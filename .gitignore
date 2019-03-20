@@ -3,3 +3,10 @@
 ################################################################################
 
 /Roguelike/obj/Debug
+/Roguelike/bin/Debug
+/Roguelike/.vs/Roguelike/v15/Server/sqlite3
+/RoguelikeConsoleRunner/bin/Debug
+/RoguelikeConsoleRunner/obj/Debug
+/RoguelikeUnitTests/bin/Debug
+/RoguelikeUnitTests/obj/Debug
+/.vs/Roguelike/v15/Server/sqlite3
