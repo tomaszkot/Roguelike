@@ -21,12 +21,11 @@ namespace Roguelike
 
   public class GameContext
   {
-    World world;
-    public World World { get => world; set => world = value; }
+    
     Hero hero;
 
     
-    public GameNode CurrentNode { get; private set; }
+    public virtual GameNode CurrentNode { get; protected set; }
     public Hero Hero { get => hero; set => hero = value; }
     public event EventHandler EnemiesTurn;
     public event EventHandler<GenericEventArgs<ContextSwitch>> ContextSwitched;
@@ -84,8 +83,7 @@ namespace Roguelike
           logger.LogError("!node.SetTile "+ Hero);
         }
       }
-      if(node is World)
-        World = node as World;
+      
       CurrentNode = node;
       //EventsManager.AppendAction(new GameStateAction() { InvolvedNode = node, Type = GameStateAction.ActionType.ContextSwitched });
       EmitContextSwitched(context);

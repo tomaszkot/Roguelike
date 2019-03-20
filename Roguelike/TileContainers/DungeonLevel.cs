@@ -46,7 +46,7 @@ namespace Roguelike.TileContainers
       Nodes[0].Reveal(true, true);
     }
 
-    internal void OnLoadDone()
+    public void OnLoadDone()
     {
       HookEvents();
     }

@@ -132,7 +132,7 @@ namespace Roguelike.TileContainers
       return null;
     }
 
-    internal virtual bool RevealRoom(Tiles.Door door, Roguelike.Tiles.Hero hero)
+    public virtual bool RevealRoom(Tiles.Door door, Roguelike.Tiles.Hero hero)
     {
       if (door.IsFromChildIsland)
       {

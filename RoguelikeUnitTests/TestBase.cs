@@ -58,7 +58,6 @@ namespace RoguelikeUnitTests
     [TearDown]
     public void Cleanup()
     { 
-      /* ... */
     }
 
   }

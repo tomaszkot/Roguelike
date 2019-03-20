@@ -9,10 +9,10 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 
-namespace Serialization
+namespace Roguelike.Serialization
 {
 
-  class JSONPersister : IPersister
+  public class JSONPersister : IPersister
   {
     public void Save<T>(T entity, string fileName)
     {
@@ -32,11 +32,6 @@ namespace Serialization
         Debug.WriteLine(ex);
         throw;
       }
-    }
-
-    public void SaveWorld(World world)
-    {
-      Save<World>(world, "OuadII_World.json");
     }
 
     public T Load<T>(string fileName) where T: class
@@ -67,11 +62,6 @@ namespace Serialization
       }
 
       return entity;
-    }
-
-    public World LoadWorld()
-    {
-      return Load<World>("OuadII_World.json");
     }
 
     private static bool IsValidJson(string strInput)
@@ -121,27 +111,6 @@ namespace Serialization
     string GetStoragePitName(string pitName)
     {
       return PitPreffix + pitName;
-    }
-
-    public void SavePits(List<DungeonPit> pits)
-    {
-      pits.ForEach(i =>
-      {
-        Directory.CreateDirectory(PitDir);
-        Save<DungeonPit>(i, PitDir+GetStoragePitName(i.Name)+".json");
-      });
-    }
-
-    public List<DungeonPit> LoadPits()
-    {
-      var pits = new List<DungeonPit>();
-      if (Directory.Exists(PitDir))
-      {
-        var files = Directory.GetFiles(PitDir, PitPreffix + "*");
-        foreach (var pitFileName in files)
-          pits.Add(Load<DungeonPit>(pitFileName));
-      }
-      return pits;
     }
 
     public void SaveGameState(GameState gameState)

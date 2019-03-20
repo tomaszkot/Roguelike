@@ -17,7 +17,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;GAME_BUILD</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
@@ -34,6 +34,9 @@
     <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Assets\Dlls\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="SimpleInjector">
+      <HintPath>..\..\OuaDII\Src\Packages\SimpleInjector.4.4.3\lib\net45\SimpleInjector.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -84,8 +87,6 @@
     <Compile Include="Generators\TileContainers\DungeonNode.cs" />
     <Compile Include="TileContainers\DungeonPit.cs" />
     <Compile Include="TileContainers\GameNode.cs" />
-    <Compile Include="TileContainers\World.cs" />
-    <Compile Include="TileContainers\WorldLayers.cs" />
     <Compile Include="Tiles\Armor.cs" />
     <Compile Include="Tiles\Door.cs" />
     <Compile Include="Tiles\Enemy.cs" />

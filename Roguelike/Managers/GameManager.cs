@@ -12,27 +12,25 @@ using Roguelike.InfoScreens;
 using Roguelike.Generators;
 using Dungeons;
 using System.Diagnostics;
-using Serialization;
 using Roguelike.Abstract;
+using Roguelike.Serialization;
+using SimpleInjector;
 
 namespace Roguelike.Managers
 {
   public class GameManager
   {
-    GameContext context;
+    protected GameContext context;
     LootGenerator lootGenerator = new LootGenerator();
     EventsManager eventsManager;
     EnemiesManager enemiesManager;
     EntitiesManager alliesManager;
 
-    IPersister persister;
-    ILogger logger;
+    protected IPersister persister;
+    protected ILogger logger;
     // InputManager inputManager;
 
     public EnemiesManager EnemiesManager { get => enemiesManager; set => enemiesManager = value; }
-    public World World { get => Context.World; set => Context.World = value; }
-
-    
     public Hero Hero { get => Context.Hero; }
     public bool HeroTurn { get => Context.HeroTurn; }
 
@@ -45,18 +43,13 @@ namespace Roguelike.Managers
 
     //public InputManager InputManager { get => inputManager; set => inputManager = value; }
 
-    //public GameManager(ILogger logger)
-    //{
-
-    //}
-
-    public GameManager(ILogger logger)//World world, Hero hero, ILogger logger)
+    public GameManager(Container container)
     {
-      this.logger = logger;
+      this.logger = container.GetInstance<ILogger>();
       EventsManager = new EventsManager();
       EventsManager.ActionAppended += EventsManager_ActionAppended;
 
-      Context = new GameContext(logger);// world, hero, logger);
+      Context = container.GetInstance<GameContext>();
       Context.EventsManager = EventsManager;
 
       enemiesManager = new EnemiesManager(Context, EventsManager);
@@ -67,8 +60,9 @@ namespace Roguelike.Managers
 
     public void SetContext(GameNode node, Hero hero, GameContextSwitchKind kind, Stairs stairs = null)
     {
-      if(node is World)
-        Context.World = node as World;
+      //TODO
+      //if(node is World)
+      //  Context.World = node as World;
       Context.Hero = hero;
 
       InitNode(node);
@@ -78,22 +72,12 @@ namespace Roguelike.Managers
       PrintHeroStats("SetContext "+ kind);
     }
 
-    private void InitNode(World node, bool fromLoad)
+    protected virtual void InitNode(GameNode node, bool fromLoad)
     {
       InitNode(node as GameNode );
-
-      foreach (var pit in node.Pits)
-      {
-        foreach (var dl in pit.Levels)
-        {
-          InitNode(dl);
-          if (fromLoad)
-            dl.OnLoadDone();
-        }
-      }
     }
 
-    private void InitNode(GameNode node)
+    protected void InitNode(GameNode node)
     {
       node.GetTiles<LivingEntity>().ForEach(i => i.EventsManager = eventsManager);
       node.Logger = this.logger;
@@ -159,7 +143,7 @@ namespace Roguelike.Managers
       return CurrentNode as T;
     }
 
-    private bool InteractWith(Tile tile, ref bool contextSwitched)
+    protected virtual bool InteractWith(Tile tile, ref bool contextSwitched)
     {
       if (tile is Enemy)
       {
@@ -182,39 +166,7 @@ namespace Roguelike.Managers
         if (tile is Stairs)
         {
           var stairs = tile as Stairs;
-          if (stairs.Kind == StairsKind.PitDown || stairs.Kind == StairsKind.PitUp)
-          {
-            var world = World;//TODO World migh not be loaded!// GetCurrentNode<World>();
-            var pit = world.GetPit(stairs.PitName);
-            if (stairs.Kind == StairsKind.PitDown)
-            {
-              DungeonLevel level = null;
-              if (!pit.Levels.Any())
-              {
-                var lg = new LevelGenerator(pit.Name, logger);
-                level = lg.Generate() as DungeonLevel;
-                level.Logger = logger;
-                pit.AddLevel(level);
-              }
-              else
-                level = pit.Levels.First();
-              SetContext(level, Hero, GameContextSwitchKind.WorldSwitched, stairs);
-              contextSwitched = true;
-
-              var heroInW = world.GetTiles<Hero>().SingleOrDefault();
-              var st = world.GetTiles<Stairs>();
-              Debug.Assert(heroInW == null);
-            }
-            else
-            {
-              var st = world.GetTiles<Stairs>();
-              SetContext(world, Hero, GameContextSwitchKind.WorldSwitched, stairs);
-              contextSwitched = true;
-              var st1 = world.GetTiles<Stairs>();
-              int k = 0;
-              k++;
-            }
-          }
+          //TODO
         }
         return true;
       }
@@ -228,43 +180,25 @@ namespace Roguelike.Managers
     }
 
 
-    public void Load()
+    public virtual void Load()
     {
-      var world = persister.LoadWorld();
-      this.World = world;
-      world.Logger = this.logger;
-      RestoreEmptyTiles(world);
-      
-      var pits = persister.LoadPits();
-      world.Pits = pits;
-
       var hero = persister.LoadHero();
 
       var gs = persister.LoadGameState();
 
-      var startingNode = world.PlaceLoadedHero(hero, gs);
-
-      InitNode(world, true);
-
-      context.SwitchTo(startingNode, hero, GameContextSwitchKind.GameLoaded);
+      //TODO
+      //var startingNode = world.PlaceLoadedHero(hero, gs);
+      //InitNode(world, true);
+      //context.SwitchTo(startingNode, hero, GameContextSwitchKind.GameLoaded);
 
       PrintHeroStats("load");
 
       //EventsManager.AppendAction(new GameStateAction() { Type = GameStateAction.ActionType.GameFinished});
     }
 
-    private void RestoreEmptyTiles(World world)
-    {
-      world.DoGridAction((int col, int row) =>
-      {
-        if (world.Tiles[row, col] == null)
-        {
-          world.SetEmptyTile(new Point(col, row));
-        }
-      });
-    }
+    
 
-    public void Save()
+    public virtual void Save()
     {
 #if DEBUG
       var heros = CurrentNode.GetTiles<Hero>();
@@ -276,35 +210,18 @@ namespace Roguelike.Managers
       if (!CurrentNode.SetEmptyTile(Hero.Point))
         logger.LogError("failed to reset hero on save");
 
-      var world = World;
-      if (world != null)
-      {
-        //optimize save/load time/storage
-        world.DoGridAction((int col, int row) =>
-        {
-          if (world.IsTileEmpty(world.Tiles[row, col]))
-          {
-            world.SetTile(null, new Point(col, row));
-          }
-        });
-        persister.SaveWorld(world);
-        persister.SavePits(world.Pits);
-      }
       persister.SaveHero(Hero);
 
-      GameState gameState = CreateGameState();
+      var gameState = CreateGameState();
       persister.SaveGameState(gameState);
 
-      world.SetTile(Hero, Hero.Point);
-
-      RestoreEmptyTiles(world);
+      CurrentNode.SetTile(Hero, Hero.Point);
     }
 
-    private GameState CreateGameState()
+    protected virtual GameState CreateGameState()
     {
       GameState gameState = new GameState();
       gameState.LastSaved = DateTime.Now;
-      gameState.HeroPathValue.World = World != null ? World.Name : "?";
       gameState.HeroPathValue.Pit = "";
       gameState.LastSaved = DateTime.Now;
       if (CurrentNode is DungeonLevel)
@@ -334,11 +251,6 @@ namespace Roguelike.Managers
 
       return new Tuple<bool, Point>(false, pos);
     }
-
-    //public Tuple<bool, Point> MoveHero(int horizontal, int vertical)
-    //{
-    //  return alliesManager.MoveEntity(hero, horizontal, vertical);
-    //}
 
     public bool CollectLootOnHeroPosition()
     {
@@ -373,7 +285,7 @@ namespace Roguelike.Managers
       return false;
     }
 
-    private void PrintHeroStats(string context,bool onlyNonZero = true)
+    protected void PrintHeroStats(string context,bool onlyNonZero = true)
     {
       logger.LogInfo("PrintHeroStats "+ context);
       foreach (var stat in Hero.Stats.Stats)
@@ -388,14 +300,5 @@ namespace Roguelike.Managers
       this.AlliesManager.MakeEntitiesMove(skipHero ? Hero : null);
       //DoEnemiesTurn();
     }
-
-    //public void DoEnemiesTurn()
-    //{
-    //  //EnemiesManager.Hero = Hero;
-    //  EnemiesManager.MakeEntitiesMove();
-    //}
-
-
-
   }
 }
