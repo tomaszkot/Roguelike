@@ -29,13 +29,6 @@ namespace RoguelikeUnitTests
     public void Init()
     {
       Container = new ContainerConfigurator().Container;
-      //Container.Options.ConstructorResolutionBehavior = new GreediestConstructorBehavior();
-
-      //Container.Register<IGameGenerator, LevelGenerator>();
-      //Container.Register<GameManager, GameManager>();
-      
-      //Container.Register<ILogger, Roguelike.Utils.Logger>();
-
       GameManager = Container.GetInstance<GameManager>();
 
       GameNode = Container.GetInstance<IGameGenerator>().Generate() as GameNode;

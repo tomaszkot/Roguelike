@@ -10,3 +10,8 @@
 /RoguelikeUnitTests/bin/Debug
 /RoguelikeUnitTests/obj/Debug
 /.vs/Roguelike/v15/Server/sqlite3
+/DungeonsGenerator/DungeonsGenerator/bin
+/DungeonsGenerator/DungeonsGenerator/obj
+/Roguelike/obj/OuaDII
+/RoguelikeConsoleRunner/obj/OuaDII
+/RoguelikeUnitTests/obj/OuaDII

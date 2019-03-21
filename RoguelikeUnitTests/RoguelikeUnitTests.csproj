@@ -36,6 +36,15 @@
   <PropertyGroup>
     <StartupObject />
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'OuaDII|AnyCPU'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\OuaDII\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
   <ItemGroup>
     <None Include="App.config" />
     <None Include="packages.config" />
@@ -45,8 +54,8 @@
     <Compile Include="TestBase.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\DungeonsGenerator\DungeonsGenerator\Dungeons.csproj">
-      <Project>{6E90D7C5-938D-4E62-B45C-53D0033847EF}</Project>
+    <ProjectReference Include="..\DungeonsGenerator\DungeonsGenerator\Dungeons.csproj">
+      <Project>{6e90d7c5-938d-4e62-b45c-53d0033847ef}</Project>
       <Name>Dungeons</Name>
     </ProjectReference>
     <ProjectReference Include="..\Roguelike\Roguelike.csproj">

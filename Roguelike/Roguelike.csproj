@@ -30,6 +30,16 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'OuaDII|AnyCPU'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\OuaDII\</OutputPath>
+    <DefineConstants>TRACE;DEBUG;GAME_BUILD</DefineConstants>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <DebugType>full</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -108,14 +118,14 @@
     <None Include="Astar\PriorityQueueB.cs.meta" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\DungeonsGenerator\DungeonsGenerator\Dungeons.csproj">
+    <ProjectReference Include="..\DungeonsGenerator\DungeonsGenerator\Dungeons.csproj">
       <Project>{6e90d7c5-938d-4e62-b45c-53d0033847ef}</Project>
       <Name>Dungeons</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>if "$(DefineConstants.Contains('GAME_BUILD'))" == "True" xcopy  "$(TargetPath)" "$(SolutionDir)\Assets\Dlls" /Y
-if "$(DefineConstants.Contains('GAME_BUILD'))" == "True" xcopy  "$(TargetDir)Roguelike.pdb" "$(SolutionDir)\Assets\Dlls" /Y</PostBuildEvent>
+    <PostBuildEvent>if  "$(SolutionName)" == "OuaDII" xcopy  "$(TargetPath)" "$(SolutionDir)\Assets\Dlls" /Y
+if  "$(SolutionName)" == "OuaDII"  xcopy  "$(TargetDir)Roguelike.pdb" "$(SolutionDir)\Assets\Dlls" /Y</PostBuildEvent>
   </PropertyGroup>
 </Project>

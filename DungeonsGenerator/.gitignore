@@ -1,0 +1,11 @@
+﻿################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+/.vs
+/DungeonsConsoleRunner/bin/Debug
+/DungeonsConsoleRunner/obj/Debug
+/DungeonsGenerator/bin/Debug
+/DungeonsGenerator/obj/Debug
+/DungeonsConsoleRunner/bin
+/DungeonsConsoleRunner/obj

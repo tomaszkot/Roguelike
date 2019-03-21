@@ -1,0 +1,104 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{6E90D7C5-938D-4E62-B45C-53D0033847EF}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Dungeons</RootNamespace>
+    <AssemblyName>Dungeons</AssemblyName>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>TRACE;DEBUG;GAME_BUILD</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'OuaDII|AnyCPU'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\OuaDII\</OutputPath>
+    <DefineConstants>TRACE;DEBUG;GAME_BUILD</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>..\..\packages\Newtonsoft.Json.12.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="SimpleInjector">
+      <HintPath>..\..\OuaDII\Src\Assets\Dlls\SimpleInjector.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="ASCIIDisplay\ConsoleDrawingEngine.cs" />
+    <Compile Include="ASCIIDisplay\Presenters\DungeonPresenter.cs" />
+    <Compile Include="ASCIIDisplay\Presenters\Item.cs" />
+    <Compile Include="ASCIIDisplay\Presenters\Label.cs" />
+    <Compile Include="ASCIIDisplay\Presenters\ListPresenter.cs" />
+    <Compile Include="ASCIIDisplay\Screen.cs" />
+    <Compile Include="Core\GenerationConstraints.cs" />
+    <Compile Include="Core\GenericEventArgs.cs" />
+    <Compile Include="Core\GreediestConstructorBehavior.cs" />
+    <Compile Include="Core\RandHelper.cs" />
+    <Compile Include="Core\Extensions.cs" />
+    <Compile Include="DefaultNodeLayouter.cs" />
+    <Compile Include="GenerationInfo.cs" />
+    <Compile Include="Generator.cs" />
+    <Compile Include="DungeonNode.cs" />
+    <Compile Include="ASCIIDisplay\IDrawingEngine.cs" />
+    <Compile Include="NodeInteriorGenerator.cs" />
+    <Compile Include="Tiles\Door.cs" />
+    <Compile Include="Tiles\IObstacle.cs" />
+    <Compile Include="Tiles\Tile.cs" />
+    <Compile Include="Tiles\Wall.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Properties\" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>
+echo $(SolutionName)
+if "$(SolutionName)" == "OuaDII" xcopy  "$(TargetPath)" "$(SolutionDir)\Assets\Dlls" /Y
+if "$(SolutionName)" == "OuaDII" xcopy  "$(TargetDir)Dungeons.pdb" "$(SolutionDir)\Assets\Dlls" /Y
+
+</PostBuildEvent>
+  </PropertyGroup>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
