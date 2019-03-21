@@ -1,5 +1,7 @@
 ﻿using Dungeons;
+using Dungeons.Core;
 using NUnit.Framework;
+using Roguelike;
 using Roguelike.Abstract;
 using Roguelike.Generators;
 using Roguelike.Managers;
@@ -16,41 +18,32 @@ using System.Threading.Tasks;
 
 namespace RoguelikeUnitTests
 {
-  public class GreediestConstructorBehavior : IConstructorResolutionBehavior
-  {
-    public ConstructorInfo GetConstructor(Type implementationType) => (
-        from ctor in implementationType.GetConstructors()
-        orderby ctor.GetParameters().Length //descending
-        select ctor)
-        .First();
-  }
-
   [TestFixture]
-  class TestBase
+  public class TestBase
   {
-    Container container;
     public GameManager GameManager { get; private set; }
     public GameNode GameNode { get; set; }
+    public Container Container { get; set; }
 
     [SetUp]
     public void Init()
     {
-      container = new Container();
-      container.Options.ConstructorResolutionBehavior = new GreediestConstructorBehavior();
+      Container = new ContainerConfigurator().Container;
+      //Container.Options.ConstructorResolutionBehavior = new GreediestConstructorBehavior();
 
-      container.Register<IGameGenerator, LevelGenerator>();
-      container.Register<GameManager, GameManager>();
+      //Container.Register<IGameGenerator, LevelGenerator>();
+      //Container.Register<GameManager, GameManager>();
       
-      container.Register<ILogger, Roguelike.Utils.Logger>();
+      //Container.Register<ILogger, Roguelike.Utils.Logger>();
 
-      GameManager = container.GetInstance<GameManager>();
+      GameManager = Container.GetInstance<GameManager>();
 
-      GameNode = container.GetInstance<IGameGenerator>().Generate() as GameNode;
+      GameNode = Container.GetInstance<IGameGenerator>().Generate() as GameNode;
     }
 
     protected Hero AddHero()
     {
-      var hero = new Hero();
+      var hero = Container.GetInstance<Hero>();
       GameNode.SetTile(hero, GameNode.GetFirstEmptyPoint().Value);
       return hero;
     }

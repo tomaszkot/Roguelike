@@ -62,6 +62,7 @@
     <Compile Include="Astar\PriorityQueueB.cs" />
     <Compile Include="Attributes\EntityStat.cs" />
     <Compile Include="Attributes\EntityStats.cs" />
+    <Compile Include="ContainerConfigurator.cs" />
     <Compile Include="Events\GameAction.cs" />
     <Compile Include="GameContext.cs" />
     <Compile Include="GameState.cs" />
@@ -85,7 +86,6 @@
     <Compile Include="Utils\SerializableDictionary.cs" />
     <Compile Include="TileContainers\DungeonLevel.cs" />
     <Compile Include="Generators\TileContainers\DungeonNode.cs" />
-    <Compile Include="TileContainers\DungeonPit.cs" />
     <Compile Include="TileContainers\GameNode.cs" />
     <Compile Include="Tiles\Armor.cs" />
     <Compile Include="Tiles\Door.cs" />
