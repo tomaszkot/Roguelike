@@ -26,8 +26,8 @@ namespace Roguelike.Managers
     EnemiesManager enemiesManager;
     EntitiesManager alliesManager;
 
-    protected IPersister persister;
-    protected ILogger logger;
+    private IPersister persister;
+    private ILogger logger;
     // InputManager inputManager;
 
     public EnemiesManager EnemiesManager { get => enemiesManager; set => enemiesManager = value; }
@@ -40,12 +40,14 @@ namespace Roguelike.Managers
     public GameNode CurrentNode { get => context.CurrentNode; }
     public EntitiesManager AlliesManager { get => alliesManager; set => alliesManager = value; }
     internal LootGenerator LootGenerator { get => lootGenerator; set => lootGenerator = value; }
+    public IPersister Persister { get => persister; set => persister = value; }
+    public ILogger Logger { get => logger; set => logger = value; }
 
     //public InputManager InputManager { get => inputManager; set => inputManager = value; }
 
     public GameManager(Container container)
     {
-      this.logger = container.GetInstance<ILogger>();
+      this.Logger = container.GetInstance<ILogger>();
       EventsManager = new EventsManager();
       EventsManager.ActionAppended += EventsManager_ActionAppended;
 
@@ -55,7 +57,7 @@ namespace Roguelike.Managers
       enemiesManager = new EnemiesManager(Context, EventsManager);
       AlliesManager = new EntitiesManager(Context, EventsManager);
 
-      persister = container.GetInstance<JSONPersister>();
+      Persister = container.GetInstance<JSONPersister>();
     }
 
     public void SetContext(GameNode node, Hero hero, GameContextSwitchKind kind, Stairs stairs = null)
@@ -72,7 +74,7 @@ namespace Roguelike.Managers
       PrintHeroStats("SetContext "+ kind);
     }
 
-    protected virtual void InitNode(GameNode node, bool fromLoad)
+    public virtual void InitNode(GameNode node, bool fromLoad)
     {
       InitNode(node as GameNode );
     }
@@ -80,7 +82,7 @@ namespace Roguelike.Managers
     protected void InitNode(GameNode node)
     {
       node.GetTiles<LivingEntity>().ForEach(i => i.EventsManager = eventsManager);
-      node.Logger = this.logger;
+      node.Logger = this.Logger;
     }
     
     private void EventsManager_ActionAppended(object sender, GenericEventArgs<GameAction> e)
@@ -94,7 +96,7 @@ namespace Roguelike.Managers
             context.CurrentNode.SetTile(context.CurrentNode.GenerateEmptyTile(), lea.InvolvedEntity.Point);
           else
           {
-            logger.LogError("context.CurrentNode HasTile failed for " + lea.InvolvedEntity);
+            Logger.LogError("context.CurrentNode HasTile failed for " + lea.InvolvedEntity);
           }
         }
       }
@@ -147,7 +149,7 @@ namespace Roguelike.Managers
     {
       if (tile is Enemy)
       {
-        logger.LogInfo("Hero attacks "+tile);
+        Logger.LogInfo("Hero attacks "+tile);
         var en = tile as Enemy;
         var ap = AlliesManager.PolicyFactory(Hero, en);
         ap.Apply();
@@ -182,43 +184,17 @@ namespace Roguelike.Managers
 
     public virtual void Load()
     {
-      var hero = persister.LoadHero();
-
-      var gs = persister.LoadGameState();
-
-      //TODO
-      //var startingNode = world.PlaceLoadedHero(hero, gs);
-      //InitNode(world, true);
-      //context.SwitchTo(startingNode, hero, GameContextSwitchKind.GameLoaded);
-
-      PrintHeroStats("load");
-
-      //EventsManager.AppendAction(new GameStateAction() { Type = GameStateAction.ActionType.GameFinished});
+      persistancyWorker.Load(this);
     }
 
-    
+    PersistancyWorker persistancyWorker = new PersistancyWorker();
 
     public virtual void Save()
     {
-#if DEBUG
-      var heros = CurrentNode.GetTiles<Hero>();
-      var heroInNode = heros.SingleOrDefault();
-      Debug.Assert(heroInNode != null);
-#endif
-      var nodeNodeName = CurrentNode.Name;
-      //Hero is saved in a separate file, see persister.SaveHero
-      if (!CurrentNode.SetEmptyTile(Hero.Point))
-        logger.LogError("failed to reset hero on save");
-
-      persister.SaveHero(Hero);
-
-      var gameState = CreateGameState();
-      persister.SaveGameState(gameState);
-
-      CurrentNode.SetTile(Hero, Hero.Point);
+      persistancyWorker.Save(this);
     }
 
-    protected virtual GameState CreateGameState()
+    public virtual GameState CreateGameState()
     {
       GameState gameState = new GameState();
       gameState.LastSaved = DateTime.Now;
@@ -285,13 +261,13 @@ namespace Roguelike.Managers
       return false;
     }
 
-    protected void PrintHeroStats(string context,bool onlyNonZero = true)
+    public void PrintHeroStats(string context,bool onlyNonZero = true)
     {
-      logger.LogInfo("PrintHeroStats "+ context);
+      Logger.LogInfo("PrintHeroStats "+ context);
       foreach (var stat in Hero.Stats.Stats)
       {
         if(!onlyNonZero || stat.Value.TotalValue != 0)
-          logger.LogInfo(stat.Key + ": " + stat.Value);
+          Logger.LogInfo(stat.Key + ": " + stat.Value);
       }
     }
 

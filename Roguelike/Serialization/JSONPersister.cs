@@ -1,17 +1,14 @@
 ﻿
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using Roguelike;
 using Roguelike.TileContainers;
 using Roguelike.Tiles;
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 
 namespace Roguelike.Serialization
 {
-
   public class JSONPersister : IPersister
   {
     public void Save<T>(T entity, string fileName)
@@ -105,17 +102,20 @@ namespace Roguelike.Serialization
     {
       return Load<Hero>(GetFullFilePath("OuadII_Hero.json"));
     }
-
-    const string PitPreffix = "";
-    const string PitDir = "./Pits/";
-
-    public JSONPersister()
+    
+    public void SaveLevel(DungeonLevel level)
     {
+      Save(level, GetFullFilePath(GetLevelFileName(level.Index)));
     }
 
-    string GetStoragePitName(string pitName)
+    private string GetLevelFileName(int levelIndex)
     {
-      return PitPreffix + pitName;
+      return "DungeonLevel" + levelIndex + ".json";
+    }
+
+    public DungeonLevel LoadLevel(int index)
+    {
+      return Load<DungeonLevel>(GetFullFilePath(GetLevelFileName(index)));
     }
 
     public void SaveGameState(GameState gameState)
