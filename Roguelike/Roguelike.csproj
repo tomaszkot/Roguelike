@@ -125,7 +125,7 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>if  "$(SolutionName)" == "OuaDII" xcopy  "$(TargetPath)" "$(SolutionDir)\Assets\Dlls" /Y
-if  "$(SolutionName)" == "OuaDII"  xcopy  "$(TargetDir)Roguelike.pdb" "$(SolutionDir)\Assets\Dlls" /Y</PostBuildEvent>
+    <PostBuildEvent>if  "$(SolutionName)" == "OuaDIISln" xcopy  "$(TargetPath)" "$(SolutionDir)\Assets\Dlls" /Y
+if  "$(SolutionName)" == "OuaDIISln"  xcopy  "$(TargetDir)Roguelike.pdb" "$(SolutionDir)\Assets\Dlls" /Y</PostBuildEvent>
   </PropertyGroup>
 </Project>
