@@ -13,7 +13,12 @@ using System.Threading.Tasks;
 
 namespace Roguelike
 {
-  public class ContainerConfigurator
+  public interface IContainerConfigurator
+  {
+    Container Container { get; set; }
+  }
+
+  public class ContainerConfigurator : IContainerConfigurator
   {
     public Container Container { get; set; }
 

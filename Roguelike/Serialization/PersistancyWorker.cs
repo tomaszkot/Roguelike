@@ -10,9 +10,9 @@ using System.Threading.Tasks;
 
 namespace Roguelike.Serialization
 {
-  class PersistancyWorker
+  public class PersistancyWorker
   {
-    public void Save(GameManager gm)
+    public void Save(GameManager gm, Action worldSaver = null)
     {
 #if DEBUG
       var heros = gm.CurrentNode.GetTiles<Hero>();
@@ -25,7 +25,11 @@ namespace Roguelike.Serialization
         gm.Logger.LogError("failed to reset hero on save");
 
       gm.Persister.SaveHero(gm.Hero);
-      gm.Persister.SaveLevel(gm.CurrentNode as DungeonLevel);
+
+      if (worldSaver == null)
+        gm.Persister.SaveLevel(gm.CurrentNode as DungeonLevel);
+      else
+        worldSaver();
 
       var gameState = gm.CreateGameState();
       gm.Persister.SaveGameState(gameState);
@@ -33,16 +37,22 @@ namespace Roguelike.Serialization
       gm.CurrentNode.SetTile(gm.Hero, gm.Hero.Point);
     }
 
-    public void Load(GameManager gm)
+    public void Load(GameManager gm, Func<Hero, GameState, GameNode> worldLoader = null)
     {
       var hero = gm.Persister.LoadHero();
 
       var gs = gm.Persister.LoadGameState();
 
-      var level = gm.Persister.LoadLevel(0);//TODO more levels
-      level.SetTile(hero, hero.Point);
-      gm.InitNode(level, true);
-      gm.Context.SwitchTo(level, hero, GameContextSwitchKind.GameLoaded);
+      GameNode node = null;
+      if (worldLoader != null)
+        node = worldLoader(hero, gs);
+      else
+      {
+        node = gm.Persister.LoadLevel(0);//TODO more levels
+        node.SetTile(hero, hero.Point);
+      }
+      gm.InitNode(node, true);
+      gm.Context.SwitchTo(node, hero, GameContextSwitchKind.GameLoaded);
 
       gm.PrintHeroStats("load");
 

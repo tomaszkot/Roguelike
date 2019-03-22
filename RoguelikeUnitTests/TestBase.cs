@@ -12,22 +12,33 @@ namespace RoguelikeUnitTests
   public class TestBase
   {
     public GameManager GameManager { get; private set; }
-    public GameNode GameNode { get; set; }
+    //public GameNode GameNode { get; set; }
     public Container Container { get; set; }
+
+    protected virtual IContainerConfigurator CreateContainerConfigurator()
+    {
+      return new ContainerConfigurator();
+    }
 
     [SetUp]
     public void Init()
     {
-      Container = new ContainerConfigurator().Container;
+      Container =  CreateContainerConfigurator().Container;
       GameManager = Container.GetInstance<GameManager>();
-
-      GameNode = Container.GetInstance<IGameGenerator>().Generate() as GameNode;
     }
 
-    protected Hero AddHero()
+    protected Dungeon CreateNewGame<Dungeon>() where Dungeon : GameNode
+    {
+      var gameNode = Container.GetInstance<IGameGenerator>().Generate() as Dungeon;
+      GameManager.SetContext(gameNode, AddHero(gameNode), Roguelike.GameContextSwitchKind.NewGame);
+
+      return gameNode;
+    }
+
+    protected Hero AddHero(GameNode node)
     {
       var hero = Container.GetInstance<Hero>();
-      GameNode.SetTile(hero, GameNode.GetFirstEmptyPoint().Value);
+      node.SetTile(hero, node.GetFirstEmptyPoint().Value);
       return hero;
     }
 

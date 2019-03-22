@@ -1,4 +1,5 @@
 ﻿using NUnit.Framework;
+using Roguelike.TileContainers;
 using Roguelike.Tiles;
 using System;
 using System.Collections.Generic;
@@ -14,22 +15,22 @@ namespace RoguelikeUnitTests
     [Test]
     public void NewGameTest()
     {
-      GameManager.SetContext(GameNode, AddHero(), Roguelike.GameContextSwitchKind.NewGame);
+      var gameNode = CreateNewGame<GameNode>();
 
-      Assert.AreEqual(GameNode, GameManager.Context.CurrentNode);
-      var hero = GameNode.GetTiles<Hero>().Single();
+      Assert.AreEqual(gameNode, GameManager.Context.CurrentNode);
+      var hero = gameNode.GetTiles<Hero>().Single();
       Assert.NotNull(hero);
-      var pt = GameNode.GetFirstEmptyPoint();
+      var pt = gameNode.GetFirstEmptyPoint();
       Assert.AreNotEqual(hero.Point, pt);
-      GameNode.SetTile(hero, pt.Value);
+      gameNode.SetTile(hero, pt.Value);
 
       GameManager.Save();
 
       GameManager.Load();
 
       //after load node shall be different
-      Assert.AreNotEqual(GameNode, GameManager.Context.CurrentNode);
-      hero = GameNode.GetTiles<Hero>().Single();
+      Assert.AreNotEqual(gameNode, GameManager.Context.CurrentNode);
+      hero = gameNode.GetTiles<Hero>().Single();
       Assert.NotNull(hero);
 
       //hero position shall match

@@ -1,4 +1,5 @@
 ﻿using NUnit.Framework;
+using Roguelike.TileContainers;
 using Roguelike.Tiles;
 using System;
 using System.Collections.Generic;
@@ -14,9 +15,9 @@ namespace RoguelikeUnitTests
     [Test]
     public void NewGameTest()
     {
-      GameManager.SetContext(GameNode, AddHero(), Roguelike.GameContextSwitchKind.NewGame);
+      var gameNode = CreateNewGame<GameNode>();
 
-      Assert.NotNull(GameNode.GetTiles<Hero>().Single());
+      Assert.NotNull(gameNode.GetTiles<Hero>().Single());
     }
 
   }

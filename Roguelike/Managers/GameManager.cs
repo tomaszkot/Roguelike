@@ -191,7 +191,7 @@ namespace Roguelike.Managers
 
     public virtual void Save()
     {
-      persistancyWorker.Save(this);
+      persistancyWorker.Save(this, null);
     }
 
     public virtual GameState CreateGameState()
