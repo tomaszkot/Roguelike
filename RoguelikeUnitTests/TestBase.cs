@@ -1,20 +1,10 @@
 ﻿using Dungeons;
-using Dungeons.Core;
 using NUnit.Framework;
 using Roguelike;
-using Roguelike.Abstract;
-using Roguelike.Generators;
 using Roguelike.Managers;
 using Roguelike.TileContainers;
 using Roguelike.Tiles;
 using SimpleInjector;
-using SimpleInjector.Advanced;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace RoguelikeUnitTests
 {

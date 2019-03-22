@@ -91,14 +91,19 @@ namespace Roguelike.Serialization
       }
     }
 
+    string GetFullFilePath(string fileName)
+    {
+      return "c:/tmp/"+ fileName;
+    }
+
     public void SaveHero(Hero hero)
     {
-      Save<Hero>(hero, "OuadII_Hero.json");
+      Save<Hero>(hero, GetFullFilePath("OuadII_Hero.json"));
     }
 
     public Hero LoadHero()
     {
-      return Load<Hero>("OuadII_Hero.json");
+      return Load<Hero>(GetFullFilePath("OuadII_Hero.json"));
     }
 
     const string PitPreffix = "";
@@ -115,12 +120,12 @@ namespace Roguelike.Serialization
 
     public void SaveGameState(GameState gameState)
     {
-      Save<GameState>(gameState, "GameState.json");
+      Save<GameState>(gameState, GetFullFilePath("GameState.json"));
     }
 
     public GameState LoadGameState()
     {
-      return Load<GameState>("GameState.json");
+      return Load<GameState>(GetFullFilePath("GameState.json"));
     }
   }
 }

@@ -55,7 +55,7 @@ namespace Roguelike.Managers
       enemiesManager = new EnemiesManager(Context, EventsManager);
       AlliesManager = new EntitiesManager(Context, EventsManager);
 
-      persister = new JSONPersister();
+      persister = container.GetInstance<JSONPersister>();
     }
 
     public void SetContext(GameNode node, Hero hero, GameContextSwitchKind kind, Stairs stairs = null)
