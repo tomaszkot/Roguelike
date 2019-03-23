@@ -18,6 +18,7 @@ namespace DungeonsConsoleRunner
     public IDrawingEngine DrawingEngine { get; set; }
     protected Screen screen;
     Container container;
+    int levelIndex;
 
     public GameController(Container container, IGameGenerator generator, IDrawingEngine drawingEngine)
     {
@@ -48,7 +49,7 @@ namespace DungeonsConsoleRunner
 
     protected virtual void Generate()
     {
-      Dungeon = generator.Generate();
+      Dungeon = generator.Generate(levelIndex++);
       
     }
 

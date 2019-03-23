@@ -14,6 +14,8 @@ namespace RoguelikeUnitTests
     public GameManager GameManager { get; private set; }
     //public GameNode GameNode { get; set; }
     public Container Container { get; set; }
+    int levelIndex;
+    public Hero Hero { get { return GameManager.Hero; } }
 
     protected virtual IContainerConfigurator CreateContainerConfigurator()
     {
@@ -27,9 +29,14 @@ namespace RoguelikeUnitTests
       GameManager = Container.GetInstance<GameManager>();
     }
 
-    protected Dungeon CreateNewGame<Dungeon>() where Dungeon : GameNode
+    protected DungeonLevel CreateNewDungeon() 
     {
-      var gameNode = Container.GetInstance<IGameGenerator>().Generate() as Dungeon;
+      return CreateNewDungeon<DungeonLevel>() ;
+    }
+
+    protected Dungeon CreateNewDungeon<Dungeon>() where Dungeon : GameNode
+    {
+      var gameNode = Container.GetInstance<IGameGenerator>().Generate(levelIndex) as Dungeon;
       GameManager.SetContext(gameNode, AddHero(gameNode), Roguelike.GameContextSwitchKind.NewGame);
 
       return gameNode;

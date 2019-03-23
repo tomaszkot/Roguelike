@@ -21,9 +21,7 @@ namespace Roguelike
 
   public class GameContext
   {
-    
     Hero hero;
-
     
     public virtual GameNode CurrentNode { get; protected set; }
     public Hero Hero { get => hero; set => hero = value; }
@@ -32,12 +30,12 @@ namespace Roguelike
     public EventsManager EventsManager { get ; set ; }
     ILogger logger;
 
-    public GameContext(/*World world, Hero hero,*/ ILogger logger)
+    public GameContext(ILogger logger)
     {
       this.logger = logger;
     }
 
-    public void SwitchTo(GameNode node, Hero hero, GameContextSwitchKind context, Stairs stairs = null)
+    public virtual void SwitchTo(GameNode node, Hero hero, GameContextSwitchKind context, Stairs stairs = null)
     {
       if (node == CurrentNode)
       {
@@ -53,28 +51,13 @@ namespace Roguelike
         var heroInNode = heros.SingleOrDefault();
         Debug.Assert(heroInNode != null);
         if (heroInNode == null)
-        {
           logger.LogError("SwitchTo heros.Count = " + heros.Count);
-        }
-        if (heroInNode != null)// && context!= GameContextSwitchKind.GameLoaded)
+
+        if (heroInNode != null)
           CurrentNode.SetEmptyTile(heroInNode.Point);//Hero is going to be placed in the node, remove it from the old one (CurrentNode)
 
-          Tile heroStartTile = null;
-          if (stairs != null)
-          {
-            if (stairs.Kind == StairsKind.PitUp)
-            {
-              var up = node.GetTiles<Stairs>().Where(i => i.Kind == StairsKind.PitDown && i.PitName == stairs.PitName).SingleOrDefault();
-              if (up != null)
-              {
-                heroStartTile = node.GetNeighborTiles<Tile>(up).FirstOrDefault();
-              }
-            }
-          }
-          if (heroStartTile == null)
-            heroStartTile = node.GetEmptyTiles().First();
-
-          node.SetTile(this.Hero, heroStartTile.Point, false);
+        Tile heroStartTile = PlaceHeroAtDungeon(node, stairs);
+        node.SetTile(this.Hero, heroStartTile.Point, false);
       }
       else
       {
@@ -87,6 +70,13 @@ namespace Roguelike
       CurrentNode = node;
       //EventsManager.AppendAction(new GameStateAction() { InvolvedNode = node, Type = GameStateAction.ActionType.ContextSwitched });
       EmitContextSwitched(context);
+    }
+
+    protected virtual Tile PlaceHeroAtDungeon(GameNode node, Stairs stairs)
+    {
+      Tile heroStartTile = node.GetEmptyTiles().First();
+
+      return heroStartTile;
     }
 
     public void EmitContextSwitched(GameContextSwitchKind context)

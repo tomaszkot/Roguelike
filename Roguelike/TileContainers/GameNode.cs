@@ -60,6 +60,18 @@ namespace Roguelike.TileContainers
           Debug.Assert(false);
         }
       }
+      else if (tile is Roguelike.Tiles.Loot)
+      {
+        if (Loot.ContainsKey(point))// && loot[point] != null)
+        {
+          if (Logger != null)
+            Logger.LogError("loot already at point: " + Loot[point] + ", trying to add: " + tile);
+          return false;
+        }
+        tile.Point = point;
+        Loot[point] = tile as Roguelike.Tiles.Loot;
+        return true;
+      }
       Point? prevPos = tile?.Point;
       var res =  base.SetTile(tile, point, resetOldTile, revealReseted);
       if (res && tile is LivingEntity && prevPos!=null)

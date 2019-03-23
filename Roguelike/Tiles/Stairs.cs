@@ -16,12 +16,8 @@ namespace Roguelike.Tiles
     public string PitName { get; set; }
     public StairsKind Kind { get => kind; set => kind = value; }
 
-    public Stairs() : base('>')
+    public Stairs() : this(StairsKind.LevelDown)
     {
-#if ASCII_BUILD
-      color = ConsoleColor.Blue;
-#endif
-      Kind = StairsKind.LevelDown;
     }
 
     public Stairs(StairsKind kind) : base('>')

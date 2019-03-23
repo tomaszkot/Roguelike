@@ -276,5 +276,10 @@ namespace Roguelike.Managers
       this.AlliesManager.MakeEntitiesMove(skipHero ? Hero : null);
       //DoEnemiesTurn();
     }
+
+    public virtual Equipment GenerateRandomEquipment(EquipmentKind weapon)
+    {
+      return new LootGenerator().GetRandomWeapon();
+    }
   }
 }

@@ -15,14 +15,17 @@ namespace RoguelikeUnitTests
     [Test]
     public void NewGameTest()
     {
-      var gameNode = CreateNewGame<GameNode>();
+      Assert.Null(Hero);
+      Assert.Null(GameManager.Context.CurrentNode);
 
-      Assert.AreEqual(gameNode, GameManager.Context.CurrentNode);
-      var hero = gameNode.GetTiles<Hero>().Single();
-      Assert.NotNull(hero);
+      var gameNode = CreateNewDungeon();
+                
+      Assert.NotNull(Hero);
+
+      //move hero to rand position.
       var pt = gameNode.GetFirstEmptyPoint();
-      Assert.AreNotEqual(hero.Point, pt);
-      gameNode.SetTile(hero, pt.Value);
+      Assert.AreNotEqual(Hero.Point, pt);
+      gameNode.SetTile(Hero, pt.Value);
 
       GameManager.Save();
 
@@ -30,11 +33,12 @@ namespace RoguelikeUnitTests
 
       //after load node shall be different
       Assert.AreNotEqual(gameNode, GameManager.Context.CurrentNode);
-      hero = gameNode.GetTiles<Hero>().Single();
+      var hero = GameManager.Context.CurrentNode.GetTiles<Hero>().Single();
       Assert.NotNull(hero);
 
       //hero position shall match
       Assert.AreEqual(hero.Point, pt);
+      Assert.AreEqual(hero, Hero);
     }
 
   }

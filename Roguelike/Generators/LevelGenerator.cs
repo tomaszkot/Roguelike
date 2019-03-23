@@ -1,50 +1,69 @@
-﻿using Dungeons;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using Dungeons;
 using Dungeons.Core;
 using Roguelike.Abstract;
 using Roguelike.TileContainers;
 using Roguelike.Tiles;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Roguelike.Generators
 {
   public class LevelGenerator : Dungeons.Generator
   {
-    string pitName;
-    ILogger logger;
-    //Roguelike.Tiles.Hero hero;
-    
     public GameNode Dungeon { get; set; }
+    public ILogger Logger { get; set; }
+    public int MaxLevelIndex { get; set; } = 100;
 
-    public LevelGenerator(ILogger logger): this("pit1", logger)
+    int levelIndex;
+
+    public LevelGenerator(ILogger logger)
     {
-      
+      this.Logger = logger;
     }
 
-    public LevelGenerator(string pitName, ILogger logger)
+    public override List<DungeonNode> CreateDungeonNodes()
     {
-      this.pitName = pitName;
-      this.logger = logger;
+      var mazeNodes = base.CreateDungeonNodes();
+      CreateDynamicTiles(mazeNodes);
+
+      return mazeNodes;
     }
 
-    protected override DungeonNode CreateNode(int w, int h, GenerationInfo gi, int index)
+    protected virtual void CreateDynamicTiles(List<DungeonNode> mazeNodes)
     {
-      var node = new GameNode(w, h, gi, index);
-      if (index == 0)
+      if (levelIndex > 0)//1st node shall have stairs up
       {
-        Stairs stairs = new Stairs() { Kind = StairsKind.PitUp, Symbol = '<' };
-        stairs.PitName = pitName;
-        node.SetTile(stairs, new System.Drawing.Point(3, 1));
-        //node.SetTile(stairs, node.GetFirstEmptyPoint().Value);
-
-        var enemy = new Enemy();
-        node.SetTile(enemy, new System.Drawing.Point(3,2));// node.GetRandomEmptyTile().Point);
-        logger.LogInfo("added enemy at :"+ enemy.Point);
-        //node.SetTile(enemy, node.GetEmptyTiles().Last().Point);
+        var stairs = new Stairs() { Kind = StairsKind.LevelUp, Symbol = '<' };
+        //mazeNodes[0].SetTile(stairs, new System.Drawing.Point(3, 1));
+        mazeNodes[0].SetTile(stairs, mazeNodes[0].GetEmptyTiles().First().Point);
       }
+
+      if (levelIndex <= MaxLevelIndex)
+      {
+        var indexWithStairsDown = mazeNodes.Count - 1;
+        if (RandHelper.GetRandomDouble() > .5f)
+          indexWithStairsDown = mazeNodes.Count - 2;
+
+        if (indexWithStairsDown < 0)
+          indexWithStairsDown = 0;
+
+        Stairs stairs = new Stairs() { Kind = StairsKind.LevelDown, Symbol = '>' };
+        mazeNodes[indexWithStairsDown].SetTile(stairs, mazeNodes[indexWithStairsDown].GetEmptyTiles().Last().Point);
+        //node.SetTile(stairs, new System.Drawing.Point(3, 1));
+      }
+    }
+
+    protected override DungeonNode CreateNode(int w, int h, GenerationInfo gi, int nodeIndex)
+    {
+      var node = new GameNode(w, h, gi, nodeIndex);
+
+      
+      var enemy = new Enemy();
+      node.SetTile(enemy, new System.Drawing.Point(3, 2));// node.GetRandomEmptyTile().Point);
+      Logger.LogInfo("added enemy at :" + enemy.Point);
+
+      
 
       return node;
     }
@@ -57,11 +76,12 @@ namespace Roguelike.Generators
       return gi;
     }
 
-    public override Dungeons.DungeonNode Generate()
+    public override DungeonNode Generate(int levelIndex)
     {
+      this.levelIndex = levelIndex;
       LayouterOptions opt = new LayouterOptions();
       opt.RevealAllNodes = false;
-      var level = base.Generate<DungeonLevel>(0, opt);
+      var level = base.Generate<DungeonLevel>(levelIndex, opt);
       level.OnGenerationDone();
       this.Dungeon = level;
 
