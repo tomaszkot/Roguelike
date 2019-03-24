@@ -9,6 +9,10 @@ namespace Roguelike.Abstract
 {
   public interface IGameManagerProvider
   {
-    GameManager GameManager { get; set; }
+    GameManager GameManager
+    {
+      get;
+      //set;
+    }
   }
 }

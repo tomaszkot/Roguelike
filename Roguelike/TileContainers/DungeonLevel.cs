@@ -32,6 +32,11 @@ namespace Roguelike.TileContainers
     {
     }
 
+    public override string ToString()
+    {
+      return Description;
+    }
+
     public override string Description
     {
       get { return "DungeonLevel Index: " + Index; }

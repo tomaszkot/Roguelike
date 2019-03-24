@@ -22,7 +22,7 @@ namespace RoguelikeUnitTests
 
     internal Game CreateGame(bool autoLoadLevel = true)
     {
-      sampleGame = new Game();
+      sampleGame = new Game(new ContainerConfigurator().Container);
       if(autoLoadLevel)
         sampleGame.GenerateLevel(0);
       return sampleGame;

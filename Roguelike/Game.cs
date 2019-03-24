@@ -15,18 +15,18 @@ namespace Roguelike
 {
   public class Game
   {
-    public GameManager GameManager { get; private set; }
+    public GameManager GameManager { get; set; }
     public Container Container { get; set; }
-    LevelGenerator LevelGenerator { get; set; }
+    public LevelGenerator LevelGenerator { get; set; }
     List<DungeonLevel> levels = new List<DungeonLevel>();
     public Hero Hero { get { return GameManager.Hero; } }
     public DungeonLevel Level { get { return GameManager.CurrentNode as DungeonLevel; } }
 
-    public Game()
+    public Game(Container container)
     {
-      Container = new ContainerConfigurator().Container;
-      GameManager = Container.GetInstance<GameManager>();
-      LevelGenerator = Container.GetInstance<LevelGenerator>();
+      Container = container;
+      GameManager = container.GetInstance<GameManager>();
+      LevelGenerator = container.GetInstance<LevelGenerator>();
 
       GameManager.Interact = (Tile tile) =>
       {

@@ -67,7 +67,7 @@ namespace Roguelike.Managers
 
     public override void MakeEntitiesMove(LivingEntity skip = null)
     {
-      var enemy = Enemies.FirstOrDefault();
+      var enemy = Enemies.Where(i=> i.Revealed).FirstOrDefault();
       if (enemy == null)
         return;
       Debug.Assert(context.CurrentNode.GetTiles<Enemy>().Any(i=> i == enemy));

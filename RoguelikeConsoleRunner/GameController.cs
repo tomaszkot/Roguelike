@@ -15,32 +15,32 @@ namespace RoguelikeConsoleRunner
 {
   public class GameController : DungeonsConsoleRunner.GameController, IGameManagerProvider
   {
-    IDungeonGenerator generator;
-    GameManager gameManager;
-    Container container;
-    public Roguelike.Tiles.Hero Hero { get ; private set ; }
+    Game game;
 
-    public GameController(Container container, IDungeonGenerator generator)
-      : base(container, generator, container.GetInstance<IDrawingEngine>())
+    public GameController(Game game)
+      : base(game.Container, game.LevelGenerator, game.Container.GetInstance<IDrawingEngine>())
     {
-      this.container = container;
-      this.generator = generator;
+      this.game = game;
     }
 
-    public LevelGenerator LevelGenerator { get { return generator as LevelGenerator; } }
+    public LevelGenerator LevelGenerator { get { return game.LevelGenerator; } }
+    public Container Container { get { return game.Container; } }
+    public Hero Hero { get { return game.Hero; } }
+    public GameManager GameManager
+    {
+      get { return game.GameManager; }
+      set { game.GameManager = value; }//TODO remove?
+    }
 
     protected override void Generate()
     {
-      base.Generate();
+      //base.Generate();
+      var dungeon = game.GenerateLevel(0);
+      PopulateDungeon();
 
-      var dungeon = PopulateDungeon();
-      AddHero(dungeon);
 
-      this.GameManager = container.GetInstance<GameManager>(); 
       this.GameManager.EventsManager.ActionAppended += ActionsManager_ActionAppended;
       this.GameManager.Context.ContextSwitched += Context_ContextSwitched;
-
-      GameManager.SetContext(dungeon, Hero, GameContextSwitchKind.NewGame);
 
       var hero1 = dungeon.GetTiles<Hero>().SingleOrDefault();
       Debug.Assert(Hero == hero1);
@@ -49,27 +49,18 @@ namespace RoguelikeConsoleRunner
 
     protected virtual Roguelike.TileContainers.GameNode PopulateDungeon()
     {
-      var world = LevelGenerator.Dungeon;
-
-      //world.ad("batPit", new System.Drawing.Point(1, 2));//world.GetFirstEmptyPoint().Value
-      //world.AddStairsWithPit("ratPit", new System.Drawing.Point(6, 6));
-      
+      var dungeon = LevelGenerator.Dungeon;
+   
 
       var lg = new LootGenerator();
       var loot = lg.GetRandomWeapon();
       //world.SetTile(loot, world.GetRandomEmptyTile().Point);
-      world.SetTile(loot, world.GetFirstEmptyPoint().Value);
+      dungeon.SetTile(loot, dungeon.GetFirstEmptyPoint().Value);
 
       //var enemy = new Enemy();
       //world.SetTile(enemy, world.GetEmptyTiles().Last().Point);
       // world.SetTile(enemy, new System.Drawing.Point(4, 1));
-      return world;
-    }
-
-    private void AddHero(Roguelike.TileContainers.GameNode world)
-    {
-      Hero = new Hero();
-      world.SetTile(Hero, world.GetFirstEmptyPoint().Value);
+      return dungeon;
     }
 
     private void Context_ContextSwitched(object sender, EventArgs e)
@@ -129,9 +120,7 @@ namespace RoguelikeConsoleRunner
         return GameManager.Context.CurrentNode;
       }
     }
-
-    public GameManager GameManager { get => gameManager; set => gameManager = value; }
-
+    
     protected override bool HandleKey(ConsoleKeyInfo info)
     {
       int vertical = 0;
@@ -183,10 +172,6 @@ namespace RoguelikeConsoleRunner
         else
         {
           GameManager.HandleHeroShift(horizontal, vertical);
-          /*var moved =*/
-          //if (moved.First)
-          //  Redraw();
-          //int k = 0;
         }
       }
 
