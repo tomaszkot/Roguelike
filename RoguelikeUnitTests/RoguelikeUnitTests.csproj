@@ -53,7 +53,6 @@
     <Compile Include="DungeonGenerationTests.cs" />
     <Compile Include="DungeonInteractionTests.cs" />
     <Compile Include="EquipmentTests.cs" />
-    <Compile Include="Game.cs" />
     <Compile Include="SerializationTests.cs" />
     <Compile Include="TestBase.cs" />
   </ItemGroup>

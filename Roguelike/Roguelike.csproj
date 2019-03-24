@@ -74,6 +74,7 @@
     <Compile Include="Attributes\EntityStats.cs" />
     <Compile Include="ContainerConfigurator.cs" />
     <Compile Include="Events\GameAction.cs" />
+    <Compile Include="Game.cs" />
     <Compile Include="GameContext.cs" />
     <Compile Include="GameState.cs" />
     <Compile Include="Generators\LevelGenerator.cs" />
