@@ -13,13 +13,22 @@ using System.Threading.Tasks;
 
 namespace Roguelike
 {
-  public class Game
+  public interface IGame
+  {
+    GameManager GameManager { get; set; }
+    Container Container { get; set; }
+    LevelGenerator LevelGenerator { get; set; }
+    Hero Hero { get; }
+  }
+
+  public class Game : IGame
   {
     public GameManager GameManager { get; set; }
     public Container Container { get; set; }
     public LevelGenerator LevelGenerator { get; set; }
-    List<DungeonLevel> levels = new List<DungeonLevel>();
     public Hero Hero { get { return GameManager.Hero; } }
+
+    List<DungeonLevel> levels = new List<DungeonLevel>();
     public DungeonLevel Level { get { return GameManager.CurrentNode as DungeonLevel; } }
 
     public Game(Container container)
