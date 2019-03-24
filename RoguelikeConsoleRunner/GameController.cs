@@ -7,6 +7,7 @@ using Roguelike;
 using Roguelike.Abstract;
 using Roguelike.Generators;
 using Roguelike.Managers;
+using Roguelike.TileContainers;
 using Roguelike.Tiles;
 using RoguelikeConsoleRunner.ASCIIDisplay;
 using SimpleInjector;
@@ -15,15 +16,16 @@ namespace RoguelikeConsoleRunner
 {
   public class GameController : DungeonsConsoleRunner.GameController, IGameManagerProvider
   {
-    Game game;
+    IGame game;
+    IDungeonGenerator generator;
 
-    public GameController(Game game)
-      : base(game.Container, game.LevelGenerator, game.Container.GetInstance<IDrawingEngine>())
+    public GameController(IGame game, IDungeonGenerator generator)
+      : base(game.Container, generator, game.Container.GetInstance<IDrawingEngine>())
     {
       this.game = game;
+      this.generator = generator;
     }
 
-    public LevelGenerator LevelGenerator { get { return game.LevelGenerator; } }
     public Container Container { get { return game.Container; } }
     public Hero Hero { get { return game.Hero; } }
     public GameManager GameManager
@@ -32,13 +34,11 @@ namespace RoguelikeConsoleRunner
       set { game.GameManager = value; }//TODO remove?
     }
 
-    protected override void Generate()
+    protected override void GenerateDungeon()
     {
-      //base.Generate();
-      var dungeon = game.GenerateLevel(0);
-      PopulateDungeon();
-
-
+      var dungeon = game.GenerateDungeon();
+      PopulateDungeon(dungeon as GameNode);
+      
       this.GameManager.EventsManager.ActionAppended += ActionsManager_ActionAppended;
       this.GameManager.Context.ContextSwitched += Context_ContextSwitched;
 
@@ -47,11 +47,8 @@ namespace RoguelikeConsoleRunner
 
     }
 
-    protected virtual Roguelike.TileContainers.GameNode PopulateDungeon()
+    protected virtual void PopulateDungeon(Roguelike.TileContainers.GameNode dungeon)
     {
-      var dungeon = LevelGenerator.Dungeon;
-   
-
       var lg = new LootGenerator();
       var loot = lg.GetRandomWeapon();
       //world.SetTile(loot, world.GetRandomEmptyTile().Point);
@@ -60,7 +57,6 @@ namespace RoguelikeConsoleRunner
       //var enemy = new Enemy();
       //world.SetTile(enemy, world.GetEmptyTiles().Last().Point);
       // world.SetTile(enemy, new System.Drawing.Point(4, 1));
-      return dungeon;
     }
 
     private void Context_ContextSwitched(object sender, EventArgs e)

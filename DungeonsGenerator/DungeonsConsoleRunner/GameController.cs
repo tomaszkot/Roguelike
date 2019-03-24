@@ -36,7 +36,7 @@ namespace DungeonsConsoleRunner
     public void Run()
     {
       ConsoleSetup.Init();
-      Generate();
+      GenerateDungeon();
       Redraw();
 
       bool exit = false;
@@ -47,7 +47,7 @@ namespace DungeonsConsoleRunner
       }
     }
 
-    protected virtual void Generate()
+    protected virtual void GenerateDungeon()
     {
       Dungeon = generator.Generate(levelIndex++);
       
@@ -72,7 +72,7 @@ namespace DungeonsConsoleRunner
 
     protected void Reload()
     {
-      Generate();
+      GenerateDungeon();
       Redraw();
     }
 

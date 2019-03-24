@@ -1,4 +1,5 @@
-﻿using Dungeons.Tiles;
+﻿using Dungeons;
+using Dungeons.Tiles;
 using Roguelike;
 using Roguelike.Generators;
 using Roguelike.Managers;
@@ -17,11 +18,17 @@ namespace Roguelike
   {
     GameManager GameManager { get; set; }
     Container Container { get; set; }
-    LevelGenerator LevelGenerator { get; set; }
     Hero Hero { get; }
+    DungeonNode GenerateDungeon();
   }
 
-  public class Game : IGame
+  public interface IRoguelikeGame : IGame
+  {
+    LevelGenerator LevelGenerator { get; set; }
+  }
+
+
+  public class Game : IRoguelikeGame
   {
     public GameManager GameManager { get; set; }
     public Container Container { get; set; }
@@ -97,6 +104,9 @@ namespace Roguelike
       return hero;
     }
 
-    
+    public DungeonNode GenerateDungeon()
+    {
+      return GenerateLevel(0);
+    }
   }
 }
