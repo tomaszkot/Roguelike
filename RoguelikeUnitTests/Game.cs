@@ -13,15 +13,16 @@ using System.Threading.Tasks;
 
 namespace RoguelikeUnitTests
 {
-  internal class SampleGame
+  internal class Game
   {
     public GameManager GameManager { get; private set; }
     public Container Container { get; set; }
-    //int levelIndex = 0;
     LevelGenerator LevelGenerator { get; set; }
     List<DungeonLevel> levels = new List<DungeonLevel>();
+    public Hero Hero { get { return GameManager.Hero; } }
+    internal DungeonLevel Level { get { return GameManager.CurrentNode as DungeonLevel; } }
 
-    internal SampleGame()
+    internal Game()
     {
       Container = new ContainerConfigurator().Container;
       GameManager = Container.GetInstance<GameManager>();
@@ -66,8 +67,6 @@ namespace RoguelikeUnitTests
       return level;
     }
 
-    internal DungeonLevel Level { get { return GameManager.CurrentNode as DungeonLevel; } }
-
     internal void SetMaxLevelindex(int maxLevelIndex)
     {
       LevelGenerator.MaxLevelIndex = maxLevelIndex;
@@ -76,7 +75,8 @@ namespace RoguelikeUnitTests
     protected Dungeon CreateNewDungeon<Dungeon>() where Dungeon : GameNode
     {
       var gameNode = LevelGenerator.Generate(LevelGenerator.LevelIndex) as Dungeon;
-      GameManager.SetContext(gameNode, AddHero(gameNode), Roguelike.GameContextSwitchKind.NewGame);
+      if(LevelGenerator.LevelIndex == 0)
+        GameManager.SetContext(gameNode, AddHero(gameNode), GameContextSwitchKind.NewGame);
 
       return gameNode;
     }
@@ -88,6 +88,6 @@ namespace RoguelikeUnitTests
       return hero;
     }
 
-    public Hero Hero { get { return GameManager.Hero; } }
+    
   }
 }

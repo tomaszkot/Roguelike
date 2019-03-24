@@ -13,7 +13,7 @@ namespace Roguelike.Generators
   {
     public GameNode Dungeon { get; set; }
     public ILogger Logger { get; set; }
-    public int MaxLevelIndex { get; set; } = 0;
+    public int MaxLevelIndex { get; set; } = 1000;
     public int LevelIndex { get; set; }
 
     int levelIndex;
@@ -80,6 +80,7 @@ namespace Roguelike.Generators
       LayouterOptions opt = new LayouterOptions();
       opt.RevealAllNodes = false;
       var level = base.Generate<DungeonLevel>(levelIndex, opt);
+      level.Index = levelIndex;
       level.OnGenerationDone();
       this.Dungeon = level;
 

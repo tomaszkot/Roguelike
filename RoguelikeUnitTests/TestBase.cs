@@ -12,7 +12,7 @@ namespace RoguelikeUnitTests
   [TestFixture]
   public class TestBase
   {
-    SampleGame sampleGame;
+    Game sampleGame;
 
     [SetUp]
     public void Init()
@@ -20,9 +20,9 @@ namespace RoguelikeUnitTests
       CreateGame();
     }
 
-    internal SampleGame CreateGame(bool autoLoadLevel = true)
+    internal Game CreateGame(bool autoLoadLevel = true)
     {
-      sampleGame = new SampleGame();
+      sampleGame = new Game();
       if(autoLoadLevel)
         sampleGame.GenerateLevel(0);
       return sampleGame;

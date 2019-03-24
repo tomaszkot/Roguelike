@@ -36,7 +36,7 @@ namespace RoguelikeConsoleRunner
       var dungeon = PopulateDungeon();
       AddHero(dungeon);
 
-      this.GameManager = container.GetInstance<GameManager>(); //new GameManager( new Roguelike.Utils.Logger());
+      this.GameManager = container.GetInstance<GameManager>(); 
       this.GameManager.EventsManager.ActionAppended += ActionsManager_ActionAppended;
       this.GameManager.Context.ContextSwitched += Context_ContextSwitched;
 

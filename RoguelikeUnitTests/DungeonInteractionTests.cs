@@ -34,6 +34,7 @@ namespace RoguelikeUnitTests
       var game = CreateGame();
       game.SetMaxLevelindex(1);
 
+      Assert.AreEqual(game.Level.Index, 0);
       var level0 = game.Level;
       var down = game.Level.GetTiles<Stairs>().Where(i=> i.Kind == StairsKind.LevelDown).Single();
 
@@ -42,7 +43,8 @@ namespace RoguelikeUnitTests
 
       var result = game.GameManager.InteractHeroWith(down);
       Assert.AreEqual(result, InteractionResult.ContextSwitched);
-      Assert.AreNotEqual(result, game.Level);
+      Assert.AreNotEqual(level0, game.Level);
+      Assert.AreEqual(game.Level.Index, 1);
       Assert.NotNull(game.Level.GetTiles<Hero>().SingleOrDefault());
       Assert.Null(level0.GetTiles<Hero>().SingleOrDefault());//old level shall not have hero
 
