@@ -14,7 +14,7 @@ namespace ConsoleDungeonsRunner
     static void Main(string[] args)
     {
       container.Register<GameController, GameController>();
-      container.Register<IGameGenerator, Generator>();
+      container.Register<IDungeonGenerator, DungeonGenerator>();
       container.Register<IDrawingEngine, ConsoleDrawingEngine>();
       container.Register<Screen, Screen>();
       container.Verify();

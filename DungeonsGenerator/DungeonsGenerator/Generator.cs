@@ -6,18 +6,18 @@ using System.Linq;
 
 namespace Dungeons
 {
-  public interface IGameGenerator
+  public interface IDungeonGenerator
   {
     DungeonNode Generate(int levelIndex);
   }
 
-  public class Generator : IGameGenerator
+  public class DungeonGenerator : IDungeonGenerator
   {
     static protected Random random;
     protected List<DungeonNode> nodes;
     int levelCounter;
 
-    static Generator()
+    static DungeonGenerator()
     {
       random = new Random();
     }

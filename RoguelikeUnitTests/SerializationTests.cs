@@ -15,30 +15,32 @@ namespace RoguelikeUnitTests
     [Test]
     public void NewGameTest()
     {
-      Assert.Null(Hero);
-      Assert.Null(GameManager.Context.CurrentNode);
+      var game = CreateGame(false);
+      var hero = game.Hero;
+      Assert.Null(hero);
+      Assert.Null(game.Level);
 
-      var gameNode = CreateNewDungeon();
-                
-      Assert.NotNull(Hero);
+      var gameNode = game.GenerateLevel(0);
+      hero = game.Hero;
+      Assert.NotNull(hero);
 
       //move hero to rand position.
       var pt = gameNode.GetFirstEmptyPoint();
-      Assert.AreNotEqual(Hero.Point, pt);
-      gameNode.SetTile(Hero, pt.Value);
+      Assert.AreNotEqual(hero.Point, pt);
+      gameNode.SetTile(hero, pt.Value);
 
-      GameManager.Save();
+      game.GameManager.Save();
 
-      GameManager.Load();
+      game.GameManager.Load();
 
       //after load node shall be different
-      Assert.AreNotEqual(gameNode, GameManager.Context.CurrentNode);
-      var hero = GameManager.Context.CurrentNode.GetTiles<Hero>().Single();
-      Assert.NotNull(hero);
+      Assert.AreNotEqual(gameNode, game.Level);
+      var heroLoaded = game.Level.GetTiles<Hero>().Single();
+      Assert.NotNull(heroLoaded);
 
       //hero position shall match
-      Assert.AreEqual(hero.Point, pt);
-      Assert.AreEqual(hero, Hero);
+      Assert.AreEqual(heroLoaded.Point, pt);
+      Assert.AreEqual(heroLoaded, game.Hero);
     }
 
   }

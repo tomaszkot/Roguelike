@@ -15,17 +15,28 @@ namespace RoguelikeUnitTests
     [Test]
     public void NewGameTest()
     {
-      var gameNode = CreateNewDungeon();
+      var game = CreateGame(false);
+      Assert.Null(game.Hero);
 
-      Assert.NotNull(gameNode);
-      Assert.AreEqual(gameNode.Index, 0);//1st level has index 0
+      game.SetMaxLevelindex(1);
+      var level0 = game.GenerateLevel(0);
 
-      Assert.AreEqual(gameNode, GameManager.Context.CurrentNode);
-      Assert.NotNull(gameNode.GetTiles<Hero>().Single());
+      Assert.NotNull(level0);
+      Assert.AreEqual(level0.Index, 0);//1st level has index 0
 
-      //1st level has only stairs down
-      Assert.AreEqual(gameNode.GetTiles<Stairs>().Count, 1);
-      Assert.AreEqual(gameNode.GetTiles<Stairs>()[0].Kind, StairsKind.LevelDown);
+      Assert.AreEqual(level0, game.Level);
+      Assert.NotNull(level0.GetTiles<Hero>().Single());
+
+      //1st level0 has only stairs down
+      Assert.AreEqual(level0.GetTiles<Stairs>().Count, 1);
+      Assert.AreEqual(level0.GetTiles<Stairs>()[0].Kind, StairsKind.LevelDown);
+
+      var level1 = game.GenerateLevel(1);
+      Assert.AreNotEqual(level0, level1);
+
+      //last level has NOT stairs down, but shall have up ones
+      Assert.AreEqual(level1.GetTiles<Stairs>().Count, 1);
+      Assert.AreEqual(level1.GetTiles<Stairs>()[0].Kind, StairsKind.LevelUp);
     }
 
   }

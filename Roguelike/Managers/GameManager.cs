@@ -18,6 +18,19 @@ using SimpleInjector;
 
 namespace Roguelike.Managers
 {
+  public enum InteractionResult { None, Handled, ContextSwitched };
+  public struct MoveResult
+  {
+    public bool Possible { get; set; }
+    public Point Point { get; set; }
+
+    public MoveResult(bool Possible, Point Point)
+    {
+      this.Possible = Possible;
+      this.Point = Point;
+    }
+  }
+
   public class GameManager
   {
     protected GameContext context;
@@ -28,7 +41,6 @@ namespace Roguelike.Managers
 
     private IPersister persister;
     private ILogger logger;
-    // InputManager inputManager;
 
     public EnemiesManager EnemiesManager { get => enemiesManager; set => enemiesManager = value; }
     public Hero Hero { get => Context.Hero; }
@@ -42,12 +54,14 @@ namespace Roguelike.Managers
     internal LootGenerator LootGenerator { get => lootGenerator; set => lootGenerator = value; }
     public IPersister Persister { get => persister; set => persister = value; }
     public ILogger Logger { get => logger; set => logger = value; }
-
+    public Func<Tile, InteractionResult> Interact;
+    // public IDungeonGenerator GameGenerator { get; private set; }
     //public InputManager InputManager { get => inputManager; set => inputManager = value; }
 
     public GameManager(Container container)
     {
       this.Logger = container.GetInstance<ILogger>();
+      //GameGenerator = container.GetInstance<IDungeonGenerator>();
       EventsManager = new EventsManager();
       EventsManager.ActionAppended += EventsManager_ActionAppended;
 
@@ -62,9 +76,6 @@ namespace Roguelike.Managers
 
     public void SetContext(GameNode node, Hero hero, GameContextSwitchKind kind, Stairs stairs = null)
     {
-      //TODO
-      //if(node is World)
-      //  Context.World = node as World;
       Context.Hero = hero;
 
       InitNode(node);
@@ -113,24 +124,23 @@ namespace Roguelike.Managers
       }
 
       var newPos = GetNewPositionFromMove(Hero.Point, horizontal, vertical);
-      if (!newPos.Item1)
+      if (!newPos.Possible)
       {
         return;
       }
             
-      var tile = CurrentNode.GetTile(newPos.Item2);
-      bool contextSwitched = false;
-      var handled = InteractWith(tile, ref contextSwitched);
-      if (contextSwitched)
+      var tile = CurrentNode.GetTile(newPos.Point);
+      var res = InteractHeroWith(tile);
+      if (res == InteractionResult.ContextSwitched)
         return;
-      if (handled)
+      if (res == InteractionResult.Handled)
       {
         //ASCII printer needs that event
         EventsManager.AppendAction(new LivingEntityAction(LivingEntityAction.Kind.Interacted) { InvolvedEntity = Hero });
       }
       else
       {
-        if (!AlliesManager.MoveEntity(Hero, newPos.Item2))
+        if (!AlliesManager.MoveEntity(Hero, newPos.Point))
           return;
       }
       AlliesManager.MoveHeroAllies();
@@ -145,34 +155,44 @@ namespace Roguelike.Managers
       return CurrentNode as T;
     }
 
-    protected virtual bool InteractWith(Tile tile, ref bool contextSwitched)
+    public virtual InteractionResult InteractHeroWith(Tile tile)
     {
+      if (Interact != null)
+      {
+        var res = Interact(tile);
+        if (res != InteractionResult.None)
+          return res;
+      }
       if (tile is Enemy)
       {
         Logger.LogInfo("Hero attacks "+tile);
         var en = tile as Enemy;
         var ap = AlliesManager.PolicyFactory(Hero, en);
         ap.Apply();
-        return true;
+        return InteractionResult.Handled;
       }
 
       if (tile is Tiles.Door)
       {
         if ((tile as Tiles.Door).Opened)
-          return false;
-        return CurrentNode.RevealRoom((tile as Tiles.Door), Hero);
+          return InteractionResult.None;
+        return CurrentNode.RevealRoom((tile as Tiles.Door), Hero) ? InteractionResult.Handled : InteractionResult.None;
       }
 
-        if (tile is Dungeons.Tiles.IObstacle)
+      if (tile is Dungeons.Tiles.IObstacle)
       {
         if (tile is Stairs)
         {
           var stairs = tile as Stairs;
-          //TODO
+          //GameNode destNode = null;
+          //if (stairs.Kind == StairsKind.LevelDown)
+          //{
+
+          //}
         }
-        return true;
+        return InteractionResult.Handled;
       }
-      return false;
+      return InteractionResult.None;
     }
 
     public string GetCurrentDungeonDesc()
@@ -210,7 +230,7 @@ namespace Roguelike.Managers
       return gameState;
     }
 
-    public Tuple<bool, Point> GetNewPositionFromMove(Point pos, int horizontal, int vertical)
+    public MoveResult GetNewPositionFromMove(Point pos, int horizontal, int vertical)
     {
       if (horizontal != 0 || vertical != 0)
       {
@@ -222,10 +242,10 @@ namespace Roguelike.Managers
         {
           pos.Y += vertical > 0 ? 1 : -1;
         }
-        return new Tuple<bool, Point>(true, pos);
+        return new MoveResult(true, pos);
       }
 
-      return new Tuple<bool, Point>(false, pos);
+      return new MoveResult(false, pos);
     }
 
     public bool CollectLootOnHeroPosition()

@@ -9,11 +9,12 @@ using Roguelike.Tiles;
 
 namespace Roguelike.Generators
 {
-  public class LevelGenerator : Dungeons.Generator
+  public class LevelGenerator : Dungeons.DungeonGenerator
   {
     public GameNode Dungeon { get; set; }
     public ILogger Logger { get; set; }
-    public int MaxLevelIndex { get; set; } = 100;
+    public int MaxLevelIndex { get; set; } = 0;
+    public int LevelIndex { get; set; }
 
     int levelIndex;
 
@@ -39,7 +40,7 @@ namespace Roguelike.Generators
         mazeNodes[0].SetTile(stairs, mazeNodes[0].GetEmptyTiles().First().Point);
       }
 
-      if (levelIndex <= MaxLevelIndex)
+      if (levelIndex < MaxLevelIndex)
       {
         var indexWithStairsDown = mazeNodes.Count - 1;
         if (RandHelper.GetRandomDouble() > .5f)
@@ -57,14 +58,11 @@ namespace Roguelike.Generators
     protected override DungeonNode CreateNode(int w, int h, GenerationInfo gi, int nodeIndex)
     {
       var node = new GameNode(w, h, gi, nodeIndex);
-
-      
+            
       var enemy = new Enemy();
       node.SetTile(enemy, new System.Drawing.Point(3, 2));// node.GetRandomEmptyTile().Point);
       Logger.LogInfo("added enemy at :" + enemy.Point);
-
-      
-
+  
       return node;
     }
 

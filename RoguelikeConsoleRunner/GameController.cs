@@ -15,12 +15,12 @@ namespace RoguelikeConsoleRunner
 {
   public class GameController : DungeonsConsoleRunner.GameController, IGameManagerProvider
   {
-    IGameGenerator generator;
+    IDungeonGenerator generator;
     GameManager gameManager;
     Container container;
     public Roguelike.Tiles.Hero Hero { get ; private set ; }
 
-    public GameController(Container container, IGameGenerator generator)
+    public GameController(Container container, IDungeonGenerator generator)
       : base(container, generator, container.GetInstance<IDrawingEngine>())
     {
       this.container = container;

@@ -14,12 +14,12 @@ namespace RoguelikeUnitTests
     [Test]
     public void EquipmentPutOnHero()
     {
-      var gameNode = CreateNewDungeon();
-      var hero = Hero;
+      var game = CreateGame();
+      var hero = game.Hero;
 
       var heroAttack = hero.Stats.Attack;
 
-      Equipment wpn = GameManager.GenerateRandomEquipment(EquipmentKind.Weapon);
+      Equipment wpn = game.GameManager.GenerateRandomEquipment(EquipmentKind.Weapon);
       hero.SetEquipment(EquipmentKind.Weapon, wpn);
 
       Assert.Greater(hero.Stats.Attack, heroAttack);

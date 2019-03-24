@@ -12,7 +12,7 @@ namespace DungeonsConsoleRunner
 {
   public class GameController
   {
-    IGameGenerator generator;
+    IDungeonGenerator generator;
 
     public virtual DungeonNode Dungeon { get; set; }
     public IDrawingEngine DrawingEngine { get; set; }
@@ -20,7 +20,7 @@ namespace DungeonsConsoleRunner
     Container container;
     int levelIndex;
 
-    public GameController(Container container, IGameGenerator generator, IDrawingEngine drawingEngine)
+    public GameController(Container container, IDungeonGenerator generator, IDrawingEngine drawingEngine)
     {
       this.container = container;
       this.generator = generator;

@@ -10,7 +10,7 @@ using System.Linq;
 
 namespace Roguelike
 {
-  public enum GameContextSwitchKind { WorldSwitched, NewGame, GameLoaded }
+  public enum GameContextSwitchKind { DungeonSwitched, NewGame, GameLoaded}
 
   public class ContextSwitch
   {
