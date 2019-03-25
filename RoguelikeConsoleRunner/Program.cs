@@ -21,11 +21,11 @@ namespace RoguelikeConsoleRunner
 
       container.Register<GameController, GameController>();
       container.Register<IDrawingEngine, ConsoleDrawingEngine>();
-      container.Register<IGame, Game>();
+      container.Register<IGame, RoguelikeGame>();
       //container.Verify();
 
       var controller = container.GetInstance<GameController>();
-      controller.Game.SetAutoHandleStairs(true);
+      //controller.Game.SetAutoHandleStairs(true);
       controller.Run();
     }
   }

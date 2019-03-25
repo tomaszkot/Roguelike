@@ -20,7 +20,7 @@ namespace RoguelikeUnitTests
       Assert.Null(hero);
       Assert.Null(game.Level);
 
-      var gameNode = game.GenerateLevel<DungeonLevel>(0);
+      var gameNode = game.GenerateLevel(0);
       hero = game.Hero;
       Assert.NotNull(hero);
 

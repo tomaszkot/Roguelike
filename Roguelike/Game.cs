@@ -20,47 +20,56 @@ namespace Roguelike
     Container Container { get; set; }
     Hero Hero { get; }
     DungeonNode GenerateDungeon();
-    void SetAutoHandleStairs(bool v);
+    //void SetAutoHandleStairs(bool v);
   }
 
-  public class Game : IGame
+  public abstract class Game : IGame
   {
     public GameManager GameManager { get; set; }
     public Container Container { get; set; }
+    public Hero Hero { get { return GameManager.Hero; } }
+    public abstract DungeonNode GenerateDungeon();
+  }
+
+  public class RoguelikeGame : Game
+  {
     public IDungeonGenerator DungeonGenerator { get; set; }
     public LevelGenerator LevelGenerator { get { return DungeonGenerator as LevelGenerator; } }
-    public Hero Hero { get { return GameManager.Hero; } }
-
     List<DungeonLevel> levels = new List<DungeonLevel>();
     public DungeonLevel Level { get { return GameManager.CurrentNode as DungeonLevel; } }
 
-    public Game(Container container)//, bool autoHandleStairs = false)
+    public RoguelikeGame(Container container)//, bool autoHandleStairs = false)
     {
       Container = container;
       GameManager = container.GetInstance<GameManager>();
-      DungeonGenerator = container.GetInstance<IDungeonGenerator>();
 
-     
+      GameManager.DungeonLevelStairsHandler = (int destLevelIndex, Stairs stairs) => {
+
+        if (levels.Count <= destLevelIndex)
+        {
+          GenerateLevel(destLevelIndex);
+        }
+        GameManager.SetContext(levels[destLevelIndex], Hero, GameContextSwitchKind.DungeonSwitched, stairs);
+        return InteractionResult.ContextSwitched;
+      };
+      DungeonGenerator = container.GetInstance<IDungeonGenerator>();
     }
 
-    public T GenerateLevel<T>(int levelIndex) where T : GameNode
+    public DungeonLevel GenerateLevel(int levelIndex) 
     {
-      T level = null;
+      DungeonLevel level = null;
       if (LevelGenerator != null)
       {
         if (LevelGenerator.MaxLevelIndex > 0 && levelIndex > LevelGenerator.MaxLevelIndex)
           throw new Exception("levelIndex > LevelGenerator.MaxLevelIndex");
         LevelGenerator.LevelIndex = levelIndex;
-        level = CreateNewDungeon<DungeonLevel>() as T;
+        level = CreateNewDungeon<DungeonLevel>();
         this.levels.Add(level as DungeonLevel);
       }
-      else
-        level = DungeonGenerator.Generate(levelIndex) as T;
 
       if (levelIndex == 0)
         GameManager.SetContext(level, AddHero(level), GameContextSwitchKind.NewGame);
-
-
+      
       return level;
     }
 
@@ -72,9 +81,6 @@ namespace Roguelike
     protected T CreateNewDungeon<T>() where T : GameNode
     {
       var gameNode = LevelGenerator.Generate(LevelGenerator.LevelIndex) as T;
-      //if(LevelGenerator.LevelIndex == 0)
-      //  GameManager.SetContext(gameNode, AddHero(gameNode), GameContextSwitchKind.NewGame);
-
       return gameNode;
     }
 
@@ -85,10 +91,10 @@ namespace Roguelike
       return hero;
     }
 
-    public DungeonNode GenerateDungeon()
+    public override DungeonNode GenerateDungeon()
     {
       if(LevelGenerator!=null)
-        return GenerateLevel< DungeonLevel>(0);
+        return GenerateLevel(0);
 
       return DungeonGenerator.Generate(0);
     }
@@ -116,7 +122,7 @@ namespace Roguelike
               }
               if (levels.Count <= destLevelIndex)
               {
-                GenerateLevel<DungeonLevel>(destLevelIndex);
+                GenerateLevel(destLevelIndex);
               }
               GameManager.SetContext(levels[destLevelIndex], Hero, GameContextSwitchKind.DungeonSwitched, stairs);
               return InteractionResult.ContextSwitched;
@@ -129,4 +135,6 @@ namespace Roguelike
         GameManager.Interact = null;
     }
   }
+
+ 
 }

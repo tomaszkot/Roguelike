@@ -55,10 +55,13 @@ namespace Roguelike.Managers
     public IPersister Persister { get => persister; set => persister = value; }
     public ILogger Logger { get => logger; set => logger = value; }
     public Func<Tile, InteractionResult> Interact;
+    public Func<int, Stairs, InteractionResult> DungeonLevelStairsHandler;
+    public LevelGenerator levelGenerator;
 
     public GameManager(Container container)
     {
       this.Logger = container.GetInstance<ILogger>();
+      levelGenerator = new LevelGenerator(Logger);
       EventsManager = new EventsManager();
       EventsManager.ActionAppended += EventsManager_ActionAppended;
 
@@ -178,9 +181,35 @@ namespace Roguelike.Managers
 
       if (tile is Dungeons.Tiles.IObstacle)
       {
+        if (tile is Stairs)
+        {
+          var stairs = tile as Stairs;
+          var destLevelIndex = -1;
+          if (stairs.Kind == StairsKind.LevelDown ||
+          stairs.Kind == StairsKind.LevelUp)
+          {
+            var level = GetCurrentDungeonLevel();
+            if (stairs.Kind == StairsKind.LevelDown)
+            {
+              destLevelIndex = level.Index + 1;
+            }
+            else if (stairs.Kind == StairsKind.LevelUp)
+            {
+              destLevelIndex = level.Index - 1;
+            }
+            if(DungeonLevelStairsHandler!=null)
+              return DungeonLevelStairsHandler(destLevelIndex, stairs);
+          }
+        }
         return InteractionResult.Handled;//blok hero by default
       }
       return InteractionResult.None;
+    }
+
+    DungeonLevel GetCurrentDungeonLevel()
+    {
+      var dl = this.CurrentNode as DungeonLevel;
+      return dl;
     }
 
     public string GetCurrentDungeonDesc()
@@ -188,8 +217,7 @@ namespace Roguelike.Managers
       GameState gameState = CreateGameState();
       return gameState.ToString();
     }
-
-
+    
     public virtual void Load()
     {
       persistancyWorker.Load(this);
