@@ -18,12 +18,12 @@ namespace RoguelikeConsoleRunner
   {
     IGame game;
     IDungeonGenerator generator;
+    public IGame Game { get => game; set => game = value; }
 
     public GameController(IGame game, IDungeonGenerator generator)
       : base(game.Container, generator, game.Container.GetInstance<IDrawingEngine>())
     {
       this.Game = game;
-      //game.SetAutoHandleStairs(true);
       this.generator = generator;
     }
 
@@ -46,8 +46,6 @@ namespace RoguelikeConsoleRunner
       var hero1 = dungeon.GetTiles<Hero>().SingleOrDefault();
       Debug.Assert(Hero == hero1);
       return dungeon;
-
-
     }
 
     protected virtual void PopulateDungeon(Roguelike.TileContainers.GameNode dungeon)
@@ -72,7 +70,6 @@ namespace RoguelikeConsoleRunner
       screen = new ASCIIDisplay.Screen(DrawingEngine, this);
       screen.OriginX = 2;
       screen.OriginY = 2;
-      //screen.DungeonY = 10;
       return screen;
     }
 
@@ -82,36 +79,21 @@ namespace RoguelikeConsoleRunner
       if (e.EventData is LivingEntityAction)
       {
         var lea = e.EventData as LivingEntityAction;
-        //if (lea.KindValue == LivingEntityAction.Kind.Moved ||
-        //  lea.KindValue == LivingEntityAction.Kind.Interacted
-        //  )
-        {
-          //
-          //var snd = lea.GetSound();
           screen.Redraw(lea.InvolvedEntity, true);
 
-          screen.RedrawLists();
-          if(lea.KindValue == LivingEntityAction.Kind.Interacted)
-            Redraw();//e.g. room revealed
-          //DrawingEngine.SetCursorPosition(0, 0);
-        }
+        screen.RedrawLists();
+        if(lea.KindValue == LivingEntityAction.Kind.Interacted)
+          Redraw();//e.g. room revealed
       }
       else if (e.EventData is GameStateAction)
       {
-        //var typed = e.EventData as GameStateAction;
-        //if (typed.Type == GameStateAction.ActionType.EnteredLevel ||
-        //  typed.Type == GameStateAction.ActionType.ContextSwitched)
-        //{
-        //  Redraw();
-        //}
       }
       else if (e.EventData is LootAction)
       {
         screen.RedrawLists();
       }
     }
-
-
+    
     public override DungeonNode Dungeon
     {
       get
@@ -119,8 +101,6 @@ namespace RoguelikeConsoleRunner
         return GameManager.Context.CurrentNode;
       }
     }
-
-    public IGame Game { get => game; set => game = value; }
 
     protected override bool HandleKey(ConsoleKeyInfo info)
     {

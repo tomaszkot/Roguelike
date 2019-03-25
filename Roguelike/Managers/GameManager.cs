@@ -55,13 +55,10 @@ namespace Roguelike.Managers
     public IPersister Persister { get => persister; set => persister = value; }
     public ILogger Logger { get => logger; set => logger = value; }
     public Func<Tile, InteractionResult> Interact;
-    // public IDungeonGenerator GameGenerator { get; private set; }
-    //public InputManager InputManager { get => inputManager; set => inputManager = value; }
 
     public GameManager(Container container)
     {
       this.Logger = container.GetInstance<ILogger>();
-      //GameGenerator = container.GetInstance<IDungeonGenerator>();
       EventsManager = new EventsManager();
       EventsManager.ActionAppended += EventsManager_ActionAppended;
 
@@ -181,7 +178,7 @@ namespace Roguelike.Managers
 
       if (tile is Dungeons.Tiles.IObstacle)
       {
-       
+        return InteractionResult.Handled;//blok hero by default
       }
       return InteractionResult.None;
     }
