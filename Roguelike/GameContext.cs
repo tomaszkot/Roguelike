@@ -76,7 +76,17 @@ namespace Roguelike
 
     protected virtual Tile PlaceHeroAtDungeon(GameNode node, Stairs stairs)
     {
-      Tile heroStartTile = node.GetEmptyTiles().First();
+      Tile heroStartTile = null;
+
+      if (stairs.Kind == StairsKind.LevelUp)
+      {
+        var stairsDown = node.GetTiles<Stairs>().Where(i => i.Kind == StairsKind.LevelDown).FirstOrDefault();
+        if(stairsDown != null)
+          heroStartTile = node.GetNeighborTiles<Tile>(stairsDown).FirstOrDefault();
+      }
+
+      if(heroStartTile == null)
+        heroStartTile = node.GetEmptyTiles().First();
 
       return heroStartTile;
     }
