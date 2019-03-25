@@ -16,13 +16,11 @@ namespace RoguelikeUnitTests
       CreateGame();
     }
 
-    public virtual RoguelikeGame CreateGame(bool autoLoadLevel = true, bool autoHandleStairs = true)
+    public virtual RoguelikeGame CreateGame(bool autoLoadLevel = true)
     {
       Game = new RoguelikeGame(new ContainerConfigurator().Container);
       if (autoLoadLevel)
         Game.GenerateLevel(0);
-
-      Game.SetAutoHandleStairs(autoHandleStairs);
       return Game;
     }
 

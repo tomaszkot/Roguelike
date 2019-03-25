@@ -25,7 +25,17 @@ namespace Roguelike
 
   public abstract class Game : IGame
   {
-    public GameManager GameManager { get; set; }
+    public Game(Container container)
+    {
+      this.Container = container;
+      GameManager = container.GetInstance<GameManager>();
+    }
+
+    public GameManager GameManager
+    {
+      get;
+      set;
+    }
     public Container Container { get; set; }
     public Hero Hero { get { return GameManager.Hero; } }
     public abstract DungeonNode GenerateDungeon();
@@ -38,11 +48,9 @@ namespace Roguelike
     List<DungeonLevel> levels = new List<DungeonLevel>();
     public DungeonLevel Level { get { return GameManager.CurrentNode as DungeonLevel; } }
 
-    public RoguelikeGame(Container container)//, bool autoHandleStairs = false)
+    public RoguelikeGame(Container container) : base(container)
     {
       Container = container;
-      GameManager = container.GetInstance<GameManager>();
-
       GameManager.DungeonLevelStairsHandler = (int destLevelIndex, Stairs stairs) => {
 
         if (levels.Count <= destLevelIndex)
@@ -99,41 +107,7 @@ namespace Roguelike
       return DungeonGenerator.Generate(0);
     }
 
-    public void SetAutoHandleStairs(bool on)
-    {
-      if (on)
-      {
-        GameManager.Interact = (Tile tile) =>
-        {
-          if (tile is Stairs)
-          {
-            var stairs = tile as Stairs;
-            var destLevelIndex = -1;
-            if (stairs.Kind == StairsKind.LevelDown ||
-            stairs.Kind == StairsKind.LevelUp)
-            {
-              if (stairs.Kind == StairsKind.LevelDown)
-              {
-                destLevelIndex = Level.Index + 1;
-              }
-              else if (stairs.Kind == StairsKind.LevelUp)
-              {
-                destLevelIndex = Level.Index - 1;
-              }
-              if (levels.Count <= destLevelIndex)
-              {
-                GenerateLevel(destLevelIndex);
-              }
-              GameManager.SetContext(levels[destLevelIndex], Hero, GameContextSwitchKind.DungeonSwitched, stairs);
-              return InteractionResult.ContextSwitched;
-            }
-          }
-          return InteractionResult.None;
-        };
-      }
-      else
-        GameManager.Interact = null;
-    }
+    
   }
 
  

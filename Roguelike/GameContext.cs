@@ -45,17 +45,19 @@ namespace Roguelike
       
       this.Hero = hero;
 
-      if (context != GameContextSwitchKind.GameLoaded && context != GameContextSwitchKind.NewGame)
+      if (!Hero.Point.IsValid() || context == GameContextSwitchKind.DungeonSwitched)
       {
-        var heros = CurrentNode.GetTiles<Hero>();
-        var heroInNode = heros.SingleOrDefault();
-        Debug.Assert(heroInNode != null);
-        if (heroInNode == null)
-          logger.LogError("SwitchTo heros.Count = " + heros.Count);
+        if (context == GameContextSwitchKind.DungeonSwitched)
+        {
+          var heros = CurrentNode.GetTiles<Hero>();
+          var heroInNode = heros.SingleOrDefault();
+          Debug.Assert(heroInNode != null);
+          if (heroInNode == null)
+            logger.LogError("SwitchTo heros.Count = " + heros.Count);
 
-        if (heroInNode != null)
-          CurrentNode.SetEmptyTile(heroInNode.Point);//Hero is going to be placed in the node, remove it from the old one (CurrentNode)
-
+          if (heroInNode != null)
+            CurrentNode.SetEmptyTile(heroInNode.Point);//Hero is going to be placed in the node, remove it from the old one (CurrentNode)
+        }
         Tile heroStartTile = PlaceHeroAtDungeon(node, stairs);
         node.SetTile(this.Hero, heroStartTile.Point, false);
       }
