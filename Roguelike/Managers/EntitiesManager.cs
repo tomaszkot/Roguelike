@@ -66,19 +66,6 @@ namespace Roguelike.Managers
       entities.Add(ent);
     }
 
-    //public Tuple<bool, Point> MoveEntity(LivingEntity entity, int horizontal, int vertical)
-    //{
-    //  var newPos = GetNewPositionFromMove(entity.point, horizontal, vertical);
-    //  if (!newPos.First)
-    //    return newPos;
-
-    //  if (!CanMoveEntity(entity, newPos.Second))
-    //    return new Tuple<bool, Point>(false, Point.Invalid);
-
-    //  MoveEntity(entity, newPos.Second);
-    //  return new Tuple<bool, Point>(true, newPos.Second); 
-    //}
-
     public bool MoveEntity(LivingEntity entity, Point newPos)
     {
       //Debug.Log("moving hero to " + newPoint);
@@ -89,7 +76,6 @@ namespace Roguelike.Managers
         return true;
       }
       return false;
-
     }
 
     public bool CanMoveEntity(LivingEntity entity, Point pt)

@@ -67,24 +67,25 @@ namespace Roguelike.Managers
 
     public override void MakeEntitiesMove(LivingEntity skip = null)
     {
-      var enemy = Enemies.Where(i=> i.Revealed).FirstOrDefault();
-      if (enemy == null)
-        return;
-      Debug.Assert(context.CurrentNode.GetTiles<Enemy>().Any(i=> i == enemy));
-      var target = Hero;
-      if(AttackIfPossible(enemy, target))
-        return;
+      var enemies = Enemies.Where(i => i.Revealed).ToList();
+      foreach (var enemy in enemies)
+      {
+        Debug.Assert(context.CurrentNode.GetTiles<Enemy>().Any(i => i == enemy));
+        var target = Hero;
+        if (AttackIfPossible(enemy, target))
+          return;
 
-      bool makeRandMove = false;
-      if (ShallChaseTarget(enemy, target))
-      {
-        makeRandMove = !MakeMoveOnPath(enemy, target);
-      }
-      else
-        makeRandMove = true;
-      if (makeRandMove)
-      {
-        MakeRandomMove(enemy);
+        bool makeRandMove = false;
+        if (ShallChaseTarget(enemy, target))
+        {
+          makeRandMove = !MakeMoveOnPath(enemy, target);
+        }
+        else
+          makeRandMove = true;
+        if (makeRandMove)
+        {
+          MakeRandomMove(enemy);
+        }
       }
     }
 
