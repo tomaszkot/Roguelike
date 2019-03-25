@@ -25,6 +25,9 @@ namespace RoguelikeConsoleRunner
     {
       this.Game = game;
       this.generator = generator;
+
+      this.GameManager.EventsManager.ActionAppended += ActionsManager_ActionAppended;
+      this.GameManager.Context.ContextSwitched += Context_ContextSwitched;
     }
 
     public Container Container { get { return Game.Container; } }
@@ -40,8 +43,7 @@ namespace RoguelikeConsoleRunner
       var dungeon = Game.GenerateDungeon();
       PopulateDungeon(dungeon as GameNode);
       
-      this.GameManager.EventsManager.ActionAppended += ActionsManager_ActionAppended;
-      this.GameManager.Context.ContextSwitched += Context_ContextSwitched;
+      
 
       var hero1 = dungeon.GetTiles<Hero>().SingleOrDefault();
       Debug.Assert(Hero == hero1);
