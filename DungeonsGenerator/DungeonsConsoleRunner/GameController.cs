@@ -47,10 +47,10 @@ namespace DungeonsConsoleRunner
       }
     }
 
-    protected virtual void GenerateDungeon()
+    public virtual DungeonNode GenerateDungeon()
     {
       Dungeon = generator.Generate(levelIndex++);
-      
+      return Dungeon;
     }
 
     protected virtual bool HandleKey(ConsoleKeyInfo key)

@@ -181,16 +181,7 @@ namespace Roguelike.Managers
 
       if (tile is Dungeons.Tiles.IObstacle)
       {
-        if (tile is Stairs)
-        {
-          var stairs = tile as Stairs;
-          //GameNode destNode = null;
-          //if (stairs.Kind == StairsKind.LevelDown)
-          //{
-
-          //}
-        }
-        return InteractionResult.Handled;
+       
       }
       return InteractionResult.None;
     }

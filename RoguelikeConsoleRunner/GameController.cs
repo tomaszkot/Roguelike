@@ -22,21 +22,22 @@ namespace RoguelikeConsoleRunner
     public GameController(IGame game, IDungeonGenerator generator)
       : base(game.Container, generator, game.Container.GetInstance<IDrawingEngine>())
     {
-      this.game = game;
+      this.Game = game;
+      //game.SetAutoHandleStairs(true);
       this.generator = generator;
     }
 
-    public Container Container { get { return game.Container; } }
-    public Hero Hero { get { return game.Hero; } }
+    public Container Container { get { return Game.Container; } }
+    public Hero Hero { get { return Game.Hero; } }
     public GameManager GameManager
     {
-      get { return game.GameManager; }
-      set { game.GameManager = value; }//TODO remove?
+      get { return Game.GameManager; }
+      set { Game.GameManager = value; }//TODO remove?
     }
 
-    protected override void GenerateDungeon()
+    public override DungeonNode GenerateDungeon()
     {
-      var dungeon = game.GenerateDungeon();
+      var dungeon = Game.GenerateDungeon();
       PopulateDungeon(dungeon as GameNode);
       
       this.GameManager.EventsManager.ActionAppended += ActionsManager_ActionAppended;
@@ -44,6 +45,8 @@ namespace RoguelikeConsoleRunner
 
       var hero1 = dungeon.GetTiles<Hero>().SingleOrDefault();
       Debug.Assert(Hero == hero1);
+      return dungeon;
+
 
     }
 
@@ -116,7 +119,9 @@ namespace RoguelikeConsoleRunner
         return GameManager.Context.CurrentNode;
       }
     }
-    
+
+    public IGame Game { get => game; set => game = value; }
+
     protected override bool HandleKey(ConsoleKeyInfo info)
     {
       int vertical = 0;

@@ -25,6 +25,7 @@ namespace RoguelikeConsoleRunner
       //container.Verify();
 
       var controller = container.GetInstance<GameController>();
+      controller.Game.SetAutoHandleStairs(true);
       controller.Run();
     }
   }

@@ -19,7 +19,7 @@ namespace RoguelikeUnitTests
       Assert.Null(game.Hero);
 
       game.SetMaxLevelindex(1);
-      var level0 = game.GenerateLevel(0);
+      var level0 = game.GenerateLevel<DungeonLevel>(0);
 
       Assert.NotNull(level0);
       Assert.AreEqual(level0.Index, 0);//1st level has index 0
@@ -31,7 +31,7 @@ namespace RoguelikeUnitTests
       Assert.AreEqual(level0.GetTiles<Stairs>().Count, 1);
       Assert.AreEqual(level0.GetTiles<Stairs>()[0].Kind, StairsKind.LevelDown);
 
-      var level1 = game.GenerateLevel(1);
+      var level1 = game.GenerateLevel< DungeonLevel>(1);
       Assert.AreNotEqual(level0, level1);
 
       //last level has NOT stairs down, but shall have up ones

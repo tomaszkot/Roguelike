@@ -12,7 +12,9 @@ namespace RoguelikeUnitTests
   [TestFixture]
   public class TestBase
   {
-    Game sampleGame;
+    protected Game game;
+
+    public Game Game { get => game; protected set => game = value; }
 
     [SetUp]
     public void Init()
@@ -20,12 +22,14 @@ namespace RoguelikeUnitTests
       CreateGame();
     }
 
-    internal Game CreateGame(bool autoLoadLevel = true)
+    public virtual Game CreateGame(bool autoLoadLevel = true, bool autoHandleStairs = true)
     {
-      sampleGame = new Game(new ContainerConfigurator().Container);
-      if(autoLoadLevel)
-        sampleGame.GenerateLevel(0);
-      return sampleGame;
+      Game = new Game(new ContainerConfigurator().Container);
+      if (autoLoadLevel)
+        Game.GenerateLevel< DungeonLevel>(0);
+
+      Game.SetAutoHandleStairs(autoHandleStairs);
+      return Game;
     }
 
     [TearDown]
