@@ -12,6 +12,8 @@ using System.Threading.Tasks;
 
 namespace Roguelike.Tiles
 {
+  public enum EntityState { Idle, Moving, Attacking }
+
   public class LivingEntity : Tile
   {
     //TileData data;
@@ -19,7 +21,8 @@ namespace Roguelike.Tiles
     //public event EventHandler<GenericEventArgs<LivingEntity>> Died;
     public Point PrevPoint;
     EntityStats stats = new EntityStats();
-    
+    public EntityState State { get; set; }
+
     public EntityStats Stats { get => stats; set => stats = value; }
 
     public LivingEntity(Point point, char symbol) : base(point, symbol)

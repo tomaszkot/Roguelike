@@ -73,7 +73,7 @@ namespace Roguelike.Managers
         Debug.Assert(context.CurrentNode.GetTiles<Enemy>().Any(i => i == enemy));
         var target = Hero;
         if (AttackIfPossible(enemy, target))
-          return;
+          continue;
 
         bool makeRandMove = false;
         if (ShallChaseTarget(enemy, target))

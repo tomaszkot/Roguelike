@@ -20,8 +20,7 @@ namespace Roguelike.Managers
 
     EventsManager eventsManager;
     GameContext context;
-    Func<LivingEntity, LivingEntity, AttackPolicy> policyFactory;
-    public Func<LivingEntity, LivingEntity, AttackPolicy> PolicyFactory { get => policyFactory; set => policyFactory = value; }
+    public Func<LivingEntity, LivingEntity, AttackPolicy> PolicyFactory { get; set; }
 
     public EntitiesManager(GameContext context, EventsManager eventsManager)
     {

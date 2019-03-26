@@ -103,6 +103,7 @@ namespace Roguelike
       get { return heroTurn; }
       set
       {
+        logger.LogInfo("set HeroTurn = "+ value);
         heroTurn = value;
         if (!heroTurn)
         {

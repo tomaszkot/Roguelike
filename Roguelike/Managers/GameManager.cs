@@ -18,7 +18,7 @@ using SimpleInjector;
 
 namespace Roguelike.Managers
 {
-  public enum InteractionResult { None, Handled, ContextSwitched };
+  public enum InteractionResult { None, Handled, ContextSwitched, Attacked, Blocked};
   public struct MoveResult
   {
     public bool Possible { get; set; }
@@ -117,11 +117,15 @@ namespace Roguelike.Managers
     {
       if (!HeroTurn)
         return;
+      
       if (!Hero.Alive)
       {
         //AppendAction(new HeroAction() { Level = ActionLevel.Critical, KindValue = HeroAction.Kind.Died, Info = Hero.Name + " is dead!" });
         return;
       }
+
+      if (Hero.State == EntityState.Attacking)
+        return;
 
       var newPos = GetNewPositionFromMove(Hero.Point, horizontal, vertical);
       if (!newPos.Possible)
@@ -131,23 +135,22 @@ namespace Roguelike.Managers
             
       var tile = CurrentNode.GetTile(newPos.Point);
       var res = InteractHeroWith(tile);
-      if (res == InteractionResult.ContextSwitched)
+      if (res == InteractionResult.ContextSwitched || res == InteractionResult.Blocked)
         return;
-      if (res == InteractionResult.Handled)
+      if (res == InteractionResult.Handled || res == InteractionResult.Attacked)
       {
         //ASCII printer needs that event
         EventsManager.AppendAction(new LivingEntityAction(LivingEntityAction.Kind.Interacted) { InvolvedEntity = Hero });
       }
       else
       {
-        if (!AlliesManager.MoveEntity(Hero, newPos.Point))
-          return;
+        AlliesManager.MoveEntity(Hero, newPos.Point);
       }
       AlliesManager.MoveHeroAllies();
 
       EnemiesManager.Enemies.RemoveAll(i => !i.Alive);
-
-      Context.HeroTurn = false;
+      if(res != InteractionResult.Attacked)//Wait for attack to be finished (or close to be finished)
+        Context.HeroTurn = false;
     }
 
     public T GetCurrentNode<T>() where T : GameNode
@@ -169,7 +172,8 @@ namespace Roguelike.Managers
         var en = tile as Enemy;
         var ap = AlliesManager.PolicyFactory(Hero, en);
         ap.Apply();
-        return InteractionResult.Handled;
+        Hero.State = EntityState.Attacking;
+        return InteractionResult.Attacked;
       }
 
       if (tile is Tiles.Door)
@@ -201,7 +205,7 @@ namespace Roguelike.Managers
               return DungeonLevelStairsHandler(destLevelIndex, stairs);
           }
         }
-        return InteractionResult.Handled;//blok hero by default
+        return InteractionResult.Blocked;//blok hero by default
       }
       return InteractionResult.None;
     }

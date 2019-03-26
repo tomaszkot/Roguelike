@@ -16,7 +16,7 @@ namespace Roguelike.Generators
     public int MaxLevelIndex { get; set; } = 1000;
     public int LevelIndex { get; set; }
 
-    int levelIndex;
+    //int levelIndex;
 
     public LevelGenerator(ILogger logger)
     {
@@ -33,14 +33,14 @@ namespace Roguelike.Generators
 
     protected virtual void CreateDynamicTiles(List<DungeonNode> mazeNodes)
     {
-      if (levelIndex > 0)//1st node shall have stairs up
+      if (LevelIndex > 0)//1st node shall have stairs up
       {
         var stairs = new Stairs() { Kind = StairsKind.LevelUp, Symbol = '<' };
         //mazeNodes[0].SetTile(stairs, new System.Drawing.Point(3, 1));
         mazeNodes[0].SetTile(stairs, mazeNodes[0].GetEmptyTiles().First().Point);
       }
 
-      if (levelIndex < MaxLevelIndex)
+      if (LevelIndex < MaxLevelIndex)
       {
         var indexWithStairsDown = mazeNodes.Count - 1;
         if (RandHelper.GetRandomDouble() > .5f)
@@ -76,7 +76,7 @@ namespace Roguelike.Generators
 
     public override DungeonNode Generate(int levelIndex)
     {
-      this.levelIndex = levelIndex;
+      this.LevelIndex = levelIndex;
       LayouterOptions opt = new LayouterOptions();
       opt.RevealAllNodes = false;
       var level = base.Generate<DungeonLevel>(levelIndex, opt);
