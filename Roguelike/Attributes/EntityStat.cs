@@ -45,7 +45,7 @@ namespace Roguelike
         && sk != EntityStatKind.FireAttack
         && sk != EntityStatKind.ColdAttack
         && sk != EntityStatKind.PoisonAttack
-        && sk != EntityStatKind.LightingAttack
+        //&& sk != EntityStatKind.LightingAttack //TODO
         )
       {
         IsPercentage = true;

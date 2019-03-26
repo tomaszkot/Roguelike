@@ -16,9 +16,10 @@ namespace Roguelike
     ResistFire, ResistCold, ResistPoison, ChanceToHit, ChanceToCastSpell, Mana,
     FireAttack, ColdAttack, PoisonAttack, LightPower, LifeStealing, ManaStealing,
 
-    ChanceToCauseBleeding, ChanceToCauseStunning, ChanceToCauseTearApart, ChanceToEvadeMeleeAttack, ChanceToEvadeMagicAttack,
-    MeleeAttackDamageReduction, MagicAttackDamageReduction, AxeExtraDamage, SwordExtraDamage, BashingExtraDamage, DaggerExtraDamage,
-    LightingAttack, ResistLighting, ChanceToStrikeBack, ChanceToBulkAttack
+    //TODO generate dynamically this enum
+    //ChanceToCauseBleeding, ChanceToCauseStunning, ChanceToCauseTearApart, ChanceToEvadeMeleeAttack, ChanceToEvadeMagicAttack,
+    //MeleeAttackDamageReduction, MagicAttackDamageReduction, AxeExtraDamage, SwordExtraDamage, BashingExtraDamage, DaggerExtraDamage,
+    //LightingAttack, ResistLighting, ChanceToStrikeBack, ChanceToBulkAttack
   };
 
   public class StatValue

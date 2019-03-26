@@ -128,7 +128,8 @@ namespace Roguelike.Tiles
     public static List<EntityStatKind> possibleChoicesWeaponMagician = new List<EntityStatKind>()
     {
       EntityStatKind.Magic, EntityStatKind.Mana, /*EntityStatKind.ManaStealing, uniq*/
-      EntityStatKind.ChanceToCastSpell,  EntityStatKind.ChanceToEvadeMeleeAttack, EntityStatKind.ChanceToEvadeMeleeAttack
+      EntityStatKind.ChanceToCastSpell
+      //,  EntityStatKind.ChanceToEvadeMeleeAttack, EntityStatKind.ChanceToEvadeMeleeAttack //TODO
     };
 
     public static List<EntityStatKind> possibleChoicesArmor = new List<EntityStatKind>() { EntityStatKind.Defence, EntityStatKind.ChanceToHit, EntityStatKind.Health,
@@ -151,18 +152,19 @@ namespace Roguelike.Tiles
 
           if (wpn != null)
           {
-            if (wpn.Kind == Weapon.WeaponKind.Bashing)
-            {
-              possibleChoices.Add(EntityStatKind.ChanceToCauseStunning);
-            }
-            else if (wpn.Kind == Weapon.WeaponKind.Axe)
-            {
-              possibleChoices.Add(EntityStatKind.ChanceToCauseTearApart);
-            }
-            else if (wpn.Kind == Weapon.WeaponKind.Dagger)
-            {
-              possibleChoices.Add(EntityStatKind.ChanceToCauseBleeding);
-            }
+            //TODO
+            //if (wpn.Kind == Weapon.WeaponKind.Bashing)
+            //{
+            //  possibleChoices.Add(EntityStatKind.ChanceToCauseStunning);
+            //}
+            //else if (wpn.Kind == Weapon.WeaponKind.Axe)
+            //{
+            //  possibleChoices.Add(EntityStatKind.ChanceToCauseTearApart);
+            //}
+            //else if (wpn.Kind == Weapon.WeaponKind.Dagger)
+            //{
+            //  possibleChoices.Add(EntityStatKind.ChanceToCauseBleeding);
+            //}
           }
           break;
         case EquipmentKind.Armor:
@@ -227,16 +229,9 @@ namespace Roguelike.Tiles
       {
         value++;
       }
-      if (stat == EntityStatKind.ResistCold || stat == EntityStatKind.ResistFire || stat == EntityStatKind.ResistPoison
-       )
+      if (stat == EntityStatKind.ResistCold || stat == EntityStatKind.ResistFire || stat == EntityStatKind.ResistPoison)
         value *= 2;
-      if (stat == EntityStatKind.ChanceToEvadeMagicAttack || stat == EntityStatKind.ChanceToEvadeMeleeAttack)
-      {
-        float tmp = value;
-        tmp *= 1.5f;
-        value = (int)Math.Ceiling(tmp);
-      }
-
+      
       if (stat == EntityStatKind.FireAttack || stat == EntityStatKind.PoisonAttack || stat == EntityStatKind.ColdAttack)
       {
         value /= 2;

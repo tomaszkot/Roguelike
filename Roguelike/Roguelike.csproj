@@ -81,7 +81,7 @@
     <Compile Include="Generators\LootGenerator.cs" />
     <Compile Include="Serialization\PersistancyWorker.cs" />
     <Compile Include="TileParts\CurrentEquipment.cs" />
-    <Compile Include="Attributes\LootContainers\Inventory.cs" />
+    <Compile Include="LootContainers\Inventory.cs" />
     <Compile Include="LootExtendedInfo.cs" />
     <Compile Include="Managers\EnemiesManager.cs" />
     <Compile Include="Managers\EntitiesManager.cs" />
