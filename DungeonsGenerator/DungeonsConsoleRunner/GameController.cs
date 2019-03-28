@@ -49,7 +49,7 @@ namespace DungeonsConsoleRunner
 
     public virtual DungeonNode GenerateDungeon()
     {
-      Dungeon = generator.Generate(levelIndex++);
+      Dungeon = generator.Generate(container, levelIndex++);
       return Dungeon;
     }
 

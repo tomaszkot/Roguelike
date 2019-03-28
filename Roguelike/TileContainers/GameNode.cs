@@ -15,8 +15,10 @@ using System.Threading.Tasks;
 
 namespace Roguelike.TileContainers
 {
-  //a single room, can have size like 100x100 (DungeonLevel) or 1000x1000 (World)
-  public class GameNode : Generators.TileContainers.DungeonNode
+  //a single room - might be:
+  //1. a DungeonLevel - result of composition  of many DungeonNodes and have size like 100x100
+  //2. a World - big one dungeon like 500x500 tiles
+  public abstract class GameNode : Generators.TileContainers.DungeonNode
   {
     public static Tile EmptyTile = new Tile(symbol: Constants.SymbolBackground);
     Dictionary<Point, Loot> loot = new Dictionary<Point, Tiles.Loot>();
@@ -36,6 +38,14 @@ namespace Roguelike.TileContainers
    : base(width, height, gi, nodeIndex, parent)
     {
 
+    }
+
+    public override void AppendMaze(Dungeons.DungeonNode childMaze, Point? destStartPoint = null, Point? childMazeMaxSize = null,
+      bool childIsland = false, EntranceSide? entranceSideToSkip = null, Dungeons.DungeonNode prevNode = null)
+    {
+      base.AppendMaze(childMaze, destStartPoint, childMazeMaxSize, childIsland, entranceSideToSkip, prevNode);
+      //foreach(var loot in childMaze.Loot)
+      //  this.Loot.Add()
     }
 
     public override Dungeons.DungeonNode CreateChildIslandInstance(int w, int h, GenerationInfo gi, Dungeons.DungeonNode parent)
@@ -83,7 +93,7 @@ namespace Roguelike.TileContainers
 
     public Tile GetRandomEmptyTile(GenerationConstraints constraints = null, bool canBeNextToDoors = true)
     {
-      List<Tile> emptyTiles = GetRandomEmptyTiles(constraints, canBeNextToDoors);
+      List<Tile> emptyTiles = GetEmptyTiles(constraints, canBeNextToDoors);
 
       if (emptyTiles.Any())
       {
@@ -94,9 +104,9 @@ namespace Roguelike.TileContainers
       return null;
     }
 
-    private List<Tile> GetRandomEmptyTiles(GenerationConstraints constraints = null, bool canBeNextToDoors = true)
+    public override List<Tile> GetEmptyTiles(GenerationConstraints constraints = null, bool canBeNextToDoors = true)
     {
-      List<Tile> emptyTiles = GetEmptyTiles(constraints);
+      List<Tile> emptyTiles = base.GetEmptyTiles(constraints);
       if (constraints != null && constraints.Tiles != null)
       {
         emptyTiles = emptyTiles.Where(i => constraints.Tiles.Contains(i)).ToList();

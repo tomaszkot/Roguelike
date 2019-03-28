@@ -9,12 +9,10 @@ namespace ConsoleDungeonsRunner
 {
   class Program
   {
-    static Container container = new Container();
-
     static void Main(string[] args)
     {
+      var container = new ContainerConfigurator().Container;
       container.Register<GameController, GameController>();
-      container.Register<IDungeonGenerator, DungeonGenerator>();
       container.Register<IDrawingEngine, ConsoleDrawingEngine>();
       container.Register<Screen, Screen>();
       container.Verify();

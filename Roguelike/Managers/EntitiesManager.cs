@@ -20,7 +20,7 @@ namespace Roguelike.Managers
 
     EventsManager eventsManager;
     GameContext context;
-    public Func<LivingEntity, LivingEntity, AttackPolicy> PolicyFactory { get; set; }
+    public Func<LivingEntity, LivingEntity, AttackPolicy> AttackPolicy { get; set; }
 
     public EntitiesManager(GameContext context, EventsManager eventsManager)
     {
@@ -28,7 +28,7 @@ namespace Roguelike.Managers
       Context.ContextSwitched += Context_ContextSwitched;
       this.eventsManager = eventsManager;
 
-      PolicyFactory = (LivingEntity e1, LivingEntity e2) => { return new AttackPolicy(e1, e2); };
+      AttackPolicy = (LivingEntity e1, LivingEntity e2) => { return new AttackPolicy(e1, e2); };
     }
 
     private void Context_ContextSwitched(object sender, EventArgs e)

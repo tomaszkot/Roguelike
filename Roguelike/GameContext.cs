@@ -78,7 +78,7 @@ namespace Roguelike
     {
       Tile heroStartTile = null;
 
-      if (stairs.Kind == StairsKind.LevelUp)
+      if (stairs != null && stairs.Kind == StairsKind.LevelUp)
       {
         var stairsDown = node.GetTiles<Stairs>().Where(i => i.Kind == StairsKind.LevelDown).FirstOrDefault();
         if(stairsDown != null)

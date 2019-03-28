@@ -63,6 +63,7 @@
     <Compile Include="ASCIIDisplay\Presenters\Label.cs" />
     <Compile Include="ASCIIDisplay\Presenters\ListPresenter.cs" />
     <Compile Include="ASCIIDisplay\Screen.cs" />
+    <Compile Include="ContainerConfigurator.cs" />
     <Compile Include="Core\GenerationConstraints.cs" />
     <Compile Include="Core\GenericEventArgs.cs" />
     <Compile Include="Core\GreediestConstructorBehavior.cs" />

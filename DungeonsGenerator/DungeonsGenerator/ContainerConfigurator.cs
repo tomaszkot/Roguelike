@@ -1,9 +1,6 @@
 ﻿using Dungeons;
 using Dungeons.Core;
-using Roguelike.Abstract;
-using Roguelike.Generators;
-using Roguelike.Managers;
-using Roguelike.Serialization;
+using Dungeons.Tiles;
 using SimpleInjector;
 using System;
 using System.Collections.Generic;
@@ -11,8 +8,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Roguelike
+namespace Dungeons
 {
+  public interface IContainerConfigurator
+  {
+    Container Container { get; set; }
+  }
+
   public class ContainerConfigurator : IContainerConfigurator
   {
     public Container Container { get; set; }
@@ -21,10 +23,8 @@ namespace Roguelike
     {
       var container = new Container();
       container.Options.ConstructorResolutionBehavior = new GreediestConstructorBehavior();
-      container.Register<IDungeonGenerator, LevelGenerator>();
-      container.Register<JSONPersister, JSONPersister>();
-      container.Register<GameManager, GameManager>();
-      container.Register<ILogger, Utils.Logger>();
+      container.Register<IDungeonGenerator, DungeonGenerator>();
+      container.Register<Door, Door>();
       Container = container;
 
     }

@@ -6,6 +6,7 @@ using Dungeons.Core;
 using Roguelike.Abstract;
 using Roguelike.TileContainers;
 using Roguelike.Tiles;
+using SimpleInjector;
 
 namespace Roguelike.Generators
 {
@@ -57,7 +58,7 @@ namespace Roguelike.Generators
 
     protected override DungeonNode CreateNode(int w, int h, GenerationInfo gi, int nodeIndex)
     {
-      var node = new GameNode(w, h, gi, nodeIndex);
+      var node = new Generators.TileContainers.DungeonNode(w, h, gi, nodeIndex);
             
       var enemy = new Enemy();
       node.SetTile(enemy, new System.Drawing.Point(3, 2));// node.GetRandomEmptyTile().Point);
@@ -74,7 +75,7 @@ namespace Roguelike.Generators
       return gi;
     }
 
-    public override DungeonNode Generate(int levelIndex)
+    public override DungeonNode Generate(Container container, int levelIndex)
     {
       this.LevelIndex = levelIndex;
       LayouterOptions opt = new LayouterOptions();

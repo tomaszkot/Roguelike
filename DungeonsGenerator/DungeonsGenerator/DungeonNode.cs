@@ -303,7 +303,7 @@ namespace Dungeons
       return tile?.Point;
     }
 
-    public List<Tile> GetEmptyTiles(GenerationConstraints constraints = null, bool lookInsidechildIslands = false)
+    public virtual List<Tile> GetEmptyTiles(GenerationConstraints constraints = null, bool lookInsidechildIslands = false)
     {
       var emptyTiles = new List<Tile>();
       DoGridAction((int col, int row) =>
@@ -418,6 +418,7 @@ namespace Dungeons
 
     public virtual DungeonNode CreateChildIslandInstance(int w, int h, GenerationInfo gi, DungeonNode parent)
     {
+      //TODO use container
       return new DungeonNode(w, h, gi, parent: this);
     }
 

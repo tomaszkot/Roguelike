@@ -88,7 +88,7 @@ namespace Roguelike
 
     protected T CreateNewDungeon<T>() where T : GameNode
     {
-      var gameNode = LevelGenerator.Generate(LevelGenerator.LevelIndex) as T;
+      var gameNode = LevelGenerator.Generate(Container, LevelGenerator.LevelIndex) as T;
       return gameNode;
     }
 
@@ -104,7 +104,7 @@ namespace Roguelike
       if(LevelGenerator!=null)
         return GenerateLevel(0);
 
-      return DungeonGenerator.Generate(0);
+      return DungeonGenerator.Generate(Container, 0);
     }
 
     

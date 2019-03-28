@@ -34,8 +34,11 @@ namespace Roguelike.Generators.TileContainers
       {
         if (tiles[row, col].IsFromChildIsland)
         {
-          reveal = (tiles[row, col] is Wall) && (tiles[row, col] as Wall).IsSide ||
-            (tiles[row, col] is Tiles.Door);
+          //if (tiles[row, col] is Tiles.Door)
+          //{
+          //  int k = 0;
+          //}
+          reveal = (tiles[row, col] is Wall) && (tiles[row, col] as Wall).IsSide || (tiles[row, col] is Dungeons.Tiles.Door);
         }
       }
 

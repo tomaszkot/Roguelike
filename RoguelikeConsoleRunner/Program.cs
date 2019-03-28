@@ -1,15 +1,5 @@
-﻿using Dungeons;
-using Dungeons.ASCIIDisplay;
+﻿using Dungeons.ASCIIDisplay;
 using Roguelike;
-using Roguelike.Abstract;
-using Roguelike.Generators;
-using Roguelike.Managers;
-using Roguelike.TileContainers;
-using SimpleInjector;
-using SimpleInjector.Advanced;
-using System;
-using System.Linq;
-using System.Reflection;
 
 namespace RoguelikeConsoleRunner
 {
@@ -17,7 +7,7 @@ namespace RoguelikeConsoleRunner
   {
     static void Main(string[] args)
     {
-      var container = new ContainerConfigurator().Container;
+      var container = new Roguelike.ContainerConfigurator().Container;
 
       container.Register<GameController, GameController>();
       container.Register<IDrawingEngine, ConsoleDrawingEngine>();

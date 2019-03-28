@@ -1,5 +1,6 @@
 ﻿using Dungeons.Core;
 using Dungeons.Tiles;
+using SimpleInjector;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,22 +9,24 @@ namespace Dungeons
 {
   public interface IDungeonGenerator
   {
-    DungeonNode Generate(int levelIndex);
+    DungeonNode Generate(Container container, int levelIndex);
   }
 
   public class DungeonGenerator : IDungeonGenerator
   {
     static protected Random random;
     protected List<DungeonNode> nodes;
-    int levelCounter;
+    protected Container container;
+    //int levelCounter;
 
     static DungeonGenerator()
     {
       random = new Random();
     }
 
-    public virtual DungeonNode Generate(int levelIndex)
+    public virtual DungeonNode Generate(Container container,int levelIndex)
     {
+      this.container = container;
       return Generate<DungeonNode>(levelIndex);
     }
 
@@ -57,8 +60,15 @@ namespace Dungeons
 
     protected virtual DungeonNode CreateNode(int w, int h, GenerationInfo gi, int nodeIndex)
     {
+      //TODO use container
       return new DungeonNode(w, h, gi, nodeIndex);
     }
+    protected virtual DungeonNode CreateLevel(int levelIndex, int w, int h, GenerationInfo gi)
+    {
+      //TODO use container
+      return new DungeonNode(w, h, gi);
+    }
+
 
     public virtual int NumberOfNodes
     {
@@ -88,10 +98,7 @@ namespace Dungeons
       return new GenerationInfo();
     }
 
-    protected virtual DungeonNode CreateLevel(int levelIndex, int w, int h, GenerationInfo gi)
-    {
-      return new DungeonNode(w, h, gi);
-    }
+
 
     protected virtual GenerationInfo CreateLevelGenerationInfo()
     {

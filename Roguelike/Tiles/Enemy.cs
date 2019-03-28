@@ -17,7 +17,7 @@ namespace Roguelike.Tiles
     //PowerKind kind;
 
     public static readonly EntityStat BaseAttack = new EntityStat(EntityStatKind.Attack, 13f);
-    public static readonly EntityStat BaseHealth = new EntityStat(EntityStatKind.Health, 100);
+    public static readonly EntityStat BaseHealth = new EntityStat(EntityStatKind.Health, 13);
     public static readonly EntityStat BaseDefence = new EntityStat(EntityStatKind.Defence, 5);
     public static readonly EntityStat BaseMana = new EntityStat(EntityStatKind.Mana, 4);
     public static readonly EntityStat BaseMagic = new EntityStat(EntityStatKind.Magic, 10);

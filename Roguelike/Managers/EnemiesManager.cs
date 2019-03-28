@@ -27,6 +27,15 @@ namespace Roguelike
     {
       if (attacker.CalculateIfHitWillHappen(victim))
         attacker.ApplyPhysicalDamage(victim);
+
+      attacker.State = EntityState.Attacking;
+
+      OnApplied();
+    }
+
+    protected virtual void OnApplied()
+    {
+      attacker.State = EntityState.Idle;
     }
   }
 }
@@ -121,7 +130,7 @@ namespace Roguelike.Managers
       var victim = GetPhysicalAttackVictim(enemy, hero);
       if (victim != null)
       {
-        var ap = PolicyFactory(enemy, hero);
+        var ap = AttackPolicy(enemy, hero);
         ap.Apply();
         //if (enCasted != null)
         //  gm.AppendAction(new EnemyAction() { KindValue = EnemyAction.Kind.AttackingHero, Enemy = enCasted })/*;*/

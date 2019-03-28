@@ -9,15 +9,15 @@ namespace Dungeons
 {
   class NodeInteriorGenerator
   {
-    DungeonNode dn;
+    DungeonNode dungeonNode;
     GenerationInfo generationInfo;
 
-    public int Width { get { return dn.Width; } }
-    public int Height { get { return dn.Height; } }
+    public int Width { get { return dungeonNode.Width; } }
+    public int Height { get { return dungeonNode.Height; } }
 
     public NodeInteriorGenerator(DungeonNode dn, GenerationInfo gi)
     {
-      this.dn = dn;
+      this.dungeonNode = dn;
       this.generationInfo = gi;
     }
 
@@ -42,7 +42,7 @@ namespace Dungeons
 
     bool Inited()
     {
-      return generationInfo != null && dn != null;
+      return generationInfo != null && dungeonNode != null;
     }
 
     Interior? GenerateRandomSimpleInterior(bool addFinishingDecorations = false)
@@ -85,7 +85,7 @@ namespace Dungeons
         index++;//avoid corner
       var pt = points[index].Point;
       var entry = new Tile();
-      dn.SetTile(entry, pt);
+      dungeonNode.SetTile(entry, pt);
       return entry;
     }
 
@@ -109,20 +109,20 @@ namespace Dungeons
         for (int col = 0; col < Width; col++)
         {
           if(row == 0)
-            dn.Sides[EntranceSide.Top].Add(this.dn.Tiles[row, col] as Wall);
+            dungeonNode.Sides[EntranceSide.Top].Add(this.dungeonNode.Tiles[row, col] as Wall);
 
           else if (row == Height-1)
-            dn.Sides[EntranceSide.Bottom].Add(this.dn.Tiles[row, col] as Wall);
+            dungeonNode.Sides[EntranceSide.Bottom].Add(this.dungeonNode.Tiles[row, col] as Wall);
 
           else if (col == 0)
-            dn.Sides[EntranceSide.Left].Add(this.dn.Tiles[row, col] as Wall);
+            dungeonNode.Sides[EntranceSide.Left].Add(this.dungeonNode.Tiles[row, col] as Wall);
 
           else if (col == Width-1)
-            dn.Sides[EntranceSide.Right].Add(this.dn.Tiles[row, col] as Wall);
+            dungeonNode.Sides[EntranceSide.Right].Add(this.dungeonNode.Tiles[row, col] as Wall);
         }
       }
     
-      foreach (var side in dn.Sides.Values)
+      foreach (var side in dungeonNode.Sides.Values)
       {
         foreach (var si in side)
           (si as Wall).IsSide = true;
@@ -137,7 +137,7 @@ namespace Dungeons
           if (entr.Item2 != null)
           {
             generated.Add(entr.Item1);
-            dn.CreateDoor(entr.Item2);
+            dungeonNode.CreateDoor(entr.Item2);
           }
         }
       }
@@ -151,7 +151,7 @@ namespace Dungeons
 
     Tuple<EntranceSide, Tile> GenerateEntranceAtSide(EntranceSide side)
     {
-      var tile = GenerateEntrance(dn.Sides[side]);
+      var tile = GenerateEntrance(dungeonNode.Sides[side]);
       Tuple<EntranceSide, Tile> res = new Tuple<EntranceSide, Tile>(side, tile);
       return res;
     }
@@ -231,15 +231,15 @@ namespace Dungeons
     {
       if (!Inited())
         return;
-      Func<Tile, bool> areAllEmpty = (Tile i) => { return dn.GetNeighborTiles(i, true).All(j => j != null && j.IsEmpty); };
+      Func<Tile, bool> areAllEmpty = (Tile i) => { return dungeonNode.GetNeighborTiles(i, true).All(j => j != null && j.IsEmpty); };
 
-      var empty = dn.GetEmptyTiles().Where(i => areAllEmpty(i)).ToList();
+      var empty = dungeonNode.GetEmptyTiles().Where(i => areAllEmpty(i)).ToList();
       if (empty.Any())
       {
         var t = empty[RandHelper.Random.Next(empty.Count())];
         var pts = new List<Point>() { t.Point };
 
-        var others = dn.GetNeighborTiles(t).Where(i => areAllEmpty(i)).ToList();
+        var others = dungeonNode.GetNeighborTiles(t).Where(i => areAllEmpty(i)).ToList();
         if (others.Any())
         {
           int maxDecLen = 6;
@@ -257,8 +257,8 @@ namespace Dungeons
       var tiles = new List<Wall>();
       foreach (var pt in points)
       {
-        var wall = dn.CreateWall();
-        dn.SetTile(wall, pt);
+        var wall = dungeonNode.CreateWall();
+        dungeonNode.SetTile(wall, pt);
         tiles.Add(wall);
       }
 
@@ -299,9 +299,9 @@ namespace Dungeons
         destStartPoint = new Point(generationInfo.MinRoomLeft / 2 + 1, generationInfo.MinRoomLeft / 2);
       for (int i = 0; i < generationInfo.NumberOfChildIslands; i++)
       {
-        var child = dn.CreateChildIslandInstance(islandWidth, islandHeight, generationInfoIsl, parent: dn);
-        dn.AppendMaze(child, destStartPoint, childIsland: true);
-        dn.ChildIslands.Add(child);
+        var child = dungeonNode.CreateChildIslandInstance(islandWidth, islandHeight, generationInfoIsl, parent: dungeonNode);
+        dungeonNode.AppendMaze(child, destStartPoint, childIsland: true);
+        dungeonNode.ChildIslands.Add(child);
         nodes.Add(child);
 
         if (destStartPoint != null)

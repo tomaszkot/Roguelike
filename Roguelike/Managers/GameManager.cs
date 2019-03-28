@@ -57,10 +57,12 @@ namespace Roguelike.Managers
     public Func<Tile, InteractionResult> Interact;
     public Func<int, Stairs, InteractionResult> DungeonLevelStairsHandler;
     public LevelGenerator levelGenerator;
+    public Container Container { get; set; }
 
     public GameManager(Container container)
     {
-      this.Logger = container.GetInstance<ILogger>();
+      Container = container;
+      Logger = container.GetInstance<ILogger>();
       levelGenerator = new LevelGenerator(Logger);
       EventsManager = new EventsManager();
       EventsManager.ActionAppended += EventsManager_ActionAppended;
@@ -149,7 +151,7 @@ namespace Roguelike.Managers
       AlliesManager.MoveHeroAllies();
 
       EnemiesManager.Enemies.RemoveAll(i => !i.Alive);
-      if(res != InteractionResult.Attacked)//Wait for attack to be finished (or close to be finished)
+      if(Hero.State != EntityState.Attacking)//Wait for attack to be finished (or close to be finished)
         Context.HeroTurn = false;
     }
 
@@ -170,9 +172,9 @@ namespace Roguelike.Managers
       {
         Logger.LogInfo("Hero attacks "+tile);
         var en = tile as Enemy;
-        var ap = AlliesManager.PolicyFactory(Hero, en);
+        var ap = AlliesManager.AttackPolicy(Hero, en);
         ap.Apply();
-        Hero.State = EntityState.Attacking;
+        
         return InteractionResult.Attacked;
       }
 
