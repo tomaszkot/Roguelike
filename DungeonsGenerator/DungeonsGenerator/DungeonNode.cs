@@ -72,7 +72,7 @@ namespace Dungeons
     public event EventHandler<GenericEventArgs<Tile>> OnTileRevealed;
     NodeInteriorGenerator interiorGenerator;
     bool revealed;
-    Container container;
+    public Container Container { get; set; }
 
     //ctors
     static DungeonNode()
@@ -82,7 +82,7 @@ namespace Dungeons
 
     public DungeonNode(Container container) 
     {
-      this.container = container;
+      this.Container = container;
     }
 
     public void Create(int width = 10, int height = 10, GenerationInfo gi = null,
@@ -419,7 +419,7 @@ namespace Dungeons
 
     public DungeonNode CreateChildIslandInstance(int w, int h, GenerationInfo gi, DungeonNode parent)
     {
-      var dungeon = container.GetInstance<DungeonNode>();
+      var dungeon = Container.GetInstance<DungeonNode>();
       dungeon.Create(w, h, gi, parent: this);
       return dungeon;
     }
@@ -618,8 +618,6 @@ namespace Dungeons
     }
 
     public EntranceSide? AppendedSide { get; private set; }
-
-
 
     /// <summary>
     /// Delete unreachable doors 
