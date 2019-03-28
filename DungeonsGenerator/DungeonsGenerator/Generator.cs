@@ -79,13 +79,13 @@ namespace Dungeons
       return dungeon;
     }
 
-    public virtual int NumberOfNodes
-    {
-      get
-      {
-        return GenerationInfo.NumberOfNodes;
-      }
-    }
+    //public virtual int NumberOfNodes
+    //{
+    //  get
+    //  {
+    //    return GenerationInfo.NumberOfNodes;
+    //  }
+    //}
 
     //TODO public
     public virtual List<DungeonNode> CreateDungeonNodes()
@@ -94,7 +94,7 @@ namespace Dungeons
       var gi = this.CreateLevelGenerationInfo();
       //gi.GenerateOuterWalls = true;
       //for (int i = 0; i < NumberOfNodes; i++)
-      for (int i = 0; i < GenerationInfo.NumberOfNodes; i++)
+      for (int i = 0; i < gi.NumberOfNodes; i++)
       {
         var node = CreateNode(i, gi);
         nodes.Add(node);

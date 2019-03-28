@@ -72,6 +72,8 @@ namespace Dungeons
     public event EventHandler<GenericEventArgs<Tile>> OnTileRevealed;
     NodeInteriorGenerator interiorGenerator;
     bool revealed;
+
+    [JsonIgnore]
     public Container Container { get; set; }
 
     //ctors
