@@ -3,6 +3,7 @@ using Dungeons.Core;
 using Dungeons.Tiles;
 using Roguelike.Generators.TileContainers;
 using Roguelike.Tiles;
+using SimpleInjector;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -24,13 +25,13 @@ namespace Roguelike.TileContainers
     Stairs stairsDown = null;
     public event EventHandler<GenericEventArgs<IList<Tile>>> NodeRevealed;
 
-    public DungeonLevel()
+    public DungeonLevel(Container c) : base(c)
     {
     }
 
-    public DungeonLevel(int width, int height) : base(width, height, null, 0)
-    {
-    }
+    //public DungeonLevel(int width, int height) : base(width, height, null, 0)
+    //{
+    //}
 
     public override string ToString()
     {

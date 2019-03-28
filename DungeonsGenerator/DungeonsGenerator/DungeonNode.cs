@@ -1,6 +1,7 @@
 ﻿using Dungeons.Core;
 using Dungeons.Tiles;
 using Newtonsoft.Json;
+using SimpleInjector;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -22,6 +23,7 @@ namespace Dungeons
   public enum TileNeighborhood { North, South, East, West }
   public enum Interior { T, L };//shape of the interior
 
+  //a single room - typically size of 20x20 tiles
   [XmlRoot("Node", Namespace = "DungeonNode")]
   [XmlInclude(typeof(Wall))]
   public class DungeonNode
@@ -70,27 +72,23 @@ namespace Dungeons
     public event EventHandler<GenericEventArgs<Tile>> OnTileRevealed;
     NodeInteriorGenerator interiorGenerator;
     bool revealed;
+    Container container;
 
     //ctors
     static DungeonNode()
     {
       random = new Random();
-
     }
 
-    public DungeonNode() : this(10, 10, null, -100)
+    public DungeonNode(Container container) 
     {
+      this.container = container;
     }
 
-    public DungeonNode(int width = 10, int height = 10) : this(width, height, null)
-    {
-
-    }
-
-    public DungeonNode(int width = 10, int height = 10, GenerationInfo gi = null,
+    public void Create(int width = 10, int height = 10, GenerationInfo gi = null,
                        int nodeIndex = DefaultNodeIndex, DungeonNode parent = null, bool generateContent = true)
-      : this(null, gi, nodeIndex, parent)
     {
+      Create(null, gi, nodeIndex, parent);
       tiles = new Tile[height, width];
 
       if (generateContent)
@@ -99,17 +97,20 @@ namespace Dungeons
       }
     }
 
-    public DungeonNode(Tile[,] tiles, GenerationInfo gi = null, int nodeIndex = DefaultNodeIndex, DungeonNode parent = null)
+    public void Create(Tile[,] tiles, GenerationInfo gi = null, int nodeIndex = DefaultNodeIndex, DungeonNode parent = null)
     {
       this.Parent = parent;
       this.NodeIndex = nodeIndex;
 
-      //if (gi == null)
-      //  gi = new GenerationInfo();
       this.generationInfo = gi;
       this.interiorGenerator = new NodeInteriorGenerator(this, generationInfo);
       this.tiles = tiles;
     }
+
+    //public DungeonNode(Tile[,] tiles, GenerationInfo gi = null, int nodeIndex = DefaultNodeIndex, DungeonNode parent = null)
+    //{
+    //  Create(tiles, gi, nodeIndex , parent);
+    //}
 
     public virtual string Description
     {
@@ -416,10 +417,11 @@ namespace Dungeons
       return new Door();
     }
 
-    public virtual DungeonNode CreateChildIslandInstance(int w, int h, GenerationInfo gi, DungeonNode parent)
+    public DungeonNode CreateChildIslandInstance(int w, int h, GenerationInfo gi, DungeonNode parent)
     {
-      //TODO use container
-      return new DungeonNode(w, h, gi, parent: this);
+      var dungeon = container.GetInstance<DungeonNode>();
+      dungeon.Create(w, h, gi, parent: this);
+      return dungeon;
     }
 
     /// <summary>

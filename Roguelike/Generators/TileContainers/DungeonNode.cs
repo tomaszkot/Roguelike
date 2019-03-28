@@ -1,26 +1,25 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Dungeons;
-using Dungeons.Tiles;
-using Roguelike.Tiles;
+﻿using Dungeons.Tiles;
+using SimpleInjector;
 
 namespace Roguelike.Generators.TileContainers
 {
   //a single room, can have size like 10x10, used only at the time of generation, then copied to the destination container
   public class DungeonNode : Dungeons.DungeonNode
   {
-    
+    public DungeonNode(Container c) : base(c)
+    { }
+    //public DungeonNode(int width = 10, int height = 10, GenerationInfo gi = null,
+    //                  int nodeIndex = Dungeons.DungeonNode.DefaultNodeIndex, Generators.TileContainers.DungeonNode parent = null)
+    //: base(width, height, gi, nodeIndex, parent)
+    //{
 
-    public DungeonNode(int width = 10, int height = 10, GenerationInfo gi = null,
-                      int nodeIndex = Dungeons.DungeonNode.DefaultNodeIndex, Generators.TileContainers.DungeonNode parent = null)
-    : base(width, height, gi, nodeIndex, parent)
-    {
+    //}
 
-    }
+    //public override Dungeons.DungeonNode CreateChildIslandInstance(int w, int h, GenerationInfo gi, Dungeons.DungeonNode parent)
+    //{
+    //  //TODO use container
+    //  return new DungeonNode(w, h, gi, parent: this);
+    //}
 
     protected override Dungeons.Tiles.Door CreateDoorInstance()
     {

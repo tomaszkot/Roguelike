@@ -44,7 +44,7 @@ namespace RoguelikeConsoleRunner.ASCIIDisplay
         //var world = GameManager.GetCurrentNode<World>();
         //if (world != null)
         //  desc += world.ToString();
-        if (GameManager.Context.CurrentNode is DungeonLevel)
+        if (GameManager.Context.CurrentNode is Roguelike.TileContainers.DungeonLevel)
           desc += " "+GameManager.Context.CurrentNode.ToString();
         DungeonDesc.Text = desc;// GameManager.GetCurrentDungeonDesc();
       }

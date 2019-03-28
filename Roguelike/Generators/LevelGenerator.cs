@@ -1,10 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using Dungeons;
 using Dungeons.Core;
 using Roguelike.Abstract;
-using Roguelike.TileContainers;
 using Roguelike.Tiles;
 using SimpleInjector;
 
@@ -12,16 +10,14 @@ namespace Roguelike.Generators
 {
   public class LevelGenerator : Dungeons.DungeonGenerator
   {
-    public GameNode Dungeon { get; set; }
+    //public GameNode Dungeon { get; set; }
     public ILogger Logger { get; set; }
     public int MaxLevelIndex { get; set; } = 1000;
     public int LevelIndex { get; set; }
 
-    //int levelIndex;
-
-    public LevelGenerator(ILogger logger)
+    public LevelGenerator(Container container) : base(container)
     {
-      this.Logger = logger;
+      Logger = container.GetInstance<ILogger>();
     }
 
     public override List<DungeonNode> CreateDungeonNodes()
@@ -56,14 +52,11 @@ namespace Roguelike.Generators
       }
     }
 
-    protected override DungeonNode CreateNode(int w, int h, GenerationInfo gi, int nodeIndex)
+    protected override DungeonNode CreateNode(int nodeIndex, GenerationInfo gi)
     {
-      var node = new Generators.TileContainers.DungeonNode(w, h, gi, nodeIndex);
-            
+      var node = base.CreateNode(nodeIndex, gi);
       var enemy = new Enemy();
-      node.SetTile(enemy, new System.Drawing.Point(3, 2));// node.GetRandomEmptyTile().Point);
-      Logger.LogInfo("added enemy at :" + enemy.Point);
-  
+      node.SetTile(enemy, new System.Drawing.Point(3, 2));// node.GetRandomEmptyTile().Point);s
       return node;
     }
 
@@ -75,23 +68,13 @@ namespace Roguelike.Generators
       return gi;
     }
 
-    public override DungeonNode Generate(Container container, int levelIndex)
+    public override Dungeons.DungeonLevel Generate(int levelIndex, LayouterOptions opt = null)
     {
-      this.LevelIndex = levelIndex;
-      LayouterOptions opt = new LayouterOptions();
-      opt.RevealAllNodes = false;
-      var level = base.Generate<DungeonLevel>(levelIndex, opt);
+      var level = base.Generate(levelIndex, opt) as Roguelike.TileContainers.DungeonLevel;
       level.Index = levelIndex;
-      level.OnGenerationDone();
-      this.Dungeon = level;
-
-      var sts = level.GetTiles<Stairs>();
-      //var level = new DungeonLevel();// new List<TileContainers.DungeonNode> { node });
-      // level.AppendMaze(node);
-      
+      level.OnGenerationDone();//TODO
       return level;
     }
 
-    
   }
 }

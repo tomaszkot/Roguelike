@@ -9,7 +9,16 @@ namespace Dungeons
 {
   public interface IDungeonGenerator
   {
-    DungeonNode Generate(Container container, int levelIndex);
+    DungeonLevel Generate(int levelIndex, LayouterOptions opt = null);
+  }
+
+  //result of composition  of many DungeonNodes 
+  public class DungeonLevel : DungeonNode
+  {
+    public DungeonLevel(Container container): base (container)
+    {
+      
+    }
   }
 
   public class DungeonGenerator : IDungeonGenerator
@@ -17,17 +26,15 @@ namespace Dungeons
     static protected Random random;
     protected List<DungeonNode> nodes;
     protected Container container;
-    //int levelCounter;
 
     static DungeonGenerator()
     {
       random = new Random();
     }
 
-    public virtual DungeonNode Generate(Container container,int levelIndex)
+    public DungeonGenerator(Container container)
     {
       this.container = container;
-      return Generate<DungeonNode>(levelIndex);
     }
 
     Tile GetPossibleDoorTile(List<Tile> listOne, List<Tile> listTwo)
@@ -55,20 +62,22 @@ namespace Dungeons
       var width = random.Next(minNodeSize, maxNodeSize);
       var height = random.Next(minNodeSize, maxNodeSize);
 
-      return CreateNode(width, height , gi, nodeIndex);
+      return CreateNode(width, height, gi, nodeIndex);
     }
 
-    protected virtual DungeonNode CreateNode(int w, int h, GenerationInfo gi, int nodeIndex)
+    protected DungeonNode CreateNode(int w, int h, GenerationInfo gi, int nodeIndex)
     {
-      //TODO use container
-      return new DungeonNode(w, h, gi, nodeIndex);
+      var dungeon = container.GetInstance<DungeonNode>();
+      dungeon.Create(w, h, gi, nodeIndex);
+      return dungeon;
     }
+
     protected virtual DungeonNode CreateLevel(int levelIndex, int w, int h, GenerationInfo gi)
     {
-      //TODO use container
-      return new DungeonNode(w, h, gi);
+      var dungeon = container.GetInstance<DungeonNode>();
+      dungeon.Create(w, h, gi);
+      return dungeon;
     }
-
 
     public virtual int NumberOfNodes
     {
@@ -77,7 +86,7 @@ namespace Dungeons
         return GenerationInfo.NumberOfNodes;
       }
     }
-    
+
     //TODO public
     public virtual List<DungeonNode> CreateDungeonNodes()
     {
@@ -98,27 +107,17 @@ namespace Dungeons
       return new GenerationInfo();
     }
 
-
-
     protected virtual GenerationInfo CreateLevelGenerationInfo()
     {
       var gi = new GenerationInfo();
-      //gi.GenerateOuterWalls = false;
-
       return gi;
     }
 
-    /// <summary>
-    /// Generates a dungeon 
-    /// </summary>
-    /// <param name="mazeNodes"></param>
-    /// <returns></returns>
-    protected virtual T Generate<T>(int levelIndex, LayouterOptions opt = null) where T : DungeonNode, new()
+    public virtual DungeonLevel Generate(int levelIndex, LayouterOptions opt = null)
     {
       var mazeNodes = CreateDungeonNodes();
-      
-      var layouter = new DefaultNodeLayouter();
-      T level = layouter.DoLayout<T>(mazeNodes, opt);
+      var layouter = new DefaultNodeLayouter(container);
+      var level = layouter.DoLayout(mazeNodes, opt);
 
       return level;
     }

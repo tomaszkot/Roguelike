@@ -63,7 +63,7 @@ namespace Roguelike.Managers
     {
       Container = container;
       Logger = container.GetInstance<ILogger>();
-      levelGenerator = new LevelGenerator(Logger);
+      levelGenerator = container.GetInstance<LevelGenerator>();
       EventsManager = new EventsManager();
       EventsManager.ActionAppended += EventsManager_ActionAppended;
 
@@ -212,9 +212,9 @@ namespace Roguelike.Managers
       return InteractionResult.None;
     }
 
-    DungeonLevel GetCurrentDungeonLevel()
+    TileContainers.DungeonLevel GetCurrentDungeonLevel()
     {
-      var dl = this.CurrentNode as DungeonLevel;
+      var dl = this.CurrentNode as TileContainers.DungeonLevel;
       return dl;
     }
 
@@ -242,9 +242,9 @@ namespace Roguelike.Managers
       gameState.LastSaved = DateTime.Now;
       gameState.HeroPathValue.Pit = "";
       gameState.LastSaved = DateTime.Now;
-      if (CurrentNode is DungeonLevel)
+      if (CurrentNode is TileContainers.DungeonLevel)//TODO 
       {
-        var dl = CurrentNode as DungeonLevel;
+        var dl = CurrentNode as TileContainers.DungeonLevel;
         gameState.HeroPathValue.Pit = dl.PitName;
         gameState.HeroPathValue.LevelIndex = dl.Index;
       }

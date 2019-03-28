@@ -1,6 +1,4 @@
 ﻿using Dungeons;
-using Dungeons.Tiles;
-using Roguelike;
 using Roguelike.Generators;
 using Roguelike.Managers;
 using Roguelike.TileContainers;
@@ -8,9 +6,6 @@ using Roguelike.Tiles;
 using SimpleInjector;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Roguelike
 {
@@ -20,7 +15,6 @@ namespace Roguelike
     Container Container { get; set; }
     Hero Hero { get; }
     DungeonNode GenerateDungeon();
-    //void SetAutoHandleStairs(bool v);
   }
 
   public abstract class Game : IGame
@@ -41,12 +35,13 @@ namespace Roguelike
     public abstract DungeonNode GenerateDungeon();
   }
 
+  //sample game proving it works
   public class RoguelikeGame : Game
   {
     public IDungeonGenerator DungeonGenerator { get; set; }
     public LevelGenerator LevelGenerator { get { return DungeonGenerator as LevelGenerator; } }
-    List<DungeonLevel> levels = new List<DungeonLevel>();
-    public DungeonLevel Level { get { return GameManager.CurrentNode as DungeonLevel; } }
+    List<TileContainers.DungeonLevel> levels = new List<TileContainers.DungeonLevel>();
+    public TileContainers.DungeonLevel Level { get { return GameManager.CurrentNode as TileContainers.DungeonLevel; } }
 
     public RoguelikeGame(Container container) : base(container)
     {
@@ -63,16 +58,17 @@ namespace Roguelike
       DungeonGenerator = container.GetInstance<IDungeonGenerator>();
     }
 
-    public DungeonLevel GenerateLevel(int levelIndex) 
+    public TileContainers.DungeonLevel GenerateLevel(int levelIndex) 
     {
-      DungeonLevel level = null;
+      TileContainers.DungeonLevel level = null;
       if (LevelGenerator != null)
       {
         if (LevelGenerator.MaxLevelIndex > 0 && levelIndex > LevelGenerator.MaxLevelIndex)
           throw new Exception("levelIndex > LevelGenerator.MaxLevelIndex");
         LevelGenerator.LevelIndex = levelIndex;
-        level = CreateNewDungeon<DungeonLevel>();
-        this.levels.Add(level as DungeonLevel);
+        level = LevelGenerator.Generate(levelIndex) as TileContainers.DungeonLevel;
+        //level.Index = levelIndex;
+        this.levels.Add(level);
       }
 
       if (levelIndex == 0)
@@ -86,11 +82,11 @@ namespace Roguelike
       LevelGenerator.MaxLevelIndex = maxLevelIndex;
     }
 
-    protected T CreateNewDungeon<T>() where T : GameNode
-    {
-      var gameNode = LevelGenerator.Generate(Container, LevelGenerator.LevelIndex) as T;
-      return gameNode;
-    }
+    //protected T CreateNewDungeon<T>() where T : GameNode
+    //{
+    //  var gameNode = LevelGenerator.Generate(Container, LevelGenerator.LevelIndex) as T;
+    //  return gameNode;
+    //}
 
     protected Hero AddHero(GameNode node)
     {
@@ -104,7 +100,7 @@ namespace Roguelike
       if(LevelGenerator!=null)
         return GenerateLevel(0);
 
-      return DungeonGenerator.Generate(Container, 0);
+      return DungeonGenerator.Generate(0);
     }
 
     

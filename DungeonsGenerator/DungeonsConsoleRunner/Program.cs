@@ -1,9 +1,6 @@
 using Dungeons;
 using Dungeons.ASCIIDisplay;
 using DungeonsConsoleRunner;
-using SimpleInjector;
-using System;
-using System.Diagnostics;
 
 namespace ConsoleDungeonsRunner
 {

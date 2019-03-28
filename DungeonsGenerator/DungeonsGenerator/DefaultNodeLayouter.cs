@@ -1,4 +1,5 @@
 ﻿using Dungeons.Core;
+using SimpleInjector;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
@@ -35,8 +36,14 @@ namespace Dungeons
     EntranceSide? forcedNextSide = EntranceSide.Bottom;
     EntranceSide? forcedEntranceSideToSkip = null;// EntranceSide.Right;
     LayouterOptions options;
+    Container container;
 
-    public T DoLayout<T>(List<DungeonNode> nodes, LayouterOptions opt = null) where T : DungeonNode, new()
+    public DefaultNodeLayouter(Container container)
+    {
+      this.container = container;
+    }
+
+    public DungeonLevel DoLayout(List<DungeonNode> nodes, LayouterOptions opt = null) //where T : DungeonNode, new()
     {
       options = opt;
       if (options == null)
@@ -49,7 +56,8 @@ namespace Dungeons
       gi.GenerateOuterWalls = false;
       gi.GenerateRandomInterior = false;
       gi.GenerateEmptyTiles = false;
-      var localLevel = new DungeonNode(tw, th + nodesPadding * nodes.Count, gi, -1);
+      var localLevel = container.GetInstance<DungeonNode>();
+      localLevel.Create(tw, th + nodesPadding * nodes.Count, gi, -1);
       
       var maxLoc = localLevel.GetMaxXY();
 
@@ -57,7 +65,8 @@ namespace Dungeons
 
       var max = localLevel.GetMaxXY();
       //generics sucks in C#
-      var Level = System.Activator.CreateInstance(typeof(T), max.Item1 + 1, max.Item2 + 1) as T;
+      var Level = container.GetInstance<DungeonLevel>();//System.Activator.CreateInstance(typeof(T), max.Item1 + 1, max.Item2 + 1) as T;
+      Level.Create(max.Item1 + 1, max.Item2 + 1);
       Level.AppendMaze(localLevel, new Point(0, 0), new Point(max.Item1 + 1, max.Item2 + 1));
       Level.DeleteWrongDoors();
 

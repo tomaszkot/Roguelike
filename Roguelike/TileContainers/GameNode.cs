@@ -3,22 +3,19 @@ using Dungeons.Core;
 using Dungeons.Tiles;
 using Newtonsoft.Json;
 using Roguelike.Abstract;
-using Roguelike.Generators.TileContainers;
 using Roguelike.Tiles;
-using System;
+using SimpleInjector;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Roguelike.TileContainers
 {
   //a single room - might be:
   //1. a DungeonLevel - result of composition  of many DungeonNodes and have size like 100x100
   //2. a World - big one dungeon like 500x500 tiles
-  public abstract class GameNode : Generators.TileContainers.DungeonNode
+  public abstract class GameNode : Dungeons.DungeonLevel
   {
     public static Tile EmptyTile = new Tile(symbol: Constants.SymbolBackground);
     Dictionary<Point, Loot> loot = new Dictionary<Point, Tiles.Loot>();
@@ -26,18 +23,18 @@ namespace Roguelike.TileContainers
     public ILogger Logger { get; set; }
     public virtual string Name { get; set; } = "";
 
-    public GameNode() : this(10, 10)
-    {
-    }
-    public GameNode(int width, int height) : this(width, height, null)
-    {
-    }
+    //public GameNode() : this(10, 10)
+    //{
+    //}
+    //public GameNode(int width, int height) : this(width, height, null)
+    //{
+    //}
     
-    public GameNode(int width = 10, int height = 10, Dungeons.GenerationInfo gi = null,
+    public GameNode(Container c, int width = 10, int height = 10, Dungeons.GenerationInfo gi = null,
                      int nodeIndex = DefaultNodeIndex, Generators.TileContainers.DungeonNode parent = null)
-   : base(width, height, gi, nodeIndex, parent)
+   : base(c)
     {
-
+      Create(width, height, gi, nodeIndex, parent);
     }
 
     public override void AppendMaze(Dungeons.DungeonNode childMaze, Point? destStartPoint = null, Point? childMazeMaxSize = null,
@@ -48,10 +45,10 @@ namespace Roguelike.TileContainers
       //  this.Loot.Add()
     }
 
-    public override Dungeons.DungeonNode CreateChildIslandInstance(int w, int h, GenerationInfo gi, Dungeons.DungeonNode parent)
-    {
-      return new Generators.TileContainers.DungeonNode(w, h, gi, parent: this);
-    }
+    //public override Dungeons.DungeonNode CreateChildIslandInstance(int w, int h, GenerationInfo gi, Dungeons.DungeonNode parent)
+    //{
+    //  return new Generators.TileContainers.DungeonNode(w, h, gi, parent: this);
+    //}
     
     public override bool SetTile(Tile tile, Point point, bool resetOldTile = true, bool revealReseted = true)
     {

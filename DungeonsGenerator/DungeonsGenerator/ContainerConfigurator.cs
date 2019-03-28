@@ -1,12 +1,6 @@
-﻿using Dungeons;
-using Dungeons.Core;
+﻿using Dungeons.Core;
 using Dungeons.Tiles;
 using SimpleInjector;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Dungeons
 {
@@ -24,7 +18,11 @@ namespace Dungeons
       var container = new Container();
       container.Options.ConstructorResolutionBehavior = new GreediestConstructorBehavior();
       container.Register<IDungeonGenerator, DungeonGenerator>();
+
+      container.Register<DungeonNode, DungeonNode>();
+      container.Register<DungeonLevel, DungeonLevel>();
       container.Register<Door, Door>();
+
       Container = container;
 
     }

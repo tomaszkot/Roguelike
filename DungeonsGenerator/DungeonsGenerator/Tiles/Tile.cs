@@ -79,14 +79,6 @@ namespace Dungeons.Tiles
       set
       {
         revealed = value;
-        if (value)
-        {
-          int k = 0;
-        }
-        if (!value)
-        {
-          int k = 0;
-        }
       }
     }
 
