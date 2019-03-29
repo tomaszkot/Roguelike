@@ -1,5 +1,6 @@
 ﻿using NUnit.Framework;
 using Roguelike;
+using SimpleInjector;
 
 namespace RoguelikeUnitTests
 {
@@ -9,16 +10,18 @@ namespace RoguelikeUnitTests
     protected RoguelikeGame game;
 
     public RoguelikeGame Game { get => game; protected set => game = value; }
+    public Container Container { get; set; }
 
     [SetUp]
     public void Init()
     {
-      CreateGame();
+      Container = new Roguelike.ContainerConfigurator().Container;
+      //CreateGame();
     }
 
     public virtual RoguelikeGame CreateGame(bool autoLoadLevel = true)
     {
-      Game = new RoguelikeGame(new ContainerConfigurator().Container);
+      Game = new RoguelikeGame(Container);
       if (autoLoadLevel)
         Game.GenerateLevel(0);
       return Game;

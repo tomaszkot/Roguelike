@@ -20,9 +20,9 @@ namespace Roguelike.Generators
       Logger = container.GetInstance<ILogger>();
     }
 
-    public override List<DungeonNode> CreateDungeonNodes()
+    public override List<DungeonNode> CreateDungeonNodes(GenerationInfo info = null)
     {
-      var mazeNodes = base.CreateDungeonNodes();
+      var mazeNodes = base.CreateDungeonNodes(info);
       CreateDynamicTiles(mazeNodes);
 
       return mazeNodes;
@@ -57,6 +57,9 @@ namespace Roguelike.Generators
       var node = base.CreateNode(nodeIndex, gi);
       var enemy = new Enemy();
       node.SetTile(enemy, new System.Drawing.Point(3, 2));// node.GetRandomEmptyTile().Point);s
+
+      var loot = new Loot();
+      node.SetTile(loot, new System.Drawing.Point(4, 2));// node.GetRandomEmptyTile().Point);s
       return node;
     }
 
@@ -68,9 +71,9 @@ namespace Roguelike.Generators
       return gi;
     }
 
-    public override Dungeons.DungeonLevel Generate(int levelIndex, LayouterOptions opt = null)
+    public override Dungeons.DungeonLevel Generate(int levelIndex, GenerationInfo info = null, LayouterOptions opt = null)
     {
-      var level = base.Generate(levelIndex, opt) as Roguelike.TileContainers.DungeonLevel;
+      var level = base.Generate(levelIndex, info, opt) as Roguelike.TileContainers.DungeonLevel;
       level.Index = levelIndex;
       level.OnGenerationDone();//TODO
       return level;

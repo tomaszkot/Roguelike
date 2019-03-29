@@ -109,11 +109,6 @@ namespace Dungeons
       this.tiles = tiles;
     }
 
-    //public DungeonNode(Tile[,] tiles, GenerationInfo gi = null, int nodeIndex = DefaultNodeIndex, DungeonNode parent = null)
-    //{
-    //  Create(tiles, gi, nodeIndex , parent);
-    //}
-
     public virtual string Description
     {
       get { return "Dungeon"; }
@@ -332,7 +327,8 @@ namespace Dungeons
       return tiles[point.Y, point.X];
     }
 
-    public virtual bool SetTile(Tile tile, Point point, bool resetOldTile = true, bool revealReseted = true)
+    public virtual bool SetTile(Tile tile, Point point,
+      bool resetOldTile = true, bool revealReseted = true, bool autoSetTileDungeonIndex = true)
     {
       if (point.X < 0 || point.Y < 0)
         return false;
@@ -358,7 +354,7 @@ namespace Dungeons
 
       if (tile != null)
       {
-        if (tile.DungeonNodeIndex > DungeonNode.ChildIslandNodeIndex)//do not touch islands
+        if (tile.DungeonNodeIndex > DungeonNode.ChildIslandNodeIndex && autoSetTileDungeonIndex)//do not touch islands
           SetDungeonNodeIndex(tile);
         if (resetOldTile)
         {
@@ -454,7 +450,7 @@ namespace Dungeons
       {
         for (int col = 0; col < childMazeMaxSize.Value.X; col++)
         {
-          var tileInChildMaze = childMaze.tiles[row, col];
+          var tileInChildMaze = childMaze.GetTile(new Point(col, row));
           if (tileInChildMaze == null)
             continue;
           if (entranceSideToSkip != null)
@@ -478,7 +474,7 @@ namespace Dungeons
           if (childIsland)
             tileInChildMaze.DungeonNodeIndex = childMaze.NodeIndex;
 
-          this.tiles[destRow, destCol] = tileInChildMaze;
+          this.SetTile(tileInChildMaze, new Point(destCol, destRow), autoSetTileDungeonIndex:false);
         }
       }
     }

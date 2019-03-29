@@ -67,7 +67,7 @@ namespace Roguelike
           throw new Exception("levelIndex > LevelGenerator.MaxLevelIndex");
         LevelGenerator.LevelIndex = levelIndex;
         var opt = new LayouterOptions() { RevealAllNodes = false };
-        level = LevelGenerator.Generate(levelIndex, opt) as TileContainers.DungeonLevel;
+        level = LevelGenerator.Generate(levelIndex, null, opt) as TileContainers.DungeonLevel;
         //level.Index = levelIndex;
         this.levels.Add(level);
       }

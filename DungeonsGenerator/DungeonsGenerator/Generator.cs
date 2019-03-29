@@ -9,7 +9,7 @@ namespace Dungeons
 {
   public interface IDungeonGenerator
   {
-    DungeonLevel Generate(int levelIndex, LayouterOptions opt = null);
+    DungeonLevel Generate(int levelIndex, Dungeons.GenerationInfo info = null, LayouterOptions opt = null);
   }
 
   //result of composition  of many DungeonNodes 
@@ -88,12 +88,11 @@ namespace Dungeons
     //}
 
     //TODO public
-    public virtual List<DungeonNode> CreateDungeonNodes()
+    public virtual List<DungeonNode> CreateDungeonNodes(GenerationInfo info = null)
     {
       nodes = new List<DungeonNode>();
-      var gi = this.CreateLevelGenerationInfo();
-      //gi.GenerateOuterWalls = true;
-      //for (int i = 0; i < NumberOfNodes; i++)
+      var gi = info ?? this.CreateLevelGenerationInfo();
+
       for (int i = 0; i < gi.NumberOfNodes; i++)
       {
         var node = CreateNode(i, gi);
@@ -113,9 +112,9 @@ namespace Dungeons
       return gi;
     }
 
-    public virtual DungeonLevel Generate(int levelIndex, LayouterOptions opt = null)
+    public virtual DungeonLevel Generate(int levelIndex, GenerationInfo info = null, LayouterOptions opt = null)
     {
-      var mazeNodes = CreateDungeonNodes();
+      var mazeNodes = CreateDungeonNodes(info);
       var layouter = new DefaultNodeLayouter(container);
       var level = layouter.DoLayout(mazeNodes, opt);
 

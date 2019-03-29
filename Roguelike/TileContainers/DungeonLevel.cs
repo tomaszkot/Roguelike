@@ -20,18 +20,13 @@ namespace Roguelike.TileContainers
     public Stairs StairsUp { get => stairsUp; set => stairsUp = value; }
     public Stairs StairsDown { get => stairsDown; set => stairsDown = value; }
 
-    //List<DungeonNode> nodes;
     Stairs stairsUp = null;
     Stairs stairsDown = null;
     public event EventHandler<GenericEventArgs<IList<Tile>>> NodeRevealed;
 
-    public DungeonLevel(Container c) : base(c)
+    public DungeonLevel(Container container) : base(container != null ? container : new ContainerConfigurator().Container)
     {
     }
-
-    //public DungeonLevel(int width, int height) : base(width, height, null, 0)
-    //{
-    //}
 
     public override string ToString()
     {

@@ -20,21 +20,18 @@ namespace Roguelike.TileContainers
     public static Tile EmptyTile = new Tile(symbol: Constants.SymbolBackground);
     Dictionary<Point, Loot> loot = new Dictionary<Point, Tiles.Loot>();
     public Dictionary<Point, Loot> Loot { get => loot; set => loot = value; }
+
+    [JsonIgnore]
     public ILogger Logger { get; set; }
     public virtual string Name { get; set; } = "";
 
-    //public GameNode() : this(10, 10)
-    //{
-    //}
-    //public GameNode(int width, int height) : this(width, height, null)
-    //{
-    //}
-    
-    public GameNode(Container c, int width = 10, int height = 10, Dungeons.GenerationInfo gi = null,
-                     int nodeIndex = DefaultNodeIndex, Generators.TileContainers.DungeonNode parent = null)
-   : base(c)
+   
+    public GameNode(Container container)//, int width = 10, int height = 10, Dungeons.GenerationInfo gi = null,
+                    // int nodeIndex = DefaultNodeIndex, Generators.TileContainers.DungeonNode parent = null)
+   : base(container)
     {
-      Create(width, height, gi, nodeIndex, parent);
+      Logger = Container.GetInstance<ILogger>();
+      //Create(width, height, gi, nodeIndex, parent);
     }
 
     public override void AppendMaze(Dungeons.DungeonNode childMaze, Point? destStartPoint = null, Point? childMazeMaxSize = null,
@@ -50,7 +47,8 @@ namespace Roguelike.TileContainers
     //  return new Generators.TileContainers.DungeonNode(w, h, gi, parent: this);
     //}
     
-    public override bool SetTile(Tile tile, Point point, bool resetOldTile = true, bool revealReseted = true)
+    public override bool SetTile(Tile tile, Point point, bool resetOldTile = true, bool revealReseted = true,
+      bool autoSetTileDungeonIndex = true)
     {
       if (tile is Enemy)
       {
@@ -80,7 +78,7 @@ namespace Roguelike.TileContainers
         return true;
       }
       Point? prevPos = tile?.Point;
-      var res =  base.SetTile(tile, point, resetOldTile, revealReseted);
+      var res =  base.SetTile(tile, point, resetOldTile, revealReseted, autoSetTileDungeonIndex);
       if (res && tile is LivingEntity && prevPos!=null)
       {
         (tile as LivingEntity).PrevPoint = prevPos.Value;
@@ -171,6 +169,18 @@ namespace Roguelike.TileContainers
       }
       door.Opened = true;
       return true;
+    }
+
+    public override Tile GetTile(Point point)
+    {
+      var tile = base.GetTile(point);
+      if (tile == null || tile.IsEmpty)
+      {
+        var lootTile = GetLootTile(point);
+        return lootTile != null ? lootTile : tile;
+      }
+
+      return tile;
     }
 
     public Tiles.Loot GetLootTile(Point point)
