@@ -58,7 +58,7 @@ namespace Dungeons
         addFinishingDecorations = true;
       if (addFinishingDecorations)
       {
-        AddFinishingDecorations();
+        AddDecorations();
       }
 
       return interior;
@@ -224,10 +224,10 @@ namespace Dungeons
         points.AddRange(GenerateWallPoints(legX, endX, endY - 1, endY));
       }
       AddWalls(points);
-      AddFinishingDecorations();
+      AddDecorations();
     }
 
-    public void AddFinishingDecorations()
+    public void AddDecorations()
     {
       if (!Inited())
         return;
@@ -325,7 +325,7 @@ namespace Dungeons
         int maxDec = (Width + Height) / 4;
         int numDec = RandHelper.Random.Next(3, maxDec > 3 ? maxDec : 3);
         for (int i = 0; i < numDec; i++)
-          AddFinishingDecorations();
+          AddDecorations();
       }
     }
   }
