@@ -80,7 +80,7 @@ namespace Roguelike.Managers
 
     public void SetContext(GameNode node, Hero hero, GameContextSwitchKind kind, Stairs stairs = null)
     {
-      if (kind == GameContextSwitchKind.NewGame)
+      if (kind == GameContextSwitchKind.NewGame && node.Nodes.Any())
         hero.DungeonNodeIndex = node.Nodes.First().NodeIndex;//TODO
 
       Context.Hero = hero;

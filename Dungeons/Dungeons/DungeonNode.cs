@@ -437,6 +437,11 @@ namespace Dungeons
       Parts.Add(childMaze);
 
       var start = destStartPoint ?? GetInteriorStartingPoint(4, childMaze);
+      if (start.X < 0 || start.Y < 0)
+      {
+        throw new Exception("AppendMaze start.X < 0 || start.Y < 0");
+      }
+
       if (childMazeMaxSize == null)
         childMazeMaxSize = new Point(childMaze.Width, childMaze.Height);
 
