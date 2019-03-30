@@ -55,6 +55,7 @@ namespace RoguelikeConsoleRunner.ASCIIDisplay
       base.CreateLists();
       Lists[UsageListName].Items.Add(new ListItem("S - Save"));
       Lists[UsageListName].Items.Add(new ListItem("L - Load"));
+      Lists[UsageListName].Items.Add(new ListItem("G - Collect Loot (while standing over it)"));
 
       var panelLeft = Console.WindowWidth - panelsWidth*2 - OriginX;
 

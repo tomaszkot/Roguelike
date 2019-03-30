@@ -21,6 +21,8 @@ namespace Roguelike.Serialization
       try
       {
         //Debug.Log("Engine_JsonSerializer...");
+        Directory.CreateDirectory(GamePath);
+
         JsonSerializerSettings settings = new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.All };
         settings.Converters.Add(new Newtonsoft.Json.Converters.StringEnumConverter());
         settings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
@@ -93,19 +95,31 @@ namespace Roguelike.Serialization
       }
     }
 
-    string GetFullFilePath(string fileName)
+    public static string RootPath { get; set; } = Path.GetTempPath();
+
+
+    string GamePath
     {
-      return "c:/tmp/"+ fileName;
+      get{ return RootPath + GameFolder; }
     }
+
+    protected string GetFullFilePath(string fileName)
+    {
+      return GamePath + Path.DirectorySeparatorChar + fileName;
+    }
+
+    protected virtual string GameName { get { return "Roguelike"; } }
+
+    protected virtual string GameFolder { get { return GameName; } }
 
     public void SaveHero(Hero hero)
     {
-      Save<Hero>(hero, GetFullFilePath("OuadII_Hero.json"));
+      Save<Hero>(hero, GetFullFilePath("Hero.json"));
     }
 
     public Hero LoadHero()
     {
-      return Load<Hero>(GetFullFilePath("OuadII_Hero.json"));
+      return Load<Hero>(GetFullFilePath("Hero.json"));
     }
     
     public void SaveLevel(DungeonLevel level)

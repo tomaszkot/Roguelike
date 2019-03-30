@@ -73,7 +73,9 @@ namespace Roguelike.Generators
 
     public override Dungeons.DungeonLevel Generate(int levelIndex, GenerationInfo info = null, LayouterOptions opt = null)
     {
-      var level = base.Generate(levelIndex, info, opt) as Roguelike.TileContainers.DungeonLevel;
+      var options = opt ?? new LayouterOptions() { RevealAllNodes = false };
+      var baseLevel = base.Generate(levelIndex, info, options);
+      var level = baseLevel as Roguelike.TileContainers.DungeonLevel;
       level.Index = levelIndex;
       level.OnGenerationDone();//TODO
       return level;

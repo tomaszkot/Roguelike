@@ -7,7 +7,7 @@ using System.Linq;
 
 namespace Dungeons
 {
-  struct AppendNodeInfo
+  struct AppendNodeInfo 
   {
     public int nextX;
     public int nextY;

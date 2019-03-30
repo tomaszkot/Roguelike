@@ -131,10 +131,11 @@ namespace Roguelike.TileContainers
       get { return Parts[0].Parts.Cast<Generators.TileContainers.DungeonNode>().ToList(); }
     }
 
-    Generators.TileContainers.DungeonNode GetNodeFromTile(Tile tile)
+    public Generators.TileContainers.DungeonNode GetNodeFromTile(Tile tile)
     {
       var parts = Parts;
-      return Nodes.Where(i => i.NodeIndex == tile.DungeonNodeIndex).Single() as Generators.TileContainers.DungeonNode;
+      var node = Nodes.Where(i => i.NodeIndex == tile.DungeonNodeIndex).SingleOrDefault();
+      return node as Generators.TileContainers.DungeonNode;
     }
 
     Generators.TileContainers.DungeonNode GetChildIslandFromTile(Tile tile)
@@ -153,14 +154,17 @@ namespace Roguelike.TileContainers
     {
       if (door.IsFromChildIsland)
       {
-        // var neib = GetNeighborTiles(door).Where(i => i.DungeonNodeIndex != door.DungeonNodeIndex && i != hero).FirstOrDefault();
         var node = GetChildIslandFromTile(door);
         var parts = Parts;
         node.Reveal(true);
       }
       else
       {
-        var neib = GetNeighborTiles(door).Where(i => i.DungeonNodeIndex != door.DungeonNodeIndex && i != hero).FirstOrDefault();
+        var neib = GetNeighborTiles(door).Where(i => 
+        i.DungeonNodeIndex != door.DungeonNodeIndex && 
+        i != hero && 
+        i.DungeonNodeIndex != DungeonNode.DefaultNodeIndex).FirstOrDefault();
+
         if (neib != null)
         {
           var parts = Parts;

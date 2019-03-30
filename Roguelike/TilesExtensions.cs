@@ -14,5 +14,10 @@ namespace Roguelike
     {
       return tile is LivingEntity || tile is InteractiveTile || tile is Loot;
     }
+
+    public static T As<T>(this Tile tile) where T : Tile
+    {
+      return tile as T;
+    }
   }
 }

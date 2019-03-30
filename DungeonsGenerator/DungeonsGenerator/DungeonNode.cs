@@ -616,6 +616,7 @@ namespace Dungeons
     }
 
     public EntranceSide? AppendedSide { get; private set; }
+    public bool Revealed { get => revealed; set => revealed = value; }
 
     /// <summary>
     /// Delete unreachable doors 
@@ -656,7 +657,7 @@ namespace Dungeons
 
     public virtual void Reveal(bool reveal, bool force = false)
     {
-      if (reveal && revealed && !force)//Optimize
+      if (reveal && Revealed && !force)//Optimize
         return;
 
       Debug.WriteLine("reveal " + NodeIndex + " start");
@@ -682,8 +683,8 @@ namespace Dungeons
           }
         }
       });
-      revealed = reveal;
-      if (revealed && OnRevealed != null)
+      Revealed = reveal;
+      if (Revealed && OnRevealed != null)
       {
         var ev = new GenericEventArgs<IList<Tile>>(revealedTiles);
         OnRevealed(this, ev);

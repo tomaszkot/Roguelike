@@ -94,9 +94,14 @@ namespace Roguelike.Managers
 
     public virtual void InitNode(GameNode node, bool fromLoad)
     {
-      InitNode(node as GameNode );
+      InitNode(node as GameNode);
       if (fromLoad)
-        (node as TileContainers.DungeonLevel).OnLoadDone();//TODO
+        InitNodeOnLoad(node);
+    }
+
+    protected virtual void InitNodeOnLoad(GameNode node)
+    {
+      (node as TileContainers.DungeonLevel).OnLoadDone();
     }
 
     protected void InitNode(GameNode node)
@@ -187,9 +192,13 @@ namespace Roguelike.Managers
 
       if (tile is Tiles.Door)
       {
-        if ((tile as Tiles.Door).Opened)
+        //if (CurrentNode.GetNodeFromTile(tile).Revealed)
+        //  return InteractionResult.None;
+        var door = tile as Tiles.Door;
+        if (door.Opened)
           return InteractionResult.None;
-        return CurrentNode.RevealRoom((tile as Tiles.Door), Hero) ? InteractionResult.Handled : InteractionResult.None;
+        
+        return CurrentNode.RevealRoom(door, Hero) ? InteractionResult.Handled : InteractionResult.None;
       }
 
       if (tile is Dungeons.Tiles.IObstacle)
