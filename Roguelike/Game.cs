@@ -63,7 +63,8 @@ namespace Roguelike
           var maxLevel = gs.HeroPathValue.LevelIndex;//TODO gs shall have maxLevel, hero might have go upper
           for (var i = 0; i <= maxLevel; i++)
           {
-            levels.Add(GameManager.Persister.LoadLevel(i));
+            var level = GameManager.LoadLevel(i);
+            levels.Add(level);
           }
           lvl = levels[gs.HeroPathValue.LevelIndex];
           return lvl;

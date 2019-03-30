@@ -42,7 +42,7 @@ namespace Roguelike.Serialization
 
       GameNode node = null;
       node = worldLoader(hero, gs);
-      gm.InitNode(node, true);
+      //gm.InitNode(node, true);
       gm.Context.SwitchTo(node, hero, GameContextSwitchKind.GameLoaded);
 
       gm.PrintHeroStats("load");

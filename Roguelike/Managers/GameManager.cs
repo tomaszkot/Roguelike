@@ -92,24 +92,33 @@ namespace Roguelike.Managers
       PrintHeroStats("SetContext "+ kind);
     }
 
-    public virtual void InitNode(GameNode node, bool fromLoad)
-    {
-      InitNode(node as GameNode);
-      if (fromLoad)
-        InitNodeOnLoad(node);
-    }
+    //public virtual void InitNode(GameNode node)//, bool fromLoad)
+    //{
+    //  InitNode(node as GameNode);
+    //  if (fromLoad)
+    //    InitNodeOnLoad(node);
+    //}
 
     protected virtual void InitNodeOnLoad(GameNode node)
     {
       (node as TileContainers.DungeonLevel).OnLoadDone();
     }
 
-    protected void InitNode(GameNode node)
+    protected virtual void InitNode(GameNode node, bool fromLoad = false)
     {
       node.GetTiles<LivingEntity>().ForEach(i => i.EventsManager = eventsManager);
       node.Logger = this.Logger;
+      if (fromLoad)
+        InitNodeOnLoad(node);
     }
-    
+
+    public TileContainers.DungeonLevel LoadLevel(int index)
+    {
+      var level = Persister.LoadLevel(index);
+      InitNode(level, true);
+      return level;
+    }
+
     private void EventsManager_ActionAppended(object sender, GenericEventArgs<GameAction> e)
     {
       if(e.EventData is LivingEntityAction)

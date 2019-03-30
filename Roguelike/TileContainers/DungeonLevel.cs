@@ -58,14 +58,19 @@ namespace Roguelike.TileContainers
       HookEvents();
     }
 
+    bool eventsHooked = false;
     private void HookEvents()
     {
+      if (eventsHooked)
+        throw new Exception("eventsHooked already hooked!");
       foreach (var node in Nodes)
       {
         node.OnRevealed += Node_OnRevealed;
         foreach (var isl in node.ChildIslands)
           isl.OnRevealed += Node_OnRevealed;
       }
+
+      eventsHooked = true;
     }
 
     private void Node_OnRevealed(object sender, GenericEventArgs<IList<Tile>> e)
