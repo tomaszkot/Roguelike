@@ -1,7 +1,9 @@
 ﻿using Dungeons;
 using Dungeons.Core;
 using Dungeons.Tiles;
+using Newtonsoft.Json;
 using Roguelike.Generators.TileContainers;
+using Roguelike.Serialization;
 using Roguelike.Tiles;
 using SimpleInjector;
 using System;
@@ -14,7 +16,7 @@ using System.Threading.Tasks;
 namespace Roguelike.TileContainers
 {
   //mid-size node like 100x100, part of the DungeonPit
-  public class DungeonLevel : GameNode
+  public class DungeonLevel : GameNode, IPersistable
   {
     public int Index { get; set; }
     public Stairs StairsUp { get => stairsUp; set => stairsUp = value; }
@@ -26,6 +28,7 @@ namespace Roguelike.TileContainers
 
     public DungeonLevel(Container container) : base(container != null ? container : new ContainerConfigurator().Container)
     {
+      Dirty = true;//TODO
     }
 
     public override string ToString()
@@ -39,6 +42,9 @@ namespace Roguelike.TileContainers
     }
 
     public string PitName { get; set; }
+
+    [JsonIgnore]
+    public bool Dirty { get; set; }
 
     internal void OnGenerationDone()
     {

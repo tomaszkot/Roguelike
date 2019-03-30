@@ -7,10 +7,12 @@ using System.Collections.Generic;
 using Roguelike.TileParts;
 using Roguelike.Utils;
 using System.Linq;
+using Roguelike.Serialization;
+using Newtonsoft.Json;
 
 namespace Roguelike.Tiles
 {
-  public class Hero : LivingEntity
+  public class Hero : LivingEntity, IPersistable
   {
     Inventory inventory = null;
 
@@ -30,10 +32,14 @@ namespace Roguelike.Tiles
 
       CreateInventory();
 
+      Dirty = true;//TODO
 #if ASCII_BUILD
       color = ConsoleColor.Yellow;
 #endif
     }
+
+    [JsonIgnore]
+    public bool Dirty { get; set; }
 
     public override string ToString()
     {

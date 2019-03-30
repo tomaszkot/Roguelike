@@ -1,4 +1,6 @@
-﻿using Roguelike.TileContainers;
+﻿using Newtonsoft.Json;
+using Roguelike.Serialization;
+using Roguelike.TileContainers;
 using Roguelike.Tiles;
 using System;
 using System.Collections.Generic;
@@ -8,8 +10,10 @@ using System.Threading.Tasks;
 
 namespace Roguelike
 {
-  public class GameState
+  public class GameState:  IPersistable
   {
+    
+
     public class HeroPath
     {
       public string World { get; set; }
@@ -24,6 +28,9 @@ namespace Roguelike
 
     public DateTime LastSaved { get; set; }
     public HeroPath HeroPathValue { get; set; } = new HeroPath();
+
+    [JsonIgnore]
+    public bool Dirty { get; set; } = true;//TODO true
 
     public override string ToString()
     {

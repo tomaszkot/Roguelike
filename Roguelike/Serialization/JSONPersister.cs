@@ -9,6 +9,11 @@ using System.IO;
 
 namespace Roguelike.Serialization
 {
+  public interface IPersistable
+  {
+    bool Dirty { get; set; }
+  }
+
   public class JSONPersister : IPersister
   {
     public void Save<T>(T entity, string fileName)
@@ -31,7 +36,7 @@ namespace Roguelike.Serialization
       }
     }
 
-    public T Load<T>(string fileName) where T: class
+    public T Load<T>(string fileName) where T: class, IPersistable
     {
       T entity = null;
 

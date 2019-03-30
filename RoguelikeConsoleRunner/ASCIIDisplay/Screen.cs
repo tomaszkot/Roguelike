@@ -56,7 +56,7 @@ namespace RoguelikeConsoleRunner.ASCIIDisplay
       Lists[UsageListName].Items.Add(new ListItem("S - Save"));
       Lists[UsageListName].Items.Add(new ListItem("L - Load"));
 
-      var panelLeft = Console.WindowWidth - panelsWidth - OriginX;
+      var panelLeft = Console.WindowWidth - panelsWidth*2 - OriginX;
 
       lastActionsPrinter = new ListPresenter("Last Actions", panelLeft, DungeonBottom, panelsWidth);
       Lists.Add(lastActionsPrinter.Caption, lastActionsPrinter);

@@ -142,7 +142,9 @@ namespace Roguelike.Tiles
     public override string ToString()
     {
       var res = Name;// + " " + Price + GoldSymbol;
-      res += " " + this.Point.ToString() + " " + Id + ", tag ="+tag;
+      res += " " + this.Point.ToString();
+      //res += " " + Id;
+      res += ", tag ="+tag;
       return res;
     }
 
