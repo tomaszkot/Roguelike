@@ -198,15 +198,15 @@ namespace Roguelike.Managers
         {
           var stairs = tile as Stairs;
           var destLevelIndex = -1;
-          if (stairs.StairsKindValue == StairsKind.LevelDown ||
-          stairs.StairsKindValue == StairsKind.LevelUp)
+          if (stairs.StairsKind == StairsKind.LevelDown ||
+          stairs.StairsKind == StairsKind.LevelUp)
           {
             var level = GetCurrentDungeonLevel();
-            if (stairs.StairsKindValue == StairsKind.LevelDown)
+            if (stairs.StairsKind == StairsKind.LevelDown)
             {
               destLevelIndex = level.Index + 1;
             }
-            else if (stairs.StairsKindValue == StairsKind.LevelUp)
+            else if (stairs.StairsKind == StairsKind.LevelUp)
             {
               destLevelIndex = level.Index - 1;
             }

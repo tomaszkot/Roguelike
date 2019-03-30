@@ -31,14 +31,14 @@ namespace RoguelikeUnitTests
 
       //1st level0 has only stairs down
       Assert.AreEqual(level0.GetTiles<Stairs>().Count, 1);
-      Assert.AreEqual(level0.GetTiles<Stairs>()[0].StairsKindValue, StairsKind.LevelDown);
+      Assert.AreEqual(level0.GetTiles<Stairs>()[0].StairsKind, StairsKind.LevelDown);
 
       var level1 = game.GenerateLevel(1);
       Assert.AreNotEqual(level0, level1);
 
       //last level has NOT stairs down, but shall have up ones
       Assert.AreEqual(level1.GetTiles<Stairs>().Count, 1);
-      Assert.AreEqual(level1.GetTiles<Stairs>()[0].StairsKindValue, StairsKind.LevelUp);
+      Assert.AreEqual(level1.GetTiles<Stairs>()[0].StairsKind, StairsKind.LevelUp);
     }
 
     [Test]
