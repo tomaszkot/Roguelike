@@ -36,7 +36,7 @@ namespace RoguelikeUnitTests
 
       Assert.AreEqual(game.Level.Index, 0);
       var level0 = game.Level;
-      var down = game.Level.GetTiles<Stairs>().Where(i=> i.Kind == StairsKind.LevelDown).Single();
+      var down = game.Level.GetTiles<Stairs>().Where(i=> i.StairsKindValue == StairsKind.LevelDown).Single();
 
       //hero shall be on the level
       Assert.NotNull(game.Level.GetTiles<Hero>().SingleOrDefault());
@@ -48,9 +48,9 @@ namespace RoguelikeUnitTests
       Assert.NotNull(game.Level.GetTiles<Hero>().SingleOrDefault());
       Assert.Null(level0.GetTiles<Hero>().SingleOrDefault());//old level shall not have hero
 
-      down = game.Level.GetTiles<Stairs>().Where(i => i.Kind == StairsKind.LevelDown).SingleOrDefault();
+      down = game.Level.GetTiles<Stairs>().Where(i => i.StairsKindValue == StairsKind.LevelDown).SingleOrDefault();
       Assert.Null(down);//max level 1
-      var up = game.Level.GetTiles<Stairs>().Where(i => i.Kind == StairsKind.LevelUp).Single();
+      var up = game.Level.GetTiles<Stairs>().Where(i => i.StairsKindValue == StairsKind.LevelUp).Single();
       result = game.GameManager.InteractHeroWith(up);
       Assert.AreEqual(result, InteractionResult.ContextSwitched);
 

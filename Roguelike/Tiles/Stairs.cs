@@ -15,7 +15,7 @@ namespace Roguelike.Tiles
   {
     StairsKind kind;
     public string PitName { get; set; }
-    public StairsKind Kind
+    public StairsKind StairsKindValue
     {
       get => kind;
       set
@@ -48,7 +48,7 @@ namespace Roguelike.Tiles
 #if ASCII_BUILD
       color = ConsoleColor.Blue;
 #endif
-      Kind = kind;
+      StairsKindValue = kind;
     }
   }
 }

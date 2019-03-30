@@ -58,6 +58,8 @@ namespace Roguelike.Managers
     public Func<int, Stairs, InteractionResult> DungeonLevelStairsHandler;
     public LevelGenerator levelGenerator;
     public Container Container { get; set; }
+    public Func<Hero, GameState, GameNode> WorldLoader { get => worldLoader; set => worldLoader = value; }
+    public Action WorldSaver { get; set; }
 
     public GameManager(Container container)
     {
@@ -78,6 +80,9 @@ namespace Roguelike.Managers
 
     public void SetContext(GameNode node, Hero hero, GameContextSwitchKind kind, Stairs stairs = null)
     {
+      if (kind == GameContextSwitchKind.NewGame)
+        hero.DungeonNodeIndex = node.Nodes.First().NodeIndex;//TODO
+
       Context.Hero = hero;
 
       InitNode(node);
@@ -90,6 +95,8 @@ namespace Roguelike.Managers
     public virtual void InitNode(GameNode node, bool fromLoad)
     {
       InitNode(node as GameNode );
+      if (fromLoad)
+        (node as TileContainers.DungeonLevel).OnLoadDone();//TODO
     }
 
     protected void InitNode(GameNode node)
@@ -191,15 +198,15 @@ namespace Roguelike.Managers
         {
           var stairs = tile as Stairs;
           var destLevelIndex = -1;
-          if (stairs.Kind == StairsKind.LevelDown ||
-          stairs.Kind == StairsKind.LevelUp)
+          if (stairs.StairsKindValue == StairsKind.LevelDown ||
+          stairs.StairsKindValue == StairsKind.LevelUp)
           {
             var level = GetCurrentDungeonLevel();
-            if (stairs.Kind == StairsKind.LevelDown)
+            if (stairs.StairsKindValue == StairsKind.LevelDown)
             {
               destLevelIndex = level.Index + 1;
             }
-            else if (stairs.Kind == StairsKind.LevelUp)
+            else if (stairs.StairsKindValue == StairsKind.LevelUp)
             {
               destLevelIndex = level.Index - 1;
             }
@@ -223,17 +230,19 @@ namespace Roguelike.Managers
       GameState gameState = CreateGameState();
       return gameState.ToString();
     }
-    
+
+    Func<Hero, GameState, GameNode> worldLoader;
+
     public virtual void Load()
     {
-      persistancyWorker.Load(this);
+      persistancyWorker.Load(this, WorldLoader);
     }
 
     PersistancyWorker persistancyWorker = new PersistancyWorker();
 
     public virtual void Save()
     {
-      persistancyWorker.Save(this, null);
+      persistancyWorker.Save(this, WorldSaver);
     }
 
     public virtual GameState CreateGameState()

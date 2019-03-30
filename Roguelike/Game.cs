@@ -55,6 +55,28 @@ namespace Roguelike
         GameManager.SetContext(levels[destLevelIndex], Hero, GameContextSwitchKind.DungeonSwitched, stairs);
         return InteractionResult.ContextSwitched;
       };
+
+      GameManager.WorldLoader = (Hero hero, GameState gs) =>
+        {
+          levels.Clear();
+          TileContainers.DungeonLevel lvl = null;
+          var maxLevel = gs.HeroPathValue.LevelIndex;//TODO gs shall have maxLevel, hero might have go upper
+          for (var i = 0; i <= maxLevel; i++)
+          {
+            levels.Add(GameManager.Persister.LoadLevel(i));
+          }
+          lvl = levels[gs.HeroPathValue.LevelIndex];
+          return lvl;
+        };
+
+      GameManager.WorldSaver = () =>
+      {
+        for (var i = 0; i < levels.Count; i++)
+        {
+          GameManager.Persister.SaveLevel(levels[i]);
+        }
+      };
+
       DungeonGenerator = container.GetInstance<IDungeonGenerator>();
     }
 

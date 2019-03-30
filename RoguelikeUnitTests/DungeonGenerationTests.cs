@@ -31,14 +31,14 @@ namespace RoguelikeUnitTests
 
       //1st level0 has only stairs down
       Assert.AreEqual(level0.GetTiles<Stairs>().Count, 1);
-      Assert.AreEqual(level0.GetTiles<Stairs>()[0].Kind, StairsKind.LevelDown);
+      Assert.AreEqual(level0.GetTiles<Stairs>()[0].StairsKindValue, StairsKind.LevelDown);
 
       var level1 = game.GenerateLevel(1);
       Assert.AreNotEqual(level0, level1);
 
       //last level has NOT stairs down, but shall have up ones
       Assert.AreEqual(level1.GetTiles<Stairs>().Count, 1);
-      Assert.AreEqual(level1.GetTiles<Stairs>()[0].Kind, StairsKind.LevelUp);
+      Assert.AreEqual(level1.GetTiles<Stairs>()[0].StairsKindValue, StairsKind.LevelUp);
     }
 
     [Test]
@@ -55,14 +55,22 @@ namespace RoguelikeUnitTests
       Assert.AreEqual(level.Width, info.MaxNodeSize);
       Assert.AreEqual(level.Height, info.MaxNodeSize);
       var zeroIndexCount = level.GetTiles().Where(i => i.DungeonNodeIndex == 0).Count();
-      Assert.AreEqual(zeroIndexCount, info.MinNodeSize* info.MaxNodeSize);
+      Assert.AreEqual(zeroIndexCount, info.MinNodeSize * info.MaxNodeSize);
     }
-    
+
+    [Test]
+    public void TestHeroTile()
+    {
+      var game = CreateGame();
+      Assert.NotNull(game.Hero);
+      Assert.AreEqual(game.Hero.DungeonNodeIndex, 0);
+    }
+
 
     //[Test]
     //public void TestLootGeneration()
     //{
-      
+
     //  var node = new Roguelike.Generators.TileContainers.DungeonNode(Container);
     //  node.Create(3, 3);
     //  var loot = new Loot();
@@ -85,9 +93,9 @@ namespace RoguelikeUnitTests
 
 
     //  Assert.AreEqual(level.GetTile(new System.Drawing.Point(1, 2)), loot);
-      
+
     //}
 
 
-    }
+  }
 }

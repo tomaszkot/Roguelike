@@ -12,7 +12,7 @@ namespace Roguelike.Serialization
 {
   public class PersistancyWorker
   {
-    public void Save(GameManager gm, Action worldSaver = null)
+    public void Save(GameManager gm, Action worldSaver)
     {
 #if DEBUG
       var heros = gm.CurrentNode.GetTiles<Hero>();
@@ -26,10 +26,7 @@ namespace Roguelike.Serialization
 
       gm.Persister.SaveHero(gm.Hero);
 
-      if (worldSaver == null)
-        gm.Persister.SaveLevel(gm.CurrentNode as DungeonLevel);
-      else
-        worldSaver();
+      worldSaver();
 
       var gameState = gm.CreateGameState();
       gm.Persister.SaveGameState(gameState);
@@ -37,20 +34,21 @@ namespace Roguelike.Serialization
       gm.CurrentNode.SetTile(gm.Hero, gm.Hero.Point);
     }
 
-    public void Load(GameManager gm, Func<Hero, GameState, GameNode> worldLoader = null)
+    public void Load(GameManager gm, Func<Hero, GameState, GameNode> worldLoader)
     {
       var hero = gm.Persister.LoadHero();
 
       var gs = gm.Persister.LoadGameState();
 
       GameNode node = null;
-      if (worldLoader != null)
+      //if (worldLoader != null)
         node = worldLoader(hero, gs);
-      else
-      {
-        node = gm.Persister.LoadLevel(0);//TODO more levels
-        node.SetTile(hero, hero.Point);
-      }
+      //else
+      //{
+
+      //  //node = gm.Persister.LoadLevel(0);//TODO more levels
+      //  //node.SetTile(hero, hero.Point);
+      //}
       gm.InitNode(node, true);
       gm.Context.SwitchTo(node, hero, GameContextSwitchKind.GameLoaded);
 

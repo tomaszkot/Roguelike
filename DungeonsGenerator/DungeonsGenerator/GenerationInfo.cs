@@ -7,7 +7,7 @@ namespace Dungeons
   /// </summary>
   public class GenerationInfo : ICloneable
   {
-    public int NumberOfNodes = 1;
+    public int NumberOfNodes = 2;
 
     /// <summary>
     /// Normally true, can be set to false for issue testing purposes

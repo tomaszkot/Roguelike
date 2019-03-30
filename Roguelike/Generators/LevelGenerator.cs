@@ -32,7 +32,7 @@ namespace Roguelike.Generators
     {
       if (LevelIndex > 0)//1st node shall have stairs up
       {
-        var stairs = new Stairs() { Kind = StairsKind.LevelUp, Symbol = '<' };
+        var stairs = new Stairs() { StairsKindValue = StairsKind.LevelUp, Symbol = '<' };
         //mazeNodes[0].SetTile(stairs, new System.Drawing.Point(3, 1));
         mazeNodes[0].SetTile(stairs, mazeNodes[0].GetEmptyTiles().First().Point);
       }
@@ -46,7 +46,7 @@ namespace Roguelike.Generators
         if (indexWithStairsDown < 0)
           indexWithStairsDown = 0;
 
-        Stairs stairs = new Stairs() { Kind = StairsKind.LevelDown, Symbol = '>' };
+        Stairs stairs = new Stairs() { StairsKindValue = StairsKind.LevelDown, Symbol = '>' };
         mazeNodes[indexWithStairsDown].SetTile(stairs, mazeNodes[indexWithStairsDown].GetEmptyTiles().Last().Point);
         //node.SetTile(stairs, new System.Drawing.Point(3, 1));
       }
