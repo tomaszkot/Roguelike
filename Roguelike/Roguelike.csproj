@@ -41,12 +41,11 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Assets\Dlls\Newtonsoft.Json.dll</HintPath>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>..\packages\Newtonsoft.Json.12.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="SimpleInjector">
-      <HintPath>..\..\OuaDII\Src\Packages\SimpleInjector.4.4.3\lib\net45\SimpleInjector.dll</HintPath>
+      <HintPath>..\packages\SimpleInjector.4.4.3\lib\net45\SimpleInjector.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -81,7 +80,6 @@
     <Compile Include="Generators\LootGenerator.cs" />
     <Compile Include="Serialization\PersistancyWorker.cs" />
     <Compile Include="TileParts\CurrentEquipment.cs" />
-    <Compile Include="LootContainers\Inventory.cs" />
     <Compile Include="LootExtendedInfo.cs" />
     <Compile Include="Managers\EnemiesManager.cs" />
     <Compile Include="Managers\EntitiesManager.cs" />
@@ -93,11 +91,8 @@
     <Compile Include="Serialization\IPersister.cs" />
     <Compile Include="Serialization\JSONPersister.cs" />
     <Compile Include="TilesExtensions.cs" />
-    <Compile Include="Tiles\Barrel.cs" />
     <Compile Include="Tiles\InteractiveTile.cs" />
-    <Compile Include="Tiles\Interactive\Chest.cs" />
     <Compile Include="Tiles\Jewellery.cs" />
-    <Compile Include="Tiles\Lever.cs" />
     <Compile Include="Utils\SerializableDictionary.cs" />
     <Compile Include="TileContainers\DungeonLevel.cs" />
     <Compile Include="Generators\TileContainers\DungeonNode.cs" />
@@ -127,6 +122,10 @@
       <Project>{6e90d7c5-938d-4e62-b45c-53d0033847ef}</Project>
       <Name>Dungeons</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="LootContainers\" />
+    <Folder Include="Tiles\Interactive\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
