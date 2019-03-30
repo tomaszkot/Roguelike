@@ -78,6 +78,7 @@
     <Compile Include="GameState.cs" />
     <Compile Include="Generators\LevelGenerator.cs" />
     <Compile Include="Generators\LootGenerator.cs" />
+    <Compile Include="LootContainers\Inventory.cs" />
     <Compile Include="Serialization\PersistancyWorker.cs" />
     <Compile Include="TileParts\CurrentEquipment.cs" />
     <Compile Include="LootExtendedInfo.cs" />
@@ -91,8 +92,11 @@
     <Compile Include="Serialization\IPersister.cs" />
     <Compile Include="Serialization\JSONPersister.cs" />
     <Compile Include="TilesExtensions.cs" />
+    <Compile Include="Tiles\Barrel.cs" />
     <Compile Include="Tiles\InteractiveTile.cs" />
+    <Compile Include="Tiles\Interactive\Chest.cs" />
     <Compile Include="Tiles\Jewellery.cs" />
+    <Compile Include="Tiles\Lever.cs" />
     <Compile Include="Utils\SerializableDictionary.cs" />
     <Compile Include="TileContainers\DungeonLevel.cs" />
     <Compile Include="Generators\TileContainers\DungeonNode.cs" />
@@ -123,10 +127,7 @@
       <Name>Dungeons</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="LootContainers\" />
-    <Folder Include="Tiles\Interactive\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>if  "$(SolutionName)" == "OuaDIISln" xcopy  "$(TargetPath)" "$(SolutionDir)\Assets\Dlls" /Y
