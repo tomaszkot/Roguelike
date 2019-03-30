@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.27703.2018
+VisualStudioVersion = 15.0.27130.2036
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Roguelike", "Roguelike\Roguelike.csproj", "{4DCC340D-FF13-47A8-AB45-C942240B4E1B}"
 EndProject
@@ -9,9 +9,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RoguelikeConsoleRunner", "R
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RoguelikeUnitTests", "RoguelikeUnitTests\RoguelikeUnitTests.csproj", "{E2864DA6-A60E-4ECB-BF44-2FB839A76BAA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dungeons", "DungeonsGenerator\DungeonsGenerator\Dungeons.csproj", "{6E90D7C5-938D-4E62-B45C-53D0033847EF}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dungeons", "Dungeons\Dungeons\Dungeons.csproj", "{6E90D7C5-938D-4E62-B45C-53D0033847EF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DungeonsConsoleRunner", "DungeonsGenerator\DungeonsConsoleRunner\DungeonsConsoleRunner.csproj", "{D0D27131-A217-4182-8682-7BBC9EDFF159}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DungeonsConsoleRunner", "Dungeons\DungeonsConsoleRunner\DungeonsConsoleRunner.csproj", "{D0D27131-A217-4182-8682-7BBC9EDFF159}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

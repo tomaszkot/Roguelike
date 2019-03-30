@@ -57,7 +57,7 @@
     <Compile Include="TestBase.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\DungeonsGenerator\DungeonsGenerator\Dungeons.csproj">
+    <ProjectReference Include="..\Dungeons\Dungeons\Dungeons.csproj">
       <Project>{6e90d7c5-938d-4e62-b45c-53d0033847ef}</Project>
       <Name>Dungeons</Name>
     </ProjectReference>

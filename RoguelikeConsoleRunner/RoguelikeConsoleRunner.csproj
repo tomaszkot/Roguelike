@@ -66,12 +66,12 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\DungeonsGenerator\DungeonsConsoleRunner\DungeonsConsoleRunner.csproj">
+    <ProjectReference Include="..\Dungeons\DungeonsConsoleRunner\DungeonsConsoleRunner.csproj">
       <Project>{d0d27131-a217-4182-8682-7bbc9edff159}</Project>
       <Name>DungeonsConsoleRunner</Name>
     </ProjectReference>
-    <ProjectReference Include="..\DungeonsGenerator\DungeonsGenerator\Dungeons.csproj">
-      <Project>{6E90D7C5-938D-4E62-B45C-53D0033847EF}</Project>
+    <ProjectReference Include="..\Dungeons\Dungeons\Dungeons.csproj">
+      <Project>{6e90d7c5-938d-4e62-b45c-53d0033847ef}</Project>
       <Name>Dungeons</Name>
     </ProjectReference>
     <ProjectReference Include="..\Roguelike\Roguelike.csproj">
