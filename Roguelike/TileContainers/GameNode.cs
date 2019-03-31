@@ -76,7 +76,7 @@ namespace Roguelike.TileContainers
         }
         tile.Point = point;
         Loot[point] = tile as Roguelike.Tiles.Loot;
-        tiles[point.Y, point.X] = new Tile();//reset old one
+        
         return true;
       }
       Point? prevPos = tile?.Point;
@@ -277,7 +277,12 @@ namespace Roguelike.TileContainers
     internal Tile ReplaceTile(Loot loot, Point point)
     {
       var prev = GetTile(point);
-      return SetTile(loot, point) ? prev : null;
+      if (SetTile(loot, point))
+      {
+        Tiles[point.Y, point.X] = new Tile(point);//reset old one
+        return prev;
+      }
+      return null;
     }
 
     public List<Algorithms.PathFinderNode> FindPath(Point from, Point endPoint, bool forHeroAlly, bool canGoOverCrackedStone)

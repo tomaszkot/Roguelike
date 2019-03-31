@@ -47,12 +47,12 @@ namespace Dungeons.Tiles
     {
     }
 
-    public Tile(char symbol) : this(GenerationConstraints.InvalidPoint, symbol)
+    public Tile(char symbol = Constants.SymbolBackground) : this(GenerationConstraints.InvalidPoint, symbol)
     {
 
     }
 
-    public Tile(Point point, char symbol)
+    public Tile(Point point, char symbol = Constants.SymbolBackground)
     {
       this.Name = GetType().Name;
       this.Point = point;

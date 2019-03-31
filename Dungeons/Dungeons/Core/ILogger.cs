@@ -4,11 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Roguelike.Abstract
+namespace Dungeons.Core
 {
   public interface ILogger
   {
-    void LogError(string err);
+    void LogError(string err, bool throwExc = false);
     void LogInfo(string info);
   }
 }

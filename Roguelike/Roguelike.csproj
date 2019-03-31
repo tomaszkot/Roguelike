@@ -60,7 +60,6 @@
   <ItemGroup>
     <Compile Include="Abstract\IDescriptable.cs" />
     <Compile Include="Abstract\IGameManagerProvider.cs" />
-    <Compile Include="Abstract\ILogger.cs" />
     <Compile Include="Abstract\IMovingDamager.cs" />
     <Compile Include="Abstract\IObstacle.cs" />
     <Compile Include="Astar\AuthorAttribute.cs" />
@@ -111,7 +110,6 @@
     <Compile Include="Tiles\Stairs.cs" />
     <Compile Include="Tiles\Weapon.cs" />
     <Compile Include="Utils\Formatters.cs" />
-    <Compile Include="Utils\Logger.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Astar\AuthorAttribute.cs.meta" />

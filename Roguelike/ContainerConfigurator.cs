@@ -23,7 +23,7 @@ namespace Roguelike
       container.Register<Dungeons.DungeonNode, Roguelike.Generators.TileContainers.DungeonNode>();
       container.Register<Dungeons.Tiles.Door, Door>();
       container.Register<Dungeons.DungeonLevel, DungeonLevel>();
-      container.Register<ILogger, Utils.Logger>();
+      container.Register<ILogger, Logger>();
       container.Register<LootGenerator, LootGenerator>(Lifestyle.Singleton);
       Container = container;
 

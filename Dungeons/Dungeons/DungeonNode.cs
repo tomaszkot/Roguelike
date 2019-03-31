@@ -331,14 +331,20 @@ namespace Dungeons
       bool resetOldTile = true, bool revealReseted = true, bool autoSetTileDungeonIndex = true)
     {
       if (point.X < 0 || point.Y < 0)
+      {
+        Container.GetInstance<ILogger>().LogError("SetTile failed for: "+ point, true);
         return false;
+      }
       if (AppendMazeStartPoint != null)
       {
         point.X -= AppendMazeStartPoint.Value.X;
         point.Y -= AppendMazeStartPoint.Value.Y;
       }
       if (point.X >= Width || point.Y >= Height)
+      {
+        Container.GetInstance<ILogger>().LogError("SetTile failed, point.X >= Width || point.Y >= Height for: " + point, true);
         return false;
+      }
 
       if (tiles[point.Y, point.X] == tile && tile.Point == point)
         return true;
