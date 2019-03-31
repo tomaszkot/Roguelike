@@ -15,6 +15,8 @@ using System.Threading.Tasks;
 
 namespace Roguelike.TileContainers
 {
+  
+
   //mid-size node like 100x100, part of the DungeonPit
   public class DungeonLevel : GameNode, IPersistable
   {
@@ -24,7 +26,7 @@ namespace Roguelike.TileContainers
 
     Stairs stairsUp = null;
     Stairs stairsDown = null;
-    public event EventHandler<GenericEventArgs<IList<Tile>>> NodeRevealed;
+    public event EventHandler<GenericEventArgs<NodeRevealedParam>> NodeRevealed;
 
     public DungeonLevel(Container container) : base(container != null ? container : new ContainerConfigurator().Container)
     {
@@ -73,9 +75,9 @@ namespace Roguelike.TileContainers
       eventsHooked = true;
     }
 
-    private void Node_OnRevealed(object sender, GenericEventArgs<IList<Tile>> e)
+    private void Node_OnRevealed(object sender, GenericEventArgs<NodeRevealedParam> e)
     {
-      var nodeTiles = e.EventData;
+      var nodeTiles = e.EventData.Tiles;
 
       //when data is loaded tiles must be revelaed by maching points;
       foreach (var tile in nodeTiles)
@@ -90,7 +92,7 @@ namespace Roguelike.TileContainers
       }
       
       if (NodeRevealed != null)
-        NodeRevealed(this, new GenericEventArgs<IList<Tile>>(nodeTiles));
+        NodeRevealed(sender, e);
       
     }
   }

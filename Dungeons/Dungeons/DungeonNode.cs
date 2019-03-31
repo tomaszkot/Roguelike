@@ -11,6 +11,12 @@ using System.Xml.Serialization;
 
 namespace Dungeons
 {
+  public class NodeRevealedParam
+  {
+    public IList<Tile> Tiles { get; set; }
+    public int NodeIndex { get; set; }
+  }
+
   public class PrintInfo
   {
     public bool PrintNodeIndexes = false;
@@ -664,7 +670,7 @@ namespace Dungeons
       return new Wall();
     }
 
-    public event EventHandler<GenericEventArgs<IList<Tile>>> OnRevealed;
+    public event EventHandler<GenericEventArgs<NodeRevealedParam>> OnRevealed;
 
     public virtual void Reveal(bool reveal, bool force = false)
     {
@@ -697,8 +703,8 @@ namespace Dungeons
       Revealed = reveal;
       if (Revealed && OnRevealed != null)
       {
-        var ev = new GenericEventArgs<IList<Tile>>(revealedTiles);
-        OnRevealed(this, ev);
+        //var ev = new GenericEventArgs<IList<Tile>>(revealedTiles);
+        OnRevealed(this, new GenericEventArgs<NodeRevealedParam>(new NodeRevealedParam() { NodeIndex = NodeIndex, Tiles = revealedTiles }));
       }
 
       Debug.WriteLine("reveal " + NodeIndex + " end ");
