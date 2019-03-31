@@ -6,7 +6,7 @@ Features:
 - generates doors allowing to traverse the dungeon 
 - nodes auto-revealing mechanism when door are opened
 - nodes persistency
-- loot generation\collectiong 
+- loot generation\collection 
 - written in C# 4.5 
 
 Along with the library a sample game is provided in RoguelikeConsoleRunner subdirectory.
