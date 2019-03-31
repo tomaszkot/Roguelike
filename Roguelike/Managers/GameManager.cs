@@ -92,13 +92,6 @@ namespace Roguelike.Managers
       PrintHeroStats("SetContext "+ kind);
     }
 
-    //public virtual void InitNode(GameNode node)//, bool fromLoad)
-    //{
-    //  InitNode(node as GameNode);
-    //  if (fromLoad)
-    //    InitNodeOnLoad(node);
-    //}
-
     protected virtual void InitNodeOnLoad(GameNode node)
     {
       (node as TileContainers.DungeonLevel).OnLoadDone();
@@ -191,26 +184,24 @@ namespace Roguelike.Managers
       }
       if (tile is Enemy)
       {
-        Logger.LogInfo("Hero attacks "+tile);
+        Logger.LogInfo("Hero attacks " + tile);
         var en = tile as Enemy;
         var ap = AlliesManager.AttackPolicy(Hero, en);
         ap.Apply();
-        
+
         return InteractionResult.Attacked;
       }
 
-      if (tile is Tiles.Door)
+      else if (tile is Tiles.Door)
       {
-        //if (CurrentNode.GetNodeFromTile(tile).Revealed)
-        //  return InteractionResult.None;
         var door = tile as Tiles.Door;
         if (door.Opened)
           return InteractionResult.None;
-        
+
         return CurrentNode.RevealRoom(door, Hero) ? InteractionResult.Handled : InteractionResult.None;
       }
 
-      if (tile is Dungeons.Tiles.IObstacle)
+      else if (tile is InteractiveTile)
       {
         if (tile is Stairs)
         {
@@ -228,13 +219,35 @@ namespace Roguelike.Managers
             {
               destLevelIndex = level.Index - 1;
             }
-            if(DungeonLevelStairsHandler!=null)
+            if (DungeonLevelStairsHandler != null)
               return DungeonLevelStairsHandler(destLevelIndex, stairs);
           }
         }
+        else if (tile is Barrel)
+        {
+          var loot = LootGenerator.GetRandomLoot();
+          ReplaceTile(loot, tile.Point);
+        }
+        return InteractionResult.Blocked;//blok hero by default
+      }
+      else if (tile is Dungeons.Tiles.IObstacle)
+      {
         return InteractionResult.Blocked;//blok hero by default
       }
       return InteractionResult.None;
+    }
+
+    internal bool ReplaceTile(Loot loot, Point point)
+    {
+      var prevTile = CurrentNode.ReplaceTile(loot, point);
+      if (prevTile != null)
+      {
+        this.EventsManager.AppendAction(new InteractiveTileAction(prevTile as InteractiveTile) { KindValue = InteractiveTileAction.Kind.Destroyed });
+        this.EventsManager.AppendAction(new LootAction(loot) { KindValue = LootAction.Kind.Generated });
+        return true;
+      }
+
+      return false;
     }
 
     TileContainers.DungeonLevel GetCurrentDungeonLevel()
@@ -306,21 +319,13 @@ namespace Roguelike.Managers
         {
           //Hero.Inventory.Print(logger, "loot added");
           CurrentNode.RemoveLoot(lootTile.Point);
-          this.EventsManager.AppendAction(new LootAction() {  });
+          this.EventsManager.AppendAction(new LootAction(lootTile) { KindValue = LootAction.Kind.Collected });
           if (lootTile is Equipment)
           {
             var eq = lootTile as Equipment;
             Hero.SetEquipment(eq.EquipmentKind, eq);
 
             PrintHeroStats("loot On");
-            //{
-            //  LootAction ac = null;
-            //  if (eq != null)
-            //    ac = new LootAction() { Info = Hero.Name + " put on " + eq, Loot = eq, KindValue = LootAction.Kind.PutOn, EquipmentKind = eq.EquipmentKind };
-            //  //else
-            //  //  ac = new LootAction() { Info = Name + " took off " + kind, Loot = null, KindValue = LootAction.Kind.TookOff, EquipmentKind = kind };
-            //  EventsManager.AppendAction(ac);
-            //}
           }
           return true;
         }

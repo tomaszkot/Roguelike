@@ -9,7 +9,7 @@ namespace Roguelike.Generators
 {
   public class LootGenerator
   {
-    public Weapon GetRandomWeapon()
+    public virtual Weapon GetRandomWeapon()
     {
       var wpn = new Weapon();
       wpn.Name = "Sword";
@@ -18,6 +18,13 @@ namespace Roguelike.Generators
       wpn.PrimaryStat = EntityStatKind.Attack;
       wpn.PrimaryStatValue = 5;
       return wpn;
+    }
+
+    public virtual Loot GetRandomLoot()
+    {
+      var loot = new Loot();
+      loot.tag = "mash3";
+      return loot;
     }
   }
 }

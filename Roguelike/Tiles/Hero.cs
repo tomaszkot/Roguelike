@@ -98,9 +98,9 @@ namespace Roguelike.Tiles
 
       LootAction ac = null;
       if (eq != null)
-        ac = new LootAction() { Info = Name + " put on " + eq, Loot = eq, KindValue = LootAction.Kind.PutOn, EquipmentKind = eq.EquipmentKind };
+        ac = new LootAction(eq) { Info = Name + " put on " + eq, KindValue = LootAction.Kind.PutOn, EquipmentKind = eq.EquipmentKind };
       else
-        ac = new LootAction() { Info = Name + " took off " + kind, Loot = null, KindValue = LootAction.Kind.TookOff, EquipmentKind = kind };
+        ac = new LootAction(null) { Info = Name + " took off " + kind, KindValue = LootAction.Kind.TookOff, EquipmentKind = kind };
       AppendAction(ac);
     }
 

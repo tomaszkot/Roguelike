@@ -83,7 +83,7 @@ namespace Roguelike.TileContainers
         var dt = this.GetTile(tile.Point);
         if (dt.Symbol != tile.Symbol)
         {
-          Logger.LogError("dt.Symbol != tile.Symbol "+ tile.Point);
+          Logger.LogError("dt.Symbol != tile.Symbol ["+ dt.Symbol + ","+ tile.Symbol + "] " + tile.Point + " ");
         }
         if (!dt.Revealed && tile.Revealed)
           dt.Revealed = true;

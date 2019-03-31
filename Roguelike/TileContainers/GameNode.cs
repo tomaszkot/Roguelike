@@ -5,6 +5,7 @@ using Newtonsoft.Json;
 using Roguelike.Abstract;
 using Roguelike.Tiles;
 using SimpleInjector;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
@@ -75,6 +76,7 @@ namespace Roguelike.TileContainers
         }
         tile.Point = point;
         Loot[point] = tile as Roguelike.Tiles.Loot;
+        tiles[point.Y, point.X] = new Tile();//reset old one
         return true;
       }
       Point? prevPos = tile?.Point;
@@ -270,6 +272,12 @@ namespace Roguelike.TileContainers
       }
 
       return findPathMatrix;
+    }
+
+    internal Tile ReplaceTile(Loot loot, Point point)
+    {
+      var prev = GetTile(point);
+      return SetTile(loot, point) ? prev : null;
     }
 
     public List<Algorithms.PathFinderNode> FindPath(Point from, Point endPoint, bool forHeroAlly, bool canGoOverCrackedStone)

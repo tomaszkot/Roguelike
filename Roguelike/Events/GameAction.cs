@@ -60,9 +60,10 @@ namespace Roguelike
 
   public class InteractiveTileAction : GameAction
   {
-    public enum Kind { Unset, DoorsUnlocked, DoorsLocked }
-    //public Tiles.InteractiveTile Tile { get; set; }
+    public enum Kind { Unset, DoorsUnlocked, DoorsLocked, Destroyed }
+    public Tiles.InteractiveTile Tile { get; set; }
     public Kind KindValue { get; set; }
+    public InteractiveTileAction(Tiles.InteractiveTile tile) { Tile = tile; }
     //public Tiles.Door Door { get; set; }
 
     //public override string GetSound
@@ -90,6 +91,8 @@ namespace Roguelike
     //TODO can be named Kind ?
     public Kind KindValue { get; set; }
     public EquipmentKind EquipmentKind { get; set; }
+
+    public LootAction(Loot loot) { Loot = loot; }
   }
 
   public class HeroAction : GameAction

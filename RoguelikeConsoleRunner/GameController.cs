@@ -93,6 +93,8 @@ namespace RoguelikeConsoleRunner
       else if (e.EventData is LootAction)
       {
         screen.RedrawLists();
+        var la = e.EventData as LootAction;
+        screen.Redraw(la.Loot, false);
       }
     }
     

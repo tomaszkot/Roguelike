@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Roguelike.Abstract;
 
 namespace Roguelike.Tiles
 {
@@ -12,7 +13,7 @@ namespace Roguelike.Tiles
     Trap, Lever
   }
 
-  public class InteractiveTile : Dungeons.Tiles.Tile
+  public class InteractiveTile : Dungeons.Tiles.Tile, Abstract.IObstacle
   {
     public InteractiveTile(char symbol) : base(symbol)
     {
@@ -20,5 +21,15 @@ namespace Roguelike.Tiles
     }
 
     public InteractiveTileKind Kind { get; set; } = InteractiveTileKind.Unknown;
+
+    public bool CanBeHitBySpell()
+    {
+      return false;
+    }
+
+    public bool OnHitBy(IMovingDamager damager)
+    {
+      return false;
+    }
   }
 }

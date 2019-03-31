@@ -56,10 +56,14 @@ namespace Roguelike.Generators
     {
       var node = base.CreateNode(nodeIndex, gi);
       var enemy = new Enemy();
-      node.SetTile(enemy, new System.Drawing.Point(3, 2));// node.GetRandomEmptyTile().Point);s
+      node.SetTile(enemy, new System.Drawing.Point(3, 2));// node.GetRandomEmptyTile().Point);
 
-      var loot = new Loot();
-      node.SetTile(loot, new System.Drawing.Point(4, 2));// node.GetRandomEmptyTile().Point);s
+      node.SetTile(container.GetInstance<LootGenerator>().GetRandomLoot(), new System.Drawing.Point(4, 2));// node.GetRandomEmptyTile().Point);
+
+      var barrel = new Barrel();
+      barrel.tag = "barrel";
+      node.SetTile(barrel, new System.Drawing.Point(2, 2));// node.GetRandomEmptyTile().Point);
+
       return node;
     }
 
