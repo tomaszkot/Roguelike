@@ -60,7 +60,7 @@ namespace Roguelike
         {
           levels.Clear();
           TileContainers.DungeonLevel lvl = null;
-          var maxLevel = gs.HeroPathValue.LevelIndex;//TODO gs shall have maxLevel, hero might have go upper
+          var maxLevel = gs.HeroPathValue.LevelIndex;//TODO gs shall have maxLevel, hero might have go upper. Maybe just count level files in dir ?
           for (var i = 0; i <= maxLevel; i++)
           {
             var level = GameManager.LoadLevel(i);
@@ -91,7 +91,6 @@ namespace Roguelike
         LevelGenerator.LevelIndex = levelIndex;
         
         level = LevelGenerator.Generate(levelIndex) as TileContainers.DungeonLevel;
-        //level.Index = levelIndex;
         this.levels.Add(level);
       }
 
@@ -105,12 +104,6 @@ namespace Roguelike
     {
       LevelGenerator.MaxLevelIndex = maxLevelIndex;
     }
-
-    //protected T CreateNewDungeon<T>() where T : GameNode
-    //{
-    //  var gameNode = LevelGenerator.Generate(Container, LevelGenerator.LevelIndex) as T;
-    //  return gameNode;
-    //}
 
     protected Hero AddHero(GameNode node)
     {

@@ -8,18 +8,6 @@ namespace Roguelike.Generators.TileContainers
   {
     public DungeonNode(Container c) : base(c)
     { }
-    //public DungeonNode(int width = 10, int height = 10, GenerationInfo gi = null,
-    //                  int nodeIndex = Dungeons.DungeonNode.DefaultNodeIndex, Generators.TileContainers.DungeonNode parent = null)
-    //: base(width, height, gi, nodeIndex, parent)
-    //{
-
-    //}
-
-    //public override Dungeons.DungeonNode CreateChildIslandInstance(int w, int h, GenerationInfo gi, Dungeons.DungeonNode parent)
-    //{
-    //  //TODO use container
-    //  return new DungeonNode(w, h, gi, parent: this);
-    //}
 
     protected override Dungeons.Tiles.Door CreateDoorInstance()
     {

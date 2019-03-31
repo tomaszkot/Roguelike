@@ -47,15 +47,18 @@ namespace RoguelikeUnitTests
       var generator = Container.GetInstance<Dungeons.IDungeonGenerator>();
       var info = new Dungeons.GenerationInfo();
       info.NumberOfNodes = 1;
-      info.MinNodeSize = 4;
-      info.MaxNodeSize = 4;
+      info.MinNodeSize = 5;
+      info.MaxNodeSize = 5;
       info.RevealTiles = true;
 
       var level = generator.Generate(0, info);
       Assert.AreEqual(level.Width, info.MaxNodeSize);
       Assert.AreEqual(level.Height, info.MaxNodeSize);
       var zeroIndexCount = level.GetTiles().Where(i => i.DungeonNodeIndex == 0).Count();
-      Assert.AreEqual(zeroIndexCount, info.MinNodeSize * info.MaxNodeSize);
+
+      var nonZero = level.GetTiles().Where(i => i.DungeonNodeIndex != 0).ToList();
+
+      Assert.AreEqual(zeroIndexCount, level.GetTiles().Count);
     }
 
     [Test]

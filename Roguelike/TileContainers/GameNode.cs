@@ -43,11 +43,16 @@ namespace Roguelike.TileContainers
       //  this.Loot.Add()
     }
 
-    //public override Dungeons.DungeonNode CreateChildIslandInstance(int w, int h, GenerationInfo gi, Dungeons.DungeonNode parent)
-    //{
-    //  return new Generators.TileContainers.DungeonNode(w, h, gi, parent: this);
-    //}
-    
+    public List<Tile> GetTiles(bool includeLoot) 
+    {
+      var res = base.GetTiles();
+      if (includeLoot)
+      {
+        res.AddRange(Loot.Values);
+      }
+      return res;
+    }
+
     public override bool SetTile(Tile tile, Point point, bool resetOldTile = true, bool revealReseted = true,
       bool autoSetTileDungeonIndex = true)
     {
