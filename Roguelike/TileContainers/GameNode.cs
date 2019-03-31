@@ -19,28 +19,22 @@ namespace Roguelike.TileContainers
   public abstract class GameNode : Dungeons.DungeonLevel
   {
     public static Tile EmptyTile = new Tile(symbol: Constants.SymbolBackground);
-    Dictionary<Point, Loot> loot = new Dictionary<Point, Tiles.Loot>();
-    public Dictionary<Point, Loot> Loot { get => loot; set => loot = value; }
-
+    public Dictionary<Point, Loot> Loot { get; set; } = new Dictionary<Point, Tiles.Loot>();
     [JsonIgnore]
     public ILogger Logger { get; set; }
     public virtual string Name { get; set; } = "";
 
    
-    public GameNode(Container container)//, int width = 10, int height = 10, Dungeons.GenerationInfo gi = null,
-                    // int nodeIndex = DefaultNodeIndex, Generators.TileContainers.DungeonNode parent = null)
+    public GameNode(Container container)
    : base(container)
     {
       Logger = Container.GetInstance<ILogger>();
-      //Create(width, height, gi, nodeIndex, parent);
     }
 
     public override void AppendMaze(Dungeons.DungeonNode childMaze, Point? destStartPoint = null, Point? childMazeMaxSize = null,
       bool childIsland = false, EntranceSide? entranceSideToSkip = null, Dungeons.DungeonNode prevNode = null)
     {
       base.AppendMaze(childMaze, destStartPoint, childMazeMaxSize, childIsland, entranceSideToSkip, prevNode);
-      //foreach(var loot in childMaze.Loot)
-      //  this.Loot.Add()
     }
 
     public List<Tile> GetTiles(bool includeLoot) 
@@ -56,11 +50,6 @@ namespace Roguelike.TileContainers
     public override bool SetTile(Tile tile, Point point, bool resetOldTile = true, bool revealReseted = true,
       bool autoSetTileDungeonIndex = true)
     {
-      if (tile is Enemy)
-      {
-        int k = 0;
-        k++;
-      }
       if (tile is Hero)
       {
         var tileAtPoint = GetTile(point);
@@ -73,7 +62,7 @@ namespace Roguelike.TileContainers
       }
       else if (tile is Roguelike.Tiles.Loot)
       {
-        if (Loot.ContainsKey(point))// && loot[point] != null)
+        if (Loot.ContainsKey(point))
         {
           if (Logger != null)
             Logger.LogError("loot already at point: " + Loot[point] + ", trying to add: " + tile);
@@ -222,11 +211,6 @@ namespace Roguelike.TileContainers
             continue;
           }
 
-          //if (!forHeroAlly && tile is Trap && (tile as Trap).SetUp)
-          //{
-          //  continue;
-          //}
-
           if (tile is Dungeons.Tiles.IObstacle)
           {
             if (forHeroAlly && tile is LivingEntity)
@@ -234,11 +218,6 @@ namespace Roguelike.TileContainers
               int k = 0;
               k++;
             }
-            //else if (!forHeroAlly && tile is CrackedStone)
-            //{
-            //  //let attack it
-            //  value = canGoOverCrackedStone ? (byte)1 : (byte)0;
-            //}
             else
             {
               value = 0;//0
