@@ -29,9 +29,6 @@ namespace Roguelike.Tiles
    // public int NumberOfCastedEffectsForAllies = 0;
     public int NumberOfEmergencyTeleports = 0;
  
-    
-
-
     static Enemy()
     {
       BaseStats = new EntityStats();
