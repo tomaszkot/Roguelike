@@ -28,6 +28,32 @@ namespace Roguelike.Tiles
       ExtendedInfo = new LootExtendedInfo();
     }
 
+    public EntityStats GetStats()
+    {
+      Equipment eq = this;
+      EntityStats stats = new EntityStats();
+      if (eq == null)
+        return stats;
+      if (eq is Weapon)
+      {
+        stats.Stats[EntityStatKind.Attack].Factor += eq.PrimaryStatValue;
+      }
+      else if (eq is Armor)
+      {
+        stats.Stats[EntityStatKind.Defence].Factor += eq.PrimaryStatValue;
+      }
+      else if (eq is Jewellery)
+      {
+        var juw = eq as Jewellery;
+        stats.Stats[juw.PrimaryStat].Factor += juw.PrimaryStatValue;
+      }
+      if (!eq.IsPlain())
+      {
+        stats.Accumulate(eq.ExtendedInfo.Stats);
+      }
+      return stats;
+    }
+
     public EquipmentClass Class
     {
       get

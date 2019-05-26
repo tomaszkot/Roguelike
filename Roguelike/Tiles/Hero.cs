@@ -147,7 +147,7 @@ namespace Roguelike.Tiles
           var eq = CurrentEquipment[et];
           if (eq != null)
           {
-            var stats = GetStats(eq);
+            var stats = eq.GetStats();
             //var att = stats.Stats[EntityStatKind.Attack];
             Stats.AccumulateFactors(stats, positive);
           }
@@ -155,31 +155,7 @@ namespace Roguelike.Tiles
       }
     }
 
-    //TODO make it method of Equipment
-    EntityStats GetStats(Equipment eq)
-    {
-      EntityStats stats = new EntityStats();
-      if (eq == null)
-        return stats;
-      if (eq is Weapon)
-      {
-        stats.Stats[EntityStatKind.Attack].Factor += eq.PrimaryStatValue;
-      }
-      else if (eq is Armor)
-      {
-        stats.Stats[EntityStatKind.Defence].Factor += eq.PrimaryStatValue;
-      }
-      else if (eq is Jewellery)
-      {
-        var juw = eq as Jewellery;
-        stats.Stats[juw.PrimaryStat].Factor += juw.PrimaryStatValue;
-      }
-      if (!eq.IsPlain())
-      {
-        stats.Accumulate(eq.ExtendedInfo.Stats);
-      }
-      return stats;
-    }
+    
 
   }
 }
