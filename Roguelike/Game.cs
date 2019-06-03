@@ -90,7 +90,7 @@ namespace Roguelike
           throw new Exception("levelIndex > LevelGenerator.MaxLevelIndex");
         LevelGenerator.LevelIndex = levelIndex;
         
-        level = LevelGenerator.Generate(levelIndex) as TileContainers.DungeonLevel;
+        level = LevelGenerator.Generate(levelIndex, new GenerationInfo()) as TileContainers.DungeonLevel;
         this.levels.Add(level);
       }
 

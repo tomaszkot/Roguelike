@@ -115,7 +115,7 @@ namespace Dungeons
     public virtual DungeonLevel Generate(int levelIndex, GenerationInfo info = null, LayouterOptions opt = null)
     {
       var mazeNodes = CreateDungeonNodes(info);
-      var layouter = new DefaultNodeLayouter(container);
+      var layouter = new CorridorNodeLayouter(container);
       var level = layouter.DoLayout(mazeNodes, opt);
 
       return level;
