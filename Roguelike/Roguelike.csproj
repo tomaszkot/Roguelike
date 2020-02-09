@@ -90,12 +90,15 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Serialization\IPersister.cs" />
     <Compile Include="Serialization\JSONPersister.cs" />
+    <Compile Include="TileParts\IEquipable.cs" />
     <Compile Include="TilesExtensions.cs" />
+    <Compile Include="Tiles\AdvancedLivingEntity.cs" />
     <Compile Include="Tiles\Barrel.cs" />
     <Compile Include="Tiles\InteractiveTile.cs" />
     <Compile Include="Tiles\Interactive\Chest.cs" />
     <Compile Include="Tiles\Jewellery.cs" />
     <Compile Include="Tiles\Lever.cs" />
+    <Compile Include="Tiles\Mushroom.cs" />
     <Compile Include="Utils\SerializableDictionary.cs" />
     <Compile Include="TileContainers\DungeonLevel.cs" />
     <Compile Include="Generators\TileContainers\DungeonNode.cs" />

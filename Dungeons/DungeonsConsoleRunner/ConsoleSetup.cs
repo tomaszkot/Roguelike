@@ -79,9 +79,9 @@ namespace DungeonsConsoleRunner
 
     public static void Init()
     {
-      var ww = Console.WindowWidth;
-      var wh = Console.WindowHeight;
-      Console.SetWindowSize((int)(ww*1.5f), wh * 2);
+      //var ww = Console.WindowWidth;
+      //var wh = Console.WindowHeight;
+      //Console.SetWindowSize((int)(ww*1.5f), wh * 2);
       ConsoleSetup.SetConsoleFont();
     }
   }

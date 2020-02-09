@@ -9,11 +9,11 @@ using Newtonsoft.Json;
 
 namespace Roguelike.Tiles
 {
-  public enum RoomKind { None, PuzzleRoom, Island }
+  public enum RoomKind { Unset, PuzzleRoom, Island }
 
   public class Enemy : LivingEntity
   {
-    public enum PowerKind { Plain, Champion, Boss };
+    public enum PowerKind { Unset, Plain, Champion, Boss };
     //PowerKind kind;
 
     public static readonly EntityStat BaseAttack = new EntityStat(EntityStatKind.Attack, 13f);

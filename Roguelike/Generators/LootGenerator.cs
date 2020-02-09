@@ -15,14 +15,15 @@ namespace Roguelike.Generators
       wpn.Name = "Sword";
       wpn.Kind = Weapon.WeaponKind.Sword;
       wpn.EquipmentKind = EquipmentKind.Weapon;
-      wpn.PrimaryStat = EntityStatKind.Attack;
+      wpn.PrimaryStatKind = EntityStatKind.Attack;
       wpn.PrimaryStatValue = 5;
       return wpn;
     }
 
     public virtual Loot GetRandomLoot()
     {
-      var loot = new Loot();
+      var loot = new Mushroom();
+      loot.SetKind(MushroomKind.Boletus);
       loot.tag = "mash3";
       return loot;
     }

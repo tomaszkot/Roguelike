@@ -10,9 +10,15 @@ namespace Roguelike.Tiles
   {
     public enum WeaponKind
     {
-      Dagger, Sword, Axe, Bashing, Scepter, Wand, Staff,
+      Unset, Dagger, Sword, Axe, Bashing, Scepter, Wand, Staff,
       Other
       //,Bow
+    }
+
+    public Weapon()
+    {
+      this.EquipmentKind = EquipmentKind.Weapon;
+      this.PrimaryStatKind = EntityStatKind.Attack;
     }
 
     public WeaponKind Kind { get; set; }

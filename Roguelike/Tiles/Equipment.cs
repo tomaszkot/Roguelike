@@ -1,9 +1,6 @@
 ﻿using Dungeons.Core;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Roguelike.Tiles
 {
@@ -11,45 +8,44 @@ namespace Roguelike.Tiles
   {
     readonly static LootKind[] possibleLootKinds = new LootKind[] { LootKind.Armor, LootKind.Weapon, LootKind.Jewellery };
 
-    EquipmentKind type;
-    private EntityStatKind primaryStat = EntityStatKind.Unknown;
-    private float primaryStatValue;
+    EquipmentKind kind;
+    EntityStat primaryStat;
     EquipmentClass _class;
+    public int RequiredLevel { get; set; }
+    EntityStats requiredStats = new EntityStats();
 
-    public Equipment() : this(EquipmentKind.Weapon)
+    public Equipment() : this(EquipmentKind.Unset)
     {
-
+      
     }
 
-    public Equipment(EquipmentKind kind = EquipmentKind.Weapon)//default arg for serialization
+    public Equipment(EquipmentKind kind = EquipmentKind.Unset)//default arg for serialization
     {
-      this.EquipmentKind = kind;
+      primaryStat = new EntityStat();
+      EquipmentKind = kind;
       Class = EquipmentClass.Plain;
-      ExtendedInfo = new LootExtendedInfo();
     }
 
     public EntityStats GetStats()
     {
-      Equipment eq = this;
       EntityStats stats = new EntityStats();
-      if (eq == null)
-        return stats;
-      if (eq is Weapon)
+      stats.Stats[this.PrimaryStatKind].Accumulate(primaryStat);
+      //if (eq is Weapon)
+      //{
+      //  stats.Stats[EntityStatKind.Attack].Factor += eq.PrimaryStatValue;
+      //}
+      //else if (eq is Armor)
+      //{
+      //  stats.Stats[EntityStatKind.Defence].Factor += eq.PrimaryStatValue;
+      //}
+      //else if (eq is Jewellery)
+      //{
+      //  var juw = eq as Jewellery;
+      //  stats.Stats[juw.PrimaryStat].Factor += juw.PrimaryStatValue;
+      //}
+      if (!IsPlain())
       {
-        stats.Stats[EntityStatKind.Attack].Factor += eq.PrimaryStatValue;
-      }
-      else if (eq is Armor)
-      {
-        stats.Stats[EntityStatKind.Defence].Factor += eq.PrimaryStatValue;
-      }
-      else if (eq is Jewellery)
-      {
-        var juw = eq as Jewellery;
-        stats.Stats[juw.PrimaryStat].Factor += juw.PrimaryStatValue;
-      }
-      if (!eq.IsPlain())
-      {
-        stats.Accumulate(eq.ExtendedInfo.Stats);
+        stats.Accumulate(ExtendedInfo.Stats);
       }
       return stats;
     }
@@ -67,18 +63,16 @@ namespace Roguelike.Tiles
       }
     }
 
-    public LootExtendedInfo ExtendedInfo { get; private set; }
-
     public virtual EquipmentKind EquipmentKind
     {
       get
       {
-        return type;
+        return kind;
       }
 
       set
       {
-        type = value;
+        kind = value;
       }
     }
     
@@ -91,7 +85,7 @@ namespace Roguelike.Tiles
     {
       if (EquipmentKind == EquipmentKind.Weapon)
         return LootKind.Weapon;
-      else if (EquipmentKind == EquipmentKind.Amulet || EquipmentKind == EquipmentKind.Ring)
+      else if (EquipmentKind == EquipmentKind.Amulet || EquipmentKind == EquipmentKind.RingLeft || EquipmentKind == EquipmentKind.RingRight)
         return LootKind.Jewellery;
       else if (EquipmentKind == EquipmentKind.Armor || EquipmentKind == EquipmentKind.Shield || EquipmentKind == EquipmentKind.Helmet)
         return LootKind.Armor;
@@ -100,16 +94,15 @@ namespace Roguelike.Tiles
       return LootKind.Other;
     }
 
-    public EntityStatKind PrimaryStat
+    public EntityStatKind PrimaryStatKind
     {
       get
       {
-        return primaryStat;
+        return primaryStat.Kind;
       }
       set
       {
-        primaryStat = value;//needed for serial...
-
+        primaryStat.Kind = value;//needed for serial...
       }
     }
 
@@ -117,20 +110,18 @@ namespace Roguelike.Tiles
     {
       get
       {
-        return primaryStatValue;
+        return primaryStat.NominalValue;
       }
 
       set
       {
-        primaryStatValue = value;
+        primaryStat.NominalValue = value;
       }
     }
 
-
     public void SetPrimaryStat(EntityStatKind primaryStat, float value)
     {
-      this.primaryStat = primaryStat;
-      this.PrimaryStatValue = value;
+      this.primaryStat = new EntityStat(primaryStat, value);
     }
 
     public List<KeyValuePair<EntityStatKind, EntityStat>> GetMagicStats()
@@ -145,7 +136,7 @@ namespace Roguelike.Tiles
 
     public override string GetPrimaryStatDescription()
     {
-      return PrimaryStat + ": " + PrimaryStatValue;
+      return primaryStat.Kind.ToString() + ": " + primaryStat.NominalValue;
     }
 
     public static List<EntityStatKind> possibleChoicesWeapon = new List<EntityStatKind>() { EntityStatKind.Attack, EntityStatKind.ChanceToHit, EntityStatKind.ColdAttack,
@@ -168,9 +159,9 @@ namespace Roguelike.Tiles
 
     EntityStatKind GetRandomStatForMagicItem(EntityStatKind[] skip)
     {
-      EntityStatKind esk = EntityStatKind.Unknown;
+      EntityStatKind esk = EntityStatKind.Unset;
       List<EntityStatKind> possibleChoices = null;
-      switch (this.type)
+      switch (this.kind)
       {
         case EquipmentKind.Weapon:
           var wpn = this as Weapon;
@@ -198,7 +189,8 @@ namespace Roguelike.Tiles
         case EquipmentKind.Shield:
           possibleChoices = possibleChoicesArmor;
           break;
-        case EquipmentKind.Ring:
+        case EquipmentKind.RingLeft:
+        case EquipmentKind.RingRight:
         case EquipmentKind.Amulet:
           possibleChoices = possibleChoicesJewelery;
           break;
@@ -214,10 +206,10 @@ namespace Roguelike.Tiles
 
     void MakeMagic(bool magicOfSecondLevel = false)
     {
-      var stat = AddMagicStat(new[] { EntityStatKind.Unknown, this.PrimaryStat }, false);
+      var stat = AddMagicStat(new[] { EntityStatKind.Unset, this.primaryStat.Kind }, false);
       if (magicOfSecondLevel)
       {
-        AddMagicStat(new[] { EntityStatKind.Unknown, this.PrimaryStat, stat }, true);
+        AddMagicStat(new[] { EntityStatKind.Unset, this.primaryStat.Kind, stat }, true);
       }
     }
 
@@ -236,13 +228,20 @@ namespace Roguelike.Tiles
     public EntityStatKind AddRandomMagicStat()
     {
       var skip = GetMagicStats().Select(i => i.Key).ToList();
-      skip.Add(PrimaryStat);
+      skip.Add(primaryStat.Kind);
       var stat = GetRandomStatForMagicItem(skip.ToArray());
       MakeMagic(stat, GetMagicStats().Any());
       return stat;
     }
 
     public bool IsSecondMagicLevel { get; set; }
+    public EntityStat PrimaryStat { get => primaryStat; set => primaryStat = value; }
+    public EntityStats RequiredStats { get => requiredStats; set => requiredStats = value; }
+
+    public List<EntityStat> GetEffectiveRequiredStats()
+    {
+      return RequiredStats.Stats.Where(i => i.Value.TotalValue > 0).Select(i=> i.Value).ToList();
+    }
 
     void MakeMagic(EntityStatKind stat, bool secLevel)
     {
@@ -377,12 +376,12 @@ namespace Roguelike.Tiles
       return res;
     }
 
-    public override Loot Clone()
-    {
-      var clone = base.Clone();
-      var eq = clone as Equipment;
-      eq.ExtendedInfo = this.ExtendedInfo.Clone() as LootExtendedInfo;
-      return clone;
-    }
+    //public override Loot Clone()
+    //{
+    //  var clone = base.Clone();
+    //  //var eq = clone as Equipment;
+      
+    //  return clone;
+    //}
   }
 }

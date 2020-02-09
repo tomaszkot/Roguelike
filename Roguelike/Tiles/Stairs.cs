@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Roguelike.Tiles
 {
-  public enum StairsKind { PitDown, PitUp, LevelUp, LevelDown };
+  public enum StairsKind { Unset, PitDown, PitUp, LevelUp, LevelDown };
 
   public class Stairs : InteractiveTile, IObstacle
   {

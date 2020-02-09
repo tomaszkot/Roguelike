@@ -13,7 +13,6 @@ namespace Roguelike.Tiles
 
     public Armor() : base(EquipmentKind.Armor)
     {
-      EquipmentKind = EquipmentKind.Armor;
       Price = 10;
       SetPrimaryStat(EntityStatKind.Defence, 1);
     }

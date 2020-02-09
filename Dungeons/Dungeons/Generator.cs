@@ -79,14 +79,6 @@ namespace Dungeons
       return dungeon;
     }
 
-    //public virtual int NumberOfNodes
-    //{
-    //  get
-    //  {
-    //    return GenerationInfo.NumberOfNodes;
-    //  }
-    //}
-
     //TODO public
     public virtual List<DungeonNode> CreateDungeonNodes(GenerationInfo info = null)
     {
@@ -115,7 +107,8 @@ namespace Dungeons
     public virtual DungeonLevel Generate(int levelIndex, GenerationInfo info = null, LayouterOptions opt = null)
     {
       var mazeNodes = CreateDungeonNodes(info);
-      var layouter = new CorridorNodeLayouter(container);
+      //var layouter = new CorridorNodeLayouter(container);
+      var layouter = new DefaultNodeLayouter(container);
       var level = layouter.DoLayout(mazeNodes, opt);
 
       return level;

@@ -9,7 +9,7 @@ namespace Roguelike.Tiles
 {
   public enum InteractiveTileKind
   {
-    Unknown, Stairs, Doors, Barrel, TreasureChest,
+    Unset, Stairs, Doors, Barrel, TreasureChest,
     Trap, Lever
   }
 
@@ -20,7 +20,7 @@ namespace Roguelike.Tiles
 
     }
 
-    public InteractiveTileKind Kind { get; set; } = InteractiveTileKind.Unknown;
+    public InteractiveTileKind Kind { get; set; } = InteractiveTileKind.Unset;
 
     public bool CanBeHitBySpell()
     {

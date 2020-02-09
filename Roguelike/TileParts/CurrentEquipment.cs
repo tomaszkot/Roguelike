@@ -8,22 +8,25 @@ using System.Threading.Tasks;
 
 namespace Roguelike.TileParts
 {
-  class CurrentInventory //TODO rename to CurrentEquipment
+  public class CurrentEquipment 
   {
-    SerializableDictionary<EquipmentKind, Equipment> primaryEquipment = new SerializableDictionary<EquipmentKind, Equipment>();
-    SerializableDictionary<EquipmentKind, Equipment> secondaryEquipment = new SerializableDictionary<EquipmentKind, Equipment>();
+    //putOnEquipment - currently worn eq. all values can be not null  
+    SerializableDictionary<EquipmentKind, Equipment> putOnEquipment = new SerializableDictionary<EquipmentKind, Equipment>();
 
-    public CurrentInventory()
+    //spareEquipment - currnetly only weapon/shield can be not null
+    SerializableDictionary<EquipmentKind, Equipment> spareEquipment = new SerializableDictionary<EquipmentKind, Equipment>();
+
+    public CurrentEquipment()
     {
       var eqipTypes = Enum.GetValues(typeof(EquipmentKind));
       foreach (EquipmentKind et in eqipTypes)
       {
-        PrimaryEquipment[et] = null;
-        SecondaryEquipment[et] = null;
+        PutOnEquipment[et] = null;
+        SpareEquipment[et] = null;
       }
     }
 
-    public SerializableDictionary<EquipmentKind, Equipment> PrimaryEquipment { get => primaryEquipment; set => primaryEquipment = value; }
-    public SerializableDictionary<EquipmentKind, Equipment> SecondaryEquipment { get => secondaryEquipment; set => secondaryEquipment = value; }
+    public SerializableDictionary<EquipmentKind, Equipment> PutOnEquipment { get => putOnEquipment; set => putOnEquipment = value; }
+    public SerializableDictionary<EquipmentKind, Equipment> SpareEquipment { get => spareEquipment; set => spareEquipment = value; }
   }
 }

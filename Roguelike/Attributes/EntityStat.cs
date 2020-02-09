@@ -3,9 +3,9 @@ using System;
 
 namespace Roguelike
 {
-  public class EntityStat : ICloneable
+  public class EntityStat //: ICloneable
   {
-    EntityStatKind kind = EntityStatKind.Unknown;
+    EntityStatKind kind = EntityStatKind.Unset;
     GenericEventArgs<EntityStatKind> args = new GenericEventArgs<EntityStatKind>();
     public event EventHandler<GenericEventArgs<EntityStatKind>> StatChanged;
     
@@ -13,7 +13,7 @@ namespace Roguelike
     public static readonly EntityStatKind[] BasicStats = { EntityStatKind.Health, EntityStatKind.Magic, EntityStatKind.Mana, EntityStatKind.Attack, EntityStatKind.Defence };
     public bool Hidden { get; set; }
 
-    public EntityStat() : this(EntityStatKind.Unknown, 0)
+    public EntityStat() : this(EntityStatKind.Unset, 0)
     {
     }
 
@@ -35,7 +35,7 @@ namespace Roguelike
       this.kind = kind;
 
       var sk = Kind;
-      if (sk != EntityStatKind.Unknown
+      if (sk != EntityStatKind.Unset
         && sk != EntityStatKind.Strength
         && sk != EntityStatKind.Health
         && sk != EntityStatKind.Magic
@@ -77,13 +77,12 @@ namespace Roguelike
       Stat.Divide(value);
     }
 
-    public object Clone()
-    {
-      var clone = MemberwiseClone() as EntityStat;
-      clone.Stat = this.Stat.Clone() as StatValue;
-      return clone;
-
-    }
+    //public object Clone()
+    //{
+    //  var clone = MemberwiseClone() as EntityStat;
+    //  clone.Stat = this.Stat.Clone() as StatValue;
+    //  return clone;
+    //}
 
     public float TotalValue
     {

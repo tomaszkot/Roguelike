@@ -55,12 +55,13 @@ namespace Roguelike
       }
       return res;
     }
-    public object Clone()
-    {
-      var clone = this.MemberwiseClone() as LootExtendedInfo;
-      clone.Stats = this.Stats.Clone() as EntityStats;
-      return clone;
-    }
+
+    //public object Clone()
+    //{
+    //  var clone = this.MemberwiseClone() as LootExtendedInfo;
+    //  clone.Stats = this.Stats.Clone() as EntityStats;
+    //  return clone;
+    //}
 
   }
 }

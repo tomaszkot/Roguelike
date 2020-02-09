@@ -25,7 +25,8 @@ namespace Roguelike.Tiles
         var name = "";
         switch (EquipmentKind)
         {
-          case EquipmentKind.Ring:
+          case EquipmentKind.RingLeft:
+          case EquipmentKind.RingRight:
             Symbol = RingSymbol;
             name = "Ring";
             includeTypeInToString = false;
@@ -44,7 +45,7 @@ namespace Roguelike.Tiles
       }
     }
 
-    public Jewellery() : base(EquipmentKind.Ring)
+    public Jewellery() : base(EquipmentKind.RingLeft)
     {
 
     }

@@ -15,7 +15,7 @@ namespace Dungeons.Tiles
     public const char SymbolWall = '#';
   }
 
-  [XmlInclude(typeof(Wall))]
+  //[XmlInclude(typeof(Wall))]
   [Serializable]
   public class Tile
   {
@@ -24,6 +24,7 @@ namespace Dungeons.Tiles
 
     private char symbol = Constants.SymbolBackground;
     public string name;
+    private string displayedName;
     public string tag;//custom purpose field
     public ConsoleColor color = ConsoleColor.White;
 
@@ -138,6 +139,17 @@ namespace Dungeons.Tiles
     }
 
     public ConsoleColor Color { get => color; set => color = value; }
+    public string DisplayedName
+    {
+      get
+      {
+        if (displayedName == null)
+          return Name;
+
+        return displayedName;
+      } 
+      set => displayedName = value;
+    }
 
     public bool IsAtSamePosition(Tile other)
     {

@@ -9,14 +9,17 @@ using Roguelike.Abstract;
 
 namespace Roguelike.Tiles
 {
-  public enum EquipmentKind { Weapon, Armor, Helmet, Shield, Ring, Amulet, TrophyLeft, TrophyRight }
-  public enum LootKind { Gold, Potion, Scroll, Weapon, Armor, Jewellery, Other, Gem, Recipe, Trophy, Seal, SealPart }
-  public enum EquipmentClass { Plain, Magic, Unique }
+  public enum EquipmentKind { Unset, Weapon, Armor, Helmet, Shield, RingLeft, RingRight, Amulet, TrophyLeft, TrophyRight, Gloves }
+  public enum LootKind { Unset, Gold, Potion, Scroll, Weapon, Armor, Jewellery, Other, Gem, Recipe, Trophy, Seal, SealPart }
+  public enum EquipmentClass { Unset, Plain, Magic, Unique }
+  public enum PotionKind { Unset, Health, Mana }
 
   public class Loot : Tile//, IDescriptable
   {
-    //public static EntityStatKind[] AttackingExtendedStats = new[] { EntityStatKind.Attack, EntityStatKind.FireAttack, EntityStatKind.PoisonAttack, EntityStatKind.ColdAttack };
-    //public static EntityStatKind[] AttackingNonPhysicalStats = new[] { EntityStatKind.FireAttack, EntityStatKind.PoisonAttack, EntityStatKind.ColdAttack, EntityStatKind.LightingAttack };
+    //public static EntityStatKind[] AttackingExtendedStats = new[] { EntityStatKind.Attack, EntityStatKind.FireAttack, 
+    //EntityStatKind.PoisonAttack, EntityStatKind.ColdAttack };
+  //public static EntityStatKind[] AttackingNonPhysicalStats = new[] { EntityStatKind.FireAttack, EntityStatKind.PoisonAttack, 
+ // EntityStatKind.ColdAttack, EntityStatKind.LightingAttack };
     public const char GoldSymbol = '$';
     public const char PotionSymbol = '!';
 #if ASCII_BUILD
@@ -25,8 +28,8 @@ namespace Roguelike.Tiles
     public const ConsoleColor HealthPotionColor = ConsoleColor.Red;
     public const ConsoleColor ManaPotionColor = ConsoleColor.Blue;
 #endif
-    public enum PotionKind { Health, Mana }
 
+    public LootExtendedInfo ExtendedInfo { get; protected set; }
     int price;
     public int Price
     {
@@ -76,6 +79,8 @@ namespace Roguelike.Tiles
 #if ASCII_BUILD
       color = ConsoleColor.Green;
 #endif
+
+      ExtendedInfo = new LootExtendedInfo();
     }
 
     public virtual Loot CreateCrafted(Loot other)
@@ -165,9 +170,11 @@ namespace Roguelike.Tiles
     }
 
 
-    public virtual Loot Clone()
-    {
-      return this.MemberwiseClone() as Loot;
-    }
+    //public virtual Loot Clone()
+    //{
+    //  var clone =  this.MemberwiseClone() as Loot;
+    //  clone.ExtendedInfo = this.ExtendedInfo.Clone() as LootExtendedInfo;
+    //  return clone;
+    //}
   }
 }

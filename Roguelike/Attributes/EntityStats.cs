@@ -9,7 +9,7 @@ namespace Roguelike
 {
   public enum EntityStatKind
   {
-    Unknown,
+    Unset,
 
     Strength, Health, Magic, Attack, Defence,
 
@@ -134,16 +134,17 @@ namespace Roguelike
       if (other.Subtracted != 0)
         Subtracted /= other.Subtracted;
     }
-    public object Clone()
-    {
-      var clone = MemberwiseClone();
-      return clone;
-    }
+
+    //public object Clone()
+    //{
+    //  var clone = MemberwiseClone();
+    //  return clone;
+    //}
   }
 
 
 
-  public class EntityStats : ICloneable
+  public class EntityStats //: ICloneable
   {
     Dictionary<EntityStatKind, EntityStat> stats = new Dictionary<EntityStatKind, EntityStat>();
     int level = 1;
@@ -270,6 +271,11 @@ namespace Roguelike
     {
       if (StatLeveledUp != null)
         StatLeveledUp(this, new GenericEventArgs<EntityStatKind>(stat));
+    }
+
+    public void SetStat(EntityStatKind kind, float nominalValue)
+    {
+      Stats[kind].NominalValue = nominalValue;
     }
 
     public float Attack
@@ -456,23 +462,23 @@ namespace Roguelike
     //  stats[EntityStatKind.Defence].Factor = arm.Defence;
     //}
 
-    public EntityStats GetCopy()
-    {
-      return (EntityStats)Clone();
-    }
+    //public EntityStats GetCopy()
+    //{
+    //  return (EntityStats)Clone();
+    //}
 
-    public object Clone()
-    {
-      EntityStats cloned = (EntityStats)MemberwiseClone();
-      cloned.Stats = new Dictionary<EntityStatKind, EntityStat>();
-      var eq = ReferenceEquals(cloned, this);
-      foreach (var myStat in this.Stats)
-      {
-        cloned.Stats[myStat.Key] = (EntityStat)myStat.Value.Clone();
-      }
+    //public object Clone()
+    //{
+    //  EntityStats cloned = (EntityStats)MemberwiseClone();
+    //  cloned.Stats = new Dictionary<EntityStatKind, EntityStat>();
+    //  var eq = ReferenceEquals(cloned, this);
+    //  foreach (var myStat in this.Stats)
+    //  {
+    //    cloned.Stats[myStat.Key] = (EntityStat)myStat.Value.Clone();
+    //  }
 
-      return cloned;
-    }
+    //  return cloned;
+    //}
 
     internal void IncreaseStatFactor(EntityStatKind sk)
     {

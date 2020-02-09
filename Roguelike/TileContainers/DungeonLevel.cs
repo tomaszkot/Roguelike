@@ -8,6 +8,7 @@ using Roguelike.Tiles;
 using SimpleInjector;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Text;
@@ -83,12 +84,25 @@ namespace Roguelike.TileContainers
       foreach (var tile in nodeTiles)
       {
         var dt = this.GetTile(tile.Point);
-        if (dt.Symbol != tile.Symbol)
+        try
         {
-          Logger.LogError("dt.Symbol != tile.Symbol ["+ dt.Symbol + ","+ tile.Symbol + "] " + tile.Point + " ");
+          if (dt == null)
+            Logger.LogError("dt == null!!! tile.Symbol = [" + tile.Symbol + "] " + tile.Point + " ");
+          else
+          {
+            if (dt.Symbol != tile.Symbol)
+            {
+              Logger.LogError("dt.Symbol != tile.Symbol [" + dt.Symbol + "," + tile.Symbol + "] " + tile.Point + " ");
+            }
+            if (!dt.Revealed && tile.Revealed)
+              dt.Revealed = true;
+          }
         }
-        if (!dt.Revealed && tile.Revealed)
-          dt.Revealed = true;
+        catch (Exception ex)
+        {
+          Debug.WriteLine(ex.Message);
+          throw;
+        }
       }
       
       if (NodeRevealed != null)
