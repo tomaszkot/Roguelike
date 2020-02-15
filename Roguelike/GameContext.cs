@@ -1,6 +1,5 @@
 ﻿using Dungeons.Core;
 using Dungeons.Tiles;
-using Roguelike.Abstract;
 using Roguelike.Managers;
 using Roguelike.TileContainers;
 using Roguelike.Tiles;
