@@ -1,4 +1,5 @@
 ﻿using Dungeons.Tiles;
+using Newtonsoft.Json;
 using Roguelike.Tiles;
 using System;
 using System.Collections.Generic;
@@ -32,6 +33,7 @@ namespace Roguelike
       }
     }
 
+    //[JsonIgnoreAttribute]
     public EntityStats Stats
     {
       get

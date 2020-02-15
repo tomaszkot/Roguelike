@@ -132,6 +132,7 @@
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>if  "$(SolutionName)" == "OuaDIISln" xcopy  "$(TargetPath)" "$(SolutionDir)\Assets\" /Y
-if  "$(SolutionName)" == "OuaDIISln"  xcopy  "$(TargetDir)Roguelike.pdb" "$(SolutionDir)\Assets\" /Y</PostBuildEvent>
+if  "$(SolutionName)" == "OuaDIISln"  xcopy  "$(TargetDir)Roguelike.pdb" "$(SolutionDir)\Assets\" /Y
+"$(SolutionDir)\Assets\"pdb2mdb.exe  "$(SolutionDir)\Assets\$(TargetFileName)"</PostBuildEvent>
   </PropertyGroup>
 </Project>

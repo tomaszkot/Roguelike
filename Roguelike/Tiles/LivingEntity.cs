@@ -23,6 +23,7 @@ namespace Roguelike.Tiles
     EntityStats stats = new EntityStats();
     public EntityState State { get; set; }
 
+    //[JsonIgnoreAttribute]
     public EntityStats Stats { get => stats; set => stats = value; }
 
     public LivingEntity(Point point, char symbol) : base(point, symbol)

@@ -1,6 +1,7 @@
 ﻿
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using Newtonsoft.Json.Serialization;
 using Roguelike.TileContainers;
 using Roguelike.Tiles;
 using System;
@@ -28,7 +29,6 @@ namespace Roguelike.Serialization
         settings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
         var json = JsonConvert.SerializeObject(entity, settings);
         File.WriteAllText(fileName, json);
-        //return json;
 
       }
       catch (Exception ex)
@@ -51,9 +51,13 @@ namespace Roguelike.Serialization
           Debug.WriteLine("param not a valid json!");
           return null;
         }
-        JsonSerializerSettings settings = new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.All };
+        ITraceWriter traceWriter = null;// new MemoryTraceWriter();
+        JsonSerializerSettings settings = new JsonSerializerSettings { TraceWriter = traceWriter, TypeNameHandling = TypeNameHandling.All };
         settings.Converters.Add(new Newtonsoft.Json.Converters.StringEnumConverter());
         entity = JsonConvert.DeserializeObject<T>(json, settings);
+
+        //string outdata = traceWriter.ToString();
+        //Console.WriteLine(outdata);
         //if (siFromJson.Hero.CurrentEquipment.ContainsKey(EquipmentKind.Weapon))
         //  Debug.Log("Engine_JsonDeserializer weapon = " + siFromJson.Hero.CurrentEquipment[EquipmentKind.Weapon]);
         //else
@@ -96,8 +100,7 @@ namespace Roguelike.Serialization
     }
 
     public static string RootPath { get; set; } = Path.GetTempPath();
-
-
+    
     string GamePath
     {
       get{ return RootPath + GameFolder; }
