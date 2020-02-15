@@ -10,7 +10,7 @@ using Roguelike.Abstract;
 namespace Roguelike.Tiles
 {
   public enum EquipmentKind { Unset, Weapon, Armor, Helmet, Shield, RingLeft, RingRight, Amulet, TrophyLeft, TrophyRight, Gloves }
-  public enum LootKind { Unset, Gold, Potion, Scroll, Weapon, Armor, Jewellery, Other, Gem, Recipe, Trophy, Seal, SealPart }
+  public enum LootKind { Unset, Gold, Potion, Scroll, Weapon, Armor, Jewellery, Other, Gem, Recipe, Trophy, Seal, SealPart, Mushroom, Food }
   public enum EquipmentClass { Unset, Plain, Magic, Unique }
   public enum PotionKind { Unset, Health, Mana }
 
@@ -29,6 +29,7 @@ namespace Roguelike.Tiles
     public const ConsoleColor ManaPotionColor = ConsoleColor.Blue;
 #endif
 
+    public LootKind LootKind { get; set; }
     public LootExtendedInfo ExtendedInfo { get; protected set; }
     int price;
     public int Price
@@ -53,6 +54,8 @@ namespace Roguelike.Tiles
     {
       get { return false; }
     }
+
+    protected string primaryStatDesc = "?";
 
     public bool StackedInInventory { get { return StackedInventoryId != Guid.Empty; } }
 
@@ -103,13 +106,13 @@ namespace Roguelike.Tiles
       return other.Id == Id;
     }
 
-    bool placedInCraftSlot;
+    //bool placedInCraftSlot;
 
-    public bool PlacedInCraftSlot
-    {
-      get { return placedInCraftSlot; }
-      set { placedInCraftSlot = value; }
-    }
+    //public bool PlacedInCraftSlot
+    //{
+    //  get { return placedInCraftSlot; }
+    //  set { placedInCraftSlot = value; }
+    //}
 
     public override int GetHashCode()
     {
@@ -158,9 +161,9 @@ namespace Roguelike.Tiles
       return this.GetType() == other.GetType();
     }
 
-    public virtual string GetPrimaryStatDescription()
+    public virtual string PrimaryStatDescription
     {
-      return "?";
+      get { return primaryStatDesc; }
     }
 
     protected string[] extraStatDescription;

@@ -129,6 +129,7 @@ namespace Roguelike.Tiles
 
     internal void ApplyPhysicalDamage(LivingEntity victim)
     {
+      
       victim.OnPhysicalHit(this);
     }
 
@@ -150,6 +151,11 @@ namespace Roguelike.Tiles
       var att = Stats.GetCurrentValue(EntityStatKind.Attack);
 
       return str + att;
+    }
+
+    public float GetTotalValue(EntityStatKind esk)
+    {
+      return Stats.GetTotalValue(esk);
     }
 
     //public static implicit operator Dungeons.Tiles.Tile(LivingEntity d)  // implicit digit to byte conversion operator

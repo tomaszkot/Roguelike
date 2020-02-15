@@ -94,6 +94,7 @@ namespace Roguelike.Tiles
       return LootKind.Other;
     }
 
+    
     public EntityStatKind PrimaryStatKind
     {
       get
@@ -103,7 +104,13 @@ namespace Roguelike.Tiles
       set
       {
         primaryStat.Kind = value;//needed for serial...
+        SetPrimaryStatDesc();
       }
+    }
+
+    void SetPrimaryStatDesc()
+    {
+      primaryStatDesc = primaryStat.Kind.ToString() + ": " + primaryStat.NominalValue;
     }
 
     public float PrimaryStatValue
@@ -134,9 +141,9 @@ namespace Roguelike.Tiles
       ExtendedInfo.Stats.Stats[statKind] = stat;
     }
 
-    public override string GetPrimaryStatDescription()
+    public override string PrimaryStatDescription
     {
-      return primaryStat.Kind.ToString() + ": " + primaryStat.NominalValue;
+      get { return primaryStatDesc; }
     }
 
     public static List<EntityStatKind> possibleChoicesWeapon = new List<EntityStatKind>() { EntityStatKind.Attack, EntityStatKind.ChanceToHit, EntityStatKind.ColdAttack,
@@ -200,9 +207,6 @@ namespace Roguelike.Tiles
       esk = RandHelper.GetRandomElem<EntityStatKind>(possibleChoices, skip);
       return esk;
     }
-
-
-    
 
     void MakeMagic(bool magicOfSecondLevel = false)
     {

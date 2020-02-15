@@ -94,6 +94,7 @@
     <Compile Include="TilesExtensions.cs" />
     <Compile Include="Tiles\AdvancedLivingEntity.cs" />
     <Compile Include="Tiles\Barrel.cs" />
+    <Compile Include="Tiles\Food.cs" />
     <Compile Include="Tiles\InteractiveTile.cs" />
     <Compile Include="Tiles\Interactive\Chest.cs" />
     <Compile Include="Tiles\Jewellery.cs" />
@@ -130,7 +131,7 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>if  "$(SolutionName)" == "OuaDIISln" xcopy  "$(TargetPath)" "$(SolutionDir)\Assets\Dlls" /Y
-if  "$(SolutionName)" == "OuaDIISln"  xcopy  "$(TargetDir)Roguelike.pdb" "$(SolutionDir)\Assets\Dlls" /Y</PostBuildEvent>
+    <PostBuildEvent>if  "$(SolutionName)" == "OuaDIISln" xcopy  "$(TargetPath)" "$(SolutionDir)\Assets\" /Y
+if  "$(SolutionName)" == "OuaDIISln"  xcopy  "$(TargetDir)Roguelike.pdb" "$(SolutionDir)\Assets\" /Y</PostBuildEvent>
   </PropertyGroup>
 </Project>

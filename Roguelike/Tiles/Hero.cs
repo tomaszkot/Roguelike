@@ -9,7 +9,7 @@ namespace Roguelike.Tiles
   {
     public Hero(): base(new Point().Invalid(), '@')
     {
-      Stats.SetNominal(EntityStatKind.Health, 100);//level up +2
+      Stats.SetNominal(EntityStatKind.Health, 15);//level up +2
                                                                                      // Character.Mana = 40;
       Stats.SetNominal(EntityStatKind.Strength, 15);//15
       Stats.SetNominal(EntityStatKind.Magic, 10);

@@ -47,9 +47,9 @@ namespace Roguelike.Tiles
 #endif
     }
 
-    public override string GetPrimaryStatDescription()
+    public override string PrimaryStatDescription
     {
-      return "Part of a lever mechanism";
+      get { return "Part of a lever mechanism"; }
     }
   }
 }
