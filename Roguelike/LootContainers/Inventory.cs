@@ -14,6 +14,7 @@ namespace Roguelike.LootContainers
     public float PriceFactor { get; set; }
     public event EventHandler<GenericEventArgs<Tuple<Loot, bool>>> ItemsChanged;
     List<Loot> items = new List<Loot>();
+    Dictionary<Type, int> stackedCount = new Dictionary<Type, int>();
 
     public Inventory()
     {
@@ -209,9 +210,11 @@ namespace Roguelike.LootContainers
     {
       get
       {
-        var plainItemsCount = Items.Where(i => !i.StackedInInventory).Count();
-        var stackedCount = Items.Where(i => i.StackedInInventory).GroupBy(j => j.StackedInventoryId).Count();
-        return plainItemsCount + stackedCount;
+        return Items.Count;
+        //var plainItemsCount = Items.Count();
+
+        //var stackedCount = Items.Where(i => i.StackedInInventory).GroupBy(j => j.StackedInventoryId).Count();
+        //return plainItemsCount + stackedCount;
       }
 
     }

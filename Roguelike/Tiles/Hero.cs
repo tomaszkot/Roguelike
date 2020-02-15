@@ -28,5 +28,26 @@ namespace Roguelike.Tiles
     {
       return base.ToString();// + Data.AssetName;
     }
+
+    public void Consume(Food food)
+    {
+      //hero turn?
+      //if (loot.LootKind == LootKind.Food)//IDrinkable ?
+      {
+        //var ac = LootManager.CreateLootGameAction(loot, "Drunk " + loot.Name);
+        //PlaySound("drink");
+        if (inventory.Contains(food))
+        {
+          Stats.IncreaseStatFactor(food.EnhancedStat);// (loot as Potion).StatKind);
+          inventory.Remove(food);
+        }
+        //else if (loot is Hooch)
+        //  Hero.AddLastingEffect(LivingEntity.EffectType.Hooch, 6);
+
+        //return ac;
+      }
+
+      //eturn null;
+    }
   }
 }

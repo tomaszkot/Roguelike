@@ -48,7 +48,7 @@ namespace Roguelike.Tiles
     public int PositionInPage { get; set; }
     public int PageIndex { get; set; }
     public bool Collected { get; set; }
-    public Guid StackedInventoryId { get; set; }
+    //public Guid StackedInventoryId { get; set; }
 
     public virtual bool Positionable
     {
@@ -57,7 +57,8 @@ namespace Roguelike.Tiles
 
     protected string primaryStatDesc = "?";
 
-    public bool StackedInInventory { get { return StackedInventoryId != Guid.Empty; } }
+    //public bool StackedInInventory { get { return StackedInventoryId != Guid.Empty; } }
+    public bool StackedInInventory { get; set; }
 
     public Guid Id
     {
@@ -91,20 +92,19 @@ namespace Roguelike.Tiles
       return null;
     }
 
-    public override bool Equals(object obj)
-    {
+    //public override bool Equals(object obj)
+    //{
+    //  var other = obj as Loot;
+    //  if (other == null)
+    //    return false;
 
-      Loot other = obj as Loot;
-      if ((object)other == null)
-      {
-        return false;
-      }
-      if (this.StackedInInventory != other.StackedInInventory)
-        return false;
-      if (this.StackedInInventory)
-        return this.StackedInventoryId == other.StackedInventoryId;
-      return other.Id == Id;
-    }
+    //  if (this.StackedInInventory != other.StackedInInventory || this.LootKind != other.LootKind)
+    //    return false;
+    //  if (this is Food)
+    //  {
+
+    //  }
+    //}
 
     //bool placedInCraftSlot;
 
@@ -128,24 +128,24 @@ namespace Roguelike.Tiles
       return false;
     }
     
-    static public bool operator ==(Loot a, Loot b)
-    {
-      if (Object.ReferenceEquals(a, b))
-      {
-        return true;
-      }
-      // If one is null, but not both, return false.
-      if (((object)a == null) || ((object)b == null))
-      {
-        return false;
-      }
-      return a.Equals(b);
-    }
+    //static public bool operator ==(Loot a, Loot b)
+    //{
+    //  if (Object.ReferenceEquals(a, b))
+    //  {
+    //    return true;
+    //  }
+    //  // If one is null, but not both, return false.
+    //  if (((object)a == null) || ((object)b == null))
+    //  {
+    //    return false;
+    //  }
+    //  return a.Equals(b);
+    //}
 
-    static public bool operator !=(Loot a, Loot b)
-    {
-      return !(a == b);
-    }
+    //static public bool operator !=(Loot a, Loot b)
+    //{
+    //  return !(a == b);
+    //}
 
     public override string ToString()
     {

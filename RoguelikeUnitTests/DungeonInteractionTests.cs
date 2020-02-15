@@ -14,11 +14,28 @@ namespace RoguelikeUnitTests
   class DungeonInteractionTests : TestBase
   {
     [Test]
+    public void ConsumeFood()
+    {
+      var game = CreateGame();
+      var loot = new Food(FoodKind.Plum);
+
+      CollectLoot(game, loot);
+      Assert.True(game.Hero.Inventory.Contains(loot));
+      game.Hero.Consume(loot);
+      Assert.True(!game.Hero.Inventory.Contains(loot));
+    }
+
+    [Test]
     public void LootCollect()
     {
       var game = CreateGame();
-      var loot = new Loot();
+      Loot loot = new Loot();
+      CollectLoot(game, loot);
+      
+    }
 
+    private static void CollectLoot(Roguelike.RoguelikeGame game, Loot loot)
+    {
       var freeTile = game.Level.GetFirstEmptyPoint().Value;
       Assert.True(game.Level.SetTile(loot, freeTile));
 
