@@ -1,4 +1,5 @@
 ﻿using Dungeons.Tiles;
+using Roguelike.LootContainers;
 using Roguelike.TileContainers;
 using Roguelike.Tiles;
 using System;
@@ -54,6 +55,21 @@ namespace Roguelike
     public class DamageAppliedAction : GameAction
     {
 
+    }
+
+    public enum InventoryActionKind { ItemAdded, ItemRemoved}
+    public class InventoryAction : GameAction
+    {
+      public Loot Item { get; set; }
+      public InventoryActionKind Kind { get; set; }
+      public Inventory Inv { get; set ; }
+
+      //Inventory inv;
+
+      public InventoryAction(Inventory inv)
+      {
+        Inv = inv;
+      }
     }
 
     public class ResourceNeededAction : GameAction

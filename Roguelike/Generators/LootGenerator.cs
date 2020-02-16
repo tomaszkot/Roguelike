@@ -28,5 +28,13 @@ namespace Roguelike.Generators
       loot.tag = "mash3";
       return loot;
     }
+
+    public virtual Loot GetRandomStackedLoot()
+    {
+      var loot = new Mushroom();
+      loot.SetKind(MushroomKind.Boletus);
+      loot.tag = "mash3";
+      return loot;
+    }
   }
 }

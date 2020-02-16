@@ -43,7 +43,8 @@ namespace Roguelike
       }
       
       this.Hero = hero;
-      this.Hero.Inventory.EventsManager = this.EventsManager;//TODO
+      hero.OnContextSwitched(EventsManager);
+      
 
       if (!Hero.Point.IsValid() || context == GameContextSwitchKind.DungeonSwitched)
       {

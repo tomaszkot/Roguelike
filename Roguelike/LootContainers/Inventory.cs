@@ -6,6 +6,7 @@ using Roguelike.Tiles;
 using Dungeons.ASCIIDisplay.Presenters;
 using Dungeons.ASCIIDisplay;
 using Roguelike.Managers;
+using Roguelike.Events;
 
 namespace Roguelike.LootContainers
 {
@@ -13,7 +14,7 @@ namespace Roguelike.LootContainers
   {
     public int CurrentPageIndex { get; set; }
     public float PriceFactor { get; set; }
-    public event EventHandler<Tuple<Loot, bool>> ItemsChanged;
+   // public event EventHandler<Tuple<Loot, bool>> ItemsChanged;
     List<Loot> items = new List<Loot>();
     Dictionary<Type, int> stackedCount = new Dictionary<Type, int>();
     public EventsManager EventsManager { get; set; }
@@ -25,7 +26,7 @@ namespace Roguelike.LootContainers
 
     public List<ListItem> ToASCIIList()
     {
-      List<ListItem> list = this.Items.Select(i => new ListItem() { Text = i.ToString() }).ToList();
+      var list = this.Items.Select(i => new ListItem() { Text = i.ToString() }).ToList();
       return list;
     }
 
@@ -115,10 +116,11 @@ namespace Roguelike.LootContainers
         Items.Add(item);
         if (item.StackedInInventory)
           stackedCount[item.GetType()] = 1;
-        if (notifyObservers && ItemsChanged != null)
+        if (notifyObservers && EventsManager != null)
         {
-          var tuple = new Tuple<Loot, bool>(item, true);
-          ItemsChanged(this, tuple);
+          EventsManager.AppendAction(new InventoryAction(this) { Kind = InventoryActionKind.ItemAdded, Item = item});
+          //var tuple = new Tuple<Loot, bool>(item, true);
+          //ItemsChanged(this, tuple);
         }
 
         return true;
@@ -128,7 +130,7 @@ namespace Roguelike.LootContainers
         if (item.StackedInInventory)
         {
           var stackedItemCount = stackedCount[item.GetType()];
-          Assert(stackedItemCount == 0);
+          Assert(stackedItemCount > 0);
           stackedCount[item.GetType()] += 1;
         }
         else
@@ -214,10 +216,9 @@ namespace Roguelike.LootContainers
           return false;
         }
       }
-      if (sendSignal && ItemsChanged != null)
+      if (sendSignal && EventsManager != null)
       {
-        var tuple = new Tuple<Loot, bool>(item, false);
-        ItemsChanged(this, tuple);
+        EventsManager.AppendAction(new InventoryAction(this) { Kind = InventoryActionKind.ItemRemoved, Item = item });
       }
       //else
       //  UnreportedRemovals.Add(item);

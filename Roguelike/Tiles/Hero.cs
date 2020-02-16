@@ -4,6 +4,7 @@ using System.Drawing;
 using System;
 using Roguelike.Events;
 using Roguelike.Attributes;
+using Roguelike.Managers;
 
 namespace Roguelike.Tiles
 {
@@ -31,6 +32,11 @@ namespace Roguelike.Tiles
     public override string ToString()
     {
       return base.ToString();// + Data.AssetName;
+    }
+
+    public virtual void OnContextSwitched(EventsManager eventsManager)
+    {
+      Inventory.EventsManager = eventsManager;//TODO
     }
 
     public void Consume(Food food)

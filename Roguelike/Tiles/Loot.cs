@@ -59,6 +59,7 @@ namespace Roguelike.Tiles
 
     //public bool StackedInInventory { get { return StackedInventoryId != Guid.Empty; } }
     public bool StackedInInventory { get; set; }
+    //public int StackedInInventoryCount { get; set; }
 
     public Guid Id
     {
