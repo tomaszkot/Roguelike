@@ -9,156 +9,160 @@ using System.Text;
 
 namespace Roguelike
 {
-  public enum ActionLevel
+  namespace Events
   {
-    Normal,
-    Important,
-  }
-  
-  public class GameAction
-  {
-    public string Info { get; set; } = "";
-    public ActionLevel Level { get; set; }
-    public int Index { get; set; }
-    public virtual string GetSound() { return ""; }
+    public enum ActionLevel
+    {
+      Normal,
+      Important,
+    }
 
-    public GameAction() : this("", ActionLevel.Normal)
+    //TODO rename to Event
+    public class GameAction
+    {
+      public string Info { get; set; } = "";
+      public ActionLevel Level { get; set; }
+      public int Index { get; set; }
+      public virtual string GetSound() { return ""; }
+
+      public GameAction() : this("", ActionLevel.Normal)
+      {
+
+      }
+
+      public GameAction(string info, ActionLevel lvl)
+      {
+        Info = info;
+        Level = lvl;
+      }
+
+      public override string ToString()
+      {
+        return GetType().Name + " " + Info;
+      }
+    }
+
+    public class GameStateAction : GameAction
+    {
+      public enum ActionType { Load, Save, NextLevel, PrevLevel, GameFinished, DemoFinished, EnteredLevel, ContextSwitched }
+      public ActionType Type { get; set; }
+      public GameNode InvolvedNode { get => involvedNode; set => involvedNode = value; }
+
+      GameNode involvedNode;
+    }
+
+    public class DamageAppliedAction : GameAction
     {
 
     }
 
-    public GameAction(string info, ActionLevel lvl)
+    public class ResourceNeededAction : GameAction
     {
-      Info = info;
-      Level = lvl;
+
     }
 
-    public override string ToString()
+    public class InteractiveTileAction : GameAction
     {
-      return GetType().Name + " " + Info;
+      public enum Kind { Unset, DoorsUnlocked, DoorsLocked, Destroyed }
+      public Tiles.InteractiveTile Tile { get; set; }
+      public Kind KindValue { get; set; }
+      public InteractiveTileAction(Tiles.InteractiveTile tile) { Tile = tile; }
+      //public Tiles.Door Door { get; set; }
+
+      //public override string GetSound
+      //{
+      //  get
+      //  {
+      //    if (KindValue == Kind.DoorsLocked)
+      //      return "door_locked";
+      //    else if (KindValue == Kind.DoorsUnlocked)
+      //      return "door_locked";
+      //    return "";
+      //  }
+      //}
     }
-  }
-  
-  public class GameStateAction : GameAction
-  {
-    public enum ActionType { Load, Save, NextLevel, PrevLevel, GameFinished, DemoFinished, EnteredLevel, ContextSwitched }
-    public ActionType Type { get; set; }
-    public GameNode InvolvedNode { get => involvedNode; set => involvedNode = value; }
+    public enum LootActionKind { Generated, Collected, PutOn, TookOff, Crafted, SpecialDrunk, Enchanted, Consumed }
+    public class LootAction : GameAction
+    {
+      
+      public Loot Loot
+      {
+        get;
+        set;
+      }
 
-    GameNode involvedNode;
-  }
+      //TODO can be named Kind ?
+      public LootActionKind LootActionKind { get; set; }
+      public EquipmentKind EquipmentKind { get; set; }
 
-  public class DamageAppliedAction : GameAction
-  {
+      public LootAction(Loot loot) { Loot = loot; }
+    }
 
-  }
+    public class HeroAction : GameAction
+    {
+      public enum Kind { LeveledUp, ChangedLevel };
 
-  public class ResourceNeededAction : GameAction
-  {
+      public Kind KindValue
+      {
+        get; set;
+      }
+    }
 
-  }
+    public class GameInstructionAction : GameAction
+    {
+      public GameInstructionAction()
+      {
+        Level = ActionLevel.Important;
+      }
+    }
 
-  public class InteractiveTileAction : GameAction
-  {
-    public enum Kind { Unset, DoorsUnlocked, DoorsLocked, Destroyed }
-    public Tiles.InteractiveTile Tile { get; set; }
-    public Kind KindValue { get; set; }
-    public InteractiveTileAction(Tiles.InteractiveTile tile) { Tile = tile; }
-    //public Tiles.Door Door { get; set; }
+    public class TilesRevealedAction : GameAction
+    {
+      public List<Tile> Revealed { get; set; }
+      public bool Value { get; set; }//revealed or hidden?
+    }
 
-    //public override string GetSound
+    //public class EnemyAction : GameAction
     //{
-    //  get
+    //  public enum Kind { Moved, Died, AttackingHero, ChasingPlayer, AppendedToLevel, Teleported, RaiseCall, SpecialAction };
+    //  public Kind KindValue;
+
+    //  public Enemy Enemy
     //  {
-    //    if (KindValue == Kind.DoorsLocked)
-    //      return "door_locked";
-    //    else if (KindValue == Kind.DoorsUnlocked)
-    //      return "door_locked";
-    //    return "";
+    //    get;
+    //    set;
     //  }
     //}
-  }
 
-  public class LootAction : GameAction
-  {
-    public enum Kind { Generated, Collected, PutOn, TookOff, Crafted, SpecialDrunk, Enchanted }
-    public Loot Loot
+    public class LivingEntityAction : GameAction
     {
-      get;
-      set;
-    }
+      public LivingEntityAction(Kind kind)
+      {
+        this.KindValue = kind;
+      }
 
-    //TODO can be named Kind ?
-    public Kind KindValue { get; set; }
-    public EquipmentKind EquipmentKind { get; set; }
+      public LivingEntity InvolvedEntity { get; set; }
+      public enum Kind
+      {
+        Moved, Died, GainedDamage, ExperiencedEffect, Trapped, Interacted, Missed, UsedSpell,
+        FailedToCastSpell, GodsTurn, GodsPowerReleased, StrikedBack, BulkAttack
+      }
+      public Kind KindValue { get; set; }
+      //public TileData TileData { get; set; }
+      public double InvolvedValue { get; set; }
 
-    public LootAction(Loot loot) { Loot = loot; }
-  }
-
-  public class HeroAction : GameAction
-  {
-    public enum Kind { LeveledUp, ChangedLevel };
-
-    public Kind KindValue
-    {
-      get; set;
-    }
-  }
-
-  public class GameInstructionAction : GameAction
-  {
-    public GameInstructionAction()
-    {
-      Level = ActionLevel.Important;
-    }
-  }
-
-  public class TilesRevealedAction : GameAction
-  {
-    public List<Tile> Revealed { get; set; }
-    public bool Value { get; set; }//revealed or hidden?
-  }
-
-  //public class EnemyAction : GameAction
-  //{
-  //  public enum Kind { Moved, Died, AttackingHero, ChasingPlayer, AppendedToLevel, Teleported, RaiseCall, SpecialAction };
-  //  public Kind KindValue;
-
-  //  public Enemy Enemy
-  //  {
-  //    get;
-  //    set;
-  //  }
-  //}
-
-  public class LivingEntityAction : GameAction
-  {
-    public LivingEntityAction(Kind kind)
-    {
-      this.KindValue = kind;
-    }
-
-    public LivingEntity InvolvedEntity { get; set; }
-    public enum Kind
-    {
-      Moved, Died, GainedDamage, ExperiencedEffect, Trapped, Interacted, Missed, UsedSpell,
-      FailedToCastSpell, GodsTurn, GodsPowerReleased, StrikedBack, BulkAttack
-    }
-    public Kind KindValue { get; set; }
-    //public TileData TileData { get; set; }
-    public double InvolvedValue { get; set; }
-
-    public override string GetSound()
-    {
+      public override string GetSound()
+      {
         var sound = "";
         //if (TileData != null)
         //  sound = TileData.GetSound(KindValue);
         if (sound.Any())
           return sound;
-      //var KindVa = KindValue.ToString();
-      //if (KindValue == Kind.Moved)
-      //  return "living_ent_moved";
-      return GetType().Name.Replace("Action", "")+ KindValue;
+        //var KindVa = KindValue.ToString();
+        //if (KindValue == Kind.Moved)
+        //  return "living_ent_moved";
+        return GetType().Name.Replace("Action", "") + KindValue;
+      }
     }
   }
 }

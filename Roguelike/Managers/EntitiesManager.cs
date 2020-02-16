@@ -6,6 +6,7 @@ using Roguelike.TileContainers;
 using Roguelike.Tiles;
 using System.Drawing;
 using System;
+using Roguelike.Events;
 
 namespace Roguelike.Managers
 {
@@ -70,7 +71,8 @@ namespace Roguelike.Managers
       //Debug.Log("moving hero to " + newPoint);
       if (Node.SetTile(entity, newPos))
       {
-        eventsManager.AppendAction(new LivingEntityAction(kind: LivingEntityAction.Kind.Moved) { /*TileData = entity.Data,*/ Info = entity + " moved", InvolvedEntity = entity });
+        eventsManager.AppendAction(new LivingEntityAction(kind: LivingEntityAction.Kind.Moved)
+        { /*TileData = entity.Data,*/ Info = entity + " moved", InvolvedEntity = entity });
         //entity.EmitSmoothMovement();
         return true;
       }

@@ -15,6 +15,7 @@ using System.Diagnostics;
 using Roguelike.Abstract;
 using Roguelike.Serialization;
 using SimpleInjector;
+using Roguelike.Events;
 
 namespace Roguelike.Managers
 {
@@ -243,7 +244,7 @@ namespace Roguelike.Managers
       if (prevTile != null)
       {
         this.EventsManager.AppendAction(new InteractiveTileAction(prevTile as InteractiveTile) { KindValue = InteractiveTileAction.Kind.Destroyed });
-        this.EventsManager.AppendAction(new LootAction(loot) { KindValue = LootAction.Kind.Generated });
+        this.EventsManager.AppendAction(new LootAction(loot) { LootActionKind = LootActionKind.Generated });
         return true;
       }
 
@@ -319,7 +320,7 @@ namespace Roguelike.Managers
         {
           //Hero.Inventory.Print(logger, "loot added");
           CurrentNode.RemoveLoot(lootTile.Point);
-          this.EventsManager.AppendAction(new LootAction(lootTile) { KindValue = LootAction.Kind.Collected });
+          this.EventsManager.AppendAction(new LootAction(lootTile) { LootActionKind = LootActionKind.Collected });
           if (lootTile is Equipment)
           {
             var eq = lootTile as Equipment;

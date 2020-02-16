@@ -5,6 +5,7 @@ using Dungeons;
 using Dungeons.ASCIIDisplay;
 using Roguelike;
 using Roguelike.Abstract;
+using Roguelike.Events;
 using Roguelike.Generators;
 using Roguelike.Managers;
 using Roguelike.TileContainers;
@@ -76,7 +77,7 @@ namespace RoguelikeConsoleRunner
     }
 
 
-    private void ActionsManager_ActionAppended(object sender, Dungeons.Core.GenericEventArgs<Roguelike.GameAction> e)
+    private void ActionsManager_ActionAppended(object sender, Dungeons.Core.GenericEventArgs<GameAction> e)
     {
       if (e.EventData is LivingEntityAction)
       {

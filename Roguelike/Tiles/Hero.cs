@@ -2,6 +2,7 @@
 using Dungeons.Core;
 using System.Drawing;
 using System;
+using Roguelike.Events;
 
 namespace Roguelike.Tiles
 {
@@ -40,6 +41,7 @@ namespace Roguelike.Tiles
         {
           Stats.IncreaseStatFactor(food.EnhancedStat);// (loot as Potion).StatKind);
           inventory.Remove(food);
+          AppendAction(new LootAction(food));
         }
         //else if (loot is Hooch)
         //  Hero.AddLastingEffect(LivingEntity.EffectType.Hooch, 6);

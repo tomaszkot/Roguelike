@@ -9,6 +9,8 @@ using System.Collections.Generic;
 
 namespace Roguelike
 {
+  public enum Difficulty { Easy, Normal, Hard };
+
   public interface IGame
   {
     GameManager GameManager { get; set; }
