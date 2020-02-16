@@ -118,12 +118,12 @@ namespace Roguelike.Tiles
     {
       get
       {
-        return primaryStat.Value.Nominal;
+        return primaryStat.Value.Factor;
       }
 
       set
       {
-        primaryStat.Value.Nominal = value;
+        primaryStat.Value.Factor = value;
       }
     }
 
@@ -272,7 +272,7 @@ namespace Roguelike.Tiles
       MakeMagic(stat, secLevel, value, false);
     }
 
-    private void MakeMagic(EntityStatKind stat, bool secLevel, int value, bool incrementFactor = false)
+    public void MakeMagic(EntityStatKind stat, bool secLevel, int value, bool incrementFactor = false)
     {
       var factorBefore = ExtendedInfo.Stats.GetFactor(stat);
       if (factorBefore > 0 && incrementFactor)

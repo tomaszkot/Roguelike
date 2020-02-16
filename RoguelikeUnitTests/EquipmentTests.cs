@@ -14,6 +14,18 @@ namespace RoguelikeUnitTests
   class EquipmentTests : TestBase
   {
     [Test]
+    public void HeroNoEquipment()
+    {
+      var game = CreateGame();
+      var hero = game.Hero;
+
+      //var ca = hero.GetCurrentValue(EntityStatKind.Attack);
+      //var ta = hero.GetTotalValue(EntityStatKind.Attack);
+      Assert.AreEqual(hero.Stats.Attack, hero.Stats.Strength);
+    }
+
+
+    [Test]
     public void EquipmentProps()
     {
       var game = CreateGame();
@@ -24,6 +36,10 @@ namespace RoguelikeUnitTests
       Assert.Greater(wpn.PrimaryStatValue, 0);
       var stats = wpn.GetStats();
       Assert.AreEqual(stats.Attack, wpn.PrimaryStatValue);
+
+      var att = wpn.PrimaryStatValue;
+      wpn.MakeMagic(EntityStatKind.Attack, false, 4);
+      Assert.AreEqual(att+4, wpn.GetStats().GetTotalValue(EntityStatKind.Attack));
     }
 
     [Test]
