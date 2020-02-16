@@ -3,14 +3,14 @@ using System;
 
 namespace Roguelike.Attributes
 {
-  public class EntityStat //: ICloneable
+  public class EntityStat 
   {
     EntityStatKind kind = EntityStatKind.Unset;
-    GenericEventArgs<EntityStatKind> args = new GenericEventArgs<EntityStatKind>();
-    public event EventHandler<GenericEventArgs<EntityStatKind>> StatChanged;
+    public event EventHandler<EntityStatKind> StatChanged;
     
     StatValue stat = new StatValue();
-    public static readonly EntityStatKind[] BasicStats = { EntityStatKind.Health, EntityStatKind.Magic, EntityStatKind.Mana, EntityStatKind.Attack, EntityStatKind.Defence };
+    public static readonly EntityStatKind[] BasicStats = { EntityStatKind.Health, EntityStatKind.Magic, EntityStatKind.Mana, EntityStatKind.Attack,
+      EntityStatKind.Defence, EntityStatKind.Dexterity };
     public bool Hidden { get; set; }
 
     public EntityStat() : this(EntityStatKind.Unset, 0)
@@ -20,8 +20,7 @@ namespace Roguelike.Attributes
     public EntityStat(EntityStatKind kind, float nominalValue)
     {
       this.Kind = kind;
-      args.EventData = kind;
-      Stat.NominalValue = nominalValue;
+      Value.Nominal = nominalValue;
     }
     
     public EntityStatKind Kind {
@@ -42,6 +41,7 @@ namespace Roguelike.Attributes
         && sk != EntityStatKind.Mana
         && sk != EntityStatKind.Attack
         && sk != EntityStatKind.Defence
+        && sk != EntityStatKind.Dexterity
         && sk != EntityStatKind.FireAttack
         && sk != EntityStatKind.ColdAttack
         && sk != EntityStatKind.PoisonAttack
@@ -54,28 +54,28 @@ namespace Roguelike.Attributes
 
     public override string ToString()
     {
-      return Kind + " " + TotalValue + " (" + Stat.ToString() + ")";
+      return Kind + " " + Value.TotalValue + " (" + Value.ToString() + ")";
     }
 
-    public void Divide(EntityStat other)
-    {
-      Stat.Divide(other.Stat);
-    }
+    //public void Divide(EntityStat other)
+    //{
+    //  Stat.Divide(other.Stat);
+    //}
 
-    public void MakeNegative()
-    {
-      Stat.MakeNegative();
-    }
+    //public void MakeNegative()
+    //{
+    //  Stat.MakeNegative();
+    //}
 
-    public void Accumulate(EntityStat other)
-    {
-      Stat.Accumulate(other.Stat);
-    }
+    //public void Accumulate(EntityStat other)
+    //{
+    //  Stat.Accumulate(other.Stat);
+    //}
 
-    public void Divide(float value)
-    {
-      Stat.Divide(value);
-    }
+    //public void Divide(float value)
+    //{
+    //  Stat.Divide(value);
+    //}
 
     //public object Clone()
     //{
@@ -84,34 +84,34 @@ namespace Roguelike.Attributes
     //  return clone;
     //}
 
-    public float TotalValue
-    {
-      get { return stat.TotalValue; }
-    }
+    //public float TotalValue
+    //{
+    //  get { return stat.TotalValue; }
+    //}
 
-    public float NominalValue
-    {
-      get { return stat.NominalValue; }
-      set { stat.NominalValue = value; }
-    }
+    //public float NominalValue
+    //{
+    //  get { return stat.Nominal; }
+    //  set { stat.Nominal = value; }
+    //}
 
-    public float CurrentValue
-    {
-      get { return stat.CurrentValue; }
-    }
+    //public float CurrentValue
+    //{
+    //  get { return stat.CurrentValue; }
+    //}
 
     public void Subtract(float amount)
     {
       stat.Subtracted += amount;
       if (StatChanged != null)
-        StatChanged(this, args);
+        StatChanged(this, Kind);
     }
 
     public void SetSubtraction(float amount)
     {
       stat.Subtracted = amount;
       if (StatChanged != null)
-        StatChanged(this, args);
+        StatChanged(this, Kind);
     }
 
     public float Factor
@@ -122,12 +122,12 @@ namespace Roguelike.Attributes
         //   if (Kind == EntityStatKind.Health && stat.Factor > 0) WTF
         //stat.Factor = 0;//?TODO 
         if (StatChanged != null)
-          StatChanged(this, args);
+          StatChanged(this, Kind);
       }
       get { return stat.Factor; }
     }
 
-    public StatValue Stat
+    public StatValue Value
     {
       get
       {
@@ -141,10 +141,11 @@ namespace Roguelike.Attributes
     }
 
     public bool IsPercentage { get; set; }
+    //public StatValue Stat1 { get => stat; set => stat = value; }
 
     public string GetFormattedCurrentValue()
     {
-      var val = CurrentValue.ToString();
+      var val = Value.CurrentValue.ToString();
       if (IsPercentage)
         val +=  " " + "%";
       return val;

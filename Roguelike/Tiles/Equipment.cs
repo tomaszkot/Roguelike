@@ -30,7 +30,7 @@ namespace Roguelike.Tiles
     public EntityStats GetStats()
     {
       EntityStats stats = new EntityStats();
-      stats.Stats[this.PrimaryStatKind].Accumulate(primaryStat);
+      stats.Stats[this.PrimaryStatKind].Value.Accumulate(primaryStat.Value);
       //if (eq is Weapon)
       //{
       //  stats.Stats[EntityStatKind.Attack].Factor += eq.PrimaryStatValue;
@@ -111,19 +111,19 @@ namespace Roguelike.Tiles
 
     void SetPrimaryStatDesc()
     {
-      primaryStatDesc = primaryStat.Kind.ToString() + ": " + primaryStat.NominalValue;
+      primaryStatDesc = primaryStat.Kind.ToString() + ": " + primaryStat.Value.Nominal;
     }
 
     public float PrimaryStatValue
     {
       get
       {
-        return primaryStat.NominalValue;
+        return primaryStat.Value.Nominal;
       }
 
       set
       {
-        primaryStat.NominalValue = value;
+        primaryStat.Value.Nominal = value;
       }
     }
 
@@ -245,7 +245,7 @@ namespace Roguelike.Tiles
 
     public List<EntityStat> GetEffectiveRequiredStats()
     {
-      return RequiredStats.Stats.Where(i => i.Value.TotalValue > 0).Select(i=> i.Value).ToList();
+      return RequiredStats.Stats.Values.Where(i => i.Value.TotalValue > 0).Select(i=> i).ToList();
     }
 
     void MakeMagic(EntityStatKind stat, bool secLevel)

@@ -11,9 +11,9 @@ namespace Roguelike.Attributes
   {
     Unset,
 
-    Strength, Health, Magic, Attack, Defence,
+    Strength, Health, Magic, Defence, Dexterity,
 
-    ResistFire, ResistCold, ResistPoison, ChanceToHit, ChanceToCastSpell, Mana,
+    ResistFire, ResistCold, ResistPoison, ChanceToHit, ChanceToCastSpell, Mana, Attack,
     FireAttack, ColdAttack, PoisonAttack, LightPower, LifeStealing, ManaStealing,
 
     //TODO generate dynamically this enum
@@ -62,7 +62,7 @@ namespace Roguelike.Attributes
 
     public void MakeNegative()
     {
-      foreach (var myStat in this.Stats)
+      foreach (var myStat in this.Stats.Values)
       {
         myStat.Value.MakeNegative();
       }
@@ -87,15 +87,15 @@ namespace Roguelike.Attributes
 
     public float GetTotalValue(EntityStatKind esk)
     {
-      return Stats[esk].TotalValue;
+      return this[esk].TotalValue;
     }
 
     public void Accumulate(EntityStats other)
     {
-      foreach (var myStat in this.Stats)
+      foreach (var myStat in this.Stats.Values)
       {
-        if (other.Stats.ContainsKey(myStat.Key))//when upgrading to new game version thre can be new stats not available in old stuff 
-          myStat.Value.Accumulate(other.Stats[myStat.Key]);
+        if (other.Stats.ContainsKey(myStat.Kind))//when upgrading to new game version thre can be new stats not available in old stuff 
+          myStat.Value.Accumulate(other[myStat.Kind]);
       }
 
       experience += other.experience;
@@ -103,15 +103,15 @@ namespace Roguelike.Attributes
 
     public void Divide(EntityStats other)
     {
-      foreach (var myStat in this.Stats)
+      foreach (var myStat in this.Stats.Values)
       {
-        myStat.Value.Divide(other.Stats[myStat.Key]);
+        myStat.Value.Divide(other.Stats[myStat.Kind].Value);
       }
     }
 
     public void Divide(float value)
     {
-      foreach (var myStat in this.Stats)
+      foreach (var myStat in this.Stats.Values)
       {
         myStat.Value.Divide(value);
       }
@@ -125,7 +125,7 @@ namespace Roguelike.Attributes
     string GetStatsDescription(bool active)
     {
       var sb = new StringBuilder();
-      foreach (var myStat in this.Stats)
+      foreach (var myStat in this.Stats.Values)
       {
         if (active && myStat.Value.TotalValue == 0)
           continue;
@@ -144,7 +144,7 @@ namespace Roguelike.Attributes
     {
       if (LevelUpPoints == 0)
         return;
-      Stats[stat].NominalValue += 1;
+      this[stat].Nominal += 1;
       LevelUpPoints--;
       EmitStatsLeveledUp(stat);
     }
@@ -157,14 +157,14 @@ namespace Roguelike.Attributes
 
     public void SetStat(EntityStatKind kind, float nominalValue)
     {
-      Stats[kind].NominalValue = nominalValue;
+      this[kind].Nominal = nominalValue;
     }
 
     public float Attack
     {
       get
       {
-        return Stats[EntityStatKind.Attack].TotalValue;
+        return this[EntityStatKind.Attack].TotalValue;
       }
     }
 
@@ -172,7 +172,7 @@ namespace Roguelike.Attributes
     {
       get
       {
-        return Stats[EntityStatKind.Defence].TotalValue;
+        return this[EntityStatKind.Defence].TotalValue;
       }
     }
 
@@ -180,7 +180,7 @@ namespace Roguelike.Attributes
     {
       get
       {
-        return Stats[EntityStatKind.Health].CurrentValue;
+        return this[EntityStatKind.Health].CurrentValue;
       }
     }
 
@@ -188,21 +188,22 @@ namespace Roguelike.Attributes
     {
       get
       {
-        return Stats[EntityStatKind.Strength].CurrentValue;
+        return this[EntityStatKind.Strength].CurrentValue;
       }
     }
 
 
     public bool HealthBelow(float factor)
     {
-      return Health < Stats[EntityStatKind.Health].NominalValue * factor;
+      //return Health < stats[EntityStatKind.Health].Value.Nominal * factor;
+      return Health < this[EntityStatKind.Health].Nominal * factor;
     }
 
     public float ChanceToHit
     {
       get
       {
-        return stats[EntityStatKind.ChanceToHit].TotalValue;
+        return this[EntityStatKind.ChanceToHit].TotalValue;
       }
     }
 
@@ -210,7 +211,7 @@ namespace Roguelike.Attributes
     {
       get
       {
-        return Stats[EntityStatKind.Mana].CurrentValue;
+        return this[EntityStatKind.Mana].CurrentValue;
       }
     }
 
@@ -291,6 +292,12 @@ namespace Roguelike.Attributes
       }
     }
 
+    public StatValue this[EntityStatKind kind]
+    {
+      get { return Stats[kind].Value; }
+     // set { arr[i] = value; }
+    }
+
     public int Level
     {
       get
@@ -312,7 +319,7 @@ namespace Roguelike.Attributes
       {
         //int k = 0;
       }
-      stats[kind].NominalValue = value;
+      this[kind].Nominal = value;
     }
 
     public void SetFactor(EntityStatKind kind, float value)
@@ -324,19 +331,20 @@ namespace Roguelike.Attributes
       stats[kind].Factor = value;
     }
 
+    //TOOD remove use indexer
     public float GetNominal(EntityStatKind kind)
     {
-      return stats[kind].NominalValue;
+      return this[kind].Nominal;
     }
 
     public float GetFactor(EntityStatKind kind)
     {
-      return stats[kind].Factor;
+      return this[kind].Factor;
     }
 
     public float GetCurrentValue(EntityStatKind kind)
     {
-      return stats[kind].CurrentValue;
+      return this[kind].CurrentValue;
     }
 
     //internal void SetArmor(Armor arm)
@@ -364,14 +372,14 @@ namespace Roguelike.Attributes
 
     internal void IncreaseStatFactor(EntityStatKind sk)
     {
-      var inc = Stats[sk].TotalValue / 2;
+      var inc = this[sk].TotalValue / 2;
       IncreaseStatDynamicValue(sk, inc);
       //IncreaseStatFactor(sk, loot.Amount);
     }
 
     internal void IncreaseStatFactor(EntityStatKind sk, float percent)
     {
-      var inc = Stats[sk].TotalValue * percent / 100;
+      var inc = this[sk].TotalValue * percent / 100;
       //if (inc < 1)
       //  inc = 1;
       IncreaseStatDynamicValue(sk, inc);
@@ -379,10 +387,10 @@ namespace Roguelike.Attributes
 
     internal bool IncreaseStatDynamicValue(EntityStatKind sk, float amount)
     {
-      var cv = Stats[sk].CurrentValue;
-      if (cv < Stats[sk].TotalValue && amount > 0 || cv > 0 && amount < 0)
+      var cv = this[sk].CurrentValue;
+      if (cv < this[sk].TotalValue && amount > 0 || cv > 0 && amount < 0)
       {
-        var valMax = Stats[sk].TotalValue - cv;
+        var valMax = this[sk].TotalValue - cv;
         float val = amount;
         if (val > valMax)
           val = valMax;
@@ -420,9 +428,9 @@ namespace Roguelike.Attributes
       {
         var stat = this.Stats[primaryStat];
         stat.Factor += primaryStatValue;
-        if (stat.IsPercentage && stat.TotalValue > 100)
+        if (stat.IsPercentage && stat.Value.TotalValue > 100)
         {
-          var diff = stat.TotalValue - 100;
+          var diff = stat.Value.TotalValue - 100;
           stat.Factor -= diff;
         }
       }

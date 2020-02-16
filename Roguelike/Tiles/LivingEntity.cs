@@ -143,7 +143,7 @@ namespace Roguelike.Tiles
     public float GetCurrentValue(EntityStatKind kind)
     {
       var stat = Stats.Stats[kind];
-      var cv = stat.CurrentValue;
+      var cv = stat.Value.CurrentValue;
       if (stat.IsPercentage && cv > 100)
       {
         cv = 100;

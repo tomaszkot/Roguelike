@@ -38,7 +38,7 @@ namespace Roguelike.Tiles
       BaseStats.Stats[EntityStatKind.Defence] = BaseDefence;
       BaseStats.Stats[EntityStatKind.Health] = BaseHealth;
       BaseStats.Stats[EntityStatKind.Mana] = BaseMana;
-      var mag = new EntityStat(EntityStatKind.Magic, BaseMagic.NominalValue + 2);
+      var mag = new EntityStat(EntityStatKind.Magic, BaseMagic.Value.Nominal + 2);
       BaseStats.Stats[EntityStatKind.Magic] = mag;
 
       
@@ -67,7 +67,7 @@ namespace Roguelike.Tiles
      
       foreach (var basicStats in EntityStat.BasicStats)
       {
-        var nv = BaseStats.Stats[basicStats].NominalValue;
+        var nv = BaseStats.Stats[basicStats].Value.Nominal;
         Stats.SetNominal(basicStats, nv);
       }
 
