@@ -113,11 +113,11 @@ namespace Roguelike.Managers
       return level;
     }
 
-    private void EventsManager_ActionAppended(object sender, GenericEventArgs<GameAction> e)
+    private void EventsManager_ActionAppended(object sender, GameAction e)
     {
-      if(e.EventData is LivingEntityAction)
+      if(e is LivingEntityAction)
       {
-        var lea = e.EventData as LivingEntityAction;
+        var lea = e as LivingEntityAction;
         if (lea.KindValue == LivingEntityAction.Kind.Died)
         {
           if (context.CurrentNode.HasTile(lea.InvolvedEntity))

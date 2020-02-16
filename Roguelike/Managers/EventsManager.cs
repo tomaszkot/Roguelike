@@ -15,14 +15,16 @@ namespace Roguelike.Managers
 
     public LastActions LastActions { get => lastActions; set => lastActions = value; }
 
-    public event EventHandler<GenericEventArgs<GameAction>> ActionAppended;
+    public event EventHandler<GameAction> ActionAppended;
 
     public void AppendAction(GameAction ac)
     {
       LastActions.Add(ac);
       // //Debug.WriteLine(ac);//slow
-      if (ActionAppended != null)//..but send it to listeners as logic of game depends on it
-        ActionAppended(this, new GenericEventArgs<GameAction>(ac));
+      if (ActionAppended != null)//send it to listeners as logic of game depends on it
+      {
+        ActionAppended(this, ac);
+      }
     }
   }
 }

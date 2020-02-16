@@ -77,24 +77,24 @@ namespace RoguelikeConsoleRunner
     }
 
 
-    private void ActionsManager_ActionAppended(object sender, Dungeons.Core.GenericEventArgs<GameAction> e)
+    private void ActionsManager_ActionAppended(object sender, GameAction e)
     {
-      if (e.EventData is LivingEntityAction)
+      if (e is LivingEntityAction)
       {
-        var lea = e.EventData as LivingEntityAction;
+        var lea = e as LivingEntityAction;
           screen.Redraw(lea.InvolvedEntity, true);
 
         screen.RedrawLists();
         if(lea.KindValue == LivingEntityAction.Kind.Interacted)
           Redraw();//e.g. room revealed
       }
-      else if (e.EventData is GameStateAction)
+      else if (e is GameStateAction)
       {
       }
-      else if (e.EventData is LootAction)
+      else if (e is LootAction)
       {
         screen.RedrawLists();
-        var la = e.EventData as LootAction;
+        var la = e as LootAction;
         screen.Redraw(la.Loot, false);
       }
     }
