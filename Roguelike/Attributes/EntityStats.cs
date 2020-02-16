@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Roguelike
+namespace Roguelike.Attributes
 {
   public enum EntityStatKind
   {
@@ -22,125 +22,7 @@ namespace Roguelike
     //LightingAttack, ResistLighting, ChanceToStrikeBack, ChanceToBulkAttack
   };
 
-  public class StatValue
-  {
-    /// <summary>
-    /// Original, native Attribute Value, in case of living entity can be increased by experience points
-    /// </summary>
-    private float nominalValue = 0;
-
-    /// <summary>
-    /// Amount of values from equipment or abilities
-    /// </summary>
-    float factor = 0;
-
-    /// <summary>
-    /// Amount of values subtracted, e.g. gained damage or used mana
-    /// </summary>
-    float subtracted = 0;
-
-
-    public float NominalValue
-    {
-      get
-      {
-        return nominalValue;
-      }
-
-      set
-      {
-        nominalValue = value;
-      }
-    }
-
-    public float Factor
-    {
-      get
-      {
-        return factor;
-      }
-
-      set
-      {
-        factor = value;
-      }
-    }
-
-    public override string ToString()
-    {
-      return "NV: " + NominalValue + ", F: " + Factor + ", Sub:" + Subtracted;
-    }
-
-    public float TotalValue
-    {
-      get { return NominalValue + Factor; }
-    }
-
-    /// <summary>
-    /// Whne damage was gained or spell used total is reduced by subtraction
-    /// </summary>
-    public float CurrentValue
-    {
-      get { return TotalValue - Subtracted; }
-    }
-
-    public float Subtracted
-    {
-      get
-      {
-        return subtracted;
-      }
-
-      set
-      {
-        subtracted = value;
-      }
-    }
-
-    public void Divide(float value)
-    {
-      if (value != 0)
-      {
-        NominalValue /= value;
-
-        Factor /= value;
-
-        Subtracted /= value;
-
-      }
-    }
-
-    public void MakeNegative()
-    {
-      NominalValue *= -1;
-      Factor *= -1;
-      Subtracted *= -1;
-
-    }
-
-    public void Accumulate(StatValue other)
-    {
-      NominalValue += other.NominalValue;
-      Factor += other.Factor;
-      Subtracted += other.Subtracted;
-
-    }
-
-    public void Divide(StatValue other)
-    {
-      NominalValue /= other.NominalValue;
-      if (other.Factor != 0)
-        Factor /= other.Factor;
-      if (other.Subtracted != 0)
-        Subtracted /= other.Subtracted;
-    }
-
-    //public object Clone()
-    //{
-    //  var clone = MemberwiseClone();
-    //  return clone;
-    //}
-  }
+  
 
 
 
@@ -525,9 +407,10 @@ namespace Roguelike
     {
       foreach (var myStat in this.Stats)
       {
-        if ((stats.Stats[myStat.Key].Factor > 0 && positive) ||
-          (stats.Stats[myStat.Key].Factor < 0 && !positive))
-          AccumulateFactor(myStat.Key, stats.Stats[myStat.Key].Factor);
+        var otherStat = stats.Stats[myStat.Key];
+        if ((otherStat.Factor > 0 && positive) ||
+          (otherStat.Factor < 0 && !positive))
+          AccumulateFactor(myStat.Key, otherStat.Factor);
       }
     }
 

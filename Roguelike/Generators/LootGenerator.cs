@@ -1,4 +1,5 @@
-﻿using Roguelike.Tiles;
+﻿using Roguelike.Attributes;
+using Roguelike.Tiles;
 using System;
 using System.Collections.Generic;
 using System.Linq;

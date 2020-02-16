@@ -44,7 +44,7 @@ namespace Roguelike
 
     public class GameStateAction : GameAction
     {
-      public enum ActionType { Load, Save, NextLevel, PrevLevel, GameFinished, DemoFinished, EnteredLevel, ContextSwitched }
+      public enum ActionType { Load, Save, NextLevel, PrevLevel, GameFinished, DemoFinished, EnteredLevel, ContextSwitched, Assert }
       public ActionType Type { get; set; }
       public GameNode InvolvedNode { get => involvedNode; set => involvedNode = value; }
 

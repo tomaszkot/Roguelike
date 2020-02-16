@@ -5,6 +5,7 @@ using System.Linq;
 using Roguelike.Tiles;
 using Dungeons.ASCIIDisplay.Presenters;
 using Dungeons.ASCIIDisplay;
+using Roguelike.Managers;
 
 namespace Roguelike.LootContainers
 {
@@ -12,9 +13,10 @@ namespace Roguelike.LootContainers
   {
     public int CurrentPageIndex { get; set; }
     public float PriceFactor { get; set; }
-    public event EventHandler<GenericEventArgs<Tuple<Loot, bool>>> ItemsChanged;
+    public event EventHandler<Tuple<Loot, bool>> ItemsChanged;
     List<Loot> items = new List<Loot>();
     Dictionary<Type, int> stackedCount = new Dictionary<Type, int>();
+    public EventsManager EventsManager { get; set; }
 
     public Inventory()
     {
@@ -49,7 +51,6 @@ namespace Roguelike.LootContainers
       return (int)(loot.Price * PriceFactor);
     }
 
-    //[XmlIgnore]
     public List<Loot> Items
     {
       get
@@ -86,37 +87,58 @@ namespace Roguelike.LootContainers
     {
       if (loot.StackedInInventory)
       {
-        return Items.Where(i => i.Equals(loot)).Count();
+        return GetStackedCountForType(loot.GetType());
       }
 
       return 0;
     }
     public virtual int GetTypedStackCount<T>()
     {
-      return Items.Where(i => i is T).Count();
+      var type = typeof(T);
+      return GetStackedCountForType(type);
+    }
+
+    private int GetStackedCountForType(Type type)
+    {
+      if (stackedCount.ContainsKey(type))
+        return stackedCount[type];
+      return 0;
     }
 
     public virtual bool Add(Loot item, bool notifyObservers = true, bool justSwappingHeroInv = false)
     {
       //Debug.WriteLine("Add(Loot item) " + Thread.CurrentThread.ManagedThreadId);
-      if (!Items.Contains(item) || item.StackedInInventory)
+      //|| item.StackedInInventory
+      if (!Items.Contains(item))
       {
         item.Collected = true;
         Items.Add(item);
+        if (item.StackedInInventory)
+          stackedCount[item.GetType()] = 1;
         if (notifyObservers && ItemsChanged != null)
         {
           var tuple = new Tuple<Loot, bool>(item, true);
-          ItemsChanged(this, new GenericEventArgs<Tuple<Loot, bool>>(tuple));
+          ItemsChanged(this, tuple);
         }
 
         return true;
       }
       else
       {
-        var sameID = Items.FirstOrDefault(i => i.Id == item.Id);
-        ////Debug.WriteLine("id = "+ item.Id + "sameID = "+ sameID);
-        //Assert(false, "Add(Loot item) duplicate item " + item);
-        //throw new Exception("Add(Loot item) duplicate item " + item);
+        if (item.StackedInInventory)
+        {
+          var stackedItemCount = stackedCount[item.GetType()];
+          Assert(stackedItemCount == 0);
+          stackedCount[item.GetType()] += 1;
+        }
+        else
+        {
+          //var sameID = Items.FirstOrDefault(i => i.Id == item.Id);
+          ////Debug.WriteLine("id = "+ item.Id + "sameID = "+ sameID);
+          Assert(false, "Add(Loot item) duplicate item " + item);
+          //throw new Exception("Add(Loot item) duplicate item " + item);
+        }
+
       }
       return false;
     }
@@ -125,50 +147,77 @@ namespace Roguelike.LootContainers
 
     //public List<Loot> UnreportedRemovals = new List<Loot>();
 
-    IEnumerable<Loot> GetStackedItems(Loot item)
-    {
-      return Items.Where(i => i.Equals(item));
-    }
+    //IEnumerable<Loot> GetStackedItems(Loot item)
+    //{
+    //  return Items.Where(i => i.Equals(item));
+    //}
 
-    public Loot GetFirstStackedItem(Loot item)
-    {
-      return GetStackedItems(item).FirstOrDefault();
-    }
+    //public Loot GetStackedItem(Loot item)
+    //{
+    //  return GetStackedItems(item).FirstOrDefault();
+    //}
 
-    private int GetStackedInfoByLoot(Loot item)
+    //private int GetStackedInfoByLoot(Loot item)
+    //{
+    //  var count = GetStackedItems(item).Count();
+    //  return count;
+    //}
+
+    public void Assert(bool assert, string info = "assert failed")
     {
-      var count = GetStackedItems(item).Count();
-      return count;
+      if (EventsManager != null && !assert)
+      {
+        EventsManager.AppendAction(new Events.GameStateAction() { Type= Events.GameStateAction.ActionType.Assert, Info = info });
+      }
     }
 
     public bool Remove(Loot item)
     {
       var res = false;
+      Assert(false, "loot");
+      Loot itemToRemove = item;
+      bool sendSignal = true;
       if (item.StackedInInventory)
       {
-        var stackedInfo = Items.FirstOrDefault(i => i == item);
-        if (stackedInfo != null)
+        itemToRemove = null;
+        sendSignal = false;
+        var stackedItem = Items.FirstOrDefault(i => i == item);
+        if (stackedItem != null)
         {
-          res = Items.Remove(stackedInfo);
-          if (!res)
+          if (stackedCount.ContainsKey(stackedItem.GetType()))
           {
-            ;//Assert(false);
+            var stackedItemCount = stackedCount[stackedItem.GetType()];
+            Assert(stackedItemCount > 0);
+            if (stackedItemCount > 0)
+            {
+              stackedItemCount--;
+              stackedCount[stackedItem.GetType()] = stackedItemCount;
+              if(stackedItemCount == 0)
+                itemToRemove = item;
+
+              sendSignal = true;
+            }
           }
+          else
+            Assert(false);
         }
+        else
+          Assert(false);
       }
-      else
+
+      if (itemToRemove!=null)
       {
         res = Items.Remove(item);
         if (!res)
         {
-          //Assert(false);
+          Assert(false);
           return false;
         }
       }
-      if (ItemsChanged != null)
+      if (sendSignal && ItemsChanged != null)
       {
         var tuple = new Tuple<Loot, bool>(item, false);
-        ItemsChanged(this, new GenericEventArgs<Tuple<Loot, bool>>(tuple));
+        ItemsChanged(this, tuple);
       }
       //else
       //  UnreportedRemovals.Add(item);

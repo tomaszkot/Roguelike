@@ -3,6 +3,7 @@ using Dungeons.Core;
 using System.Drawing;
 using System;
 using Roguelike.Events;
+using Roguelike.Attributes;
 
 namespace Roguelike.Tiles
 {

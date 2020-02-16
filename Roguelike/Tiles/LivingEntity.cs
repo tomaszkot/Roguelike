@@ -1,6 +1,7 @@
 ﻿using Dungeons.Core;
 using Dungeons.Tiles;
 using Newtonsoft.Json;
+using Roguelike.Attributes;
 using Roguelike.Events;
 using Roguelike.Managers;
 using Roguelike.Utils;
@@ -69,8 +70,12 @@ namespace Roguelike.Tiles
       }
     }
 
-   // public TileData Data { get => data; set => data = value; }
-    public EventsManager EventsManager { get; set; }
+    EventsManager eventsManager;
+    public EventsManager EventsManager
+    {
+      get { return eventsManager; }
+      set { eventsManager = value; }
+    }
 
     internal bool CalculateIfHitWillHappen(LivingEntity target)
     {

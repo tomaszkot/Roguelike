@@ -1,7 +1,7 @@
 ﻿using Dungeons.Core;
 using System;
 
-namespace Roguelike
+namespace Roguelike.Attributes
 {
   public class EntityStat //: ICloneable
   {

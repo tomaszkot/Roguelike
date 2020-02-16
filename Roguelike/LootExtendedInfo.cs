@@ -1,5 +1,6 @@
 ﻿using Dungeons.Tiles;
 using Newtonsoft.Json;
+using Roguelike.Attributes;
 using Roguelike.Tiles;
 using System;
 using System.Collections.Generic;

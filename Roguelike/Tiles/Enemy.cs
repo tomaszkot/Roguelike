@@ -6,6 +6,7 @@ using System.Drawing;
 using Dungeons.Core;
 
 using Newtonsoft.Json;
+using Roguelike.Attributes;
 
 namespace Roguelike.Tiles
 {
