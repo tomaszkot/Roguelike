@@ -13,7 +13,7 @@ namespace Roguelike.Tiles
     Trap, Lever
   }
 
-  public class InteractiveTile : Dungeons.Tiles.Tile, Abstract.IObstacle
+  public class InteractiveTile : Dungeons.Tiles.Tile, IObstacle
   {
     public InteractiveTile(char symbol) : base(symbol)
     {

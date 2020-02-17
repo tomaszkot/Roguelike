@@ -8,7 +8,7 @@ namespace Roguelike.Tiles
   public class Equipment : Loot
   {
     readonly static LootKind[] possibleLootKinds = new LootKind[] { LootKind.Armor, LootKind.Weapon, LootKind.Jewellery };
-
+    public int MinDropDungeonLevel = 100;
     EquipmentKind kind;
     EntityStat primaryStat;
     EquipmentClass _class;
@@ -129,7 +129,8 @@ namespace Roguelike.Tiles
 
     public void SetPrimaryStat(EntityStatKind primaryStat, float value)
     {
-      this.primaryStat = new EntityStat(primaryStat, value);
+      this.primaryStat = new EntityStat(primaryStat, 0);
+      PrimaryStatValue = value; 
     }
 
     public List<KeyValuePair<EntityStatKind, EntityStat>> GetMagicStats()

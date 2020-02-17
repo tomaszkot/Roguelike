@@ -52,7 +52,7 @@ namespace Roguelike.Managers
     public GameContext Context { get => context; set => context = value; }
     public GameNode CurrentNode { get => context.CurrentNode; }
     public EntitiesManager AlliesManager { get => alliesManager; set => alliesManager = value; }
-    internal LootGenerator LootGenerator { get => lootGenerator; set => lootGenerator = value; }
+    public LootGenerator LootGenerator { get => lootGenerator; set => lootGenerator = value; }
     public IPersister Persister { get => persister; set => persister = value; }
     public ILogger Logger { get => logger; set => logger = value; }
     public Func<Tile, InteractionResult> Interact;
@@ -61,6 +61,7 @@ namespace Roguelike.Managers
     public Container Container { get; set; }
     public Func<Hero, GameState, GameNode> WorldLoader { get => worldLoader; set => worldLoader = value; }
     public Action WorldSaver { get; set; }
+    
 
     public GameManager(Container container)
     {
@@ -353,7 +354,7 @@ namespace Roguelike.Managers
 
     public virtual Equipment GenerateRandomEquipment(EquipmentKind weapon)
     {
-      return new LootGenerator().GetRandomWeapon();
+      return lootGenerator.GetRandomWeapon();
     }
   }
 }

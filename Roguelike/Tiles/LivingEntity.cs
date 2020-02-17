@@ -33,6 +33,11 @@ namespace Roguelike.Tiles
       //this.EventsManager = eventsManager;
     }
 
+    public static LivingEntity CreateDummy()
+    {
+      return new LivingEntity(new Point(0, 0), '\0');
+    }
+    
     [JsonIgnore]
     public List<Algorithms.PathFinderNode> PathToTarget
     {

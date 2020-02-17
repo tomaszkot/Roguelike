@@ -58,6 +58,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Abilities\Ability.cs" />
     <Compile Include="Abstract\IDescriptable.cs" />
     <Compile Include="Abstract\IGameManagerProvider.cs" />
     <Compile Include="Abstract\IMovingDamager.cs" />
@@ -73,6 +74,7 @@
     <Compile Include="Attributes\StatValue.cs" />
     <Compile Include="ContainerConfigurator.cs" />
     <Compile Include="Events\GameAction.cs" />
+    <Compile Include="FactorCalculator.cs" />
     <Compile Include="Game.cs" />
     <Compile Include="GameContext.cs" />
     <Compile Include="GameState.cs" />
@@ -80,6 +82,7 @@
     <Compile Include="Generators\LootGenerator.cs" />
     <Compile Include="LootContainers\Inventory.cs" />
     <Compile Include="Serialization\PersistancyWorker.cs" />
+    <Compile Include="Spells\Spell.cs" />
     <Compile Include="TileParts\CurrentEquipment.cs" />
     <Compile Include="LootExtendedInfo.cs" />
     <Compile Include="Managers\EnemiesManager.cs" />
@@ -100,6 +103,8 @@
     <Compile Include="Tiles\Interactive\Chest.cs" />
     <Compile Include="Tiles\Jewellery.cs" />
     <Compile Include="Tiles\Lever.cs" />
+    <Compile Include="Tiles\Looting\FightItem.cs" />
+    <Compile Include="Tiles\Looting\Scroll.cs" />
     <Compile Include="Tiles\Mushroom.cs" />
     <Compile Include="Utils\SerializableDictionary.cs" />
     <Compile Include="TileContainers\DungeonLevel.cs" />

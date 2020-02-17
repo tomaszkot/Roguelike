@@ -23,7 +23,7 @@ namespace Roguelike.Tiles
     }
 
     public WeaponKind Kind { get; set; }
-    public int MinDropDungeonLevel { get; set; }
+   // public int MinDropDungeonLevel { get; set; }
 
     public int Damage
     {
