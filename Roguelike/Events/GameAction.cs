@@ -57,7 +57,7 @@ namespace Roguelike
 
     }
 
-    public enum InventoryActionKind { ItemAdded, ItemRemoved}
+    public enum InventoryActionKind { ItemAdded, ItemRemoved, ShorcutsBarChanged}
     public class InventoryAction : GameAction
     {
       public Loot Item { get; set; }

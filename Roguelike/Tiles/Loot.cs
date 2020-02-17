@@ -101,9 +101,9 @@ namespace Roguelike.Tiles
       if (this.StackedInInventory != other.StackedInInventory)
         return false;
       if (!this.StackedInInventory)
-        return obj.GetHashCode() == other.GetHashCode();
+        return this.GetHashCode() == other.GetHashCode();
 
-      return obj.GetType() == other.GetType();
+      return this.GetType() == other.GetType();
       
     }
 
@@ -114,6 +114,11 @@ namespace Roguelike.Tiles
     //  get { return placedInCraftSlot; }
     //  set { placedInCraftSlot = value; }
     //}
+
+    public virtual bool IsConsumable()
+    {
+      return LootKind == LootKind.Food || LootKind == LootKind.Mushroom;
+    }
 
     public override int GetHashCode()
     {

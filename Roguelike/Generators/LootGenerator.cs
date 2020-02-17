@@ -123,13 +123,23 @@ namespace Roguelike.Generators
 
     public virtual Weapon GetRandomWeapon()
     {
-      var wpn = new Weapon();
-      wpn.Name = "Sword";
-      wpn.Kind = Weapon.WeaponKind.Sword;
-      wpn.EquipmentKind = EquipmentKind.Weapon;
-      wpn.PrimaryStatKind = EntityStatKind.Attack;
-      wpn.PrimaryStatValue = 5;
-      return wpn;
+      var item = new Weapon();
+      item.Name = "Sword";
+      item.Kind = Weapon.WeaponKind.Sword;
+      item.EquipmentKind = EquipmentKind.Weapon;
+      item.PrimaryStatKind = EntityStatKind.Attack;
+      item.PrimaryStatValue = 5;
+      return item;
+    }
+
+    public virtual Equipment GetRandomHelmet()
+    {
+      var item = new Equipment(EquipmentKind.Helmet);
+      item.Name = "Helmet";
+      //item.Kind = Weapon.WeaponKind.Sword;
+      item.PrimaryStatKind = EntityStatKind.Defence;
+      item.PrimaryStatValue = 2;
+      return item;
     }
 
     public virtual Jewellery GetRandomJewellery(EntityStatKind sk, EquipmentKind eq = EquipmentKind.Unset)

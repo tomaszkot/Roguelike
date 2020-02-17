@@ -1,6 +1,7 @@
 ﻿using NUnit.Framework;
 using Roguelike;
 using Roguelike.Attributes;
+using Roguelike.Generators;
 using Roguelike.Tiles;
 using System;
 using System.Collections.Generic;
@@ -108,12 +109,21 @@ namespace RoguelikeUnitTests
 
       var heroAttack = hero.Stats.Attack;
 
-      Equipment wpn = game.GameManager.GenerateRandomEquipment(EquipmentKind.Weapon);
+      var wpn = game.GameManager.GenerateRandomEquipment(EquipmentKind.Weapon);
       Assert.AreEqual(wpn.PrimaryStatKind, EntityStatKind.Attack);
       Assert.Greater(wpn.PrimaryStatValue, 0);
       hero.SetEquipment(EquipmentKind.Weapon, wpn);
 
       Assert.Greater(hero.Stats.Attack, heroAttack);
+
+
+      var heroDef = hero.Stats.Defence;
+      var lg = new LootGenerator();
+      var hel = lg.GetRandomHelmet();
+      Assert.AreEqual(hel.PrimaryStatKind, EntityStatKind.Defence);
+      Assert.Greater(hel.PrimaryStatValue, 0);
+      hero.SetEquipment(EquipmentKind.Helmet, hel);
+      Assert.Greater(hero.Stats.Defence, heroDef);
     }
   }
 }

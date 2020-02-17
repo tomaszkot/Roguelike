@@ -51,7 +51,7 @@ namespace Roguelike.Tiles
         {
           Stats.IncreaseStatFactor(food.EnhancedStat);// (loot as Potion).StatKind);
           inventory.Remove(food);
-          AppendAction(new LootAction(food));
+          AppendAction(new LootAction(food) { LootActionKind = LootActionKind.Consumed  });
         }
         //else if (loot is Hooch)
         //  Hero.AddLastingEffect(LivingEntity.EffectType.Hooch, 6);

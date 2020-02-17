@@ -1,4 +1,5 @@
 ﻿using Dungeons.Core;
+using Newtonsoft.Json;
 using Roguelike.Tiles;
 using System;
 using System.Collections.Generic;
@@ -7,25 +8,6 @@ using System.Text;
 
 namespace Roguelike.Attributes
 {
-  public enum EntityStatKind
-  {
-    Unset,
-
-    Strength, Health, Magic, Defence, Dexterity,
-
-    ResistFire, ResistCold, ResistPoison, ChanceToHit, ChanceToCastSpell, Mana, Attack,
-    FireAttack, ColdAttack, PoisonAttack, LightPower, LifeStealing, ManaStealing,
-
-    //TODO generate dynamically this enum
-    //ChanceToCauseBleeding, ChanceToCauseStunning, ChanceToCauseTearApart, ChanceToEvadeMeleeAttack, ChanceToEvadeMagicAttack,
-    //MeleeAttackDamageReduction, MagicAttackDamageReduction, AxeExtraDamage, SwordExtraDamage, BashingExtraDamage, DaggerExtraDamage,
-    //LightingAttack, ResistLighting, ChanceToStrikeBack, ChanceToBulkAttack
-  };
-
-  
-
-
-
   public class EntityStats //: ICloneable
   {
     Dictionary<EntityStatKind, EntityStat> stats = new Dictionary<EntityStatKind, EntityStat>();
@@ -292,6 +274,7 @@ namespace Roguelike.Attributes
       }
     }
 
+    [JsonIgnore]
     public StatValue this[EntityStatKind kind]
     {
       get { return Stats[kind].Value; }
@@ -436,6 +419,21 @@ namespace Roguelike.Attributes
       }
     }
   }
+
+  public enum EntityStatKind
+  {
+    Unset,
+
+    Strength, Health, Magic, Defence, Dexterity,
+
+    ResistFire, ResistCold, ResistPoison, ChanceToHit, ChanceToCastSpell, Mana, Attack,
+    FireAttack, ColdAttack, PoisonAttack, LightPower, LifeStealing, ManaStealing,
+
+    //TODO generate dynamically this enum
+    //ChanceToCauseBleeding, ChanceToCauseStunning, ChanceToCauseTearApart, ChanceToEvadeMeleeAttack, ChanceToEvadeMagicAttack,
+    //MeleeAttackDamageReduction, MagicAttackDamageReduction, AxeExtraDamage, SwordExtraDamage, BashingExtraDamage, DaggerExtraDamage,
+    //LightingAttack, ResistLighting, ChanceToStrikeBack, ChanceToBulkAttack
+  };
 
   public class EntityStatsTotal : EntityStats
   {

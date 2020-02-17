@@ -207,7 +207,7 @@ namespace Roguelike.LootContainers
           Assert(false);
       }
 
-      if (itemToRemove!=null)
+      if (itemToRemove != null)
       {
         res = Items.Remove(item);
         if (!res)

@@ -25,6 +25,7 @@ namespace Roguelike.Serialization
         Directory.CreateDirectory(GamePath);
 
         JsonSerializerSettings settings = new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.All };
+        //settings.TypeNameAssemblyFormatHandling = TypeNameAssemblyFormatHandling.Full;
         settings.Converters.Add(new Newtonsoft.Json.Converters.StringEnumConverter());
         settings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
         var json = JsonConvert.SerializeObject(entity, settings);
@@ -53,6 +54,7 @@ namespace Roguelike.Serialization
         }
         ITraceWriter traceWriter = null;// new MemoryTraceWriter();
         JsonSerializerSettings settings = new JsonSerializerSettings { TraceWriter = traceWriter, TypeNameHandling = TypeNameHandling.All };
+        //settings.TypeNameAssemblyFormatHandling = TypeNameAssemblyFormatHandling.Full;
         settings.Converters.Add(new Newtonsoft.Json.Converters.StringEnumConverter());
         entity = JsonConvert.DeserializeObject<T>(json, settings);
 
