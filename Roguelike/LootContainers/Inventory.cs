@@ -6,6 +6,7 @@ using Dungeons.ASCIIDisplay.Presenters;
 using Dungeons.ASCIIDisplay;
 using Roguelike.Managers;
 using Roguelike.Events;
+using Newtonsoft.Json;
 
 namespace Roguelike.LootContainers
 {
@@ -20,6 +21,7 @@ namespace Roguelike.LootContainers
     public float PriceFactor { get; set; }
     List<Loot> items = new List<Loot>();
     Dictionary<Type, int> stackedCount = new Dictionary<Type, int>();
+    [JsonIgnore]
     public EventsManager EventsManager { get; set; }
 
     public Inventory()
@@ -261,5 +263,7 @@ namespace Roguelike.LootContainers
         return Items.Count;
       }
     }
+
+    public Dictionary<Type, int> StackedCount { get => stackedCount; set => stackedCount = value; }
   }
 }

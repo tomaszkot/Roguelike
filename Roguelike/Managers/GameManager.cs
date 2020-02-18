@@ -16,6 +16,7 @@ using Roguelike.Abstract;
 using Roguelike.Serialization;
 using SimpleInjector;
 using Roguelike.Events;
+using Newtonsoft.Json;
 
 namespace Roguelike.Managers
 {
@@ -48,6 +49,7 @@ namespace Roguelike.Managers
     public bool HeroTurn { get => Context.HeroTurn; }
 
     //public EventsManager ActionsManager { get => EventsManager; set => EventsManager = value; }
+    [JsonIgnore]
     public EventsManager EventsManager { get => eventsManager; set => eventsManager = value; }
     public GameContext Context { get => context; set => context = value; }
     public GameNode CurrentNode { get => context.CurrentNode; }

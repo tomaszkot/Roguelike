@@ -76,6 +76,7 @@ namespace Roguelike.Tiles
     }
 
     EventsManager eventsManager;
+    [JsonIgnore]
     public EventsManager EventsManager
     {
       get { return eventsManager; }

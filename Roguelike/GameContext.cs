@@ -1,5 +1,6 @@
 ﻿using Dungeons.Core;
 using Dungeons.Tiles;
+using Newtonsoft.Json;
 using Roguelike.Managers;
 using Roguelike.TileContainers;
 using Roguelike.Tiles;
@@ -26,6 +27,7 @@ namespace Roguelike
     public Hero Hero { get => hero; set => hero = value; }
     public event EventHandler EnemiesTurn;
     public event EventHandler<GenericEventArgs<ContextSwitch>> ContextSwitched;
+    [JsonIgnore]
     public EventsManager EventsManager { get ; set ; }
     ILogger logger;
 
@@ -104,7 +106,7 @@ namespace Roguelike
       get { return heroTurn; }
       set
       {
-        logger.LogInfo("set HeroTurn = "+ value);
+        //logger.LogInfo("set HeroTurn = "+ value);
         heroTurn = value;
         if (!heroTurn)
         {
