@@ -142,6 +142,24 @@ namespace Roguelike.Generators
       return item;
     }
 
+    public virtual Equipment GetRandomShield()
+    {
+      var item = new Equipment(EquipmentKind.Shield);
+      item.Name = "Buckler";
+      item.PrimaryStatKind = EntityStatKind.Defence;
+      item.PrimaryStatValue = 1;
+      return item;
+    }
+
+    public virtual Equipment GetRandomGloves()
+    {
+      var item = new Equipment(EquipmentKind.Gloves);
+      item.Name = "Gloves";
+      item.PrimaryStatKind = EntityStatKind.Defence;
+      item.PrimaryStatValue = 1;
+      return item;
+    }
+
     public virtual Jewellery GetRandomJewellery(EntityStatKind sk, EquipmentKind eq = EquipmentKind.Unset)
     {
       if (eq == EquipmentKind.Amulet)

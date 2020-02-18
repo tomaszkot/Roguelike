@@ -81,6 +81,7 @@
     <Compile Include="Generators\LevelGenerator.cs" />
     <Compile Include="Generators\LootGenerator.cs" />
     <Compile Include="LootContainers\Inventory.cs" />
+    <Compile Include="RpgGameSettings.cs" />
     <Compile Include="Serialization\PersistancyWorker.cs" />
     <Compile Include="Spells\Spell.cs" />
     <Compile Include="TileParts\CurrentEquipment.cs" />

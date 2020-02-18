@@ -1,13 +1,7 @@
 ﻿using NUnit.Framework;
-using Roguelike;
 using Roguelike.Attributes;
 using Roguelike.Generators;
 using Roguelike.Tiles;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace RoguelikeUnitTests
 {
@@ -115,14 +109,29 @@ namespace RoguelikeUnitTests
       hero.SetEquipment(EquipmentKind.Weapon, wpn);
 
       Assert.Greater(hero.Stats.Attack, heroAttack);
-
-
       var heroDef = hero.Stats.Defence;
       var lg = new LootGenerator();
-      var hel = lg.GetRandomHelmet();
-      Assert.AreEqual(hel.PrimaryStatKind, EntityStatKind.Defence);
-      Assert.Greater(hel.PrimaryStatValue, 0);
-      hero.SetEquipment(EquipmentKind.Helmet, hel);
+      {
+        var hel = lg.GetRandomHelmet();
+        Assert.AreEqual(hel.PrimaryStatKind, EntityStatKind.Defence);
+        Assert.Greater(hel.PrimaryStatValue, 0);
+        hero.SetEquipment(EquipmentKind.Helmet, hel);
+        Assert.Greater(hero.Stats.Defence, heroDef);
+      }
+      {
+        heroDef = hero.Stats.Defence;
+        var sh = lg.GetRandomShield();
+        Assert.AreEqual(sh.PrimaryStatKind, EntityStatKind.Defence);
+        Assert.Greater(sh.PrimaryStatValue, 0);
+        hero.SetEquipment(EquipmentKind.Shield, sh);
+        Assert.Greater(hero.Stats.Defence, heroDef);
+      }
+
+      heroDef = hero.Stats.Defence;
+      var gl = lg.GetRandomGloves();
+      Assert.AreEqual(gl.PrimaryStatKind, EntityStatKind.Defence);
+      Assert.Greater(gl.PrimaryStatValue, 0);
+      hero.SetEquipment(EquipmentKind.Gloves, gl);
       Assert.Greater(hero.Stats.Defence, heroDef);
     }
   }

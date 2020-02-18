@@ -1,5 +1,4 @@
-﻿using Dungeons.Core;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using Roguelike.Tiles;
@@ -10,11 +9,15 @@ using Roguelike.Events;
 
 namespace Roguelike.LootContainers
 {
-  public class Inventory
+  public class InventoryBase
+  {
+
+  }
+
+  public class Inventory : InventoryBase
   {
     public int CurrentPageIndex { get; set; }
     public float PriceFactor { get; set; }
-   // public event EventHandler<Tuple<Loot, bool>> ItemsChanged;
     List<Loot> items = new List<Loot>();
     Dictionary<Type, int> stackedCount = new Dictionary<Type, int>();
     public EventsManager EventsManager { get; set; }
@@ -225,11 +228,6 @@ namespace Roguelike.LootContainers
       return res;
     }
 
-    //public Loot GetAt(int index)
-    //{
-    //  return Items[index];
-    //}
-
     public bool Contains(Loot item)
     {
       return Items.Contains(item);
@@ -261,12 +259,7 @@ namespace Roguelike.LootContainers
       get
       {
         return Items.Count;
-        //var plainItemsCount = Items.Count();
-
-        //var stackedCount = Items.Where(i => i.StackedInInventory).GroupBy(j => j.StackedInventoryId).Count();
-        //return plainItemsCount + stackedCount;
       }
-
     }
   }
 }
