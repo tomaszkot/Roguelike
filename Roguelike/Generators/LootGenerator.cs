@@ -1,4 +1,5 @@
-﻿using Roguelike.Attributes;
+﻿using Dungeons.Tiles;
+using Roguelike.Attributes;
 using Roguelike.Tiles;
 using Roguelike.Tiles.Looting;
 using System;
@@ -12,6 +13,19 @@ namespace Roguelike.Generators
   public class LootGenerator
   {
     List<Scroll> scrolls = new List<Scroll>();
+    Dictionary<string, Loot> uniqueLoot = new Dictionary<string, Loot>();
+
+    public virtual Loot GetLootByTileName(string tileName)
+    {
+      //if (tileName == "amulet_of_might")
+      //{
+
+      //}
+      if (uniqueLoot.ContainsKey(tileName))
+        return uniqueLoot[tileName];
+
+      return null;
+    }
 
     void AddScrolls()
     {

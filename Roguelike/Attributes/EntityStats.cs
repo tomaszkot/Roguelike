@@ -430,9 +430,9 @@ namespace Roguelike.Attributes
     FireAttack, ColdAttack, PoisonAttack, LightPower, LifeStealing, ManaStealing,
 
     //TODO generate dynamically this enum
-    //ChanceToCauseBleeding, ChanceToCauseStunning, ChanceToCauseTearApart, ChanceToEvadeMeleeAttack, ChanceToEvadeMagicAttack,
-    //MeleeAttackDamageReduction, MagicAttackDamageReduction, AxeExtraDamage, SwordExtraDamage, BashingExtraDamage, DaggerExtraDamage,
-    //LightingAttack, ResistLighting, ChanceToStrikeBack, ChanceToBulkAttack
+    ChanceToCauseBleeding, ChanceToCauseStunning, ChanceToCauseTearApart, ChanceToEvadeMeleeAttack, ChanceToEvadeMagicAttack,
+    MeleeAttackDamageReduction, MagicAttackDamageReduction, AxeExtraDamage, SwordExtraDamage, BashingExtraDamage, DaggerExtraDamage,
+    LightingAttack, ResistLighting, ChanceToStrikeBack, ChanceToBulkAttack
   };
 
   public class EntityStatsTotal : EntityStats

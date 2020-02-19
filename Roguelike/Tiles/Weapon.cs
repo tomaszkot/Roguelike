@@ -22,6 +22,12 @@ namespace Roguelike.Tiles
       this.PrimaryStatKind = EntityStatKind.Attack;
     }
 
+    public bool IsMagician()
+    {
+      return Kind == Roguelike.Tiles.Weapon.WeaponKind.Scepter || Kind == Roguelike.Tiles.Weapon.WeaponKind.Wand ||
+        Kind == Roguelike.Tiles.Weapon.WeaponKind.Staff;
+    }
+
     public WeaponKind Kind { get; set; }
    // public int MinDropDungeonLevel { get; set; }
 
