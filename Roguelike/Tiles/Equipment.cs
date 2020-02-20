@@ -246,7 +246,12 @@ namespace Roguelike.Tiles
 
     public List<EntityStat> GetEffectiveRequiredStats()
     {
-      return RequiredStats.Stats.Values.Where(i => i.Value.TotalValue > 0).Select(i=> i).ToList();
+      return RequiredStats.Stats.Values.Where(i => GetReqStatValue(i) > 0).Select(i=> i).ToList();
+    }
+
+    public float GetReqStatValue(EntityStat es)
+    {
+      return es.Value.TotalValue;
     }
 
     void MakeMagic(EntityStatKind stat, bool secLevel)
