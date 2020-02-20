@@ -106,6 +106,7 @@
     <Compile Include="Tiles\Lever.cs" />
     <Compile Include="Tiles\Looting\FightItem.cs" />
     <Compile Include="Tiles\Looting\Scroll.cs" />
+    <Compile Include="Tiles\Merchant.cs" />
     <Compile Include="Tiles\Mushroom.cs" />
     <Compile Include="Utils\SerializableDictionary.cs" />
     <Compile Include="TileContainers\DungeonLevel.cs" />
