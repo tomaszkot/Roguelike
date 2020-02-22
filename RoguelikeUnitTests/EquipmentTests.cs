@@ -26,25 +26,18 @@ namespace RoguelikeUnitTests
       var hero = game.Hero;
 
       float ringLeft = 0;
+      var statKind = EntityStatKind.Defence;
       float origHeroDef = game.Hero.GetTotalValue(EntityStatKind.Defence);
       {
-        var juw = game.GameManager.LootGenerator.GetRandomJewellery(EntityStatKind.Defence);
-        Assert.AreEqual(juw.PrimaryStatKind, EntityStatKind.Defence);
-        Assert.IsTrue(juw.PrimaryStatValue > 0);
-
-        game.Hero.Inventory.Add(juw);
-        Assert.IsTrue(game.Hero.Inventory.Contains(juw));
+        Jewellery juw = AddJewelleryToInv(game, statKind);
         game.Hero.MoveEquipmentInv2Current(juw, EquipmentKind.RingLeft);
         Assert.AreEqual(game.Hero.GetTotalValue(EntityStatKind.Defence), origHeroDef + juw.PrimaryStatValue);
         ringLeft = juw.PrimaryStatValue;
         Assert.IsTrue(!game.Hero.Inventory.Contains(juw));
       }
       {
-        var juw1 = game.GameManager.LootGenerator.GetRandomJewellery(EntityStatKind.Defence);
-        game.Hero.Inventory.Add(juw1);
-        Assert.IsTrue(game.Hero.Inventory.Contains(juw1));
-        Assert.AreEqual(juw1.PrimaryStatKind, EntityStatKind.Defence);
-        Assert.IsTrue(juw1.PrimaryStatValue > 0);
+        var juw1 = AddJewelleryToInv(game, statKind);
+
         var defHero = game.Hero.GetTotalValue(EntityStatKind.Defence);
         game.Hero.MoveEquipmentInv2Current(juw1, EquipmentKind.RingRight);
         Assert.AreEqual(game.Hero.GetTotalValue(EntityStatKind.Defence), origHeroDef + ringLeft + juw1.PrimaryStatValue);
@@ -53,11 +46,7 @@ namespace RoguelikeUnitTests
 
       float ringRight = 0;
       {
-        var juw2 = game.GameManager.LootGenerator.GetRandomJewellery(EntityStatKind.Defence);
-        game.Hero.Inventory.Add(juw2);
-        Assert.IsTrue(game.Hero.Inventory.Contains(juw2));
-        Assert.AreEqual(juw2.PrimaryStatKind, EntityStatKind.Defence);
-        Assert.IsTrue(juw2.PrimaryStatValue > 0);
+        var juw2 = AddJewelleryToInv(game, statKind);
         juw2.PrimaryStatValue *= 5;
         var defHero = game.Hero.GetTotalValue(EntityStatKind.Defence);
         //game.Hero.SetEquipment(EquipmentKind.RingRight, juw2);
@@ -68,33 +57,69 @@ namespace RoguelikeUnitTests
       }
 
       {
-        var juw3 = game.GameManager.LootGenerator.GetRandomJewellery(EntityStatKind.Defence);
-        game.Hero.Inventory.Add(juw3);
-        Assert.IsTrue(game.Hero.Inventory.Contains(juw3));
-        Assert.AreEqual(juw3.PrimaryStatKind, EntityStatKind.Defence);
-        Assert.IsTrue(juw3.PrimaryStatValue > 0);
-        //juw2.PrimaryStatValue;
+        //gen. ring
+        var juwNotMatching = AddJewelleryToInv(game, statKind);
         var defHero = game.Hero.GetTotalValue(EntityStatKind.Defence);
-        var set = game.Hero.SetEquipment(EquipmentKind.Amulet, juw3);
+        var set = game.Hero.MoveEquipmentInv2Current(juwNotMatching, EquipmentKind.Amulet);//ring not matching amulet slot
         Assert.False(set);
-        juw3 = game.GameManager.LootGenerator.GetRandomJewellery(EntityStatKind.Defence, EquipmentKind.Amulet);
-        game.Hero.Inventory.Add(juw3);
-        Assert.IsTrue(game.Hero.Inventory.Contains(juw3));
-        set = game.Hero.MoveEquipmentInv2Current(juw3, EquipmentKind.Amulet);//game.Hero.SetEquipment(EquipmentKind.Amulet, juw3);
+
+        var juw33 = game.GameManager.LootGenerator.GetRandomJewellery(EntityStatKind.Defence, EquipmentKind.Amulet);
+        AddItemToInv(game, juw33);
+        set = game.Hero.MoveEquipmentInv2Current(juw33, EquipmentKind.Amulet);//game.Hero.SetEquipment(EquipmentKind.Amulet, juw3);
         Assert.True(set);
-        Assert.AreEqual(game.Hero.GetTotalValue(EntityStatKind.Defence), origHeroDef + ringLeft + ringRight + juw3.PrimaryStatValue);
-        Assert.IsTrue(!game.Hero.Inventory.Contains(juw3));
+        Assert.AreEqual(game.Hero.GetTotalValue(EntityStatKind.Defence), origHeroDef + ringLeft + ringRight + juw33.PrimaryStatValue);
+        Assert.IsTrue(!game.Hero.Inventory.Contains(juw33));
       }
 
-      var on = game.Hero.CurrentEquipment.PutOnEquipment;
-      Assert.True(game.Hero.MoveEquipmentCurrent2Inv(on[EquipmentKind.RingRight], EquipmentKind.RingRight));
-      Assert.True(game.Hero.MoveEquipmentCurrent2Inv(on[EquipmentKind.RingLeft], EquipmentKind.RingLeft));
-      Assert.True(game.Hero.MoveEquipmentCurrent2Inv(on[EquipmentKind.Amulet], EquipmentKind.Amulet));
-      //game.Hero.SetEquipment(EquipmentKind.RingLeft, null);
-      // game.Hero.SetEquipment(EquipmentKind.Amulet, null);
+      var on = game.Hero.CurrentEquipment.PrimaryEquipment;
+      var rr = on[EquipmentKind.RingRight];
+      Assert.True(game.Hero.MoveEquipmentCurrent2Inv(rr, EquipmentKind.RingRight));
+      var rl = on[EquipmentKind.RingLeft];
+      Assert.True(game.Hero.MoveEquipmentCurrent2Inv(rl, EquipmentKind.RingLeft));
+      var amu = on[EquipmentKind.Amulet];
+      Assert.True(game.Hero.MoveEquipmentCurrent2Inv(amu, EquipmentKind.Amulet));
       Assert.AreEqual(game.Hero.GetTotalValue(EntityStatKind.Defence), origHeroDef);
+
+      Assert.True(game.Hero.Inventory.Contains(rr));
+      Assert.True(game.Hero.Inventory.Contains(rl));
+      Assert.True(game.Hero.Inventory.Contains(amu));
+
     }
 
+    private static Jewellery AddJewelleryToInv(Roguelike.RoguelikeGame game, EntityStatKind statKind)
+    {
+      var juw = game.GameManager.LootGenerator.GetRandomJewellery(statKind);
+      Assert.AreEqual(juw.PrimaryStatKind, EntityStatKind.Defence);
+      Assert.IsTrue(juw.PrimaryStatValue > 0);
+
+      AddItemToInv(game, juw);
+      return juw;
+    }
+
+    private static void AddItemToInv(Roguelike.RoguelikeGame game, Jewellery juw)
+    {
+      game.Hero.Inventory.Add(juw);
+      Assert.IsTrue(game.Hero.Inventory.Contains(juw));
+    }
+
+    [Test]
+    public void EquipmentPrimaryAndSpare()
+    {
+      var game = CreateGame();
+      var hero = game.Hero;
+
+      var ek = EquipmentKind.Weapon;
+      Equipment wpn = game.GameManager.GenerateRandomEquipment(ek);
+      Assert.Greater(wpn.PrimaryStatValue, 0);
+      hero.Inventory.Add(wpn);
+      var attackBase = hero.GetCurrentValue(EntityStatKind.Attack);
+      hero.MoveEquipmentInv2Current(wpn, ek);
+      var attackWithWpn = hero.GetCurrentValue(EntityStatKind.Attack);
+      Assert.Greater(attackWithWpn, attackBase);
+      hero.MoveEquipmentCurrent2Inv(wpn, ek);
+
+      Assert.AreEqual(attackBase, hero.GetCurrentValue(EntityStatKind.Attack));
+    }
 
     [Test]
     public void EquipmentProps()
