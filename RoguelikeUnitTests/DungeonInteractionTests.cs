@@ -49,7 +49,7 @@ namespace RoguelikeUnitTests
     public void StairsTest()
     {
       var game = CreateGame();
-      game.SetMaxLevelindex(1);
+      game.SetMaxLevelIndex(1);
 
       Assert.AreEqual(game.Level.Index, 0);
       var level0 = game.Level;

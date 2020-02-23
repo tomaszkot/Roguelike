@@ -85,10 +85,13 @@ namespace Dungeons
       nodes = new List<DungeonNode>();
       var gi = info ?? this.CreateLevelGenerationInfo();
 
-      for (int i = 0; i < gi.NumberOfNodes; i++)
+      for (int i = 0; i < gi.NumberOfRooms; i++)
       {
+        if (i > 0)
+          gi.RevealTiles = false;
         var node = CreateNode(i, gi);
         nodes.Add(node);
+        
       }
       return nodes;
     }

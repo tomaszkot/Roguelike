@@ -62,7 +62,7 @@ namespace Dungeons
       gi.GenerateRandomInterior = false;
       gi.GenerateEmptyTiles = false;
       var localLevel = container.GetInstance<DungeonNode>();
-      localLevel.Create(tw, th + nodesPadding * nodes.Count, gi, -1);
+      localLevel.Create(tw, th + nodesPadding * nodes.Count, gi, -1, null, false);
       
       var maxLoc = localLevel.GetMaxXY();
 

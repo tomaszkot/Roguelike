@@ -84,7 +84,24 @@ namespace Roguelike.Generators
       var level = baseLevel as Roguelike.TileContainers.DungeonLevel;
       level.Index = levelIndex;
       level.OnGenerationDone();//TODO
+
+      PopulateDungeonLevel(level);
       return level;
+    }
+
+    protected virtual void PopulateDungeonLevel(Roguelike.TileContainers.DungeonLevel level)
+    {
+      var lg = new LootGenerator();
+      var levelIndex = level.Index;
+      var loot = lg.GetRandomWeapon();
+      loot.DungeonNodeIndex = levelIndex;
+      level.SetTile(loot, level.GetFirstEmptyPoint().Value);
+
+      //var enemy = new Enemy();
+      //enemy.DungeonNodeIndex = levelIndex;
+      //level.SetTile(enemy, level.GetEmptyTiles().Last().Point);
+      //int k = 0;
+      //k++;
     }
 
   }

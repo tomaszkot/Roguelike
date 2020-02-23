@@ -109,13 +109,10 @@ namespace Dungeons.ASCIIDisplay
 
     private void RedrawItems()
     {
-      
       ASCIIItems.ForEach(i =>
       {
         UpdateItem(i);
         i.Redraw(DrawingEngine);
-        
-
       }
       );
     }

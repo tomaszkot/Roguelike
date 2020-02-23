@@ -69,7 +69,9 @@ namespace Dungeons
     [JsonIgnore]
     internal Dictionary<EntranceSide, List<Wall>> Sides { get { return sides; } }
     protected List<TileNeighborhood> allNeighborhoods = new List<TileNeighborhood> { TileNeighborhood.East, TileNeighborhood.West, TileNeighborhood.North, TileNeighborhood.South };
-    public const int DefaultNodeIndex = 99;
+
+    //it's assummed, level has there are less rooms that 999. 
+    public const int DefaultNodeIndex = 999;
     public const int ChildIslandNodeIndex = -1;
     public static int NextChildIslandId = ChildIslandNodeIndex;
     int nodeIndex;

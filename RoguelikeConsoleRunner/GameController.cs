@@ -42,10 +42,7 @@ namespace RoguelikeConsoleRunner
     public override DungeonNode GenerateDungeon()
     {
       var dungeon = Game.GenerateDungeon();
-      PopulateDungeon(dungeon as GameNode);
-      
-      
-
+     
       var hero1 = dungeon.GetTiles<Hero>().SingleOrDefault();
       Debug.Assert(Hero == hero1);
       return dungeon;
@@ -53,14 +50,14 @@ namespace RoguelikeConsoleRunner
 
     protected virtual void PopulateDungeon(Roguelike.TileContainers.GameNode dungeon)
     {
-      var lg = new LootGenerator();
-      var loot = lg.GetRandomWeapon();
-      //world.SetTile(loot, world.GetRandomEmptyTile().Point);
-      dungeon.SetTile(loot, dungeon.GetFirstEmptyPoint().Value);
+      //var lg = new LootGenerator();
+      //var loot = lg.GetRandomWeapon();
+      ////world.SetTile(loot, world.GetRandomEmptyTile().Point);
+      //dungeon.SetTile(loot, dungeon.GetFirstEmptyPoint().Value);
 
-      //var enemy = new Enemy();
-      //world.SetTile(enemy, world.GetEmptyTiles().Last().Point);
-      // world.SetTile(enemy, new System.Drawing.Point(4, 1));
+      ////var enemy = new Enemy();
+      ////world.SetTile(enemy, world.GetEmptyTiles().Last().Point);
+      //// world.SetTile(enemy, new System.Drawing.Point(4, 1));
     }
 
     private void Context_ContextSwitched(object sender, EventArgs e)
