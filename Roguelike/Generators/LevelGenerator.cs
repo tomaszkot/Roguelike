@@ -75,6 +75,7 @@ namespace Roguelike.Generators
       return gi;
     }
 
+   
     public override Dungeons.TileContainers.DungeonLevel Generate(int levelIndex, GenerationInfo info = null, LayouterOptions opt = null)
     {
       var revealAllNodes = info != null ? info.RevealAllNodes : false;
@@ -89,6 +90,8 @@ namespace Roguelike.Generators
      // PopulateDungeonLevel(level);
       return level;
     }
+
+
 
     protected virtual void PopulateDungeonLevel(Roguelike.TileContainers.GameLevel level)
     {
