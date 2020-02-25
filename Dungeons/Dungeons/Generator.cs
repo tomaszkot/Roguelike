@@ -1,4 +1,5 @@
 ﻿using Dungeons.Core;
+using Dungeons.TileContainers;
 using Dungeons.Tiles;
 using SimpleInjector;
 using System;
@@ -10,15 +11,6 @@ namespace Dungeons
   public interface IDungeonGenerator
   {
     DungeonLevel Generate(int levelIndex, Dungeons.GenerationInfo info = null, LayouterOptions opt = null);
-  }
-
-  //result of composition  of many DungeonNodes 
-  public class DungeonLevel : DungeonNode
-  {
-    public DungeonLevel(Container container): base (container)
-    {
-      
-    }
   }
 
   public class DungeonGenerator : IDungeonGenerator

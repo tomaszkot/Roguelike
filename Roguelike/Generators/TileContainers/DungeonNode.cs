@@ -4,7 +4,7 @@ using SimpleInjector;
 namespace Roguelike.Generators.TileContainers
 {
   //a single room, can have size like 10x10, used only at the time of generation, then copied to the destination container
-  public class DungeonNode : Dungeons.DungeonNode
+  public class DungeonNode : Dungeons.TileContainers.DungeonNode
   {
     public DungeonNode(Container c) : base(c)
     { }

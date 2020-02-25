@@ -11,7 +11,7 @@ namespace Roguelike.Serialization
     void SaveGameState(GameState gameState);
     GameState LoadGameState();
 
-    void SaveLevel(DungeonLevel level);
-    DungeonLevel LoadLevel(int index);
+    void SaveLevel(GameLevel level);
+    GameLevel LoadLevel(int index);
   }
 }

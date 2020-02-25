@@ -34,13 +34,13 @@ namespace Roguelike.Serialization
       gm.CurrentNode.SetTile(gm.Hero, gm.Hero.Point);
     }
 
-    public void Load(GameManager gm, Func<Hero, GameState, GameNode> worldLoader)
+    public void Load(GameManager gm, Func<Hero, GameState, AbstractGameLevel> worldLoader)
     {
       var hero = gm.Persister.LoadHero();
 
       var gs = gm.Persister.LoadGameState();
 
-      GameNode node = null;
+      AbstractGameLevel node = null;
       node = worldLoader(hero, gs);
       //gm.InitNode(node, true);
       gm.Context.SwitchTo(node, hero, GameContextSwitchKind.GameLoaded);

@@ -39,7 +39,7 @@ namespace RoguelikeConsoleRunner
       set { Game.GameManager = value; }//TODO remove?
     }
 
-    public override DungeonNode GenerateDungeon()
+    public override Dungeons.TileContainers.DungeonNode GenerateDungeon()
     {
       var dungeon = Game.GenerateDungeon();
      
@@ -48,7 +48,7 @@ namespace RoguelikeConsoleRunner
       return dungeon;
     }
 
-    protected virtual void PopulateDungeon(Roguelike.TileContainers.GameNode dungeon)
+    protected virtual void PopulateDungeon(Roguelike.TileContainers.AbstractGameLevel dungeon)
     {
       //var lg = new LootGenerator();
       //var loot = lg.GetRandomWeapon();
@@ -96,7 +96,7 @@ namespace RoguelikeConsoleRunner
       }
     }
     
-    public override DungeonNode Dungeon
+    public override Dungeons.TileContainers.DungeonNode Dungeon
     {
       get
       {

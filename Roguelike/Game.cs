@@ -16,7 +16,7 @@ namespace Roguelike
     GameManager GameManager { get; set; }
     Container Container { get; set; }
     Hero Hero { get; }
-    DungeonNode GenerateDungeon();
+    Dungeons.TileContainers.DungeonNode GenerateDungeon();
   }
 
   public abstract class Game : IGame
@@ -34,7 +34,7 @@ namespace Roguelike
     }
     public Container Container { get; set; }
     public Hero Hero { get { return GameManager.Hero; } }
-    public abstract DungeonNode GenerateDungeon();
+    public abstract Dungeons.TileContainers.DungeonNode GenerateDungeon();
   }
 
   //sample game proving it works
@@ -42,8 +42,8 @@ namespace Roguelike
   {
     public IDungeonGenerator DungeonGenerator { get; set; }
     public LevelGenerator LevelGenerator { get { return DungeonGenerator as LevelGenerator; } }
-    List<TileContainers.DungeonLevel> levels = new List<TileContainers.DungeonLevel>();
-    public TileContainers.DungeonLevel Level { get { return GameManager.CurrentNode as TileContainers.DungeonLevel; } }
+    List<TileContainers.GameLevel> levels = new List<TileContainers.GameLevel>();
+    public TileContainers.GameLevel Level { get { return GameManager.CurrentNode as TileContainers.GameLevel; } }
 
     public RoguelikeGame(Container container) : base(container)
     {
@@ -61,7 +61,7 @@ namespace Roguelike
       GameManager.WorldLoader = (Hero hero, GameState gs) =>
         {
           levels.Clear();
-          TileContainers.DungeonLevel lvl = null;
+          TileContainers.GameLevel lvl = null;
           var maxLevel = gs.HeroPathValue.LevelIndex;//TODO gs shall have maxLevel, hero might have go upper. Maybe just count level files in dir ?
           for (var i = 0; i <= maxLevel; i++)
           {
@@ -83,9 +83,9 @@ namespace Roguelike
       DungeonGenerator = container.GetInstance<IDungeonGenerator>();
     }
 
-    public TileContainers.DungeonLevel GenerateLevel(int levelIndex, GenerationInfo gi = null) 
+    public TileContainers.GameLevel GenerateLevel(int levelIndex, GenerationInfo gi = null) 
     {
-      TileContainers.DungeonLevel level = null;
+      TileContainers.GameLevel level = null;
       if (LevelGenerator != null)
       {
         if (LevelGenerator.MaxLevelIndex > 0 && levelIndex > LevelGenerator.MaxLevelIndex)
@@ -93,7 +93,7 @@ namespace Roguelike
         LevelGenerator.LevelIndex = levelIndex;
         
         var generInfo = gi ?? new GenerationInfo();
-        level = LevelGenerator.Generate(levelIndex, generInfo) as TileContainers.DungeonLevel;
+        level = LevelGenerator.Generate(levelIndex, generInfo) as TileContainers.GameLevel;
 
         this.levels.Add(level);
       }
@@ -109,14 +109,14 @@ namespace Roguelike
       LevelGenerator.MaxLevelIndex = maxLevelIndex;
     }
 
-    protected Hero AddHero(GameNode node)
+    protected Hero AddHero(AbstractGameLevel node)
     {
       var hero = Container.GetInstance<Hero>();
       node.SetTile(hero, node.GetFirstEmptyPoint().Value);
       return hero;
     }
 
-    public override DungeonNode GenerateDungeon()
+    public override Dungeons.TileContainers.DungeonNode GenerateDungeon()
     {
       var level = GenerateLevel(0);
       

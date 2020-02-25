@@ -21,7 +21,7 @@ namespace RoguelikeUnitTests
       var game = CreateGame(false);
       Assert.Null(game.Hero);
 
-      game.SetMaxLevelIndex(1);//there willl be level0, level1
+      game.SetMaxLevelIndex(1);//there will be level0, level1
       var level0 = game.GenerateLevel(0);
 
       Assert.NotNull(level0);

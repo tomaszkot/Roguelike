@@ -52,7 +52,7 @@ namespace Roguelike.Managers
     [JsonIgnore]
     public EventsManager EventsManager { get => eventsManager; set => eventsManager = value; }
     public GameContext Context { get => context; set => context = value; }
-    public GameNode CurrentNode { get => context.CurrentNode; }
+    public AbstractGameLevel CurrentNode { get => context.CurrentNode; }
     public EntitiesManager AlliesManager { get => alliesManager; set => alliesManager = value; }
     public LootGenerator LootGenerator { get => lootGenerator; set => lootGenerator = value; }
     public IPersister Persister { get => persister; set => persister = value; }
@@ -61,7 +61,7 @@ namespace Roguelike.Managers
     public Func<int, Stairs, InteractionResult> DungeonLevelStairsHandler;
     public LevelGenerator levelGenerator;
     public Container Container { get; set; }
-    public Func<Hero, GameState, GameNode> WorldLoader { get => worldLoader; set => worldLoader = value; }
+    public Func<Hero, GameState, AbstractGameLevel> WorldLoader { get => worldLoader; set => worldLoader = value; }
     public Action WorldSaver { get; set; }
     
 
@@ -82,10 +82,15 @@ namespace Roguelike.Managers
       Persister = container.GetInstance<JSONPersister>();
     }
 
-    public void SetContext(GameNode node, Hero hero, GameContextSwitchKind kind, Stairs stairs = null)
+    public void SetContext(AbstractGameLevel node, Hero hero, GameContextSwitchKind kind, Stairs stairs = null)
     {
-      if (kind == GameContextSwitchKind.NewGame && node.Nodes.Any())
-        hero.DungeonNodeIndex = node.Nodes.First().NodeIndex;//TODO
+      if (kind == GameContextSwitchKind.NewGame)
+      {
+        if (node.Nodes !=null && node.Nodes.Any())
+          hero.DungeonNodeIndex = node.Nodes.First().NodeIndex;//TODOs
+        else
+          hero.DungeonNodeIndex = 0;//TODO
+      }
 
       Context.Hero = hero;
 
@@ -96,12 +101,12 @@ namespace Roguelike.Managers
       PrintHeroStats("SetContext "+ kind);
     }
 
-    protected virtual void InitNodeOnLoad(GameNode node)
+    protected virtual void InitNodeOnLoad(AbstractGameLevel node)
     {
-      (node as TileContainers.DungeonLevel).OnLoadDone();
+      (node as TileContainers.GameLevel).OnLoadDone();
     }
 
-    protected virtual void InitNode(GameNode node, bool fromLoad = false)
+    protected virtual void InitNode(AbstractGameLevel node, bool fromLoad = false)
     {
       node.GetTiles<LivingEntity>().ForEach(i => i.EventsManager = eventsManager);
       node.Logger = this.Logger;
@@ -109,7 +114,7 @@ namespace Roguelike.Managers
         InitNodeOnLoad(node);
     }
 
-    public TileContainers.DungeonLevel LoadLevel(int index)
+    public TileContainers.GameLevel LoadLevel(int index)
     {
       var level = Persister.LoadLevel(index);
       InitNode(level, true);
@@ -173,7 +178,7 @@ namespace Roguelike.Managers
         Context.HeroTurn = false;
     }
 
-    public T GetCurrentNode<T>() where T : GameNode
+    public T GetCurrentNode<T>() where T : AbstractGameLevel
     {
       return CurrentNode as T;
     }
@@ -254,9 +259,9 @@ namespace Roguelike.Managers
       return false;
     }
 
-    TileContainers.DungeonLevel GetCurrentDungeonLevel()
+    TileContainers.GameLevel GetCurrentDungeonLevel()
     {
-      var dl = this.CurrentNode as TileContainers.DungeonLevel;
+      var dl = this.CurrentNode as TileContainers.GameLevel;
       return dl;
     }
 
@@ -266,7 +271,7 @@ namespace Roguelike.Managers
       return gameState.ToString();
     }
 
-    Func<Hero, GameState, GameNode> worldLoader;
+    Func<Hero, GameState, AbstractGameLevel> worldLoader;
 
     public virtual void Load()
     {
@@ -286,9 +291,9 @@ namespace Roguelike.Managers
       gameState.LastSaved = DateTime.Now;
       gameState.HeroPathValue.Pit = "";
       gameState.LastSaved = DateTime.Now;
-      if (CurrentNode is TileContainers.DungeonLevel)//TODO 
+      if (CurrentNode is TileContainers.GameLevel)//TODO 
       {
-        var dl = CurrentNode as TileContainers.DungeonLevel;
+        var dl = CurrentNode as TileContainers.GameLevel;
         gameState.HeroPathValue.Pit = dl.PitName;
         gameState.HeroPathValue.LevelIndex = dl.Index;
       }

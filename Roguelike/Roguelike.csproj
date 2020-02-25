@@ -109,9 +109,9 @@
     <Compile Include="Tiles\Merchant.cs" />
     <Compile Include="Tiles\Mushroom.cs" />
     <Compile Include="Utils\SerializableDictionary.cs" />
-    <Compile Include="TileContainers\DungeonLevel.cs" />
+    <Compile Include="TileContainers\GameLevel.cs" />
     <Compile Include="Generators\TileContainers\DungeonNode.cs" />
-    <Compile Include="TileContainers\GameNode.cs" />
+    <Compile Include="TileContainers\AbstractGameLevel.cs" />
     <Compile Include="Tiles\Armor.cs" />
     <Compile Include="Tiles\Door.cs" />
     <Compile Include="Tiles\Enemy.cs" />
@@ -130,6 +130,7 @@
     <None Include="Astar\PathFinder.cs.meta" />
     <None Include="Astar\PathFinderFast.cs.meta" />
     <None Include="Astar\PriorityQueueB.cs.meta" />
+    <None Include="Dungeons.cd" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Dungeons\Dungeons\Dungeons.csproj">

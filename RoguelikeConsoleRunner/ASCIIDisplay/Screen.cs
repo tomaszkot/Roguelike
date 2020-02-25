@@ -31,7 +31,7 @@ namespace RoguelikeConsoleRunner.ASCIIDisplay
       get { return gameManagerProvider.GameManager; }
     }
 
-    public override DungeonNode Dungeon { get { return GameManager.Context.CurrentNode; } }
+    public override Dungeons.TileContainers.DungeonNode Dungeon { get { return GameManager.Context.CurrentNode; } }
 
 
     protected override void UpdateItem(Item i)

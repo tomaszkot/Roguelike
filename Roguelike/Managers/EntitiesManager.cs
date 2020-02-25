@@ -16,7 +16,7 @@ namespace Roguelike.Managers
 
     protected List<LivingEntity> entities = new List<LivingEntity>();
     LivingEntity skipInTurn;
-    public GameNode Node { get => context.CurrentNode;  }
+    public AbstractGameLevel Node { get => context.CurrentNode;  }
     public GameContext Context { get => context; set => context = value; }
 
     EventsManager eventsManager;

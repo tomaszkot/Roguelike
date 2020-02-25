@@ -20,7 +20,7 @@ namespace Roguelike.Generators
       Logger = container.GetInstance<ILogger>();
     }
 
-    public override List<DungeonNode> CreateDungeonNodes(GenerationInfo info = null)
+    public override List<Dungeons.TileContainers.DungeonNode> CreateDungeonNodes(GenerationInfo info = null)
     {
       var mazeNodes = base.CreateDungeonNodes(info);
       CreateDynamicTiles(mazeNodes);
@@ -28,7 +28,7 @@ namespace Roguelike.Generators
       return mazeNodes;
     }
 
-    protected virtual void CreateDynamicTiles(List<DungeonNode> mazeNodes)
+    protected virtual void CreateDynamicTiles(List<Dungeons.TileContainers.DungeonNode> mazeNodes)
     {
       if (LevelIndex > 0)//1st node shall have stairs up
       {
@@ -52,7 +52,7 @@ namespace Roguelike.Generators
       }
     }
 
-    protected override DungeonNode CreateNode(int nodeIndex, GenerationInfo gi)
+    protected override Dungeons.TileContainers.DungeonNode CreateNode(int nodeIndex, GenerationInfo gi)
     {
       var node = base.CreateNode(nodeIndex, gi);
       var enemy = new Enemy();
@@ -75,21 +75,22 @@ namespace Roguelike.Generators
       return gi;
     }
 
-    public override Dungeons.DungeonLevel Generate(int levelIndex, GenerationInfo info = null, LayouterOptions opt = null)
+    public override Dungeons.TileContainers.DungeonLevel Generate(int levelIndex, GenerationInfo info = null, LayouterOptions opt = null)
     {
       var revealAllNodes = info != null ? info.RevealAllNodes : false;
       var options = opt ?? new LayouterOptions() { RevealAllNodes = revealAllNodes };
       LevelIndex = levelIndex;
+      //generate level
       var baseLevel = base.Generate(levelIndex, info, options);
-      var level = baseLevel as Roguelike.TileContainers.DungeonLevel;
+      var level = baseLevel as Roguelike.TileContainers.GameLevel;
       level.Index = levelIndex;
-      level.OnGenerationDone();//TODO
+      level.OnGenerationDone();
 
-      PopulateDungeonLevel(level);
+     // PopulateDungeonLevel(level);
       return level;
     }
 
-    protected virtual void PopulateDungeonLevel(Roguelike.TileContainers.DungeonLevel level)
+    protected virtual void PopulateDungeonLevel(Roguelike.TileContainers.GameLevel level)
     {
       var lg = new LootGenerator();
       var levelIndex = level.Index;

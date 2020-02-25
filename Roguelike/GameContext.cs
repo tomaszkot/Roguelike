@@ -15,7 +15,7 @@ namespace Roguelike
   public class ContextSwitch
   {
     public GameContextSwitchKind Kind { get; set; }
-    public GameNode CurrentNode { get;  set; }
+    public AbstractGameLevel CurrentNode { get;  set; }
     public Hero Hero { get; set; }
   }
 
@@ -23,7 +23,7 @@ namespace Roguelike
   {
     Hero hero;
     
-    public virtual GameNode CurrentNode { get; protected set; }
+    public virtual AbstractGameLevel CurrentNode { get; protected set; }
     public Hero Hero { get => hero; set => hero = value; }
     public event EventHandler EnemiesTurn;
     public event EventHandler<GenericEventArgs<ContextSwitch>> ContextSwitched;
@@ -36,7 +36,7 @@ namespace Roguelike
       this.logger = logger;
     }
 
-    public virtual void SwitchTo(GameNode node, Hero hero, GameContextSwitchKind context, Stairs stairs = null)
+    public virtual void SwitchTo(AbstractGameLevel node, Hero hero, GameContextSwitchKind context, Stairs stairs = null)
     {
       if (node == CurrentNode)
       {
@@ -77,7 +77,7 @@ namespace Roguelike
       EmitContextSwitched(context);
     }
 
-    protected virtual Tile PlaceHeroAtDungeon(GameNode node, Stairs stairs)
+    protected virtual Tile PlaceHeroAtDungeon(AbstractGameLevel node, Stairs stairs)
     {
       Tile heroStartTile = null;
 

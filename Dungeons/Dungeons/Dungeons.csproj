@@ -76,7 +76,8 @@
     <Compile Include="DefaultNodeLayouter.cs" />
     <Compile Include="GenerationInfo.cs" />
     <Compile Include="Generator.cs" />
-    <Compile Include="DungeonNode.cs" />
+    <Compile Include="TileContainers\DungeonLevel.cs" />
+    <Compile Include="TileContainers\DungeonNode.cs" />
     <Compile Include="ASCIIDisplay\IDrawingEngine.cs" />
     <Compile Include="NodeInteriorGenerator.cs" />
     <Compile Include="Tiles\Door.cs" />
@@ -85,6 +86,7 @@
     <Compile Include="Tiles\Wall.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Dungeons.cd" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>

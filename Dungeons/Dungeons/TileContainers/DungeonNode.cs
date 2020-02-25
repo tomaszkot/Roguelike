@@ -29,6 +29,8 @@ namespace Dungeons
   public enum TileNeighborhood { North, South, East, West }
   public enum Interior { T, L };//shape of the interior
 
+  namespace TileContainers
+  { 
   //a single room - typically size of 20x20 tiles
   [XmlRoot("Node", Namespace = "DungeonNode")]
   [XmlInclude(typeof(Wall))]
@@ -95,10 +97,10 @@ namespace Dungeons
       this.Container = container;
     }
 
-    public void Create(int width = 10, int height = 10, GenerationInfo gi = null,
+    public void Create(int width = 10, int height = 10, GenerationInfo info = null,
                        int nodeIndex = DefaultNodeIndex, DungeonNode parent = null, bool generateContent = true)
     {
-      Create(null, gi, nodeIndex, parent);
+      Create(null, info, nodeIndex, parent);
       tiles = new Tile[height, width];
 
       if (generateContent)
@@ -119,7 +121,7 @@ namespace Dungeons
 
     public virtual string Description
     {
-      get { return "Dungeon"; }
+      get { return GetType().Name; }
     }
 
     public Point? AppendMazeStartPoint { get; set; }
@@ -773,6 +775,6 @@ namespace Dungeons
     {
       return GetTiles<Tile>();
     }
-
+      }
   }
 }

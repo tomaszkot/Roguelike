@@ -127,7 +127,7 @@ namespace Roguelike.Serialization
       return Load<Hero>(GetFullFilePath("Hero.json"));
     }
     
-    public void SaveLevel(DungeonLevel level)
+    public void SaveLevel(GameLevel level)
     {
       Save(level, GetFullFilePath(GetLevelFileName(level.Index)));
     }
@@ -137,9 +137,9 @@ namespace Roguelike.Serialization
       return "DungeonLevel" + levelIndex + ".json";
     }
 
-    public DungeonLevel LoadLevel(int index)
+    public GameLevel LoadLevel(int index)
     {
-      return Load<DungeonLevel>(GetFullFilePath(GetLevelFileName(index)));
+      return Load<GameLevel>(GetFullFilePath(GetLevelFileName(index)));
     }
 
     public void SaveGameState(GameState gameState)
