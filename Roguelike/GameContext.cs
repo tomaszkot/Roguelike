@@ -4,6 +4,7 @@ using Newtonsoft.Json;
 using Roguelike.Managers;
 using Roguelike.TileContainers;
 using Roguelike.Tiles;
+using Roguelike.Tiles.Interactive;
 using System;
 using System.Diagnostics;
 using System.Linq;

@@ -17,6 +17,7 @@ using Roguelike.Serialization;
 using SimpleInjector;
 using Roguelike.Events;
 using Newtonsoft.Json;
+using Roguelike.Tiles.Interactive;
 
 namespace Roguelike.Managers
 {

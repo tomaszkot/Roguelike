@@ -2,6 +2,7 @@
 using Roguelike.Managers;
 using Roguelike.TileContainers;
 using Roguelike.Tiles;
+using Roguelike.Tiles.Interactive;
 using System;
 using System.Collections.Generic;
 using System.Linq;

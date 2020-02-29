@@ -4,6 +4,7 @@ using Dungeons;
 using Dungeons.Core;
 using Roguelike.Abstract;
 using Roguelike.Tiles;
+using Roguelike.Tiles.Interactive;
 using SimpleInjector;
 
 namespace Roguelike.Generators
@@ -56,13 +57,16 @@ namespace Roguelike.Generators
     {
       var node = base.CreateNode(nodeIndex, gi);
       var enemy = new Enemy();
+      enemy.tag = "bat";
       node.SetTile(enemy, new System.Drawing.Point(3, 2));// node.GetRandomEmptyTile().Point);
 
-      node.SetTile(container.GetInstance<LootGenerator>().GetRandomLoot(), new System.Drawing.Point(4, 2));// node.GetRandomEmptyTile().Point);
+      var lpt = node.GetEmptyTiles().First().Point;// new System.Drawing.Point(4, 2);
+      node.SetTile(container.GetInstance<LootGenerator>().GetRandomLoot(), lpt);
 
       var barrel = new Barrel();
       barrel.tag = "barrel";
-      node.SetTile(barrel, new System.Drawing.Point(2, 2));// node.GetRandomEmptyTile().Point);
+      var pt = node.GetEmptyTiles().First().Point;//new System.Drawing.Point(2, 2));
+      node.SetTile(barrel, pt);
 
       return node;
     }

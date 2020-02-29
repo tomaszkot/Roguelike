@@ -3,6 +3,7 @@ using Roguelike.Generators;
 using Roguelike.Managers;
 using Roguelike.TileContainers;
 using Roguelike.Tiles;
+using Roguelike.Tiles.Interactive;
 using SimpleInjector;
 using System;
 using System.Collections.Generic;
