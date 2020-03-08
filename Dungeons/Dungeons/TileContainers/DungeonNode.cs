@@ -311,7 +311,7 @@ namespace Dungeons
       return tile?.Point;
     }
 
-    public virtual List<Tile> GetEmptyTiles(GenerationConstraints constraints = null, bool lookInsidechildIslands = false)
+    public virtual List<Tile> GetEmptyTiles(GenerationConstraints constraints = null, bool canBeNextToDoors = true)
     {
       var emptyTiles = new List<Tile>();
       DoGridAction((int col, int row) =>
@@ -325,10 +325,31 @@ namespace Dungeons
             emptyTiles.Add(tiles[row, col]);
         }
       });
+      //if (constraints != null && constraints.Tiles != null)
+      //{
+      //  emptyTiles = emptyTiles.Where(i => constraints.Tiles.Contains(i)).ToList();
+      //}
+      if (!canBeNextToDoors)
+      {
+        emptyTiles = emptyTiles.Where(i => !GetNeighborTiles(i).Any(j => j is Dungeons.Tiles.Door)).ToList();
+      }
       return emptyTiles;
     }
 
-    public virtual Tile GetTile(Point point)
+    public Tile GetRandomEmptyTile(GenerationConstraints constraints = null, bool canBeNextToDoors = true)
+    {
+      List<Tile> emptyTiles = GetEmptyTiles(constraints, canBeNextToDoors);
+
+      if (emptyTiles.Any())
+      {
+        var emptyTileIndex = random.Next(emptyTiles.Count);
+        return emptyTiles[emptyTileIndex];
+      }
+
+      return null;
+    }
+
+      public virtual Tile GetTile(Point point)
     {
       if (point.X < 0 || point.Y < 0)
         return null;

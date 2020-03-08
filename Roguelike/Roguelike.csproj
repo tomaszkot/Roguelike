@@ -78,6 +78,7 @@
     <Compile Include="Game.cs" />
     <Compile Include="GameContext.cs" />
     <Compile Include="GameState.cs" />
+    <Compile Include="GenerationInfo.cs" />
     <Compile Include="Generators\LevelGenerator.cs" />
     <Compile Include="Generators\LootGenerator.cs" />
     <Compile Include="LootContainers\Inventory.cs" />

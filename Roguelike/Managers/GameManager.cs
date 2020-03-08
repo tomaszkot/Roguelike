@@ -130,10 +130,16 @@ namespace Roguelike.Managers
         if (lea.KindValue == LivingEntityAction.Kind.Died)
         {
           if (context.CurrentNode.HasTile(lea.InvolvedEntity))
+          {
             context.CurrentNode.SetTile(context.CurrentNode.GenerateEmptyTile(), lea.InvolvedEntity.Point);
+          }
           else
           {
             Logger.LogError("context.CurrentNode HasTile failed for " + lea.InvolvedEntity);
+          }
+          if (lea.InvolvedEntity is Enemy)
+          {
+            Hero.IncreaseExp(10);
           }
         }
       }

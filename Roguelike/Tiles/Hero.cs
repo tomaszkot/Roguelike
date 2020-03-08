@@ -5,13 +5,17 @@ using System;
 using Roguelike.Events;
 using Roguelike.Attributes;
 using Roguelike.Managers;
+using Dungeons;
 
 namespace Roguelike.Tiles
 {
   public class Hero : AdvancedLivingEntity
   {
+    public static int FirstNextLevelExperienceThreshold = 15;
+
     public Hero(): base(new Point().Invalid(), '@')
     {
+      canAdvanceInExp = true;
       Stats.SetNominal(EntityStatKind.Health, 15);//level up +2
       // Character.Mana = 40;
       var str = 15;
@@ -21,6 +25,8 @@ namespace Roguelike.Tiles
       Stats.SetNominal(EntityStatKind.Mana, 40);
       Stats.SetNominal(EntityStatKind.Defence, 10);
       Stats.SetNominal(EntityStatKind.Dexterity, 10);
+
+      NextLevelExperience = FirstNextLevelExperienceThreshold;
 
       CreateInventory();
 

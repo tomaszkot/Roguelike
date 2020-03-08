@@ -92,7 +92,7 @@ namespace RoguelikeUnitTests
       //game can have 1-n levels (sub-dungeons)
       var game = CreateGame(false);
       Assert.Null(game.Hero);
-      var gi = new Dungeons.GenerationInfo();
+      var gi = new Roguelike.GenerationInfo();
       gi.NumberOfRooms = 1;//tmp
       gi.MaxNodeSize = 5;
       gi.MinNodeSize = 5;
@@ -108,7 +108,7 @@ namespace RoguelikeUnitTests
     public void TestLootRevealFlag()
     {
       var generator = Container.GetInstance<Dungeons.IDungeonGenerator>();
-      var info = new Dungeons.GenerationInfo();
+      var info = new Roguelike.GenerationInfo();
       //info.NumberOfRooms = 1;
       //info.MinNodeSize = 5;
       //info.MaxNodeSize = 5;

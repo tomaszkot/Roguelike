@@ -40,7 +40,7 @@ namespace Dungeons
     {
     }
 
-    public object Clone()
+    public virtual object Clone()
     {
       return this.MemberwiseClone() as GenerationInfo;
     }

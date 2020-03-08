@@ -71,7 +71,7 @@ namespace Roguelike.Tiles
         Stats.SetNominal(basicStats, nv);
       }
 
-      Stats.Experience = 1;
+      //Stats.Experience = 1;
       //kind = PowerKind.Plain;
       Name = "Enemy";
     }

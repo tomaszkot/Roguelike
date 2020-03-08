@@ -84,7 +84,7 @@ namespace Roguelike
       DungeonGenerator = container.GetInstance<IDungeonGenerator>();
     }
 
-    public TileContainers.GameLevel GenerateLevel(int levelIndex, GenerationInfo gi = null) 
+    public TileContainers.GameLevel GenerateLevel(int levelIndex, Dungeons.GenerationInfo gi = null) 
     {
       TileContainers.GameLevel level = null;
       if (LevelGenerator != null)

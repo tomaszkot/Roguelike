@@ -12,12 +12,12 @@ namespace Roguelike.Attributes
   {
     Dictionary<EntityStatKind, EntityStat> stats = new Dictionary<EntityStatKind, EntityStat>();
     int level = 1;
-    int experience;
-    int nextExperience;
-    int levelUpPoints;
+    //int experience;
+    //int nextExperience;
+    //int levelUpPoints;
 
     bool canAdvanceInExp = true;
-    public event EventHandler<GenericEventArgs<EntityStatKind>> StatLeveledUp;
+    
 
     public EntityStats()
     {
@@ -80,7 +80,7 @@ namespace Roguelike.Attributes
           myStat.Value.Accumulate(other[myStat.Kind]);
       }
 
-      experience += other.experience;
+      //experience += other.experience;
     }
 
     public void Divide(EntityStats other)
@@ -122,20 +122,7 @@ namespace Roguelike.Attributes
       return GetStatsDescription(false);
     }
 
-    public void IncreaseStatByLevelUpPoint(EntityStatKind stat)
-    {
-      if (LevelUpPoints == 0)
-        return;
-      this[stat].Nominal += 1;
-      LevelUpPoints--;
-      EmitStatsLeveledUp(stat);
-    }
-
-    public void EmitStatsLeveledUp(EntityStatKind stat)
-    {
-      if (StatLeveledUp != null)
-        StatLeveledUp(this, new GenericEventArgs<EntityStatKind>(stat));
-    }
+    
 
     public void SetStat(EntityStatKind kind, float nominalValue)
     {
@@ -197,67 +184,33 @@ namespace Roguelike.Attributes
       }
     }
 
-    public int PrevLevelExperience { get; set; }
-
-    public int Experience
-    {
-      get
-      {
-        return experience;
-      }
-
-      set
-      {
-        experience = value;
-      }
-    }
-
-    //public bool IncreaseExp(int factor)
+    //public int Experience
     //{
-    //  experience += factor;
-    //  bool lu = experience >= NextExperience;
-    //  if (lu && canAdvanceInExp)
+    //  get
     //  {
-    //    PrevLevelExperience = NextExperience;
-    //    Level++;
-    //    //TODO move to hero class
-    //    LevelUpPoints += LevelGenerationInfo.Instance.LevelUpPoints;
-    //    AbilityPoints += 2;
-    //    nextExperience = (int)(nextExperience + (nextExperience * LevelGenerationInfo.Instance.NextExperienceIncrease));
-    //    if (Level == 2)
-    //      nextExperience += Hero.BaseExperience;//TODO
-
-    //    return true;
+    //    return experience;
     //  }
 
-    //  return false;
+    //  set
+    //  {
+    //    experience = value;
+    //  }
     //}
 
-    public int NextExperience
-    {
-      get
-      {
-        return nextExperience;
-      }
+    //public int NextExperience
+    //{
+    //  get
+    //  {
+    //    return nextExperience;
+    //  }
 
-      set
-      {
-        nextExperience = value;
-      }
-    }
+    //  set
+    //  {
+    //    nextExperience = value;
+    //  }
+    //}
 
-    public int LevelUpPoints
-    {
-      get
-      {
-        return levelUpPoints;
-      }
-
-      set
-      {
-        levelUpPoints = value;
-      }
-    }
+    
 
     public int AbilityPoints { get; set; }
 
