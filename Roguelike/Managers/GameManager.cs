@@ -83,6 +83,11 @@ namespace Roguelike.Managers
       Persister = container.GetInstance<JSONPersister>();
     }
 
+    protected virtual EnemiesManager CreateEnemiesManager(GameContext context, EventsManager eventsManager)
+    {
+      return new EnemiesManager(Context, EventsManager);
+    }
+
     public void SetContext(AbstractGameLevel node, Hero hero, GameContextSwitchKind kind, Stairs stairs = null)
     {
       if (kind == GameContextSwitchKind.NewGame)
