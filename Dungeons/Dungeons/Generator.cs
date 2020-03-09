@@ -62,8 +62,21 @@ namespace Dungeons
     protected DungeonNode CreateNode(int w, int h, GenerationInfo gi, int nodeIndex)
     {
       var dungeon = container.GetInstance<DungeonNode>();
+
+      dungeon.ChildIslandCreated += Dungeon_ChildIslandCreated;
+
       dungeon.Create(w, h, gi, nodeIndex);
       return dungeon;
+    }
+
+    private void Dungeon_ChildIslandCreated(object sender, ChildIslandCreationInfo e)
+    {
+      OnChildIslandCreated(e);
+    }
+
+    protected virtual void OnChildIslandCreated(ChildIslandCreationInfo e)
+    {
+      
     }
 
     protected virtual DungeonNode CreateLevel(int levelIndex, int w, int h, GenerationInfo gi)

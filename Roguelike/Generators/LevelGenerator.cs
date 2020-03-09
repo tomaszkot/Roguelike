@@ -2,6 +2,7 @@
 using System.Linq;
 using Dungeons;
 using Dungeons.Core;
+using Dungeons.TileContainers;
 using Roguelike.Abstract;
 using Roguelike.Tiles;
 using Roguelike.Tiles.Interactive;
@@ -53,15 +54,18 @@ namespace Roguelike.Generators
       }
     }
 
+    protected override void OnChildIslandCreated(ChildIslandCreationInfo e)
+    {
+      base.OnChildIslandCreated(e);
+      var roomGen = container.GetInstance<RoomContentGenerator>();
+      roomGen.Run(e.Child, LevelIndex, e.Child.NodeIndex, e.GenerationInfoIsl as Roguelike.GenerationInfo, container);
+    }
+
     protected override Dungeons.TileContainers.DungeonNode CreateNode(int nodeIndex, Dungeons.GenerationInfo gi)
     {
       var node = base.CreateNode(nodeIndex, gi);
 
-      var roomGen = new RoomContentGenerator();
-      roomGen.Run(node, LevelIndex, nodeIndex, gi as Roguelike.GenerationInfo, Logger);
-      //var enemy = new Enemy();
-      //enemy.tag = "bat";
-      //node.SetTile(enemy, new System.Drawing.Point(3, 2));// node.GetRandomEmptyTile().Point);
+      GenerateRoomContent(nodeIndex, gi, node);
 
       //var lpt = node.GetEmptyTiles().First().Point;// new System.Drawing.Point(4, 2);
       //node.SetTile(container.GetInstance<LootGenerator>().GetRandomLoot(), lpt);
@@ -72,6 +76,12 @@ namespace Roguelike.Generators
       //node.SetTile(barrel, pt);
 
       return node;
+    }
+
+    protected virtual void GenerateRoomContent(int nodeIndex, Dungeons.GenerationInfo gi, DungeonNode node)
+    {
+      var roomGen = container.GetInstance<RoomContentGenerator>();
+      roomGen.Run(node, LevelIndex, nodeIndex, gi as Roguelike.GenerationInfo, container);
     }
 
     protected override Dungeons.GenerationInfo CreateLevelGenerationInfo()

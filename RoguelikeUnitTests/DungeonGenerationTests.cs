@@ -128,6 +128,7 @@ namespace RoguelikeUnitTests
       Assert.Greater(level.GetTiles().Where(i => i.DungeonNodeIndex == DungeonNode.ChildIslandNodeIndex).Count(), 0);
 
       var en = level.GetTiles().Where(i => i is Enemy).ToList();
+      
       Assert.Greater(en.Where(i => i.DungeonNodeIndex == level.Nodes[0].NodeIndex).Count(), 0);
       Assert.Greater(en.Where(i => i.DungeonNodeIndex == island.NodeIndex).Count(), 0);
     }

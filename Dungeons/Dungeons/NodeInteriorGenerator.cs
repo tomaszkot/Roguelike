@@ -15,6 +15,7 @@ namespace Dungeons
 
     public int Width { get { return dungeonNode.Width; } }
     public int Height { get { return dungeonNode.Height; } }
+    public event EventHandler<ChildIslandCreationInfo> ChildIslandCreated;
 
     public NodeInteriorGenerator(DungeonNode dn, GenerationInfo gi)
     {
@@ -301,6 +302,8 @@ namespace Dungeons
       for (int i = 0; i < generationInfo.MaxNumberOfChildIslands; i++)
       {
         var child = dungeonNode.CreateChildIslandInstance(islandWidth, islandHeight, generationInfoIsl, parent: dungeonNode);
+        if(ChildIslandCreated !=null )
+          ChildIslandCreated(this, new ChildIslandCreationInfo() { Child = child, GenerationInfoIsl = generationInfoIsl, ParentDungeonNode = dungeonNode });
         dungeonNode.AppendMaze(child, destStartPoint, childIsland: true);
         dungeonNode.ChildIslands.Add(child);
         nodes.Add(child);
@@ -316,6 +319,11 @@ namespace Dungeons
 
       return nodes.ToArray();
     }
+
+    //protected virtual void OnChildIslandCreated(DungeonNode child, GenerationInfo generationInfoIsl, DungeonNode dungeonNode)
+    //{
+    //  dungeonNode.ChildIslandCreated(child, generationInfoIsl, dungeonNode);
+    //}
 
     public void GenerateRandomStonesBlocks()
     {
