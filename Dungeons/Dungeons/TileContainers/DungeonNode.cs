@@ -74,6 +74,9 @@ namespace Dungeons
 
     //it's assummed, level has there are less rooms that 999. 
     public const int DefaultNodeIndex = 999;
+    //public const int ChildIslandNodeIndex1 = 998;
+    //public const int ChildIslandNodeIndex2 = 997;
+
     public const int ChildIslandNodeIndex = -1;
     public static int NextChildIslandId = ChildIslandNodeIndex;
     int nodeIndex;
@@ -336,9 +339,11 @@ namespace Dungeons
       return emptyTiles;
     }
 
-    public Tile GetRandomEmptyTile(GenerationConstraints constraints = null, bool canBeNextToDoors = true)
+    public Tile GetRandomEmptyTile(GenerationConstraints constraints = null, bool canBeNextToDoors = true, int? nodeIndex = null)
     {
-      List<Tile> emptyTiles = GetEmptyTiles(constraints, canBeNextToDoors);
+      var emptyTiles = GetEmptyTiles(constraints, canBeNextToDoors);
+      if (nodeIndex != null)
+        emptyTiles = emptyTiles.Where(i => i.dungeonNodeIndex == nodeIndex.Value).ToList();
 
       if (emptyTiles.Any())
       {
@@ -382,10 +387,11 @@ namespace Dungeons
 
       if (tiles[point.Y, point.X] != null)
       {
-        var prev = tiles[point.Y, point.X];
-        if (tile != null && tile.DungeonNodeIndex < 0)
-          tile.DungeonNodeIndex = prev.DungeonNodeIndex;
-      }
+          //caused ChildIsland to be revealed at once.
+          //var prev = tiles[point.Y, point.X];
+          //if (tile != null && tile.DungeonNodeIndex < 0)
+          //  tile.DungeonNodeIndex = prev.DungeonNodeIndex;
+        }
 
       tiles[point.Y, point.X] = tile;
 
@@ -457,7 +463,7 @@ namespace Dungeons
       var dungeon = Container.GetInstance<DungeonNode>();
       var childGenInfo = gi.Clone() as GenerationInfo;
       childGenInfo.ChildIslandAllowed = false;//sub islands are not supported
-      dungeon.Create(w, h, childGenInfo, parent: this);
+      dungeon.Create(w, h, childGenInfo, ChildIslandNodeIndex,  parent: this);
       return dungeon;
     }
 
@@ -704,7 +710,8 @@ namespace Dungeons
       if (reveal && Revealed && !force)//Optimize
         return;
 
-      Debug.WriteLine("reveal " + NodeIndex + " start");
+      var revDesc = "reveal: " + reveal + ", for: " + NodeIndex;
+      Debug.WriteLine(revDesc+", start");
       IList<Tile> revealedTiles = new List<Tile>();
 
       DoGridAction((int col, int row) =>
@@ -734,8 +741,8 @@ namespace Dungeons
         OnRevealed(this, new GenericEventArgs<NodeRevealedParam>(new NodeRevealedParam() { NodeIndex = NodeIndex, Tiles = revealedTiles }));
       }
 
-      Debug.WriteLine("reveal " + NodeIndex + " end ");
-    }
+        Debug.WriteLine(revDesc + ", end");
+      }
 
     protected virtual bool ShallReveal(int row, int col)
     {

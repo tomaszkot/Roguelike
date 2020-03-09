@@ -1,4 +1,7 @@
-﻿using SimpleInjector;
+﻿using Newtonsoft.Json;
+using SimpleInjector;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Dungeons.TileContainers
 {
@@ -10,6 +13,12 @@ namespace Dungeons.TileContainers
     public DungeonLevel(Container container) : base(container)
     {
 
+    }
+
+    [JsonIgnore]
+    public virtual List<DungeonNode> Nodes
+    {
+      get { return Parts[0].Parts.ToList(); }
     }
   }
 }

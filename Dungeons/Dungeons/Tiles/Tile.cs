@@ -1,4 +1,5 @@
 ﻿using Dungeons.Core;
+using Dungeons.TileContainers;
 using System;
 using System.Drawing;
 using System.Linq;
@@ -60,7 +61,7 @@ namespace Dungeons.Tiles
       this.Symbol = symbol;
     }
 
-    public int dungeonNodeIndex;
+    public int dungeonNodeIndex = DungeonNode.DefaultNodeIndex;
     public int DungeonNodeIndex
     {
       get { return dungeonNodeIndex; }
@@ -70,6 +71,12 @@ namespace Dungeons.Tiles
           int k = 0;
           k++;
         }
+        if (dungeonNodeIndex == DungeonNode.ChildIslandNodeIndex && value != DungeonNode.ChildIslandNodeIndex)
+        {
+          int k = 0;
+          k++;
+        }
+
         dungeonNodeIndex = value;
       }
     }

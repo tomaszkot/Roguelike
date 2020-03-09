@@ -56,17 +56,20 @@ namespace Roguelike.Generators
     protected override Dungeons.TileContainers.DungeonNode CreateNode(int nodeIndex, Dungeons.GenerationInfo gi)
     {
       var node = base.CreateNode(nodeIndex, gi);
-      var enemy = new Enemy();
-      enemy.tag = "bat";
-      node.SetTile(enemy, new System.Drawing.Point(3, 2));// node.GetRandomEmptyTile().Point);
 
-      var lpt = node.GetEmptyTiles().First().Point;// new System.Drawing.Point(4, 2);
-      node.SetTile(container.GetInstance<LootGenerator>().GetRandomLoot(), lpt);
+      var roomGen = new RoomContentGenerator();
+      roomGen.Run(node, LevelIndex, nodeIndex, gi as Roguelike.GenerationInfo, Logger);
+      //var enemy = new Enemy();
+      //enemy.tag = "bat";
+      //node.SetTile(enemy, new System.Drawing.Point(3, 2));// node.GetRandomEmptyTile().Point);
 
-      var barrel = new Barrel();
-      barrel.tag = "barrel";
-      var pt = node.GetEmptyTiles().First().Point;//new System.Drawing.Point(2, 2));
-      node.SetTile(barrel, pt);
+      //var lpt = node.GetEmptyTiles().First().Point;// new System.Drawing.Point(4, 2);
+      //node.SetTile(container.GetInstance<LootGenerator>().GetRandomLoot(), lpt);
+
+      //var barrel = new Barrel();
+      //barrel.tag = "barrel";
+      //var pt = node.GetEmptyTiles().First().Point;//new System.Drawing.Point(2, 2));
+      //node.SetTile(barrel, pt);
 
       return node;
     }

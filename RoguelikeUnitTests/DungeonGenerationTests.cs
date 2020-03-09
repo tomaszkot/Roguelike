@@ -1,4 +1,5 @@
-﻿using NUnit.Framework;
+﻿using Dungeons.TileContainers;
+using NUnit.Framework;
 using Roguelike.Generators;
 using Roguelike.TileContainers;
 using Roguelike.Tiles;
@@ -99,25 +100,65 @@ namespace RoguelikeUnitTests
       var level0 = game.GenerateLevel(0, gi);
       Assert.NotNull(level0);
 
-      Assert.AreEqual(level0.Nodes.Count, 1);
-      Assert.AreEqual(level0.Nodes[0].Width, 5);
-      Assert.AreEqual(level0.Nodes[0].Height, 5);
+      Assert.AreEqual(level0.GeneratorNodes.Count, 1);
+      Assert.AreEqual(level0.GeneratorNodes[0].Width, 5);
+      Assert.AreEqual(level0.GeneratorNodes[0].Height, 5);
     }
 
     [Test]
-    public void TestLootRevealFlag()
+    public void TestLootRevealFlagBasic()
     {
       var generator = Container.GetInstance<Dungeons.IDungeonGenerator>();
       var info = new Roguelike.GenerationInfo();
-      //info.NumberOfRooms = 1;
-      //info.MinNodeSize = 5;
-      //info.MaxNodeSize = 5;
+      info.NumberOfRooms = 1;
+      info.MinNodeSize = new System.Drawing.Size(15,15);
+      info.MaxNodeSize = new System.Drawing.Size(30, 30);
+      info.ForceChildIslandInterior = true;
       //info.RevealTiles = true;
 
       var level = generator.Generate(0, info);
-      //Assert.AreEqual(level.Width, info.MaxNodeSize);
-      //Assert.AreEqual(level.Height, info.MaxNodeSize);
+      Assert.GreaterOrEqual(level.Width, info.MinNodeSize.Width);
+      Assert.GreaterOrEqual(level.Height, info.MinNodeSize.Height);
+      Assert.AreEqual(level.Nodes.Count, 1);
+      Assert.AreEqual(level.Nodes[0].ChildIslands.Count, 1);
+            
+      Assert.True(level.Nodes[0].Revealed);
+      var island = level.Nodes[0].ChildIslands[0];
+      Assert.False(island.Revealed);
+      Assert.Greater(level.GetTiles().Where(i => i.DungeonNodeIndex == DungeonNode.ChildIslandNodeIndex).Count(), 0);
+
       var en = level.GetTiles().Where(i => i is Enemy).ToList();
+      Assert.Greater(en.Where(i => i.DungeonNodeIndex == level.Nodes[0].NodeIndex).Count(), 0);
+      Assert.Greater(en.Where(i => i.DungeonNodeIndex == island.NodeIndex).Count(), 0);
+    }
+
+    [Test]
+    public void TestLootRevealFlagAdv()
+    {
+      var generator = Container.GetInstance<Dungeons.IDungeonGenerator>();
+      var info = new Roguelike.GenerationInfo();
+      info.NumberOfRooms = 2;
+      info.MinNodeSize = new System.Drawing.Size(15, 15);
+      info.MaxNodeSize = new System.Drawing.Size(30, 30);
+      info.ForceChildIslandInterior = true;
+      //info.RevealTiles = true;
+
+      var level = generator.Generate(0, info);
+      Assert.GreaterOrEqual(level.Width, info.MinNodeSize.Width);
+      Assert.GreaterOrEqual(level.Height, info.MinNodeSize.Height);
+      Assert.AreEqual(level.Nodes.Count, 2);
+      Assert.AreEqual(level.Nodes[0].ChildIslands.Count, 1);
+      Assert.AreEqual(level.Nodes[1].ChildIslands.Count, 1);
+
+      Assert.True(level.Nodes[0].Revealed);
+      Assert.False(level.Nodes[1].Revealed);
+      Assert.False(level.Nodes[0].ChildIslands[0].Revealed);
+      Assert.False(level.Nodes[1].ChildIslands[0].Revealed);
+      Assert.Greater(level.GetTiles().Where(i => i.DungeonNodeIndex == DungeonNode.ChildIslandNodeIndex).Count(), 1);
+      Assert.Greater(level.GetTiles().Where(i => i.DungeonNodeIndex < DungeonNode.ChildIslandNodeIndex).Count(), 1);
+
+      //Assert.AreEqual(level.Height, info.MaxNodeSize);
+      //var en = level.GetTiles().Where(i => i is Enemy).ToList();
       //var tiles = level.GetTiles().Where(i=> i is Loot).ToList().GroupBy(i=>i.DungeonNodeIndex).ToList();
       //var zeroIndexCount = tiles.Where(i => i.DungeonNodeIndex == 0).Count();
 

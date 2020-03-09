@@ -92,8 +92,8 @@ namespace Roguelike.Managers
     {
       if (kind == GameContextSwitchKind.NewGame)
       {
-        if (node.Nodes !=null && node.Nodes.Any())
-          hero.DungeonNodeIndex = node.Nodes.First().NodeIndex;//TODOs
+        if (node.GeneratorNodes !=null && node.GeneratorNodes.Any())
+          hero.DungeonNodeIndex = node.GeneratorNodes.First().NodeIndex;//TODOs
         else
           hero.DungeonNodeIndex = 0;//TODO
       }
