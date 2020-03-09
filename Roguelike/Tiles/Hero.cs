@@ -16,7 +16,7 @@ namespace Roguelike.Tiles
     public Hero(): base(new Point().Invalid(), '@')
     {
       canAdvanceInExp = true;
-      Stats.SetNominal(EntityStatKind.Health, 15);//level up +2
+      Stats.SetNominal(EntityStatKind.Health, 150);//level up +2
       // Character.Mana = 40;
       var str = 15;
       Stats.SetNominal(EntityStatKind.Strength, str);//15

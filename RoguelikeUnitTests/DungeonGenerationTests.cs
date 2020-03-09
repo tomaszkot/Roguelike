@@ -94,8 +94,8 @@ namespace RoguelikeUnitTests
       Assert.Null(game.Hero);
       var gi = new Roguelike.GenerationInfo();
       gi.NumberOfRooms = 1;//tmp
-      gi.MaxNodeSize = 5;
-      gi.MinNodeSize = 5;
+      gi.MaxNodeSize = new System.Drawing.Size(5, 5);
+      gi.MinNodeSize = new System.Drawing.Size(5, 5);
       var level0 = game.GenerateLevel(0, gi);
       Assert.NotNull(level0);
 

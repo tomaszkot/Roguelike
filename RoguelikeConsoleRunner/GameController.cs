@@ -10,6 +10,7 @@ using Roguelike.Generators;
 using Roguelike.Managers;
 using Roguelike.TileContainers;
 using Roguelike.Tiles;
+using Roguelike.Tiles.Interactive;
 using RoguelikeConsoleRunner.ASCIIDisplay;
 using SimpleInjector;
 
@@ -158,11 +159,20 @@ namespace RoguelikeConsoleRunner
         }
       }
 
-      if ((info.Modifiers & ConsoleModifiers.Control) != 0)
+      //if ((info.Modifiers & ConsoleModifiers.Control) != 0)
       {
         if (key == ConsoleKey.N)
         {
           //next level
+          var down = GameManager.CurrentNode.GetTiles<Stairs>().Where(i=> i.StairsKind == StairsKind.LevelDown).FirstOrDefault();
+          if (down != null)
+            GameManager.InteractHeroWith(down);
+          else
+          {
+            down = GameManager.CurrentNode.GetTiles<Stairs>().Where(i => i.StairsKind == StairsKind.PitDown).FirstOrDefault();
+            if (down != null)
+              GameManager.InteractHeroWith(down);
+          }
         }
       }
       return base.HandleKey(info);

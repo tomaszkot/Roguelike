@@ -162,7 +162,7 @@ namespace Dungeons
       }
       set { parts = value; }
     }
-
+      
     public List<DungeonNode> ChildIslands
     {
       get
@@ -455,7 +455,9 @@ namespace Dungeons
     public DungeonNode CreateChildIslandInstance(int w, int h, GenerationInfo gi, DungeonNode parent)
     {
       var dungeon = Container.GetInstance<DungeonNode>();
-      dungeon.Create(w, h, gi, parent: this);
+      var childGenInfo = gi.Clone() as GenerationInfo;
+      childGenInfo.ChildIslandAllowed = false;//sub islands are not supported
+      dungeon.Create(w, h, childGenInfo, parent: this);
       return dungeon;
     }
 

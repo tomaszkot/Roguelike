@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Drawing;
 
 namespace Dungeons
 {
@@ -19,17 +20,17 @@ namespace Dungeons
     public bool ChildIsland;
     public bool GenerateOuterWalls = true;
     public bool GenerateRandomInterior = true;
-    public bool PreferChildIslandInterior = false;
+    public bool ForceChildIslandInterior = false;
     public bool FirstNodeSmaller = false;
     public bool GenerateRandomStonesBlocks = true;
 
-    public int MinNodeSize = 9;
-    public int MaxNodeSize = 16;
+    public Size MinNodeSize = new Size(9,9);
+    public Size MaxNodeSize = new Size(16, 16);
 
     public readonly int MinSubMazeNodeSize = 5;
     public readonly int MinSimpleInteriorSize = 3;
     public int MinRoomLeft = 6;
-    public int NumberOfChildIslands = 1;
+    public int MaxNumberOfChildIslands = 1;
     public bool ChildIslandAllowed = true;
     internal bool GenerateEmptyTiles = true;
     public bool GenerateDoors = true;

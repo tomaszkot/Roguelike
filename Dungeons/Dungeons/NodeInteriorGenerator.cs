@@ -29,7 +29,7 @@ namespace Dungeons
 
       Interior? interior = null;
       var rand = RandHelper.GetRandomDouble();
-      if (generationInfo.ChildIslandAllowed && (generationInfo.PreferChildIslandInterior || rand < .33))
+      if (generationInfo.ChildIslandAllowed && (generationInfo.ForceChildIslandInterior || rand < .33))
       {
         var island = GenerateChildIslands();
         if (island == null)
@@ -272,16 +272,16 @@ namespace Dungeons
         return null;
 
       List<DungeonNode> nodes = new List<DungeonNode>();
-      var roomLeft = Width - generationInfo.MinSubMazeNodeSize * generationInfo.NumberOfChildIslands;
+      var roomLeft = Width - generationInfo.MinSubMazeNodeSize * generationInfo.MaxNumberOfChildIslands;
       if (roomLeft < generationInfo.MinRoomLeft)
         return null;
-      roomLeft = Height - generationInfo.MinSubMazeNodeSize * generationInfo.NumberOfChildIslands;
+      roomLeft = Height - generationInfo.MinSubMazeNodeSize * generationInfo.MaxNumberOfChildIslands;
       if (roomLeft < generationInfo.MinRoomLeft)
         return null;
       int islandWidth = this.Width - generationInfo.MinRoomLeft;// * generationInfo.NumberOfChildIslands;
-      if (generationInfo.NumberOfChildIslands > 1)
+      if (generationInfo.MaxNumberOfChildIslands > 1)
         islandWidth -= 2;//TODO
-      int islandHeight = this.Height / generationInfo.NumberOfChildIslands - generationInfo.MinRoomLeft;// * generationInfo.NumberOfChildIslands;
+      int islandHeight = this.Height / generationInfo.MaxNumberOfChildIslands - generationInfo.MinRoomLeft;// * generationInfo.NumberOfChildIslands;
 
       var xRandRange = islandWidth - generationInfo.MinSubMazeNodeSize;
       if (xRandRange > 0)
@@ -296,9 +296,9 @@ namespace Dungeons
       generationInfoIsl.EntrancesCount = 4;
       generationInfoIsl.ChildIsland = true;
       Point? destStartPoint = null;
-      if (generationInfo.NumberOfChildIslands > 1)
+      if (generationInfo.MaxNumberOfChildIslands > 1)
         destStartPoint = new Point(generationInfo.MinRoomLeft / 2 + 1, generationInfo.MinRoomLeft / 2);
-      for (int i = 0; i < generationInfo.NumberOfChildIslands; i++)
+      for (int i = 0; i < generationInfo.MaxNumberOfChildIslands; i++)
       {
         var child = dungeonNode.CreateChildIslandInstance(islandWidth, islandHeight, generationInfoIsl, parent: dungeonNode);
         dungeonNode.AppendMaze(child, destStartPoint, childIsland: true);
