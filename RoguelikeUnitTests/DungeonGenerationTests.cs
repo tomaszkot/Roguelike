@@ -95,14 +95,14 @@ namespace RoguelikeUnitTests
       Assert.Null(game.Hero);
       var gi = new Roguelike.GenerationInfo();
       gi.NumberOfRooms = 1;//tmp
-      gi.MaxNodeSize = new System.Drawing.Size(5, 5);
-      gi.MinNodeSize = new System.Drawing.Size(5, 5);
+      gi.MaxNodeSize = new System.Drawing.Size(11, 11);
+      gi.MinNodeSize = gi.MaxNodeSize;
       var level0 = game.GenerateLevel(0, gi);
       Assert.NotNull(level0);
 
       Assert.AreEqual(level0.GeneratorNodes.Count, 1);
-      Assert.AreEqual(level0.GeneratorNodes[0].Width, 5);
-      Assert.AreEqual(level0.GeneratorNodes[0].Height, 5);
+      Assert.AreEqual(level0.GeneratorNodes[0].Width, gi.MaxNodeSize.Width);
+      Assert.AreEqual(level0.GeneratorNodes[0].Height, gi.MaxNodeSize.Height);
     }
 
     [Test]
@@ -125,7 +125,7 @@ namespace RoguelikeUnitTests
       Assert.True(level.Nodes[0].Revealed);
       var island = level.Nodes[0].ChildIslands[0];
       Assert.False(island.Revealed);
-      Assert.Greater(level.GetTiles().Where(i => i.DungeonNodeIndex == DungeonNode.ChildIslandNodeIndex).Count(), 0);
+      Assert.Greater(level.GetTiles().Where(i => i.DungeonNodeIndex == island.NodeIndex).Count(), 0);
 
       var en = level.GetTiles().Where(i => i is Enemy).ToList();
       
@@ -153,10 +153,13 @@ namespace RoguelikeUnitTests
 
       Assert.True(level.Nodes[0].Revealed);
       Assert.False(level.Nodes[1].Revealed);
-      Assert.False(level.Nodes[0].ChildIslands[0].Revealed);
-      Assert.False(level.Nodes[1].ChildIslands[0].Revealed);
-      Assert.Greater(level.GetTiles().Where(i => i.DungeonNodeIndex == DungeonNode.ChildIslandNodeIndex).Count(), 1);
-      Assert.Greater(level.GetTiles().Where(i => i.DungeonNodeIndex < DungeonNode.ChildIslandNodeIndex).Count(), 1);
+
+      var chidIsl1 = level.Nodes[0].ChildIslands[0];
+      Assert.False(chidIsl1.Revealed);
+      var chidIsl2 = level.Nodes[1].ChildIslands[0];
+      Assert.False(chidIsl2.Revealed);
+      Assert.Greater(level.GetTiles().Where(i => i.DungeonNodeIndex == chidIsl1.NodeIndex).Count(), 1);
+      Assert.Greater(level.GetTiles().Where(i => i.DungeonNodeIndex == chidIsl2.NodeIndex).Count(), 1);
 
       //Assert.AreEqual(level.Height, info.MaxNodeSize);
       //var en = level.GetTiles().Where(i => i is Enemy).ToList();

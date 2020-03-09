@@ -49,7 +49,13 @@ namespace Roguelike.Generators
           indexWithStairsDown = 0;
 
         Stairs stairs = new Stairs() { StairsKind = StairsKind.LevelDown, Symbol = '>' };
-        mazeNodes[indexWithStairsDown].SetTile(stairs, mazeNodes[indexWithStairsDown].GetEmptyTiles().Last().Point);
+        var maze = mazeNodes[indexWithStairsDown];
+
+        var tile = maze.GetEmptyTiles().LastOrDefault();
+        if (tile != null)
+          maze.SetTile(stairs, tile.Point);
+        else
+          Logger.LogError("no room for stairs, maze: " + maze);
         //node.SetTile(stairs, new System.Drawing.Point(3, 1));
       }
     }

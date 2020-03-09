@@ -22,8 +22,16 @@ namespace Roguelike.Generators.TileContainers
       var atPos = tiles[point.Y, point.X];
       if (tile != null && !tile.IsEmpty && atPos != null && !atPos.IsEmpty)
       {
-        Container.GetInstance<ILogger>().LogError("atPos != null: "+ atPos + ", while setting "+ tile);
-        return false;
+        var allowed = (tile is Door && atPos is Wall) || (tile is Wall && atPos is Door);
+        if (!allowed)
+        {
+          allowed = tile is Wall && atPos is Wall;
+          if (!allowed)
+          {
+            Container.GetInstance<ILogger>().LogError("atPos != null: " + atPos + ", while setting " + tile);
+            return false;
+          }
+        }
       }
       return base.SetTile(tile, point, resetOldTile, revealReseted, autoSetTileDungeonIndex);
     }
