@@ -145,6 +145,9 @@ namespace RoguelikeUnitTests
       var hero = game.Hero;
 
       var heroAttack = hero.Stats.Attack;
+      Assert.AreEqual(hero.Stats.Strength, heroAttack);
+      var attack1 = hero.GetCurrentValue(EntityStatKind.Attack);
+      Assert.AreEqual(attack1, heroAttack);
 
       var wpn = game.GameManager.GenerateRandomEquipment(EquipmentKind.Weapon);
       Assert.AreEqual(wpn.PrimaryStatKind, EntityStatKind.Attack);
@@ -153,6 +156,7 @@ namespace RoguelikeUnitTests
       hero.SetEquipment(EquipmentKind.Weapon, wpn);
 
       Assert.Greater(hero.Stats.Attack, heroAttack);
+      Assert.AreEqual(hero.GetCurrentValue(EntityStatKind.Attack), hero.Stats.Attack);
       var heroDef = hero.Stats.Defence;
       var lg = new LootGenerator();
       {

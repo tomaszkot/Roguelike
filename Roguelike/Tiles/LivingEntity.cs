@@ -96,7 +96,7 @@ namespace Roguelike.Tiles
         //gm.Assert(false, "Stats.Defence == 0");
         return 0;
       }
-      var inflicted = (attacker.GetHitAttackValue(true) / defence);
+      var inflicted = attacker.GetCurrentValue(EntityStatKind.Attack) / defence;
       ReduceHealth(inflicted);
       var ga = new LivingEntityAction(LivingEntityAction.Kind.GainedDamage) { InvolvedValue = inflicted, InvolvedEntity = this };
       var desc = "received damage: " + inflicted.Formatted();
@@ -163,14 +163,14 @@ namespace Roguelike.Tiles
       return cv;
     }
 
-    public virtual float GetHitAttackValue(bool withVariation)
-    {
-      var str = Stats.GetCurrentValue(EntityStatKind.Strength);
-      //var as1 = Stats.Stats[EntityStatKind.Attack];
-      var att = Stats.GetCurrentValue(EntityStatKind.Attack);
+    //public virtual float GetHitAttackValue()//bool withVariation)
+    //{
+    //  var str = Stats.GetCurrentValue(EntityStatKind.Strength);
+    //  //var as1 = Stats.Stats[EntityStatKind.Attack];
+    //  var att = Stats.GetCurrentValue(EntityStatKind.Attack);
 
-      return str + att;
-    }
+    //  return str + att;
+    //}
 
     public float GetTotalValue(EntityStatKind esk)
     {
