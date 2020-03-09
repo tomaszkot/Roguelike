@@ -805,6 +805,19 @@ namespace Dungeons
         return pt.X >= 0 && pt.Y >= 0 && pt.X < this.Width && pt.Y < this.Height;
       }
 
+      public Tile GetClosestEmpty(Tile baseTile, bool sameNodeId = false)
+      {
+        var emptyTiles = GetEmptyTiles();
+        if (sameNodeId)
+          emptyTiles = emptyTiles.Where(i => i.DungeonNodeIndex == baseTile.DungeonNodeIndex).ToList();
+        return GetClosestEmpty(baseTile, emptyTiles);
+      }
+
+      public Tile GetClosestEmpty(Tile baseTile, List<Tile> emptyTiles)
+      {
+        return emptyTiles.Where(i => i.DistanceFrom(baseTile) == emptyTiles.Min(j => j.DistanceFrom(baseTile))).FirstOrDefault();
+      }
+
       public List<T> GetTiles<T>() where T : class
       {
         var res = new List<T>();

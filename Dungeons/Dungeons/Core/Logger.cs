@@ -11,7 +11,7 @@ namespace Dungeons.Core
   {
     public void LogError(string err, bool throwExc = false)
     {
-      Debug.WriteLine(err);
+      Debug.WriteLine("ERROR: "+ err);
       if (throwExc)
         throw new Exception(err);
     }

@@ -1,4 +1,6 @@
-﻿using Dungeons.Tiles;
+﻿using System.Drawing;
+using Dungeons.Core;
+using Dungeons.Tiles;
 using SimpleInjector;
 
 namespace Roguelike.Generators.TileContainers
@@ -7,11 +9,23 @@ namespace Roguelike.Generators.TileContainers
   public class DungeonNode : Dungeons.TileContainers.DungeonNode
   {
     public DungeonNode(Container c) : base(c)
-    { }
+    {
+    }
 
     protected override Dungeons.Tiles.Door CreateDoorInstance()
     {
       return new Tiles.Door();
+    }
+
+    public override bool SetTile(Tile tile, Point point, bool resetOldTile = true, bool revealReseted = true, bool autoSetTileDungeonIndex = true)
+    {
+      var atPos = tiles[point.Y, point.X];
+      if (tile != null && !tile.IsEmpty && atPos != null && !atPos.IsEmpty)
+      {
+        Container.GetInstance<ILogger>().LogError("atPos != null: "+ atPos + ", while setting "+ tile);
+        return false;
+      }
+      return base.SetTile(tile, point, resetOldTile, revealReseted, autoSetTileDungeonIndex);
     }
 
     protected override bool ShallReveal(int row, int col)
