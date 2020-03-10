@@ -9,7 +9,7 @@ namespace Dungeons.Core
 {
   public class Logger : ILogger
   {
-    public void LogError(string err, bool throwExc = false)
+    public void LogError(string err, bool throwExc = true)
     {
       Debug.WriteLine("ERROR: "+ err);
       if (throwExc)

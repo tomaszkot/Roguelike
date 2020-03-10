@@ -84,6 +84,7 @@
     <Compile Include="Generators\LootGenerator.cs" />
     <Compile Include="Generators\RoomContentGenerator.cs" />
     <Compile Include="LootContainers\Inventory.cs" />
+    <Compile Include="Managers\SoundManager.cs" />
     <Compile Include="RpgGameSettings.cs" />
     <Compile Include="Serialization\PersistancyWorker.cs" />
     <Compile Include="Spells\Spell.cs" />

@@ -69,7 +69,7 @@ namespace Roguelike.Tiles
           alive = value;
           if (!alive)
           {
-            AppendAction(new LivingEntityAction(LivingEntityAction.Kind.Died) { InvolvedEntity = this, Level = ActionLevel.Important, Info = Name +" Died" });
+            AppendAction(new LivingEntityAction(LivingEntityActionKind.Died) { InvolvedEntity = this, Level = ActionLevel.Important, Info = Name +" Died" });
           }
         }
       }
@@ -98,13 +98,17 @@ namespace Roguelike.Tiles
       }
       var inflicted = attacker.GetCurrentValue(EntityStatKind.Attack) / defence;
       ReduceHealth(inflicted);
-      var ga = new LivingEntityAction(LivingEntityAction.Kind.GainedDamage) { InvolvedValue = inflicted, InvolvedEntity = this };
+      var ga = new LivingEntityAction(LivingEntityActionKind.GainedPhisicalDamage) { InvolvedValue = inflicted, InvolvedEntity = this };
       var desc = "received damage: " + inflicted.Formatted();
       ga.Info = Name.ToString() + " " + desc;
 #if UNITY_EDITOR
       ga.Info += "UE , Health = " + Stats.Health.Formatted();
 #endif
       AppendAction(ga);
+      //if (this is Enemy || this is Hero)// || this is CrackedStone)
+      //{
+      //  PlayPunchSound();
+      //}
       DieIfShould();
       return inflicted;
     }

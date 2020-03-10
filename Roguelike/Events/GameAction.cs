@@ -114,11 +114,12 @@ namespace Roguelike
       public LootAction(Loot loot) { Loot = loot; }
     }
 
+    public enum HeroActionKind { LeveledUp, ChangedLevel, Moved };
     public class HeroAction : GameAction
     {
-      public enum Kind { LeveledUp, ChangedLevel };
+      
 
-      public Kind KindValue
+      public HeroActionKind Kind
       {
         get; set;
       }
@@ -138,32 +139,35 @@ namespace Roguelike
       public bool Value { get; set; }//revealed or hidden?
     }
 
-    //public class EnemyAction : GameAction
-    //{
-    //  public enum Kind { Moved, Died, AttackingHero, ChasingPlayer, AppendedToLevel, Teleported, RaiseCall, SpecialAction };
-    //  public Kind KindValue;
+    public enum EnemyActionKind { Moved, Died, AttackingHero, ChasingPlayer, AppendedToLevel, Teleported, RaiseCall, SpecialAction };
 
-    //  public Enemy Enemy
-    //  {
-    //    get;
-    //    set;
-    //  }
-    //}
+    public class EnemyAction : GameAction
+    {
+      
+      public EnemyActionKind Kind;
 
+      public Enemy Enemy
+      {
+        get;
+        set;
+      }
+    }
+
+    public enum LivingEntityActionKind
+    {
+      Moved, Died, GainedPhisicalDamage, ExperiencedEffect, Trapped, Interacted, Missed, UsedSpell,
+      FailedToCastSpell, GodsTurn, GodsPowerReleased, StrikedBack, BulkAttack
+    }
     public class LivingEntityAction : GameAction
     {
-      public LivingEntityAction(Kind kind)
+      public LivingEntityAction(LivingEntityActionKind kind)
       {
-        this.KindValue = kind;
+        this.Kind = kind;
       }
 
       public LivingEntity InvolvedEntity { get; set; }
-      public enum Kind
-      {
-        Moved, Died, GainedDamage, ExperiencedEffect, Trapped, Interacted, Missed, UsedSpell,
-        FailedToCastSpell, GodsTurn, GodsPowerReleased, StrikedBack, BulkAttack
-      }
-      public Kind KindValue { get; set; }
+      
+      public LivingEntityActionKind Kind { get; set; }
       //public TileData TileData { get; set; }
       public double InvolvedValue { get; set; }
 
@@ -177,7 +181,7 @@ namespace Roguelike
         //var KindVa = KindValue.ToString();
         //if (KindValue == Kind.Moved)
         //  return "living_ent_moved";
-        return GetType().Name.Replace("Action", "") + KindValue;
+        return GetType().Name.Replace("Action", "") + Kind;
       }
     }
   }

@@ -71,7 +71,7 @@ namespace Roguelike.Managers
       //Debug.Log("moving hero to " + newPoint);
       if (Node.SetTile(entity, newPos))
       {
-        eventsManager.AppendAction(new LivingEntityAction(kind: LivingEntityAction.Kind.Moved)
+        eventsManager.AppendAction(new LivingEntityAction(kind: LivingEntityActionKind.Moved)
         { /*TileData = entity.Data,*/ Info = entity + " moved", InvolvedEntity = entity });
         //entity.EmitSmoothMovement();
         return true;

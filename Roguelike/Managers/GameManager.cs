@@ -64,11 +64,12 @@ namespace Roguelike.Managers
     public Container Container { get; set; }
     public Func<Hero, GameState, AbstractGameLevel> WorldLoader { get => worldLoader; set => worldLoader = value; }
     public Action WorldSaver { get; set; }
-    
+    public SoundManager soundManager;
 
     public GameManager(Container container)
     {
       Container = container;
+      
       Logger = container.GetInstance<ILogger>();
       levelGenerator = container.GetInstance<LevelGenerator>();
       EventsManager = new EventsManager();
@@ -81,6 +82,8 @@ namespace Roguelike.Managers
       AlliesManager = new EntitiesManager(Context, EventsManager);
 
       Persister = container.GetInstance<JSONPersister>();
+
+      soundManager = new SoundManager(this, container);
     }
 
     protected virtual EnemiesManager CreateEnemiesManager(GameContext context, EventsManager eventsManager)
@@ -132,7 +135,7 @@ namespace Roguelike.Managers
       if(e is LivingEntityAction)
       {
         var lea = e as LivingEntityAction;
-        if (lea.KindValue == LivingEntityAction.Kind.Died)
+        if (lea.Kind == LivingEntityActionKind.Died)
         {
           if (context.CurrentNode.HasTile(lea.InvolvedEntity))
           {
@@ -177,7 +180,7 @@ namespace Roguelike.Managers
       if (res == InteractionResult.Handled || res == InteractionResult.Attacked)
       {
         //ASCII printer needs that event
-        EventsManager.AppendAction(new LivingEntityAction(LivingEntityAction.Kind.Interacted) { InvolvedEntity = Hero });
+        EventsManager.AppendAction(new LivingEntityAction(LivingEntityActionKind.Interacted) { InvolvedEntity = Hero });
       }
       else
       {

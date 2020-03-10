@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
+using System.Media;
 using Dungeons;
 using Dungeons.ASCIIDisplay;
 using Roguelike;
@@ -16,6 +18,27 @@ using SimpleInjector;
 
 namespace RoguelikeConsoleRunner
 {
+  public class AppSoundPlayer : ISoundPlayer
+  {
+    public void PlaySound(string soundFileName)
+    {
+      try
+      {
+        SoundPlayer sp = new SoundPlayer();
+        var filePath = Path.Combine(Environment.CurrentDirectory, "sounds\\"+soundFileName + ".wav");
+        var ex = File.Exists(filePath);
+        sp.SoundLocation = filePath;
+        sp.Play();
+      }
+      catch (Exception ex)
+      {
+        //Debug.WriteLine(ex.Message);
+      }
+    }
+
+    public void StopSound() { }
+  }
+
   public class GameController : DungeonsConsoleRunner.GameController, IGameManagerProvider
   {
     IGame game;
@@ -25,6 +48,7 @@ namespace RoguelikeConsoleRunner
     public GameController(IGame game, IDungeonGenerator generator)
       : base(game.Container, generator, game.Container.GetInstance<IDrawingEngine>())
     {
+      //game.Container.Register<ISoundPlayer, AppSoundPlayer>();
       this.Game = game;
       this.generator = generator;
 
@@ -83,7 +107,7 @@ namespace RoguelikeConsoleRunner
           screen.Redraw(lea.InvolvedEntity, true);
 
         screen.RedrawLists();
-        if(lea.KindValue == LivingEntityAction.Kind.Interacted)
+        if(lea.Kind == LivingEntityActionKind.Interacted)
           Redraw();//e.g. room revealed
       }
       else if (e is GameStateAction)
