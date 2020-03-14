@@ -32,7 +32,7 @@ namespace Roguelike.Managers
       AttackPolicy = (LivingEntity e1, LivingEntity e2) => { return new AttackPolicy(e1, e2); };
     }
 
-    private void Context_ContextSwitched(object sender, EventArgs e)
+    private void Context_ContextSwitched(object sender, ContextSwitch e)
     {
       //SetEntities(Context.CurrentNode.GetTiles<LivingEntity>().Where(i=> !(i is Hero)).ToList());
     }

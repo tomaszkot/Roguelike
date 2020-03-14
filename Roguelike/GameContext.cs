@@ -27,7 +27,7 @@ namespace Roguelike
     public virtual AbstractGameLevel CurrentNode { get; protected set; }
     public Hero Hero { get => hero; set => hero = value; }
     public event EventHandler EnemiesTurn;
-    public event EventHandler<GenericEventArgs<ContextSwitch>> ContextSwitched;
+    public event EventHandler<ContextSwitch> ContextSwitched;
     [JsonIgnore]
     public EventsManager EventsManager { get ; set ; }
     ILogger logger;
@@ -98,7 +98,7 @@ namespace Roguelike
     public void EmitContextSwitched(GameContextSwitchKind context)
     {
       if (ContextSwitched != null)
-        ContextSwitched(this, new GenericEventArgs<ContextSwitch>(new ContextSwitch() { Kind = context, CurrentNode = this.CurrentNode, Hero = this.hero }));
+        ContextSwitched(this, new ContextSwitch() { Kind = context, CurrentNode = this.CurrentNode, Hero = this.hero });
     }
 
     bool heroTurn = true;

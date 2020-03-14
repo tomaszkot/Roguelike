@@ -60,7 +60,7 @@ namespace Roguelike.Managers
       
     }
 
-    private void Context_ContextSwitched(object sender, EventArgs e)
+    private void Context_ContextSwitched(object sender, ContextSwitch e)
     {
       Enemies = Context.CurrentNode.GetTiles<Enemy>();
     }

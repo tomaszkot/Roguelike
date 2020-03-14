@@ -85,7 +85,7 @@ namespace RoguelikeConsoleRunner
       //// world.SetTile(enemy, new System.Drawing.Point(4, 1));
     }
 
-    private void Context_ContextSwitched(object sender, EventArgs e)
+    private void Context_ContextSwitched(object sender, ContextSwitch e)
     {
       Redraw();
     }
