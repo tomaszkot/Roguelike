@@ -28,6 +28,9 @@ namespace Dungeons
       if (!Inited())
         return;
 
+      if (!generationInfo.GenerateRandomInterior && !generationInfo.ForceChildIslandInterior)
+        return;
+
       Interior? interior = null;
       var rand = RandHelper.GetRandomDouble();
       if (generationInfo.ChildIslandAllowed && (generationInfo.ForceChildIslandInterior || rand < .33))
@@ -38,7 +41,7 @@ namespace Dungeons
           interior = GenerateRandomSimpleInterior(true);
         }
       }
-      else
+      else if (generationInfo.GenerateRandomInterior)
         interior = GenerateRandomSimpleInterior();
     }
 

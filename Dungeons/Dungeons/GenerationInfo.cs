@@ -20,11 +20,14 @@ namespace Dungeons
     public int EntrancesCount = 0;
     public bool ChildIsland;
 
-    public bool GenerateOuterWalls = true;
-    public bool GenerateRandomInterior = true;
-    public bool GenerateRandomStonesBlocks = true;
+    //global switch
+    public const bool ForceEmpty = false;
+
+    public bool GenerateOuterWalls = true && !ForceEmpty;
+    public bool GenerateRandomInterior = true && !ForceEmpty;
+    public bool GenerateRandomStonesBlocks = true && !ForceEmpty;
+    public bool GenerateDoors = true && !ForceEmpty;
     internal bool GenerateEmptyTiles = true;
-    public bool GenerateDoors = true;
 
     public bool FirstNodeSmaller = false;
     const int mixSize = 12;
@@ -37,7 +40,7 @@ namespace Dungeons
 
     public bool ChildIslandAllowed = true;
     public int MaxNumberOfChildIslands = 1;
-    public bool ForceChildIslandInterior = true;
+    public bool ForceChildIslandInterior = false;
 
     public bool RevealTiles { get; set; } = false;
     public bool RevealAllNodes { get; set; } = false;

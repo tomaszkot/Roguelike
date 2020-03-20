@@ -216,12 +216,10 @@ namespace Dungeons
         if (generationInfo.GenerateOuterWalls)
           GenerateOuterWalls();
 
-        if (generationInfo.GenerateRandomInterior)
-        {
-          interiorGenerator.GenerateRandomInterior();
+        interiorGenerator.GenerateRandomInterior();
 
+        if (generationInfo.GenerateRandomInterior)
           GenerateRandomStonesBlocks();
-        }
 
         Reveal(generationInfo.RevealTiles);
       }
