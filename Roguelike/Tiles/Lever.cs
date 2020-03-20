@@ -41,7 +41,7 @@ namespace Roguelike.Tiles
     public LeverPart()
     {
       Symbol = ',';
-      tag = "lever_part";
+      tag1 = "lever_part";
 #if ASCII_BUILD
       color = ConsoleColor.Blue;
 #endif

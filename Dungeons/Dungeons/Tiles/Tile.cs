@@ -26,7 +26,8 @@ namespace Dungeons.Tiles
     private char symbol = Constants.SymbolBackground;
     public string name;
     private string displayedName;
-    public string tag;//custom purpose field
+    public string tag1;//custom purpose field
+    public string tag2;//custom purpose field
     public ConsoleColor color = ConsoleColor.White;
 
     /// <summary>

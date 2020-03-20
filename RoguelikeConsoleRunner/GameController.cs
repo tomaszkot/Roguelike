@@ -18,26 +18,7 @@ using SimpleInjector;
 
 namespace RoguelikeConsoleRunner
 {
-  public class AppSoundPlayer : ISoundPlayer
-  {
-    public void PlaySound(string soundFileName)
-    {
-      try
-      {
-        SoundPlayer sp = new SoundPlayer();
-        var filePath = Path.Combine(Environment.CurrentDirectory, "sounds\\"+soundFileName + ".wav");
-        var ex = File.Exists(filePath);
-        sp.SoundLocation = filePath;
-        sp.Play();
-      }
-      catch (Exception ex)
-      {
-        //Debug.WriteLine(ex.Message);
-      }
-    }
-
-    public void StopSound() { }
-  }
+  
 
   public class GameController : DungeonsConsoleRunner.GameController, IGameManagerProvider
   {

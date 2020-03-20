@@ -1,5 +1,6 @@
 ﻿using NUnit.Framework;
 using Roguelike;
+using Roguelike.Managers;
 using SimpleInjector;
 
 namespace RoguelikeUnitTests
@@ -16,6 +17,7 @@ namespace RoguelikeUnitTests
     public void Init()
     {
       Container = new Roguelike.ContainerConfigurator().Container;
+      Container.Register<ISoundPlayer, BasicSoundPlayer>();
       //CreateGame();
     }
 

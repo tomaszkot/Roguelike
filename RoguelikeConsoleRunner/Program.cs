@@ -18,7 +18,7 @@ namespace RoguelikeConsoleRunner
       container.Register<GameController, GameController>();
       container.Register<IDrawingEngine, ConsoleDrawingEngine>();
       container.Register<IGame, RoguelikeGame>();
-      container.Register<ISoundPlayer, AppSoundPlayer>();
+      container.Register<ISoundPlayer, BasicSoundPlayer>();
       //container.Verify();
 
       var controller = container.GetInstance<GameController>();

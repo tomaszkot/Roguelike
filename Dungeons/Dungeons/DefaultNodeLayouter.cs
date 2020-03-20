@@ -44,9 +44,11 @@ namespace Dungeons
     LayouterOptions options;
     Container container;
 
-    public DefaultNodeLayouter(Container container)
+    public DefaultNodeLayouter(Container container, GenerationInfo info = null)
     {
       this.container = container;
+      if (info != null && info.forcedNextRoomSide != null)
+        forcedNextSide = info.forcedNextRoomSide.Value;
     }
 
     public DungeonLevel DoLayout(List<DungeonNode> nodes, LayouterOptions opt = null) 

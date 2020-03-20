@@ -118,7 +118,7 @@ namespace Dungeons
     {
       var mazeNodes = CreateDungeonNodes(info);
       //var layouter = new CorridorNodeLayouter(container);
-      var layouter = new DefaultNodeLayouter(container);
+      var layouter = new DefaultNodeLayouter(container, info);
       var level = layouter.DoLayout(mazeNodes, opt);
 
       return level;

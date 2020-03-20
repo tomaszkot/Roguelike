@@ -30,82 +30,82 @@ namespace Roguelike.Generators
     void AddScrolls()
     {
       var loot = new Scroll();
-      loot.tag = "fire_ball_scroll";
+      loot.tag1 = "fire_ball_scroll";
       loot.Kind = Spells.SpellKind.FireBall;
       scrolls.Add(loot);
 
       loot = new Scroll();
-      loot.tag = "NESW_fire_scroll";
+      loot.tag1 = "NESW_fire_scroll";
       loot.Kind = Spells.SpellKind.NESWFireBall;
       scrolls.Add(loot);
 
       loot = new Scroll();
-      loot.tag = "cracked_stone_scroll";
+      loot.tag1 = "cracked_stone_scroll";
       loot.Kind = Spells.SpellKind.CrackedStone;
       scrolls.Add(loot);
 
       loot = new Scroll();
-      loot.tag = "trap_stone_scroll";
+      loot.tag1 = "trap_stone_scroll";
       loot.Kind = Spells.SpellKind.Trap;
       scrolls.Add(loot);
 
       loot = new Scroll();
-      loot.tag = "skeleton_stone_scroll";
+      loot.tag1 = "skeleton_stone_scroll";
       loot.Kind = Spells.SpellKind.Skeleton;
       scrolls.Add(loot);
 
       loot = new Scroll();
-      loot.tag = "transform_scroll";
+      loot.tag1 = "transform_scroll";
       loot.Kind = Spells.SpellKind.Transform;
       scrolls.Add(loot);
 
       loot = new Scroll();
-      loot.tag = "poison_ball_scroll";
+      loot.tag1 = "poison_ball_scroll";
       loot.Kind = Spells.SpellKind.PoisonBall;
       scrolls.Add(loot);
 
       loot = new Scroll();
-      loot.tag = "ice_ball_scroll";
+      loot.tag1 = "ice_ball_scroll";
       loot.Kind = Spells.SpellKind.IceBall;
       scrolls.Add(loot);
 
       loot = new Scroll();
-      loot.tag = "frighten_scroll";
+      loot.tag1 = "frighten_scroll";
       loot.Kind = Spells.SpellKind.Frighten;
       scrolls.Add(loot);
 
       loot = new Scroll();
-      loot.tag = "healing_scroll";
+      loot.tag1 = "healing_scroll";
       loot.Kind = Spells.SpellKind.Healing;
       scrolls.Add(loot);
 
       loot = new Scroll();
-      loot.tag = "mana_shield_scroll";
+      loot.tag1 = "mana_shield_scroll";
       loot.Kind = Spells.SpellKind.ManaShield;
       scrolls.Add(loot);
 
       loot = new Scroll();
-      loot.tag = "telekinesis_scroll";
+      loot.tag1 = "telekinesis_scroll";
       loot.Kind = Spells.SpellKind.Telekinesis;
       scrolls.Add(loot);
 
       loot = new Scroll();
-      loot.tag = "mana_scroll";
+      loot.tag1 = "mana_scroll";
       loot.Kind = Spells.SpellKind.Mana;
       scrolls.Add(loot);
 
       loot = new Scroll();
-      loot.tag = "rage_scroll";
+      loot.tag1 = "rage_scroll";
       loot.Kind = Spells.SpellKind.Rage;
       scrolls.Add(loot);
 
       loot = new Scroll();
-      loot.tag = "weaken_scroll";
+      loot.tag1 = "weaken_scroll";
       loot.Kind = Spells.SpellKind.Weaken;
       scrolls.Add(loot);
 
       loot = new Scroll();
-      loot.tag = "iron_skin_scroll";
+      loot.tag1 = "iron_skin_scroll";
       loot.Kind = Spells.SpellKind.IronSkin;
       scrolls.Add(loot);
       //loot = new Scroll();
@@ -114,23 +114,23 @@ namespace Roguelike.Generators
       //scrolls.Add(loot);
 
       loot = new Scroll();
-      loot.tag = "teleport_scroll";
+      loot.tag1 = "teleport_scroll";
       loot.Kind = Spells.SpellKind.Teleport;
       scrolls.Add(loot);
 
       loot = new Scroll();
-      loot.tag = "call_merchant_scroll";
+      loot.tag1 = "call_merchant_scroll";
       loot.Kind = Spells.SpellKind.CallMerchant;
       scrolls.Add(loot);
 
       loot = new Scroll();
-      loot.tag = "call_god_scroll";
+      loot.tag1 = "call_god_scroll";
       loot.Kind = Spells.SpellKind.CallGod;
       scrolls.Add(loot);
 
       //
       loot = new Scroll();
-      loot.tag = "lighting_scroll";
+      loot.tag1 = "lighting_scroll";
       loot.Kind = Spells.SpellKind.LightingBall;
       scrolls.Add(loot);
     }
@@ -193,7 +193,7 @@ namespace Roguelike.Generators
     private Jewellery createAmulet(EntityStatKind sk, int minDungeonLevel, int statValue)
     {
       var jew = createJewellery(EquipmentKind.Amulet, minDungeonLevel);
-      jew.tag = sk.ToString() + "_amulet";
+      jew.tag1 = sk.ToString() + "_amulet";
       int AmuletStatAddition = 2;
       jew.SetPrimaryStat(sk, statValue + AmuletStatAddition);
 
@@ -211,7 +211,7 @@ namespace Roguelike.Generators
       int statValue)
     {
       var jew = createJewellery(EquipmentKind.RingLeft, minDropDungeonLevel);
-      jew.tag = asset;
+      jew.tag1 = asset;
       //juw.ExtendedInfo.Stats.SetFactor(EntityStatKind.ResistCold, 10);
       jew.SetPrimaryStat(sk, statValue);
       var name = "ring of ";
@@ -232,7 +232,7 @@ namespace Roguelike.Generators
     {
       var loot = new Mushroom();
       loot.SetKind(MushroomKind.Boletus);
-      loot.tag = "mash3";
+      loot.tag1 = "mash3";
       return loot;
     }
 
@@ -240,7 +240,7 @@ namespace Roguelike.Generators
     {
       var loot = new Food();
       loot.SetKind(FoodKind.Plum);
-      loot.tag = "plum_mirabelka";
+      loot.tag1 = "plum_mirabelka";
       return loot;
     }
   }

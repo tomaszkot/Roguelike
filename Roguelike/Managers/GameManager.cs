@@ -172,7 +172,7 @@ namespace Roguelike.Managers
       {
         return;
       }
-            
+      var hc = CurrentNode.GetHashCode();
       var tile = CurrentNode.GetTile(newPos.Point);
       var res = InteractHeroWith(tile);
       if (res == InteractionResult.ContextSwitched || res == InteractionResult.Blocked)

@@ -15,15 +15,18 @@ namespace Dungeons
     /// Normally true, can be set to false for issue testing purposes
     /// </summary>
     public bool CreateDoors = true;
+    public EntranceSide? forcedNextRoomSide;
 
     public int EntrancesCount = 0;
     public bool ChildIsland;
+
     public bool GenerateOuterWalls = true;
     public bool GenerateRandomInterior = true;
-    
-    public bool FirstNodeSmaller = false;
     public bool GenerateRandomStonesBlocks = true;
+    internal bool GenerateEmptyTiles = true;
+    public bool GenerateDoors = true;
 
+    public bool FirstNodeSmaller = false;
     const int mixSize = 12;
     public Size MinNodeSize = new Size(mixSize, mixSize);
     public Size MaxNodeSize = new Size(16, 16);
@@ -35,10 +38,6 @@ namespace Dungeons
     public bool ChildIslandAllowed = true;
     public int MaxNumberOfChildIslands = 1;
     public bool ForceChildIslandInterior = true;
-    
-    internal bool GenerateEmptyTiles = true;
-    public bool GenerateDoors = true;
-
 
     public bool RevealTiles { get; set; } = false;
     public bool RevealAllNodes { get; set; } = false;

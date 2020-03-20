@@ -35,6 +35,23 @@ namespace RoguelikeUnitTests
       
     }
 
+    [Test]
+    public void DestroyBarrel()
+    {
+      var game = CreateGame();
+      var barrels = game.Level.GetTiles<Barrel>();
+      Assert.Greater(barrels.Count, 0);
+      var pt = barrels.First().Point;
+      Assert.AreEqual(game.Level.GetTile(pt), barrels.First());
+
+      game.GameManager.InteractHeroWith(barrels.First());
+      var barrels1 = game.Level.GetTiles<Barrel>();
+      Assert.AreEqual(barrels1.Count, barrels.Count-1);
+      Assert.AreNotEqual(game.Level.GetTile(pt), barrels.First());
+     // var tile = game.Level.GetTile(pt);
+     // Assert.True(tile.IsEmpty);
+    }
+
     private static void CollectLoot(Roguelike.RoguelikeGame game, Loot loot)
     {
       var freeTile = game.Level.GetFirstEmptyPoint().Value;

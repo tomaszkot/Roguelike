@@ -72,6 +72,7 @@
     <Compile Include="Attributes\EntityStat.cs" />
     <Compile Include="Attributes\EntityStats.cs" />
     <Compile Include="Attributes\StatValue.cs" />
+    <Compile Include="BasicSoundPlayer.cs" />
     <Compile Include="ContainerConfigurator.cs" />
     <Compile Include="EnemySymbols.cs" />
     <Compile Include="Events\GameAction.cs" />
