@@ -21,7 +21,7 @@ namespace Dungeons
     public bool ChildIsland;
 
     //global switch
-    public const bool ForceEmpty = true;
+    public const bool ForceEmpty = false;
 
     public bool GenerateOuterWalls = true && !ForceEmpty;
     public bool GenerateRandomInterior = true && !ForceEmpty;
