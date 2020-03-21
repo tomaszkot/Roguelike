@@ -538,6 +538,11 @@ namespace Dungeons
             if (childIsland)
               tileInChildMaze.DungeonNodeIndex = childMaze.NodeIndex;
 
+            //var at = this.GetTile(new Point(destCol, destRow));
+            //if (at.name == "Bat")
+            //{
+
+            //}
             this.SetTile(tileInChildMaze, new Point(destCol, destRow), autoSetTileDungeonIndex: false);
           }
         }
@@ -805,9 +810,11 @@ namespace Dungeons
         return pt.X >= 0 && pt.Y >= 0 && pt.X < this.Width && pt.Y < this.Height;
       }
 
-      public Tile GetClosestEmpty(Tile baseTile, bool sameNodeId = false)
+      public Tile GetClosestEmpty(Tile baseTile, bool sameNodeId = false, List<Tile> skip = null)
       {
         var emptyTiles = GetEmptyTiles();
+        if (skip != null)
+          emptyTiles.RemoveAll(i=> skip.Contains(i));
         if (sameNodeId)
           emptyTiles = emptyTiles.Where(i => i.DungeonNodeIndex == baseTile.DungeonNodeIndex).ToList();
         return GetClosestEmpty(baseTile, emptyTiles);

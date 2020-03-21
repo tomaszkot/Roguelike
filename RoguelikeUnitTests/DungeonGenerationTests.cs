@@ -7,6 +7,7 @@ using Roguelike.Tiles.Interactive;
 using SimpleInjector;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -103,6 +104,46 @@ namespace RoguelikeUnitTests
       Assert.AreEqual(level0.GeneratorNodes.Count, 1);
       Assert.AreEqual(level0.GeneratorNodes[0].Width, gi.MaxNodeSize.Width);
       Assert.AreEqual(level0.GeneratorNodes[0].Height, gi.MaxNodeSize.Height);
+    }
+
+    [Test]
+    public void AppendMazeTest()
+    {
+      var level1 = GenRoomWithEnemies();
+      Assert.AreEqual(level1.GetTiles<Enemy>().Count(), 2);
+
+      var level2 = GenRoomWithEnemies();
+      Assert.AreEqual(level2.GetTiles<Enemy>().Count(), 2);
+            
+      level2.Merge(level1.GetTiles().Where(i=>i is Enemy).ToList(), new System.Drawing.Point(0, 0),
+        (Dungeons.Tiles.Tile tile) => { return tile is Enemy; });
+
+      Assert.AreEqual(level2.GetTiles<Enemy>().Count(), 4);
+    }
+
+    private DungeonLevel GenRoomWithEnemies()
+    {
+      var generator = Container.GetInstance<Dungeons.IDungeonGenerator>();
+      var info = new Roguelike.GenerationInfo();
+      info.NumberOfRooms = 1;
+      info.GenerateEnemies = false;
+      info.MinNodeSize = new System.Drawing.Size(5, 5);
+      info.MaxNodeSize = new System.Drawing.Size(5, 5);
+      var level = generator.Generate(0, info);
+      Assert.Greater(level.GetTiles().Where(i => i.IsEmpty).Count(), 0);
+
+      var en = new Enemy();
+      var pt = new Point(2,2);// level.GetFirstEmptyPoint();
+      var set = level.SetTile(en, pt);
+      Assert.True(set);
+
+      en = new Enemy();
+      pt = new Point(2, 3);
+      set = level.SetTile(en, pt);
+      Assert.True(set);
+      return level;
+
+      
     }
 
     [Test]
