@@ -21,7 +21,7 @@ namespace Dungeons
     public bool ChildIsland;
 
     //global switch
-    public const bool ForceEmpty = false;
+    public const bool ForceEmpty = true;
 
     public bool GenerateOuterWalls = true && !ForceEmpty;
     public bool GenerateRandomInterior = true && !ForceEmpty;
@@ -33,6 +33,7 @@ namespace Dungeons
     const int mixSize = 12;
     public Size MinNodeSize = new Size(mixSize, mixSize);
     public Size MaxNodeSize = new Size(16, 16);
+    public Size ForcedChilldIslandSize = new Size(0, 0);
 
     public readonly int MinSubMazeNodeSize = 5;
     public readonly int MinSimpleInteriorSize = 3;

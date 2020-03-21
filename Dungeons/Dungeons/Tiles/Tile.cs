@@ -27,7 +27,7 @@ namespace Dungeons.Tiles
     public string name;
     private string displayedName;
     public string tag1;//custom purpose field
-    public string tag2;//custom purpose field
+    //public string tag2;//custom purpose field
     public ConsoleColor color = ConsoleColor.White;
 
     /// <summary>

@@ -276,25 +276,30 @@ namespace Dungeons
         return null;
 
       List<DungeonNode> nodes = new List<DungeonNode>();
-      var roomLeft = Width - generationInfo.MinSubMazeNodeSize * generationInfo.MaxNumberOfChildIslands;
-      if (roomLeft < generationInfo.MinRoomLeft)
-        return null;
-      roomLeft = Height - generationInfo.MinSubMazeNodeSize * generationInfo.MaxNumberOfChildIslands;
-      if (roomLeft < generationInfo.MinRoomLeft)
-        return null;
-      int islandWidth = this.Width - generationInfo.MinRoomLeft;// * generationInfo.NumberOfChildIslands;
-      if (generationInfo.MaxNumberOfChildIslands > 1)
-        islandWidth -= 2;//TODO
-      int islandHeight = this.Height / generationInfo.MaxNumberOfChildIslands - generationInfo.MinRoomLeft;// * generationInfo.NumberOfChildIslands;
+      int islandWidth = generationInfo.ForcedChilldIslandSize.Width;
+      int islandHeight = generationInfo.ForcedChilldIslandSize.Height;
+      if (generationInfo.ForcedChilldIslandSize.Height == 0)
+      {
+        var roomLeft = Width - generationInfo.MinSubMazeNodeSize * generationInfo.MaxNumberOfChildIslands;
+        if (roomLeft < generationInfo.MinRoomLeft)
+          return null;
+        roomLeft = Height - generationInfo.MinSubMazeNodeSize * generationInfo.MaxNumberOfChildIslands;
+        if (roomLeft < generationInfo.MinRoomLeft)
+          return null;
+        islandWidth = this.Width - generationInfo.MinRoomLeft;// * generationInfo.NumberOfChildIslands;
+        if (generationInfo.MaxNumberOfChildIslands > 1)
+          islandWidth -= 2;//TODO
+        islandHeight = this.Height / generationInfo.MaxNumberOfChildIslands - generationInfo.MinRoomLeft;// * generationInfo.NumberOfChildIslands;
 
-      var xRandRange = islandWidth - generationInfo.MinSubMazeNodeSize;
-      if (xRandRange > 0)
-        islandWidth -= RandHelper.Random.Next(xRandRange);
+        var xRandRange = islandWidth - generationInfo.MinSubMazeNodeSize;
+        if (xRandRange > 0)
+          islandWidth -= RandHelper.Random.Next(xRandRange);
 
-      if (islandWidth < generationInfo.MinSubMazeNodeSize)
-        islandWidth = generationInfo.MinSubMazeNodeSize;
-      if (islandHeight < generationInfo.MinSubMazeNodeSize)
-        islandHeight = generationInfo.MinSubMazeNodeSize;
+        if (islandWidth < generationInfo.MinSubMazeNodeSize)
+          islandWidth = generationInfo.MinSubMazeNodeSize;
+        if (islandHeight < generationInfo.MinSubMazeNodeSize)
+          islandHeight = generationInfo.MinSubMazeNodeSize;
+      }
 
       var generationInfoIsl = generationInfo.Clone() as GenerationInfo;//TODO
       generationInfoIsl.EntrancesCount = 4;
