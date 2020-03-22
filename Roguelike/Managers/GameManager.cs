@@ -400,5 +400,16 @@ namespace Roguelike.Managers
     {
       return lootGenerator.GetRandomWeapon();
     }
+
+    public void MakeGameTick()
+    {
+      if (context.PendingTurnOwnerApply)
+      {
+        if (context.TurnOwner == TurnOwner.Allies)
+          AlliesManager.MoveHeroAllies();
+        else if (context.TurnOwner == TurnOwner.Enemies)
+          EnemiesManager.MakeEntitiesMove();
+      }
+    }
   }
 }

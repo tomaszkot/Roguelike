@@ -194,8 +194,8 @@ namespace Roguelike.Managers
 
     private void OnTurnOwnerChanged(object sender, TurnOwner turnOwner)
     {
-      if (turnOwner == TurnOwner.Allies)
-        MoveHeroAllies();
+      //if (turnOwner == TurnOwner.Allies)
+      //  MoveHeroAllies();
     }
   }
 }

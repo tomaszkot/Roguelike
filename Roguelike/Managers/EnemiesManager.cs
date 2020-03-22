@@ -70,8 +70,8 @@ namespace Roguelike.Managers
 
     private void OnTurnOwnerChanged(object sender, TurnOwner turnOwner)
     {
-      if(turnOwner == TurnOwner.Enemies)
-       MakeEntitiesMove();
+      //if(turnOwner == TurnOwner.Enemies)
+      // MakeEntitiesMove();
     }
 
     public void MakeMove(LivingEntity enemy)

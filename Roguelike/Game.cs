@@ -18,6 +18,7 @@ namespace Roguelike
     Container Container { get; set; }
     Hero Hero { get; }
     Dungeons.TileContainers.DungeonNode GenerateDungeon();
+    void MakeGameTick();
   }
 
   public abstract class Game : IGame
@@ -26,6 +27,11 @@ namespace Roguelike
     {
       this.Container = container;
       GameManager = container.GetInstance<GameManager>();
+    }
+
+    public void MakeGameTick()
+    {
+      GameManager.MakeGameTick();
     }
 
     public GameManager GameManager
@@ -123,8 +129,6 @@ namespace Roguelike
       
       //Pop
       return level;
-
-      //return DungeonGenerator.Generate(0);??
     }
 
     

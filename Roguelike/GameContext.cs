@@ -106,6 +106,8 @@ namespace Roguelike
         ContextSwitched(this, new ContextSwitch() { Kind = context, CurrentNode = this.CurrentNode, Hero = this.hero });
     }
 
+    private bool pendingTurnOwnerApply;
+
     public void MoveToNextTurnOwner()
     {
       if (turnOwner == TurnOwner.Hero)
@@ -117,6 +119,8 @@ namespace Roguelike
         Debug.Assert(turnOwner == TurnOwner.Enemies);
         turnOwner = TurnOwner.Hero;
       }
+      PendingTurnOwnerApply = true;
+
       if (TurnOwnerChanged != null)
         TurnOwnerChanged(this, turnOwner);
 
@@ -143,5 +147,6 @@ namespace Roguelike
 
     public ILogger Logger { get => logger; set => logger = value; }
     public TurnOwner TurnOwner { get => turnOwner; set => turnOwner = value; }
+    public bool PendingTurnOwnerApply { get => pendingTurnOwnerApply; set => pendingTurnOwnerApply = value; }
   }
 }

@@ -36,11 +36,24 @@ namespace DungeonsConsoleRunner
       Redraw();
 
       bool exit = false;
+      var buf = new byte[2048];
       while (!exit)
       {
-        var key = Console.ReadKey(true);
-        exit = HandleKey(key);
+        if (Console.KeyAvailable)
+        {
+          var key = Console.ReadKey(true);
+          exit = HandleKey(key);
+        }
+        if (!exit)
+        {
+          HandleNextGameTick();
+        }
       }
+    }
+
+    protected virtual void HandleNextGameTick()
+    {
+      
     }
 
     public virtual DungeonNode GenerateDungeon()

@@ -37,6 +37,12 @@ namespace RoguelikeConsoleRunner
       this.GameManager.Context.ContextSwitched += Context_ContextSwitched;
     }
 
+    protected override void HandleNextGameTick()
+    {
+      base.HandleNextGameTick();
+      Game.MakeGameTick();
+    }
+
     public Container Container { get { return Game.Container; } }
     public Hero Hero { get { return Game.Hero; } }
     public GameManager GameManager

@@ -15,6 +15,10 @@ namespace RoguelikeUnitTests
       Assert.AreEqual(game.GameManager.Context.TurnOwner, TurnOwner.Hero);
       game.GameManager.SkipHeroTurn();
       Assert.AreEqual(game.GameManager.Context.TurnOwner, TurnOwner.Allies);
+      game.GameManager.MakeGameTick();
+      Assert.AreEqual(game.GameManager.Context.TurnOwner, TurnOwner.Enemies);
+      game.GameManager.MakeGameTick();
+      Assert.AreEqual(game.GameManager.Context.TurnOwner, TurnOwner.Hero);
     }
   }
 }
