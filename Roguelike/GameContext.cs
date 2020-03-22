@@ -113,10 +113,13 @@ namespace Roguelike
         {
           if (EnemiesTurn != null)
             EnemiesTurn(this, EventArgs.Empty);
-          heroTurn = true;
+
+          //heroTurn = true; //we nee to wait for animation of attack to end
         }
 
       }
     }
+
+    public ILogger Logger { get => logger; set => logger = value; }
   }
 }

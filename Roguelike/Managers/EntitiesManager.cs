@@ -19,7 +19,7 @@ namespace Roguelike.Managers
     public AbstractGameLevel Node { get => context.CurrentNode;  }
     public GameContext Context { get => context; set => context = value; }
 
-    EventsManager eventsManager;
+    protected EventsManager eventsManager;
     GameContext context;
     public Func<LivingEntity, LivingEntity, AttackPolicy> AttackPolicy { get; set; }
 
@@ -66,14 +66,15 @@ namespace Roguelike.Managers
       entities.Add(ent);
     }
 
-    public bool MoveEntity(LivingEntity entity, Point newPos)
+    public virtual bool MoveEntity(LivingEntity entity, Point newPos)
     {
       //Debug.Log("moving hero to " + newPoint);
       if (Node.SetTile(entity, newPos))
       {
         eventsManager.AppendAction(new LivingEntityAction(kind: LivingEntityActionKind.Moved)
-        { /*TileData = entity.Data,*/ Info = entity + " moved", InvolvedEntity = entity });
-        //entity.EmitSmoothMovement();
+        {
+          Info = entity + " moved", InvolvedEntity = entity }
+        );
         return true;
       }
       return false;

@@ -18,7 +18,6 @@ namespace Roguelike.Tiles
 
   public class LivingEntity : Tile
   {
-    //TileData data;
     //public event EventHandler SmoothMovement;
     //public event EventHandler<GenericEventArgs<LivingEntity>> Died;
     public Point PrevPoint;

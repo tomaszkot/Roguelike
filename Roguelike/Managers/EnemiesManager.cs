@@ -8,6 +8,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Roguelike
@@ -16,6 +17,7 @@ namespace Roguelike
   {
     LivingEntity attacker;
     LivingEntity victim;
+    public event EventHandler OnApplied;
 
     public AttackPolicy(LivingEntity attacker, LivingEntity victim)
     {
@@ -30,12 +32,14 @@ namespace Roguelike
 
       attacker.State = EntityState.Attacking;
 
-      OnApplied();
+      ReportApplied();
     }
 
-    protected virtual void OnApplied()
+    protected virtual void ReportApplied()
     {
       attacker.State = EntityState.Idle;
+      if (OnApplied != null)
+        OnApplied(this, EventArgs.Empty);
     }
   }
 }
@@ -57,7 +61,6 @@ namespace Roguelike.Managers
       this.context = context;
       context.EnemiesTurn += OnEnemiesTurn;
       context.ContextSwitched += Context_ContextSwitched;
-      
     }
 
     private void Context_ContextSwitched(object sender, ContextSwitch e)
@@ -77,6 +80,11 @@ namespace Roguelike.Managers
     public override void MakeEntitiesMove(LivingEntity skip = null)
     {
       var enemies = Enemies.Where(i => i.Revealed).ToList();
+      if (!enemies.Any())
+      {
+        Context.HeroTurn = true;
+        return;
+      }
       foreach (var enemy in enemies)
       {
         Debug.Assert(context.CurrentNode.GetTiles<Enemy>().Any(i => i == enemy));
@@ -96,6 +104,7 @@ namespace Roguelike.Managers
           MakeRandomMove(enemy);
         }
       }
+
     }
 
     private bool MakeMoveOnPath(LivingEntity enemy, Hero target)
@@ -131,6 +140,7 @@ namespace Roguelike.Managers
       if (victim != null)
       {
         var ap = AttackPolicy(enemy, hero);
+        ap.OnApplied += OnPolicyApplied;
         ap.Apply();
         //if (enCasted != null)
         //  gm.AppendAction(new EnemyAction() { KindValue = EnemyAction.Kind.AttackingHero, Enemy = enCasted })/*;*/
@@ -139,6 +149,20 @@ namespace Roguelike.Managers
       }
 
       return false;
+    }
+
+    public override bool MoveEntity(LivingEntity entity, Point newPos)
+    {
+      var moved = base.MoveEntity(entity, newPos);
+      OnPolicyApplied(this, EventArgs.Empty);
+      return moved;
+    }
+
+    private void OnPolicyApplied(object sender, EventArgs e)
+    {
+      var notIdle = enemies.FirstOrDefault(i => i.State != EntityState.Idle);
+      if (notIdle == null)
+        Context.HeroTurn = true;
     }
 
     private LivingEntity GetPhysicalAttackVictim(LivingEntity enemy, LivingEntity target)
