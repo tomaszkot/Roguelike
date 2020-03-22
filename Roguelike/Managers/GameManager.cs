@@ -40,7 +40,7 @@ namespace Roguelike.Managers
     LootGenerator lootGenerator = new LootGenerator();
     EventsManager eventsManager;
     EnemiesManager enemiesManager;
-    EntitiesManager alliesManager;
+    AlliesManager alliesManager;
 
     private IPersister persister;
     private ILogger logger;
@@ -54,7 +54,7 @@ namespace Roguelike.Managers
     public EventsManager EventsManager { get => eventsManager; set => eventsManager = value; }
     public GameContext Context { get => context; set => context = value; }
     public AbstractGameLevel CurrentNode { get => context.CurrentNode; }
-    public EntitiesManager AlliesManager { get => alliesManager; set => alliesManager = value; }
+    public AlliesManager AlliesManager { get => alliesManager; set => alliesManager = value; }
     public LootGenerator LootGenerator { get => lootGenerator; set => lootGenerator = value; }
     public IPersister Persister { get => persister; set => persister = value; }
     public ILogger Logger { get => logger; set => logger = value; }
@@ -79,7 +79,7 @@ namespace Roguelike.Managers
       Context.EventsManager = EventsManager;
 
       enemiesManager = new EnemiesManager(Context, EventsManager);
-      AlliesManager = new EntitiesManager(Context, EventsManager);
+      AlliesManager = new AlliesManager(Context, EventsManager);
 
       Persister = container.GetInstance<JSONPersister>();
 
@@ -157,7 +157,7 @@ namespace Roguelike.Managers
     {
       if (!HeroTurn)
         return;
-      
+
       if (!Hero.Alive)
       {
         //AppendAction(new HeroAction() { Level = ActionLevel.Critical, KindValue = HeroAction.Kind.Died, Info = Hero.Name + " is dead!" });
@@ -186,13 +186,24 @@ namespace Roguelike.Managers
       {
         AlliesManager.MoveEntity(Hero, newPos.Point);
       }
-      AlliesManager.MoveHeroAllies();
+      //AlliesManager.MoveHeroAllies();
 
-      EnemiesManager.Enemies.RemoveAll(i => !i.Alive);
+      RemoveDeadEnemies();
 
       //this is risky mode
       //if(Hero.State != EntityState.Attacking)//Wait for attack to be finished (or close to be finished)
       //  Context.HeroTurn = false;
+    }
+
+    public void SkipHeroTurn()
+    {
+      if (Context.HeroTurn)
+        Context.MoveToNextTurnOwner();
+    }
+
+    private void RemoveDeadEnemies()
+    {
+      EnemiesManager.Enemies.RemoveAll(i => !i.Alive);
     }
 
     public T GetCurrentNode<T>() where T : AbstractGameLevel
@@ -213,7 +224,7 @@ namespace Roguelike.Managers
         Logger.LogInfo("Hero attacks " + tile);
         var en = tile as Enemy;
         var ap = AlliesManager.AttackPolicy(Hero, en);
-        ap.OnApplied += Ap_OnApplied;
+        ap.OnApplied += OnHeroAttackPolicyApplied;
         ap.Apply();
 
         return InteractionResult.Attacked;
@@ -264,9 +275,10 @@ namespace Roguelike.Managers
       return InteractionResult.None;
     }
 
-    private void Ap_OnApplied(object sender, EventArgs e)
+    private void OnHeroAttackPolicyApplied(object sender, EventArgs e)
     {
-      context.HeroTurn = false;
+      RemoveDeadEnemies();
+      context.MoveToNextTurnOwner();
     }
 
     internal bool ReplaceTile(Loot loot, Point point)

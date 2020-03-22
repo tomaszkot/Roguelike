@@ -95,18 +95,26 @@ namespace Roguelike.Managers
       }
     }
 
+    bool entitiesSet = false;
     public void SetEntities(List<LivingEntity> list)
     {
       entities = list;
+      entitiesSet = true;
     }
 
     public void AddEntity(LivingEntity ent)
     {
       entities.Add(ent);
+      entitiesSet = true;
     }
 
     protected virtual void OnPolicyApplied()
     {
+      if (context.TurnOwner != TurnOwner.Enemies)
+        return;//in ascii/UT mode this can happend
+
+      if (!entitiesSet)
+        context.Logger.LogError("!entitiesSet");
       var notIdle = entities.FirstOrDefault(i => i.State != EntityState.Idle);
       if (notIdle == null)
         OnPolicyAppliedAllIdle();
@@ -124,7 +132,7 @@ namespace Roguelike.Managers
       {
         if (mp.Entity is Hero)
         {
-          context.HeroTurn = false;
+          Context.MoveToNextTurnOwner();
         }
         else
           OnPolicyApplied();
@@ -158,10 +166,36 @@ namespace Roguelike.Managers
 
     internal void MoveHeroAllies()
     {
+      if (!entities.Any())
+      {
+        context.MoveToNextTurnOwner();
+        return;
+      }
       foreach (var ent in entities)
       {
         MakeRandomMove(ent);
       }
+    }
+  }
+
+  public class AlliesManager : EntitiesManager
+  {
+    public AlliesManager(GameContext context, EventsManager eventsManager) :
+      base(context, eventsManager)
+    {
+      context.TurnOwnerChanged += OnTurnOwnerChanged;
+      context.ContextSwitched += Context_ContextSwitched;
+    }
+
+    private void Context_ContextSwitched(object sender, ContextSwitch e)
+    {
+      //base.SetEntities(enemies);
+    }
+
+    private void OnTurnOwnerChanged(object sender, TurnOwner turnOwner)
+    {
+      if (turnOwner == TurnOwner.Allies)
+        MoveHeroAllies();
     }
   }
 }

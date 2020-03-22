@@ -49,27 +49,28 @@ namespace Roguelike.Managers
   public class EnemiesManager : EntitiesManager
   {
     GameContext context;
-    List<Enemy> enemies;
-    
-
-    public List<Enemy> Enemies { get => enemies; set => enemies = value; }
+    List<LivingEntity> enemies;
+    public List<LivingEntity> Enemies { get => enemies; set => enemies = value; }
    
 
     public EnemiesManager(GameContext context, EventsManager eventsManager) :
       base(context, eventsManager)
     {
       this.context = context;
-      context.EnemiesTurn += OnEnemiesTurn;
+      context.TurnOwnerChanged += OnTurnOwnerChanged;
       context.ContextSwitched += Context_ContextSwitched;
     }
 
     private void Context_ContextSwitched(object sender, ContextSwitch e)
     {
-      Enemies = Context.CurrentNode.GetTiles<Enemy>();
+      //Enemies = Context.CurrentNode.GetTiles<Enemy>();
+      enemies = Context.CurrentNode.GetTiles<LivingEntity>().Where(i=> i is Enemy).ToList();
+      base.SetEntities(enemies);
     }
 
-    private void OnEnemiesTurn(object sender, EventArgs e)
+    private void OnTurnOwnerChanged(object sender, TurnOwner turnOwner)
     {
+      if(turnOwner == TurnOwner.Enemies)
        MakeEntitiesMove();
     }
 
@@ -79,10 +80,11 @@ namespace Roguelike.Managers
 
     public override void MakeEntitiesMove(LivingEntity skip = null)
     {
-      var enemies = Enemies.Where(i => i.Revealed).ToList();
+      var enemies = this.Enemies.Where(i => i.Revealed && i.Alive).ToList();
       if (!enemies.Any())
       {
-        Context.HeroTurn = true;
+        //Context.HeroTurn = true;
+        Context.MoveToNextTurnOwner();
         return;
       }
       foreach (var enemy in enemies)
@@ -165,7 +167,7 @@ namespace Roguelike.Managers
 
     protected override void OnPolicyAppliedAllIdle()
     {
-      Context.HeroTurn = true;
+      Context.MoveToNextTurnOwner();
     }
 
     private LivingEntity GetPhysicalAttackVictim(LivingEntity enemy, LivingEntity target)

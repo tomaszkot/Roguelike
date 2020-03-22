@@ -134,8 +134,7 @@ namespace RoguelikeConsoleRunner
       else if (key == ConsoleKey.Spacebar)
       {
         //GameManager.DoAlliesTurn(true);
-        if(GameManager.Context.HeroTurn)
-          GameManager.Context.HeroTurn = false;
+        GameManager.SkipHeroTurn();
       }
       else if (key == ConsoleKey.LeftArrow)
       {

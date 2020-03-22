@@ -13,6 +13,7 @@ using System.Linq;
 namespace Roguelike
 {
   public enum GameContextSwitchKind { DungeonSwitched, NewGame, GameLoaded}
+  public enum TurnOwner { Hero, Allies, Enemies }
 
   public class ContextSwitch
   {
@@ -27,12 +28,13 @@ namespace Roguelike
     
     public virtual AbstractGameLevel CurrentNode { get; protected set; }
     public Hero Hero { get => hero; set => hero = value; }
-    public event EventHandler EnemiesTurn;
+    public event EventHandler<TurnOwner> TurnOwnerChanged;
     public event EventHandler<ContextSwitch> ContextSwitched;
     [JsonIgnore]
     public EventsManager EventsManager { get ; set ; }
     ILogger logger;
     public Container Container { get; set; }
+    TurnOwner turnOwner = TurnOwner.Hero;
 
     public GameContext(Container container)
     {
@@ -80,7 +82,7 @@ namespace Roguelike
       //EventsManager.AppendAction(new GameStateAction() { InvolvedNode = node, Type = GameStateAction.ActionType.ContextSwitched });
       EmitContextSwitched(context);
     }
-
+       
     protected virtual Tile PlaceHeroAtDungeon(AbstractGameLevel node, Stairs stairs)
     {
       Tile heroStartTile = null;
@@ -104,25 +106,42 @@ namespace Roguelike
         ContextSwitched(this, new ContextSwitch() { Kind = context, CurrentNode = this.CurrentNode, Hero = this.hero });
     }
 
-    bool heroTurn = true;
+    public void MoveToNextTurnOwner()
+    {
+      if (turnOwner == TurnOwner.Hero)
+        turnOwner = TurnOwner.Allies;
+      else if (turnOwner == TurnOwner.Allies)
+        turnOwner = TurnOwner.Enemies;
+      else
+      {
+        Debug.Assert(turnOwner == TurnOwner.Enemies);
+        turnOwner = TurnOwner.Hero;
+      }
+      if (TurnOwnerChanged != null)
+        TurnOwnerChanged(this, turnOwner);
+
+      logger.LogInfo("turnOwner changed to "+ turnOwner);
+    }
+
     public bool HeroTurn
     {
-      get { return heroTurn; }
-      set
-      {
-        //logger.LogInfo("set HeroTurn = "+ value);
-        heroTurn = value;
-        if (!heroTurn)
-        {
-          if (EnemiesTurn != null)
-            EnemiesTurn(this, EventArgs.Empty);
+      get { return turnOwner == TurnOwner.Hero; }
+      //set
+      //{
+      //  //logger.LogInfo("set HeroTurn = "+ value);
+      //  heroTurn = value;
+      //  if (!heroTurn)
+      //  {
+      //    if (EnemiesTurn != null)
+      //      EnemiesTurn(this, EventArgs.Empty);
 
-          //heroTurn = true; //we nee to wait for animation of attack to end
-        }
+      //    //heroTurn = true; //we nee to wait for animation of attack to end
+      //  }
 
-      }
+      //}
     }
 
     public ILogger Logger { get => logger; set => logger = value; }
+    public TurnOwner TurnOwner { get => turnOwner; set => turnOwner = value; }
   }
 }

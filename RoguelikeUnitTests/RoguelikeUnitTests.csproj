@@ -50,6 +50,7 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ControllTests.cs" />
     <Compile Include="EnemiesTests.cs" />
     <Compile Include="InventoryTests.cs" />
     <Compile Include="DungeonGenerationTests.cs" />

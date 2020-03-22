@@ -106,6 +106,13 @@ namespace Roguelike.Tiles
       return inflicted;
     }
 
+    public override string ToString()
+    {
+      var str = base.ToString();
+      str += " "+this.State;
+      return str;
+    }
+
     protected void AppendAction(GameAction ac)
     {
       if(EventsManager != null)
