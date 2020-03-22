@@ -1,5 +1,6 @@
 ﻿using Dungeons.Tiles;
 using Roguelike.LootContainers;
+using Roguelike.Managers;
 using Roguelike.TileContainers;
 using Roguelike.Tiles;
 using System;
@@ -164,6 +165,8 @@ namespace Roguelike
       {
         this.Kind = kind;
       }
+
+      public MovePolicy MovePolicy { get; set; }
 
       public LivingEntity InvolvedEntity { get; set; }
       

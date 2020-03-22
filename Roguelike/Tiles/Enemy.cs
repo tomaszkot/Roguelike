@@ -1,11 +1,7 @@
 ﻿#define ASCII_BUILD  
-using System.Collections.Generic;
-using System.Linq;
 using System;
 using System.Drawing;
 using Dungeons.Core;
-
-using Newtonsoft.Json;
 using Roguelike.Attributes;
 
 namespace Roguelike.Tiles

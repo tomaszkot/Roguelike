@@ -154,15 +154,18 @@ namespace Roguelike.Managers
     public override bool MoveEntity(LivingEntity entity, Point newPos)
     {
       var moved = base.MoveEntity(entity, newPos);
-      OnPolicyApplied(this, EventArgs.Empty);
+      //OnPolicyApplied(this, EventArgs.Empty);
       return moved;
     }
 
-    private void OnPolicyApplied(object sender, EventArgs e)
+    protected void OnPolicyApplied(object sender, EventArgs e)
     {
-      var notIdle = enemies.FirstOrDefault(i => i.State != EntityState.Idle);
-      if (notIdle == null)
-        Context.HeroTurn = true;
+      OnPolicyApplied();
+    }
+
+    protected override void OnPolicyAppliedAllIdle()
+    {
+      Context.HeroTurn = true;
     }
 
     private LivingEntity GetPhysicalAttackVictim(LivingEntity enemy, LivingEntity target)

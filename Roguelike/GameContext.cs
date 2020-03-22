@@ -5,6 +5,7 @@ using Roguelike.Managers;
 using Roguelike.TileContainers;
 using Roguelike.Tiles;
 using Roguelike.Tiles.Interactive;
+using SimpleInjector;
 using System;
 using System.Diagnostics;
 using System.Linq;
@@ -31,10 +32,12 @@ namespace Roguelike
     [JsonIgnore]
     public EventsManager EventsManager { get ; set ; }
     ILogger logger;
+    public Container Container { get; set; }
 
-    public GameContext(ILogger logger)
+    public GameContext(Container container)
     {
-      this.logger = logger;
+      this.logger = container.GetInstance<ILogger>();
+      this.Container = container;
     }
 
     public virtual void SwitchTo(AbstractGameLevel node, Hero hero, GameContextSwitchKind context, Stairs stairs = null)

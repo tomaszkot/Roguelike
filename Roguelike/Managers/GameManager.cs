@@ -189,8 +189,10 @@ namespace Roguelike.Managers
       AlliesManager.MoveHeroAllies();
 
       EnemiesManager.Enemies.RemoveAll(i => !i.Alive);
-      if(Hero.State != EntityState.Attacking)//Wait for attack to be finished (or close to be finished)
-        Context.HeroTurn = false;
+
+      //this is risky mode
+      //if(Hero.State != EntityState.Attacking)//Wait for attack to be finished (or close to be finished)
+      //  Context.HeroTurn = false;
     }
 
     public T GetCurrentNode<T>() where T : AbstractGameLevel
@@ -211,6 +213,7 @@ namespace Roguelike.Managers
         Logger.LogInfo("Hero attacks " + tile);
         var en = tile as Enemy;
         var ap = AlliesManager.AttackPolicy(Hero, en);
+        ap.OnApplied += Ap_OnApplied;
         ap.Apply();
 
         return InteractionResult.Attacked;
@@ -259,6 +262,11 @@ namespace Roguelike.Managers
         return InteractionResult.Blocked;//blok hero by default
       }
       return InteractionResult.None;
+    }
+
+    private void Ap_OnApplied(object sender, EventArgs e)
+    {
+      context.HeroTurn = false;
     }
 
     internal bool ReplaceTile(Loot loot, Point point)

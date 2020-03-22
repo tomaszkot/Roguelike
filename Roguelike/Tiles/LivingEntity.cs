@@ -18,12 +18,13 @@ namespace Roguelike.Tiles
 
   public class LivingEntity : Tile
   {
-    //public event EventHandler SmoothMovement;
     //public event EventHandler<GenericEventArgs<LivingEntity>> Died;
     public Point PrevPoint;
     EntityStats stats = new EntityStats();
     public EntityState State { get; set; }
+    List<Algorithms.PathFinderNode> pathToTarget;
 
+    bool alive = true;
     //[JsonIgnoreAttribute]
     public EntityStats Stats { get => stats; set => stats = value; }
 
@@ -50,14 +51,7 @@ namespace Roguelike.Tiles
         pathToTarget = value;
       }
     }
-    List<Algorithms.PathFinderNode> pathToTarget;
-    //internal void EmitSmoothMovement()
-    //{
-    //  if (SmoothMovement != null)
-    //    SmoothMovement(this, EventArgs.Empty);
-    //}
-
-    bool alive = true;
+    
     public virtual bool Alive
     {
       get { return alive; }

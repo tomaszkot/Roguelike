@@ -10,13 +10,54 @@ using Roguelike.Events;
 
 namespace Roguelike.Managers
 {
+  public class MovePolicy
+  {
+    LivingEntity entity;
+    public event EventHandler OnApplied;
+    AbstractGameLevel level;
+    Point newPos;
+
+    public Point NewPos { get => newPos; set => newPos = value; }
+    public AbstractGameLevel Level { get => level; set => level = value; }
+    public LivingEntity Entity { get => entity; set => entity = value; }
+
+    public MovePolicy()
+    {
+      
+    }
+
+    public bool Apply(AbstractGameLevel level, LivingEntity entity, Point newPos)
+    {
+      this.Entity = entity;
+      this.NewPos = newPos;
+      this.Level = level;
+      entity.State = EntityState.Moving;
+      if (level.SetTile(entity, newPos))
+      {
+        ReportApplied();
+        return true;
+      }
+      else
+        entity.State = EntityState.Idle;
+
+      return false;
+    }
+
+    protected virtual void ReportApplied()
+    {
+      Entity.State = EntityState.Idle;
+      if (OnApplied != null)
+        OnApplied(this, EventArgs.Empty);
+    }
+  }
+
   public class EntitiesManager
   {
-    public Hero Hero { get => context.Hero;  }
+    public Hero Hero { get => context.Hero; }
 
     protected List<LivingEntity> entities = new List<LivingEntity>();
     LivingEntity skipInTurn;
-    public AbstractGameLevel Node { get => context.CurrentNode;  }
+    public AbstractGameLevel Node { get => context.CurrentNode; }
     public GameContext Context { get => context; set => context = value; }
 
     protected EventsManager eventsManager;
@@ -40,10 +81,8 @@ namespace Roguelike.Managers
     public virtual void MakeEntitiesMove(LivingEntity skipInTurn = null)
     {
       this.skipInTurn = skipInTurn;
-      if(entities.Any())
+      if (entities.Any())
         MakeRandomMove(entities.First());
-
-      Context.HeroTurn = false;
     }
 
     public void MakeRandomMove(LivingEntity entity)
@@ -66,18 +105,43 @@ namespace Roguelike.Managers
       entities.Add(ent);
     }
 
+    protected virtual void OnPolicyApplied()
+    {
+      var notIdle = entities.FirstOrDefault(i => i.State != EntityState.Idle);
+      if (notIdle == null)
+        OnPolicyAppliedAllIdle();
+    }
+
+    protected virtual void OnPolicyAppliedAllIdle()
+    {
+    }
+
     public virtual bool MoveEntity(LivingEntity entity, Point newPos)
     {
       //Debug.Log("moving hero to " + newPoint);
-      if (Node.SetTile(entity, newPos))
+      var mp = context.Container.GetInstance<MovePolicy>();
+      mp.OnApplied += (s, e) =>
+      {
+        if (mp.Entity is Hero)
+        {
+          context.HeroTurn = false;
+        }
+        else
+          OnPolicyApplied();
+      };
+
+      if(mp.Apply(Context.CurrentNode, entity, newPos))
       {
         eventsManager.AppendAction(new LivingEntityAction(kind: LivingEntityActionKind.Moved)
         {
-          Info = entity + " moved", InvolvedEntity = entity }
-        );
-        return true;
+          Info = entity + " moved",
+          InvolvedEntity = entity,
+          MovePolicy = mp
+        }
+);
       }
-      return false;
+
+      return true;//TODO
     }
 
     public bool CanMoveEntity(LivingEntity entity, Point pt)
@@ -98,8 +162,6 @@ namespace Roguelike.Managers
       {
         MakeRandomMove(ent);
       }
-
-      
     }
   }
 }

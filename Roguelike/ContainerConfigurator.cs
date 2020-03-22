@@ -27,6 +27,7 @@ namespace Roguelike
       container.Register<LootGenerator, LootGenerator>(Lifestyle.Singleton);
       container.Register<Enemy, Enemy>();
       container.Register<RoomContentGenerator, RoomContentGenerator>();
+      container.Register <MovePolicy, MovePolicy>();
       Container = container;
 
     }
