@@ -167,6 +167,9 @@ namespace Roguelike.Managers
       if (Hero.State == EntityState.Attacking)
         return;
 
+      if(Context.GetActionsCount() == 1)
+        return;
+
       var newPos = GetNewPositionFromMove(Hero.Point, horizontal, vertical);
       if (!newPos.Possible)
       {
@@ -175,24 +178,24 @@ namespace Roguelike.Managers
       var hc = CurrentNode.GetHashCode();
       var tile = CurrentNode.GetTile(newPos.Point);
       var res = InteractHeroWith(tile);
+
+
       if (res == InteractionResult.ContextSwitched || res == InteractionResult.Blocked)
         return;
       if (res == InteractionResult.Handled || res == InteractionResult.Attacked)
       {
         //ASCII printer needs that event
         EventsManager.AppendAction(new LivingEntityAction(LivingEntityActionKind.Interacted) { InvolvedEntity = Hero });
+        Context.IncreaseActions();
       }
       else
       {
-        AlliesManager.MoveEntity(Hero, newPos.Point);
+        if(AlliesManager.MoveEntity(Hero, newPos.Point))
+          Context.IncreaseActions();
       }
-      //AlliesManager.MoveHeroAllies();
 
+      //TODO shall be here ?
       RemoveDeadEnemies();
-
-      //this is risky mode
-      //if(Hero.State != EntityState.Attacking)//Wait for attack to be finished (or close to be finished)
-      //  Context.HeroTurn = false;
     }
 
     public void SkipHeroTurn()
@@ -406,9 +409,17 @@ namespace Roguelike.Managers
       if (context.PendingTurnOwnerApply)
       {
         if (context.TurnOwner == TurnOwner.Allies)
+        {
+          context.PendingTurnOwnerApply = false;
           AlliesManager.MoveHeroAllies();
+        }
         else if (context.TurnOwner == TurnOwner.Enemies)
+        {
+          context.PendingTurnOwnerApply = false;
           EnemiesManager.MakeEntitiesMove();
+        }
+
+        
       }
     }
   }

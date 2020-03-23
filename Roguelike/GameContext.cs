@@ -7,6 +7,7 @@ using Roguelike.Tiles;
 using Roguelike.Tiles.Interactive;
 using SimpleInjector;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 
@@ -25,21 +26,31 @@ namespace Roguelike
   public class GameContext
   {
     Hero hero;
-    
+
     public virtual AbstractGameLevel CurrentNode { get; protected set; }
     public Hero Hero { get => hero; set => hero = value; }
     public event EventHandler<TurnOwner> TurnOwnerChanged;
     public event EventHandler<ContextSwitch> ContextSwitched;
     [JsonIgnore]
-    public EventsManager EventsManager { get ; set ; }
+    public EventsManager EventsManager { get; set; }
     ILogger logger;
     public Container Container { get; set; }
     TurnOwner turnOwner = TurnOwner.Hero;
+
+    //total turn count in whole game
+    Dictionary<TurnOwner, int> turnCounts = new Dictionary<TurnOwner, int>();
+
+    //actions (move, attack) count in turn - typically 1
+    Dictionary<TurnOwner, int> turnActionsCount = new Dictionary<TurnOwner, int>();
 
     public GameContext(Container container)
     {
       this.logger = container.GetInstance<ILogger>();
       this.Container = container;
+
+      turnActionsCount[TurnOwner.Hero] = 0;
+      turnActionsCount[TurnOwner.Allies] = 0;
+      turnActionsCount[TurnOwner.Enemies] = 0;
     }
 
     public virtual void SwitchTo(AbstractGameLevel node, Hero hero, GameContextSwitchKind context, Stairs stairs = null)
@@ -49,10 +60,10 @@ namespace Roguelike
         Debug.Assert(false);
         return;
       }
-      
+
       this.Hero = hero;
       hero.OnContextSwitched(EventsManager);
-      
+
 
       if (!Hero.Point.IsValid() || context == GameContextSwitchKind.DungeonSwitched)
       {
@@ -74,15 +85,15 @@ namespace Roguelike
       {
         if (!node.SetTile(Hero, Hero.Point))
         {
-          logger.LogError("!node.SetTile "+ Hero);
+          logger.LogError("!node.SetTile " + Hero);
         }
       }
-      
+
       CurrentNode = node;
       //EventsManager.AppendAction(new GameStateAction() { InvolvedNode = node, Type = GameStateAction.ActionType.ContextSwitched });
       EmitContextSwitched(context);
     }
-       
+
     protected virtual Tile PlaceHeroAtDungeon(AbstractGameLevel node, Stairs stairs)
     {
       Tile heroStartTile = null;
@@ -90,11 +101,11 @@ namespace Roguelike
       if (stairs != null && stairs.StairsKind == StairsKind.LevelUp)
       {
         var stairsDown = node.GetTiles<Stairs>().Where(i => i.StairsKind == StairsKind.LevelDown).FirstOrDefault();
-        if(stairsDown != null)
+        if (stairsDown != null)
           heroStartTile = node.GetNeighborTiles<Tile>(stairsDown).FirstOrDefault();
       }
 
-      if(heroStartTile == null)
+      if (heroStartTile == null)
         heroStartTile = node.GetEmptyTiles().First();
 
       return heroStartTile;
@@ -107,16 +118,36 @@ namespace Roguelike
     }
 
     private bool pendingTurnOwnerApply;
+    private bool autoTurnManagement = true;
+
+    public void IncreaseActions()//TurnOwner owner)
+    {
+      TurnActionsCount[turnOwner]++;
+    }
+
+    public int GetActionsCount()
+    {
+      return TurnActionsCount[turnOwner];
+    }
 
     public void MoveToNextTurnOwner()
     {
+      if (!AutoTurnManagement)
+        return;
       if (turnOwner == TurnOwner.Hero)
+      {
+        TurnActionsCount[TurnOwner.Hero] = 0;
         turnOwner = TurnOwner.Allies;
+      }
       else if (turnOwner == TurnOwner.Allies)
+      {
+        TurnActionsCount[TurnOwner.Allies] = 0;
         turnOwner = TurnOwner.Enemies;
+      }
       else
       {
         Debug.Assert(turnOwner == TurnOwner.Enemies);
+        TurnActionsCount[TurnOwner.Enemies] = 0;
         turnOwner = TurnOwner.Hero;
       }
       PendingTurnOwnerApply = true;
@@ -130,23 +161,12 @@ namespace Roguelike
     public bool HeroTurn
     {
       get { return turnOwner == TurnOwner.Hero; }
-      //set
-      //{
-      //  //logger.LogInfo("set HeroTurn = "+ value);
-      //  heroTurn = value;
-      //  if (!heroTurn)
-      //  {
-      //    if (EnemiesTurn != null)
-      //      EnemiesTurn(this, EventArgs.Empty);
-
-      //    //heroTurn = true; //we nee to wait for animation of attack to end
-      //  }
-
-      //}
     }
 
     public ILogger Logger { get => logger; set => logger = value; }
     public TurnOwner TurnOwner { get => turnOwner; set => turnOwner = value; }
     public bool PendingTurnOwnerApply { get => pendingTurnOwnerApply; set => pendingTurnOwnerApply = value; }
+    public bool AutoTurnManagement { get => autoTurnManagement; set => autoTurnManagement = value; }
+    public Dictionary<TurnOwner, int> TurnActionsCount { get => turnActionsCount; set => turnActionsCount = value; }
   }
 }

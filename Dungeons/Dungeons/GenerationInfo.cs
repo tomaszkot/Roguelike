@@ -51,6 +51,13 @@ namespace Dungeons
     {
     }
 
+    public virtual void MakeEmpty()
+    {
+      GenerateRandomInterior = false;
+      GenerateRandomStonesBlocks = false;
+      GenerateDoors = false;
+    }
+
     public virtual object Clone()
     {
       return this.MemberwiseClone() as GenerationInfo;
