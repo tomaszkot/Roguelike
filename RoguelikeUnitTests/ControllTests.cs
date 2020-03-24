@@ -43,21 +43,23 @@ namespace RoguelikeUnitTests
       var gi = new Roguelike.GenerationInfo();
       gi.MakeEmpty();
       
-      var level0 = game.GenerateLevel(0, gi);
+      var level = game.GenerateLevel(0, gi);
 
       Assert.AreEqual(game.GameManager.Context.TurnOwner, TurnOwner.Hero);
       var movement = GetMovementDirections();
       Assert.True(movement.Item1 > 0 || movement.Item2 > 0);
-      var heroPos = game.Hero.Point;
+      var heroPrevPos = game.Hero.Point;
       game.GameManager.HandleHeroShift(movement.Item1, movement.Item2);
-      Assert.AreNotEqual(heroPos, game.Hero.Point);
+      Assert.AreNotEqual(heroPrevPos, game.Hero.Point);
 
       Assert.AreEqual(game.GameManager.Context.TurnOwner, TurnOwner.Allies);
       movement = GetMovementDirections();
       Assert.True(movement.Item1 > 0 || movement.Item2 > 0);
-      heroPos = game.Hero.Point;
+      heroPrevPos = game.Hero.Point;
       game.GameManager.HandleHeroShift(movement.Item1, movement.Item2);
-      Assert.AreEqual(heroPos, game.Hero.Point);
+      Assert.AreEqual(heroPrevPos, game.Hero.Point);//shall not move as already did in turn
+      
+      Assert.AreEqual(game.GameManager.Context.TurnOwner, TurnOwner.Allies);
     }
 
     [Test]
@@ -68,7 +70,8 @@ namespace RoguelikeUnitTests
       var gi = new Roguelike.GenerationInfo();
       gi.MakeEmpty();
 
-      var level0 = game.GenerateLevel(0, gi);
+      var level = game.GenerateLevel(0, gi);
+      //do not change turn owner automatically!
       game.GameManager.Context.AutoTurnManagement = false;
 
       Assert.AreEqual(game.GameManager.Context.TurnOwner, TurnOwner.Hero);
@@ -79,12 +82,84 @@ namespace RoguelikeUnitTests
       Assert.AreNotEqual(heroPos, game.Hero.Point);
       Assert.AreEqual(game.GameManager.Context.TurnActionsCount[TurnOwner.Hero], 1);
 
-      Assert.AreEqual(game.GameManager.Context.TurnOwner, TurnOwner.Hero);
-      movement = GetMovementDirections();
-      Assert.True(movement.Item1 > 0 || movement.Item2 > 0);
       heroPos = game.Hero.Point;
-      game.GameManager.HandleHeroShift(movement.Item1, movement.Item2);
+      TryToMoveHero(game);
       Assert.AreEqual(heroPos, game.Hero.Point);//hero shall not move as it already move this turn
+      Assert.AreEqual(Game.GameManager.Context.GetActionsCount(), 1);
+
+      Assert.AreEqual(game.GameManager.Context.TurnOwner, TurnOwner.Hero);
+
+      MoveToHeroTurn(game);
+
+      //try move agin
+      TryToMoveHero(game);
+      Assert.AreNotEqual(heroPos, game.Hero.Point);//now shall move!
+      Assert.AreEqual(Game.GameManager.Context.GetActionsCount(), 1);
+    }
+
+    private void MoveToHeroTurn(RoguelikeGame game)
+    {
+      game.GameManager.Context.DoMoveToNextTurnOwner();
+      Assert.AreEqual(Game.GameManager.Context.TurnCounts[TurnOwner.Hero], 1);
+      Assert.AreEqual(game.GameManager.Context.TurnOwner, TurnOwner.Allies);
+      game.GameManager.Context.DoMoveToNextTurnOwner();
+      Assert.AreEqual(game.GameManager.Context.TurnOwner, TurnOwner.Enemies);
+      game.GameManager.Context.DoMoveToNextTurnOwner();
+      Assert.AreEqual(game.GameManager.Context.TurnOwner, TurnOwner.Hero);
+      Assert.AreEqual(Game.GameManager.Context.GetActionsCount(), 0);
+    }
+
+    private void TryToMoveHero(RoguelikeGame game)//, out Tuple<int, int> movement, out Point heroPos)
+    {
+      Assert.AreEqual(game.GameManager.Context.TurnOwner, TurnOwner.Hero);
+      var movement = GetMovementDirections();
+      Assert.True(movement.Item1 > 0 || movement.Item2 > 0);
+      game.GameManager.HandleHeroShift(movement.Item1, movement.Item2);
+    }
+
+    [Test]
+    public void TestFigthHitNumberCustomTurnOwner()
+    {
+      var game = CreateGame(false);
+      Assert.Null(game.Hero);
+      var gi = new Roguelike.GenerationInfo();
+      gi.MakeEmpty();
+
+      var level = game.GenerateLevel(0, gi);
+      game.GameManager.Context.AutoTurnManagement = false;
+
+      Assert.AreEqual(game.GameManager.Context.TurnOwner, TurnOwner.Hero);
+      var movement = GetMovementDirections();
+      Assert.True(movement.Item1 > 0 || movement.Item2 > 0);
+      var heroPos = game.Hero.Point;
+
+      //
+      var en = new Enemy();
+      var enHealth = en.GetCurrentValue(Roguelike.Attributes.EntityStatKind.Health);
+      var pos = game.GameManager.GetNewPositionFromMove(heroPos, movement.Item1, movement.Item2).Point;
+      var set = level.SetTile(en, pos);
+      Assert.True(set);
+
+      game.GameManager.HandleHeroShift(movement.Item1, movement.Item2);
+      Assert.AreEqual(heroPos, game.Hero.Point);
+      Assert.Less(en.GetCurrentValue(Roguelike.Attributes.EntityStatKind.Health), enHealth);
+      Assert.AreEqual(Game.GameManager.Context.GetActionsCount(), 1);
+
+      enHealth = en.GetCurrentValue(Roguelike.Attributes.EntityStatKind.Health);
+      game.GameManager.HandleHeroShift(movement.Item1, movement.Item2);
+      Assert.AreEqual(heroPos, game.Hero.Point);
+
+      //hit not done as hero already hit in this turn
+      Assert.AreEqual(en.GetCurrentValue(Roguelike.Attributes.EntityStatKind.Health), enHealth);
+      Assert.AreEqual(Game.GameManager.Context.GetActionsCount(), 1);
+
+      MoveToHeroTurn(game);
+      game.GameManager.HandleHeroShift(movement.Item1, movement.Item2);
+      Assert.AreEqual(heroPos, game.Hero.Point);
+
+      //hit done 
+      Assert.Less(en.GetCurrentValue(Roguelike.Attributes.EntityStatKind.Health), enHealth);
+      Assert.AreEqual(Game.GameManager.Context.GetActionsCount(), 1);
     }
 
 

@@ -412,11 +412,13 @@ namespace Roguelike.Managers
         {
           context.PendingTurnOwnerApply = false;
           AlliesManager.MoveHeroAllies();
+          context.IncreaseActions();
         }
         else if (context.TurnOwner == TurnOwner.Enemies)
         {
           context.PendingTurnOwnerApply = false;
           EnemiesManager.MakeEntitiesMove();
+          context.IncreaseActions();
         }
 
         

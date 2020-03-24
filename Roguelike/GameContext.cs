@@ -51,6 +51,10 @@ namespace Roguelike
       turnActionsCount[TurnOwner.Hero] = 0;
       turnActionsCount[TurnOwner.Allies] = 0;
       turnActionsCount[TurnOwner.Enemies] = 0;
+
+      turnCounts[TurnOwner.Hero] = 0;
+      turnCounts[TurnOwner.Allies] = 0;
+      turnCounts[TurnOwner.Enemies] = 0;
     }
 
     public virtual void SwitchTo(AbstractGameLevel node, Hero hero, GameContextSwitchKind context, Stairs stairs = null)
@@ -134,28 +138,39 @@ namespace Roguelike
     {
       if (!AutoTurnManagement)
         return;
+      DoMoveToNextTurnOwner();
+    }
+
+    //TODO make priv, call in UT by refl.
+    public void DoMoveToNextTurnOwner()
+    {
       if (turnOwner == TurnOwner.Hero)
       {
         TurnActionsCount[TurnOwner.Hero] = 0;
+        turnCounts[TurnOwner.Hero]++;
         turnOwner = TurnOwner.Allies;
+
       }
       else if (turnOwner == TurnOwner.Allies)
       {
         TurnActionsCount[TurnOwner.Allies] = 0;
+        turnCounts[TurnOwner.Allies]++;
         turnOwner = TurnOwner.Enemies;
       }
       else
       {
         Debug.Assert(turnOwner == TurnOwner.Enemies);
         TurnActionsCount[TurnOwner.Enemies] = 0;
+        turnCounts[TurnOwner.Enemies]++;
         turnOwner = TurnOwner.Hero;
       }
+
       PendingTurnOwnerApply = true;
 
       if (TurnOwnerChanged != null)
         TurnOwnerChanged(this, turnOwner);
 
-      logger.LogInfo("turnOwner changed to "+ turnOwner);
+      logger.LogInfo("turnOwner changed to " + turnOwner);
     }
 
     public bool HeroTurn
@@ -168,5 +183,6 @@ namespace Roguelike
     public bool PendingTurnOwnerApply { get => pendingTurnOwnerApply; set => pendingTurnOwnerApply = value; }
     public bool AutoTurnManagement { get => autoTurnManagement; set => autoTurnManagement = value; }
     public Dictionary<TurnOwner, int> TurnActionsCount { get => turnActionsCount; set => turnActionsCount = value; }
+    public Dictionary<TurnOwner, int> TurnCounts { get => turnCounts; set => turnCounts = value; }
   }
 }
