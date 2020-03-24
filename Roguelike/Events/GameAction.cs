@@ -1,6 +1,7 @@
 ﻿using Dungeons.Tiles;
 using Roguelike.LootContainers;
 using Roguelike.Managers;
+using Roguelike.Policies;
 using Roguelike.TileContainers;
 using Roguelike.Tiles;
 using System;

@@ -11,44 +11,12 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Roguelike
-{
-  public class AttackPolicy
-  {
-    LivingEntity attacker;
-    LivingEntity victim;
-    public event EventHandler OnApplied;
-
-    public AttackPolicy(LivingEntity attacker, LivingEntity victim)
-    {
-      this.attacker = attacker;
-      this.victim = victim;
-    }
-
-    public void Apply()
-    {
-      if (attacker.CalculateIfHitWillHappen(victim))
-        attacker.ApplyPhysicalDamage(victim);
-
-      attacker.State = EntityState.Attacking;
-
-      ReportApplied();
-    }
-
-    protected virtual void ReportApplied()
-    {
-      attacker.State = EntityState.Idle;
-      if (OnApplied != null)
-        OnApplied(this, EventArgs.Empty);
-    }
-  }
-}
 
 namespace Roguelike.Managers
 {
   public class EnemiesManager : EntitiesManager
   {
-    GameContext context;
+    //GameContext context;
     List<LivingEntity> enemies;
     public List<LivingEntity> Enemies { get => enemies; set => enemies = value; }
    
@@ -81,10 +49,10 @@ namespace Roguelike.Managers
     public override void MakeEntitiesMove(LivingEntity skip = null)
     {
       var enemies = this.Enemies.Where(i => i.Revealed && i.Alive).ToList();
+      context.Logger.LogInfo("MakeEntitiesMove "+ enemies.Count);
       if (!enemies.Any())
       {
-        //Context.HeroTurn = true;
-        Context.MoveToNextTurnOwner();
+        OnPolicyAppliedAllIdle();
         return;
       }
       foreach (var enemy in enemies)
@@ -92,8 +60,10 @@ namespace Roguelike.Managers
         Debug.Assert(context.CurrentNode.GetTiles<Enemy>().Any(i => i == enemy));
         var target = Hero;
         if (AttackIfPossible(enemy, target))
+        {
           continue;
-
+        }
+        context.Logger.LogInfo("!AttackIfPossible ...");
         bool makeRandMove = false;
         if (ShallChaseTarget(enemy, target))
         {
@@ -141,9 +111,9 @@ namespace Roguelike.Managers
       var victim = GetPhysicalAttackVictim(enemy, hero);
       if (victim != null)
       {
-        var ap = AttackPolicy(enemy, hero);
-        ap.OnApplied += OnPolicyApplied;
-        ap.Apply();
+        var enemyAttackPollicy = AttackPolicy(enemy, hero);
+        enemyAttackPollicy.OnApplied += (s,e)=>OnPolicyApplied(e);
+        enemyAttackPollicy.Apply();
         //if (enCasted != null)
         //  gm.AppendAction(new EnemyAction() { KindValue = EnemyAction.Kind.AttackingHero, Enemy = enCasted })/*;*/
 
@@ -153,21 +123,19 @@ namespace Roguelike.Managers
       return false;
     }
 
-    public override bool MoveEntity(LivingEntity entity, Point newPos)
+    protected override bool MoveEntity(LivingEntity entity, Point newPos)
     {
       var moved = base.MoveEntity(entity, newPos);
-      //OnPolicyApplied(this, EventArgs.Empty);
       return moved;
-    }
-
-    protected void OnPolicyApplied(object sender, EventArgs e)
-    {
-      OnPolicyApplied();
     }
 
     protected override void OnPolicyAppliedAllIdle()
     {
-      Context.MoveToNextTurnOwner();
+      if (context.TurnOwner == TurnOwner.Enemies)//for ASCII/UT
+      {
+        context.IncreaseActions(TurnOwner.Enemies);
+        base.OnPolicyAppliedAllIdle();
+      }
     }
 
     private LivingEntity GetPhysicalAttackVictim(LivingEntity enemy, LivingEntity target)

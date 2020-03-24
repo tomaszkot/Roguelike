@@ -2,6 +2,7 @@
 using Roguelike.Abstract;
 using Roguelike.Generators;
 using Roguelike.Managers;
+using Roguelike.Policies;
 using Roguelike.Serialization;
 using Roguelike.TileContainers;
 using Roguelike.Tiles;

@@ -18,6 +18,7 @@ using SimpleInjector;
 using Roguelike.Events;
 using Newtonsoft.Json;
 using Roguelike.Tiles.Interactive;
+using Roguelike.Policies;
 
 namespace Roguelike.Managers
 {
@@ -164,10 +165,11 @@ namespace Roguelike.Managers
         return;
       }
 
-      if (Hero.State == EntityState.Attacking)
+      if (Hero.State != EntityState.Idle)
         return;
 
-      if(Context.GetActionsCount() == 1)
+      var ac = Context.TurnActionsCount[TurnOwner.Hero];
+      if (ac == 1)
         return;
 
       var newPos = GetNewPositionFromMove(Hero.Point, horizontal, vertical);
@@ -182,16 +184,20 @@ namespace Roguelike.Managers
 
       if (res == InteractionResult.ContextSwitched || res == InteractionResult.Blocked)
         return;
+
       if (res == InteractionResult.Handled || res == InteractionResult.Attacked)
       {
         //ASCII printer needs that event
+        logger.LogInfo(" InteractionResult " + res + ", ac="  + ac);
         EventsManager.AppendAction(new LivingEntityAction(LivingEntityActionKind.Interacted) { InvolvedEntity = Hero });
-        Context.IncreaseActions();
       }
       else
       {
-        if(AlliesManager.MoveEntity(Hero, newPos.Point))
-          Context.IncreaseActions();
+        logger.LogInfo(" Hero ac ="+ ac);
+        //AlliesManager.MoveEntity(Hero, newPos.Point);
+        context.CreateMovePolicy(Hero, newPos.Point, (e) => {
+          OnHeroAttackPolicyApplied(this, e);
+        });
       }
 
       //TODO shall be here ?
@@ -226,9 +232,9 @@ namespace Roguelike.Managers
       {
         Logger.LogInfo("Hero attacks " + tile);
         var en = tile as Enemy;
-        var ap = AlliesManager.AttackPolicy(Hero, en);
-        ap.OnApplied += OnHeroAttackPolicyApplied;
-        ap.Apply();
+        var heroAttackPolicy = AlliesManager.AttackPolicy(Hero, en);
+        heroAttackPolicy.OnApplied += OnHeroAttackPolicyApplied;
+        heroAttackPolicy.Apply();
 
         return InteractionResult.Attacked;
       }
@@ -278,9 +284,11 @@ namespace Roguelike.Managers
       return InteractionResult.None;
     }
 
-    private void OnHeroAttackPolicyApplied(object sender, EventArgs e)
+    private void OnHeroAttackPolicyApplied(object sender, Policies.Policy e)
     {
-      RemoveDeadEnemies();
+      if(e is AttackPolicy)
+        RemoveDeadEnemies();
+      context.IncreaseActions(TurnOwner.Hero);
       context.MoveToNextTurnOwner();
     }
 
@@ -410,15 +418,17 @@ namespace Roguelike.Managers
       {
         if (context.TurnOwner == TurnOwner.Allies)
         {
+          logger.LogInfo("call to liesManager.MoveHeroAllies");
           context.PendingTurnOwnerApply = false;
           AlliesManager.MoveHeroAllies();
-          context.IncreaseActions();
+          
         }
         else if (context.TurnOwner == TurnOwner.Enemies)
         {
+          logger.LogInfo("call to EnemiesManager.MakeEntitiesMove");
           context.PendingTurnOwnerApply = false;
           EnemiesManager.MakeEntitiesMove();
-          context.IncreaseActions();
+          
         }
 
         

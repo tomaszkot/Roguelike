@@ -86,6 +86,9 @@
     <Compile Include="Generators\RoomContentGenerator.cs" />
     <Compile Include="LootContainers\Inventory.cs" />
     <Compile Include="Managers\SoundManager.cs" />
+    <Compile Include="Policies\AttackPolicy.cs" />
+    <Compile Include="Policies\MovePolicy.cs" />
+    <Compile Include="Policies\Policy.cs" />
     <Compile Include="RpgGameSettings.cs" />
     <Compile Include="Serialization\PersistancyWorker.cs" />
     <Compile Include="Spells\Spell.cs" />

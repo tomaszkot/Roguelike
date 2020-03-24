@@ -11,6 +11,15 @@ namespace RoguelikeUnitTests
   class ControllTests : TestBase
   {
     [Test]
+    public void TestEntityManagers()
+    {
+      var game = CreateGame();
+      Assert.Greater(game.GameManager.EnemiesManager.Enemies.Count, 0);
+      Assert.AreEqual(game.GameManager.EnemiesManager.Enemies.Count, game.Level.GetTiles<Enemy>().Count);
+      Assert.False(game.GameManager.AlliesManager.Contains(game.Hero));
+    }
+
+    [Test]
     public void TestTurnOwner()
     {
       var game = CreateGame();
@@ -118,7 +127,7 @@ namespace RoguelikeUnitTests
     }
 
     [Test]
-    public void TestFigthHitNumberCustomTurnOwner()
+    public void TestFightHitNumberCustomTurnOwner()
     {
       var game = CreateGame(false);
       Assert.Null(game.Hero);
@@ -160,6 +169,10 @@ namespace RoguelikeUnitTests
       //hit done 
       Assert.Less(en.GetCurrentValue(Roguelike.Attributes.EntityStatKind.Health), enHealth);
       Assert.AreEqual(Game.GameManager.Context.GetActionsCount(), 1);
+
+      heroPos = game.Hero.Point;
+      TryToMoveHero(game);
+      Assert.AreEqual(heroPos, game.Hero.Point);//hero shall not move as it already made action this turn
     }
 
 

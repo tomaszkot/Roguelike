@@ -1,7 +1,9 @@
 ﻿using Dungeons.Core;
 using Dungeons.Tiles;
 using Newtonsoft.Json;
+using Roguelike.Events;
 using Roguelike.Managers;
+using Roguelike.Policies;
 using Roguelike.TileContainers;
 using Roguelike.Tiles;
 using Roguelike.Tiles.Interactive;
@@ -9,6 +11,7 @@ using SimpleInjector;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Drawing;
 using System.Linq;
 
 namespace Roguelike
@@ -55,6 +58,31 @@ namespace Roguelike
       turnCounts[TurnOwner.Hero] = 0;
       turnCounts[TurnOwner.Allies] = 0;
       turnCounts[TurnOwner.Enemies] = 0;
+    }
+
+    public void CreateMovePolicy(LivingEntity entity, Point newPos, Action<Policy> OnApplied)
+    {
+      var movePolicy = Container.GetInstance<MovePolicy>();
+      Logger.LogInfo("moving " + entity + " to " + newPos + " mp = " + movePolicy);
+
+      movePolicy.OnApplied += (s, e) =>
+      {
+        if (OnApplied != null)
+        {
+          OnApplied(e);
+        }
+      };
+
+      if (movePolicy.Apply(CurrentNode, entity, newPos))
+      {
+        EventsManager.AppendAction(new LivingEntityAction(kind: LivingEntityActionKind.Moved)
+        {
+          Info = entity + " moved",
+          InvolvedEntity = entity,
+          MovePolicy = movePolicy
+        }
+);
+      }
     }
 
     public virtual void SwitchTo(AbstractGameLevel node, Hero hero, GameContextSwitchKind context, Stairs stairs = null)
@@ -124,9 +152,12 @@ namespace Roguelike
     private bool pendingTurnOwnerApply;
     private bool autoTurnManagement = true;
 
-    public void IncreaseActions()//TurnOwner owner)
+    public void IncreaseActions(TurnOwner caller)
     {
-      TurnActionsCount[turnOwner]++;
+      if (turnOwner == caller)
+        TurnActionsCount[turnOwner]++;
+      else
+        Logger.LogError("TurnOwner mismatch! ", true);
     }
 
     public int GetActionsCount()
@@ -148,21 +179,21 @@ namespace Roguelike
       {
         TurnActionsCount[TurnOwner.Hero] = 0;
         turnCounts[TurnOwner.Hero]++;
-        turnOwner = TurnOwner.Allies;
+        TurnOwner = TurnOwner.Allies;
 
       }
       else if (turnOwner == TurnOwner.Allies)
       {
         TurnActionsCount[TurnOwner.Allies] = 0;
         turnCounts[TurnOwner.Allies]++;
-        turnOwner = TurnOwner.Enemies;
+        TurnOwner = TurnOwner.Enemies;
       }
       else
       {
         Debug.Assert(turnOwner == TurnOwner.Enemies);
         TurnActionsCount[TurnOwner.Enemies] = 0;
         turnCounts[TurnOwner.Enemies]++;
-        turnOwner = TurnOwner.Hero;
+        TurnOwner = TurnOwner.Hero;
       }
 
       PendingTurnOwnerApply = true;
@@ -179,7 +210,11 @@ namespace Roguelike
     }
 
     public ILogger Logger { get => logger; set => logger = value; }
-    public TurnOwner TurnOwner { get => turnOwner; set => turnOwner = value; }
+    public TurnOwner TurnOwner
+    {
+      get => turnOwner;
+      set => turnOwner = value;
+    }
     public bool PendingTurnOwnerApply { get => pendingTurnOwnerApply; set => pendingTurnOwnerApply = value; }
     public bool AutoTurnManagement { get => autoTurnManagement; set => autoTurnManagement = value; }
     public Dictionary<TurnOwner, int> TurnActionsCount { get => turnActionsCount; set => turnActionsCount = value; }

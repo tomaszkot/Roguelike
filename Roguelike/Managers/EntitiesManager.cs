@@ -7,49 +7,11 @@ using Roguelike.Tiles;
 using System.Drawing;
 using System;
 using Roguelike.Events;
+using Roguelike.Policies;
 
 namespace Roguelike.Managers
 {
-  public class MovePolicy
-  {
-    LivingEntity entity;
-    public event EventHandler OnApplied;
-    AbstractGameLevel level;
-    Point newPos;
-
-    public Point NewPos { get => newPos; set => newPos = value; }
-    public AbstractGameLevel Level { get => level; set => level = value; }
-    public LivingEntity Entity { get => entity; set => entity = value; }
-
-    public MovePolicy()
-    {
-      
-    }
-
-    public bool Apply(AbstractGameLevel level, LivingEntity entity, Point newPos)
-    {
-      this.Entity = entity;
-      this.NewPos = newPos;
-      this.Level = level;
-      entity.State = EntityState.Moving;
-      if (level.SetTile(entity, newPos))
-      {
-        ReportApplied();
-        return true;
-      }
-      else
-        entity.State = EntityState.Idle;
-
-      return false;
-    }
-
-    protected virtual void ReportApplied()
-    {
-      Entity.State = EntityState.Idle;
-      if (OnApplied != null)
-        OnApplied(this, EventArgs.Empty);
-    }
-  }
+  
 
   public class EntitiesManager
   {
@@ -61,7 +23,7 @@ namespace Roguelike.Managers
     public GameContext Context { get => context; set => context = value; }
 
     protected EventsManager eventsManager;
-    GameContext context;
+    protected GameContext context;
     public Func<LivingEntity, LivingEntity, AttackPolicy> AttackPolicy { get; set; }
 
     public EntitiesManager(GameContext context, EventsManager eventsManager)
@@ -108,46 +70,37 @@ namespace Roguelike.Managers
       entitiesSet = true;
     }
 
-    protected virtual void OnPolicyApplied()
+    public bool Contains(LivingEntity ent)
     {
-      if (context.TurnOwner != TurnOwner.Enemies)
-        return;//in ascii/UT mode this can happend
+      return entities.Contains(ent);
+    }
+
+    protected virtual void OnPolicyApplied(Policy policy)
+    {
+      //if (context.TurnOwner != TurnOwner.Enemies)
+      //  return;//in ascii/UT mode this can happend
 
       if (!entitiesSet)
         context.Logger.LogError("!entitiesSet");
       var notIdle = entities.FirstOrDefault(i => i.State != EntityState.Idle);
       if (notIdle == null)
+      {
         OnPolicyAppliedAllIdle();
+      }
     }
 
     protected virtual void OnPolicyAppliedAllIdle()
     {
+      //if (Context.TurnOwner == TurnOwner.Enemies)//this check is mainly for ASCII/UT
+      {
+        Context.Logger.LogInfo(" OnPolicyAppliedAllIdle");
+        Context.MoveToNextTurnOwner();
+      }
     }
 
-    public virtual bool MoveEntity(LivingEntity entity, Point newPos)
+    protected virtual bool MoveEntity(LivingEntity entity, Point newPos)
     {
-      //Debug.Log("moving hero to " + newPoint);
-      var mp = context.Container.GetInstance<MovePolicy>();
-      mp.OnApplied += (s, e) =>
-      {
-        if (mp.Entity is Hero)
-        {
-          Context.MoveToNextTurnOwner();
-        }
-        else
-          OnPolicyApplied();
-      };
-
-      if(mp.Apply(Context.CurrentNode, entity, newPos))
-      {
-        eventsManager.AppendAction(new LivingEntityAction(kind: LivingEntityActionKind.Moved)
-        {
-          Info = entity + " moved",
-          InvolvedEntity = entity,
-          MovePolicy = mp
-        }
-);
-      }
+      context.CreateMovePolicy(entity, newPos, (e) => OnPolicyApplied(e));
 
       return true;//TODO
     }
@@ -168,7 +121,7 @@ namespace Roguelike.Managers
     {
       if (!entities.Any())
       {
-        context.MoveToNextTurnOwner();
+        OnPolicyAppliedAllIdle();
         return;
       }
       foreach (var ent in entities)
@@ -190,6 +143,15 @@ namespace Roguelike.Managers
     private void Context_ContextSwitched(object sender, ContextSwitch e)
     {
       //base.SetEntities(enemies);
+    }
+
+    protected override void OnPolicyAppliedAllIdle()
+    {
+      if (context.TurnOwner == TurnOwner.Allies)//for ASCII/UT
+      {
+        context.IncreaseActions(TurnOwner.Allies);
+        base.OnPolicyAppliedAllIdle();
+      }
     }
 
     private void OnTurnOwnerChanged(object sender, TurnOwner turnOwner)
