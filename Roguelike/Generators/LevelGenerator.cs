@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Dungeons;
 using Dungeons.Core;
@@ -24,6 +25,7 @@ namespace Roguelike.Generators
 
     public override List<Dungeons.TileContainers.DungeonNode> CreateDungeonNodes(Dungeons.GenerationInfo info = null)
     {
+      
       var mazeNodes = base.CreateDungeonNodes(info);
       CreateDynamicTiles(mazeNodes);
 
@@ -32,12 +34,8 @@ namespace Roguelike.Generators
 
     protected virtual void CreateDynamicTiles(List<Dungeons.TileContainers.DungeonNode> mazeNodes)
     {
-      if (LevelIndex > 0)//1st node shall have stairs up
-      {
-        var stairs = new Stairs() { StairsKind = StairsKind.LevelUp, Symbol = '<' };
-        //mazeNodes[0].SetTile(stairs, new System.Drawing.Point(3, 1));
-        mazeNodes[0].SetTile(stairs, mazeNodes[0].GetEmptyTiles().First().Point);
-      }
+      
+
 
       if (LevelIndex < MaxLevelIndex)
       {
@@ -71,6 +69,16 @@ namespace Roguelike.Generators
     {
       var node = base.CreateNode(nodeIndex, gi);
 
+      if (
+        //LevelIndex > 0 &&
+        nodeIndex==0)//1st node shall have stairs up
+      {
+        var stairs = new Stairs() { StairsKind = StairsKind.LevelUp, Symbol = '<' };
+        //mazeNodes[0].SetTile(stairs, new System.Drawing.Point(3, 1));
+        node.SetTile(stairs, node.GetEmptyTiles().First().Point);
+        OnStairsUpCreated(stairs);
+      }
+
       GenerateRoomContent(nodeIndex, gi, node);
 
       //var lpt = node.GetEmptyTiles().First().Point;// new System.Drawing.Point(4, 2);
@@ -82,6 +90,11 @@ namespace Roguelike.Generators
       //node.SetTile(barrel, pt);
 
       return node;
+    }
+
+    protected virtual void OnStairsUpCreated(Stairs stairs)
+    {
+      //throw new NotImplementedException();
     }
 
     protected virtual void GenerateRoomContent(int nodeIndex, Dungeons.GenerationInfo gi, DungeonNode node)
@@ -124,11 +137,6 @@ namespace Roguelike.Generators
       loot.DungeonNodeIndex = levelIndex;
       level.SetTile(loot, level.GetFirstEmptyPoint().Value);
 
-      //var enemy = new Enemy();
-      //enemy.DungeonNodeIndex = levelIndex;
-      //level.SetTile(enemy, level.GetEmptyTiles().Last().Point);
-      //int k = 0;
-      //k++;
     }
 
   }

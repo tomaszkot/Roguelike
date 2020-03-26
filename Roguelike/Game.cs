@@ -7,6 +7,7 @@ using Roguelike.Tiles.Interactive;
 using SimpleInjector;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Roguelike
 {
@@ -119,7 +120,11 @@ namespace Roguelike
     protected Hero AddHero(AbstractGameLevel node)
     {
       var hero = Container.GetInstance<Hero>();
-      node.SetTile(hero, node.GetFirstEmptyPoint().Value);
+      //TODO PitUp here?
+      var stairs = node.GetTiles<Stairs>().FirstOrDefault(i => i.StairsKind == StairsKind.LevelUp ||
+                                                       i.StairsKind == StairsKind.PitUp);
+      var empty = node.GetClosestEmpty(stairs, node.GetEmptyTiles());
+      node.SetTile(hero, empty.Point);
       return hero;
     }
 

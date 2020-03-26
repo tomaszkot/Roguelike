@@ -354,6 +354,12 @@ namespace Dungeons
       public Tile GetRandomEmptyTile(GenerationConstraints constraints = null, bool canBeNextToDoors = true, int? nodeIndex = null)
       {
         var emptyTiles = GetEmptyTiles(constraints, canBeNextToDoors);
+
+        return GetRandomEmptyTile(emptyTiles, nodeIndex);
+      }
+
+      public Tile GetRandomEmptyTile(List<Tile> emptyTiles, int? nodeIndex = null)
+      {
         if (nodeIndex != null)
           emptyTiles = emptyTiles.Where(i => i.dungeonNodeIndex == nodeIndex.Value).ToList();
 
@@ -361,12 +367,13 @@ namespace Dungeons
         {
           var emptyTileIndex = random.Next(emptyTiles.Count);
           var res = emptyTiles[emptyTileIndex];
-          Container.GetInstance<ILogger>().LogInfo("GetRandomEmptyTile: "+res);
+          Container.GetInstance<ILogger>().LogInfo("GetRandomEmptyTile: " + res);
           return res;
         }
 
         return null;
       }
+
 
       public virtual Tile GetTile(Point point)
       {

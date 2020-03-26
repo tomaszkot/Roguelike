@@ -9,7 +9,7 @@ namespace Dungeons
   public class GenerationInfo : ICloneable
   {
     //Number of rooms inside a level, not counting ChildIslands (smallers rooms inside a room)
-    public int NumberOfRooms = 1;
+    public int NumberOfRooms = 2;
 
     /// <summary>
     /// Normally true, can be set to false for issue testing purposes
@@ -23,7 +23,7 @@ namespace Dungeons
     //global switch
     public const bool ForceEmpty = false;
 
-    public int ForcedNumberOfEnemiesInRoom { get; set; } = 5;
+    public int ForcedNumberOfEnemiesInRoom { get; set; } = 2;
     public bool GenerateOuterWalls = true && !ForceEmpty;
     public bool GenerateRandomInterior = true && !ForceEmpty;
     public bool GenerateRandomStonesBlocks = true && !ForceEmpty;
