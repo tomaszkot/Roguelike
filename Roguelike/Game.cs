@@ -131,8 +131,6 @@ namespace Roguelike
     public override Dungeons.TileContainers.DungeonNode GenerateDungeon()
     {
       var level = GenerateLevel(0);
-      
-      //Pop
       return level;
     }
 

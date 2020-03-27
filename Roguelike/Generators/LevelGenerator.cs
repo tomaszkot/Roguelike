@@ -13,11 +13,11 @@ namespace Roguelike.Generators
 {
   public class LevelGenerator : Dungeons.DungeonGenerator
   {
-    //public GameNode Dungeon { get; set; }
     public ILogger Logger { get; set; }
     public int MaxLevelIndex { get; set; } = 1000;
     public int LevelIndex { get; set; }
-
+    public EventHandler<DungeonNode> CustomInteriorDecorator;
+    
     public LevelGenerator(Container container) : base(container)
     {
       Logger = container.GetInstance<ILogger>();
@@ -25,18 +25,24 @@ namespace Roguelike.Generators
 
     public override List<Dungeons.TileContainers.DungeonNode> CreateDungeonNodes(Dungeons.GenerationInfo info = null)
     {
-      
       var mazeNodes = base.CreateDungeonNodes(info);
       CreateDynamicTiles(mazeNodes);
 
       return mazeNodes;
     }
 
+    protected override void OnCreate(DungeonNode dungeon, int w, int h, Dungeons.GenerationInfo gi, int nodeIndex)
+    {
+      dungeon.Create(w, h, gi, nodeIndex);
+    }
+
     protected virtual void CreateDynamicTiles(List<Dungeons.TileContainers.DungeonNode> mazeNodes)
     {
-      
-
-
+      if (mazeNodes.Any(i => !i.Created))
+      {
+        Logger.LogError("!i.Created ");
+        return;
+      }
       if (LevelIndex < MaxLevelIndex)
       {
         var indexWithStairsDown = mazeNodes.Count - 1;
@@ -65,16 +71,30 @@ namespace Roguelike.Generators
       roomGen.Run(e.Child, LevelIndex, e.Child.NodeIndex, e.GenerationInfoIsl as Roguelike.GenerationInfo, container);
     }
 
+    protected virtual Stairs CreateStairsUp(int nodeIndex)
+    {
+      return new Stairs() { StairsKind = StairsKind.LevelUp, Symbol = '<' };
+    }
+
+    public override DungeonNode CreateDungeonNodeInstance()
+    {
+      var node = base.CreateDungeonNodeInstance();
+      node.CustomInteriorDecorator = CustomInteriorDecorator;
+
+      return node;
+    }
+
     protected override Dungeons.TileContainers.DungeonNode CreateNode(int nodeIndex, Dungeons.GenerationInfo gi)
     {
-      var node = base.CreateNode(nodeIndex, gi);
 
+      var node = base.CreateNode(nodeIndex, gi);
+      if (!node.Created)
+        return node;
       if (
         //LevelIndex > 0 &&
         nodeIndex==0)//1st node shall have stairs up
       {
-        var stairs = new Stairs() { StairsKind = StairsKind.LevelUp, Symbol = '<' };
-        //mazeNodes[0].SetTile(stairs, new System.Drawing.Point(3, 1));
+        var stairs = CreateStairsUp(nodeIndex);
         node.SetTile(stairs, node.GetEmptyTiles().First().Point);
         OnStairsUpCreated(stairs);
       }

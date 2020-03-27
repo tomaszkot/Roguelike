@@ -53,6 +53,8 @@ namespace Dungeons
 
     public DungeonLevel DoLayout(List<DungeonNode> nodes, LayouterOptions opt = null) 
     {
+      if(nodes.Any(i=> !i.Created))
+        return container.GetInstance<DungeonLevel>();
       options = opt;
       if (options == null)
         options = new LayouterOptions();

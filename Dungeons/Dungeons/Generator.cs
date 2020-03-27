@@ -18,6 +18,7 @@ namespace Dungeons
     static protected Random random;
     protected List<DungeonNode> nodes;
     protected Container container;
+    public Func<int, GenerationInfo, DungeonNode> CustomNodeCreator;
 
     static DungeonGenerator()
     {
@@ -48,6 +49,10 @@ namespace Dungeons
 
     protected virtual DungeonNode CreateNode(int nodeIndex, GenerationInfo gi)
     {
+      if (CustomNodeCreator!=null)
+      {
+        return CustomNodeCreator(nodeIndex, gi);
+      }
       var minNodeSize = gi.MinNodeSize;
       var maxNodeSize = gi.MaxNodeSize;
       //var minNodeSize = nodeIndex == 0 && gi.FirstNodeSmaller ? gi.MinNodeSize - gi.MinNodeSize / 2 : gi.MinNodeSize;
@@ -61,12 +66,22 @@ namespace Dungeons
 
     protected DungeonNode CreateNode(int w, int h, GenerationInfo gi, int nodeIndex)
     {
-      var dungeon = container.GetInstance<DungeonNode>();
+      DungeonNode dungeon = CreateDungeonNodeInstance();
 
       dungeon.ChildIslandCreated += Dungeon_ChildIslandCreated;
 
-      dungeon.Create(w, h, gi, nodeIndex);
+      OnCreate(dungeon, w, h, gi, nodeIndex);
       return dungeon;
+    }
+
+    protected virtual void OnCreate(DungeonNode dungeon, int w, int h, GenerationInfo gi, int nodeIndex)
+    {
+      dungeon.Create(w, h, gi, nodeIndex);
+    }
+
+    public virtual DungeonNode CreateDungeonNodeInstance()
+    {
+      return container.GetInstance<DungeonNode>();
     }
 
     private void Dungeon_ChildIslandCreated(object sender, ChildIslandCreationInfo e)

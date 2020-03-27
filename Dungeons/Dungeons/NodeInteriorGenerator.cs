@@ -23,7 +23,7 @@ namespace Dungeons
       this.generationInfo = gi;
     }
 
-    public void GenerateRandomInterior()
+    public void GenerateRandomInterior(EventHandler<DungeonNode> CustomInteriorDecorator)
     {
       if (!Inited())
         return;
@@ -40,9 +40,14 @@ namespace Dungeons
         {
           interior = GenerateRandomSimpleInterior(true);
         }
+        else if(CustomInteriorDecorator!=null)
+          CustomInteriorDecorator(this, island.FirstOrDefault());//currently only one is send 
       }
       else if (generationInfo.GenerateRandomInterior)
         interior = GenerateRandomSimpleInterior();
+
+      if (generationInfo.GenerateRandomInterior)
+        GenerateRandomStonesBlocks();
     }
 
     bool Inited()
@@ -327,11 +332,6 @@ namespace Dungeons
 
       return nodes.ToArray();
     }
-
-    //protected virtual void OnChildIslandCreated(DungeonNode child, GenerationInfo generationInfoIsl, DungeonNode dungeonNode)
-    //{
-    //  dungeonNode.ChildIslandCreated(child, generationInfoIsl, dungeonNode);
-    //}
 
     public void GenerateRandomStonesBlocks()
     {

@@ -1,4 +1,5 @@
 ﻿using Dungeons.TileContainers;
+using Dungeons.Tiles;
 using NUnit.Framework;
 using Roguelike.Generators;
 using Roguelike.TileContainers;
@@ -17,6 +18,29 @@ namespace RoguelikeUnitTests
   [TestFixture]
   class DungeonGenerationTests : TestBase
   {
+    [Test]
+    public void TestCustomInteriorGen()
+    {
+      var game = CreateGame(false);
+      Assert.Null(game.Hero);
+      Assert.AreEqual(game.Level, null);
+      //var info = new Roguelike.GenerationInfo();
+      //info.MakeEmpty();
+      //info.NumberOfRooms = 1;
+
+      game.LevelGenerator.CustomNodeCreator = (int nodeIndex, Dungeons.GenerationInfo gi) => {
+        var dungeon = game.LevelGenerator.CreateDungeonNodeInstance(); 
+        return dungeon;
+      };
+      var level = game.LevelGenerator.Generate(0);
+
+      var walls = level.GetTiles<Wall>();
+      Assert.AreEqual(walls.Count, 0);
+      var tiles = level.GetTiles();
+      Assert.IsTrue(tiles.All(i=> i.IsEmpty));
+      //Assert.True(walls.All(i=> i.IsSide) && false);
+    }
+
     [Test]
     public void NewGameTest()
     {

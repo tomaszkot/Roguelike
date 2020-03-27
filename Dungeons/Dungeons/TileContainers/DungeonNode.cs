@@ -95,9 +95,12 @@ namespace Dungeons
       public event EventHandler<ChildIslandCreationInfo> ChildIslandCreated;
       NodeInteriorGenerator interiorGenerator;
       bool revealed;
+      bool created;
 
       [JsonIgnore]
       public Container Container { get; set; }
+
+      public EventHandler<DungeonNode> CustomInteriorDecorator;
 
       //ctors
       static DungeonNode()
@@ -120,6 +123,7 @@ namespace Dungeons
         {
           GenerateContent();
         }
+        this.created = true;
       }
 
       public void Create(Tile[,] tiles, GenerationInfo gi = null, int nodeIndex = DefaultNodeIndex, DungeonNode parent = null)
@@ -134,6 +138,7 @@ namespace Dungeons
           ChildIslandCreated?.Invoke(s, e);
         };
         this.tiles = tiles;
+        this.created = true;
       }
 
       public virtual string Description
@@ -216,17 +221,12 @@ namespace Dungeons
         if (generationInfo.GenerateOuterWalls)
           GenerateOuterWalls();
 
-        interiorGenerator.GenerateRandomInterior();
+        interiorGenerator.GenerateRandomInterior(CustomInteriorDecorator);
 
-        if (generationInfo.GenerateRandomInterior)
-          GenerateRandomStonesBlocks();
+        if (CustomInteriorDecorator != null)
+          CustomInteriorDecorator(this, this);
 
         Reveal(generationInfo.RevealTiles);
-      }
-
-      protected void GenerateRandomStonesBlocks()
-      {
-        interiorGenerator.GenerateRandomStonesBlocks();
       }
 
       public bool IsCornerWall(Wall wall)
@@ -329,6 +329,8 @@ namespace Dungeons
       public virtual List<Tile> GetEmptyTiles(GenerationConstraints constraints = null, bool canBeNextToDoors = true)
       {
         var emptyTiles = new List<Tile>();
+        if (!created)
+          return emptyTiles;
         DoGridAction((int col, int row) =>
         {
           if (IsTileEmpty(tiles[row, col])// != null && tiles[row, col].IsEmpty  //null can be outside the walls
@@ -698,6 +700,8 @@ namespace Dungeons
         get { return NodeIndex <= ChildIslandNodeIndex; }
       }
 
+      public bool Created { get => created; set => created = value; }
+
       /// <summary>
       /// Delete unreachable doors 
       /// </summary>
@@ -835,6 +839,8 @@ namespace Dungeons
       public List<T> GetTiles<T>() where T : class
       {
         var res = new List<T>();
+        if (Tiles == null)
+          return res;
         foreach (var tile in Tiles)
         {
           if (tile is T)
