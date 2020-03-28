@@ -1,17 +1,11 @@
 ﻿using Dungeons.TileContainers;
 using Dungeons.Tiles;
 using NUnit.Framework;
-using Roguelike.Generators;
-using Roguelike.TileContainers;
 using Roguelike.Tiles;
 using Roguelike.Tiles.Interactive;
 using SimpleInjector;
-using System;
-using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace RoguelikeUnitTests
 {
@@ -24,21 +18,26 @@ namespace RoguelikeUnitTests
       var game = CreateGame(false);
       Assert.Null(game.Hero);
       Assert.AreEqual(game.Level, null);
-      //var info = new Roguelike.GenerationInfo();
-      //info.MakeEmpty();
-      //info.NumberOfRooms = 1;
 
       game.LevelGenerator.CustomNodeCreator = (int nodeIndex, Dungeons.GenerationInfo gi) => {
-        var dungeon = game.LevelGenerator.CreateDungeonNodeInstance(); 
+        var dungeon = game.LevelGenerator.CreateDungeonNodeInstance();
+        dungeon.Create(10, 10, gi);
+
+        dungeon.SetTileAtRandomPosition<Enemy>();
+        dungeon.SetTileAtRandomPosition<Barrel>();
+        dungeon.SetTileAtRandomPosition<Barrel>();
         return dungeon;
       };
-      var level = game.LevelGenerator.Generate(0);
 
-      var walls = level.GetTiles<Wall>();
-      Assert.AreEqual(walls.Count, 0);
-      var tiles = level.GetTiles();
-      Assert.IsTrue(tiles.All(i=> i.IsEmpty));
-      //Assert.True(walls.All(i=> i.IsSide) && false);
+      var info = new Roguelike.GenerationInfo();
+      info.NumberOfRooms = 1;
+      info.MakeEmpty();
+      info.GenerateOuterWalls = false;
+      var level = game.LevelGenerator.Generate(0, info);
+
+      Assert.AreEqual(level.GetTiles<Wall>().Count, 0);
+      Assert.AreEqual(level.GetTiles<Enemy>().Count, 1);
+      Assert.AreEqual(level.GetTiles<Barrel>().Count, 2);
     }
 
     [Test]

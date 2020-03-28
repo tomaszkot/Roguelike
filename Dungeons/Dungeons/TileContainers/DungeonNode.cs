@@ -856,6 +856,14 @@ namespace Dungeons
       {
         return GetTiles<Tile>();
       }
+
+      public T SetTileAtRandomPosition<T>() where T : Tile, new()
+      {
+        var empty = this.GetRandomEmptyTile();
+        var tile = new T();
+        var set = SetTile(tile, empty.Point);
+        return set ? tile : null;
+      }
     }
   }
 }

@@ -83,13 +83,13 @@ namespace Roguelike.Tiles
 
     public float OnPhysicalHit(LivingEntity attacker)
     {
-      float defence = GetDefence();
-      if (defence == 0)
+      float defense = GetDefense();
+      if (defense == 0)
       {
         //gm.Assert(false, "Stats.Defence == 0");
         return 0;
       }
-      var inflicted = attacker.GetCurrentValue(EntityStatKind.Attack) / defence;
+      var inflicted = attacker.GetCurrentValue(EntityStatKind.Attack) / defense;
       ReduceHealth(inflicted);
       var ga = new LivingEntityAction(LivingEntityActionKind.GainedPhisicalDamage) { InvolvedValue = inflicted, InvolvedEntity = this };
       var desc = "received damage: " + inflicted.Formatted();
@@ -145,7 +145,7 @@ namespace Roguelike.Tiles
       Stats.Stats[EntityStatKind.Health].Subtract(amount);
     }
 
-    private float GetDefence()
+    private float GetDefense()
     {
       return GetCurrentValue(EntityStatKind.Defence);
     }

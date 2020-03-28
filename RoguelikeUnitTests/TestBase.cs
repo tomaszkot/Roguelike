@@ -18,7 +18,6 @@ namespace RoguelikeUnitTests
     {
       Container = new Roguelike.ContainerConfigurator().Container;
       Container.Register<ISoundPlayer, BasicSoundPlayer>();
-      //CreateGame();
     }
 
     public virtual RoguelikeGame CreateGame(bool autoLoadLevel = true)

@@ -1,4 +1,5 @@
 ﻿using Dungeons;
+using Dungeons.Core;
 using Roguelike.Generators;
 using Roguelike.Managers;
 using Roguelike.TileContainers;
@@ -121,9 +122,17 @@ namespace Roguelike
     {
       var hero = Container.GetInstance<Hero>();
       //TODO PitUp here?
-      var stairs = node.GetTiles<Stairs>().FirstOrDefault(i => i.StairsKind == StairsKind.LevelUp ||
+      Dungeons.Tiles.Tile emptyForHero = node.GetTiles<Stairs>().FirstOrDefault(i => i.StairsKind == StairsKind.LevelUp ||
                                                        i.StairsKind == StairsKind.PitUp);
-      var empty = node.GetClosestEmpty(stairs, node.GetEmptyTiles());
+      if (emptyForHero == null)
+      {
+        if (LevelGenerator.LevelIndex != 0)
+        {
+          Container.GetInstance<ILogger>().LogError("stairs == null " + LevelGenerator.LevelIndex);
+        }
+        emptyForHero = node.GetEmptyTiles().First();
+      }
+      var empty = node.GetClosestEmpty(emptyForHero, node.GetEmptyTiles());
       node.SetTile(hero, empty.Point);
       return hero;
     }

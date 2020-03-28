@@ -91,8 +91,8 @@ namespace Roguelike.Generators
       if (!node.Created)
         return node;
       if (
-        //LevelIndex > 0 &&
-        nodeIndex==0)//1st node shall have stairs up
+        LevelIndex > 0 &&
+        nodeIndex==0)
       {
         var stairs = CreateStairsUp(nodeIndex);
         node.SetTile(stairs, node.GetEmptyTiles().First().Point);
