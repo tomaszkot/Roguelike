@@ -128,9 +128,9 @@ namespace Roguelike
       {
         if (LevelGenerator.LevelIndex != 0)
         {
-          Container.GetInstance<ILogger>().LogError("stairs == null " + LevelGenerator.LevelIndex);
+          Container.GetInstance<ILogger>().LogError("emptyForHero == null " + LevelGenerator.LevelIndex);
         }
-        emptyForHero = node.GetEmptyTiles().First();
+        emptyForHero = node.GetEmptyTiles(levelIndexMustMatch:false).First();
       }
       var empty = node.GetClosestEmpty(emptyForHero, node.GetEmptyTiles());
       node.SetTile(hero, empty.Point);

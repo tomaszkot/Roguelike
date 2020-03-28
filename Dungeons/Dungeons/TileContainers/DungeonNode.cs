@@ -330,7 +330,7 @@ namespace Dungeons
       (
         GenerationConstraints constraints = null, 
         bool canBeNextToDoors = true,
-        bool levelIndexMustMatch = true//allows skipping childIsland tiles
+        bool levelIndexMustMatch = false//allows skipping childIsland tiles
       )
       {
         var emptyTiles = new List<Tile>();
@@ -865,9 +865,10 @@ namespace Dungeons
         return GetTiles<Tile>();
       }
 
-      public T SetTileAtRandomPosition<T>() where T : Tile, new()
+      public T SetTileAtRandomPosition<T>(bool matchNodeIndex = true) where T : Tile, new()
       {
-        var empty = this.GetRandomEmptyTile();
+        var node = matchNodeIndex == true ? (int?)NodeIndex : null;
+        var empty = this.GetRandomEmptyTile(nodeIndex: node);
         var tile = new T();
         var set = SetTile(tile, empty.Point);
         if (tile.DungeonNodeIndex != NodeIndex)
