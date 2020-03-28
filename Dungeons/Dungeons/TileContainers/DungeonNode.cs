@@ -871,10 +871,7 @@ namespace Dungeons
         var empty = this.GetRandomEmptyTile(nodeIndex: node);
         var tile = new T();
         var set = SetTile(tile, empty.Point);
-        if (tile.DungeonNodeIndex != NodeIndex)
-        {
-          int k = 0;
-        }
+
         return set ? tile : null;
       }
     }

@@ -23,7 +23,7 @@ namespace Roguelike.Generators
       Logger = container.GetInstance<ILogger>();
     }
 
-    public override List<Dungeons.TileContainers.DungeonNode> CreateDungeonNodes(Dungeons.GenerationInfo info = null)
+    public override List<DungeonNode> CreateDungeonNodes(Dungeons.GenerationInfo info = null)
     {
       var mazeNodes = base.CreateDungeonNodes(info);
       CreateDynamicTiles(mazeNodes);
@@ -132,7 +132,7 @@ namespace Roguelike.Generators
     }
 
    
-    public override Dungeons.TileContainers.DungeonLevel Generate(int levelIndex, Dungeons.GenerationInfo info = null, LayouterOptions opt = null)
+    public override DungeonLevel Generate(int levelIndex, Dungeons.GenerationInfo info = null, LayouterOptions opt = null)
     {
       var revealAllNodes = info != null ? info.RevealAllNodes : false;
       var options = opt ?? new LayouterOptions() { RevealAllNodes = revealAllNodes };
