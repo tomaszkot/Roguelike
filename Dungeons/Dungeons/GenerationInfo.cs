@@ -42,7 +42,7 @@ namespace Dungeons
 
     public bool ChildIslandAllowed = true;
     public int MaxNumberOfChildIslands = 1;
-    public bool ForceChildIslandInterior = true;
+    public bool ForceChildIslandInterior = false;
 
     public bool RevealTiles { get; set; } = false;
     public bool RevealAllNodes { get; set; } = false;

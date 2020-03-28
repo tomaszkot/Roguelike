@@ -130,8 +130,7 @@ namespace Roguelike.Generators
 
       return gi;
     }
-
-   
+       
     public override DungeonLevel Generate(int levelIndex, Dungeons.GenerationInfo info = null, LayouterOptions opt = null)
     {
       var revealAllNodes = info != null ? info.RevealAllNodes : false;
@@ -147,8 +146,6 @@ namespace Roguelike.Generators
       return level;
     }
 
-
-
     protected virtual void PopulateDungeonLevel(Roguelike.TileContainers.GameLevel level)
     {
       var lg = new LootGenerator();
@@ -156,8 +153,6 @@ namespace Roguelike.Generators
       var loot = lg.GetRandomWeapon();
       loot.DungeonNodeIndex = levelIndex;
       level.SetTile(loot, level.GetFirstEmptyPoint().Value);
-
     }
-
   }
 }
