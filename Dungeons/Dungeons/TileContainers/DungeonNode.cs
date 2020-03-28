@@ -326,7 +326,12 @@ namespace Dungeons
         return tile?.Point;
       }
 
-      public virtual List<Tile> GetEmptyTiles(GenerationConstraints constraints = null, bool canBeNextToDoors = true)
+      public virtual List<Tile> GetEmptyTiles
+      (
+        GenerationConstraints constraints = null, 
+        bool canBeNextToDoors = true,
+        bool levelIndexMustMatch = true//allows skipping childIsland tiles
+      )
       {
         var emptyTiles = new List<Tile>();
         if (!created)
@@ -336,10 +341,13 @@ namespace Dungeons
           if (IsTileEmpty(tiles[row, col])// != null && tiles[row, col].IsEmpty  //null can be outside the walls
           )
           {
-            var pt = new Point(col, row);
-
-            if (constraints == null || (constraints.IsInside(pt)))
-              emptyTiles.Add(tiles[row, col]);
+            var tile = tiles[row, col];
+            if (!levelIndexMustMatch || tile.dungeonNodeIndex == NodeIndex)
+            {
+              var pt = new Point(col, row);
+              if (constraints == null || (constraints.IsInside(pt)))
+                emptyTiles.Add(tile);
+            }
           }
         });
         //if (constraints != null && constraints.Tiles != null)
@@ -862,6 +870,10 @@ namespace Dungeons
         var empty = this.GetRandomEmptyTile();
         var tile = new T();
         var set = SetTile(tile, empty.Point);
+        if (tile.DungeonNodeIndex != NodeIndex)
+        {
+          int k = 0;
+        }
         return set ? tile : null;
       }
     }

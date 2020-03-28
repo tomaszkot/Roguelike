@@ -9,7 +9,7 @@ namespace Dungeons
   public class GenerationInfo : ICloneable
   {
     //Number of rooms inside a level, not counting ChildIslands (smallers rooms inside a room)
-    public int NumberOfRooms = 2;
+    public int NumberOfRooms = 1;
 
     /// <summary>
     /// Normally true, can be set to false for issue testing purposes
@@ -42,7 +42,7 @@ namespace Dungeons
 
     public bool ChildIslandAllowed = true;
     public int MaxNumberOfChildIslands = 1;
-    public bool ForceChildIslandInterior = false;
+    public bool ForceChildIslandInterior = true;
 
     public bool RevealTiles { get; set; } = false;
     public bool RevealAllNodes { get; set; } = false;
@@ -55,7 +55,7 @@ namespace Dungeons
     {
       GenerateRandomInterior = false;
       GenerateRandomStonesBlocks = false;
-      GenerateDoors = false;
+      //GenerateDoors = false;
     }
 
     public virtual object Clone()

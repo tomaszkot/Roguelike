@@ -138,7 +138,16 @@ namespace Roguelike
       }
 
       if (heroStartTile == null)
-        heroStartTile = node.GetEmptyTiles().First();
+      {
+        var emp = node.GetEmptyTiles(levelIndexMustMatch:false)//merged level migth have index  999 and none tile has such
+          .FirstOrDefault();
+        if (emp == null)
+        {
+          int k = 0;
+          k++;
+        }
+        heroStartTile = emp;
+      }
 
       return heroStartTile;
     }
