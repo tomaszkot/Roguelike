@@ -175,6 +175,7 @@ namespace RoguelikeConsoleRunner
       {
         if (key == ConsoleKey.N)
         {
+          
           //next level
           var down = GameManager.CurrentNode.GetTiles<Stairs>().Where(i=> i.StairsKind == StairsKind.LevelDown).FirstOrDefault();
           if (down != null)

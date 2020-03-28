@@ -53,7 +53,6 @@ namespace DungeonsConsoleRunner
 
     protected virtual void HandleNextGameTick()
     {
-      
     }
 
     public virtual DungeonNode GenerateDungeon()

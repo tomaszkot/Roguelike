@@ -75,7 +75,7 @@
     <Compile Include="CorridorNodeLayouter.cs" />
     <Compile Include="DefaultNodeLayouter.cs" />
     <Compile Include="GenerationInfo.cs" />
-    <Compile Include="Generator.cs" />
+    <Compile Include="DungeonGenerator.cs" />
     <Compile Include="TileContainers\DungeonLevel.cs" />
     <Compile Include="TileContainers\DungeonNode.cs" />
     <Compile Include="ASCIIDisplay\IDrawingEngine.cs" />

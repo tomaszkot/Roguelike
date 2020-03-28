@@ -1,6 +1,7 @@
 ﻿using System.Drawing;
 using Dungeons.Core;
 using Dungeons.Tiles;
+using Roguelike.Tiles.Interactive;
 using SimpleInjector;
 
 namespace Roguelike.Generators.TileContainers
@@ -22,7 +23,9 @@ namespace Roguelike.Generators.TileContainers
       var atPos = tiles[point.Y, point.X];
       if (tile != null && !tile.IsEmpty && atPos != null && !atPos.IsEmpty)
       {
-        var allowed = (tile is Door && atPos is Wall) || (tile is Wall && atPos is Door);
+        var allowed = (tile is Door && atPos is Wall) || (tile is Wall && atPos is Door)
+           //|| (tile is Door && atPos is Door)
+           ;
         if (!allowed)
         {
           allowed = tile is Wall && atPos is Wall;

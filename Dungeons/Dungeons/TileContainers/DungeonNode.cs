@@ -88,7 +88,7 @@ namespace Dungeons
 
       public const int ChildIslandNodeIndex = -1;
       public static int NextChildIslandId = ChildIslandNodeIndex;
-      int nodeIndex;
+      int nodeIndex = 0;
       DungeonNode parent;
 
       public event EventHandler<GenericEventArgs<Tile>> OnTileRevealed;
@@ -594,7 +594,7 @@ namespace Dungeons
         return new Tuple<int, int>(maxX, maxY);
       }
 
-      protected void GenerateOuterWalls()
+      public void GenerateOuterWalls()
       {
         interiorGenerator.GenerateOuterWalls();
       }
