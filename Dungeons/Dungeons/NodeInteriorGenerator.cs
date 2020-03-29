@@ -8,7 +8,7 @@ using System.Linq;
 
 namespace Dungeons
 {
-  class NodeInteriorGenerator
+  public class NodeInteriorGenerator
   {
     DungeonNode dungeonNode;
     GenerationInfo generationInfo;
@@ -114,29 +114,7 @@ namespace Dungeons
       AddWalls(leftPoints);
       AddWalls(rightPoints);
 
-      for (int row = 0; row < Height; row++)
-      {
-        for (int col = 0; col < Width; col++)
-        {
-          if(row == 0)
-            dungeonNode.Sides[EntranceSide.Top].Add(this.dungeonNode.Tiles[row, col] as Wall);
-
-          else if (row == Height-1)
-            dungeonNode.Sides[EntranceSide.Bottom].Add(this.dungeonNode.Tiles[row, col] as Wall);
-
-          else if (col == 0)
-            dungeonNode.Sides[EntranceSide.Left].Add(this.dungeonNode.Tiles[row, col] as Wall);
-
-          else if (col == Width-1)
-            dungeonNode.Sides[EntranceSide.Right].Add(this.dungeonNode.Tiles[row, col] as Wall);
-        }
-      }
-    
-      foreach (var side in dungeonNode.Sides.Values)
-      {
-        foreach (var si in side)
-          (si as Wall).IsSide = true;
-      }
+      SetSideWalls();
 
       if (this.generationInfo.GenerateDoors)
       {
@@ -149,6 +127,39 @@ namespace Dungeons
             generated.Add(entr.Item1);
             dungeonNode.CreateDoor(entr.Item2);
           }
+        }
+      }
+    }
+
+    public void SetSideWalls()
+    {
+      for (int row = 0; row < Height; row++)
+      {
+        for (int col = 0; col < Width; col++)
+        {
+          if (row == 0)
+            dungeonNode.Sides[EntranceSide.Top].Add(this.dungeonNode.Tiles[row, col] as Wall);
+
+          else if (row == Height - 1)
+            dungeonNode.Sides[EntranceSide.Bottom].Add(this.dungeonNode.Tiles[row, col] as Wall);
+
+          else if (col == 0)
+            dungeonNode.Sides[EntranceSide.Left].Add(this.dungeonNode.Tiles[row, col] as Wall);
+
+          else if (col == Width - 1)
+            dungeonNode.Sides[EntranceSide.Right].Add(this.dungeonNode.Tiles[row, col] as Wall);
+        }
+      }
+
+      foreach (var side in dungeonNode.Sides.Values)
+      {
+        foreach (var si in side)
+        {
+          var wall = (si as Wall);
+          if (wall != null)
+            wall.IsSide = true;
+          else
+            dungeonNode.Container.GetInstance<ILogger>().LogError("if (wall != null)");
         }
       }
     }

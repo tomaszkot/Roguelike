@@ -22,8 +22,11 @@ namespace Dungeons
   {
     static protected Random random;
     protected List<DungeonNode> nodes;
-    protected Container container;
+    private Container container;
     public Func<int, GenerationInfo, DungeonNode> CustomNodeCreator;
+
+    public Container Container { get => container; }
+
     public event EventHandler<DungeonNode> NodeCreated;
 
     static DungeonGenerator()
@@ -94,7 +97,9 @@ namespace Dungeons
 
     public virtual DungeonNode CreateDungeonNodeInstance()
     {
-      return container.GetInstance<DungeonNode>();
+      var node = container.GetInstance<DungeonNode>();
+      node.Container = container;
+      return node;
     }
 
     private void Dungeon_ChildIslandCreated(object sender, ChildIslandCreationInfo e)
@@ -104,7 +109,6 @@ namespace Dungeons
 
     protected virtual void OnChildIslandCreated(ChildIslandCreationInfo e)
     {
-      
     }
 
     protected virtual DungeonNode CreateLevel(int levelIndex, int w, int h, GenerationInfo gi)
@@ -145,6 +149,11 @@ namespace Dungeons
     public virtual DungeonLevel Generate(int levelIndex, GenerationInfo info = null, LayouterOptions opt = null)
     {
       var mazeNodes = CreateDungeonNodes(info);
+      var diffIndexes = mazeNodes.GroupBy(i => i.NodeIndex).Count();
+      if (diffIndexes != mazeNodes.Count)
+      {
+        container.GetInstance<Logger>().LogError("diffIndexes != mazeNodes.Count", false );
+      }
       //var layouter = new CorridorNodeLayouter(container);
       var layouter = new DefaultNodeLayouter(container, info);
       var level = layouter.DoLayout(mazeNodes, opt);

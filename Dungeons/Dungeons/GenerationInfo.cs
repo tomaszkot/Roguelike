@@ -9,7 +9,7 @@ namespace Dungeons
   public class GenerationInfo : ICloneable
   {
     //Number of rooms inside a level, not counting ChildIslands (smallers rooms inside a room)
-    public int NumberOfRooms = 1;
+    public int NumberOfRooms = 2;
 
     /// <summary>
     /// Normally true, can be set to false for issue testing purposes
@@ -23,7 +23,7 @@ namespace Dungeons
     //global switch
     public const bool ForceEmpty = false;
 
-    public int ForcedNumberOfEnemiesInRoom { get; set; } =4;
+    public int ForcedNumberOfEnemiesInRoom { get; set; } = 4;
     public bool GenerateOuterWalls = true && !ForceEmpty;
     public bool GenerateRandomInterior = true && !ForceEmpty;
     public bool GenerateRandomStonesBlocks = true && !ForceEmpty;
@@ -31,9 +31,9 @@ namespace Dungeons
     internal bool GenerateEmptyTiles = true;
 
     public bool FirstNodeSmaller = false;
-    const int mixSize = 12;
-    public Size MinNodeSize = new Size(mixSize, mixSize);
-    public Size MaxNodeSize = new Size(16, 16);
+    const int minSize = 8;
+    public Size MinNodeSize = new Size(minSize, minSize);
+    public Size MaxNodeSize = new Size(12, 14);
     public Size ForcedChilldIslandSize = new Size(0, 0);
 
     public readonly int MinSubMazeNodeSize = 5;

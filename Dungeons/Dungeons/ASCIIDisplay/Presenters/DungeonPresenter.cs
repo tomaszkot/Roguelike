@@ -54,6 +54,8 @@ namespace Dungeons.ASCIIDisplay.Presenters
 
     public virtual void Redraw(DungeonNode node, PrintInfo pi)
     {
+      if (node.Tiles == null)
+        return;
       if (pi == null)
         pi = new PrintInfo();
       

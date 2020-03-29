@@ -10,6 +10,7 @@ namespace Dungeons
     Container Container { get; set; }
   }
 
+  //that one shall be used only in running projects app/UT
   public class ContainerConfigurator : IContainerConfigurator
   {
     public Container Container { get; set; }
@@ -22,7 +23,7 @@ namespace Dungeons
 
       container.Register<DungeonNode, DungeonNode>();
       container.Register<DungeonLevel, DungeonLevel>();
-      container.Register<Door, Door>();
+      container.Register<Dungeons.Tiles.Door, Dungeons.Tiles.Door>();
 
       Container = container;
 

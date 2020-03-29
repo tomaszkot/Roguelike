@@ -67,11 +67,23 @@ namespace Dungeons
       gi.GenerateRandomInterior = false;
       gi.GenerateEmptyTiles = false;
       var localLevel = container.GetInstance<DungeonNode>();
+      localLevel.Container = this.container;
+      //Activator.CreateInstance(typeof(T), new object[] { container }) as T;
       localLevel.Create(tw, th + nodesPadding * nodes.Count, gi, -1, null, false);
       
       var maxLoc = localLevel.GetMaxXY();
+      if (nodes.Count > 1)
+      {
+        if(nodes[1].GetTiles().First().DungeonNodeIndex != nodes[1].NodeIndex)
+          container.GetInstance<ILogger>().LogError("nodes[1].GetTiles().First().DungeonNodeIndex != nodes[1].NodeIndex");
+      }
 
       LayoutNodes(localLevel, nodes);
+
+      if (localLevel.Tiles[0, 0].DungeonNodeIndex == DungeonNode.DefaultNodeIndex)
+      {
+        container.GetInstance<ILogger>().LogError("localLevel.Tiles[0, 0].DungeonNodeIndex == "+ DungeonNode.DefaultNodeIndex);
+      }
 
       var max = localLevel.GetMaxXY();
 

@@ -111,7 +111,8 @@ namespace Roguelike
             CurrentNode.SetEmptyTile(heroInNode.Point);//Hero is going to be placed in the node, remove it from the old one (CurrentNode)
         }
         Tile heroStartTile = PlaceHeroAtDungeon(node, stairs);
-        node.SetTile(this.Hero, heroStartTile.Point, false);
+        if(heroStartTile!=null)
+          node.SetTile(this.Hero, heroStartTile.Point, false);
       }
       else
       {

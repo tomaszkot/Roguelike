@@ -13,11 +13,6 @@ namespace Roguelike.Generators.TileContainers
     {
     }
 
-    protected override Dungeons.Tiles.Door CreateDoorInstance()
-    {
-      return new Tiles.Door();
-    }
-
     public override bool SetTile(Tile tile, Point point, bool resetOldTile = true, bool revealReseted = true, bool autoSetTileDungeonIndex = true)
     {
       var atPos = tiles[point.Y, point.X];

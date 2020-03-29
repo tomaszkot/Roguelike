@@ -108,9 +108,20 @@ namespace Dungeons
         random = new Random();
       }
 
+      //:/ Due to : 'DungeonNode' must be a non-abstract type with a public parameterless constructor in order to use it as parameter 'T' in the generic type or method 'UnityMapToDungeonFactory<T...
+
+      public DungeonNode() : this(null)
+      {
+      }
+
       public DungeonNode(Container container)
       {
         this.Container = container;
+
+        Sides.Add(EntranceSide.Top, new List<Wall>());
+        Sides.Add(EntranceSide.Bottom, new List<Wall>());
+        Sides.Add(EntranceSide.Left, new List<Wall>());
+        Sides.Add(EntranceSide.Right, new List<Wall>());
       }
 
       public void Create(int width = 10, int height = 10, GenerationInfo info = null,
@@ -209,12 +220,6 @@ namespace Dungeons
       {
         if (generationInfo == null)
           return;
-
-        Sides.Add(EntranceSide.Top, new List<Wall>());
-        Sides.Add(EntranceSide.Bottom, new List<Wall>());
-        Sides.Add(EntranceSide.Left, new List<Wall>());
-        Sides.Add(EntranceSide.Right, new List<Wall>());
-
 
         if (generationInfo.GenerateEmptyTiles)
           PlaceEmptyTiles();
@@ -470,12 +475,15 @@ namespace Dungeons
 
       public virtual Tile CreateDoor(Tile original)
       {
-        if (generationInfo.ChildIsland)
+        if (generationInfo != null)
         {
-          Debug.Assert(generationInfo.EntrancesCount > 0);
+          if (generationInfo.ChildIsland)
+          {
+            Debug.Assert(generationInfo.EntrancesCount > 0);
+          }
+          else
+            Debug.Assert(generationInfo.EntrancesCount == 0);
         }
-        else
-          Debug.Assert(generationInfo.EntrancesCount == 0);
         var door = CreateDoorInstance();
         bool doorSet = SetTile(door, original.Point);
         Debug.Assert(doorSet);
@@ -484,9 +492,10 @@ namespace Dungeons
         return door;
       }
 
-      protected virtual Door CreateDoorInstance()
+      protected Door CreateDoorInstance()
       {
-        return new Door();
+        return Container.GetInstance<Door>();
+        //return new Door();
       }
 
       public DungeonNode CreateChildIslandInstance(int w, int h, GenerationInfo gi, DungeonNode parent)
@@ -869,6 +878,8 @@ namespace Dungeons
       {
         var node = matchNodeIndex == true ? (int?)NodeIndex : null;
         var empty = this.GetRandomEmptyTile(nodeIndex: node);
+        if (empty == null)
+          return null;
         var tile = new T();
         var set = SetTile(tile, empty.Point);
 

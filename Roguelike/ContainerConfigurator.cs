@@ -21,14 +21,14 @@ namespace Roguelike
       container.Register<Dungeons.IDungeonGenerator, LevelGenerator>();
       container.Register<JSONPersister, JSONPersister>();
       container.Register<GameManager, GameManager>();
-      container.Register< Dungeons.TileContainers.DungeonNode, Roguelike.Generators.TileContainers.DungeonNode>();
-      container.Register<Dungeons.Tiles.Door, Door>();
+      container.Register<Dungeons.TileContainers.DungeonNode, Roguelike.Generators.TileContainers.DungeonNode>();
+      container.Register<Dungeons.Tiles.Door, Roguelike.Tiles.Door>();
       container.Register< Dungeons.TileContainers.DungeonLevel, GameLevel>();
       container.Register<ILogger, Logger>();
       container.Register<LootGenerator, LootGenerator>(Lifestyle.Singleton);
       container.Register<Enemy, Enemy>();
       container.Register<RoomContentGenerator, RoomContentGenerator>();
-      container.Register <MovePolicy, MovePolicy>();
+      //container.Register <MovePolicy, MovePolicy>();//move to exe
       Container = container;
 
     }

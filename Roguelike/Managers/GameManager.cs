@@ -228,6 +228,9 @@ namespace Roguelike.Managers
         if (res != InteractionResult.None)
           return res;
       }
+      bool tileIsDoor = tile is Tiles.Door;
+      bool tileIsDoorBySumbol = tile.Symbol == Constants.SymbolDoor;
+
       if (tile is Enemy)
       {
         Logger.LogInfo("Hero attacks " + tile);
@@ -238,8 +241,7 @@ namespace Roguelike.Managers
 
         return InteractionResult.Attacked;
       }
-
-      else if (tile is Tiles.Door)
+      else if (tileIsDoor || tileIsDoorBySumbol)
       {
         var door = tile as Tiles.Door;
         if (door.Opened)
