@@ -11,6 +11,7 @@ namespace Roguelike.Tiles
     public Barrel(Point point) : base(BarrelSymbol)
     {
       Kind = InteractiveTileKind.Barrel;
+      Name = Kind.ToString();
     }
 
     public Barrel() : this(new Point().Invalid())

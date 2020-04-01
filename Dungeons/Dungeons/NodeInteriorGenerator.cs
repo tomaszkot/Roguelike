@@ -159,7 +159,7 @@ namespace Dungeons
           if (wall != null)
             wall.IsSide = true;
           else
-            dungeonNode.Container.GetInstance<ILogger>().LogError("if (wall != null)");
+            dungeonNode.Container.GetInstance<ILogger>().LogError("if (wall != null) , si="+ si);
         }
       }
     }
@@ -327,7 +327,7 @@ namespace Dungeons
       {
         var child = dungeonNode.CreateChildIslandInstance(islandWidth, islandHeight, generationInfoIsl, parent: dungeonNode);
         if(ChildIslandCreated !=null )
-          ChildIslandCreated(this, new ChildIslandCreationInfo() { Child = child, GenerationInfoIsl = generationInfoIsl, ParentDungeonNode = dungeonNode });
+          ChildIslandCreated(this, new ChildIslandCreationInfo() { ChildIslandNode = child, GenerationInfoIsl = generationInfoIsl, ParentDungeonNode = dungeonNode });
         dungeonNode.AppendMaze(child, destStartPoint, childIsland: true);
         dungeonNode.ChildIslands.Add(child);
         nodes.Add(child);

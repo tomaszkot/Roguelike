@@ -49,7 +49,7 @@ namespace Roguelike.Managers
     public override void MakeEntitiesMove(LivingEntity skip = null)
     {
       var enemies = this.Enemies.Where(i => i.Revealed && i.Alive).ToList();
-      context.Logger.LogInfo("MakeEntitiesMove "+ enemies.Count);
+      //context.Logger.LogInfo("MakeEntitiesMove "+ enemies.Count);
       if (!enemies.Any())
       {
         OnPolicyAppliedAllIdle();

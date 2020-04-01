@@ -193,7 +193,7 @@ namespace Roguelike.Managers
       }
       else
       {
-        logger.LogInfo(" Hero ac ="+ ac);
+        //logger.LogInfo(" Hero ac ="+ ac);
         //AlliesManager.MoveEntity(Hero, newPos.Point);
         context.CreateMovePolicy(Hero, newPos.Point, (e) => {
           OnHeroAttackPolicyApplied(this, e);
@@ -398,8 +398,8 @@ namespace Roguelike.Managers
       Logger.LogInfo("PrintHeroStats "+ context);
       foreach (var stat in Hero.Stats.Stats.Values)
       {
-        if(!onlyNonZero || stat.Value.TotalValue != 0)
-          Logger.LogInfo(stat.Kind + ": " + stat.Value);
+        //if(!onlyNonZero || stat.Value.TotalValue != 0)
+        //  Logger.LogInfo(stat.Kind + ": " + stat.Value);
       }
     }
 
@@ -420,14 +420,14 @@ namespace Roguelike.Managers
       {
         if (context.TurnOwner == TurnOwner.Allies)
         {
-          logger.LogInfo("call to liesManager.MoveHeroAllies");
+          //logger.LogInfo("call to liesManager.MoveHeroAllies");
           context.PendingTurnOwnerApply = false;
           AlliesManager.MoveHeroAllies();
           
         }
         else if (context.TurnOwner == TurnOwner.Enemies)
         {
-          logger.LogInfo("call to EnemiesManager.MakeEntitiesMove");
+          //logger.LogInfo("call to EnemiesManager.MakeEntitiesMove");
           context.PendingTurnOwnerApply = false;
           EnemiesManager.MakeEntitiesMove();
           

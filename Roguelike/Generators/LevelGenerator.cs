@@ -23,6 +23,21 @@ namespace Roguelike.Generators
       Logger = container.GetInstance<ILogger>();
     }
 
+    public override DungeonLevel Generate(int levelIndex, Dungeons.GenerationInfo info = null, LayouterOptions opt = null)
+    {
+      var revealAllNodes = info != null ? info.RevealAllNodes : false;
+      var options = opt ?? new LayouterOptions() { RevealAllNodes = revealAllNodes };
+      LevelIndex = levelIndex;
+      //generate level
+      var baseLevel = base.Generate(levelIndex, info, options);
+      var level = baseLevel as Roguelike.TileContainers.GameLevel;
+      level.Index = levelIndex;
+      level.OnGenerationDone();
+
+      // PopulateDungeonLevel(level);
+      return level;
+    }
+
     public override List<DungeonNode> CreateDungeonNodes(Dungeons.GenerationInfo info = null)
     {
       var mazeNodes = base.CreateDungeonNodes(info);
@@ -68,7 +83,7 @@ namespace Roguelike.Generators
     {
       base.OnChildIslandCreated(e);
       var roomGen = Container.GetInstance<RoomContentGenerator>();
-      roomGen.Run(e.Child, LevelIndex, e.Child.NodeIndex, e.GenerationInfoIsl as Roguelike.GenerationInfo, Container);
+      roomGen.Run(e.ChildIslandNode, LevelIndex, e.ChildIslandNode.NodeIndex, e.GenerationInfoIsl as Roguelike.GenerationInfo, Container);
     }
 
     protected virtual Stairs CreateStairsUp(int nodeIndex)
@@ -129,21 +144,6 @@ namespace Roguelike.Generators
       gi.RevealTiles = false;
 
       return gi;
-    }
-       
-    public override DungeonLevel Generate(int levelIndex, Dungeons.GenerationInfo info = null, LayouterOptions opt = null)
-    {
-      var revealAllNodes = info != null ? info.RevealAllNodes : false;
-      var options = opt ?? new LayouterOptions() { RevealAllNodes = revealAllNodes };
-      LevelIndex = levelIndex;
-      //generate level
-      var baseLevel = base.Generate(levelIndex, info, options);
-      var level = baseLevel as Roguelike.TileContainers.GameLevel;
-      level.Index = levelIndex;
-      level.OnGenerationDone();
-
-     // PopulateDungeonLevel(level);
-      return level;
     }
 
     protected virtual void PopulateDungeonLevel(Roguelike.TileContainers.GameLevel level)

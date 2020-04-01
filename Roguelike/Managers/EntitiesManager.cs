@@ -93,7 +93,7 @@ namespace Roguelike.Managers
     {
       //if (Context.TurnOwner == TurnOwner.Enemies)//this check is mainly for ASCII/UT
       {
-        Context.Logger.LogInfo(" OnPolicyAppliedAllIdle");
+        //Context.Logger.LogInfo(" OnPolicyAppliedAllIdle");
         Context.MoveToNextTurnOwner();
       }
     }

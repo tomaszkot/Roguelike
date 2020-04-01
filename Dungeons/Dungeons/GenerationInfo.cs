@@ -15,7 +15,7 @@ namespace Dungeons
     /// Normally true, can be set to false for issue testing purposes
     /// </summary>
     public bool CreateDoors = true;
-    public EntranceSide? forcedNextRoomSide;
+    public EntranceSide? ForcedNextRoomSide;
 
     public int EntrancesCount = 0;
     public bool ChildIsland;

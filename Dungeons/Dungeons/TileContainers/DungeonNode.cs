@@ -35,7 +35,7 @@ namespace Dungeons
 
     public class ChildIslandCreationInfo
     {
-      public DungeonNode Child { get; set; }
+      public DungeonNode ChildIslandNode { get; set; }
       public GenerationInfo GenerationInfoIsl { get; set; }
       public DungeonNode ParentDungeonNode { get; set; }
     }

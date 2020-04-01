@@ -63,7 +63,7 @@ namespace Roguelike
     public void CreateMovePolicy(LivingEntity entity, Point newPos, Action<Policy> OnApplied)
     {
       var movePolicy = Container.GetInstance<MovePolicy>();
-      Logger.LogInfo("moving " + entity + " to " + newPos + " mp = " + movePolicy);
+      //Logger.LogInfo("moving " + entity + " to " + newPos + " mp = " + movePolicy);
 
       movePolicy.OnApplied += (s, e) =>
       {
@@ -211,7 +211,7 @@ namespace Roguelike
       if (TurnOwnerChanged != null)
         TurnOwnerChanged(this, turnOwner);
 
-      logger.LogInfo("turnOwner changed to " + turnOwner);
+      //logger.LogInfo("turnOwner changed to " + turnOwner);
     }
 
     public bool HeroTurn
