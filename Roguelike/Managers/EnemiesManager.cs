@@ -63,7 +63,7 @@ namespace Roguelike.Managers
         {
           continue;
         }
-        context.Logger.LogInfo("!AttackIfPossible ...");
+        //context.Logger.LogInfo("!AttackIfPossible ...");
         bool makeRandMove = false;
         if (ShallChaseTarget(enemy, target))
         {
