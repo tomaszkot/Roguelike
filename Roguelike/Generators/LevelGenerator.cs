@@ -101,30 +101,24 @@ namespace Roguelike.Generators
 
     protected override Dungeons.TileContainers.DungeonNode CreateNode(int nodeIndex, Dungeons.GenerationInfo gi)
     {
-
       var node = base.CreateNode(nodeIndex, gi);
       if (!node.Created)
         return node;
-      if (
-        LevelIndex > 0 &&
-        nodeIndex==0)
+
+      if(LevelIndex > 0 && nodeIndex == 0)
       {
-        var stairs = CreateStairsUp(nodeIndex);
-        node.SetTile(stairs, node.GetEmptyTiles().First().Point);
-        OnStairsUpCreated(stairs);
+        AddStairsUp(node);
       }
 
       GenerateRoomContent(nodeIndex, gi, node);
-
-      //var lpt = node.GetEmptyTiles().First().Point;// new System.Drawing.Point(4, 2);
-      //node.SetTile(container.GetInstance<LootGenerator>().GetRandomLoot(), lpt);
-
-      //var barrel = new Barrel();
-      //barrel.tag = "barrel";
-      //var pt = node.GetEmptyTiles().First().Point;//new System.Drawing.Point(2, 2));
-      //node.SetTile(barrel, pt);
-
       return node;
+    }
+
+    protected void AddStairsUp(DungeonNode node)
+    {
+      var stairs = CreateStairsUp(node.NodeIndex);
+      node.SetTile(stairs, node.GetEmptyTiles().First().Point);
+      OnStairsUpCreated(stairs);
     }
 
     protected virtual void OnStairsUpCreated(Stairs stairs)
