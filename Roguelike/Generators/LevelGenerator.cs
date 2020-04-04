@@ -17,7 +17,8 @@ namespace Roguelike.Generators
     public int MaxLevelIndex { get; set; } = 1000;
     public int LevelIndex { get; set; }
     public EventHandler<DungeonNode> CustomInteriorDecorator;
-    
+    public bool StairsUpOnLevel0 { get; set; }
+
     public LevelGenerator(Container container) : base(container)
     {
       Logger = container.GetInstance<ILogger>();
@@ -105,7 +106,7 @@ namespace Roguelike.Generators
       if (!node.Created)
         return node;
 
-      if(LevelIndex > 0 && nodeIndex == 0)
+      if((LevelIndex > 0 || StairsUpOnLevel0)  && nodeIndex == 0)
       {
         AddStairsUp(node);
       }

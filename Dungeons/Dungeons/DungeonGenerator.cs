@@ -13,11 +13,6 @@ namespace Dungeons
     DungeonLevel Generate(int levelIndex, Dungeons.GenerationInfo info = null, LayouterOptions opt = null);
   }
 
-  //class NodeCreatedArgs
-  //{
-  //  //public int MyProperty { get; set; }
-  //}
-
   public class DungeonGenerator : IDungeonGenerator
   {
     static protected Random random;
