@@ -87,7 +87,14 @@ namespace Dungeons.Tiles
       get { return revealed; }
       set
       {
-        revealed = value;
+        if (value != revealed)
+        {
+          if (DungeonNodeIndex < 0)
+          {
+            int k = 0;
+          }
+          revealed = value;
+        }
       }
     }
 

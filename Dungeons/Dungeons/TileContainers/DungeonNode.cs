@@ -196,6 +196,7 @@ namespace Dungeons
         set { parts = value; }
       }
 
+
       public virtual List<DungeonNode> ChildIslands
       {
         get
@@ -251,6 +252,12 @@ namespace Dungeons
       public List<T> GetNeighborTiles<T>(Tile tile) where T : Tile
       {
         return GetNeighborTiles(tile).Where(i => i != null && i.GetType() == typeof(T)).Cast<T>().ToList();
+      }
+
+      public void AddChildIsland(Point? destStartPoint, DungeonNode childIsland)
+      {
+        AppendMaze(childIsland, destStartPoint, childIsland: true);
+        ChildIslands.Add(childIsland);
       }
 
       public List<Tile> GetNeighborTiles(Tile tile, bool incDiagonal = false)
