@@ -155,6 +155,8 @@ namespace Dungeons
       {
         foreach (var si in side)
         {
+          if (si == null)
+            continue;
           var wall = (si as Wall);
           if (wall != null)
             wall.IsSide = true;

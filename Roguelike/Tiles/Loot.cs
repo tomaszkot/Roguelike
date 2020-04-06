@@ -10,7 +10,7 @@ using Roguelike.Abstract;
 namespace Roguelike.Tiles
 {
   public enum EquipmentKind { Unset, Weapon, Armor, Helmet, Shield, RingLeft, RingRight, Amulet, TrophyLeft, TrophyRight, Gloves }
-  public enum LootKind { Unset, Gold, Potion, Scroll, Weapon, Armor, Jewellery, Other, Gem, Recipe, Trophy, Seal, SealPart, Mushroom, Food }
+  public enum LootKind { Unset, Gold, Potion, Scroll, Weapon, Armor, Jewellery, Other, Gem, Recipe, Trophy, Seal, SealPart, Mushroom, Food, Plant }
   public enum EquipmentClass { Unset, Plain, Magic, Unique }
   public enum PotionKind { Unset, Health, Mana }
 

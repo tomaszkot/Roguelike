@@ -137,6 +137,7 @@ namespace Roguelike.LootContainers
           var stackedItemCount = stackedCount[item.GetType()];
           Assert(stackedItemCount > 0);
           stackedCount[item.GetType()] += 1;
+          return true;
         }
         else
         {
@@ -145,14 +146,9 @@ namespace Roguelike.LootContainers
           Assert(false, "Add(Loot item) duplicate item " + item);
           //throw new Exception("Add(Loot item) duplicate item " + item);
         }
-
       }
       return false;
     }
-
-    
-
-    //public List<Loot> UnreportedRemovals = new List<Loot>();
 
     //IEnumerable<Loot> GetStackedItems(Loot item)
     //{

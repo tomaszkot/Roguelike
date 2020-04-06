@@ -116,6 +116,7 @@
     <Compile Include="Tiles\Looting\Scroll.cs" />
     <Compile Include="Tiles\Merchant.cs" />
     <Compile Include="Tiles\Mushroom.cs" />
+    <Compile Include="Tiles\Plant.cs" />
     <Compile Include="Utils\SerializableDictionary.cs" />
     <Compile Include="TileContainers\GameLevel.cs" />
     <Compile Include="Generators\TileContainers\DungeonNode.cs" />

@@ -389,7 +389,7 @@ namespace Dungeons
         {
           var emptyTileIndex = random.Next(emptyTiles.Count);
           var res = emptyTiles[emptyTileIndex];
-          Container.GetInstance<ILogger>().LogInfo("GetRandomEmptyTile: " + res);
+          //Container.GetInstance<ILogger>().LogInfo("GetRandomEmptyTile: " + res);
           return res;
         }
 
