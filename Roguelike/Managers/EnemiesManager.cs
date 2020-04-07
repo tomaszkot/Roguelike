@@ -103,7 +103,14 @@ namespace Roguelike.Managers
 
     private bool ShallChaseTarget(LivingEntity enemy, Hero target)
     {
-      return true;
+      if (enemy.EverHitBy.Contains(target))
+        return true;
+
+      var dist = enemy.DistanceFrom(target);
+      if(dist < 5)
+        return true;
+      
+      return false;
     }
 
     private bool AttackIfPossible(LivingEntity enemy, Hero hero)

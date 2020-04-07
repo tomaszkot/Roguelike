@@ -24,6 +24,9 @@ namespace Roguelike.Tiles
     public EntityState State { get; set; }
     List<Algorithms.PathFinderNode> pathToTarget;
 
+    [JsonIgnore]
+    public List<LivingEntity> EverHitBy { get; set; } = new List<LivingEntity>();
+
     bool alive = true;
     //[JsonIgnoreAttribute]
     public EntityStats Stats { get => stats; set => stats = value; }
@@ -87,6 +90,7 @@ namespace Roguelike.Tiles
       if (defense == 0)
       {
         //gm.Assert(false, "Stats.Defence == 0");
+        AppendAction(new GameStateAction() {Type = GameStateAction.ActionType.Assert, Info = "Stats.Defence == 0!!!" });
         return 0;
       }
       var inflicted = attacker.GetCurrentValue(EntityStatKind.Attack) / defense;
@@ -98,6 +102,8 @@ namespace Roguelike.Tiles
       ga.Info += "UE , Health = " + Stats.Health.Formatted();
 #endif
       AppendAction(ga);
+      if(!this.EverHitBy.Contains(attacker))
+        this.EverHitBy.Add(attacker);
       //if (this is Enemy || this is Hero)// || this is CrackedStone)
       //{
       //  PlayPunchSound();
@@ -152,7 +158,6 @@ namespace Roguelike.Tiles
 
     internal void ApplyPhysicalDamage(LivingEntity victim)
     {
-      
       victim.OnPhysicalHit(this);
     }
 

@@ -30,7 +30,6 @@ namespace Roguelike
 
       public GameAction() : this("", ActionLevel.Normal)
       {
-
       }
 
       public GameAction(string info, ActionLevel lvl)
