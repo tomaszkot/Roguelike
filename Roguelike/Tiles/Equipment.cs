@@ -1,5 +1,6 @@
 ﻿using Dungeons.Core;
 using Roguelike.Attributes;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -143,6 +144,11 @@ namespace Roguelike.Tiles
       ExtendedInfo.Stats.Stats[statKind] = stat;
     }
 
+    internal bool IsBetter(Equipment currentEq)
+    {
+      return Price > currentEq.Price;
+    }
+
     public override string PrimaryStatDescription
     {
       get { return primaryStatDesc; }
@@ -217,6 +223,8 @@ namespace Roguelike.Tiles
       {
         AddMagicStat(new[] { EntityStatKind.Unset, this.primaryStat.Kind, stat }, true);
       }
+
+      IncreasePriceBasedOnExtInfo();
     }
 
     public EntityStatKind AddMagicStat(EntityStatKind[] skip, bool secMagicLevel)
@@ -287,6 +295,7 @@ namespace Roguelike.Tiles
 
       ExtendedInfo.Stats.SetFactor(stat, value);
       IsSecondMagicLevel = secLevel;
+      IncreasePriceBasedOnExtInfo();
     }
 
     public bool priceAlrIncreased;

@@ -1,5 +1,6 @@
 ﻿using NUnit.Framework;
 using Roguelike;
+using Roguelike.Attributes;
 using Roguelike.Managers;
 using Roguelike.Tiles;
 using SimpleInjector;
@@ -69,6 +70,22 @@ namespace RoguelikeUnitTests
       if (autoLoadLevel)
         Game.GenerateLevel(0);
       return Game;
+    }
+
+    protected static Jewellery AddJewelleryToInv(Roguelike.RoguelikeGame game, EntityStatKind statKind)
+    {
+      var juw = game.GameManager.LootGenerator.GetRandomJewellery(statKind);
+      Assert.AreEqual(juw.PrimaryStatKind, EntityStatKind.Defence);
+      Assert.IsTrue(juw.PrimaryStatValue > 0);
+
+      AddItemToInv(game, juw);
+      return juw;
+    }
+
+    protected static void AddItemToInv(Roguelike.RoguelikeGame game, Jewellery juw)
+    {
+      game.Hero.Inventory.Add(juw);
+      Assert.IsTrue(game.Hero.Inventory.Contains(juw));
     }
 
     [TearDown]
