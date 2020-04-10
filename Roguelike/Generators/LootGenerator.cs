@@ -17,15 +17,18 @@ namespace Roguelike.Generators
 
     public virtual Loot GetLootByTileName(string tileName)
     {
-      //if (tileName == "amulet_of_might")
-      //{
-
-      //}
       if (uniqueLoot.ContainsKey(tileName))
         return uniqueLoot[tileName];
 
       return null;
     }
+
+    public virtual T GetLootByTileName<T>(string tileName) where T : Loot
+    {
+      return GetLootByTileName(tileName) as T;
+    }
+
+
 
     void AddScrolls()
     {
@@ -134,18 +137,7 @@ namespace Roguelike.Generators
       loot.Kind = Spells.SpellKind.LightingBall;
       scrolls.Add(loot);
     }
-
-    public virtual Weapon GetRandomWeapon()
-    {
-      var item = new Weapon();
-      item.Name = "Sword";
-      item.Kind = Weapon.WeaponKind.Sword;
-      item.EquipmentKind = EquipmentKind.Weapon;
-      item.PrimaryStatKind = EntityStatKind.Attack;
-      item.PrimaryStatValue = 5;
-      return item;
-    }
-
+        
     public virtual Equipment GetRandom(EquipmentKind kind)
     {
       Equipment eq = null;
@@ -192,6 +184,17 @@ namespace Roguelike.Generators
       item.Name = "Armor";
       item.PrimaryStatKind = EntityStatKind.Defence;
       item.PrimaryStatValue = 3;
+      return item;
+    }
+
+    public virtual Weapon GetRandomWeapon()
+    {
+      var item = new Weapon();
+      item.Name = "Sword";
+      item.Kind = Weapon.WeaponKind.Sword;
+      item.EquipmentKind = EquipmentKind.Weapon;
+      item.PrimaryStatKind = EntityStatKind.Attack;
+      item.PrimaryStatValue = 5;
       return item;
     }
 

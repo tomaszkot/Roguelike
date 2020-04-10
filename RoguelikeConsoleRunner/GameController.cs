@@ -62,14 +62,7 @@ namespace RoguelikeConsoleRunner
 
     protected virtual void PopulateDungeon(Roguelike.TileContainers.AbstractGameLevel dungeon)
     {
-      //var lg = new LootGenerator();
-      //var loot = lg.GetRandomWeapon();
-      ////world.SetTile(loot, world.GetRandomEmptyTile().Point);
-      //dungeon.SetTile(loot, dungeon.GetFirstEmptyPoint().Value);
 
-      ////var enemy = new Enemy();
-      ////world.SetTile(enemy, world.GetEmptyTiles().Last().Point);
-      //// world.SetTile(enemy, new System.Drawing.Point(4, 1));
     }
 
     private void Context_ContextSwitched(object sender, ContextSwitch e)

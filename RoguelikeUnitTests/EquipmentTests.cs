@@ -2,12 +2,29 @@
 using Roguelike.Attributes;
 using Roguelike.Generators;
 using Roguelike.Tiles;
+using System.Linq;
 
 namespace RoguelikeUnitTests
 {
   [TestFixture]
   class EquipmentTests : TestBase
   {
+    [Test]
+    public void TestMagicLevel()
+    {
+      var game = CreateGame();
+
+      var wpn = game.GameManager.LootGenerator.GetRandomWeapon();
+      Assert.IsFalse(wpn.GetMagicStats().Any());
+      wpn.MakeMagic();
+      Assert.NotNull(wpn.GetMagicStats().Single());
+
+      var wpn1 = game.GameManager.LootGenerator.GetRandomWeapon();
+      wpn1.MakeMagic(true);
+      Assert.AreEqual(wpn1.GetMagicStats().Count, 2);
+
+    }
+
     [Test]
     public void HeroNoEquipment()
     {
@@ -112,7 +129,7 @@ namespace RoguelikeUnitTests
       var price = wpn.Price;
       Assert.Greater(price, 0);
 
-      wpn.MakeMagic(EntityStatKind.Attack, false, 4);
+      wpn.MakeMagic(EntityStatKind.Attack, 4);
       Assert.AreEqual(att+4, wpn.GetStats().GetTotalValue(EntityStatKind.Attack));
       Assert.Greater(wpn.Price, price);
     }
@@ -165,7 +182,7 @@ namespace RoguelikeUnitTests
 
       var eq2 = lg.GetRandom(EquipmentKind.Weapon);
       var wpnStatBefore = eq2.GetStats().GetTotalValue(eq2.PrimaryStatKind);
-      eq2.MakeMagic(EntityStatKind.Attack, false, 5);
+      eq2.MakeMagic(EntityStatKind.Attack, 5);
       //eq2.PrimaryStat.Value.Factor += 5;
       Assert.AreEqual(eq2.GetStats().GetTotalValue(eq2.PrimaryStatKind), wpnStatBefore + 5);
             

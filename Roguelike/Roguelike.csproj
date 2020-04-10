@@ -89,6 +89,7 @@
     <Compile Include="Policies\AttackPolicy.cs" />
     <Compile Include="Policies\MovePolicy.cs" />
     <Compile Include="Policies\Policy.cs" />
+    <Compile Include="Probability\Looting.cs" />
     <Compile Include="RpgGameSettings.cs" />
     <Compile Include="Serialization\PersistancyWorker.cs" />
     <Compile Include="Spells\Spell.cs" />
@@ -147,6 +148,7 @@
       <Name>Dungeons</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>if  "$(SolutionName)" == "OuaDIISln" xcopy  "$(TargetPath)" "$(SolutionDir)\Assets\Dlls" /Y

@@ -2,6 +2,7 @@
 using Roguelike.Attributes;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 
 namespace Roguelike.Tiles
@@ -216,7 +217,7 @@ namespace Roguelike.Tiles
       return esk;
     }
 
-    void MakeMagic(bool magicOfSecondLevel = false)
+    public void MakeMagic(bool magicOfSecondLevel = false)
     {
       var stat = AddMagicStat(new[] { EntityStatKind.Unset, this.primaryStat.Kind }, false);
       if (magicOfSecondLevel)
@@ -286,16 +287,35 @@ namespace Roguelike.Tiles
       MakeMagic(stat, secLevel, value, false);
     }
 
-    public void MakeMagic(EntityStatKind stat, bool secLevel, int value, bool incrementFactor = false)
+    public void MakeMagic(EntityStatKind stat, int statValue)
+    {
+      MakeMagic(stat, false, statValue, false);
+    }
+
+    public void MakeMagicSecLevel(EntityStatKind stat, int statValue)
+    {
+      MakeMagic(stat, true, statValue, false);
+    }
+
+    void MakeMagic(EntityStatKind stat, bool secLevel, int statValue, bool incrementFactor = false)
     {
       var factorBefore = ExtendedInfo.Stats.GetFactor(stat);
       if (factorBefore > 0 && incrementFactor)
-        value += value;
+        statValue += statValue;
       Class = EquipmentClass.Magic;//we shall not lost that info
 
-      ExtendedInfo.Stats.SetFactor(stat, value);
+      ExtendedInfo.Stats.SetFactor(stat, statValue);
       IsSecondMagicLevel = secLevel;
       IncreasePriceBasedOnExtInfo();
+    }
+
+    public override void HandleGenerationDone()
+    {
+      Debug.Assert(this.MinDropDungeonLevel >= 0);
+      if (this.MinDropDungeonLevel >= 0)
+      {
+        Price += Price*this.MinDropDungeonLevel;
+      }
     }
 
     public bool priceAlrIncreased;
@@ -349,6 +369,7 @@ namespace Roguelike.Tiles
       return price;
     }
 
+    //set based of the Dungeon Level it was dropped on.
     int levelIndex = -1;
 
     public void SetUnique(EntityStats lootStats)

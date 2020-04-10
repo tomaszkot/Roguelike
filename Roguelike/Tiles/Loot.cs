@@ -6,11 +6,13 @@ using System.Linq;
 using System.Text;
 using System.Xml.Serialization;
 using Roguelike.Abstract;
+using System.Diagnostics;
 
 namespace Roguelike.Tiles
 {
   public enum EquipmentKind { Unset, Weapon, Armor, Helmet, Shield, RingLeft, RingRight, Amulet, TrophyLeft, TrophyRight, Gloves }
   public enum LootKind { Unset, Gold, Potion, Scroll, Weapon, Armor, Jewellery, Other, Gem, Recipe, Trophy, Seal, SealPart, Mushroom, Food, Plant }
+  public enum LootSourceKind { Enemy, PlainChest, GoldChest, DeluxeGoldChest, Barrel }
   public enum EquipmentClass { Unset, Plain, Magic, Unique }
   public enum PotionKind { Unset, Health, Mana }
 
@@ -176,6 +178,11 @@ namespace Roguelike.Tiles
     public virtual string[] GetExtraStatDescription()
     {
       return extraStatDescription;
+    }
+
+    public virtual void HandleGenerationDone()
+    {
+      
     }
 
 

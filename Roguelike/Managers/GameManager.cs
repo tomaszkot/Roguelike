@@ -38,7 +38,7 @@ namespace Roguelike.Managers
   public class GameManager
   {
     protected GameContext context;
-    LootGenerator lootGenerator = new LootGenerator();
+    LootGenerator lootGenerator;
     EventsManager eventsManager;
     EnemiesManager enemiesManager;
     AlliesManager alliesManager;
@@ -70,7 +70,8 @@ namespace Roguelike.Managers
     public GameManager(Container container)
     {
       Container = container;
-      
+
+      LootGenerator = container.GetInstance<LootGenerator>();
       Logger = container.GetInstance<ILogger>();
       levelGenerator = container.GetInstance<LevelGenerator>();
       EventsManager = new EventsManager();
@@ -149,6 +150,7 @@ namespace Roguelike.Managers
           if (lea.InvolvedEntity is Enemy)
           {
             Hero.IncreaseExp(10);
+            LootGenerator.GetRandomLoot();
           }
         }
       }
