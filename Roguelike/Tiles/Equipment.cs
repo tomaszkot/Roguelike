@@ -9,7 +9,7 @@ namespace Roguelike.Tiles
 {
   public class Equipment : Loot
   {
-    readonly static LootKind[] possibleLootKinds = new LootKind[] { LootKind.Armor, LootKind.Weapon, LootKind.Jewellery };
+    //readonly static LootKind[] possibleLootKinds = new LootKind[] { LootKind.Armor, LootKind.Weapon, LootKind.Jewellery };
     public int MinDropDungeonLevel = 100;
     EquipmentKind kind;
     EntityStat primaryStat;
@@ -79,23 +79,24 @@ namespace Roguelike.Tiles
       }
     }
     
-    public static LootKind[] GetPossibleLootKindsForCrafting()
-    {
-      return possibleLootKinds;
-    }
+    //public static LootKind[] GetPossibleLootKindsForCrafting()
+    //{
+    //  return possibleLootKinds;
+    //}
 
-    internal LootKind GetLootKind()
-    {
-      if (EquipmentKind == EquipmentKind.Weapon)
-        return LootKind.Weapon;
-      else if (EquipmentKind == EquipmentKind.Amulet || EquipmentKind == EquipmentKind.RingLeft || EquipmentKind == EquipmentKind.RingRight)
-        return LootKind.Jewellery;
-      else if (EquipmentKind == EquipmentKind.Armor || EquipmentKind == EquipmentKind.Shield || EquipmentKind == EquipmentKind.Helmet)
-        return LootKind.Armor;
-      else if (EquipmentKind == EquipmentKind.TrophyLeft)//|| Type == EquipmentKind.TrophyRight)
-        return LootKind.Trophy;
-      return LootKind.Other;
-    }
+    //internal LootKind GetLootKind()
+    //{
+    //  //if (EquipmentKind == EquipmentKind.Weapon)
+    //  //  return LootKind.Weapon;
+    //  //else if (EquipmentKind == EquipmentKind.Amulet || EquipmentKind == EquipmentKind.RingLeft || EquipmentKind == EquipmentKind.RingRight)
+    //  //  return LootKind.Jewellery;
+    //  //else if (EquipmentKind == EquipmentKind.Armor || EquipmentKind == EquipmentKind.Shield || EquipmentKind == EquipmentKind.Helmet)
+    //  //  return LootKind.Armor;
+    //  //else if (EquipmentKind == EquipmentKind.TrophyLeft)//|| Type == EquipmentKind.TrophyRight)
+    //  //  return LootKind.Trophy;
+    //  //return LootKind.Other;
+    //  return LootKind.Equipment;
+    //}
 
     
     public EntityStatKind PrimaryStatKind

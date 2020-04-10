@@ -114,6 +114,7 @@
     <Compile Include="Tiles\Jewellery.cs" />
     <Compile Include="Tiles\Lever.cs" />
     <Compile Include="Tiles\Looting\FightItem.cs" />
+    <Compile Include="Tiles\Looting\Gold.cs" />
     <Compile Include="Tiles\Looting\Scroll.cs" />
     <Compile Include="Tiles\Merchant.cs" />
     <Compile Include="Tiles\Mushroom.cs" />

@@ -1,5 +1,6 @@
 ﻿using Dungeons.Tiles;
 using Roguelike.Attributes;
+using Roguelike.Probability;
 using Roguelike.Tiles;
 using Roguelike.Tiles.Looting;
 using System;
@@ -14,6 +15,9 @@ namespace Roguelike.Generators
   {
     List<Scroll> scrolls = new List<Scroll>();
     Dictionary<string, Loot> uniqueLoot = new Dictionary<string, Loot>();
+    Roguelike.Probability.Looting probability = new Roguelike.Probability.Looting();
+
+    public Looting Probability { get => probability; }
 
     public virtual Loot GetLootByTileName(string tileName)
     {
@@ -27,8 +31,7 @@ namespace Roguelike.Generators
     {
       return GetLootByTileName(tileName) as T;
     }
-
-
+    
 
     void AddScrolls()
     {
@@ -187,11 +190,28 @@ namespace Roguelike.Generators
       return item;
     }
 
+    internal Loot TryGetRandomLootByDiceRoll(LootSourceKind lsk)
+    {
+      var lootKind = Probability.RollDiceForKind(lsk);
+      if (lootKind == LootKind.Unset)
+        return null;
+
+      if (lootKind == LootKind.Equipment)
+      {
+        var ek = Probability.RollDice(lsk);
+        if (ek != EquipmentClass.Unset)
+          return GetRandomWeapon();//TODO
+      }
+
+      return GetRandomLoot(lootKind);
+    }
+
     public virtual Weapon GetRandomWeapon()
     {
       var item = new Weapon();
       item.Name = "Sword";
       item.Kind = Weapon.WeaponKind.Sword;
+      item.LootKind = LootKind.Equipment;
       item.EquipmentKind = EquipmentKind.Weapon;
       item.PrimaryStatKind = EntityStatKind.Attack;
       item.PrimaryStatValue = 5;
@@ -276,6 +296,15 @@ namespace Roguelike.Generators
       jew.MinDropDungeonLevel = minDropDungeonLevel;
       
       return jew;
+    }
+
+    public virtual Loot GetRandomLoot(LootKind kind)
+    {
+      //if(kind == LootKind.Potion)
+      //  return  new PotionKind
+      if (kind == LootKind.Gold)
+        return new Gold();
+      return GetRandomLoot();
     }
 
     public virtual Loot GetRandomLoot()

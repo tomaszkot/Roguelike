@@ -150,7 +150,11 @@ namespace Roguelike.Managers
           if (lea.InvolvedEntity is Enemy)
           {
             Hero.IncreaseExp(10);
-            LootGenerator.GetRandomLoot();
+            var loot = LootGenerator.TryGetRandomLootByDiceRoll(LootSourceKind.Enemy);
+            if (loot!=null)
+            {
+              ReplaceTile(loot, lea.InvolvedEntity.Point);
+            }
           }
         }
       }
