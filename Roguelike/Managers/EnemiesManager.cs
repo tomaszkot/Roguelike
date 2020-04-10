@@ -67,7 +67,7 @@ namespace Roguelike.Managers
         bool makeRandMove = false;
         if (ShallChaseTarget(enemy, target))
         {
-          makeRandMove = !MakeMoveOnPath(enemy, target);
+          makeRandMove = !MakeMoveOnPath(enemy, target.Point);
         }
         else
           makeRandMove = true;
@@ -76,14 +76,27 @@ namespace Roguelike.Managers
           MakeRandomMove(enemy);
         }
       }
-
     }
 
-    private bool MakeMoveOnPath(LivingEntity enemy, Hero target)
+    public override void MakeRandomMove(LivingEntity entity)
+    {
+      if (entity.InitialPoint != LivingEntity.DefaultInitialPoint)
+      {
+        var distFromInitPoint = entity.DistanceFrom(entity.InitialPoint);
+        if (distFromInitPoint > 5)
+        {
+          if (MakeMoveOnPath(entity, entity.InitialPoint))
+            return;
+        }
+      }
+      base.MakeRandomMove(entity);
+    }
+
+    private bool MakeMoveOnPath(LivingEntity enemy, Point target)
     {
       bool forHeroAlly = false;
       bool moved = false;
-      enemy.PathToTarget = Node.FindPath(enemy.Point, target.Point, forHeroAlly, true);
+      enemy.PathToTarget = Node.FindPath(enemy.Point, target, forHeroAlly, true);
       if (enemy.PathToTarget != null && enemy.PathToTarget.Count > 1)
       {
         var node = enemy.PathToTarget[1];
@@ -132,6 +145,11 @@ namespace Roguelike.Managers
 
     protected override bool MoveEntity(LivingEntity entity, Point newPos)
     {
+      if (entity.InitialPoint == LivingEntity.DefaultInitialPoint)
+      {
+        entity.InitialPoint = entity.Point;
+      }
+
       var moved = base.MoveEntity(entity, newPos);
       return moved;
     }

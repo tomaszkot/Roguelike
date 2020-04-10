@@ -13,7 +13,7 @@ namespace RoguelikeUnitTests
       var hero = game.Hero;
 
       var wpn = game.GameManager.GenerateRandomEquipment(EquipmentKind.Weapon);
-      hero.Inventory.Add(wpn);
+      //hero.Inventory.Add(wpn);
      //TODO
       //var ca = hero.GetCurrentValue(EntityStatKind.Attack);
       //var ta = hero.GetTotalValue(EntityStatKind.Attack);

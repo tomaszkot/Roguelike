@@ -327,7 +327,8 @@ namespace Dungeons
         destStartPoint = new Point(generationInfo.MinRoomLeft / 2 + 1, generationInfo.MinRoomLeft / 2);
       for (int i = 0; i < generationInfo.MaxNumberOfChildIslands; i++)
       {
-        var child = dungeonNode.CreateChildIslandInstance(islandWidth, islandHeight, generationInfoIsl, parent: dungeonNode);
+        var child = dungeonNode.CreateChildIslandInstance(islandWidth, islandHeight, generationInfoIsl, 
+          parent: dungeonNode);
         if (ChildIslandCreated != null)
           ChildIslandCreated(this, new ChildIslandCreationInfo() { ChildIslandNode = child, GenerationInfoIsl = generationInfoIsl, ParentDungeonNode = dungeonNode });
         dungeonNode.AddChildIsland(destStartPoint, child);

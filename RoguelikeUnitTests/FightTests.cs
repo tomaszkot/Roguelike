@@ -21,8 +21,9 @@ namespace RoguelikeUnitTests
       var enemyHealthDiff2 = enemyHealth1 - enemyHealth2;
       Assert.Greater(enemyHealthDiff2, 0);
 
-      var wpn = game.GameManager.GenerateRandomEquipment(EquipmentKind.Weapon);
-      hero.SetEquipment(EquipmentKind.Weapon, wpn);
+      //var wpn = game.GameManager.GenerateRandomEquipment(EquipmentKind.Weapon);
+      var wpn = GenerateRandomEqOnLevelAndCollectIt<Weapon>();
+      //hero.SetEquipment(EquipmentKind.Weapon, wpn);
       enemy.OnPhysicalHit(hero);
       var enemyHealthDiff3 = enemyHealth2 - enemy.Stats.Health;
       Assert.Greater(enemyHealthDiff3, enemyHealthDiff2);

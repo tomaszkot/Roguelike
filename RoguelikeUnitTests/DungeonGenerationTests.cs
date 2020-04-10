@@ -56,6 +56,17 @@ namespace RoguelikeUnitTests
       Assert.AreEqual(level0, game.Level);
       Assert.NotNull(level0.GetTiles<Hero>().SingleOrDefault());
 
+      Assert.NotNull(level0.GetTiles().Where(i => i.IsEmpty).FirstOrDefault());
+      level0.DoGridAction((int col, int row) =>
+      {
+        if (level0.Tiles[row, col] == null)
+        {
+          var tile = level0.GetTile(new Point(col, row));
+          Assert.NotNull(tile);
+          Assert.True(tile is Loot);
+        }
+      });
+
       //1st level0 has only stairs down
       Assert.AreEqual(level0.GetTiles<Stairs>().Count, 1);
       Assert.AreEqual(level0.GetTiles<Stairs>()[0].StairsKind, StairsKind.LevelDown);
@@ -134,6 +145,7 @@ namespace RoguelikeUnitTests
     {
       var level1 = GenRoomWithEnemies();
       Assert.AreEqual(level1.GetTiles<Enemy>().Count(), 2);
+      Assert.Greater(level1.GetTiles().Where(i => i.IsEmpty).Count(), 3);
 
       var level2 = GenRoomWithEnemies();
       Assert.AreEqual(level2.GetTiles<Enemy>().Count(), 2);
@@ -150,8 +162,8 @@ namespace RoguelikeUnitTests
       var info = new Roguelike.GenerationInfo();
       info.NumberOfRooms = 1;
       info.GenerateEnemies = false;
-      info.MinNodeSize = new System.Drawing.Size(5, 5);
-      info.MaxNodeSize = new System.Drawing.Size(5, 5);
+      info.MinNodeSize = new Size(8, 8);
+      info.MaxNodeSize = info.MinNodeSize;
       var level = generator.Generate(0, info);
       Assert.Greater(level.GetTiles().Where(i => i.IsEmpty).Count(), 0);
 

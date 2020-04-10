@@ -381,9 +381,6 @@ namespace Roguelike.Managers
           {
             var eq = lootTile as Equipment;
             Hero.MoveEquipment(Hero.Inventory, Hero.CurrentEquipment, eq, eq.EquipmentKind);
-            
-            //Hero.SetEquipment(eq.EquipmentKind, eq);
-
             PrintHeroStats("loot On");
           }
           return true;

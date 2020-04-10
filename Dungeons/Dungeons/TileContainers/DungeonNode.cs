@@ -101,6 +101,7 @@ namespace Dungeons
       public Container Container { get; set; }
 
       public EventHandler<DungeonNode> CustomInteriorDecorator;
+      ILogger logger;
 
       //ctors
       static DungeonNode()
@@ -152,6 +153,24 @@ namespace Dungeons
         this.created = true;
       }
 
+      void EnsureLogger()
+      {
+        if (this.logger == null && Container != null)
+          logger = Container.GetInstance<ILogger>();
+      }
+
+      void Log(string info, bool error)
+      {
+        EnsureLogger();
+        if (logger != null)
+        {
+          if(error)
+            logger.LogError(info);
+          else
+            logger.LogInfo(info);
+        }
+      }
+
       public virtual string Description
       {
         get { return GetType().Name; }
@@ -171,7 +190,7 @@ namespace Dungeons
           nodeIndex = value;
         }
       }
-
+            
       [XmlIgnore]
       [JsonIgnore]
       public DungeonNode Parent
@@ -389,7 +408,7 @@ namespace Dungeons
         {
           var emptyTileIndex = random.Next(emptyTiles.Count);
           var res = emptyTiles[emptyTileIndex];
-          //Container.GetInstance<ILogger>().LogInfo("GetRandomEmptyTile: " + res);
+          //Log("GetRandomEmptyTile: " + res);
           return res;
         }
 
@@ -411,7 +430,7 @@ namespace Dungeons
       {
         if (point.X < 0 || point.Y < 0)
         {
-          Container.GetInstance<ILogger>().LogError("SetTile failed for: " + point, true);
+          Log("SetTile failed for: " + point, true);
           return false;
         }
         if (AppendMazeStartPoint != null)
@@ -421,7 +440,7 @@ namespace Dungeons
         }
         if (point.X >= Width || point.Y >= Height)
         {
-          Container.GetInstance<ILogger>().LogError("SetTile failed, point.X >= Width || point.Y >= Height for: " + point, true);
+          Log("SetTile failed, point.X >= Width || point.Y >= Height for: " + point, true);
           return false;
         }
 
@@ -508,6 +527,7 @@ namespace Dungeons
       public DungeonNode CreateChildIslandInstance(int w, int h, GenerationInfo gi, DungeonNode parent)
       {
         var dungeon = Container.GetInstance<DungeonNode>();
+        dungeon.Container = this.Container;
         var childGenInfo = gi.Clone() as GenerationInfo;
         childGenInfo.ChildIslandAllowed = false;//sub islands are not supported
         dungeon.Create(w, h, childGenInfo, ChildIslandNodeIndex, parent: this);
@@ -576,7 +596,11 @@ namespace Dungeons
             //{
 
             //}
-            this.SetTile(tileInChildMaze, new Point(destCol, destRow), autoSetTileDungeonIndex: false);
+            var set = this.SetTile(tileInChildMaze, new Point(destCol, destRow), autoSetTileDungeonIndex: false);
+            if (!set)
+            {
+              this.Log("SetTile failed "+ tileInChildMaze, true);
+            }
           }
         }
       }
@@ -663,6 +687,7 @@ namespace Dungeons
           }
         }
       }
+
       public void DoGridAction(Action<int, int> ac)
       {
         for (int row = 0; row < Height; row++)
@@ -881,16 +906,22 @@ namespace Dungeons
         return GetTiles<Tile>();
       }
 
-      public T SetTileAtRandomPosition<T>(bool matchNodeIndex = true) where T : Tile, new()
+      public Tile SetTileAtRandomPosition(Tile tile, bool matchNodeIndex = true) 
       {
         var node = matchNodeIndex == true ? (int?)NodeIndex : null;
         var empty = this.GetRandomEmptyTile(nodeIndex: node);
         if (empty == null)
           return null;
-        var tile = new T();
+
         var set = SetTile(tile, empty.Point);
 
         return set ? tile : null;
+      }
+
+      public T SetTileAtRandomPosition<T>(bool matchNodeIndex = true) where T : Tile, new()
+      {
+        var tile = new T();
+        return SetTileAtRandomPosition(tile, matchNodeIndex) as T;
       }
     }
   }

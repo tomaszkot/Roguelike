@@ -18,8 +18,10 @@ namespace Roguelike.Tiles
 
   public class LivingEntity : Tile
   {
+    public static Point DefaultInitialPoint = new Point(0, 0);
     //public event EventHandler<GenericEventArgs<LivingEntity>> Died;
     public Point PrevPoint;
+    public Point InitialPoint = DefaultInitialPoint;
     EntityStats stats = new EntityStats();
     public EntityState State { get; set; }
     List<Algorithms.PathFinderNode> pathToTarget;

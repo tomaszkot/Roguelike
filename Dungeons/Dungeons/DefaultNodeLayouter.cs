@@ -88,8 +88,10 @@ namespace Dungeons
       var max = localLevel.GetMaxXY();
 
       var level = container.GetInstance<DungeonLevel>();
-      level.Create(max.Item1 + 1, max.Item2 + 1);
-      level.AppendMaze(localLevel, new Point(0, 0), new Point(max.Item1 + 1, max.Item2 + 1));
+      var width = max.Item1 + 1;
+      var height = max.Item2 + 1;
+      level.Create(width, height);
+      level.AppendMaze(localLevel, new Point(0, 0), new Point(width, height));
       level.DeleteWrongDoors();
 
       return level;

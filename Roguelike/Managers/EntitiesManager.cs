@@ -47,8 +47,9 @@ namespace Roguelike.Managers
         MakeRandomMove(entities.First());
     }
 
-    public void MakeRandomMove(LivingEntity entity)
+    public virtual void MakeRandomMove(LivingEntity entity)
     {
+      
       var pt = Node.GetEmptyNeighborhoodPoint(entity);
       if (pt.IsValid())
       {

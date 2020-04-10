@@ -178,7 +178,12 @@ namespace Dungeons.Tiles
 
     public double DistanceFrom(Tile other)
     {
-      var dPowered = (Math.Pow(Point.X - other.Point.X, 2) + Math.Pow(Point.Y - other.Point.Y, 2));
+      return DistanceFrom(other.Point);
+    }
+
+    public double DistanceFrom(Point other)
+    {
+      var dPowered = (Math.Pow(Point.X - other.X, 2) + Math.Pow(Point.Y - other.Y, 2));
       return Math.Sqrt(dPowered);
     }
   }

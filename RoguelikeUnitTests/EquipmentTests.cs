@@ -49,7 +49,6 @@ namespace RoguelikeUnitTests
         var juw2 = AddJewelleryToInv(game, statKind);
         juw2.PrimaryStatValue *= 5;
         var defHero = game.Hero.GetTotalValue(EntityStatKind.Defence);
-        //game.Hero.SetEquipment(EquipmentKind.RingRight, juw2);
         game.Hero.MoveEquipmentInv2Current(juw2, EquipmentKind.RingRight);
         ringRight = juw2.PrimaryStatValue;
         Assert.AreEqual(game.Hero.GetTotalValue(EntityStatKind.Defence), origHeroDef + ringLeft + juw2.PrimaryStatValue);
@@ -65,7 +64,7 @@ namespace RoguelikeUnitTests
 
         var juw33 = game.GameManager.LootGenerator.GetRandomJewellery(EntityStatKind.Defence, EquipmentKind.Amulet);
         AddItemToInv(game, juw33);
-        set = game.Hero.MoveEquipmentInv2Current(juw33, EquipmentKind.Amulet);//game.Hero.SetEquipment(EquipmentKind.Amulet, juw3);
+        set = game.Hero.MoveEquipmentInv2Current(juw33, EquipmentKind.Amulet);
         Assert.True(set);
         Assert.AreEqual(game.Hero.GetTotalValue(EntityStatKind.Defence), origHeroDef + ringLeft + ringRight + juw33.PrimaryStatValue);
         Assert.IsTrue(!game.Hero.Inventory.Contains(juw33));
@@ -122,20 +121,50 @@ namespace RoguelikeUnitTests
     }
 
     [Test]
-    public void EquipmentProps()
+    public void EquipmentMagicProps()
     {
       var game = CreateGame();
       var hero = game.Hero;
 
       Equipment wpn = game.GameManager.GenerateRandomEquipment(EquipmentKind.Weapon);
-      Assert.AreEqual(wpn.PrimaryStatKind, EntityStatKind.Attack);
-      Assert.Greater(wpn.PrimaryStatValue, 0);
-      var stats = wpn.GetStats();
-      Assert.AreEqual(stats.Attack, wpn.PrimaryStatValue);
-
       var att = wpn.PrimaryStatValue;
       wpn.MakeMagic(EntityStatKind.Attack, false, 4);
       Assert.AreEqual(att+4, wpn.GetStats().GetTotalValue(EntityStatKind.Attack));
+    }
+
+    [Test]
+    public void TestAutoPutOnEquipmentOnHero()
+    {
+      var game = CreateGame();
+      var hero = game.Hero;
+      var heroAttack = hero.Stats.Attack;
+
+      var wpn = game.GameManager.GenerateRandomEquipment(EquipmentKind.Weapon);
+      Assert.AreEqual(wpn.PrimaryStatKind, EntityStatKind.Attack);
+      Assert.Greater(wpn.PrimaryStatValue, 0);
+    }
+
+    [Test]
+    public void EquipmentBasicProps()
+    {
+      var lg = new LootGenerator();
+      {
+        var kinds = new[] { EquipmentKind.Weapon, EquipmentKind.Armor, EquipmentKind.Shield, EquipmentKind.Helmet, EquipmentKind.RingLeft, EquipmentKind.Amulet };
+        foreach(var kind in kinds)
+        {
+          var eq = lg.GetRandom(kind);
+          Assert.Greater(eq.PrimaryStatValue, 0);
+
+          var stats = eq.GetStats();
+          Assert.AreEqual(stats.GetTotalValue(eq.PrimaryStatKind), eq.PrimaryStatValue);
+
+          if (kind == EquipmentKind.Weapon)
+          {
+            Assert.AreEqual(eq.PrimaryStatKind, EntityStatKind.Attack);
+            Assert.AreEqual(stats.Attack, eq.PrimaryStatValue);
+          }
+        }
+      }
     }
 
     [Test]
@@ -144,43 +173,47 @@ namespace RoguelikeUnitTests
       var game = CreateGame();
       var hero = game.Hero;
 
+      //Attack
       var heroAttack = hero.Stats.Attack;
       Assert.AreEqual(hero.Stats.Strength, heroAttack);
       var attack1 = hero.GetCurrentValue(EntityStatKind.Attack);
       Assert.AreEqual(attack1, heroAttack);
 
-      var wpn = game.GameManager.GenerateRandomEquipment(EquipmentKind.Weapon);
-      Assert.AreEqual(wpn.PrimaryStatKind, EntityStatKind.Attack);
-      Assert.Greater(wpn.PrimaryStatValue, 0);
-      
-      hero.SetEquipment(EquipmentKind.Weapon, wpn);
-
-      Assert.Greater(hero.Stats.Attack, heroAttack);
-      Assert.AreEqual(hero.GetCurrentValue(EntityStatKind.Attack), hero.Stats.Attack);
-      var heroDef = hero.Stats.Defence;
       var lg = new LootGenerator();
       {
+        var wpn = lg.GetRandomWeapon();
+        PutEqOnLevelAndCollectIt(wpn);
+        //var wpn = GenerateRandomEqOnLevelAndCollectIt<Weapon>();
+        //hero had no weapon - shall put it on
+        //Assert.AreEqual(hero.CurrentEquipment.PrimaryEquipment[EquipmentKind.Weapon], wpn);
+        //Assert.Greater(hero.Stats.Attack, heroAttack);
+        Assert.AreEqual(hero.GetCurrentValue(EntityStatKind.Attack), hero.Stats.Attack);
+      }
+      //Defence
+      var heroDef = hero.Stats.Defence;
+      {
         var hel = lg.GetRandomHelmet();
-        Assert.AreEqual(hel.PrimaryStatKind, EntityStatKind.Defence);
-        Assert.Greater(hel.PrimaryStatValue, 0);
-        hero.SetEquipment(EquipmentKind.Helmet, hel);
+        //Assert.AreEqual(hel.PrimaryStatKind, EntityStatKind.Defence);
+        //Assert.Greater(hel.PrimaryStatValue, 0);
+        PutEqOnLevelAndCollectIt(hel);
         Assert.Greater(hero.Stats.Defence, heroDef);
       }
       {
         heroDef = hero.Stats.Defence;
         var sh = lg.GetRandomShield();
-        Assert.AreEqual(sh.PrimaryStatKind, EntityStatKind.Defence);
-        Assert.Greater(sh.PrimaryStatValue, 0);
-        hero.SetEquipment(EquipmentKind.Shield, sh);
+        PutEqOnLevelAndCollectIt(sh);
+        //Assert.AreEqual(sh.PrimaryStatKind, EntityStatKind.Defence);
+        //Assert.Greater(sh.PrimaryStatValue, 0);
+        //hero.SetEquipment(EquipmentKind.Shield, sh);
         Assert.Greater(hero.Stats.Defence, heroDef);
       }
 
-      heroDef = hero.Stats.Defence;
-      var gl = lg.GetRandomGloves();
-      Assert.AreEqual(gl.PrimaryStatKind, EntityStatKind.Defence);
-      Assert.Greater(gl.PrimaryStatValue, 0);
-      hero.SetEquipment(EquipmentKind.Gloves, gl);
-      Assert.Greater(hero.Stats.Defence, heroDef);
+      //heroDef = hero.Stats.Defence;
+      //var gl = lg.GetRandomGloves();
+      //Assert.AreEqual(gl.PrimaryStatKind, EntityStatKind.Defence);
+      //Assert.Greater(gl.PrimaryStatValue, 0);
+      //hero.SetEquipment(EquipmentKind.Gloves, gl);
+      //Assert.Greater(hero.Stats.Defence, heroDef);
     }
   }
 }

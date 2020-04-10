@@ -146,6 +146,55 @@ namespace Roguelike.Generators
       return item;
     }
 
+    public virtual Equipment GetRandom(EquipmentKind kind)
+    {
+      Equipment eq = null;
+      switch (kind)
+      {
+        case EquipmentKind.Unset:
+          break;
+        case EquipmentKind.Weapon:
+          eq = GetRandomWeapon();
+          break;
+        case EquipmentKind.Armor:
+          eq = GetRandomArmor();
+          break;
+        case EquipmentKind.Helmet:
+          eq = GetRandomHelmet();
+          break;
+        case EquipmentKind.Shield:
+          eq = GetRandomShield();
+          break;
+        case EquipmentKind.RingLeft:
+          eq = GetRandomJewellery(EntityStatKind.Attack, EquipmentKind.RingLeft);
+          break;
+        case EquipmentKind.RingRight:
+          eq = GetRandomJewellery(EntityStatKind.Attack, EquipmentKind.RingRight);
+          break;
+        case EquipmentKind.Amulet:
+          eq = GetRandomJewellery(EntityStatKind.Attack, EquipmentKind.Amulet);
+          break;
+        case EquipmentKind.TrophyLeft:
+          break;
+        case EquipmentKind.TrophyRight:
+          break;
+        case EquipmentKind.Gloves:
+          eq = GetRandomGloves();
+          
+          break;
+      }
+      return eq;
+    }
+
+    private Equipment GetRandomArmor()
+    {
+      var item = new Equipment(EquipmentKind.Armor);
+      item.Name = "Armor";
+      item.PrimaryStatKind = EntityStatKind.Defence;
+      item.PrimaryStatValue = 3;
+      return item;
+    }
+
     public virtual Equipment GetRandomHelmet()
     {
       var item = new Equipment(EquipmentKind.Helmet);
@@ -225,8 +274,6 @@ namespace Roguelike.Generators
       
       return jew;
     }
-
-
 
     public virtual Loot GetRandomLoot()
     {
