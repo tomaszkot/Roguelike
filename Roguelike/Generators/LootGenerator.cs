@@ -1,14 +1,12 @@
 ﻿using Dungeons.Core;
-using Dungeons.Tiles;
 using Roguelike.Attributes;
+using Roguelike.LootFactories;
 using Roguelike.Probability;
 using Roguelike.Tiles;
 using Roguelike.Tiles.Looting;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Roguelike.Generators
 {
@@ -29,11 +27,16 @@ namespace Roguelike.Generators
 
   public class LootGenerator
   {
+    protected EquipmentFactory equipmentFactory;
     Dictionary<string, Loot> uniqueLoot = new Dictionary<string, Loot>();
     Looting probability = new Looting();
 
+    public Looting Probability { get => probability; }
+    public EquipmentFactory EquipmentFactory { get => equipmentFactory; }
+
     public LootGenerator()
     {
+      CreateEqFactory();
       var lootSourceKinds = Enum.GetValues(typeof(LootSourceKind));
       var lootingChancesForEqEnemy = new LootingChancesForEquipmentClass();
       foreach (var lootSource in lootSourceKinds.Cast<LootSourceKind>())
@@ -46,6 +49,11 @@ namespace Roguelike.Generators
           probability.SetLootingChance(lootSource, lootingChancesForEq);
         }
       }
+    }
+
+    protected virtual void CreateEqFactory()
+    {
+      equipmentFactory = new EquipmentFactory();
     }
 
     LootingChancesForEquipmentClass CreateLootingChancesForEquipmentClass
@@ -75,10 +83,8 @@ namespace Roguelike.Generators
 
       return lootingChancesForEq;
     }
-
-    public Looting Probability { get => probability; }
-
-    public virtual Loot GetLootByTileName(string tileName)
+        
+    public virtual Loot GetLootByName(string tileName)
     {
       if (uniqueLoot.ContainsKey(tileName))
         return uniqueLoot[tileName];
@@ -88,56 +94,12 @@ namespace Roguelike.Generators
 
     public virtual T GetLootByTileName<T>(string tileName) where T : Loot
     {
-      return GetLootByTileName(tileName) as T;
+      return GetLootByName(tileName) as T;
     }
 
     public virtual Equipment GetRandom(EquipmentKind kind)
     {
-      Equipment eq = null;
-      switch (kind)
-      {
-        case EquipmentKind.Unset:
-          break;
-        case EquipmentKind.Weapon:
-          eq = GetRandomWeapon();
-          break;
-        case EquipmentKind.Armor:
-          eq = GetRandomArmor();
-          break;
-        case EquipmentKind.Helmet:
-          eq = GetRandomHelmet();
-          break;
-        case EquipmentKind.Shield:
-          eq = GetRandomShield();
-          break;
-        case EquipmentKind.RingLeft:
-          eq = GetRandomJewellery(EntityStatKind.Attack, EquipmentKind.RingLeft);
-          break;
-        case EquipmentKind.RingRight:
-          eq = GetRandomJewellery(EntityStatKind.Attack, EquipmentKind.RingRight);
-          break;
-        case EquipmentKind.Amulet:
-          eq = GetRandomJewellery(EntityStatKind.Attack, EquipmentKind.Amulet);
-          break;
-        case EquipmentKind.TrophyLeft:
-          break;
-        case EquipmentKind.TrophyRight:
-          break;
-        case EquipmentKind.Gloves:
-          eq = GetRandomGloves();
-
-          break;
-      }
-      return eq;
-    }
-
-    private Equipment GetRandomArmor()
-    {
-      var item = new Equipment(EquipmentKind.Armor);
-      item.Name = "Armor";
-      item.PrimaryStatKind = EntityStatKind.Defence;
-      item.PrimaryStatValue = 3;
-      return item;
+      return equipmentFactory.GetRandom(kind);
     }
 
     internal Loot TryGetRandomLootByDiceRoll(LootSourceKind lsk)
@@ -165,19 +127,13 @@ namespace Roguelike.Generators
         var eqClass = Probability.RollDice(lsk);
         if (eqClass != EquipmentClass.Unset)
         {
-          var randedEnum = RandHelper.GetRandomEnumValue<EquipmentKind>(new[] { EquipmentKind.TrophyLeft, EquipmentKind .TrophyRight, EquipmentKind .Unset});
-          var item = GetRandom(randedEnum);
-          if (eqClass == EquipmentClass.Magic)
-            item.MakeMagic();
-          else if (eqClass == EquipmentClass.Unique)
-          {
-            var ees = new EqEntityStats();
-            ees.Add(EntityStatKind.Health, 15)
-            .Add(EntityStatKind.Attack, 15)
-            .Add(EntityStatKind.Defence, 15)
-            .Add(EntityStatKind.ChanceToCastSpell, 15);
-            item.SetUnique(ees.Get());
-          }
+          var item = GetRandomEquipment(eqClass);
+          //if (eqClass == EquipmentClass.Magic)
+          //  item.MakeMagic();
+          //else if (eqClass == EquipmentClass.Unique)
+          //{
+            
+          //}
           return item;
         }
       }
@@ -185,102 +141,10 @@ namespace Roguelike.Generators
       return GetRandomLoot(lootKind);
     }
 
-    protected virtual Loot GetRandomLoot(LootKind lootKind, EquipmentClass eqClass)
+    protected virtual Equipment GetRandomEquipment(EquipmentClass eqClass)
     {
-      //var rand = GetRandom(lootKind);
-      return null;
-    }
-
-    public virtual Weapon GetRandomWeapon()
-    {
-      var item = new Weapon();
-      item.Name = "Sword";
-      item.Kind = Weapon.WeaponKind.Sword;
-      item.LootKind = LootKind.Equipment;
-      item.EquipmentKind = EquipmentKind.Weapon;
-      item.PrimaryStatKind = EntityStatKind.Attack;
-      item.PrimaryStatValue = 5;
-      return item;
-    }
-
-    public virtual Equipment GetRandomHelmet()
-    {
-      var item = new Equipment(EquipmentKind.Helmet);
-      item.Name = "Helmet";
-      //item.Kind = Weapon.WeaponKind.Sword;
-      item.PrimaryStatKind = EntityStatKind.Defence;
-      item.PrimaryStatValue = 2;
-      return item;
-    }
-
-    public virtual Equipment GetRandomShield()
-    {
-      var item = new Equipment(EquipmentKind.Shield);
-      item.Name = "Buckler";
-      item.PrimaryStatKind = EntityStatKind.Defence;
-      item.PrimaryStatValue = 1;
-      return item;
-    }
-
-    public virtual Equipment GetRandomGloves()
-    {
-      var item = new Equipment(EquipmentKind.Gloves);
-      item.Name = "Gloves";
-      item.PrimaryStatKind = EntityStatKind.Defence;
-      item.PrimaryStatValue = 1;
-      return item;
-    }
-
-    public virtual Jewellery GetRandomJewellery(EntityStatKind sk, EquipmentKind eq = EquipmentKind.Unset)
-    {
-      if (eq == EquipmentKind.Amulet)
-        return createAmulet(sk, 1, 3);
-      return AddRing("", sk, 1, 3);
-    }
-
-    Jewellery createJewellery(EquipmentKind kind, int minDropDungeonLevel)
-    {
-      var juwell = new Jewellery();
-      juwell.EquipmentKind = kind;
-      juwell.MinDropDungeonLevel = minDropDungeonLevel;
-      juwell.Price = 10;
-      return juwell;
-    }
-
-    private Jewellery createAmulet(EntityStatKind sk, int minDungeonLevel, int statValue)
-    {
-      var jew = createJewellery(EquipmentKind.Amulet, minDungeonLevel);
-      jew.tag1 = sk.ToString() + "_amulet";
-      int AmuletStatAddition = 2;
-      jew.SetPrimaryStat(sk, statValue + AmuletStatAddition);
-
-      var name = "amulet of ";// "amulet of ";
-      jew.Name = name + sk.ToString();
-      if (sk == EntityStatKind.ResistCold || sk == EntityStatKind.ResistFire || sk == EntityStatKind.ResistPoison)
-      {
-        jew.Name += " resistance";
-      }
-      
-      return jew;
-    }
-
-    private Jewellery AddRing(string asset, EntityStatKind sk, int minDropDungeonLevel,
-      int statValue)
-    {
-      var jew = createJewellery(EquipmentKind.RingLeft, minDropDungeonLevel);
-      jew.tag1 = asset;
-      //juw.ExtendedInfo.Stats.SetFactor(EntityStatKind.ResistCold, 10);
-      jew.SetPrimaryStat(sk, statValue);
-      var name = "ring of ";
-      jew.Name = name + sk;
-
-      if (sk == EntityStatKind.ResistCold || sk == EntityStatKind.ResistFire || sk == EntityStatKind.ResistPoison)
-      {
-        jew.Name += " resistance";
-      }
-      jew.MinDropDungeonLevel = minDropDungeonLevel;
-      
-      return jew;
+      var randedEnum = RandHelper.GetRandomEnumValue<EquipmentKind>(new[] { EquipmentKind.TrophyLeft, EquipmentKind.TrophyRight, EquipmentKind.Unset });
+      return equipmentFactory.GetRandom(randedEnum, eqClass);
     }
 
     public virtual Loot GetRandomLoot(LootKind kind)

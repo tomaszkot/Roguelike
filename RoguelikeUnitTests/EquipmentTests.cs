@@ -14,12 +14,12 @@ namespace RoguelikeUnitTests
     {
       var game = CreateGame();
 
-      var wpn = game.GameManager.LootGenerator.GetRandomWeapon();
+      var wpn = game.GameManager.LootGenerator.GetRandom(EquipmentKind.Weapon);
       Assert.IsFalse(wpn.GetMagicStats().Any());
       wpn.MakeMagic();
       Assert.NotNull(wpn.GetMagicStats().Single());
 
-      var wpn1 = game.GameManager.LootGenerator.GetRandomWeapon();
+      var wpn1 = game.GameManager.LootGenerator.GetRandom(EquipmentKind.Weapon);
       wpn1.MakeMagic(true);
       Assert.AreEqual(wpn1.GetMagicStats().Count, 2);
 
@@ -76,7 +76,7 @@ namespace RoguelikeUnitTests
         var set = game.Hero.MoveEquipmentInv2Current(juwNotMatching, EquipmentKind.Amulet);//ring not matching amulet slot
         Assert.False(set);
 
-        var juw33 = game.GameManager.LootGenerator.GetRandomJewellery(EntityStatKind.Defence, EquipmentKind.Amulet);
+        var juw33 = game.GameManager.LootGenerator.EquipmentFactory.GetRandomJewellery(EntityStatKind.Defence, EquipmentKind.Amulet);
         AddItemToInv(game, juw33);
         set = game.Hero.MoveEquipmentInv2Current(juw33, EquipmentKind.Amulet);
         Assert.True(set);

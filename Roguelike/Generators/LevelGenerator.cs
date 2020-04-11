@@ -145,7 +145,7 @@ namespace Roguelike.Generators
     {
       var lg = new LootGenerator();
       var levelIndex = level.Index;
-      var loot = lg.GetRandomWeapon();
+      var loot = lg.GetRandom(EquipmentKind.Weapon);
       loot.DungeonNodeIndex = levelIndex;
       level.SetTile(loot, level.GetFirstEmptyPoint().Value);
     }

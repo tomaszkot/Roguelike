@@ -75,7 +75,7 @@ namespace RoguelikeUnitTests
 
     protected static Jewellery AddJewelleryToInv(Roguelike.RoguelikeGame game, EntityStatKind statKind)
     {
-      var juw = game.GameManager.LootGenerator.GetRandomJewellery(statKind);
+      var juw = game.GameManager.LootGenerator.EquipmentFactory.GetRandomJewellery(statKind);
       Assert.AreEqual(juw.PrimaryStatKind, EntityStatKind.Defence);
       Assert.IsTrue(juw.PrimaryStatValue > 0);
 

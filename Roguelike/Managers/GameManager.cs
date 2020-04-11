@@ -419,9 +419,9 @@ namespace Roguelike.Managers
       //DoEnemiesTurn();
     }
 
-    public virtual Equipment GenerateRandomEquipment(EquipmentKind weapon)
+    public virtual Equipment GenerateRandomEquipment(EquipmentKind kind)
     {
-      return lootGenerator.GetRandomWeapon();
+      return lootGenerator.GetRandom(kind);
     }
 
     public void MakeGameTick()
