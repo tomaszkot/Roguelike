@@ -1,4 +1,5 @@
-﻿using Dungeons.Tiles;
+﻿using Dungeons.Core;
+using Dungeons.Tiles;
 using Roguelike.Attributes;
 using Roguelike.Probability;
 using Roguelike.Tiles;
@@ -11,11 +12,69 @@ using System.Threading.Tasks;
 
 namespace Roguelike.Generators
 {
+  public class EqEntityStats
+  {
+    EntityStats es = new EntityStats();
+    public EntityStats Get()
+    {
+      return es;
+    }
+
+    public EqEntityStats Add(EntityStatKind sk, int val)
+    {
+      es.SetFactor(sk, val);
+      return this;
+    }
+  }
+
   public class LootGenerator
   {
-    List<Scroll> scrolls = new List<Scroll>();
     Dictionary<string, Loot> uniqueLoot = new Dictionary<string, Loot>();
-    Roguelike.Probability.Looting probability = new Roguelike.Probability.Looting();
+    Looting probability = new Looting();
+
+    public LootGenerator()
+    {
+      var lootSourceKinds = Enum.GetValues(typeof(LootSourceKind));
+      var lootingChancesForEqEnemy = new LootingChancesForEquipmentClass();
+      foreach (var lootSource in lootSourceKinds.Cast<LootSourceKind>())
+      {
+        if (lootSource == LootSourceKind.Enemy)
+          probability.SetLootingChance(lootSource, lootingChancesForEqEnemy);
+        else
+        {
+          var lootingChancesForEq = CreateLootingChancesForEquipmentClass(lootSource, lootingChancesForEqEnemy);
+          probability.SetLootingChance(lootSource, lootingChancesForEq);
+        }
+      }
+    }
+
+    LootingChancesForEquipmentClass CreateLootingChancesForEquipmentClass
+    (
+      LootSourceKind lootSourceKind,
+      LootingChancesForEquipmentClass enemy
+      )
+    {
+
+      var lootingChancesForEq = new LootingChancesForEquipmentClass();
+      if (lootSourceKind == LootSourceKind.Barrel)
+      {
+        lootingChancesForEq.MagicItem = lootingChancesForEq.MagicItem / 2;
+        lootingChancesForEq.SecLevelMagicItem = lootingChancesForEq.SecLevelMagicItem / 2;
+        lootingChancesForEq.UniqueItem = lootingChancesForEq.UniqueItem / 2;
+      }
+      else
+      {
+        if (lootSourceKind == LootSourceKind.DeluxeGoldChest ||
+          lootSourceKind == LootSourceKind.GoldChest)
+        {
+          lootingChancesForEq.MagicItem = 0;
+          lootingChancesForEq.SecLevelMagicItem = 0;
+          lootingChancesForEq.UniqueItem = 1;
+        }
+      }
+
+      return lootingChancesForEq;
+    }
 
     public Looting Probability { get => probability; }
 
@@ -31,116 +90,7 @@ namespace Roguelike.Generators
     {
       return GetLootByTileName(tileName) as T;
     }
-    
 
-    void AddScrolls()
-    {
-      var loot = new Scroll();
-      loot.tag1 = "fire_ball_scroll";
-      loot.Kind = Spells.SpellKind.FireBall;
-      scrolls.Add(loot);
-
-      loot = new Scroll();
-      loot.tag1 = "NESW_fire_scroll";
-      loot.Kind = Spells.SpellKind.NESWFireBall;
-      scrolls.Add(loot);
-
-      loot = new Scroll();
-      loot.tag1 = "cracked_stone_scroll";
-      loot.Kind = Spells.SpellKind.CrackedStone;
-      scrolls.Add(loot);
-
-      loot = new Scroll();
-      loot.tag1 = "trap_stone_scroll";
-      loot.Kind = Spells.SpellKind.Trap;
-      scrolls.Add(loot);
-
-      loot = new Scroll();
-      loot.tag1 = "skeleton_stone_scroll";
-      loot.Kind = Spells.SpellKind.Skeleton;
-      scrolls.Add(loot);
-
-      loot = new Scroll();
-      loot.tag1 = "transform_scroll";
-      loot.Kind = Spells.SpellKind.Transform;
-      scrolls.Add(loot);
-
-      loot = new Scroll();
-      loot.tag1 = "poison_ball_scroll";
-      loot.Kind = Spells.SpellKind.PoisonBall;
-      scrolls.Add(loot);
-
-      loot = new Scroll();
-      loot.tag1 = "ice_ball_scroll";
-      loot.Kind = Spells.SpellKind.IceBall;
-      scrolls.Add(loot);
-
-      loot = new Scroll();
-      loot.tag1 = "frighten_scroll";
-      loot.Kind = Spells.SpellKind.Frighten;
-      scrolls.Add(loot);
-
-      loot = new Scroll();
-      loot.tag1 = "healing_scroll";
-      loot.Kind = Spells.SpellKind.Healing;
-      scrolls.Add(loot);
-
-      loot = new Scroll();
-      loot.tag1 = "mana_shield_scroll";
-      loot.Kind = Spells.SpellKind.ManaShield;
-      scrolls.Add(loot);
-
-      loot = new Scroll();
-      loot.tag1 = "telekinesis_scroll";
-      loot.Kind = Spells.SpellKind.Telekinesis;
-      scrolls.Add(loot);
-
-      loot = new Scroll();
-      loot.tag1 = "mana_scroll";
-      loot.Kind = Spells.SpellKind.Mana;
-      scrolls.Add(loot);
-
-      loot = new Scroll();
-      loot.tag1 = "rage_scroll";
-      loot.Kind = Spells.SpellKind.Rage;
-      scrolls.Add(loot);
-
-      loot = new Scroll();
-      loot.tag1 = "weaken_scroll";
-      loot.Kind = Spells.SpellKind.Weaken;
-      scrolls.Add(loot);
-
-      loot = new Scroll();
-      loot.tag1 = "iron_skin_scroll";
-      loot.Kind = Spells.SpellKind.IronSkin;
-      scrolls.Add(loot);
-      //loot = new Scroll();
-      //loot.tag = "mind_control_scroll";
-      //loot.Kind = Spells.SpellKind.MindControl;
-      //scrolls.Add(loot);
-
-      loot = new Scroll();
-      loot.tag1 = "teleport_scroll";
-      loot.Kind = Spells.SpellKind.Teleport;
-      scrolls.Add(loot);
-
-      loot = new Scroll();
-      loot.tag1 = "call_merchant_scroll";
-      loot.Kind = Spells.SpellKind.CallMerchant;
-      scrolls.Add(loot);
-
-      loot = new Scroll();
-      loot.tag1 = "call_god_scroll";
-      loot.Kind = Spells.SpellKind.CallGod;
-      scrolls.Add(loot);
-
-      //
-      loot = new Scroll();
-      loot.tag1 = "lighting_scroll";
-      loot.Kind = Spells.SpellKind.LightingBall;
-      scrolls.Add(loot);
-    }
-        
     public virtual Equipment GetRandom(EquipmentKind kind)
     {
       Equipment eq = null;
@@ -175,7 +125,7 @@ namespace Roguelike.Generators
           break;
         case EquipmentKind.Gloves:
           eq = GetRandomGloves();
-          
+
           break;
       }
       return eq;
@@ -192,18 +142,53 @@ namespace Roguelike.Generators
 
     internal Loot TryGetRandomLootByDiceRoll(LootSourceKind lsk)
     {
-      var lootKind = Probability.RollDiceForKind(lsk);
+      LootKind lootKind = LootKind.Unset;
+      if (lsk == LootSourceKind.DeluxeGoldChest ||
+        lsk == LootSourceKind.GoldChest ||
+        lsk == LootSourceKind.PlainChest)
+      {
+        if (lsk == LootSourceKind.PlainChest)
+        {
+          //TODO
+        }
+        else
+          lootKind = LootKind.Equipment;
+      }
+      else
+        lootKind = Probability.RollDiceForKind(lsk);
+
       if (lootKind == LootKind.Unset)
         return null;
 
       if (lootKind == LootKind.Equipment)
       {
-        var ek = Probability.RollDice(lsk);
-        if (ek != EquipmentClass.Unset)
-          return GetRandomWeapon();//TODO
+        var eqClass = Probability.RollDice(lsk);
+        if (eqClass != EquipmentClass.Unset)
+        {
+          var randedEnum = RandHelper.GetRandomEnumValue<EquipmentKind>(new[] { EquipmentKind.TrophyLeft, EquipmentKind .TrophyRight, EquipmentKind .Unset});
+          var item = GetRandom(randedEnum);
+          if (eqClass == EquipmentClass.Magic)
+            item.MakeMagic();
+          else if (eqClass == EquipmentClass.Unique)
+          {
+            var ees = new EqEntityStats();
+            ees.Add(EntityStatKind.Health, 15)
+            .Add(EntityStatKind.Attack, 15)
+            .Add(EntityStatKind.Defence, 15)
+            .Add(EntityStatKind.ChanceToCastSpell, 15);
+            item.SetUnique(ees.Get());
+          }
+          return item;
+        }
       }
 
       return GetRandomLoot(lootKind);
+    }
+
+    protected virtual Loot GetRandomLoot(LootKind lootKind, EquipmentClass eqClass)
+    {
+      //var rand = GetRandom(lootKind);
+      return null;
     }
 
     public virtual Weapon GetRandomWeapon()

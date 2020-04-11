@@ -1,4 +1,5 @@
-﻿using NUnit.Framework;
+﻿using Dungeons.Tiles;
+using NUnit.Framework;
 using Roguelike;
 using Roguelike.Attributes;
 using Roguelike.Managers;
@@ -80,6 +81,14 @@ namespace RoguelikeUnitTests
 
       AddItemToInv(game, juw);
       return juw;
+    }
+
+    protected T AddTile<T>() where T : Tile, new()
+    {
+      var tile = new T();
+      if (game.Level.SetTile(tile, game.Level.GetFirstEmptyPoint().Value))
+        return tile;
+      return null;
     }
 
     protected static void AddItemToInv(Roguelike.RoguelikeGame game, Jewellery juw)

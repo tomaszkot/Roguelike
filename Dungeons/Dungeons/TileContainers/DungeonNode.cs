@@ -885,7 +885,7 @@ namespace Dungeons
         return emptyTiles.Where(i => i.DistanceFrom(baseTile) == emptyTiles.Min(j => j.DistanceFrom(baseTile))).FirstOrDefault();
       }
 
-      public List<T> GetTiles<T>() where T : class
+      public virtual List<T> GetTiles<T>() where T : class
       {
         var res = new List<T>();
         if (Tiles == null)

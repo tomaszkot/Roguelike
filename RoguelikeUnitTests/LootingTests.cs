@@ -1,6 +1,9 @@
-﻿using NUnit.Framework;
+﻿using Dungeons.Tiles;
+using NUnit.Framework;
 using Roguelike;
 using Roguelike.Tiles;
+using Roguelike.Tiles.Interactive;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -18,7 +21,7 @@ namespace RoguelikeUnitTests
     }
 
     [Test]
-    public void KilledEnemyForPotions()
+    public void KilledEnemyForGold()
     {
       var game = PerepareForEnemyLooting();
       game.GameManager.LootGenerator.Probability.SetLootingChance(LootSourceKind.Enemy, LootKind.Gold, 1);
@@ -26,13 +29,26 @@ namespace RoguelikeUnitTests
     }
 
     [Test]
-    public void KilledEnemyForEqipAndPotions()
+    public void KilledEnemyForEqipAndGold()
     {
       var game = PerepareForEnemyLooting(25);
       game.GameManager.LootGenerator.Probability.SetLootingChance(LootSourceKind.Enemy, LootKind.Equipment, .5f);
       game.GameManager.LootGenerator.Probability.SetLootingChance(LootSourceKind.Enemy, LootKind.Gold, .5f);
       var loots = AssertLootKind(new[] { LootKind.Gold, LootKind.Equipment });
       Assert.AreEqual(loots.GroupBy(i=>i).Count(), 2);
+    }
+
+    [Test]
+    public void KilledEnemyForEqipAndGoldMoreEq()
+    {
+      var game = PerepareForEnemyLooting(50);
+      game.GameManager.LootGenerator.Probability.SetLootingChance(LootSourceKind.Enemy, LootKind.Equipment, .8f);
+      game.GameManager.LootGenerator.Probability.SetLootingChance(LootSourceKind.Enemy, LootKind.Gold, .2f);
+      var loots = AssertLootKind(new[] { LootKind.Gold, LootKind.Equipment });
+      Assert.AreEqual(loots.GroupBy(i => i).Count(), 2);
+      var goldC = loots.Where(i => i == LootKind.Gold).Count();
+      var eqC = loots.Where(i => i == LootKind.Equipment).Count();
+      Assert.Greater(eqC, goldC);
     }
 
     private RoguelikeGame PerepareForEnemyLooting(int numEnemies = 10)
@@ -84,6 +100,19 @@ namespace RoguelikeUnitTests
     [Test]
     public void GoldChests()
     {
+      var game = CreateGame();
+      var chest = AddTile<Chest>();
+      chest.ChestKind = ChestKind.Gold;
+      var lootPrev = game.Level.GetTiles<Loot>();
+      game.GameManager.InteractHeroWith(chest);
+      var lootAfter = game.Level.GetTiles<Loot>();
+      Assert.Greater(lootAfter.Count, lootPrev.Count);
+      var newLootItems = lootAfter.Except(lootPrev);
+
+      var eq = newLootItems.Where(i => i is Equipment).Cast<Equipment>().ToList();
+      Assert.AreEqual(eq.First().Class, EquipmentClass.Unique);
     }
+
+    
   }
 }

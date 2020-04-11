@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Roguelike.Tiles.Interactive
 {
-  public enum ChestKind { Unset, Plain, Gold }
+  public enum ChestKind { Unset, Plain, Gold, GoldDeluxe }
 
   public class Chest : InteractiveTile
   {

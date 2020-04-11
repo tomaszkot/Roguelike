@@ -283,6 +283,13 @@ namespace Roguelike.Managers
           var loot = LootGenerator.GetRandomLoot();
           ReplaceTile(loot, tile.Point);
         }
+        else if (tile is Chest)
+        {
+          var chest = tile as Chest;
+          var loot = LootGenerator.TryGetRandomLootByDiceRoll(LootSourceKind.GoldChest);
+          bool replaced = ReplaceTile(loot, tile.Point);
+          Debug.Write(replaced);
+        }
         return InteractionResult.Blocked;//blok hero by default
       }
       else if (tile is Dungeons.Tiles.IObstacle)
