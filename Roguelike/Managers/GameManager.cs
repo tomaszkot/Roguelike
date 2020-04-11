@@ -95,6 +95,7 @@ namespace Roguelike.Managers
 
     public void SetContext(AbstractGameLevel node, Hero hero, GameContextSwitchKind kind, Stairs stairs = null)
     {
+      LootGenerator.LevelIndex = node.Index;
       if (kind == GameContextSwitchKind.NewGame)
       {
         if (node.GeneratorNodes !=null && node.GeneratorNodes.Any())
@@ -286,7 +287,7 @@ namespace Roguelike.Managers
         else if (tile is Chest)
         {
           var chest = tile as Chest;
-          var loot = LootGenerator.TryGetRandomLootByDiceRoll(LootSourceKind.GoldChest);
+          var loot = LootGenerator.TryGetRandomLootByDiceRoll(chest.LootSourceKind);
           bool replaced = ReplaceTile(loot, tile.Point);
           Debug.Write(replaced);
         }

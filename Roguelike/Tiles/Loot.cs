@@ -14,7 +14,7 @@ namespace Roguelike.Tiles
   public enum LootKind { Unset, Gold, Potion, Scroll, Equipment, Other, Gem,
                          Recipe, Seal, SealPart, Food, Plant }
   public enum LootSourceKind { Enemy, PlainChest, GoldChest, DeluxeGoldChest, Barrel }
-  public enum EquipmentClass { Unset, Plain, Magic, Unique }
+  public enum EquipmentClass { Unset, Plain, Magic, MagicSecLevel, Unique }
   public enum PotionKind { Unset, Health, Mana }
 
   public class Loot : Tile//, IDescriptable

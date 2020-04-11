@@ -74,6 +74,18 @@ namespace Dungeons.Core
       return values[index];
     }
 
+    public static T GetRandomEnumValue<T>(bool skipUnset) where T : IConvertible
+    {
+      var values = Enum.GetValues(typeof(T)).Cast<T>().ToList();
+      if (skipUnset)
+      {
+        values.RemoveAll(i => i.ToString() == "Unset");
+      }
+      int index = random.Next(values.Count());
+
+      return values[index];
+    }
+
     public static T GetRandomEnumValueFromList<T>(T[] possibleOnes) where T : IConvertible
     {
       var values = Enum.GetValues(typeof(T)).Cast<T>().Where(i => possibleOnes.Contains(i)).ToList();

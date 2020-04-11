@@ -5,9 +5,36 @@ using Roguelike.Attributes;
 using Roguelike.Managers;
 using Roguelike.Tiles;
 using SimpleInjector;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace RoguelikeUnitTests
 {
+  class LootInfo
+  {
+    public List<Loot> prev;
+    public List<Loot> newLoot;
+    RoguelikeGame game;
+
+    public LootInfo(RoguelikeGame game, InteractiveTile interactWith)
+    {
+      prev = game.Level.GetTiles<Loot>();
+      this.game = game;
+      if (interactWith != null)
+      {
+        game.GameManager.InteractHeroWith(interactWith);
+        newLoot  = GetDiff();
+      }
+    }
+
+    public List<Loot> GetDiff()
+    {
+      var lootAfter = game.Level.GetTiles<Loot>();
+      newLoot = lootAfter.Except(prev).ToList();
+      return newLoot;
+    }
+  };
+
   [TestFixture]
   public class TestBase
   {

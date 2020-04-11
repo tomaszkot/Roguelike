@@ -112,7 +112,7 @@ namespace Roguelike.Attributes
         if (active && myStat.Value.TotalValue == 0)
           continue;
         //sb.Append(myStat.Key + "=" + myStat.Value.NominalValue + "+" + myStat.Value.Factor + "(" + myStat.Value.TotalValue +  "); ");
-        sb.Append(myStat.Value.ToString());
+        sb.Append(myStat.Kind + ":" + myStat.Value.ToString());
       }
       return sb.ToString();
     }

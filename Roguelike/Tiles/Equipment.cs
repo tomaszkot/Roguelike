@@ -220,9 +220,11 @@ namespace Roguelike.Tiles
 
     public void MakeMagic(bool magicOfSecondLevel = false)
     {
+      Debug.Assert(levelIndex >= 0);
       var stat = AddMagicStat(new[] { EntityStatKind.Unset, this.primaryStat.Kind }, false);
       if (magicOfSecondLevel)
       {
+        priceAlrIncreased = false;
         AddMagicStat(new[] { EntityStatKind.Unset, this.primaryStat.Kind, stat }, true);
       }
 

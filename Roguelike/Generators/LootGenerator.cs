@@ -6,6 +6,7 @@ using Roguelike.Tiles;
 using Roguelike.Tiles.Looting;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 
 namespace Roguelike.Generators
@@ -31,15 +32,23 @@ namespace Roguelike.Generators
     Dictionary<string, Loot> uniqueLoot = new Dictionary<string, Loot>();
     Looting probability = new Looting();
 
-    public Looting Probability { get => probability; }
+    public Looting Probability { get => probability; set => probability = value; }
     public EquipmentFactory EquipmentFactory { get => equipmentFactory; }
+    public int LevelIndex { get; internal set; } = -1;
 
     public LootGenerator()
     {
       CreateEqFactory();
-      var lootSourceKinds = Enum.GetValues(typeof(LootSourceKind));
-      var lootingChancesForEqEnemy = new LootingChancesForEquipmentClass();
-      foreach (var lootSource in lootSourceKinds.Cast<LootSourceKind>())
+      var lootSourceKinds = Enum.GetValues(typeof(LootSourceKind)).Cast<LootSourceKind>();
+
+      var lootingChancesForEqEnemy = new EquipmentClassChances();
+      lootingChancesForEqEnemy.SetValue(EquipmentClass.Plain, .1f);
+      lootingChancesForEqEnemy.SetValue(EquipmentClass.Magic, .05f);
+      lootingChancesForEqEnemy.SetValue(EquipmentClass.MagicSecLevel, .033f);
+      lootingChancesForEqEnemy.SetValue(EquipmentClass.Unique, .01f);
+
+      var lootKinds = Enum.GetValues(typeof(LootKind)).Cast<LootKind>();
+      foreach (var lootSource in lootSourceKinds)
       {
         if (lootSource == LootSourceKind.Enemy)
           probability.SetLootingChance(lootSource, lootingChancesForEqEnemy);
@@ -47,6 +56,13 @@ namespace Roguelike.Generators
         {
           var lootingChancesForEq = CreateLootingChancesForEquipmentClass(lootSource, lootingChancesForEqEnemy);
           probability.SetLootingChance(lootSource, lootingChancesForEq);
+        }
+
+        foreach(var lk in lootKinds)
+        {
+          var lkChance = new LootKindChances();
+          lkChance.SetChance(lk, .2f);
+          probability.SetLootingChance(lootSource, lkChance);
         }
       }
     }
@@ -56,32 +72,33 @@ namespace Roguelike.Generators
       equipmentFactory = new EquipmentFactory();
     }
 
-    LootingChancesForEquipmentClass CreateLootingChancesForEquipmentClass
+    EquipmentClassChances CreateLootingChancesForEquipmentClass
     (
       LootSourceKind lootSourceKind,
-      LootingChancesForEquipmentClass enemy
+      EquipmentClassChances enemy
       )
     {
-
-      var lootingChancesForEq = new LootingChancesForEquipmentClass();
       if (lootSourceKind == LootSourceKind.Barrel)
       {
-        lootingChancesForEq.MagicItem = lootingChancesForEq.MagicItem / 2;
-        lootingChancesForEq.SecLevelMagicItem = lootingChancesForEq.SecLevelMagicItem / 2;
-        lootingChancesForEq.UniqueItem = lootingChancesForEq.UniqueItem / 2;
+        return enemy.Clone(.5f);
       }
       else
       {
+        var lootingChancesForEq = new EquipmentClassChances();
         if (lootSourceKind == LootSourceKind.DeluxeGoldChest ||
           lootSourceKind == LootSourceKind.GoldChest)
         {
-          lootingChancesForEq.MagicItem = 0;
-          lootingChancesForEq.SecLevelMagicItem = 0;
-          lootingChancesForEq.UniqueItem = 1;
+          lootingChancesForEq.SetValue(EquipmentClass.Unique, 1);
         }
-      }
+        else if (lootSourceKind == LootSourceKind.PlainChest)
+        {
+          return enemy.Clone(1);
+        }
+        else
+          Debug.Assert(false);
 
-      return lootingChancesForEq;
+        return lootingChancesForEq;
+      }
     }
         
     public virtual Loot GetLootByName(string tileName)
@@ -99,44 +116,43 @@ namespace Roguelike.Generators
 
     public virtual Equipment GetRandom(EquipmentKind kind)
     {
-      return equipmentFactory.GetRandom(kind);
+      var eq = equipmentFactory.GetRandom(kind);
+      EnasureLevelIndex(eq);
+      return eq;
+    }
+
+    private void EnasureLevelIndex(Equipment eq)
+    {
+      if (eq != null)
+        eq.SetLevelIndex(LevelIndex);
     }
 
     internal Loot TryGetRandomLootByDiceRoll(LootSourceKind lsk)
     {
       LootKind lootKind = LootKind.Unset;
       if (lsk == LootSourceKind.DeluxeGoldChest ||
-        lsk == LootSourceKind.GoldChest ||
-        lsk == LootSourceKind.PlainChest)
+        lsk == LootSourceKind.GoldChest 
+        //lsk == LootSourceKind.PlainChest
+        )
       {
-        if (lsk == LootSourceKind.PlainChest)
-        {
-          //TODO
-        }
-        else
+        if (lsk != LootSourceKind.PlainChest)
           lootKind = LootKind.Equipment;
       }
       else
         lootKind = Probability.RollDiceForKind(lsk);
-
-      if (lootKind == LootKind.Unset)
-        return null;
-
+           
       if (lootKind == LootKind.Equipment)
       {
         var eqClass = Probability.RollDice(lsk);
         if (eqClass != EquipmentClass.Unset)
         {
           var item = GetRandomEquipment(eqClass);
-          //if (eqClass == EquipmentClass.Magic)
-          //  item.MakeMagic();
-          //else if (eqClass == EquipmentClass.Unique)
-          //{
-            
-          //}
           return item;
         }
       }
+
+      if (lootKind == LootKind.Unset)
+        return null;//lootKind = RandHelper.GetRandomEnumValue<LootKind>(true);
 
       return GetRandomLoot(lootKind);
     }
@@ -149,11 +165,19 @@ namespace Roguelike.Generators
 
     public virtual Loot GetRandomLoot(LootKind kind)
     {
+      Loot res = null;
       //if(kind == LootKind.Potion)
       //  return  new PotionKind
       if (kind == LootKind.Gold)
-        return new Gold();
-      return GetRandomLoot();
+        res = new Gold();
+      else if (kind == LootKind.Equipment)
+        res = GetRandomEquipment(EquipmentClass.Plain);
+      else
+        res = GetRandomLoot();
+
+      if(res is Equipment)
+        EnasureLevelIndex(res as Equipment);
+      return res;
     }
 
     public virtual Loot GetRandomLoot()

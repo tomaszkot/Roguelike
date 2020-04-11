@@ -20,7 +20,20 @@ namespace Roguelike.Tiles.Interactive
 
     }
 
-    public bool IsGold { get { return ChestKind == ChestKind.Gold; } }
+    public LootSourceKind LootSourceKind
+    {
+      get
+      {
+        if (ChestKind == ChestKind.Plain)
+          return LootSourceKind.PlainChest;
+        if (ChestKind == ChestKind.Gold)
+          return LootSourceKind.GoldChest;
+        
+        return LootSourceKind.DeluxeGoldChest;
+      }
+    }
+
+    //public bool IsGold { get { return ChestKind == ChestKind.Gold; } }
 
 //    bool generateUniq;
 //    public bool GenerateUniq
