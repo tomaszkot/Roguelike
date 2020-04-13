@@ -281,7 +281,7 @@ namespace Roguelike.Managers
         }
         else if (tile is Barrel)
         {
-          var loot = LootGenerator.GetRandomLoot();
+          var loot = LootGenerator.TryGetRandomLootByDiceRoll(LootSourceKind.Barrel);//LootGenerator.GetRandomLoot();
           ReplaceTile(loot, tile.Point);
         }
         else if (tile is Chest)

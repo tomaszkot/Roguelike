@@ -1,5 +1,6 @@
 ﻿using Dungeons.Tiles;
 using Roguelike;
+using Roguelike.Generators;
 using Roguelike.Managers;
 
 namespace RoguelikeUnitTests.Helpers
@@ -10,14 +11,8 @@ namespace RoguelikeUnitTests.Helpers
     protected TestBase test;
 
     public GameManager GameManager { get { return game.GameManager; } }
+    public LootGenerator LootGenerator { get { return GameManager.LootGenerator; }  }
 
-    //public RoguelikeGame BaseHelper(bool autoLoadLevel = true)
-    //{
-    //  var game = new RoguelikeGame(Container);
-    //  if (autoLoadLevel)
-    //    Game.GenerateLevel(0);
-    //  return Game;
-    //}
     public BaseHelper(TestBase test)
     {
       this.test = test;
