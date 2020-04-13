@@ -4,6 +4,7 @@ using Roguelike;
 using Roguelike.Attributes;
 using Roguelike.Managers;
 using Roguelike.Tiles;
+using RoguelikeUnitTests.Helpers;
 using SimpleInjector;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,7 +16,7 @@ namespace RoguelikeUnitTests
     public List<Loot> prev;
     public List<Loot> newLoot;
     RoguelikeGame game;
-
+    
     public LootInfo(RoguelikeGame game, InteractiveTile interactWith)
     {
       prev = game.Level.GetTiles<Loot>();
@@ -45,6 +46,11 @@ namespace RoguelikeUnitTests
 
     [SetUp]
     public void Init()
+    {
+      OnInit();
+    }
+
+    protected virtual void OnInit()
     {
       Container = new Roguelike.ContainerConfigurator().Container;
       Container.Register<ISoundPlayer, BasicSoundPlayer>();
@@ -92,14 +98,14 @@ namespace RoguelikeUnitTests
       CollectLoot(eq);
     }
 
-    public virtual RoguelikeGame CreateGame(bool autoLoadLevel = true)
+    public virtual RoguelikeGame CreateGame(bool autoLoadLevel = true, int numEnemies = 10)
     {
       Game = new RoguelikeGame(Container);
       if (autoLoadLevel)
         Game.GenerateLevel(0);
       return Game;
     }
-
+        
     protected static Jewellery AddJewelleryToInv(Roguelike.RoguelikeGame game, EntityStatKind statKind)
     {
       var juw = game.GameManager.LootGenerator.EquipmentFactory.GetRandomJewellery(statKind);
@@ -109,15 +115,7 @@ namespace RoguelikeUnitTests
       AddItemToInv(game, juw);
       return juw;
     }
-
-    protected T AddTile<T>() where T : Tile, new()
-    {
-      var tile = new T();
-      if (game.Level.SetTile(tile, game.Level.GetFirstEmptyPoint().Value))
-        return tile;
-      return null;
-    }
-
+        
     protected static void AddItemToInv(Roguelike.RoguelikeGame game, Jewellery juw)
     {
       game.Hero.Inventory.Add(juw);

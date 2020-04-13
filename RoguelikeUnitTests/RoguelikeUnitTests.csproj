@@ -52,6 +52,8 @@
   <ItemGroup>
     <Compile Include="ControllTests.cs" />
     <Compile Include="EnemiesTests.cs" />
+    <Compile Include="Helpers\BaseHelper.cs" />
+    <Compile Include="Helpers\LootingTestsHelper.cs" />
     <Compile Include="InventoryTests.cs" />
     <Compile Include="DungeonGenerationTests.cs" />
     <Compile Include="DungeonInteractionTests.cs" />
@@ -61,6 +63,7 @@
     <Compile Include="LootingTests.cs" />
     <Compile Include="SerializationTests.cs" />
     <Compile Include="TestBase.cs" />
+    <Compile Include="TestBaseTyped.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Dungeons\Dungeons\Dungeons.csproj">
@@ -85,6 +88,7 @@
       <HintPath>..\..\..\..\..\..\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.6.1\System.Drawing.dll</HintPath>
     </Reference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
