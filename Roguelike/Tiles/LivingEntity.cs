@@ -65,7 +65,7 @@ namespace Roguelike.Tiles
 
     public void ReduceMana(float amount)
     {
-      Stats.Stats[EntityStatKind.Mana].Subtract(amount);
+      Stats.GetStat(EntityStatKind.Mana).Subtract(amount);
     }
 
     public static LivingEntity CreateDummy()
@@ -314,7 +314,7 @@ namespace Roguelike.Tiles
 
     public virtual void ReduceHealth(float amount)
     {
-      Stats.Stats[EntityStatKind.Health].Subtract(amount);
+      Stats.GetStat(EntityStatKind.Health).Subtract(amount);
     }
 
     private float GetDefense()
@@ -329,7 +329,7 @@ namespace Roguelike.Tiles
 
     public float GetCurrentValue(EntityStatKind kind)
     {
-      var stat = Stats.Stats[kind];
+      var stat = Stats.GetStat(kind);
       var cv = stat.Value.CurrentValue;
       if (stat.IsPercentage && cv > 100)
       {

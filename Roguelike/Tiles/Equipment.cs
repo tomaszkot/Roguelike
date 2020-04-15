@@ -45,7 +45,7 @@ namespace Roguelike.Tiles
     public EntityStats GetStats()
     {
       EntityStats stats = new EntityStats();
-      stats.Stats[this.PrimaryStatKind].Value.Accumulate(primaryStat.Value);
+      stats[this.PrimaryStatKind].Accumulate(primaryStat.Value);
       //if (eq is Weapon)
       //{
       //  stats.Stats[EntityStatKind.Attack].Factor += eq.PrimaryStatValue;
@@ -151,12 +151,12 @@ namespace Roguelike.Tiles
 
     public List<KeyValuePair<EntityStatKind, EntityStat>> GetMagicStats()
     {
-      return ExtendedInfo.Stats.Stats.Where(i => i.Value.Factor > 0).ToList();
+      return ExtendedInfo.Stats.GetStats().Where(i => i.Value.Factor > 0).ToList();
     }
 
     public void SetMagicStat(EntityStatKind statKind, EntityStat stat)
     {
-      ExtendedInfo.Stats.Stats[statKind] = stat;
+      ExtendedInfo.Stats.SetStat(statKind, stat);
     }
 
     internal bool IsBetter(Equipment currentEq)
@@ -271,7 +271,7 @@ namespace Roguelike.Tiles
 
     public List<EntityStat> GetEffectiveRequiredStats()
     {
-      return RequiredStats.Stats.Values.Where(i => GetReqStatValue(i) > 0).Select(i=> i).ToList();
+      return RequiredStats.GetStats().Where(i => GetReqStatValue(i.Value) > 0).Select(i=> i.Value).ToList();
     }
 
     public float GetReqStatValue(EntityStat es)
@@ -355,7 +355,7 @@ namespace Roguelike.Tiles
         return;
       }
       basePrice = Price;
-      foreach (var st in ExtendedInfo.Stats.Stats)
+      foreach (var st in ExtendedInfo.Stats.GetStats())
       {
         var prInc = GetPriceForFactor(st.Key, (int)st.Value.Factor);
         if (prInc > 0)

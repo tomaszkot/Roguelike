@@ -121,10 +121,10 @@ namespace RoguelikeUnitTests
     [Test]
     public void KilledEnemyForEqipAndGoldMoreEq()
     {
-      var env = CreateTestEnv();
+      var env = CreateTestEnv(numEnemies:30);
       env.LootGenerator.Probability = new Roguelike.Probability.Looting();
-      env.LootGenerator.Probability.SetLootingChance(LootSourceKind.Enemy, LootKind.Equipment, .8f);
-      env.LootGenerator.Probability.SetLootingChance(LootSourceKind.Enemy, LootKind.Gold, .2f);
+      env.LootGenerator.Probability.SetLootingChance(LootSourceKind.Enemy, LootKind.Equipment, .75f);
+      env.LootGenerator.Probability.SetLootingChance(LootSourceKind.Enemy, LootKind.Gold, .25f);
       var loots = env.AssertLootKindFromEnemies(new[] { LootKind.Gold, LootKind.Equipment });
       Assert.AreEqual(loots.GroupBy(i => i).Count(), 2);
       var goldC = loots.Where(i => i == LootKind.Gold).Count();

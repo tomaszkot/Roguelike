@@ -210,12 +210,20 @@ namespace Roguelike.Attributes
     //  }
     //}
 
-    
-
     public int AbilityPoints { get; set; }
 
+    public EntityStat GetStat(EntityStatKind esk)
+    {
+      return Stats[esk];
+    }
+
+    public void SetStat(EntityStatKind esk, EntityStat es)
+    {
+      Stats[esk] = es;
+    }
+
     //TODO rename
-    public Dictionary<EntityStatKind, EntityStat> Stats
+    Dictionary<EntityStatKind, EntityStat> Stats
     {
       get
       {
@@ -225,6 +233,16 @@ namespace Roguelike.Attributes
       {
         stats = value;
       }
+    }
+
+    public List<StatValue> Values()
+    {
+      return Stats.Values.Select(i=> i.Value).ToList();
+    }
+
+    public Dictionary<EntityStatKind, EntityStat> GetStats()
+    {
+      return Stats;
     }
 
     [JsonIgnore]

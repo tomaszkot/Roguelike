@@ -156,8 +156,9 @@ namespace Roguelike.Tiles
 
     public virtual string GetFormattedStatValue(EntityStatKind kind)
     {
-      var stat = Stats.Stats[kind];
+      var stat = Stats.GetStat(kind);
       var value = stat.GetFormattedCurrentValue();
+      
       //var value = stat.Value.CurrentValue.ToString(""); ;
       //if (stat.IsPercentage)
       //{
@@ -299,9 +300,9 @@ namespace Roguelike.Tiles
       Stats.ResetStatFactors();
       if (fromLoad)//this shall not be affected by any after load
       {
-        Stats.Stats[EntityStatKind.ChanceToHit].SetSubtraction(0);
-        Stats.Stats[EntityStatKind.Defence].SetSubtraction(0);
-        Stats.Stats[EntityStatKind.Attack].SetSubtraction(0);
+        Stats.GetStat(EntityStatKind.ChanceToHit).SetSubtraction(0);
+        Stats.GetStat(EntityStatKind.Defence).SetSubtraction(0);
+        Stats.GetStat(EntityStatKind.Attack).SetSubtraction(0);
       }
 
       //accumulate positive factors

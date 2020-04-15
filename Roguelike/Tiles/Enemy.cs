@@ -34,12 +34,12 @@ namespace Roguelike.Tiles
     {
       BaseStats = new EntityStats();
 
-      BaseStats.Stats[EntityStatKind.Attack] = BaseAttack;
-      BaseStats.Stats[EntityStatKind.Defence] = BaseDefence;
-      BaseStats.Stats[EntityStatKind.Health] = BaseHealth;
-      BaseStats.Stats[EntityStatKind.Mana] = BaseMana;
+      BaseStats.SetStat(EntityStatKind.Attack, BaseAttack);
+      BaseStats.SetStat(EntityStatKind.Defence, BaseDefence);
+      BaseStats.SetStat(EntityStatKind.Health, BaseHealth);
+      BaseStats.SetStat(EntityStatKind.Mana,  BaseMana);
       var mag = new EntityStat(EntityStatKind.Magic, BaseMagic.Value.Nominal + 2);
-      BaseStats.Stats[EntityStatKind.Magic] = mag;
+      BaseStats.SetStat(EntityStatKind.Magic, mag);
 
 
     }
@@ -67,7 +67,7 @@ namespace Roguelike.Tiles
 
       foreach (var basicStats in EntityStat.BasicStats)
       {
-        var nv = BaseStats.Stats[basicStats].Value.Nominal;
+        var nv = BaseStats[basicStats].Nominal;
         Stats.SetNominal(basicStats, nv);
       }
 
@@ -161,11 +161,11 @@ namespace Roguelike.Tiles
         inc = 1.2f;
       }
 
-      foreach (var key in Stats.Stats.Keys)
+      foreach (var kv in Stats.GetStats())
       {
         var incToUse = inc;
-        var val = Stats.Stats[key].Value.TotalValue * incToUse;
-        Stats.SetNominal(key, val);
+        var val = kv.Value.Value.TotalValue * incToUse;//TODO TotalValue ? -> SetNominal ?
+        Stats.SetNominal(kv.Key, val);
       }
 
       if (fromPowerKind)

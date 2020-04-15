@@ -436,11 +436,11 @@ namespace Roguelike.Managers
     public void PrintHeroStats(string context,bool onlyNonZero = true)
     {
       Logger.LogInfo("PrintHeroStats "+ context);
-      foreach (var stat in Hero.Stats.Stats.Values)
-      {
-        //if(!onlyNonZero || stat.Value.TotalValue != 0)
-        //  Logger.LogInfo(stat.Kind + ": " + stat.Value);
-      }
+      //foreach (var stat in Hero.Stats.Stats.Values)
+      //{
+      //  //if(!onlyNonZero || stat.Value.TotalValue != 0)
+      //  //  Logger.LogInfo(stat.Kind + ": " + stat.Value);
+      //}
     }
 
     public void DoAlliesTurn(bool skipHero = false)

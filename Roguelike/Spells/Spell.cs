@@ -111,9 +111,7 @@ namespace Roguelike.Spells
         caller = value;
       }
     }
-
-
-
+    
     public int GetNextLevelMagicNeeded()
     {
       var index = GetNextLevelMagicIndex();
