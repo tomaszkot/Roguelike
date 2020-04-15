@@ -74,6 +74,7 @@
     <Compile Include="Attributes\StatValue.cs" />
     <Compile Include="BasicSoundPlayer.cs" />
     <Compile Include="ContainerConfigurator.cs" />
+    <Compile Include="Effects\LastingEffect.cs" />
     <Compile Include="EnemySymbols.cs" />
     <Compile Include="Events\GameAction.cs" />
     <Compile Include="FactorCalculator.cs" />
@@ -92,10 +93,14 @@
     <Compile Include="Policies\AttackPolicy.cs" />
     <Compile Include="Policies\MovePolicy.cs" />
     <Compile Include="Policies\Policy.cs" />
+    <Compile Include="Probability\Chances.cs" />
     <Compile Include="Probability\Looting.cs" />
     <Compile Include="RpgGameSettings.cs" />
     <Compile Include="Serialization\PersistancyWorker.cs" />
+    <Compile Include="Spells\AttackingSpell.cs" />
+    <Compile Include="Spells\DefensiveSpell.cs" />
     <Compile Include="Spells\Spell.cs" />
+    <Compile Include="Spells\Spells.cs" />
     <Compile Include="TileParts\CurrentEquipment.cs" />
     <Compile Include="LootExtendedInfo.cs" />
     <Compile Include="Managers\EnemiesManager.cs" />
@@ -109,8 +114,11 @@
     <Compile Include="Serialization\JSONPersister.cs" />
     <Compile Include="TileParts\IEquipable.cs" />
     <Compile Include="TilesExtensions.cs" />
+    <Compile Include="Tiles\Abstract\IConsumable.cs" />
+    <Compile Include="Tiles\Abstract\IMovingDamager.cs" />
     <Compile Include="Tiles\AdvancedLivingEntity.cs" />
     <Compile Include="Tiles\Barrel.cs" />
+    <Compile Include="Tiles\CrackedStone.cs" />
     <Compile Include="Tiles\Food.cs" />
     <Compile Include="Tiles\InteractiveTile.cs" />
     <Compile Include="Tiles\Interactive\Chest.cs" />
@@ -118,10 +126,12 @@
     <Compile Include="Tiles\Lever.cs" />
     <Compile Include="Tiles\Looting\FightItem.cs" />
     <Compile Include="Tiles\Looting\Gold.cs" />
+    <Compile Include="Tiles\Looting\Potion.cs" />
     <Compile Include="Tiles\Looting\Scroll.cs" />
     <Compile Include="Tiles\Merchant.cs" />
     <Compile Include="Tiles\Mushroom.cs" />
     <Compile Include="Tiles\Plant.cs" />
+    <Compile Include="Tiles\Trap.cs" />
     <Compile Include="Utils\SerializableDictionary.cs" />
     <Compile Include="TileContainers\GameLevel.cs" />
     <Compile Include="Generators\TileContainers\DungeonNode.cs" />

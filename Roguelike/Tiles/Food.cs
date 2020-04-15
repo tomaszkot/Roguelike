@@ -1,5 +1,6 @@
 ﻿using Dungeons.Core;
 using Roguelike.Attributes;
+using Roguelike.Tiles.Abstract;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,13 +11,14 @@ namespace Roguelike.Tiles
 {
   public enum FoodKind { Unset, Plum, Herb }
 
-  public class Food : Loot
+  public class Food : Loot, IConsumable
   {
     public FoodKind Kind;
     EntityStatKind enhancedStat = EntityStatKind.Unset;
 
     public Food() : this(RandHelper.GetRandomEnumValue<FoodKind>())
     {
+
     }
 
     public Food(FoodKind kind)
@@ -29,6 +31,7 @@ namespace Roguelike.Tiles
     }
 
     public EntityStatKind EnhancedStat { get => enhancedStat; set => enhancedStat = value; }
+    public Loot Loot { get => this; }
 
     public void SetKind(FoodKind kind)
     {

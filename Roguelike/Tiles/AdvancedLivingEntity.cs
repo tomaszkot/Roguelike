@@ -3,9 +3,13 @@ using Roguelike.Attributes;
 using Roguelike.Events;
 using Roguelike.LootContainers;
 using Roguelike.Serialization;
+using Roguelike.Spells;
 using Roguelike.TileParts;
+using Roguelike.Tiles.Abstract;
+using Roguelike.Tiles.Looting;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 
@@ -29,9 +33,21 @@ namespace Roguelike.Tiles
     public int AvailableExpPoints { get; set; }
     protected bool canAdvanceInExp = false;
     int levelUpPoints;
+    Dictionary<SpellKind, int> coolingDownSpells = new Dictionary<SpellKind, int>();
+
+    public Scroll ActiveScroll
+    {
+      get;
+      set;
+    }
 
     public AdvancedLivingEntity(Point point, char symbol) : base(point, symbol)
     {
+    }
+
+    public new static AdvancedLivingEntity CreateDummy()
+    {
+      return new AdvancedLivingEntity(new Point(0, 0), '\0');
     }
 
     public int LevelUpPoints
@@ -67,6 +83,60 @@ namespace Roguelike.Tiles
       if (ExpChanged != null)
         ExpChanged(this, EventArgs.Empty);
       return leveledUp;
+    }
+        
+    public void SetSpellCoolingDown(SpellKind kind)
+    {
+      if (coolingDownSpells.ContainsKey(kind) && coolingDownSpells[kind] > 0)
+      {
+        //AppendAction("SpellKind already collingdown!" + kind);
+        return;
+      }
+
+      coolingDownSpells[kind] = ActiveScroll.CreateSpell(this).CoolingDown;
+    }
+
+    private void OnSpellUsed(Spell spell, Enemy targetEn)
+    {
+      ReduceMana(spell.ManaCost);
+
+      if (spell.CoolingDown > 0)
+      {
+        SetSpellCoolingDown(spell.Kind);
+      }
+
+      //TODO
+      //AppendAction(new ScrollAppliedAction() { Info = Hero.ActiveScroll + " used by " + Hero.Name, Kind = Hero.ActiveScroll.Kind, Spell = spell, Target = targetEn });
+      //HeroTurn = false;
+    }
+
+    public void Consume(IConsumable consumable)
+    {
+      //hero turn?
+      //if (loot.LootKind == LootKind.Food)//IDrinkable ?
+      {
+        //var ac = LootManager.CreateLootGameAction(loot, "Drunk " + loot.Name);
+        //PlaySound("drink");
+        if (inventory.Contains(consumable.Loot))
+        {
+          if (consumable.EnhancedStat == EntityStatKind.Unset)
+          {
+            var pot = consumable.Loot as Potion;
+            Debug.Assert(pot != null && pot.Kind == PotionKind.Poison);
+          }
+          Stats.IncreaseStatFactor(consumable.EnhancedStat);// (loot as Potion).StatKind);
+          inventory.Remove(consumable.Loot);
+          AppendAction(new LootAction(consumable.Loot) { LootActionKind = LootActionKind.Consumed });
+        }
+        else
+          Debug.Assert(false);
+        //else if (loot is Hooch)
+        //  Hero.AddLastingEffect(LivingEntity.EffectType.Hooch, 6);
+
+        //return ac;
+      }
+      
+      //eturn null;
     }
 
     //public void IncreaseStatByLevelUpPoint(EntityStatKind stat)

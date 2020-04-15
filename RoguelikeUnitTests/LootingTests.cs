@@ -1,11 +1,9 @@
-﻿using Dungeons.Tiles;
-using NUnit.Framework;
-using Roguelike;
+﻿using NUnit.Framework;
+using Roguelike.Attributes;
 using Roguelike.Tiles;
 using Roguelike.Tiles.Interactive;
+using Roguelike.Tiles.Looting;
 using RoguelikeUnitTests.Helpers;
-using System;
-using System.Collections.Generic;
 using System.Linq;
 
 namespace RoguelikeUnitTests
@@ -14,12 +12,48 @@ namespace RoguelikeUnitTests
   class LootingTests : TestBaseTyped<LootingTestsHelper>
   {
     [Test]
+    public void IdentifiedPlainClassTest()
+    {
+      var env = CreateTestEnv();
+      var wpn = env.LootGenerator.GetLootByTileName<Weapon>("rusty_sword");
+      Assert.AreEqual(wpn.Class, EquipmentClass.Plain);
+      var price = wpn.Price;
+      var damage = wpn.GetStats().GetTotalValue(EntityStatKind.Attack);
+
+      Assert.Greater(price, 0);
+      Assert.Greater(damage, 0);
+      Assert.AreEqual(wpn.Identified, true);
+
+      int extraAttack = 2;
+      wpn.MakeMagic(EntityStatKind.Attack, extraAttack);
+      Assert.AreEqual(wpn.Identified, false);
+      Assert.AreEqual(wpn.Class, EquipmentClass.Magic);
+      Assert.AreEqual(wpn.GetStats().GetTotalValue(EntityStatKind.Attack), damage);
+      Assert.Greater(wpn.Price, price);//shall be bit bigger
+      price = wpn.Price;
+
+      wpn.Identify();
+      Assert.AreEqual(wpn.Identified, true);
+      Assert.AreEqual(wpn.GetStats().GetTotalValue(EntityStatKind.Attack), damage + extraAttack);
+      Assert.Greater(wpn.Price, price);//shall be bit bigger
+    }
+
+    [Test]
     public void KilledEnemyForEquipment()
     {
       var env = CreateTestEnv(numEnemies: 25);
       env.LootGenerator.Probability = new Roguelike.Probability.Looting();
       env.LootGenerator.Probability.SetLootingChance(LootSourceKind.Enemy, LootKind.Equipment, 1);
       env.AssertLootKindFromEnemies(new[] { LootKind.Equipment });
+    }
+
+    [Test]
+    public void KilledEnemyForPotion()
+    {
+      var env = CreateTestEnv(numEnemies: 25);
+      env.LootGenerator.Probability = new Roguelike.Probability.Looting();
+      env.LootGenerator.Probability.SetLootingChance(LootSourceKind.Enemy, LootKind.Potion, 1);
+      env.AssertLootKindFromEnemies(new[] { LootKind.Potion });
     }
 
     [Test]
@@ -61,7 +95,7 @@ namespace RoguelikeUnitTests
     {
       var env = CreateTestEnv();
       var newLootItems = env.TestInteractive<Barrel>(
-         (InteractiveTile chest) => {
+         (InteractiveTile barrel) => {
          }
         );
     }
@@ -69,26 +103,35 @@ namespace RoguelikeUnitTests
     [Test]
     public void PlainChests()
     {
+      int mult = 3;
       var env = CreateTestEnv();
-      var newLootItems = env.TestInteractive<Chest>(
+      var lootInfo = env.TestInteractive<Chest>(
          (InteractiveTile chest) => {
            (chest as Chest).ChestKind = ChestKind.Plain;
-         }
+         }, 100 * mult, 30 * mult
+
         );
+
+      var pots = lootInfo.Get<Potion>();
+      Assert.Greater(pots.Count, 0);
+      Assert.Less(pots.Count, 12);
     }
         
     [Test]
     public void GoldChests()
     {
+      int mult = 1;
       var env = CreateTestEnv();
-      var chest = env.AddTile<Chest>(game);
-      chest.ChestKind = ChestKind.Gold;
-      var lootInfo = new LootInfo(game, chest);
+      var lootInfo = env.TestInteractive<Chest>(
+         (InteractiveTile chest) => {
+           (chest as Chest).ChestKind = ChestKind.Gold;
+         }, 20 * mult, 20 * mult, 20 * mult
 
-      Assert.NotNull(lootInfo.newLoot);
+        );
 
-      var eq = lootInfo.newLoot.Where(i => i is Equipment).Cast<Equipment>().ToList();
-      Assert.AreEqual(eq.First().Class, EquipmentClass.Unique);
+      var lootItems = lootInfo.Get<Equipment>();
+      Assert.AreEqual(lootItems.Count, 20);
+      lootItems.ForEach(i=> Assert.AreEqual(i.Class, EquipmentClass.Unique));
     }
 
     

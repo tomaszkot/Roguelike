@@ -48,6 +48,8 @@ namespace Roguelike.Generators
       lootingChancesForEqEnemy.SetValue(EquipmentClass.Unique, .01f);
 
       var lootKinds = Enum.GetValues(typeof(LootKind)).Cast<LootKind>();
+
+      //iterate chances for: Enemy, Barrel, GoldChest...
       foreach (var lootSource in lootSourceKinds)
       {
         if (lootSource == LootSourceKind.Enemy)
@@ -58,18 +60,21 @@ namespace Roguelike.Generators
           probability.SetLootingChance(lootSource, lootingChancesForEq);
         }
 
-        foreach(var lk in lootKinds)
+        //2 set Loot Kind chances
+        var lkChance = new LootKindChances();
+        foreach (var lk in lootKinds)
         {
-          var lkChance = new LootKindChances();
           lkChance.SetChance(lk, .2f);
-          probability.SetLootingChance(lootSource, lkChance);
         }
+        probability.SetLootingChance(lootSource, lkChance);
       }
     }
 
     protected virtual void CreateEqFactory()
     {
       equipmentFactory = new EquipmentFactory();
+
+      //EquipmentTypeFactory wpns = new EquipmentTypeFactory();
     }
 
     EquipmentClassChances CreateLootingChancesForEquipmentClass
@@ -103,10 +108,21 @@ namespace Roguelike.Generators
         
     public virtual Loot GetLootByName(string tileName)
     {
+      Loot loot;
       if (uniqueLoot.ContainsKey(tileName))
-        return uniqueLoot[tileName];
+        loot = uniqueLoot[tileName];
+      else
+        loot = equipmentFactory.GetByName(tileName);
+      if (loot == null && tileName == "rusty_sword")
+      {
+        var wpn = new Weapon();
+        wpn.tag1 = "rusty_sword";
+        wpn.Damage = 2;
+        wpn.Name = "Rusty sword";
+        return wpn;
+      }
 
-      return null;
+      return loot;
     }
 
     public virtual T GetLootByTileName<T>(string tileName) where T : Loot
@@ -172,12 +188,23 @@ namespace Roguelike.Generators
         res = new Gold();
       else if (kind == LootKind.Equipment)
         res = GetRandomEquipment(EquipmentClass.Plain);
+      else if (kind == LootKind.Potion)
+        res = GetRandomPotion();
       else
         res = GetRandomLoot();
 
       if(res is Equipment)
         EnasureLevelIndex(res as Equipment);
       return res;
+    }
+
+    private Loot GetRandomPotion() //where T : enum
+    {
+      var enumVal = RandHelper.GetRandomEnumValue<PotionKind>();// (enumKind);
+      var potion = new Potion();
+      //if (enumVal == PotionKind.Health)
+      potion.SetKind(enumVal);
+      return potion;
     }
 
     public virtual Loot GetRandomLoot()

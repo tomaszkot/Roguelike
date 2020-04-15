@@ -26,7 +26,7 @@ namespace RoguelikeUnitTests.Helpers
 
     public RoguelikeGame Game { get => game; set => game = value; }
 
-    public T AddTile<T>(RoguelikeGame game) where T : Tile, new()
+    public T AddTile<T>() where T : Tile, new()
     {
       var tile = new T();
       if (game.Level.SetTile(tile, game.Level.GetFirstEmptyPoint().Value))

@@ -6,6 +6,7 @@ using Roguelike.Events;
 using Roguelike.Attributes;
 using Roguelike.Managers;
 using Dungeons;
+using Roguelike.Tiles.Abstract;
 
 namespace Roguelike.Tiles
 {
@@ -46,26 +47,6 @@ namespace Roguelike.Tiles
       Inventory.EventsManager = eventsManager;//TODO
     }
 
-    public void Consume(Food food)
-    {
-      //hero turn?
-      //if (loot.LootKind == LootKind.Food)//IDrinkable ?
-      {
-        //var ac = LootManager.CreateLootGameAction(loot, "Drunk " + loot.Name);
-        //PlaySound("drink");
-        if (inventory.Contains(food))
-        {
-          Stats.IncreaseStatFactor(food.EnhancedStat);// (loot as Potion).StatKind);
-          inventory.Remove(food);
-          AppendAction(new LootAction(food) { LootActionKind = LootActionKind.Consumed  });
-        }
-        //else if (loot is Hooch)
-        //  Hero.AddLastingEffect(LivingEntity.EffectType.Hooch, 6);
-
-        //return ac;
-      }
-
-      //eturn null;
-    }
+    
   }
 }

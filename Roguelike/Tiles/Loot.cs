@@ -15,7 +15,6 @@ namespace Roguelike.Tiles
                          Recipe, Seal, SealPart, Food, Plant }
   public enum LootSourceKind { Enemy, PlainChest, GoldChest, DeluxeGoldChest, Barrel }
   public enum EquipmentClass { Unset, Plain, Magic, MagicSecLevel, Unique }
-  public enum PotionKind { Unset, Health, Mana }
 
   public class Loot : Tile//, IDescriptable
   {
@@ -35,12 +34,16 @@ namespace Roguelike.Tiles
     public LootKind LootKind { get; set; }
     public LootExtendedInfo ExtendedInfo { get; protected set; }
     int price;
+    protected int basePrice = -1;
+
     public int Price
     {
       get { return price; }
       set
       {
         price = value;
+        if (basePrice == -1)
+          basePrice = price;
         //if (AssetName == "shark")
         //{
         //  int k = 0;

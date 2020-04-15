@@ -88,6 +88,7 @@ namespace Roguelike.TileContainers
         {
           if (Logger != null)
             Logger.LogError("loot already at point: " + Loot[point] + ", trying to add: " + tile);
+          Debug.Assert(false);
           return false;
         }
         tile.Point = point;

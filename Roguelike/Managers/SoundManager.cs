@@ -88,7 +88,7 @@ namespace Roguelike.Managers
       else if (e is LivingEntityAction)
       {
         var lea = e as LivingEntityAction;
-        if (lea.Kind == LivingEntityActionKind.GainedPhisicalDamage)
+        if (lea.Kind == LivingEntityActionKind.GainedDamage)
         {
           Player.PlaySound("punch");
         }

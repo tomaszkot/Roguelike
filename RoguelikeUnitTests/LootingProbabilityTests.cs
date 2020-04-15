@@ -20,15 +20,31 @@ namespace RoguelikeUnitTests
       var lootingProbab = game.GameManager.LootGenerator.Probability;
 
       var lootSourceKinds = Enum.GetValues(typeof(LootSourceKind)).Cast<LootSourceKind>();
+      //iterate chances for: Enemy, Barrel, GoldChest...
       foreach (var lootSourceKind in lootSourceKinds)
       {
+        //1 check Equipment chances
         var equipmentClassChances = lootingProbab.EquipmentClassChances[lootSourceKind];
-        var sum = equipmentClassChances.Values().Sum();
+        var sum = equipmentClassChances.ValuesCopy().Values.Sum();
         Assert.Greater(sum, 0);
+        //foreach (var eqc in equipmentClassChances.ValuesCopy())
+        //{
+        //  if (eqc.Key == EquipmentClass.Unset)
+        //    continue;
+        //  Assert.Greater(eqc.Value, 0);
+        //}
 
+
+        //2 check Loot Kind chances
         var lootKindChances = lootingProbab.LootKindChances[lootSourceKind];
-        var sum1 = lootKindChances.Values().Sum();
-        Assert.Greater(sum1, 0);
+        foreach (var eqc in lootKindChances.ValuesCopy())
+        {
+          if (eqc.Key == LootKind.Unset)
+            continue;
+          Assert.Greater(eqc.Value, 0);
+        }
+        //var sum1 = lootKindChances.Values().Sum();
+        //Assert.Greater(sum1, 0);
       }
     }
   }

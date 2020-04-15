@@ -19,7 +19,7 @@ namespace Roguelike.Tiles.Looting
   }
 }
 
-  namespace Roguelike.Spells
+namespace Roguelike.Spells
 {
   public enum SpellKind
   {
@@ -69,10 +69,12 @@ namespace Roguelike.Tiles.Looting
       this.Caller = caller;
       manaCost = BaseManaCost;
       levelToMagic[1] = 10;
+
+      this.Caller.ReduceMana(ManaCost);
     }
 
     protected float damage;
-    float damageMultiplicator = 45.0f;//%
+    //float damageMultiplicator = 45.0f;//%
 
     //Returns damage based on Spell level.
     //Spell level depends on the magic amount owner has.
@@ -89,8 +91,10 @@ namespace Roguelike.Tiles.Looting
 
     protected virtual float CalcDamage(int magicLevel)
     {
-      var dmg = damage + (damage * ((magicLevel - 1) * (damageMultiplicator + magicLevel * magicLevel / 2) / 100.0f));
-      return (float)Math.Ceiling(dmg);
+      //TODO
+      //var dmg = damage + (damage * ((magicLevel - 1) * (damageMultiplicator + magicLevel * magicLevel / 2) / 100.0f));
+      //return (float)Math.Ceiling(dmg);
+      return magicLevel;
     }
 
     //[XmlIgnore]
@@ -197,50 +201,5 @@ namespace Roguelike.Tiles.Looting
     }
   }
 
-  public class DefensiveSpell : Spell
-  {
-    protected Tile tile;
-    protected void SetHealthFromLevel(LivingEntity spellTarget, float factor = 1)
-    {
-      var lvl = GetCurrentLevel();
-      var he = GetHealthFromLevel(lvl) * factor;
-      spellTarget.Stats.SetNominal(EntityStatKind.Health, he);
-    }
 
-    const int baseHealth = 20;
-    protected int GetHealthFromLevel(int lvl)
-    {
-      return FactorCalculator.CalcFromLevel(lvl, baseHealth);
-    }
-
-    public virtual Tile Tile
-    {
-      get
-      {
-        return tile;
-      }
-
-      set
-      {
-        tile = value;
-      }
-    }
-
-    protected int CalcTourLasting(float factor = 1)
-    {
-      return CalcTourLasting(GetCurrentLevel(), factor);
-    }
-
-    protected int CalcTourLasting(int magicLevel, float factor = 1)
-    {
-      var he = GetHealthFromLevel(magicLevel);
-      float baseVal = ((float)he) * factor;
-      return (int)(baseVal / 4f);
-    }
-
-    public DefensiveSpell() : this(LivingEntity.CreateDummy()) { }
-    public DefensiveSpell(LivingEntity caller) : base(caller)
-    {
-    }
-  }
 }

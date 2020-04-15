@@ -156,7 +156,7 @@ namespace Roguelike
 
     public enum LivingEntityActionKind
     {
-      Moved, Died, GainedPhisicalDamage, ExperiencedEffect, Trapped, Interacted, Missed, UsedSpell,
+      Moved, Died, GainedDamage, ExperiencedEffect, Trapped, Interacted, Missed, UsedSpell,
       FailedToCastSpell, GodsTurn, GodsPowerReleased, StrikedBack, BulkAttack
     }
     public class LivingEntityAction : GameAction

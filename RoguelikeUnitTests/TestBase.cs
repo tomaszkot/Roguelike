@@ -11,30 +11,6 @@ using System.Linq;
 
 namespace RoguelikeUnitTests
 {
-  class LootInfo
-  {
-    public List<Loot> prev;
-    public List<Loot> newLoot;
-    RoguelikeGame game;
-    
-    public LootInfo(RoguelikeGame game, InteractiveTile interactWith)
-    {
-      prev = game.Level.GetTiles<Loot>();
-      this.game = game;
-      if (interactWith != null)
-      {
-        game.GameManager.InteractHeroWith(interactWith);
-        newLoot  = GetDiff();
-      }
-    }
-
-    public List<Loot> GetDiff()
-    {
-      var lootAfter = game.Level.GetTiles<Loot>();
-      newLoot = lootAfter.Except(prev).ToList();
-      return newLoot;
-    }
-  };
 
   [TestFixture]
   public class TestBase
@@ -43,6 +19,9 @@ namespace RoguelikeUnitTests
 
     public RoguelikeGame Game { get => game; protected set => game = value; }
     public Container Container { get; set; }
+    public BaseHelper Helper { get => helper; set => helper = value; }
+
+    protected BaseHelper helper;
 
     [SetUp]
     public void Init()
@@ -100,26 +79,33 @@ namespace RoguelikeUnitTests
 
     public virtual RoguelikeGame CreateGame(bool autoLoadLevel = true, int numEnemies = 10)
     {
-      Game = new RoguelikeGame(Container);
+      game = new RoguelikeGame(Container);
+      helper = new BaseHelper(this, game);
       if (autoLoadLevel)
-        Game.GenerateLevel(0);
-      return Game;
+      {
+        var info = new GenerationInfo();
+        info.MinNodeSize = new System.Drawing.Size(30, 30);
+        info.MaxNodeSize = info.MinNodeSize;
+        info.ForcedNumberOfEnemiesInRoom = numEnemies;
+        game.GenerateLevel(0, info);
+      }
+      return game;
     }
         
-    protected static Jewellery AddJewelleryToInv(Roguelike.RoguelikeGame game, EntityStatKind statKind)
+    protected Jewellery AddJewelleryToInv(Roguelike.RoguelikeGame game, EntityStatKind statKind)
     {
       var juw = game.GameManager.LootGenerator.EquipmentFactory.GetRandomJewellery(statKind);
       Assert.AreEqual(juw.PrimaryStatKind, EntityStatKind.Defence);
       Assert.IsTrue(juw.PrimaryStatValue > 0);
 
-      AddItemToInv(game, juw);
+      AddItemToInv(juw);
       return juw;
     }
         
-    protected static void AddItemToInv(Roguelike.RoguelikeGame game, Jewellery juw)
+    protected void AddItemToInv(Loot loot)
     {
-      game.Hero.Inventory.Add(juw);
-      Assert.IsTrue(game.Hero.Inventory.Contains(juw));
+      game.Hero.Inventory.Add(loot);
+      Assert.IsTrue(game.Hero.Inventory.Contains(loot));
     }
 
     [TearDown]

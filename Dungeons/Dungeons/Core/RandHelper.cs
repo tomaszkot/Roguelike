@@ -61,12 +61,12 @@ namespace Dungeons.Core
     }
 
 
-    public static T GetRandomEnumValue<T>() where T : IConvertible
+    public static T GetRandomEnumValue<T>()// where T : IConvertible
     {
       return GetRandomEnumValue(new T[] { });
     }
 
-    public static T GetRandomEnumValue<T>(T[] skip) where T : IConvertible
+    public static T GetRandomEnumValue<T>(T[] skip)// where T : IConvertible
     {
       var values = Enum.GetValues(typeof(T)).Cast<T>().Where(i=> !skip.Contains(i)).ToList();
       int index = random.Next(values.Count());

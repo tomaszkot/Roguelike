@@ -288,8 +288,13 @@ namespace Roguelike.Managers
         {
           var chest = tile as Chest;
           var loot = LootGenerator.TryGetRandomLootByDiceRoll(chest.LootSourceKind);
-          bool replaced = ReplaceTile(loot, tile.Point);
-          Debug.Write(replaced);
+          if (loot != null)
+          {
+            bool replaced = ReplaceTile(loot, tile.Point);
+            Debug.Assert(replaced);
+            Debug.Write(replaced);
+          }
+          
         }
         return InteractionResult.Blocked;//blok hero by default
       }

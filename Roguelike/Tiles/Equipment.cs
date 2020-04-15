@@ -15,6 +15,7 @@ namespace Roguelike.Tiles
     EquipmentClass _class;
     public int RequiredLevel { get; set; }
     EntityStats requiredStats = new EntityStats();
+    public bool Identified { get; set; } = true;
 
     public Equipment() : this(EquipmentKind.Unset)
     {
@@ -27,6 +28,18 @@ namespace Roguelike.Tiles
       EquipmentKind = kind;
       Class = EquipmentClass.Plain;
       LootKind = LootKind.Equipment;
+    }
+
+    public void Identify()
+    {
+      if (Identified)
+        return;
+      this.Identified = true;
+      if (unidentifiedStats != null)//TODO assert
+      {
+        ExtendedInfo.Stats.Accumulate(unidentifiedStats);
+        IncreasePriceBasedOnExtInfo();
+      }
     }
 
     public EntityStats GetStats()
@@ -234,13 +247,13 @@ namespace Roguelike.Tiles
     public EntityStatKind AddMagicStat(EntityStatKind[] skip, bool secMagicLevel)
     {
       var stat = GetRandomStatForMagicItem(skip);
-      MakeMagic(stat, secMagicLevel);
+      AddMagicStat(stat, secMagicLevel);
       return stat;
     }
 
     public void AddMagicStat(EntityStatKind esk)
     {
-      MakeMagic(esk, GetMagicStats().Any());
+      AddMagicStat(esk, GetMagicStats().Any());
     }
 
     public EntityStatKind AddRandomMagicStat()
@@ -248,7 +261,7 @@ namespace Roguelike.Tiles
       var skip = GetMagicStats().Select(i => i.Key).ToList();
       skip.Add(primaryStat.Kind);
       var stat = GetRandomStatForMagicItem(skip.ToArray());
-      MakeMagic(stat, GetMagicStats().Any());
+      AddMagicStat(stat, GetMagicStats().Any());
       return stat;
     }
 
@@ -266,7 +279,7 @@ namespace Roguelike.Tiles
       return es.Value.TotalValue;
     }
 
-    void MakeMagic(EntityStatKind stat, bool secLevel)
+    void AddMagicStat(EntityStatKind stat, bool secLevel)
     {
       var value = levelIndex + 1;
       if (RandHelper.Random.NextDouble() > 0.5f)
@@ -287,27 +300,36 @@ namespace Roguelike.Tiles
       }
       if (value == 1)
         value = 2;
-      MakeMagic(stat, secLevel, value, false);
+      AddMagicStat(stat, secLevel, value, false);
     }
 
     public void MakeMagic(EntityStatKind stat, int statValue)
     {
-      MakeMagic(stat, false, statValue, false);
+      AddMagicStat(stat, false, statValue, false);
     }
 
     public void MakeMagicSecLevel(EntityStatKind stat, int statValue)
     {
-      MakeMagic(stat, true, statValue, false);
+      AddMagicStat(stat, true, statValue, false);
     }
 
-    void MakeMagic(EntityStatKind stat, bool secLevel, int statValue, bool incrementFactor = false)
+    EntityStats unidentifiedStats;
+
+    void AddMagicStat(EntityStatKind stat, bool secLevel, int statValue, bool incrementFactor = false)
     {
       var factorBefore = ExtendedInfo.Stats.GetFactor(stat);
       if (factorBefore > 0 && incrementFactor)
         statValue += statValue;
-      Class = EquipmentClass.Magic;//we shall not lost that info
+      SetClass(EquipmentClass.Magic);//we shall not lost that info
 
-      ExtendedInfo.Stats.SetFactor(stat, statValue);
+      if (unidentifiedStats == null)
+      {
+        unidentifiedStats = new EntityStats();
+        Price *= 2;
+      }
+
+      //ExtendedInfo.Stats.SetFactor(stat, statValue);
+      unidentifiedStats.SetFactor(stat, statValue);
       IsSecondMagicLevel = secLevel;
       IncreasePriceBasedOnExtInfo();
     }
@@ -322,14 +344,17 @@ namespace Roguelike.Tiles
     }
 
     public bool priceAlrIncreased;
+    
     public void IncreasePriceBasedOnExtInfo()
     {
+      if(!Identified)
+        return;
       if (priceAlrIncreased)
       {
         //Debug.Assert(false, "priceAlrIncreased");
         return;
       }
-      //var priceInc = 0;
+      basePrice = Price;
       foreach (var st in ExtendedInfo.Stats.Stats)
       {
         var prInc = GetPriceForFactor(st.Key, (int)st.Value.Factor);
@@ -386,7 +411,7 @@ namespace Roguelike.Tiles
     public virtual void SetClass(EquipmentClass _class, int levelIndex, EntityStats lootStats = null, bool magicOfSecondLevel = false)
     {
       this.levelIndex = levelIndex;
-      Class = _class;
+      SetClass(_class);
       if (lootStats == null)
       {
         //TODO assert
@@ -402,6 +427,13 @@ namespace Roguelike.Tiles
         IsSecondMagicLevel = magicOfSecondLevel;
       }
       IncreasePriceBasedOnExtInfo();
+    }
+
+    private void SetClass(EquipmentClass _class)
+    {
+      Class = _class;
+      if (_class != EquipmentClass.Plain)
+        Identified = false;
     }
 
     public bool IsPlain()

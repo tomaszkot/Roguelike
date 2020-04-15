@@ -8,10 +8,7 @@ namespace Roguelike.LootFactories
   public class EquipmentFactory : LootFactory
   {
     protected Dictionary<EquipmentKind, EquipmentTypeFactory> lootCreators = new Dictionary<EquipmentKind, EquipmentTypeFactory>();
-    //public override Loot GetByName(string name)
-    //{
-    //  return null;
-    //}
+
     public override Roguelike.Tiles.Loot GetByName(string assetName)
     {
       foreach (var kv in lootCreators)
@@ -21,6 +18,11 @@ namespace Roguelike.LootFactories
           return tile;
       }
       return null;
+    }
+
+    public void SetFactory(EquipmentKind ek, EquipmentTypeFactory factory)
+    {
+      lootCreators[ek] = factory;
     }
 
     protected virtual void CreateKindFactories()

@@ -1,9 +1,12 @@
 ﻿using Dungeons.Core;
 using Dungeons.Tiles;
 using Newtonsoft.Json;
+using Roguelike.Abstract;
 using Roguelike.Attributes;
+using Roguelike.Effects;
 using Roguelike.Events;
 using Roguelike.Managers;
+using Roguelike.Spells;
 using Roguelike.Utils;
 using System;
 using System.Collections.Generic;
@@ -15,9 +18,25 @@ using System.Threading.Tasks;
 namespace Roguelike.Tiles
 {
   public enum EntityState { Idle, Moving, Attacking }
+  public enum EffectType
+  {
+    None, Bleeding, Poisoned, Frozen, Firing, Transform, TornApart, Frighten, Stunned,
+    ManaShield, BushTrap, Rage, Weaken, IronSkin, ResistAll, Inaccuracy, Hooch
+  }
+    
+  public interface ILastingEffectOwner
+  {
+    void OnEffectFinished(EffectType type);
+    void OnEffectStarted(EffectType type);
+  }
 
   public class LivingEntity : Tile
   {
+    static Dictionary<EntityStatKind, EntityStatKind> statsHitIncrease = new Dictionary<EntityStatKind, EntityStatKind> {
+                { EntityStatKind.LifeStealing, EntityStatKind.Health },
+                { EntityStatKind.ManaStealing, EntityStatKind.Mana }
+    };
+
     public static Point DefaultInitialPoint = new Point(0, 0);
     //public event EventHandler<GenericEventArgs<LivingEntity>> Died;
     public Point PrevPoint;
@@ -25,6 +44,8 @@ namespace Roguelike.Tiles
     EntityStats stats = new EntityStats();
     public EntityState State { get; set; }
     List<Algorithms.PathFinderNode> pathToTarget;
+    List<LastingEffect> lastingEffects = new List<LastingEffect>();
+    protected List<EffectType> immunedEffects = new List<EffectType>();
 
     [JsonIgnore]
     public List<LivingEntity> EverHitBy { get; set; } = new List<LivingEntity>();
@@ -33,9 +54,18 @@ namespace Roguelike.Tiles
     //[JsonIgnoreAttribute]
     public EntityStats Stats { get => stats; set => stats = value; }
 
+    public LivingEntity():this(new Point(-1, -1), '\0')
+    {
+    }
+
     public LivingEntity(Point point, char symbol) : base(point, symbol)
     {
       //this.EventsManager = eventsManager;
+    }
+
+    public void ReduceMana(float amount)
+    {
+      Stats.Stats[EntityStatKind.Mana].Subtract(amount);
     }
 
     public static LivingEntity CreateDummy()
@@ -97,7 +127,7 @@ namespace Roguelike.Tiles
       }
       var inflicted = attacker.GetCurrentValue(EntityStatKind.Attack) / defense;
       ReduceHealth(inflicted);
-      var ga = new LivingEntityAction(LivingEntityActionKind.GainedPhisicalDamage) { InvolvedValue = inflicted, InvolvedEntity = this };
+      var ga = new LivingEntityAction(LivingEntityActionKind.GainedDamage) { InvolvedValue = inflicted, InvolvedEntity = this };
       var desc = "received damage: " + inflicted.Formatted();
       ga.Info = Name.ToString() + " " + desc;
 #if UNITY_EDITOR
@@ -112,6 +142,140 @@ namespace Roguelike.Tiles
       //}
       DieIfShould();
       return inflicted;
+    }
+
+    protected virtual void OnHitBy
+    (
+      float amount, 
+      //FightItem fightItem, 
+      LivingEntity attacker = null, 
+      Spell spell = null, 
+      string damageDesc = null
+    )
+    {
+      if (!Alive)
+        return;
+      //if (LevelGenerationInfo.HeroGodMode && this is Hero)
+      //  return;
+      //if (attacker is Hero && this is Enemy && (this as Enemy).HeroAlly)
+      //{
+      //  amount /= 10;
+      //}
+      if (spell != null)
+      {
+        if (spell.Kind == SpellKind.StonedBall)
+          amount /= Stats.Defence;
+        else
+        {
+          var magicAttackDamageReductionPerc = Stats.GetCurrentValue(EntityStatKind.MagicAttackDamageReduction);
+          amount -= GetReducePercentage(amount, magicAttackDamageReductionPerc);
+        }
+      }
+      ReduceHealth(amount);
+      var ga = new LivingEntityAction(LivingEntityActionKind.GainedDamage) { InvolvedValue = amount, InvolvedEntity = this };
+      var desc = damageDesc ?? "received damage: " + amount.Formatted();
+      ga.Info = Name.ToString() + " " + desc;
+#if UNITY_EDITOR
+      ga.Info += "UE , Health = " + Stats.Health.Formatted();
+#endif
+      AppendAction(ga);
+
+      RemoveLastingEffect(this, EffectType.Frighten);
+      if (attacker != null || (spell.Caller != null && spell.Caller.LastingEffects.Any(i => i.Type == EffectType.Transform)))
+      {
+        var removeTr = attacker ?? spell.Caller;
+        RemoveLastingEffect(removeTr, EffectType.Transform);
+      }
+      if (attacker != null && spell == null && amount > 0)
+      {
+        StealStatIfApplicable(amount, attacker);
+      }
+
+      //TODO
+      //var effectInfo = CalcLastingEffDamage(amount, attacker, spell, fightItem);
+      //if (effectInfo.Type != EffectType.None && !IsImmuned(effectInfo.Type))
+      //{
+      //  var rand = CommonRandHelper.Random.NextDouble();
+      //  var chance = GetChanceToExperienceEffect(effectInfo.Type);
+      //  if (spell != null)
+      //  {
+      //    if (spell.SendByGod && spell.Kind != SpellKind.LightingBall)
+      //      chance *= 2;
+
+      //  }
+      //  if (fightItem != null)
+      //    chance += fightItem.GetFactor(false);
+      //  if (rand * 100 <= chance)
+      //  {
+      //    this.AddLastingEffect(effectInfo.Type, effectInfo.Turns, effectInfo.Damage);
+      //    //AppendEffectAction(effectInfo.Type, true); duplicated message
+      //  }
+      //}
+      //var died = DieIfShould(effectInfo.Type);
+      
+      var attackedInst = attacker ?? spell.Caller;
+      if (attackedInst != null)
+      {
+        if (!EverHitBy.Contains(attackedInst))
+          EverHitBy.Add(attackedInst);
+      }
+    }
+
+    /// <summary>
+    /// Increases health or mana by stealing
+    /// </summary>
+    /// <param name="amount"></param>
+    /// <param name="attacker"></param>
+    private static void StealStatIfApplicable(float damageAmount, LivingEntity attacker)
+    {
+      foreach (var stat in statsHitIncrease)
+      {
+        var stealStatValue = attacker.Stats.GetCurrentValue(stat.Key);
+        if (stealStatValue > 0)
+        {
+          var lsAmount = stealStatValue / 100f * damageAmount;
+          attacker.Stats.IncreaseStatDynamicValue(stat.Value, lsAmount);
+        }
+      }
+    }
+
+    [JsonIgnore]
+    public List<LastingEffect> LastingEffects
+    {
+      get
+      {
+        return lastingEffects;
+      }
+
+      set
+      {
+        lastingEffects = value;
+      }
+    }
+
+    public virtual void RemoveLastingEffect(LivingEntity livEnt, EffectType et)
+    {
+      var le = livEnt.LastingEffects.FirstOrDefault(i => i.Type == et);
+      if (le != null)
+      {
+        livEnt.LastingEffects.RemoveAll(i => i.Type == et);
+        le.Dispose();
+        //TODO
+        //HandleSpecialFightStat(et, false);
+        //if (et == EffectType.Hooch)
+        //{
+        //  ApplyHoochEffects(false);
+        //  lastingEffHooch = null;
+        //}
+
+        //if (livEnt == this && LastingEffectDone != null)
+        //  LastingEffectDone(this, new GenericEventArgs<LastingEffect>(le));
+      }
+    }
+
+    public static float GetReducePercentage(float orgAmount, float discPerc)
+    {
+      return orgAmount * discPerc / 100f;
     }
 
     public override string ToString()
@@ -188,9 +352,110 @@ namespace Roguelike.Tiles
       return Stats.GetTotalValue(esk);
     }
 
-    //public static implicit operator Dungeons.Tiles.Tile(LivingEntity d)  // implicit digit to byte conversion operator
-    //{
-    //  return d.DungeonTile;  // implicit conversion
-    //}
+    public float CalcNonPhysicalDamageFromSpell(Spell spell)
+    {
+      EntityStatKind attackingStat = EntityStatKind.Unset;
+      switch (spell.Kind)
+      {
+        case SpellKind.FireBall:
+        case SpellKind.NESWFireBall:
+          attackingStat = EntityStatKind.FireAttack;
+          break;
+
+        case SpellKind.IceBall:
+          attackingStat = EntityStatKind.ColdAttack;
+          break;
+        case SpellKind.PoisonBall:
+          attackingStat = EntityStatKind.PoisonAttack;
+          break;
+        case SpellKind.LightingBall:
+          attackingStat = EntityStatKind.LightingAttack;
+          break;
+
+        default:
+          break;
+      }
+      var npd = CalculateNonPhysicalDamage(attackingStat, spell.Damage);
+      return npd;
+    }
+
+    float CalculateNonPhysicalDamage(EntityStatKind attackingStat, float damageAmount)
+    {
+      if (damageAmount == 0)
+        return 0;
+      float damage = damageAmount;
+      var resist = GetResistValue(attackingStat);
+      return damage - (damage * resist / 100);//resist is %
+    }
+
+    float GetResistValue(EntityStatKind attackingStat)
+    {
+      var resist = GetResist(attackingStat);
+      if (resist == EntityStatKind.Unset)
+        return 0;
+      return GetCurrentValue(resist);
+    }
+
+    public static EntityStatKind GetResist(EntityStatKind attackingStat)
+    {
+      if (attackingStat == EntityStatKind.FireAttack)
+        return EntityStatKind.ResistFire;
+      else if (attackingStat == EntityStatKind.PoisonAttack)
+        return EntityStatKind.ResistPoison;
+      else if (attackingStat == EntityStatKind.ColdAttack)
+        return EntityStatKind.ResistCold;
+      else if (attackingStat == EntityStatKind.LightingAttack)
+        return EntityStatKind.ResistLighting;
+
+      return EntityStatKind.Unset;
+    }
+
+    public bool OnHitBy(IMovingDamager md)
+    {
+      if (md is Spell)
+      {
+        var spell = md as Spell;
+        //if (ShouldEvade(this, EntityStatKind.ChanceToEvadeMagicAttack, spell))
+        //{
+        //  //GameManager.Instance.AppendDiagnosticsUnityLog("ChanceToEvadeMagicAttack worked!");
+        //  AppendMissedAction(spell.Caller, GameManager.Instance, false);
+        //  return false;
+        //}
+        //lastHitBySpell = true;
+        var dmg = CalcNonPhysicalDamageFromSpell(spell);
+        OnHitBy(dmg /*, spell.FightItem*/, null, spell);
+      }
+
+      //else if (md is FightItem)
+      //{
+      //  float damage = 0;
+      //  FightItem fi = md as FightItem;
+      //  if (md is ExplosiveCocktail)
+      //  {
+      //    lastHitBySpell = true;//to put on enemy resist
+      //    var spell = new FireBallSpell(this);
+      //    spell.Caller = md.Caller;
+      //    spell.SourceOfDamage = false;//dmg is fixed !
+      //    var expl = md as ExplosiveCocktail;
+      //    spell.FightItem = fi;
+      //    damage = CalculateNonPhysicalDamage(EntityStatKind.FireAttack, expl.GetDamage());
+      //    OnHitBy(damage, fi, null, spell);
+      //  }
+      //  else if (md is ThrowingKnife)
+      //  {
+      //    damage = fi.GetDamage() / GetDefence();
+      //    OnHitBy(damage, fi, fi.Caller, null);
+      //  }
+      //  else
+      //  {
+      //    GameManager.Instance.AppendDiagnosticsUnityLogError(new Exception("OnHitBy!"));
+      //  }
+      //}
+      //else
+      //{
+      //  GameManager.Instance.AppendDiagnosticsUnityLogError(new Exception("OnHitBy - not supported"));
+      //}
+      return true;
+    }
   }
 }

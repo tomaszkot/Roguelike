@@ -169,10 +169,10 @@ namespace Roguelike.Tiles.Looting
 
     public static Spell CreateSpell(SpellKind Kind, LivingEntity caller)
     {
-      //switch (Kind)
-      //{
-      //  case SpellKind.FireBall:
-      //    return new FireBallSpell(caller);
+      switch (Kind)
+      {
+        case SpellKind.FireBall:
+          return new FireBallSpell(caller);
       //  case SpellKind.NESWFireBall:
       //    return new NESWFireBallSpell(caller);
       //  case SpellKind.CrackedStone:
@@ -224,7 +224,7 @@ namespace Roguelike.Tiles.Looting
       //  default:
       //    break;
       //    throw new Exception("CreateSpell ???");
-      //}
+      }
       return null;
     }
 

@@ -13,16 +13,24 @@ namespace RoguelikeUnitTests
     public void TestMagicLevel()
     {
       var game = CreateGame();
-
-      var wpn = game.GameManager.LootGenerator.GetRandom(EquipmentKind.Weapon);
-      Assert.IsFalse(wpn.GetMagicStats().Any());
-      wpn.MakeMagic();
-      Assert.NotNull(wpn.GetMagicStats().Single());
-
-      var wpn1 = game.GameManager.LootGenerator.GetRandom(EquipmentKind.Weapon);
-      wpn1.MakeMagic(true);
-      Assert.AreEqual(wpn1.GetMagicStats().Count, 2);
-
+      {
+        var wpn = game.GameManager.LootGenerator.GetRandom(EquipmentKind.Weapon);
+        Assert.IsFalse(wpn.GetMagicStats().Any());
+        wpn.MakeMagic();
+        Assert.False(wpn.GetMagicStats().Any());
+        wpn.Identify();
+        Assert.True(wpn.GetMagicStats().Any());
+      }
+      {
+        var wpn1 = game.GameManager.LootGenerator.GetRandom(EquipmentKind.Weapon);
+        var ms = wpn1.GetMagicStats();
+        Assert.False(ms.Any());
+        wpn1.MakeMagic(true);
+        ms = wpn1.GetMagicStats();
+        Assert.False(ms.Any());
+        wpn1.Identify();
+        Assert.AreEqual(wpn1.GetMagicStats().Count, 2);
+      }
     }
 
     [Test]
@@ -77,7 +85,7 @@ namespace RoguelikeUnitTests
         Assert.False(set);
 
         var juw33 = game.GameManager.LootGenerator.EquipmentFactory.GetRandomJewellery(EntityStatKind.Defence, EquipmentKind.Amulet);
-        AddItemToInv(game, juw33);
+        AddItemToInv(juw33);
         set = game.Hero.MoveEquipmentInv2Current(juw33, EquipmentKind.Amulet);
         Assert.True(set);
         Assert.AreEqual(game.Hero.GetTotalValue(EntityStatKind.Defence), origHeroDef + ringLeft + ringRight + juw33.PrimaryStatValue);
@@ -130,6 +138,7 @@ namespace RoguelikeUnitTests
       Assert.Greater(price, 0);
 
       wpn.MakeMagic(EntityStatKind.Attack, 4);
+      wpn.Identify();
       Assert.AreEqual(att+4, wpn.GetStats().GetTotalValue(EntityStatKind.Attack));
       Assert.Greater(wpn.Price, price);
     }
@@ -183,6 +192,7 @@ namespace RoguelikeUnitTests
       var eq2 = lg.GetRandom(EquipmentKind.Weapon);
       var wpnStatBefore = eq2.GetStats().GetTotalValue(eq2.PrimaryStatKind);
       eq2.MakeMagic(EntityStatKind.Attack, 5);
+      eq2.Identify();
       //eq2.PrimaryStat.Value.Factor += 5;
       Assert.AreEqual(eq2.GetStats().GetTotalValue(eq2.PrimaryStatKind), wpnStatBefore + 5);
             
