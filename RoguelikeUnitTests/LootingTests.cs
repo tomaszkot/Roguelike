@@ -1,4 +1,5 @@
 ﻿using NUnit.Framework;
+using Roguelike;
 using Roguelike.Attributes;
 using Roguelike.Tiles;
 using Roguelike.Tiles.Interactive;
@@ -11,6 +12,47 @@ namespace RoguelikeUnitTests
   [TestFixture]
   class LootingTests : TestBaseTyped<LootingTestsHelper>
   {
+    [Test]
+    public void LotsOfPotionsTest()
+    {
+      var env = CreateTestEnv();
+      GenerationInfo.DebugInfo.EachEnemyGivesPotion = true;
+      try
+      {
+        var lootInfo = new LootInfo(game, null);
+        for (int i = 0; i < 10; i++)
+        {
+          var pot = env.LootGenerator.GetRandomLoot(LootKind.Potion);
+          var added = game.GameManager.AddLootReward(pot, env.Game.Hero);
+          Assert.True(added);
+          var dist = pot.DistanceFrom(env.Game.Hero);
+          Assert.Less(dist, 4);
+        }
+        var newLootItems = lootInfo.GetDiff();
+        Assert.AreEqual(newLootItems.Count, 10);
+      }
+      catch (System.Exception)
+      {
+        GenerationInfo.DebugInfo.EachEnemyGivesPotion = false;
+      }
+    }
+
+    [Test]
+    public void LotsOfEqTest()
+    {
+      var env = CreateTestEnv();
+      var lootInfo = new LootInfo(game, null);
+      for (int i = 0; i < 10; i++)
+      {
+        var pot = env.LootGenerator.GetRandomLoot(LootKind.Equipment);
+        var closeEmp = env.Game.Level.GetClosestEmpty(env.Game.Hero, true);
+        var set = env.Game.Level.SetTile(pot, closeEmp.Point);
+        Assert.True(set);
+      }
+      var newLootItems = lootInfo.GetDiff();
+      Assert.AreEqual(newLootItems.Count, 10);
+    }
+
     [Test]
     public void IdentifiedPlainClassTest()
     {

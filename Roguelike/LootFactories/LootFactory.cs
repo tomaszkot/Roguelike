@@ -2,8 +2,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Roguelike.LootFactories
 {
@@ -22,7 +20,7 @@ namespace Roguelike.LootFactories
 
   public abstract class EquipmentTypeFactory : LootFactory
   {
-    protected Dictionary<string, Func<string, Roguelike.Tiles.Equipment>> factory = new Dictionary<string, Func<string, Roguelike.Tiles.Equipment>>();
+    protected Dictionary<string, Func<string, Equipment>> factory = new Dictionary<string, Func<string, Equipment>>();
 
     public override Loot GetByName(string name)
     {

@@ -98,7 +98,7 @@ namespace Roguelike.Managers
       LootGenerator.LevelIndex = node.Index;
       if (kind == GameContextSwitchKind.NewGame)
       {
-        if (node.GeneratorNodes !=null && node.GeneratorNodes.Any())
+        if (node.GeneratorNodes != null && node.GeneratorNodes.Any())
           hero.DungeonNodeIndex = node.GeneratorNodes.First().NodeIndex;//TODOs
         else
           hero.DungeonNodeIndex = 0;//TODO
@@ -110,7 +110,7 @@ namespace Roguelike.Managers
 
       Context.SwitchTo(node, hero, kind, stairs);
 
-      PrintHeroStats("SetContext "+ kind);
+      PrintHeroStats("SetContext " + kind);
     }
 
     protected virtual void InitNodeOnLoad(AbstractGameLevel node)
@@ -135,30 +135,54 @@ namespace Roguelike.Managers
 
     private void EventsManager_ActionAppended(object sender, GameAction e)
     {
-      if(e is LivingEntityAction)
+      var isLivingEntityAction = e is LivingEntityAction;
+      if (!isLivingEntityAction)
+        return;
+
+      var lea = e as LivingEntityAction;
+      if (lea.Kind == LivingEntityActionKind.Died)
       {
-        var lea = e as LivingEntityAction;
-        if (lea.Kind == LivingEntityActionKind.Died)
+        if (context.CurrentNode.HasTile(lea.InvolvedEntity))
         {
-          if (context.CurrentNode.HasTile(lea.InvolvedEntity))
+          context.CurrentNode.SetTile(context.CurrentNode.GenerateEmptyTile(), lea.InvolvedEntity.Point);
+        }
+        else
+        {
+          Logger.LogError("context.CurrentNode HasTile failed for " + lea.InvolvedEntity);
+        }
+        if (lea.InvolvedEntity is Enemy)
+        {
+          Hero.IncreaseExp(10);
+          var loot = LootGenerator.TryGetRandomLootByDiceRoll(LootSourceKind.Enemy);
+          if (loot != null)
           {
-            context.CurrentNode.SetTile(context.CurrentNode.GenerateEmptyTile(), lea.InvolvedEntity.Point);
+            ReplaceTile(loot, lea.InvolvedEntity.Point);
           }
-          else
+          var extraLootItems = GetExtraLoot();
+          foreach (var extraLoot in extraLootItems)
           {
-            Logger.LogError("context.CurrentNode HasTile failed for " + lea.InvolvedEntity);
-          }
-          if (lea.InvolvedEntity is Enemy)
-          {
-            Hero.IncreaseExp(10);
-            var loot = LootGenerator.TryGetRandomLootByDiceRoll(LootSourceKind.Enemy);
-            if (loot!=null)
-            {
-              ReplaceTile(loot, lea.InvolvedEntity.Point);
-            }
+            AddLootReward(extraLoot, lea.InvolvedEntity);
           }
         }
       }
+    }
+
+    public bool AddLootReward(Loot item, Tile closest)
+    {
+      var emptyCell = context.CurrentNode.GetClosestEmpty(closest, true);
+      return context.CurrentNode.SetTile(item, emptyCell.Point);
+    }
+
+    List<Loot> extraLoot = new List<Loot>();
+    List<Loot> GetExtraLoot()
+    {
+      extraLoot.Clear();
+      if (GenerationInfo.DebugInfo.EachEnemyGivesPotion)
+      {
+        var potion = LootGenerator.GetRandomLoot(LootKind.Potion);
+        extraLoot.Add(potion);
+      }
+      return extraLoot;
     }
 
     public void HandleHeroShift(int horizontal, int vertical)

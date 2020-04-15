@@ -423,7 +423,8 @@ namespace Roguelike.Tiles
       }
       else
       {
-        ExtendedInfo.Stats = lootStats;
+        //ExtendedInfo.Stats = lootStats;
+        unidentifiedStats = lootStats;
         IsSecondMagicLevel = magicOfSecondLevel;
       }
       IncreasePriceBasedOnExtInfo();

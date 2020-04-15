@@ -6,8 +6,15 @@ using System.Threading.Tasks;
 
 namespace Roguelike
 {
+  public class DebugGenerationInfo
+  {
+    public bool EachEnemyGivesPotion { get; set; } = true;
+  }
+
   public class GenerationInfo : Dungeons.GenerationInfo
   {
+    public static DebugGenerationInfo DebugInfo = new DebugGenerationInfo();
+
     public const int LevelUpPoints = 5;
     public const float NextExperienceIncrease = 1.002f;
 
