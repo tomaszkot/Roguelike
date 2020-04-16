@@ -58,14 +58,19 @@ namespace Roguelike
 
     }
 
-    public enum InventoryActionKind { ItemAdded, ItemRemoved, ShorcutsBarChanged}
+    public enum ShorcutsBarActionKind { ShorcutsBarChanged }
+    public class ShorcutsBarAction : GameAction
+    {
+      public int Digit { get; set; } = -1;
+      public ShorcutsBarActionKind Kind { get; set; }
+    }
+
+    public enum InventoryActionKind { ItemAdded, ItemRemoved}
     public class InventoryAction : GameAction
     {
       public Loot Item { get; set; }
       public InventoryActionKind Kind { get; set; }
       public Inventory Inv { get; set ; }
-
-      //Inventory inv;
 
       public InventoryAction(Inventory inv)
       {

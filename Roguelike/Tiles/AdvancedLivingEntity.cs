@@ -37,6 +37,11 @@ namespace Roguelike.Tiles
 
     public Scroll ActiveScroll
     {
+      get { return ActiveLoot as Scroll; }
+    }
+
+    public virtual Loot ActiveLoot
+    {
       get;
       set;
     }

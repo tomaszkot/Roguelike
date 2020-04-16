@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Roguelike.Policies
 {
-  public enum PolicyKind { Move, Attack }
+  public enum PolicyKind { Move, Attack, SpellCast }
 
   public class Policy
   {

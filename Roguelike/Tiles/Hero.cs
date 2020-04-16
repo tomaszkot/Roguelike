@@ -7,6 +7,7 @@ using Roguelike.Attributes;
 using Roguelike.Managers;
 using Dungeons;
 using Roguelike.Tiles.Abstract;
+using Roguelike.Tiles.Looting;
 
 namespace Roguelike.Tiles
 {
@@ -36,7 +37,7 @@ namespace Roguelike.Tiles
       color = ConsoleColor.Yellow;
 #endif
     }
-
+        
     public override string ToString()
     {
       return base.ToString();// + Data.AssetName;

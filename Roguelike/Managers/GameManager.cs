@@ -331,7 +331,7 @@ namespace Roguelike.Managers
 
     private void OnHeroAttackPolicyApplied(object sender, Policies.Policy e)
     {
-      if(e is AttackPolicy)
+      if(e is AttackPolicy || e is SpellCastPolicy)
         RemoveDeadEnemies();
       context.IncreaseActions(TurnOwner.Hero);
       context.MoveToNextTurnOwner();

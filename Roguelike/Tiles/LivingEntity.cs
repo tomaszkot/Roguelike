@@ -6,8 +6,11 @@ using Roguelike.Attributes;
 using Roguelike.Effects;
 using Roguelike.Events;
 using Roguelike.Managers;
+using Roguelike.Policies;
 using Roguelike.Spells;
+using Roguelike.Tiles.Looting;
 using Roguelike.Utils;
+using SimpleInjector;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -17,7 +20,7 @@ using System.Threading.Tasks;
 
 namespace Roguelike.Tiles
 {
-  public enum EntityState { Idle, Moving, Attacking }
+  public enum EntityState { Idle, Moving, Attacking, CastingSpell }
   public enum EffectType
   {
     None, Bleeding, Poisoned, Frozen, Firing, Transform, TornApart, Frighten, Stunned,
@@ -49,10 +52,16 @@ namespace Roguelike.Tiles
 
     [JsonIgnore]
     public List<LivingEntity> EverHitBy { get; set; } = new List<LivingEntity>();
+    public static Func<SpellCastPolicy> spellCastPolicyProvider;
 
     bool alive = true;
     //[JsonIgnoreAttribute]
     public EntityStats Stats { get => stats; set => stats = value; }
+
+    static LivingEntity()
+    {
+      spellCastPolicyProvider = () => { return new SpellCastPolicy(); };
+    }
 
     public LivingEntity():this(new Point(-1, -1), '\0')
     {
@@ -394,6 +403,19 @@ namespace Roguelike.Tiles
       if (resist == EntityStatKind.Unset)
         return 0;
       return GetCurrentValue(resist);
+    }
+
+    public void UseScroll(Scroll scroll, LivingEntity target)
+    {
+      var spell = scroll.CreateSpell(this);
+      var policy = spellCastPolicyProvider();
+      policy.Apply(scroll, this, target);
+    }
+
+    public void UseSpellPolicy(SpellCastPolicy policy)
+    {
+      var spell = policy.Scroll.CreateSpell(policy.Caster);
+      policy.Target.OnHitBy(spell);
     }
 
     public static EntityStatKind GetResist(EntityStatKind attackingStat)
