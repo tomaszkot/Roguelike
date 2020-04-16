@@ -52,6 +52,7 @@
   <ItemGroup>
     <Compile Include="ControllTests.cs" />
     <Compile Include="EnemiesTests.cs" />
+    <Compile Include="FightMagicTests.cs" />
     <Compile Include="Helpers\BaseHelper.cs" />
     <Compile Include="Helpers\LootInfo.cs" />
     <Compile Include="Helpers\LootingTestsHelper.cs" />
@@ -59,7 +60,7 @@
     <Compile Include="DungeonGenerationTests.cs" />
     <Compile Include="DungeonInteractionTests.cs" />
     <Compile Include="EquipmentTests.cs" />
-    <Compile Include="FightTests.cs" />
+    <Compile Include="FightMeleeTests.cs" />
     <Compile Include="LootingProbabilityTests.cs" />
     <Compile Include="LootingTests.cs" />
     <Compile Include="PotionTests.cs" />

@@ -1,28 +1,24 @@
 ﻿using NUnit.Framework;
 using Roguelike.Tiles;
+using Roguelike.Tiles.Looting;
 using System.Linq;
 
 namespace RoguelikeUnitTests
 {
   [TestFixture]
-  class FightTests : TestBase
+  class FightMagicTests : TestBase
   {
     [Test]
-    public void EquipmentImpactTest()
+    public void SimpleBallsTest()
     {
       var game = CreateGame();
       var hero = game.Hero;
-
-      Assert.Greater(game.GameManager.EnemiesManager.Enemies.Count, 0);
+      var fireBallScroll = new Scroll(Roguelike.Spells.SpellKind.FireBall);
+      var spell = fireBallScroll.CreateSpell(hero);
+      Assert.Greater(spell.Damage, 0);
       var enemy = game.GameManager.EnemiesManager.Enemies.First();
       var enemyHealth = enemy.Stats.Health;
-      enemy.OnPhysicalHit(hero);
-      Assert.Greater(enemyHealth, enemy.Stats.Health);
-      enemyHealth = enemy.Stats.Health;
-
-      var wpn = GenerateRandomEqOnLevelAndCollectIt<Weapon>();
-      enemy.OnPhysicalHit(hero);
-      
+      enemy.OnHitBy(spell);
       Assert.Greater(enemyHealth, enemy.Stats.Health);
     }
   }
