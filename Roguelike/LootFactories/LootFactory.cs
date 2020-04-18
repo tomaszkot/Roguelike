@@ -1,32 +1,33 @@
 ﻿using Roguelike.Tiles;
+using SimpleInjector;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace Roguelike.LootFactories
 {
-  public abstract class LootFactory
+  public class LootFactory : AbstractLootFactory
   {
-    protected abstract void Create();
-    public abstract Loot GetRandom(); //where T : Loot;
-    public abstract Loot GetByName(string name);
-
-    public LootFactory()
+    public EquipmentFactory EquipmentFactory { get; set; }
+    public ScrollsFactory ScrollsFactory { get; set; }
+    
+    public LootFactory(Container container) : base(container)
     {
-      Create();
     }
-  }
 
-
-  public abstract class EquipmentTypeFactory : LootFactory
-  {
-    protected Dictionary<string, Func<string, Equipment>> factory = new Dictionary<string, Func<string, Equipment>>();
+    protected override void Create()
+    {
+      EquipmentFactory = container.GetInstance<EquipmentFactory>();
+      ScrollsFactory = container.GetInstance<ScrollsFactory>();
+    }
 
     public override Loot GetByName(string name)
     {
-      var tile = factory.FirstOrDefault(i => i.Key == name);
-      if (tile.Key != null)
-        return tile.Value(name);
+      //var tile = factory.FirstOrDefault(i => i.Key == name);
+      //if (tile.Key != null)
+      //  return tile.Value(name);
 
       return null;
     }
@@ -35,5 +36,6 @@ namespace Roguelike.LootFactories
     {
       return null;
     }
-  };
+
+  }
 }

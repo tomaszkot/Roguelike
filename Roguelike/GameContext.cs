@@ -60,7 +60,12 @@ namespace Roguelike
       turnCounts[TurnOwner.Enemies] = 0;
     }
 
-    public void CreateMovePolicy(LivingEntity entity, Point newPos, Action<Policy> OnApplied)
+    public void ApplySpellPolicy()
+    {
+
+    }
+
+    public void ApplyMovePolicy(LivingEntity entity, Point newPos, Action<Policy> OnApplied)
     {
       var movePolicy = Container.GetInstance<MovePolicy>();
       //Logger.LogInfo("moving " + entity + " to " + newPos + " mp = " + movePolicy);
@@ -80,8 +85,7 @@ namespace Roguelike
           Info = entity + " moved",
           InvolvedEntity = entity,
           MovePolicy = movePolicy
-        }
-);
+        });
       }
     }
 
@@ -94,7 +98,7 @@ namespace Roguelike
       }
 
       this.Hero = hero;
-      hero.OnContextSwitched(EventsManager);
+      hero.OnContextSwitched(EventsManager, Container);
 
 
       if (!Hero.Point.IsValid() || context == GameContextSwitchKind.DungeonSwitched)

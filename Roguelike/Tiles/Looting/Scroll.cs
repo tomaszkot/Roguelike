@@ -8,9 +8,9 @@ using System.Threading.Tasks;
 
 namespace Roguelike.Tiles.Looting
 {
-  public class Scroll : Loot
+  public class Scroll : Loot, ICloneable
   {
-    LivingEntity dummy = LivingEntity.CreateDummy();
+    //LivingEntity dummy = LivingEntity.CreateDummy();
     SpellKind kind;
     public SpellKind Kind
     {
@@ -18,13 +18,18 @@ namespace Roguelike.Tiles.Looting
       set
       {
         kind = value;
-        Name = kind + " " + "Scroll";
-        spell = CreateSpell(dummy);
+        Name = GetNameFromKind();
+        //spell = CreateSpell(dummy);
         if (kind == SpellKind.CrackedStone)
           Price = (int)((float)Price / 2.0f);
 
         SetDesc();
       }
+    }
+
+    public string GetNameFromKind()
+    {
+      return kind + " " + "Scroll";
     }
 
     private void SetDesc()
@@ -108,15 +113,15 @@ namespace Roguelike.Tiles.Looting
       }
     }
 
-    public bool EnemyRequired { get { return spell.EnemyRequired; } }
-    public bool EntityRequired { get { return spell.EntityRequired; } }
-    Spell spell;
+    //public bool EnemyRequired { get { return spell.EnemyRequired; } }
+    //public bool EntityRequired { get { return spell.EntityRequired; } }
+    //Spell spell;
+    
+    //public int Level
+    //{
+    //  get { return spell.GetCurrentLevel(); }
+    //}
 
-
-    public int Level
-    {
-      get { return spell.GetCurrentLevel(); }
-    }
     string desc;
     public string GetDescription()
     {
@@ -145,22 +150,23 @@ namespace Roguelike.Tiles.Looting
 
     public float ManaCost
     {
-      get { return spell.ManaCost; }
+      //get { return spell.ManaCost; }
+      get { return 5; }
     }
 
-    public void UpdateLevel(LivingEntity le)
-    {
-      spell = CreateSpell(le);
-    }
+    //public void UpdateLevel(LivingEntity le)
+    //{
+    //  spell = CreateSpell(le);
+    //}
 
-    public bool IsDefensive { get { return spell is DefensiveSpell; } }
+    //public bool IsDefensive { get { return spell is DefensiveSpell; } }
 
-    public string[] GetFeatures(LivingEntity caller)
-    {
-      spell = CreateSpell(caller);
-      var feat = spell.GetFeatures();
-      return feat;
-    }
+    //public string[] GetFeatures(LivingEntity caller)
+    //{
+    //  spell = CreateSpell(caller);
+    //  var feat = spell.GetFeatures();
+    //  return feat;
+    //}
 
     public Spell CreateSpell(LivingEntity caller)
     {
@@ -226,6 +232,16 @@ namespace Roguelike.Tiles.Looting
       //    throw new Exception("CreateSpell ???");
       }
       return null;
+    }
+
+    public object Clone()
+    {
+      return MemberwiseClone();
+    }
+
+    public Scroll CloneAsScroll()
+    {
+      return Clone() as Scroll;
     }
 
     //public override string GetPrimaryStatDescription()

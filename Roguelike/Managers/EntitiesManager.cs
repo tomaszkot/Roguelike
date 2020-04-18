@@ -8,6 +8,7 @@ using System.Drawing;
 using System;
 using Roguelike.Events;
 using Roguelike.Policies;
+using SimpleInjector;
 
 namespace Roguelike.Managers
 {
@@ -24,15 +25,14 @@ namespace Roguelike.Managers
 
     protected EventsManager eventsManager;
     protected GameContext context;
-    public Func<LivingEntity, LivingEntity, AttackPolicy> AttackPolicy { get; set; }
+    protected Container container;
 
-    public EntitiesManager(GameContext context, EventsManager eventsManager)
+    public EntitiesManager(GameContext context, EventsManager eventsManager, Container container)
     {
+      this.container = container;
       Context = context;
       Context.ContextSwitched += Context_ContextSwitched;
       this.eventsManager = eventsManager;
-
-      AttackPolicy = (LivingEntity e1, LivingEntity e2) => { return new AttackPolicy(e1, e2); };
     }
 
     private void Context_ContextSwitched(object sender, ContextSwitch e)
@@ -101,7 +101,7 @@ namespace Roguelike.Managers
 
     protected virtual bool MoveEntity(LivingEntity entity, Point newPos)
     {
-      context.CreateMovePolicy(entity, newPos, (e) => OnPolicyApplied(e));
+      context.ApplyMovePolicy(entity, newPos, (e) => OnPolicyApplied(e));
 
       return true;//TODO
     }
@@ -134,8 +134,8 @@ namespace Roguelike.Managers
 
   public class AlliesManager : EntitiesManager
   {
-    public AlliesManager(GameContext context, EventsManager eventsManager) :
-      base(context, eventsManager)
+    public AlliesManager(GameContext context, EventsManager eventsManager, Container container) :
+      base(context, eventsManager, container)
     {
       context.TurnOwnerChanged += OnTurnOwnerChanged;
       context.ContextSwitched += Context_ContextSwitched;

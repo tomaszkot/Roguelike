@@ -8,12 +8,14 @@ using Roguelike.Managers;
 using Dungeons;
 using Roguelike.Tiles.Abstract;
 using Roguelike.Tiles.Looting;
+using SimpleInjector;
 
 namespace Roguelike.Tiles
 {
   public class Hero : AdvancedLivingEntity
   {
     public static int FirstNextLevelExperienceThreshold = 15;
+    protected Container container;
 
     public Hero(): base(new Point().Invalid(), '@')
     {
@@ -33,18 +35,25 @@ namespace Roguelike.Tiles
       CreateInventory();
 
       Dirty = true;//TODO
+
+      
 #if ASCII_BUILD
       color = ConsoleColor.Yellow;
 #endif
+#if UNITY_EDITOR
+      
+#endif
+
     }
-        
+
     public override string ToString()
     {
       return base.ToString();// + Data.AssetName;
     }
 
-    public virtual void OnContextSwitched(EventsManager eventsManager)
+    public virtual void OnContextSwitched(EventsManager eventsManager, Container container)
     {
+      this.container = container;
       Inventory.EventsManager = eventsManager;//TODO
     }
 

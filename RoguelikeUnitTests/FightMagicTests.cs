@@ -1,4 +1,5 @@
 ﻿using NUnit.Framework;
+using Roguelike.Policies;
 using Roguelike.Tiles;
 using Roguelike.Tiles.Looting;
 using System.Linq;
@@ -30,7 +31,7 @@ namespace RoguelikeUnitTests
       var mana = hero.Stats.Mana;
 
       var fireBallScroll = new Scroll(Roguelike.Spells.SpellKind.FireBall);
-      hero.UseScroll(fireBallScroll, enemy);
+      hero.UseScroll(fireBallScroll, enemy, Container.GetInstance<SpellCastPolicy>());
       Assert.Greater(enemyHealth, enemy.Stats.Health);
       Assert.Greater(mana, hero.Stats.Mana);
     }

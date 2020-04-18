@@ -12,14 +12,15 @@ namespace Roguelike.Policies
     LivingEntity attacker;
     LivingEntity victim;
 
-    public AttackPolicy(LivingEntity attacker, LivingEntity victim)
+    public AttackPolicy()
+    {
+    }
+
+    public virtual void Apply(LivingEntity attacker, LivingEntity victim)
     {
       this.attacker = attacker;
       this.victim = victim;
-    }
 
-    public void Apply()
-    {
       if (attacker.CalculateIfHitWillHappen(victim))
         attacker.ApplyPhysicalDamage(victim);
 

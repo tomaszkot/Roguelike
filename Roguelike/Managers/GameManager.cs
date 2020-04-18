@@ -3,16 +3,11 @@ using Dungeons.Tiles;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Roguelike.TileContainers;
 using Roguelike.Tiles;
 using System.Drawing;
-using Roguelike.InfoScreens;
 using Roguelike.Generators;
-using Dungeons;
 using System.Diagnostics;
-using Roguelike.Abstract;
 using Roguelike.Serialization;
 using SimpleInjector;
 using Roguelike.Events;
@@ -74,14 +69,14 @@ namespace Roguelike.Managers
       LootGenerator = container.GetInstance<LootGenerator>();
       Logger = container.GetInstance<ILogger>();
       levelGenerator = container.GetInstance<LevelGenerator>();
-      EventsManager = new EventsManager();
+      EventsManager = container.GetInstance<EventsManager>();
       EventsManager.ActionAppended += EventsManager_ActionAppended;
 
       Context = container.GetInstance<GameContext>();
       Context.EventsManager = EventsManager;
 
-      enemiesManager = new EnemiesManager(Context, EventsManager);
-      AlliesManager = new AlliesManager(Context, EventsManager);
+      enemiesManager = new EnemiesManager(Context, EventsManager, Container);
+      AlliesManager = new AlliesManager(Context, EventsManager, Container);
 
       Persister = container.GetInstance<JSONPersister>();
 
@@ -90,7 +85,7 @@ namespace Roguelike.Managers
 
     protected virtual EnemiesManager CreateEnemiesManager(GameContext context, EventsManager eventsManager)
     {
-      return new EnemiesManager(Context, EventsManager);
+      return new EnemiesManager(Context, EventsManager, Container);
     }
 
     public void SetContext(AbstractGameLevel node, Hero hero, GameContextSwitchKind kind, Stairs stairs = null)
@@ -225,9 +220,8 @@ namespace Roguelike.Managers
       else
       {
         //logger.LogInfo(" Hero ac ="+ ac);
-        //AlliesManager.MoveEntity(Hero, newPos.Point);
-        context.CreateMovePolicy(Hero, newPos.Point, (e) => {
-          OnHeroAttackPolicyApplied(this, e);
+        context.ApplyMovePolicy(Hero, newPos.Point, (e) => {
+          OnHeroPolicyApplied(this, e);
         });
       }
 
@@ -266,9 +260,9 @@ namespace Roguelike.Managers
       {
         Logger.LogInfo("Hero attacks " + tile);
         var en = tile as Enemy;
-        var heroAttackPolicy = AlliesManager.AttackPolicy(Hero, en);
-        heroAttackPolicy.OnApplied += OnHeroAttackPolicyApplied;
-        heroAttackPolicy.Apply();
+        var heroAttackPolicy = Container.GetInstance<AttackPolicy>();
+        heroAttackPolicy.OnApplied += OnHeroPolicyApplied;
+        heroAttackPolicy.Apply(Hero, en);
 
         return InteractionResult.Attacked;
       }
@@ -329,7 +323,7 @@ namespace Roguelike.Managers
       return InteractionResult.None;
     }
 
-    private void OnHeroAttackPolicyApplied(object sender, Policies.Policy e)
+    private void OnHeroPolicyApplied(object sender, Policies.Policy e)
     {
       if(e is AttackPolicy || e is SpellCastPolicy)
         RemoveDeadEnemies();
@@ -451,7 +445,7 @@ namespace Roguelike.Managers
 
     public virtual Equipment GenerateRandomEquipment(EquipmentKind kind)
     {
-      return lootGenerator.GetRandom(kind);
+      return lootGenerator.GetRandomEquipment(kind);
     }
 
     public void MakeGameTick()

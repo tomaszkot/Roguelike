@@ -1,24 +1,19 @@
 ﻿using System;
 using System.Diagnostics;
-using System.IO;
 using System.Linq;
-using System.Media;
 using Dungeons;
 using Dungeons.ASCIIDisplay;
 using Roguelike;
 using Roguelike.Abstract;
 using Roguelike.Events;
-using Roguelike.Generators;
 using Roguelike.Managers;
-using Roguelike.TileContainers;
 using Roguelike.Tiles;
 using Roguelike.Tiles.Interactive;
-using RoguelikeConsoleRunner.ASCIIDisplay;
 using SimpleInjector;
 
 namespace RoguelikeConsoleRunner
 {
-  
+
 
   public class GameController : DungeonsConsoleRunner.GameController, IGameManagerProvider
   {

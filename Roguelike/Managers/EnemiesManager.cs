@@ -1,15 +1,11 @@
-﻿using Dungeons;
-using Dungeons.Tiles;
-using Roguelike.TileContainers;
+﻿using Dungeons.Tiles;
+using Roguelike.Policies;
 using Roguelike.Tiles;
-using System;
+using SimpleInjector;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 
 
 namespace Roguelike.Managers
@@ -21,8 +17,8 @@ namespace Roguelike.Managers
     public List<LivingEntity> Enemies { get => enemies; set => enemies = value; }
    
 
-    public EnemiesManager(GameContext context, EventsManager eventsManager) :
-      base(context, eventsManager)
+    public EnemiesManager(GameContext context, EventsManager eventsManager, Container container) :
+      base(context, eventsManager, container)
     {
       this.context = context;
       context.TurnOwnerChanged += OnTurnOwnerChanged;
@@ -131,9 +127,9 @@ namespace Roguelike.Managers
       var victim = GetPhysicalAttackVictim(enemy, hero);
       if (victim != null)
       {
-        var enemyAttackPollicy = AttackPolicy(enemy, hero);
+        var enemyAttackPollicy = container.GetInstance<AttackPolicy>();
         enemyAttackPollicy.OnApplied += (s,e)=>OnPolicyApplied(e);
-        enemyAttackPollicy.Apply();
+        enemyAttackPollicy.Apply(enemy, hero);
         //if (enCasted != null)
         //  gm.AppendAction(new EnemyAction() { KindValue = EnemyAction.Kind.AttackingHero, Enemy = enCasted })/*;*/
 

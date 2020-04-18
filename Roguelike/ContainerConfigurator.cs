@@ -1,6 +1,7 @@
 ﻿using Dungeons.Core;
 using Roguelike.Abstract;
 using Roguelike.Generators;
+using Roguelike.LootFactories;
 using Roguelike.Managers;
 using Roguelike.Policies;
 using Roguelike.Serialization;
@@ -26,8 +27,10 @@ namespace Roguelike
       container.Register< Dungeons.TileContainers.DungeonLevel, GameLevel>();
       container.Register<ILogger, Logger>();
       container.Register<LootGenerator, LootGenerator>(Lifestyle.Singleton);
+      container.Register <EventsManager, EventsManager>(Lifestyle.Singleton);
       container.Register<Enemy, Enemy>();
       container.Register<RoomContentGenerator, RoomContentGenerator>();
+      container.Register<AbstractLootFactory, LootFactory>();
       //container.Register <MovePolicy, MovePolicy>();//move to exe
       Container = container;
 

@@ -52,7 +52,7 @@ namespace Roguelike.Tiles
 
     [JsonIgnore]
     public List<LivingEntity> EverHitBy { get; set; } = new List<LivingEntity>();
-    public static Func<SpellCastPolicy> spellCastPolicyProvider;
+    //public static Func<SpellCastPolicy> spellCastPolicyProvider;
 
     bool alive = true;
     //[JsonIgnoreAttribute]
@@ -60,7 +60,7 @@ namespace Roguelike.Tiles
 
     static LivingEntity()
     {
-      spellCastPolicyProvider = () => { return new SpellCastPolicy(); };
+      //spellCastPolicyProvider = () => { return new SpellCastPolicy(); };
     }
 
     public LivingEntity():this(new Point(-1, -1), '\0')
@@ -405,10 +405,10 @@ namespace Roguelike.Tiles
       return GetCurrentValue(resist);
     }
 
-    public void UseScroll(Scroll scroll, LivingEntity target)
+    public void UseScroll(Scroll scroll, LivingEntity target, SpellCastPolicy policy)
     {
-      var spell = scroll.CreateSpell(this);
-      var policy = spellCastPolicyProvider();
+      //var spell = scroll.CreateSpell(this);
+      //var policy = spellCastPolicyProvider();
       policy.Apply(scroll, this, target);
     }
 

@@ -143,9 +143,9 @@ namespace Roguelike.Generators
 
     protected virtual void PopulateDungeonLevel(Roguelike.TileContainers.GameLevel level)
     {
-      var lg = new LootGenerator();
+      var lg = new LootGenerator(Container);
       var levelIndex = level.Index;
-      var loot = lg.GetRandom(EquipmentKind.Weapon);
+      var loot = lg.GetRandomEquipment(EquipmentKind.Weapon);
       loot.DungeonNodeIndex = levelIndex;
       level.SetTile(loot, level.GetFirstEmptyPoint().Value);
     }

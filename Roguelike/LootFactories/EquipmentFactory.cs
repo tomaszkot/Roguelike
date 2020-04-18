@@ -1,13 +1,18 @@
 ﻿using Roguelike.Attributes;
 using Roguelike.Generators;
 using Roguelike.Tiles;
+using SimpleInjector;
 using System.Collections.Generic;
 
 namespace Roguelike.LootFactories
 {
-  public class EquipmentFactory : LootFactory
+  public class EquipmentFactory : AbstractLootFactory
   {
     protected Dictionary<EquipmentKind, EquipmentTypeFactory> lootCreators = new Dictionary<EquipmentKind, EquipmentTypeFactory>();
+
+    public EquipmentFactory(Container container) : base(container)
+    {
+    }
 
     public override Roguelike.Tiles.Loot GetByName(string assetName)
     {

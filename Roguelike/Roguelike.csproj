@@ -87,6 +87,7 @@
     <Compile Include="Generators\RoomContentGenerator.cs" />
     <Compile Include="LootContainers\Inventory.cs" />
     <Compile Include="LootFactories\EquipmentFactory.cs" />
+    <Compile Include="LootFactories\AbstractLootFactory.cs" />
     <Compile Include="LootFactories\LootFactory.cs" />
     <Compile Include="LootFactories\ScrollsFactory.cs" />
     <Compile Include="Managers\SoundManager.cs" />

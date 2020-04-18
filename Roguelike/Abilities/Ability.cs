@@ -11,8 +11,16 @@ namespace Roguelike.Abilities
 {
   public enum AbilityKind
   {
-    Unknown, RestoreHealth, RestoreMana, AxesMastering, BashingMastering, DaggersMastering, SwordsMastering,
-    MeleeDefender, MagicDefender, ExplosiveMastering, LootingMastering, ThrowingWeaponsMastering, HuntingMastering, StrikeBack, BulkAttack
+    Unknown, RestoreHealth, RestoreMana, ExplosiveMastering, LootingMastering,
+
+    AxesMastering, BashingMastering, DaggersMastering, SwordsMastering,
+    MeleeDefender, MagicDefender, StrikeBack, BulkAttack,
+
+    Traps, RemoveClaws, RemoveTusk, Unskin, Bows, CrossBows, ThrowingWeaponsMastering,
+    HuntingMastering /*<-(to del)*/
+    
+    ,Scroll//user must invest in each scroll indywidually
+    
   }
 
   public class Ability : IDescriptable

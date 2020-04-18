@@ -2,6 +2,7 @@
 using Roguelike.Spells;
 using Roguelike.Tiles;
 using Roguelike.Tiles.Looting;
+using SimpleInjector;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,19 +11,28 @@ using System.Threading.Tasks;
 
 namespace Roguelike.LootFactories
 {
-  class ScrollsFactory : LootFactory
+  public class ScrollsFactory : EquipmentTypeFactory
   {
     List<Scroll> scrolls = new List<Scroll>();
+
+    public ScrollsFactory(Container container) : base(container)
+    {
+    }
 
     public override Loot GetRandom()
     {
       var kind = RandHelper.GetRandomEnumValue<SpellKind>();
-      return scrolls.Where(i=>i.Kind == kind).Single();
+      return scrolls.Where(i=>i.Kind == kind).Single().CloneAsScroll();
     }
 
     public override Loot GetByName(string name)
     {
       return scrolls.Where(i => i.Name == name).Single();
+    }
+
+    public Loot GetByKind(Spells.SpellKind kind)
+    {
+      return scrolls.Where(i => i.Kind == kind).Single();
     }
 
     protected override void Create()
