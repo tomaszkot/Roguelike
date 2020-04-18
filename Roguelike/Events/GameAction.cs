@@ -159,11 +159,22 @@ namespace Roguelike
       }
     }
 
+    public class SoundRequestAction : GameAction
+    {
+      public string SoundName { get; set; }
+    }
+
     public enum LivingEntityActionKind
     {
       Moved, Died, GainedDamage, ExperiencedEffect, Trapped, Interacted, Missed, UsedSpell,
       FailedToCastSpell, GodsTurn, GodsPowerReleased, StrikedBack, BulkAttack
     }
+
+    public class PolicyAppliedAction : GameAction
+    {
+      public Policy Policy { get; set; }
+    }
+
     public class LivingEntityAction : GameAction
     {
       public LivingEntityAction(LivingEntityActionKind kind)
@@ -179,18 +190,18 @@ namespace Roguelike
       //public TileData TileData { get; set; }
       public double InvolvedValue { get; set; }
 
-      public override string GetSound()
-      {
-        var sound = "";
-        //if (TileData != null)
-        //  sound = TileData.GetSound(KindValue);
-        if (sound.Any())
-          return sound;
-        //var KindVa = KindValue.ToString();
-        //if (KindValue == Kind.Moved)
-        //  return "living_ent_moved";
-        return GetType().Name.Replace("Action", "") + Kind;
-      }
+      //public override string GetSound()
+      //{
+      //  var sound = "";
+      //  //if (TileData != null)
+      //  //  sound = TileData.GetSound(KindValue);
+      //  if (sound.Any())
+      //    return sound;
+      //  //var KindVa = KindValue.ToString();
+      //  //if (KindValue == Kind.Moved)
+      //  //  return "living_ent_moved";
+      //  return GetType().Name.Replace("Action", "") + Kind;
+      //}
     }
   }
 }

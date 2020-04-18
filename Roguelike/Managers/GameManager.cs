@@ -130,6 +130,16 @@ namespace Roguelike.Managers
 
     private void EventsManager_ActionAppended(object sender, GameAction e)
     {
+      var pac = e as PolicyAppliedAction;
+      if (pac!=null)
+      {
+        if (pac.Policy.Kind == PolicyKind.SpellCast)
+        {
+          var ap = pac.Policy as SpellCastPolicy;
+        }
+        return;
+      }
+
       var isLivingEntityAction = e is LivingEntityAction;
       if (!isLivingEntityAction)
         return;
@@ -323,7 +333,7 @@ namespace Roguelike.Managers
       return InteractionResult.None;
     }
 
-    private void OnHeroPolicyApplied(object sender, Policies.Policy e)
+    public void OnHeroPolicyApplied(object sender, Policies.Policy e)
     {
       if(e is AttackPolicy || e is SpellCastPolicy)
         RemoveDeadEnemies();

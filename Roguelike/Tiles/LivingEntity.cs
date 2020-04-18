@@ -1,5 +1,4 @@
-﻿using Dungeons.Core;
-using Dungeons.Tiles;
+﻿using Dungeons.Tiles;
 using Newtonsoft.Json;
 using Roguelike.Abstract;
 using Roguelike.Attributes;
@@ -11,12 +10,9 @@ using Roguelike.Spells;
 using Roguelike.Tiles.Looting;
 using Roguelike.Utils;
 using SimpleInjector;
-using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Roguelike.Tiles
 {
@@ -131,11 +127,12 @@ namespace Roguelike.Tiles
       if (defense == 0)
       {
         //gm.Assert(false, "Stats.Defence == 0");
-        AppendAction(new GameStateAction() {Type = GameStateAction.ActionType.Assert, Info = "Stats.Defence == 0!!!" });
+        AppendAction(new GameStateAction() { Type = GameStateAction.ActionType.Assert, Info = "Stats.Defence == 0!!!" });
         return 0;
       }
       var inflicted = attacker.GetCurrentValue(EntityStatKind.Attack) / defense;
       ReduceHealth(inflicted);
+
       var ga = new LivingEntityAction(LivingEntityActionKind.GainedDamage) { InvolvedValue = inflicted, InvolvedEntity = this };
       var desc = "received damage: " + inflicted.Formatted();
       ga.Info = Name.ToString() + " " + desc;
@@ -143,7 +140,10 @@ namespace Roguelike.Tiles
       ga.Info += "UE , Health = " + Stats.Health.Formatted();
 #endif
       AppendAction(ga);
-      if(!this.EverHitBy.Contains(attacker))
+
+      PlaySound("punch");
+
+      if (!this.EverHitBy.Contains(attacker))
         this.EverHitBy.Add(attacker);
       //if (this is Enemy || this is Hero)// || this is CrackedStone)
       //{
@@ -151,6 +151,12 @@ namespace Roguelike.Tiles
       //}
       DieIfShould();
       return inflicted;
+    }
+
+    private void PlaySound(string sound)
+    {
+      if(sound.Any())
+        AppendAction(new SoundRequestAction() { SoundName = sound });
     }
 
     protected virtual void OnHitBy
@@ -170,6 +176,7 @@ namespace Roguelike.Tiles
       //{
       //  amount /= 10;
       //}
+      var sound = "";
       if (spell != null)
       {
         if (spell.Kind == SpellKind.StonedBall)
@@ -179,6 +186,7 @@ namespace Roguelike.Tiles
           var magicAttackDamageReductionPerc = Stats.GetCurrentValue(EntityStatKind.MagicAttackDamageReduction);
           amount -= GetReducePercentage(amount, magicAttackDamageReductionPerc);
         }
+        sound = spell.GetHitSound();
       }
       ReduceHealth(amount);
       var ga = new LivingEntityAction(LivingEntityActionKind.GainedDamage) { InvolvedValue = amount, InvolvedEntity = this };
@@ -188,6 +196,7 @@ namespace Roguelike.Tiles
       ga.Info += "UE , Health = " + Stats.Health.Formatted();
 #endif
       AppendAction(ga);
+      PlaySound(sound);
 
       RemoveLastingEffect(this, EffectType.Frighten);
       if (attacker != null || (spell.Caller != null && spell.Caller.LastingEffects.Any(i => i.Type == EffectType.Transform)))
@@ -405,18 +414,24 @@ namespace Roguelike.Tiles
       return GetCurrentValue(resist);
     }
 
-    public void UseScroll(Scroll scroll, LivingEntity target, SpellCastPolicy policy)
+    //public void UseScroll(Scroll scroll, LivingEntity target, Container container)
+    //{
+    //  var policy = container.GetInstance<SpellCastPolicy>();
+    //  policy.Target = target;
+    //  policy.Scroll = scroll;
+    //  UseScroll(policy);
+    //}
+
+    public void UseScroll(SpellCastPolicy policy)
     {
-      //var spell = scroll.CreateSpell(this);
-      //var policy = spellCastPolicyProvider();
-      policy.Apply(scroll, this, target);
+      policy.Apply(this);
     }
 
-    public void UseSpellPolicy(SpellCastPolicy policy)
-    {
-      var spell = policy.Scroll.CreateSpell(policy.Caster);
-      policy.Target.OnHitBy(spell);
-    }
+    //public void UseSpellPolicy(SpellCastPolicy policy)
+    //{
+      
+    //  policy.Target.OnHitBy(spell);
+    //}
 
     public static EntityStatKind GetResist(EntityStatKind attackingStat)
     {

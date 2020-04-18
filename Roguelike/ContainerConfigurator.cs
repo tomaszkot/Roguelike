@@ -14,7 +14,7 @@ namespace Roguelike
   public class ContainerConfigurator : Dungeons.IContainerConfigurator
   {
     public Container Container { get; set; }
-
+    
     public ContainerConfigurator()
     {
       var container = new Container();
@@ -31,6 +31,7 @@ namespace Roguelike
       container.Register<Enemy, Enemy>();
       container.Register<RoomContentGenerator, RoomContentGenerator>();
       container.Register<AbstractLootFactory, LootFactory>();
+      container.Register<SpellCastPolicy, SpellCastPolicy>();
       //container.Register <MovePolicy, MovePolicy>();//move to exe
       Container = container;
 

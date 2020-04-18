@@ -30,10 +30,21 @@ namespace RoguelikeUnitTests
       var enemyHealth = enemy.Stats.Health;
       var mana = hero.Stats.Mana;
 
-      var fireBallScroll = new Scroll(Roguelike.Spells.SpellKind.FireBall);
-      hero.UseScroll(fireBallScroll, enemy, Container.GetInstance<SpellCastPolicy>());
+      Assert.True(game.GameManager.HeroTurn);
+
+      var scroll = new Scroll(Roguelike.Spells.SpellKind.FireBall);
+      var policy = Container.GetInstance<SpellCastPolicy>();
+      policy.Target = enemy;
+      policy.Scroll = scroll;
+      policy.OnApplied += (s, e) =>
+      {
+        game.GameManager.OnHeroPolicyApplied(this, policy);
+      };
+      hero.UseScroll(policy);
       Assert.Greater(enemyHealth, enemy.Stats.Health);
       Assert.Greater(mana, hero.Stats.Mana);
+
+      Assert.False(game.GameManager.HeroTurn);
     }
   }
 }

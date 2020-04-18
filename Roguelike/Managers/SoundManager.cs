@@ -85,13 +85,19 @@ namespace Roguelike.Managers
         if (ha.Kind == HeroActionKind.Moved)
           Player.PlaySound("foot_steps");
       }
+      else if (e is SoundRequestAction)
+      {
+        var snd = e as SoundRequestAction;
+        if(!string.IsNullOrEmpty(snd.SoundName))
+          Player.PlaySound(snd.SoundName);
+      }
       else if (e is LivingEntityAction)
       {
-        var lea = e as LivingEntityAction;
-        if (lea.Kind == LivingEntityActionKind.GainedDamage)
-        {
-          Player.PlaySound("punch");
-        }
+        //var lea = e as LivingEntityAction;
+        //if (lea.Kind == LivingEntityActionKind.GainedDamage)
+        //{
+        //  Player.PlaySound("punch");
+        //}
       }
     }
   }
