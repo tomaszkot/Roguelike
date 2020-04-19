@@ -32,6 +32,7 @@ namespace Roguelike
       container.Register<RoomContentGenerator, RoomContentGenerator>();
       container.Register<AbstractLootFactory, LootFactory>();
       container.Register<SpellCastPolicy, SpellCastPolicy>();
+      container.Register<IProjectilesFactory, ProjectilesFactory>();
       //container.Register <MovePolicy, MovePolicy>();//move to exe
       Container = container;
 

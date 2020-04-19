@@ -63,6 +63,8 @@
     <Compile Include="Abstract\IGameManagerProvider.cs" />
     <Compile Include="Abstract\IMovingDamager.cs" />
     <Compile Include="Abstract\IObstacle.cs" />
+    <Compile Include="Abstract\IProjectilesFactory.cs" />
+    <Compile Include="Abstract\IProjectile.cs" />
     <Compile Include="Astar\AuthorAttribute.cs" />
     <Compile Include="Astar\HighResolutionTime.cs" />
     <Compile Include="Astar\IPathFinder.cs" />
@@ -84,6 +86,7 @@
     <Compile Include="GenerationInfo.cs" />
     <Compile Include="Generators\LevelGenerator.cs" />
     <Compile Include="Generators\LootGenerator.cs" />
+    <Compile Include="Generators\ProjectilesFactory.cs" />
     <Compile Include="Generators\RoomContentGenerator.cs" />
     <Compile Include="LootContainers\Inventory.cs" />
     <Compile Include="LootFactories\EquipmentFactory.cs" />

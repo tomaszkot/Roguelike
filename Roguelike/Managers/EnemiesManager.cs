@@ -16,7 +16,7 @@ namespace Roguelike.Managers
     //GameContext context;
     List<LivingEntity> enemies;
     public List<LivingEntity> Enemies { get => enemies; set => enemies = value; }
-   
+    
 
     public EnemiesManager(GameContext context, EventsManager eventsManager, Container container) :
       base(context, eventsManager, container)
@@ -128,12 +128,14 @@ namespace Roguelike.Managers
       var enemyCasted = enemy as Enemy;
       if (enemyCasted.PrefferedFightStyle == PrefferedFightStyle.Magic)
       {
-        if(enemyCasted.DistanceFrom(hero) < 6)
+        if(enemyCasted.DistanceFrom(hero) < 8)
         {
-          var scroll = new Scroll(Roguelike.Spells.SpellKind.FireBall);
+          var scroll = new Scroll(Spells.SpellKind.FireBall);
           Context.ApplySpellAttackPolicy(enemy, hero, scroll, null,
             (p) => { OnPolicyApplied(p); }
           );
+
+          return true;
         }
       }
 

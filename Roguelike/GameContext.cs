@@ -1,6 +1,7 @@
 ﻿using Dungeons.Core;
 using Dungeons.Tiles;
 using Newtonsoft.Json;
+using Roguelike.Abstract;
 using Roguelike.Events;
 using Roguelike.Managers;
 using Roguelike.Policies;
@@ -66,17 +67,21 @@ namespace Roguelike
 
     }
 
-    public void ApplySpellAttackPolicy(LivingEntity caster, LivingEntity target, Scroll scroll, Action<Policy> BeforeApply, 
+    public void ApplySpellAttackPolicy(LivingEntity caster, LivingEntity target, Scroll scroll, 
+      Action<Policy> BeforeApply, 
       Action<Policy> AfterApply)
     {
       var policy = Container.GetInstance<SpellCastPolicy>();
       policy.Target = target;
-      //policy.Caster = caster;
+      policy.ProjectilesFactory = Container.GetInstance<IProjectilesFactory>();
       policy.Scroll = scroll;
       if (BeforeApply!=null)
         BeforeApply(policy);
 
-      policy.OnApplied += (s,e)=> AfterApply(policy);
+      policy.OnApplied += (s, e) =>
+      {
+        AfterApply(policy);
+      };
 
       policy.Apply(caster);
     }

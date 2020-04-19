@@ -48,7 +48,7 @@ namespace RoguelikeUnitTests
       var hero = game.Hero;
 
       var enemy = game.GameManager.EnemiesManager.Enemies.Cast<Enemy>().First();
-      enemy.PrefferedFightStyle = PrefferedFightStyle.Magic;
+      enemy.PrefferedFightStyle = PrefferedFightStyle.Magic;//use spells
       var heroHealth = hero.Stats.Health;
       var mana = enemy.Stats.Mana;
       
