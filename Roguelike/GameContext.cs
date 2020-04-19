@@ -7,6 +7,7 @@ using Roguelike.Policies;
 using Roguelike.TileContainers;
 using Roguelike.Tiles;
 using Roguelike.Tiles.Interactive;
+using Roguelike.Tiles.Looting;
 using SimpleInjector;
 using System;
 using System.Collections.Generic;
@@ -63,6 +64,21 @@ namespace Roguelike
     public void ApplySpellPolicy()
     {
 
+    }
+
+    public void ApplySpellAttackPolicy(LivingEntity caster, LivingEntity target, Scroll scroll, Action<Policy> BeforeApply, 
+      Action<Policy> AfterApply)
+    {
+      var policy = Container.GetInstance<SpellCastPolicy>();
+      policy.Target = target;
+      //policy.Caster = caster;
+      policy.Scroll = scroll;
+      if (BeforeApply!=null)
+        BeforeApply(policy);
+
+      policy.OnApplied += (s,e)=> AfterApply(policy);
+
+      policy.Apply(caster);
     }
 
     public void ApplyMovePolicy(LivingEntity entity, Point newPos, Action<Policy> OnApplied)

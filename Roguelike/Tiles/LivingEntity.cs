@@ -414,23 +414,9 @@ namespace Roguelike.Tiles
       return GetCurrentValue(resist);
     }
 
-    //public void UseScroll(Scroll scroll, LivingEntity target, Container container)
+    //public void UseScroll(SpellCastPolicy policy)
     //{
-    //  var policy = container.GetInstance<SpellCastPolicy>();
-    //  policy.Target = target;
-    //  policy.Scroll = scroll;
-    //  UseScroll(policy);
-    //}
-
-    public void UseScroll(SpellCastPolicy policy)
-    {
-      policy.Apply(this);
-    }
-
-    //public void UseSpellPolicy(SpellCastPolicy policy)
-    //{
-      
-    //  policy.Target.OnHitBy(spell);
+    //  policy.Apply(this);
     //}
 
     public static EntityStatKind GetResist(EntityStatKind attackingStat)

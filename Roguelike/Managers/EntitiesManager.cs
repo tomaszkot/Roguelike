@@ -49,11 +49,10 @@ namespace Roguelike.Managers
 
     public virtual void MakeRandomMove(LivingEntity entity)
     {
-      
       var pt = Node.GetEmptyNeighborhoodPoint(entity);
-      if (pt.IsValid())
+      if (pt.Item1.IsValid())
       {
-        MoveEntity(entity, pt);
+        MoveEntity(entity, pt.Item1);
         //logger.WriteLine(entity + " moved to "+ pt);
       }
     }

@@ -173,7 +173,7 @@ namespace Dungeons.Tiles
 
     public override string ToString()
     {
-      return Symbol + " " + DungeonNodeIndex + " [" + Point.Y + "," + Point.X + "]" + " " + GetHashCode();
+      return Symbol + " " + DungeonNodeIndex + Point + " " + GetHashCode();
     }
 
     public double DistanceFrom(Tile other)

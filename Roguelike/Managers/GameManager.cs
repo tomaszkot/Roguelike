@@ -14,6 +14,8 @@ using Roguelike.Events;
 using Newtonsoft.Json;
 using Roguelike.Tiles.Interactive;
 using Roguelike.Policies;
+using Dungeons;
+using Dungeons.TileContainers;
 
 namespace Roguelike.Managers
 {
@@ -130,15 +132,15 @@ namespace Roguelike.Managers
 
     private void EventsManager_ActionAppended(object sender, GameAction e)
     {
-      var pac = e as PolicyAppliedAction;
-      if (pac!=null)
-      {
-        if (pac.Policy.Kind == PolicyKind.SpellCast)
-        {
-          var ap = pac.Policy as SpellCastPolicy;
-        }
-        return;
-      }
+      //var pac = e as PolicyAppliedAction;
+      //if (pac!=null)
+      //{
+      //  if (pac.Policy.Kind == PolicyKind.SpellCast)
+      //  {
+      //    var ap = pac.Policy as SpellCastPolicy;
+      //  }
+      //  return;
+      //}
 
       var isLivingEntityAction = e is LivingEntityAction;
       if (!isLivingEntityAction)
@@ -190,6 +192,19 @@ namespace Roguelike.Managers
       return extraLoot;
     }
 
+    public void HandleHeroShift(TileNeighborhood neib)
+    {
+      int horizontal = 0; 
+      int vertical = 0;
+      var res = DungeonNode.GetNeighborPoint(new Tile() { Point = new Point(0, 0) }, neib);
+      if (res.X != 0)
+        horizontal = res.X;
+      else
+        vertical = res.Y;
+
+      HandleHeroShift(horizontal, vertical);
+    }
+
     public void HandleHeroShift(int horizontal, int vertical)
     {
       if (!HeroTurn)
@@ -215,9 +230,9 @@ namespace Roguelike.Managers
       }
       var hc = CurrentNode.GetHashCode();
       var tile = CurrentNode.GetTile(newPos.Point);
+      logger.LogInfo(" tile at " + newPos.Point + " = "+ tile);
       var res = InteractHeroWith(tile);
-
-
+      
       if (res == InteractionResult.ContextSwitched || res == InteractionResult.Blocked)
         return;
 

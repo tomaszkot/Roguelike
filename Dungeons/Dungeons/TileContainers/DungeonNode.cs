@@ -327,7 +327,7 @@ namespace Dungeons
         return GetTile(pt);
       }
 
-      public Point GetNeighborPoint(Tile tile, TileNeighborhood neighborhood)
+      public static Point GetNeighborPoint(Tile tile, TileNeighborhood neighborhood)
       {
         Point pt = tile.Point;
         switch (neighborhood)
@@ -832,7 +832,7 @@ namespace Dungeons
         return true;
       }
 
-      public Point GetEmptyNeighborhoodPoint(Tile target, TileNeighborhood? prefferedSide = null)
+      public Tuple<Point, TileNeighborhood> GetEmptyNeighborhoodPoint(Tile target, TileNeighborhood? prefferedSide = null)
       {
         var set = new List<TileNeighborhood>();
         if (prefferedSide != null)
@@ -841,7 +841,8 @@ namespace Dungeons
         }
         allNeighborhoods.Shuffle();
         set.AddRange(allNeighborhoods.Where(i => !set.Contains(i)));
-        return GetEmptyNeighborhoodPoint(target, set);
+        var res = GetEmptyNeighborhoodPoint(target, set);
+        return res;
       }
 
       public virtual bool IsTileEmpty(Tile tile)
@@ -849,20 +850,22 @@ namespace Dungeons
         return tile != null && tile.IsEmpty;
       }
 
-      protected virtual Point GetEmptyNeighborhoodPoint(Tile target, List<TileNeighborhood> sides)
+      protected virtual Tuple<Point, TileNeighborhood> GetEmptyNeighborhoodPoint(Tile target, List<TileNeighborhood> sides)
       {
-        Point pt = GenerationConstraints.InvalidPoint;
+        var res = new Tuple<Point, TileNeighborhood>(GenerationConstraints.InvalidPoint, TileNeighborhood.East);
+
         foreach (var side in sides)
         {
           Tile tile = GetNeighborTile(target, side);
           if (IsTileEmpty(tile))
           {
-            pt = tile.Point;
+            res = new Tuple<Point, TileNeighborhood>(tile.Point, side);
+            //pt = tile.Point;
             break;
           }
         }
 
-        return pt;
+        return res;
       }
 
       public bool IsPointInBoundaries(Point pt)

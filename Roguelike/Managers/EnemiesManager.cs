@@ -1,6 +1,7 @@
 ﻿using Dungeons.Tiles;
 using Roguelike.Policies;
 using Roguelike.Tiles;
+using Roguelike.Tiles.Looting;
 using SimpleInjector;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -124,6 +125,18 @@ namespace Roguelike.Managers
 
     private bool AttackIfPossible(LivingEntity enemy, Hero hero)
     {
+      var enemyCasted = enemy as Enemy;
+      if (enemyCasted.PrefferedFightStyle == PrefferedFightStyle.Magic)
+      {
+        if(enemyCasted.DistanceFrom(hero) < 6)
+        {
+          var scroll = new Scroll(Roguelike.Spells.SpellKind.FireBall);
+          Context.ApplySpellAttackPolicy(enemy, hero, scroll, null,
+            (p) => { OnPolicyApplied(p); }
+          );
+        }
+      }
+
       var victim = GetPhysicalAttackVictim(enemy, hero);
       if (victim != null)
       {
