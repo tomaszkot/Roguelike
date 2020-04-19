@@ -47,6 +47,7 @@ namespace Roguelike
 
     //actions (move, attack) count in turn - typically 1
     Dictionary<TurnOwner, int> turnActionsCount = new Dictionary<TurnOwner, int>();
+    public Action<Policy, LivingEntity , LivingEntity > AttackPolicyInitializer;
 
     public GameContext(Container container)
     {
@@ -64,7 +65,15 @@ namespace Roguelike
 
     public void ApplySpellPolicy()
     {
+    }
 
+    public void ApplyPhysicalAttackPolicy(LivingEntity attacker, LivingEntity target, Action<Policy> AfterApply)
+    {
+      var enemyAttackPolicy = Container.GetInstance<AttackPolicy>();
+      if (AttackPolicyInitializer != null)
+        AttackPolicyInitializer(enemyAttackPolicy, attacker, target);
+      enemyAttackPolicy.OnApplied += (s, e) => AfterApply(e);
+      enemyAttackPolicy.Apply(attacker, target);
     }
 
     public void ApplySpellAttackPolicy(LivingEntity caster, LivingEntity target, Scroll scroll, 
@@ -89,7 +98,7 @@ namespace Roguelike
     public void ApplyMovePolicy(LivingEntity entity, Point newPos, Action<Policy> OnApplied)
     {
       var movePolicy = Container.GetInstance<MovePolicy>();
-      //Logger.LogInfo("moving " + entity + " to " + newPos + " mp = " + movePolicy);
+      Logger.LogInfo("moving " + entity + " to " + newPos + " mp = " + movePolicy);
 
       movePolicy.OnApplied += (s, e) =>
       {

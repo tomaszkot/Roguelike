@@ -285,9 +285,7 @@ namespace Roguelike.Managers
       {
         Logger.LogInfo("Hero attacks " + tile);
         var en = tile as Enemy;
-        var heroAttackPolicy = Container.GetInstance<AttackPolicy>();
-        heroAttackPolicy.OnApplied += OnHeroPolicyApplied;
-        heroAttackPolicy.Apply(Hero, en);
+        Context.ApplyPhysicalAttackPolicy(Hero, en, (p) => OnHeroPolicyApplied(this, p));
 
         return InteractionResult.Attacked;
       }
