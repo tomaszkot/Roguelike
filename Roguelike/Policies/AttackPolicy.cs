@@ -9,8 +9,8 @@ namespace Roguelike.Policies
 {
   public class AttackPolicy : Policy
   {
-    LivingEntity attacker;
-    LivingEntity victim;
+    protected LivingEntity attacker;
+    protected LivingEntity victim;
 
     public AttackPolicy()
     {
@@ -21,14 +21,19 @@ namespace Roguelike.Policies
       this.attacker = attacker;
       this.victim = victim;
 
-      if (attacker.CalculateIfHitWillHappen(victim))
-        attacker.ApplyPhysicalDamage(victim);
-
       attacker.State = EntityState.Attacking;
 
       ReportApplied(attacker);
     }
 
-    
+    protected override void ReportApplied(LivingEntity attacker)
+    {
+      if (attacker.CalculateIfHitWillHappen(victim))
+        attacker.ApplyPhysicalDamage(victim);
+
+      base.ReportApplied(attacker);
+    }
+
+
   }
 }

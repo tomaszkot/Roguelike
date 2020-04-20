@@ -98,7 +98,7 @@ namespace Roguelike
     public void ApplyMovePolicy(LivingEntity entity, Point newPos, Action<Policy> OnApplied)
     {
       var movePolicy = Container.GetInstance<MovePolicy>();
-      Logger.LogInfo("moving " + entity + " to " + newPos + " mp = " + movePolicy);
+      //Logger.LogInfo("moving " + entity + " to " + newPos + " mp = " + movePolicy);
 
       movePolicy.OnApplied += (s, e) =>
       {
