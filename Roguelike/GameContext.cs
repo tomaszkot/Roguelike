@@ -69,11 +69,11 @@ namespace Roguelike
 
     public void ApplyPhysicalAttackPolicy(LivingEntity attacker, LivingEntity target, Action<Policy> AfterApply)
     {
-      var enemyAttackPolicy = Container.GetInstance<AttackPolicy>();
+      var attackPolicy = Container.GetInstance<AttackPolicy>();
       if (AttackPolicyInitializer != null)
-        AttackPolicyInitializer(enemyAttackPolicy, attacker, target);
-      enemyAttackPolicy.OnApplied += (s, e) => AfterApply(e);
-      enemyAttackPolicy.Apply(attacker, target);
+        AttackPolicyInitializer(attackPolicy, attacker, target);
+      attackPolicy.OnApplied += (s, e) => AfterApply(e);
+      attackPolicy.Apply(attacker, target);
     }
 
     public void ApplySpellAttackPolicy(LivingEntity caster, LivingEntity target, Scroll scroll, 
@@ -245,7 +245,7 @@ namespace Roguelike
       if (TurnOwnerChanged != null)
         TurnOwnerChanged(this, turnOwner);
 
-      //logger.LogInfo("turnOwner changed to " + turnOwner);
+      
     }
 
     public bool HeroTurn
@@ -257,7 +257,11 @@ namespace Roguelike
     public TurnOwner TurnOwner
     {
       get => turnOwner;
-      set => turnOwner = value;
+      set  
+      {
+        turnOwner = value;
+        logger.LogInfo("to =>" + turnOwner);
+      }
     }
     public bool PendingTurnOwnerApply { get => pendingTurnOwnerApply; set => pendingTurnOwnerApply = value; }
     public bool AutoTurnManagement { get => autoTurnManagement; set => autoTurnManagement = value; }

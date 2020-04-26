@@ -144,7 +144,12 @@ namespace Roguelike.Managers
 
       var isLivingEntityAction = e is LivingEntityAction;
       if (!isLivingEntityAction)
+      {
+        var gsa = e as GameStateAction;
+        if(gsa!=null)
+          Logger.LogInfo(gsa.Info);
         return;
+      }
 
       var lea = e as LivingEntityAction;
       if (lea.Kind == LivingEntityActionKind.Died)
@@ -160,16 +165,16 @@ namespace Roguelike.Managers
         if (lea.InvolvedEntity is Enemy)
         {
           Hero.IncreaseExp(10);
-          var loot = LootGenerator.TryGetRandomLootByDiceRoll(LootSourceKind.Enemy);
-          if (loot != null)
-          {
-            ReplaceTile(loot, lea.InvolvedEntity.Point);
-          }
-          var extraLootItems = GetExtraLoot();
-          foreach (var extraLoot in extraLootItems)
-          {
-            AddLootReward(extraLoot, lea.InvolvedEntity);
-          }
+          //var loot = LootGenerator.TryGetRandomLootByDiceRoll(LootSourceKind.Enemy);
+          //if (loot != null)
+          //{
+          //  ReplaceTile(loot, lea.InvolvedEntity.Point);
+          //}
+          //var extraLootItems = GetExtraLoot();
+          //foreach (var extraLoot in extraLootItems)
+          //{
+          //  AddLootReward(extraLoot, lea.InvolvedEntity);
+          //}
         }
       }
     }
@@ -230,7 +235,7 @@ namespace Roguelike.Managers
       }
       var hc = CurrentNode.GetHashCode();
       var tile = CurrentNode.GetTile(newPos.Point);
-      logger.LogInfo(" tile at " + newPos.Point + " = "+ tile);
+      //logger.LogInfo(" tile at " + newPos.Point + " = "+ tile);
       var res = InteractHeroWith(tile);
       
       if (res == InteractionResult.ContextSwitched || res == InteractionResult.Blocked)
@@ -285,6 +290,10 @@ namespace Roguelike.Managers
       {
         Logger.LogInfo("Hero attacks " + tile);
         var en = tile as Enemy;
+        if(!en.Alive)
+          Logger.LogError("Hero attacks dead!" );
+        else
+          Logger.LogInfo("Hero attacks en health = "+en.Stats.Health);
         Context.ApplyPhysicalAttackPolicy(Hero, en, (p) => OnHeroPolicyApplied(this, p));
 
         return InteractionResult.Attacked;

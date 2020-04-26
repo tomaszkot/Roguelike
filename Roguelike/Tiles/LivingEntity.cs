@@ -41,7 +41,17 @@ namespace Roguelike.Tiles
     public Point PrevPoint;
     public Point InitialPoint = DefaultInitialPoint;
     EntityStats stats = new EntityStats();
-    public EntityState State { get; set; }
+
+    public EntityState state;
+    public EntityState State
+    {
+      get { return state; }
+      set
+      {
+        state = value;
+        //AppendAction(new GameStateAction() { Type = GameStateAction.ActionType.Assert, Info = Name + " state = "+ state });
+      }
+    }
     List<Algorithms.PathFinderNode> pathToTarget;
     List<LastingEffect> lastingEffects = new List<LastingEffect>();
     protected List<EffectType> immunedEffects = new List<EffectType>();
@@ -130,6 +140,12 @@ namespace Roguelike.Tiles
         AppendAction(new GameStateAction() { Type = GameStateAction.ActionType.Assert, Info = "Stats.Defence == 0!!!" });
         return 0;
       }
+      if (!Alive)
+      {
+        AppendAction(new GameStateAction() { Type = GameStateAction.ActionType.Assert, Info = "!Alive" });
+        return 0;
+      }
+
       var inflicted = attacker.GetCurrentValue(EntityStatKind.Attack) / defense;
       ReduceHealth(inflicted);
 
@@ -299,7 +315,7 @@ namespace Roguelike.Tiles
     public override string ToString()
     {
       var str = base.ToString();
-      str += " "+this.State;
+      str += " "+this.State + ", Alive:"+Alive + ", H:"+Stats.Health;
       return str;
     }
 

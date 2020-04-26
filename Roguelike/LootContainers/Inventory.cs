@@ -12,7 +12,6 @@ namespace Roguelike.LootContainers
 {
   public class InventoryBase
   {
-
   }
 
   public class Inventory : InventoryBase
@@ -114,7 +113,6 @@ namespace Roguelike.LootContainers
     public virtual bool Add(Loot item, bool notifyObservers = true, bool justSwappingHeroInv = false)
     {
       //Debug.WriteLine("Add(Loot item) " + Thread.CurrentThread.ManagedThreadId);
-      //|| item.StackedInInventory
       if (!Items.Contains(item))
       {
         item.Collected = true;
@@ -124,8 +122,6 @@ namespace Roguelike.LootContainers
         if (notifyObservers && EventsManager != null)
         {
           EventsManager.AppendAction(new InventoryAction(this) { Kind = InventoryActionKind.ItemAdded, Item = item});
-          //var tuple = new Tuple<Loot, bool>(item, true);
-          //ItemsChanged(this, tuple);
         }
 
         return true;
@@ -231,20 +227,15 @@ namespace Roguelike.LootContainers
       return Items.Contains(item);
     }
 
-    //public bool Contains(string AssetName)
+    //public Loot GetNextLoot(Loot prev)
     //{
-    //  return Items.Any(i => i.AssetName == AssetName);
+    //  if (prev == null)
+    //  {
+    //    return Items.FirstOrDefault();
+    //  }
+    //  var ind = Items.IndexOf(prev);
+    //  return Items.Count > ind + 1 ? Items[ind + 1] : Items.FirstOrDefault();
     //}
-
-    public Loot GetNextLoot(Loot prev)
-    {
-      if (prev == null)
-      {
-        return Items.FirstOrDefault();
-      }
-      var ind = Items.IndexOf(prev);
-      return Items.Count > ind + 1 ? Items[ind + 1] : Items.FirstOrDefault();
-    }
 
     public void Print(IDrawingEngine printer, string name)
     {

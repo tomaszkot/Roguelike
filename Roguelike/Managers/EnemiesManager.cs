@@ -171,6 +171,7 @@ namespace Roguelike.Managers
       if (context.TurnOwner == TurnOwner.Enemies)//for ASCII/UT
       {
         context.IncreaseActions(TurnOwner.Enemies);
+        //Context.Logger.LogInfo("Enemies OnPolicyAppliedAllIdle");
         base.OnPolicyAppliedAllIdle();
       }
     }
