@@ -98,7 +98,7 @@ namespace RoguelikeUnitTests
       env.LootGenerator.Probability.SetLootingChance(LootSourceKind.Enemy, LootKind.Potion, 1);
       env.AssertLootKindFromEnemies(new[] { LootKind.Potion });
     }
-
+        
     [Test]
     public void KilledEnemyForGold()
     {
@@ -197,6 +197,36 @@ namespace RoguelikeUnitTests
       lootItems.ForEach(i=> Assert.AreEqual(i.Class, EquipmentClass.Unique));
     }
 
-    
+    [Test]
+    public void KilledEnemyGivesPotionFromTimeToTime()
+    {
+      for (int i = 0; i < 2; i++)
+      {
+        var env = CreateTestEnv(numEnemies: 100);
+        var li = new LootInfo(game, null);
+        env.KillAllEnemies();
+        var lootItems = li.GetDiff();
+        Assert.Greater(lootItems.Count, 0);
+        var potions = lootItems.Where(j => j.LootKind == LootKind.Potion).ToList();
+        Assert.Greater(potions.Count, 4);
+        Assert.Less(potions.Count, 15);
+      }
+    }
+
+    [Test]
+    public void KilledEnemyGivesFoodFromTimeToTime()
+    {
+      for (int i = 0; i < 2; i++)
+      {
+        var env = CreateTestEnv(numEnemies: 100);
+        var li = new LootInfo(game, null);
+        env.KillAllEnemies();
+        var lootItems = li.GetDiff();
+        Assert.Greater(lootItems.Count, 0);
+        var food = lootItems.Where(j => j.LootKind == LootKind.Food).ToList();
+        Assert.Greater(food.Count, 8);
+        Assert.Less(food.Count, 30);
+      }
+    }
   }
 }

@@ -67,7 +67,10 @@ namespace Roguelike.Generators
         var lkChance = new LootKindChances();
         foreach (var lk in lootKinds)
         {
-          lkChance.SetChance(lk, .2f);
+          var val = .2f;
+          if (lk == LootKind.Potion)
+            val *= 1.25f;
+          lkChance.SetChance(lk, val);
         }
         probability.SetLootingChance(lootSource, lkChance);
       }

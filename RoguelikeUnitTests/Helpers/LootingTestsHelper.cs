@@ -27,14 +27,10 @@ namespace RoguelikeUnitTests.Helpers
       var enemies = game.GameManager.EnemiesManager.Enemies;
       Assert.GreaterOrEqual(enemies.Count, 5);
       var li = new LootInfo(game, null);
-      for (int i = 0; i < enemies.Count; i++)
-      {
-        var en = enemies[i];
-        KillEnemy(en);
-      }
+      KillAllEnemies();
 
-      var lootItems = li.GetDiff(); //game.GameManager.CurrentNode.GetTile(en.Point) as Loot;
-      if (lootItems != null)
+      var lootItems = li.GetDiff();
+      //if (lootItems != null)
       {
         foreach (var loot in lootItems)
         {
@@ -44,6 +40,16 @@ namespace RoguelikeUnitTests.Helpers
       }
 
       return res;
+    }
+
+    public void KillAllEnemies()
+    {
+      var enemies = game.GameManager.EnemiesManager.Enemies;
+      for (int i = 0; i < enemies.Count; i++)
+      {
+        var en = enemies[i];
+        KillEnemy(en);
+      }
     }
 
     public void KillEnemy(LivingEntity en)
