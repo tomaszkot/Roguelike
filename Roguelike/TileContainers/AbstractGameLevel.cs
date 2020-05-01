@@ -69,14 +69,6 @@ namespace Roguelike.TileContainers
       return res;
     }
 
-    //public Point? GetFirstEmptyPointAdvanced(bool lootCanBeAtPos)
-    //{
-    //  var tiles = GetEmptyTiles();
-
-    //  //.FirstOrDefault()
-    //  return tile?.Point;
-    //}
-
     //hmm, maybe that method shall be marked as trowing NotSupportedException? (Loot is not considered here)
     public override Tile GetClosestEmpty(Tile baseTile, bool sameNodeId = false, List<Tile> skip = null)
     {
@@ -290,10 +282,13 @@ namespace Roguelike.TileContainers
 
     internal Tile ReplaceTile(Loot loot, Point point)
     {
+      Tile toUse = loot;
+      if (loot == null)
+        toUse = new Tile();
       var prev = GetTile(point);
-      if (SetTile(loot, point))
+      if (SetTile(toUse, point))
       {
-        Tiles[point.Y, point.X] = new Tile(point);//reset old one
+        Tiles[point.Y, point.X] = new Tile(point);//reset old one, as loot is not hold in Tiles table
         return prev;
       }
       return null;

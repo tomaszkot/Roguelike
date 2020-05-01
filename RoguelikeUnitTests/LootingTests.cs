@@ -26,7 +26,8 @@ namespace RoguelikeUnitTests
           var added = game.GameManager.AddLootReward(pot, env.Game.Hero);
           Assert.True(added);
           var dist = pot.DistanceFrom(env.Game.Hero);
-          Assert.Less(dist, 4);
+          Assert.Less(dist, 5);
+          Assert.True(dist < 4 || i>5);
         }
         var newLootItems = lootInfo.GetDiff();
         Assert.AreEqual(newLootItems.Count, 10);
@@ -116,6 +117,26 @@ namespace RoguelikeUnitTests
       env.LootGenerator.Probability.SetLootingChance(LootSourceKind.Enemy, LootKind.Gold, .5f);
       var loots = env.AssertLootKindFromEnemies(new[] { LootKind.Gold, LootKind.Equipment });
       Assert.AreEqual(loots.GroupBy(i=>i).Count(), 2);
+    }
+
+    [Test]
+    public void KilledEnemyAtSamePlace()
+    {
+      var env = CreateTestEnv(numEnemies: 5);
+      env.LootGenerator.Probability = new Roguelike.Probability.Looting();
+      env.LootGenerator.Probability.SetLootingChance(LootSourceKind.Enemy, LootKind.Equipment, 1f);
+
+      var enemies = game.GameManager.EnemiesManager.Enemies;
+      env.KillEnemy(enemies[0]);
+      var loot = env.Game.Level.GetTile(enemies[0].Point);
+      Assert.NotNull(loot);
+      Assert.True(env.Game.Level.SetTile(enemies[1], enemies[0].Point));
+
+      var li = new LootInfo(game, null);
+      env.KillEnemy(enemies[1]);
+      var lootItems = li.GetDiff();
+      Assert.AreEqual(lootItems.Count, 1);
+      Assert.True(lootItems[0].DistanceFrom(loot) < 2);
     }
 
     [Test]

@@ -260,7 +260,7 @@ namespace Roguelike
       set  
       {
         turnOwner = value;
-        logger.LogInfo("to =>" + turnOwner);
+        //logger.LogInfo("to =>" + turnOwner);
       }
     }
     public bool PendingTurnOwnerApply { get => pendingTurnOwnerApply; set => pendingTurnOwnerApply = value; }

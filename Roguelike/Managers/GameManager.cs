@@ -165,24 +165,36 @@ namespace Roguelike.Managers
         if (lea.InvolvedEntity is Enemy)
         {
           Hero.IncreaseExp(10);
-          //var loot = LootGenerator.TryGetRandomLootByDiceRoll(LootSourceKind.Enemy);
-          //if (loot != null)
-          //{
-          //  ReplaceTile(loot, lea.InvolvedEntity.Point);
-          //}
-          //var extraLootItems = GetExtraLoot();
-          //foreach (var extraLoot in extraLootItems)
-          //{
-          //  AddLootReward(extraLoot, lea.InvolvedEntity);
-          //}
+          //var loot = LootGenerator.GetRandomLoot();
+          var loot = LootGenerator.TryGetRandomLootByDiceRoll(LootSourceKind.Enemy);
+          if (loot != null)
+          {
+            context.CurrentNode.SetTile(new Tile(), lea.InvolvedEntity.Point);
+            AddLootReward(loot, lea.InvolvedEntity);
+            //ReplaceTile(loot, lea.InvolvedEntity.Point);
+          }
+          var extraLootItems = GetExtraLoot();
+          foreach (var extraLoot in extraLootItems)
+          {
+            AddLootReward(extraLoot, lea.InvolvedEntity);
+          }
         }
       }
     }
 
-    public bool AddLootReward(Loot item, Tile closest)
+    public bool AddLootReward(Loot item, Tile positionSource)
     {
-      var emptyCell = context.CurrentNode.GetClosestEmpty(closest, true);
-      return context.CurrentNode.SetTile(item, emptyCell.Point);
+      Tile dest = null;
+      var tileAtPos = context.CurrentNode.GetTile(positionSource.Point);
+      if (tileAtPos.IsEmpty)
+        dest = tileAtPos;
+      else
+        dest = context.CurrentNode.GetClosestEmpty(positionSource, true);
+      if(dest!=null)
+        return context.CurrentNode.SetTile(item, dest.Point);
+
+      Logger.LogError("AddLootReward no room! for a loot");
+      return false;
     }
 
     List<Loot> extraLoot = new List<Loot>();
@@ -236,7 +248,9 @@ namespace Roguelike.Managers
       var hc = CurrentNode.GetHashCode();
       var tile = CurrentNode.GetTile(newPos.Point);
       //logger.LogInfo(" tile at " + newPos.Point + " = "+ tile);
-      var res = InteractHeroWith(tile);
+      var res = InteractionResult.None;
+      if(!tile.IsEmpty)
+        res = InteractHeroWith(tile);
       
       if (res == InteractionResult.ContextSwitched || res == InteractionResult.Blocked)
         return;
@@ -283,7 +297,13 @@ namespace Roguelike.Managers
         if (res != InteractionResult.None)
           return res;
       }
+      if (tile == null)
+      {
+        Logger.LogError("tile == null!!!");
+        return InteractionResult.None;
+      }
       bool tileIsDoor = tile is Tiles.Door;
+
       bool tileIsDoorBySumbol = tile.Symbol == Constants.SymbolDoor;
 
       if (tile is Enemy)

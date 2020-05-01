@@ -117,11 +117,6 @@ namespace RoguelikeUnitTests
       }
     }
 
-    //[Test]
-    //public void AllLevelsTest()
-    //{
-    //}
-
     [Test]
     public void FixedRoomSize()
     {
@@ -177,8 +172,6 @@ namespace RoguelikeUnitTests
       set = level.SetTile(en, pt);
       Assert.True(set);
       return level;
-
-      
     }
 
     [Test]
@@ -187,10 +180,9 @@ namespace RoguelikeUnitTests
       var generator = Container.GetInstance<Dungeons.IDungeonGenerator>();
       var info = new Roguelike.GenerationInfo();
       info.NumberOfRooms = 1;
-      info.MinNodeSize = new System.Drawing.Size(15,15);
-      info.MaxNodeSize = new System.Drawing.Size(30, 30);
+      info.MinNodeSize = new Size(15,15);
+      info.MaxNodeSize = new Size(30, 30);
       info.ForceChildIslandInterior = true;
-      //info.RevealTiles = true;
 
       var level = generator.Generate(0, info);
       Assert.GreaterOrEqual(level.Width, info.MinNodeSize.Width);

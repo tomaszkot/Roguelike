@@ -30,8 +30,7 @@ namespace RoguelikeUnitTests.Helpers
       for (int i = 0; i < enemies.Count; i++)
       {
         var en = enemies[i];
-        while (en.Alive)
-          en.OnPhysicalHit(game.Hero);
+        KillEnemy(en);
       }
 
       var lootItems = li.GetDiff(); //game.GameManager.CurrentNode.GetTile(en.Point) as Loot;
@@ -45,6 +44,12 @@ namespace RoguelikeUnitTests.Helpers
       }
 
       return res;
+    }
+
+    public void KillEnemy(LivingEntity en)
+    {
+      while (en.Alive)
+        en.OnPhysicalHit(game.Hero);
     }
 
     public LootInfo TestInteractive<T>(Action<InteractiveTile> init,
