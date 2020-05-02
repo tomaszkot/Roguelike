@@ -21,7 +21,29 @@ namespace RoguelikeUnitTests
     }
 
     [Test]
-    public void SaveLoadMushrooms()
+    public void SaveLoadNonStacked()
+    {
+      var game = CreateGame();
+      var hero = game.Hero;
+      var wpn = game.GameManager.LootGenerator.GetLootByName("rusty_sword");
+      Assert.NotNull(wpn);
+      hero.Inventory.Add(wpn);
+      Assert.AreEqual(hero.Inventory.Items.Count, 1);
+
+      var wpn1 = game.GameManager.LootGenerator.GetLootByName("rusty_sword");
+      hero.Inventory.Add(wpn1);
+      Assert.AreEqual(hero.Inventory.Items.Count, 2);
+      Assert.AreEqual(hero.Inventory.Items[0].tag1, "rusty_sword");
+
+      game.GameManager.Save();
+      game.GameManager.Load();
+
+      Assert.AreEqual(hero.Inventory.Items.Count, 2);
+      Assert.AreEqual(hero.Inventory.Items[0].tag1, "rusty_sword");
+    }
+
+    [Test]
+    public void SaveLoadStacked()
     {
       var game = CreateGame();
       var hero = game.Hero;
@@ -43,12 +65,25 @@ namespace RoguelikeUnitTests
       Assert.AreEqual(hero.Inventory.GetStackedCount(mush1), 1);
       Assert.AreEqual(hero.Inventory.GetStackedCount(mush2), 2);
 
+      var plant1 = new Plant();
+      plant1.SetKind(PlantKind.Thistle);
+      hero.Inventory.Add(plant1);
+      Assert.AreEqual(hero.Inventory.Items.Count, 3);
+
+      var plant2 = new Plant();
+      plant2.SetKind(PlantKind.Thistle);
+      hero.Inventory.Add(plant2);
+      Assert.AreEqual(hero.Inventory.Items.Count, 3);
+      Assert.AreEqual(hero.Inventory.GetStackedCount(plant2), 2);
+
+
       game.GameManager.Save();
       game.GameManager.Load();
 
       var heroLoaded = game.GameManager.Hero;
       Assert.AreEqual(heroLoaded.Inventory.GetStackedCount(mush1), 1);
       Assert.AreEqual(heroLoaded.Inventory.GetStackedCount(mush2), 2);
+      Assert.AreEqual(heroLoaded.Inventory.GetStackedCount(plant2), 2);
     }
 
     [Test]
