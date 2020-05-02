@@ -40,15 +40,15 @@ namespace RoguelikeUnitTests
       hero.Inventory.Add(mush3);
       Assert.AreEqual(hero.Inventory.Items.Count, 2);
 
-      Assert.AreEqual(hero.Inventory.GetStackCount(mush1), 1);
-      Assert.AreEqual(hero.Inventory.GetStackCount(mush2), 2);
+      Assert.AreEqual(hero.Inventory.GetStackedCount(mush1), 1);
+      Assert.AreEqual(hero.Inventory.GetStackedCount(mush2), 2);
 
       game.GameManager.Save();
       game.GameManager.Load();
 
       var heroLoaded = game.GameManager.Hero;
-      Assert.AreEqual(heroLoaded.Inventory.GetStackCount(mush1), 1);
-      Assert.AreEqual(heroLoaded.Inventory.GetStackCount(mush2), 2);
+      Assert.AreEqual(heroLoaded.Inventory.GetStackedCount(mush1), 1);
+      Assert.AreEqual(heroLoaded.Inventory.GetStackedCount(mush2), 2);
     }
 
     [Test]

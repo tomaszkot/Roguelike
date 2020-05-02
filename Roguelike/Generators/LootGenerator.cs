@@ -230,7 +230,7 @@ namespace Roguelike.Generators
       return loot;
     }
 
-    public virtual Loot GetRandomStackedLoot()
+    public virtual StackedLoot GetRandomStackedLoot()
     {
       var loot = new Food();
       loot.SetKind(FoodKind.Plum);

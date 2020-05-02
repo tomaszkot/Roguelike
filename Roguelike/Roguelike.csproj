@@ -133,6 +133,7 @@
     <Compile Include="Tiles\Looting\Gold.cs" />
     <Compile Include="Tiles\Looting\Potion.cs" />
     <Compile Include="Tiles\Looting\Scroll.cs" />
+    <Compile Include="Tiles\Looting\StackedLoot.cs" />
     <Compile Include="Tiles\Merchant.cs" />
     <Compile Include="Tiles\Looting\Mushroom.cs" />
     <Compile Include="Tiles\Looting\Plant.cs" />
