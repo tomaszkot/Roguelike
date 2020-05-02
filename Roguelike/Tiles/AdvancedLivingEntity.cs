@@ -118,30 +118,26 @@ namespace Roguelike.Tiles
     public void Consume(IConsumable consumable)
     {
       //hero turn?
-      //if (loot.LootKind == LootKind.Food)//IDrinkable ?
+      //var ac = LootManager.CreateLootGameAction(loot, "Drunk " + loot.Name);
+      //PlaySound("drink");
+      if (inventory.Contains(consumable.Loot))
       {
-        //var ac = LootManager.CreateLootGameAction(loot, "Drunk " + loot.Name);
-        //PlaySound("drink");
-        if (inventory.Contains(consumable.Loot))
+        if (consumable.EnhancedStat == EntityStatKind.Unset)
         {
-          if (consumable.EnhancedStat == EntityStatKind.Unset)
-          {
-            var pot = consumable.Loot as Potion;
-            Debug.Assert(pot != null && pot.Kind == PotionKind.Poison);
-          }
-          Stats.IncreaseStatFactor(consumable.EnhancedStat);// (loot as Potion).StatKind);
-          inventory.Remove(consumable.Loot);
-          AppendAction(new LootAction(consumable.Loot) { LootActionKind = LootActionKind.Consumed });
+          var pot = consumable.Loot as Potion;
+          Debug.Assert(pot != null && pot.Kind == PotionKind.Poison);
         }
-        else
-          Debug.Assert(false);
-        //else if (loot is Hooch)
-        //  Hero.AddLastingEffect(LivingEntity.EffectType.Hooch, 6);
-
-        //return ac;
+        Stats.IncreaseStatFactor(consumable.EnhancedStat);
+        var stacked = consumable.Loot as StackedLoot;
+        inventory.Remove(stacked);
+        AppendAction(new LootAction(consumable.Loot) { LootActionKind = LootActionKind.Consumed });
       }
-      
-      //eturn null;
+      else
+        Debug.Assert(false);
+      //else if (loot is Hooch)
+      //  Hero.AddLastingEffect(LivingEntity.EffectType.Hooch, 6);
+
+      //return ac;
     }
 
     //public void IncreaseStatByLevelUpPoint(EntityStatKind stat)
