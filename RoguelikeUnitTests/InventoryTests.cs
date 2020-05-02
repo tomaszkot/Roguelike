@@ -38,6 +38,7 @@ namespace RoguelikeUnitTests
       var mush3 = new Mushroom();
       mush3.SetKind(MushroomKind.RedToadstool);
       hero.Inventory.Add(mush3);
+      Assert.AreEqual(hero.Inventory.Items.Count, 2);
 
       Assert.AreEqual(hero.Inventory.GetStackCount(mush1), 1);
       Assert.AreEqual(hero.Inventory.GetStackCount(mush2), 2);
