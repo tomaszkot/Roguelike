@@ -227,7 +227,6 @@ namespace Roguelike.Generators
     {
       var loot = new Mushroom();
       loot.SetKind(MushroomKind.Boletus);
-      loot.tag1 = "mash3";
       return loot;
     }
 

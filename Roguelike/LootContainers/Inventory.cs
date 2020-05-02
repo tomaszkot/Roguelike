@@ -119,27 +119,32 @@ namespace Roguelike.LootContainers
     public virtual bool Add(Loot item, bool notifyObservers = true, bool justSwappingHeroInv = false)
     {
       //Debug.WriteLine("Add(Loot item) " + Thread.CurrentThread.ManagedThreadId);
-      if (!Items.Contains(item))
+      var exist = false;
+      var stacked = item.StackedInInventory;
+      if (stacked)
+        exist = GetStackCount(item) > 0;
+      else
+        exist = Items.Contains(item);
+
+      bool changed = false;
+
+      if (!exist)
       {
-        item.Collected = true;
+        //item.Collected = true;
         Items.Add(item);
         if (item.StackedInInventory)
           SetStackCount(item, 1);
-        if (notifyObservers && EventsManager != null)
-        {
-          EventsManager.AppendAction(new InventoryAction(this) { Kind = InventoryActionKind.ItemAdded, Item = item});
-        }
 
-        return true;
+        changed = true;
       }
       else
       {
-        if (item.StackedInInventory)
+        if (stacked)
         {
           var stackedItemCount = GetStackCount(item);
           Assert(stackedItemCount > 0);
           SetStackCount(item, stackedItemCount + 1);
-          return true;
+          changed = true;
         }
         else
         {
@@ -149,7 +154,11 @@ namespace Roguelike.LootContainers
           //throw new Exception("Add(Loot item) duplicate item " + item);
         }
       }
-      return false;
+
+      if (changed && notifyObservers && EventsManager != null)
+        EventsManager.AppendAction(new InventoryAction(this) { Kind = InventoryActionKind.ItemAdded, Item = item });
+
+      return changed;
     }
 
     //IEnumerable<Loot> GetStackedItems(Loot item)
