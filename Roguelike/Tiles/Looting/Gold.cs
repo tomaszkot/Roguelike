@@ -7,18 +7,22 @@ using System.Threading.Tasks;
 
 namespace Roguelike.Tiles.Looting
 {
-  public class Gold : Loot
+  public class Gold : StackedLoot
   {
-    public int Amount = 5;
-    public Gold()
+    public Gold(int amount)
     {
       Symbol = GoldSymbol;
 #if ASCII_BUILD
       color = GoldColor;
 #endif
       tag1 = "coin";
-      Amount = RandHelper.Random.Next(4, 8);
+      Count = amount;
       LootKind = LootKind.Gold;
+    }
+
+    public Gold() : this(RandHelper.Random.Next(4, 8))
+    {
+      
     }
 
     //public override string GetPrimaryStatDescription()

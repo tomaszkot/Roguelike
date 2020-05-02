@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Roguelike.Tiles.Looting
 {
-  public class Scroll : Loot, ICloneable
+  public class Scroll : StackedLoot, ICloneable
   {
     //LivingEntity dummy = LivingEntity.CreateDummy();
     SpellKind kind;
@@ -242,6 +242,11 @@ namespace Roguelike.Tiles.Looting
     public Scroll CloneAsScroll()
     {
       return Clone() as Scroll;
+    }
+
+    public override string GetId()
+    {
+      return base.GetId() + "_"+Kind;
     }
 
     //public override string GetPrimaryStatDescription()

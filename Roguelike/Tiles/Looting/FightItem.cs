@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Roguelike.Tiles.Looting
 {
-  public class FightItem : Loot
+  public class FightItem : StackedLoot
   {
     private FightItemKind kind;
     public float baseDamage = 2.0f;
@@ -134,6 +134,11 @@ namespace Roguelike.Tiles.Looting
       get
       { return null; }
       set { }
+    }
+
+    public override string GetId()
+    {
+      return base.GetId() + "_" + Kind;
     }
 
   }

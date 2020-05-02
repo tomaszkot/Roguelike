@@ -1,5 +1,6 @@
 ﻿using NUnit.Framework;
 using Roguelike.Tiles;
+using Roguelike.Tiles.Looting;
 
 namespace RoguelikeUnitTests
 {
@@ -21,6 +22,32 @@ namespace RoguelikeUnitTests
     }
 
     [Test]
+    public void TransferStacked()
+    {
+      var game = CreateGame();
+      var hero = game.Hero;
+      var gold = new Gold(5);
+
+      hero.Inventory.Add(gold);
+      Assert.AreEqual(hero.Inventory.Items.Count, 1);
+      var goldInv = hero.Inventory.Items[0] as Gold;
+      Assert.AreEqual(goldInv.Count, 5);
+
+      var gold1 = new Gold(15);
+      hero.Inventory.Add(gold1);
+      Assert.AreEqual(hero.Inventory.Items.Count, 1);
+      Assert.AreEqual(goldInv.Count, 20);
+
+      game.GameManager.Save();
+      game.GameManager.Load();
+
+      var heroLoaded = game.GameManager.Hero;
+      Assert.AreEqual(heroLoaded.Inventory.Items.Count, 1);
+      goldInv = heroLoaded.Inventory.Items[0] as Gold;
+      Assert.AreEqual(goldInv.Count, 20);
+    }
+
+    [Test]
     public void SaveLoadNonStacked()
     {
       var game = CreateGame();
@@ -38,8 +65,9 @@ namespace RoguelikeUnitTests
       game.GameManager.Save();
       game.GameManager.Load();
 
-      Assert.AreEqual(hero.Inventory.Items.Count, 2);
-      Assert.AreEqual(hero.Inventory.Items[0].tag1, "rusty_sword");
+      var heroLoaded = game.GameManager.Hero;
+      Assert.AreEqual(heroLoaded.Inventory.Items.Count, 2);
+      Assert.AreEqual(heroLoaded.Inventory.Items[0].tag1, "rusty_sword");
     }
 
     [Test]
@@ -75,8 +103,7 @@ namespace RoguelikeUnitTests
       hero.Inventory.Add(plant2);
       Assert.AreEqual(hero.Inventory.Items.Count, 3);
       Assert.AreEqual(hero.Inventory.GetStackedCount(plant2), 2);
-
-
+      
       game.GameManager.Save();
       game.GameManager.Load();
 

@@ -127,6 +127,7 @@
     <Compile Include="Tiles\Looting\Food.cs" />
     <Compile Include="Tiles\InteractiveTile.cs" />
     <Compile Include="Tiles\Interactive\Chest.cs" />
+    <Compile Include="Tiles\Looting\Gem.cs" />
     <Compile Include="Tiles\Looting\Jewellery.cs" />
     <Compile Include="Tiles\Lever.cs" />
     <Compile Include="Tiles\Looting\FightItem.cs" />
