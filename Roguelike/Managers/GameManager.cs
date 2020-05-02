@@ -166,11 +166,11 @@ namespace Roguelike.Managers
         {
           Hero.IncreaseExp(10);
           //var loot = LootGenerator.GetRandomLoot();
+          context.CurrentNode.SetTile(new Tile(), lea.InvolvedEntity.Point);
           var loot = LootGenerator.TryGetRandomLootByDiceRoll(LootSourceKind.Enemy);
           if (loot != null)
           {
-            context.CurrentNode.SetTile(new Tile(), lea.InvolvedEntity.Point);
-            AddLootReward(loot, lea.InvolvedEntity);
+            ReplaceTileByLoot(loot, lea.InvolvedEntity.Point);
             //ReplaceTile(loot, lea.InvolvedEntity.Point);
           }
           var extraLootItems = GetExtraLoot();
@@ -190,8 +190,16 @@ namespace Roguelike.Managers
         dest = tileAtPos;
       else
         dest = context.CurrentNode.GetClosestEmpty(positionSource, true);
-      if(dest!=null)
-        return context.CurrentNode.SetTile(item, dest.Point);
+      if (dest != null)
+      {
+        var set = ReplaceTileByLoot(item, dest.Point);
+        //var set = context.CurrentNode.SetTile(item, dest.Point);
+        //if (set)
+        //  Logger.LogInfo("AddLootReward " + item + " set = " + set);
+        //else
+        //  Logger.LogError("AddLootReward failed " + item + " set = " + set);
+        return set;
+      }
 
       Logger.LogError("AddLootReward no room! for a loot");
       return false;
@@ -205,6 +213,12 @@ namespace Roguelike.Managers
       {
         var potion = LootGenerator.GetRandomLoot(LootKind.Potion);
         extraLoot.Add(potion);
+      }
+      if (GenerationInfo.DebugInfo.EachEnemyGivesJewellery)
+      {
+        //var loot = LootGenerator.GetRandomJewellery();
+        var loot = LootGenerator.GetRandomRing();
+        extraLoot.Add(loot);
       }
       return extraLoot;
     }
@@ -258,7 +272,7 @@ namespace Roguelike.Managers
       if (res == InteractionResult.Handled || res == InteractionResult.Attacked)
       {
         //ASCII printer needs that event
-        logger.LogInfo(" InteractionResult " + res + ", ac="  + ac);
+        //logger.LogInfo(" InteractionResult " + res + ", ac="  + ac);
         EventsManager.AppendAction(new LivingEntityAction(LivingEntityActionKind.Interacted) { InvolvedEntity = Hero });
       }
       else
@@ -303,17 +317,16 @@ namespace Roguelike.Managers
         return InteractionResult.None;
       }
       bool tileIsDoor = tile is Tiles.Door;
-
       bool tileIsDoorBySumbol = tile.Symbol == Constants.SymbolDoor;
 
       if (tile is Enemy)
       {
-        Logger.LogInfo("Hero attacks " + tile);
+        //Logger.LogInfo("Hero attacks " + tile);
         var en = tile as Enemy;
-        if(!en.Alive)
-          Logger.LogError("Hero attacks dead!" );
-        else
-          Logger.LogInfo("Hero attacks en health = "+en.Stats.Health);
+        //if(!en.Alive)
+        //  Logger.LogError("Hero attacks dead!" );
+        //else
+        //  Logger.LogInfo("Hero attacks en health = "+en.Stats.Health);
         Context.ApplyPhysicalAttackPolicy(Hero, en, (p) => OnHeroPolicyApplied(this, p));
 
         return InteractionResult.Attacked;
@@ -352,7 +365,8 @@ namespace Roguelike.Managers
         else if (tile is Barrel)
         {
           var loot = LootGenerator.TryGetRandomLootByDiceRoll(LootSourceKind.Barrel);//LootGenerator.GetRandomLoot();
-          ReplaceTile(loot, tile.Point);
+          if(loot!=null)
+            ReplaceTileByLoot(loot, tile.Point);
         }
         else if (tile is Chest)
         {
@@ -360,9 +374,7 @@ namespace Roguelike.Managers
           var loot = LootGenerator.TryGetRandomLootByDiceRoll(chest.LootSourceKind);
           if (loot != null)
           {
-            bool replaced = ReplaceTile(loot, tile.Point);
-            Debug.Assert(replaced);
-            Debug.Write(replaced);
+            bool replaced = ReplaceTileByLoot(loot, tile.Point);
           }
           
         }
@@ -383,12 +395,15 @@ namespace Roguelike.Managers
       context.MoveToNextTurnOwner();
     }
 
-    internal bool ReplaceTile(Loot loot, Point point)
+    public bool ReplaceTileByLoot(Loot loot, Point point)
     {
       var prevTile = CurrentNode.ReplaceTile(loot, point);
       if (prevTile != null)
       {
-        this.EventsManager.AppendAction(new InteractiveTileAction(prevTile as InteractiveTile) { KindValue = InteractiveTileAction.Kind.Destroyed });
+        var it = prevTile as InteractiveTile;
+        if(it!=null)
+          this.EventsManager.AppendAction(new InteractiveTileAction(it) { KindValue = InteractiveTileAction.Kind.Destroyed });
+
         this.EventsManager.AppendAction(new LootAction(loot) { LootActionKind = LootActionKind.Generated });
         return true;
       }
@@ -456,24 +471,30 @@ namespace Roguelike.Managers
       return new MoveResult(false, pos);
     }
 
+    public bool CollectLoot(Loot lootTile)
+    {
+      if (Hero.Inventory.Add(lootTile))
+      {
+        //Hero.Inventory.Print(logger, "loot added");
+        CurrentNode.RemoveLoot(lootTile.Point);
+        this.EventsManager.AppendAction(new LootAction(lootTile) { LootActionKind = LootActionKind.Collected });
+        if (lootTile is Equipment)
+        {
+          var eq = lootTile as Equipment;
+          Hero.HandleEquipmentFound(eq);
+          PrintHeroStats("loot On");
+        }
+        return true;
+      }
+      return false;
+    }
+
     public bool CollectLootOnHeroPosition()
     {
       var lootTile = CurrentNode.GetLootTile(Hero.Point);
       if (lootTile != null)
       {
-        if(Hero.Inventory.Add(lootTile))
-        {
-          //Hero.Inventory.Print(logger, "loot added");
-          CurrentNode.RemoveLoot(lootTile.Point);
-          this.EventsManager.AppendAction(new LootAction(lootTile) { LootActionKind = LootActionKind.Collected });
-          if (lootTile is Equipment)
-          {
-            var eq = lootTile as Equipment;
-            Hero.HandleEquipmentFound(eq);
-            PrintHeroStats("loot On");
-          }
-          return true;
-        }
+        CollectLoot(lootTile);
       }
 
       return false;

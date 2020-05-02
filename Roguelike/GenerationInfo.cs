@@ -9,6 +9,7 @@ namespace Roguelike
   public class DebugGenerationInfo
   {
     public bool EachEnemyGivesPotion { get; set; } = false;
+    public bool EachEnemyGivesJewellery { get; set; } = true;
   }
 
   public class GenerationInfo : Dungeons.GenerationInfo

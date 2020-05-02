@@ -37,9 +37,11 @@ namespace Roguelike.Generators
     public Looting Probability { get => probability; set => probability = value; }
     public EquipmentFactory EquipmentFactory { get => lootFactory.EquipmentFactory; }
     public int LevelIndex { get; internal set; } = -1;
+    public Container Container { get; set; }
 
     public LootGenerator(Container cont)
     {
+      Container = cont;
       lootFactory = cont.GetInstance<LootFactory>();
       //CreateEqFactory();
       var lootSourceKinds = Enum.GetValues(typeof(LootSourceKind)).Cast<LootSourceKind>();
@@ -181,6 +183,16 @@ namespace Roguelike.Generators
     {
       var randedEnum = RandHelper.GetRandomEnumValue<EquipmentKind>(new[] { EquipmentKind.TrophyLeft, EquipmentKind.TrophyRight, EquipmentKind.Unset });
       return EquipmentFactory.GetRandom(randedEnum, eqClass);
+    }
+
+    public virtual Loot GetRandomJewellery()
+    {
+      return EquipmentFactory.GetRandom(EquipmentKind.Amulet);
+    }
+
+    public virtual Loot GetRandomRing()
+    {
+      return EquipmentFactory.GetRandom(EquipmentKind.RingLeft);
     }
 
     public virtual Loot GetRandomLoot(LootKind kind)

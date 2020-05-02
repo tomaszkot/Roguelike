@@ -162,7 +162,7 @@ namespace RoguelikeUnitTests
             Assert.AreEqual(eq.PrimaryStatKind, EntityStatKind.Attack);
             Assert.AreEqual(stats.Attack, eq.PrimaryStatValue);
           }
-          else if (kind == EquipmentKind.Armor || kind == EquipmentKind.Gloves || kind == EquipmentKind.Helmet)
+          else if (kind == EquipmentKind.Armor || kind == EquipmentKind.Glove || kind == EquipmentKind.Helmet)
           {
             Assert.AreEqual(eq.PrimaryStatKind, EntityStatKind.Defence);
             Assert.AreEqual(stats.Defence, eq.PrimaryStatValue);

@@ -13,7 +13,5 @@ namespace Dungeons.Tiles
     }
 
     public Wall() : this(new Point().Invalid()) { }
-
-
   }
 }

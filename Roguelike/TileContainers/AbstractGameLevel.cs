@@ -205,6 +205,16 @@ namespace Roguelike.TileContainers
       return tile;
     }
 
+    public List<Tiles.Loot> GetLootTilesNearby(Tile tile)
+    {
+      List<Tiles.Loot> res = Loot.Values
+        .Where(i=> i.Revealed && i.DistanceFrom(tile.Point) < 5
+        //&& i.DungeonNodeIndex == tile.DungeonNodeIndex TODO
+        )
+        .ToList();//TODO 
+      return res;
+    }
+
     public Tiles.Loot GetLootTile(Point point)
     {
       if (Loot.ContainsKey(point))

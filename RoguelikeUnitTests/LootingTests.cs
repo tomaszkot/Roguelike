@@ -16,7 +16,7 @@ namespace RoguelikeUnitTests
     public void LotsOfPotionsTest()
     {
       var env = CreateTestEnv();
-      GenerationInfo.DebugInfo.EachEnemyGivesPotion = true;
+      //GenerationInfo.DebugInfo.EachEnemyGivesPotion = true;
       try
       {
         var lootInfo = new LootInfo(game, null);
@@ -34,7 +34,7 @@ namespace RoguelikeUnitTests
       }
       catch (System.Exception)
       {
-        GenerationInfo.DebugInfo.EachEnemyGivesPotion = false;
+        //GenerationInfo.DebugInfo.EachEnemyGivesPotion = false;
       }
     }
 

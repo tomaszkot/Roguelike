@@ -79,7 +79,7 @@ namespace Roguelike.LootFactories
           break;
         case EquipmentKind.TrophyRight:
           break;
-        case EquipmentKind.Gloves:
+        case EquipmentKind.Glove:
           eq = GetRandomGloves();
 
           break;
@@ -144,7 +144,7 @@ namespace Roguelike.LootFactories
 
     public virtual Equipment GetRandomGloves()
     {
-      var item = new Equipment(EquipmentKind.Gloves);
+      var item = new Equipment(EquipmentKind.Glove);
       item.Name = "Gloves";
       item.PrimaryStatKind = EntityStatKind.Defence;
       item.PrimaryStatValue = 1;

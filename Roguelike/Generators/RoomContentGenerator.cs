@@ -122,7 +122,7 @@ namespace Roguelike.Generators
       
       var packSize = gi.ForcedNumberOfEnemiesInRoom;
       if(packSize == 0)
-        RandHelper.GetRandomElem<int>(new List<int>() { 3, 4, 5 });
+        packSize = RandHelper.GetRandomElem<int>(new List<int>() { 3, 4, 5 });
       for (int enIndex = 0; enIndex < packSize; enIndex++)
       {
         var enemy = CreateEnemyInstance(enemyName);
