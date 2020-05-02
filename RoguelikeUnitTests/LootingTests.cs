@@ -175,9 +175,9 @@ namespace RoguelikeUnitTests
 
         );
 
-      var pots = lootInfo.Get<Potion>();
-      Assert.Greater(pots.Count, 0);
-      Assert.Less(pots.Count, 12);
+      var potions = lootInfo.Get<Potion>();
+      Assert.Greater(potions.Count, 3);
+      Assert.Less(potions.Count, 25);
     }
         
     [Test]
@@ -208,8 +208,8 @@ namespace RoguelikeUnitTests
         var lootItems = li.GetDiff();
         Assert.Greater(lootItems.Count, 0);
         var potions = lootItems.Where(j => j.LootKind == LootKind.Potion).ToList();
-        Assert.Greater(potions.Count, 4);
-        Assert.Less(potions.Count, 15);
+        Assert.Greater(potions.Count, 7);
+        Assert.Less(potions.Count, 18);
       }
     }
 

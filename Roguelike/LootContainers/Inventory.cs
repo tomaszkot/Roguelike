@@ -19,7 +19,7 @@ namespace Roguelike.LootContainers
     public int CurrentPageIndex { get; set; }
     public float PriceFactor { get; set; }
     List<Loot> items = new List<Loot>();
-    Dictionary<Type, int> stackedCount = new Dictionary<Type, int>();
+    Dictionary<string, int> stackedCount = new Dictionary<string, int>();
     [JsonIgnore]
     public EventsManager EventsManager { get; set; }
 
@@ -88,25 +88,31 @@ namespace Roguelike.LootContainers
       return Items.Where(i => i is T).Cast<T>();
     }
 
+    public virtual void SetStackCount(Loot loot, int count)
+    {
+      if (loot.StackedInInventory)
+      {
+        var id = loot.GetStackedId();
+        stackedCount[id] = count;
+      }
+
+    }
+
     public virtual int GetStackCount(Loot loot)
     {
       if (loot.StackedInInventory)
       {
-        return GetStackedCountForType(loot.GetType());
+        return GetStackedCount(loot);
       }
 
       return 0;
     }
-    public virtual int GetTypedStackCount<T>()
-    {
-      var type = typeof(T);
-      return GetStackedCountForType(type);
-    }
 
-    private int GetStackedCountForType(Type type)
+    private int GetStackedCount(Loot loot)
     {
-      if (stackedCount.ContainsKey(type))
-        return stackedCount[type];
+      var id = loot.GetStackedId();
+      if (stackedCount.ContainsKey(id))
+        return stackedCount[id];
       return 0;
     }
 
@@ -118,7 +124,7 @@ namespace Roguelike.LootContainers
         item.Collected = true;
         Items.Add(item);
         if (item.StackedInInventory)
-          stackedCount[item.GetType()] = 1;
+          SetStackCount(item, 1);
         if (notifyObservers && EventsManager != null)
         {
           EventsManager.AppendAction(new InventoryAction(this) { Kind = InventoryActionKind.ItemAdded, Item = item});
@@ -130,9 +136,9 @@ namespace Roguelike.LootContainers
       {
         if (item.StackedInInventory)
         {
-          var stackedItemCount = stackedCount[item.GetType()];
+          var stackedItemCount = GetStackCount(item);
           Assert(stackedItemCount > 0);
-          stackedCount[item.GetType()] += 1;
+          SetStackCount(item, stackedItemCount + 1);
           return true;
         }
         else
@@ -183,14 +189,14 @@ namespace Roguelike.LootContainers
         var stackedItem = Items.FirstOrDefault(i => i == item);
         if (stackedItem != null)
         {
-          if (stackedCount.ContainsKey(stackedItem.GetType()))
+          var stackedItemCount = GetStackedCount(stackedItem);
+          if (stackedItemCount > 0)
           {
-            var stackedItemCount = stackedCount[stackedItem.GetType()];
             Assert(stackedItemCount > 0);
             if (stackedItemCount > 0)
             {
               stackedItemCount--;
-              stackedCount[stackedItem.GetType()] = stackedItemCount;
+              SetStackCount(stackedItem, stackedItemCount);
               if(stackedItemCount == 0)
                 itemToRemove = item;
 
@@ -251,6 +257,7 @@ namespace Roguelike.LootContainers
       }
     }
 
-    public Dictionary<Type, int> StackedCount { get => stackedCount; set => stackedCount = value; }
+    //prop for persistance
+    public Dictionary<string, int> StackedCount { get => stackedCount; set => stackedCount = value; }
   }
 }

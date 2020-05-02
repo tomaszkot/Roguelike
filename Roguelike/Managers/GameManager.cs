@@ -85,6 +85,15 @@ namespace Roguelike.Managers
       soundManager = new SoundManager(this, container);
     }
 
+    public void Assert(bool assert, string info = "assert failed")
+    {
+      if (!assert)
+      {
+        Debug.Assert(false, info);
+        EventsManager.AppendAction(new Events.GameStateAction() { Type = Events.GameStateAction.ActionType.Assert, Info = info });
+      }
+    }
+
     protected virtual EnemiesManager CreateEnemiesManager(GameContext context, EventsManager eventsManager)
     {
       return new EnemiesManager(Context, EventsManager, Container);
@@ -170,7 +179,8 @@ namespace Roguelike.Managers
           var loot = LootGenerator.TryGetRandomLootByDiceRoll(LootSourceKind.Enemy);
           if (loot != null)
           {
-            ReplaceTileByLoot(loot, lea.InvolvedEntity.Point);
+            AddLootReward(loot, lea.InvolvedEntity);
+            //ReplaceTileByLoot(loot, lea.InvolvedEntity.Point);
             //ReplaceTile(loot, lea.InvolvedEntity.Point);
           }
           var extraLootItems = GetExtraLoot();
@@ -364,9 +374,10 @@ namespace Roguelike.Managers
         }
         else if (tile is Barrel)
         {
-          var loot = LootGenerator.TryGetRandomLootByDiceRoll(LootSourceKind.Barrel);//LootGenerator.GetRandomLoot();
-          if(loot!=null)
-            ReplaceTileByLoot(loot, tile.Point);
+          var tileDest = LootGenerator.TryGetRandomLootByDiceRoll(LootSourceKind.Barrel);
+          bool repl = ReplaceTileByLoot(tileDest, tile.Point);
+          Assert(repl, "ReplaceTileByLoot "+ tileDest);
+          Debug.WriteLine("ReplaceTileByLoot " + tileDest + " " + repl);
         }
         else if (tile is Chest)
         {
@@ -397,6 +408,7 @@ namespace Roguelike.Managers
 
     public bool ReplaceTileByLoot(Loot loot, Point point)
     {
+      //Assert(loot is Loot || loot.IsEmpty, "ReplaceTileByLoot failed");
       var prevTile = CurrentNode.ReplaceTile(loot, point);
       if (prevTile != null)
       {
@@ -494,7 +506,7 @@ namespace Roguelike.Managers
       var lootTile = CurrentNode.GetLootTile(Hero.Point);
       if (lootTile != null)
       {
-        CollectLoot(lootTile);
+        return CollectLoot(lootTile);
       }
 
       return false;

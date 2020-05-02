@@ -290,7 +290,7 @@ namespace Roguelike.TileContainers
       return findPathMatrix;
     }
 
-    internal Tile ReplaceTile(Loot loot, Point point)
+    internal Tile ReplaceTile(Tile loot, Point point)
     {
       Tile toUse = loot;
       if (loot == null)
