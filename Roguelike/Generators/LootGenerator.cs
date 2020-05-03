@@ -35,9 +35,10 @@ namespace Roguelike.Generators
     Looting probability = new Looting();
 
     public Looting Probability { get => probability; set => probability = value; }
-    public EquipmentFactory EquipmentFactory { get => lootFactory.EquipmentFactory; }
+    //public EquipmentFactory EquipmentFactory { get => lootFactory.EquipmentFactory; }
     public int LevelIndex { get; internal set; } = -1;
     public Container Container { get; set; }
+    public LootFactory LootFactory { get => lootFactory; set => lootFactory = value; }
 
     public LootGenerator(Container cont)
     {
@@ -111,14 +112,27 @@ namespace Roguelike.Generators
         return lootingChancesForEq;
       }
     }
-        
+
+    public virtual Loot GetLootByTag(string tagPart)
+    {
+      var loot = LootFactory.GetByTag(tagPart) as Roguelike.Tiles.Loot;
+      if (loot != null)
+        PrepareLoot(loot);
+      return loot;
+    }
+
+    protected virtual void PrepareLoot(Loot loot)
+    {
+      //adjust price...
+    }
+
     public virtual Loot GetLootByName(string tileName)
     {
       Loot loot;
       if (uniqueLoot.ContainsKey(tileName))
         loot = uniqueLoot[tileName];
       else
-        loot = EquipmentFactory.GetByName(tileName);
+        loot = LootFactory.GetByName(tileName);
       if (loot == null && tileName == "rusty_sword")
       {
         var wpn = new Weapon();
@@ -138,7 +152,7 @@ namespace Roguelike.Generators
 
     public virtual Equipment GetRandomEquipment(EquipmentKind kind)
     {
-      var eq = EquipmentFactory.GetRandom(kind);
+      var eq = LootFactory.EquipmentFactory.GetRandom(kind);
       EnasureLevelIndex(eq);
       return eq;
     }
@@ -182,17 +196,17 @@ namespace Roguelike.Generators
     protected virtual Equipment GetRandomEquipment(EquipmentClass eqClass)
     {
       var randedEnum = RandHelper.GetRandomEnumValue<EquipmentKind>(new[] { EquipmentKind.TrophyLeft, EquipmentKind.TrophyRight, EquipmentKind.Unset });
-      return EquipmentFactory.GetRandom(randedEnum, eqClass);
+      return LootFactory.EquipmentFactory.GetRandom(randedEnum, eqClass);
     }
 
     public virtual Loot GetRandomJewellery()
     {
-      return EquipmentFactory.GetRandom(EquipmentKind.Amulet);
+      return LootFactory.EquipmentFactory.GetRandom(EquipmentKind.Amulet);
     }
 
     public virtual Loot GetRandomRing()
     {
-      return EquipmentFactory.GetRandom(EquipmentKind.RingLeft);
+      return LootFactory.EquipmentFactory.GetRandom(EquipmentKind.RingLeft);
     }
 
     public virtual Loot GetRandomLoot(LootKind kind)

@@ -14,6 +14,17 @@ namespace Roguelike.LootFactories
     {
     }
 
+    public override Loot GetByTag(string tagPart)
+    {
+      foreach (var kv in lootCreators)
+      {
+        var tile = kv.Value.GetByTag(tagPart);
+        if (tile != null)
+          return tile;
+      }
+      return null;
+    }
+
     public override Roguelike.Tiles.Loot GetByName(string assetName)
     {
       foreach (var kv in lootCreators)
@@ -32,8 +43,6 @@ namespace Roguelike.LootFactories
 
     protected virtual void CreateKindFactories()
     {
-      //lootCreators[Roguelike.Tiles.EquipmentKind.Weapon] = new WeaponFactory();
-      
     }
 
     public override Loot GetRandom()

@@ -84,7 +84,7 @@ namespace RoguelikeUnitTests
         var set = game.Hero.MoveEquipmentInv2Current(juwNotMatching, EquipmentKind.Amulet);//ring not matching amulet slot
         Assert.False(set);
 
-        var juw33 = game.GameManager.LootGenerator.EquipmentFactory.GetRandomJewellery(EntityStatKind.Defence, EquipmentKind.Amulet);
+        var juw33 = game.GameManager.LootGenerator.LootFactory.EquipmentFactory.GetRandomJewellery(EntityStatKind.Defence, EquipmentKind.Amulet);
         AddItemToInv(juw33);
         set = game.Hero.MoveEquipmentInv2Current(juw33, EquipmentKind.Amulet);
         Assert.True(set);

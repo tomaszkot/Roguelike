@@ -23,10 +23,10 @@ namespace Roguelike.Spells
 {
   public enum SpellKind
   {
-    FireBall, CrackedStone, Skeleton, Trap, IceBall, PoisonBall, Transform,
+    Unset, FireBall, CrackedStone, Skeleton, Trap, IceBall, PoisonBall, Transform,
     Frighten, Healing, ManaShield, Telekinesis, StonedBall, LightingBall
         //,MindControl
-        , Mana, BushTrap, Rage, Weaken, NESWFireBall, Teleport, IronSkin, ResistAll, Inaccuracy, CallMerchant, CallGod
+        , Mana, BushTrap, Rage, Weaken, NESWFireBall, Teleport, IronSkin, ResistAll, Inaccuracy, CallMerchant, CallGod, Identify
   }
 
   public class Spell : IMovingDamager
