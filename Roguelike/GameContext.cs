@@ -80,6 +80,12 @@ namespace Roguelike
       Action<Policy> BeforeApply, 
       Action<Policy> AfterApply)
     {
+      if (scroll.Count <= 0)
+      {
+        logger.LogError("scroll.Count <= 0");
+        return;
+      }
+
       var policy = Container.GetInstance<SpellCastPolicy>();
       policy.Target = target;
       policy.ProjectilesFactory = Container.GetInstance<IProjectilesFactory>();

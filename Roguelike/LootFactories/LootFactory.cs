@@ -1,4 +1,5 @@
-﻿using Roguelike.Tiles;
+﻿using Roguelike.Managers;
+using Roguelike.Tiles;
 using SimpleInjector;
 using System;
 using System.Collections.Generic;
@@ -31,11 +32,27 @@ namespace Roguelike.LootFactories
       foreach (var fac in factories)
       {
         var loot = fac.GetByTag(tagPart);
-        if (loot != null)
-          return loot;
+        if(loot != null)
+          return ReturnLoot(loot);
       }
 
       return null;
+    }
+
+    Loot ReturnLoot(Loot loot)
+    {
+      var eq = loot as Equipment;
+      if(eq != null)
+        eq.Identified += Eq_Identified;
+      return loot;
+    }
+
+    private void Eq_Identified(object sender, Loot e)
+    {
+      container.GetInstance<EventsManager>().AppendAction(new Events.LootAction(e)
+      {
+        LootActionKind = Events.LootActionKind.Identified
+      });
     }
 
     public override Loot GetByName(string name)
@@ -44,7 +61,7 @@ namespace Roguelike.LootFactories
       {
         var loot = fac.GetByName(name);
         if (loot != null)
-          return loot;
+          return ReturnLoot(loot);
       }
       
       return null;

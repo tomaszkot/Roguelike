@@ -246,22 +246,29 @@ namespace Roguelike.Managers
       HandleHeroShift(horizontal, vertical);
     }
 
-    public void HandleHeroShift(int horizontal, int vertical)
+    public bool CanHeroDoAction()
     {
-      if (!HeroTurn)
-        return;
-
+      if (!this.HeroTurn)
+        return false;
       if (!Hero.Alive)
       {
         //AppendAction(new HeroAction() { Level = ActionLevel.Critical, KindValue = HeroAction.Kind.Died, Info = Hero.Name + " is dead!" });
-        return;
+        return false;
       }
 
       if (Hero.State != EntityState.Idle)
-        return;
+        return false;
 
       var ac = Context.TurnActionsCount[TurnOwner.Hero];
       if (ac == 1)
+        return false;
+
+      return true;
+    }
+
+    public void HandleHeroShift(int horizontal, int vertical)
+    {
+      if(!CanHeroDoAction())
         return;
 
       var newPos = GetNewPositionFromMove(Hero.Point, horizontal, vertical);

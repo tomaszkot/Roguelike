@@ -78,6 +78,8 @@ namespace Roguelike.Tiles
       //this.EventsManager = eventsManager;
     }
 
+    //public int ActionsDoneInTurn { get; set; }
+
     public void ReduceMana(float amount)
     {
       Stats.GetStat(EntityStatKind.Mana).Subtract(amount);
@@ -246,7 +248,8 @@ namespace Roguelike.Tiles
       //  }
       //}
       //var died = DieIfShould(effectInfo.Type);
-      
+      DieIfShould();
+
       var attackedInst = attacker ?? spell.Caller;
       if (attackedInst != null)
       {

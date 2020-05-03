@@ -37,14 +37,15 @@ namespace Roguelike.Tiles
 
     public Scroll ActiveScroll
     {
-      get { return ActiveLoot as Scroll; }
+      get; set;
+
     }
 
-    public virtual Loot ActiveLoot
-    {
-      get;
-      set;
-    }
+    //public virtual Loot ActiveLoot
+    //{
+    //  get;
+    //  set;
+    //}
 
     public AdvancedLivingEntity(Point point, char symbol) : base(point, symbol)
     {

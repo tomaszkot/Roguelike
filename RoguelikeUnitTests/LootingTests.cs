@@ -65,18 +65,18 @@ namespace RoguelikeUnitTests
 
       Assert.Greater(price, 0);
       Assert.Greater(damage, 0);
-      Assert.AreEqual(wpn.Identified, true);
+      Assert.AreEqual(wpn.IsIdentified, true);
 
       int extraAttack = 2;
       wpn.MakeMagic(EntityStatKind.Attack, extraAttack);
-      Assert.AreEqual(wpn.Identified, false);
+      Assert.AreEqual(wpn.IsIdentified, false);
       Assert.AreEqual(wpn.Class, EquipmentClass.Magic);
       Assert.AreEqual(wpn.GetStats().GetTotalValue(EntityStatKind.Attack), damage);
       Assert.Greater(wpn.Price, price);//shall be bit bigger
       price = wpn.Price;
 
       wpn.Identify();
-      Assert.AreEqual(wpn.Identified, true);
+      Assert.AreEqual(wpn.IsIdentified, true);
       Assert.AreEqual(wpn.GetStats().GetTotalValue(EntityStatKind.Attack), damage + extraAttack);
       Assert.Greater(wpn.Price, price);//shall be bit bigger
     }

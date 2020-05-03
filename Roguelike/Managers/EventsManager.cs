@@ -18,6 +18,11 @@ namespace Roguelike.Managers
 
     public event EventHandler<GameAction> ActionAppended;
 
+    public EventsManager()
+    {
+
+    }
+
     public void Assert(bool check, string desc)
     {
       if (!check)

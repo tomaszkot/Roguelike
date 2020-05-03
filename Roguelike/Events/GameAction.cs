@@ -103,7 +103,7 @@ namespace Roguelike
       //  }
       //}
     }
-    public enum LootActionKind { Generated, Collected, PutOn, TookOff, Crafted, SpecialDrunk, Enchanted, Consumed }
+    public enum LootActionKind { Generated, Collected, PutOn, TookOff, Crafted, SpecialDrunk, Enchanted, Consumed, Identified }
     public class LootAction : GameAction
     {
       
