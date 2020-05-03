@@ -86,6 +86,8 @@ namespace Roguelike
         return;
       }
 
+      scroll.Count--;
+
       var policy = Container.GetInstance<SpellCastPolicy>();
       policy.Target = target;
       policy.ProjectilesFactory = Container.GetInstance<IProjectilesFactory>();
