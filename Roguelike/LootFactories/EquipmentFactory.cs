@@ -75,18 +75,13 @@ namespace Roguelike.LootFactories
         case EquipmentKind.Shield:
           eq = GetRandomShield();
           break;
-        case EquipmentKind.RingLeft:
-          eq = GetRandomJewellery(EntityStatKind.Attack, EquipmentKind.RingLeft);
-          break;
-        case EquipmentKind.RingRight:
-          eq = GetRandomJewellery(EntityStatKind.Attack, EquipmentKind.RingRight);
+        case EquipmentKind.Ring:
+          eq = GetRandomJewellery(EntityStatKind.Attack, EquipmentKind.Ring);
           break;
         case EquipmentKind.Amulet:
           eq = GetRandomJewellery(EntityStatKind.Attack, EquipmentKind.Amulet);
           break;
-        case EquipmentKind.TrophyLeft:
-          break;
-        case EquipmentKind.TrophyRight:
+        case EquipmentKind.Trophy:
           break;
         case EquipmentKind.Glove:
           eq = GetRandomGloves();
@@ -196,7 +191,7 @@ namespace Roguelike.LootFactories
     private Jewellery AddRing(string asset, EntityStatKind sk, int minDropDungeonLevel,
       int statValue)
     {
-      var jew = createJewellery(EquipmentKind.RingLeft, minDropDungeonLevel);
+      var jew = createJewellery(EquipmentKind.Ring, minDropDungeonLevel);
       jew.tag1 = asset;
       //juw.ExtendedInfo.Stats.SetFactor(EntityStatKind.ResistCold, 10);
       jew.SetPrimaryStat(sk, statValue);

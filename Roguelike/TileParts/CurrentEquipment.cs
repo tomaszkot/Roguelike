@@ -7,15 +7,15 @@ namespace Roguelike.TileParts
   public class CurrentEquipment 
   {
     //putOnEquipment - currently worn eq. all values can be not null  
-    SerializableDictionary<EquipmentKind, Equipment> primaryEquipment = new SerializableDictionary<EquipmentKind, Equipment>();
+    SerializableDictionary<CurrentEquipmentKind, Equipment> primaryEquipment = new SerializableDictionary<CurrentEquipmentKind, Equipment>();
 
     //spareEquipment - currently only weapon/shield can be not null
-    SerializableDictionary<EquipmentKind, Equipment> spareEquipment = new SerializableDictionary<EquipmentKind, Equipment>();
+    SerializableDictionary<CurrentEquipmentKind, Equipment> spareEquipment = new SerializableDictionary<CurrentEquipmentKind, Equipment>();
     
     public CurrentEquipment()
     {
-      var eqipTypes = Enum.GetValues(typeof(EquipmentKind));
-      foreach (EquipmentKind et in eqipTypes)
+      var eqipTypes = Enum.GetValues(typeof(CurrentEquipmentKind));
+      foreach (CurrentEquipmentKind et in eqipTypes)
       {
         PrimaryEquipment[et] = null;
         SpareEquipment[et] = null;
@@ -23,10 +23,10 @@ namespace Roguelike.TileParts
       }
     }
 
-    public SerializableDictionary<EquipmentKind, Equipment> PrimaryEquipment { get => primaryEquipment; set => primaryEquipment = value; }
-    public SerializableDictionary<EquipmentKind, Equipment> SpareEquipment { get => spareEquipment; set => spareEquipment = value; }
+    public SerializableDictionary<CurrentEquipmentKind, Equipment> PrimaryEquipment { get => primaryEquipment; set => primaryEquipment = value; }
+    public SerializableDictionary<CurrentEquipmentKind, Equipment> SpareEquipment { get => spareEquipment; set => spareEquipment = value; }
 
     //currently only weapon/shield can be not null
-    public SerializableDictionary<EquipmentKind, bool> SpareEquipmentUsed { get; set; } = new SerializableDictionary<EquipmentKind, bool>();
+    public SerializableDictionary<CurrentEquipmentKind, bool> SpareEquipmentUsed { get; set; } = new SerializableDictionary<CurrentEquipmentKind, bool>();
   }
 }

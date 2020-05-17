@@ -195,7 +195,7 @@ namespace Roguelike.Generators
 
     protected virtual Equipment GetRandomEquipment(EquipmentClass eqClass)
     {
-      var randedEnum = RandHelper.GetRandomEnumValue<EquipmentKind>(new[] { EquipmentKind.TrophyLeft, EquipmentKind.TrophyRight, EquipmentKind.Unset });
+      var randedEnum = RandHelper.GetRandomEnumValue<EquipmentKind>(new[] { EquipmentKind.Trophy, EquipmentKind.God, EquipmentKind.Unset });
       return LootFactory.EquipmentFactory.GetRandom(randedEnum, eqClass);
     }
 
@@ -206,7 +206,7 @@ namespace Roguelike.Generators
 
     public virtual Loot GetRandomRing()
     {
-      return LootFactory.EquipmentFactory.GetRandom(EquipmentKind.RingLeft);
+      return LootFactory.EquipmentFactory.GetRandom(EquipmentKind.Ring);
     }
 
     public virtual Loot GetRandomLoot(LootKind kind)

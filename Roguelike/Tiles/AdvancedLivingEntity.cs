@@ -41,12 +41,6 @@ namespace Roguelike.Tiles
 
     }
 
-    //public virtual Loot ActiveLoot
-    //{
-    //  get;
-    //  set;
-    //}
-
     public AdvancedLivingEntity(Point point, char symbol) : base(point, symbol)
     {
     }
@@ -183,39 +177,102 @@ namespace Roguelike.Tiles
       this.inventory = new Inventory();
     }
 
-    public bool MoveEquipmentInv2Current(Equipment eq, EquipmentKind ek)
+    public bool MoveEquipmentInv2Current(Equipment eq, CurrentEquipmentKind ek)
     {
       return MoveEquipment(Inventory, CurrentEquipment, eq, ek);
     }
 
-    public bool MoveEquipmentCurrent2Inv(Equipment eq)
+    public bool MoveEquipmentCurrent2Inv(Equipment eq, CurrentEquipmentPosition pos)
     {
-      return MoveEquipment(CurrentEquipment, Inventory, eq, eq.EquipmentKind);
+      //var cek = FromEquipmentKind(eq.EquipmentKind, pos);
+      //return MoveEquipment(CurrentEquipment, Inventory, eq, cek);
+      return MoveEquipmentCurrent2Inv(eq, eq.EquipmentKind, pos);
     }
 
-    public bool MoveEquipmentCurrent2Inv(Equipment eq, EquipmentKind ek)
+    public bool MoveEquipmentCurrent2Inv(Equipment eq, EquipmentKind ek, CurrentEquipmentPosition pos)
     {
-      return MoveEquipment(CurrentEquipment, Inventory, eq, ek);
+      var cek = FromEquipmentKind(eq.EquipmentKind, pos);
+      return MoveEquipment(CurrentEquipment, Inventory, eq, cek);
     }
 
     public bool HandleEquipmentFound(Equipment eq)
     {
-      var activeSet = GetActiveEquipment();
-      var currentEq = activeSet[eq.EquipmentKind];
+      var activeSet = GetActiveEquipment();//primary or secondary 
+      var cep = CurrentEquipmentPosition.Unset;
+      if (eq.EquipmentKind == EquipmentKind.Ring || eq.EquipmentKind == EquipmentKind.Trophy)
+        cep = CurrentEquipmentPosition.Left;
+      //TODO handle right
+      var cek = FromEquipmentKind(eq.EquipmentKind, cep);
+      var currentEq = activeSet[cek];
+      if (currentEq != null)
+      {
+        if (eq.EquipmentKind == EquipmentKind.Ring || eq.EquipmentKind == EquipmentKind.Trophy)
+        {
+          cep = CurrentEquipmentPosition.Right;
+          cek = FromEquipmentKind(eq.EquipmentKind, cep);
+          var currentEqRight = activeSet[cek];
+          if (currentEqRight == null)
+          {
+            currentEq = null;
+            cep = CurrentEquipmentPosition.Right;
+          }
+        }
+      }
+
       if (currentEq == null || eq.IsBetter(currentEq))
       {
         if (currentEq != null)
         {
-          if (!MoveEquipmentCurrent2Inv(currentEq))
+          if (!MoveEquipmentCurrent2Inv(currentEq, cep))
             return false;
         }
-        return MoveEquipment(Inventory, CurrentEquipment, eq, eq.EquipmentKind);
+        var destKind = FromEquipmentKind(eq.EquipmentKind, cep);
+        return MoveEquipment(Inventory, CurrentEquipment, eq, destKind);
       }
       
       return false;
     }
 
-    public bool MoveEquipment(Inventory from, CurrentEquipment to, Equipment eq, EquipmentKind ek, bool primary = true)
+    CurrentEquipmentKind FromEquipmentKind(EquipmentKind equipmentKind, CurrentEquipmentPosition pos)
+    {
+      //ring or trophy can be also right
+      //if (pos == CurrentEquipmentPosition.Right)
+      {
+        if (equipmentKind == EquipmentKind.Ring || equipmentKind == EquipmentKind.Trophy)
+        {
+          Assert(pos != CurrentEquipmentPosition.Unset, "FromEquipmentKind " + equipmentKind + " " + pos);
+          if (pos == CurrentEquipmentPosition.Unset)
+            return CurrentEquipmentKind.Unset;
+          if (pos == CurrentEquipmentPosition.Right)
+          {
+            return equipmentKind == EquipmentKind.Ring ? CurrentEquipmentKind.RingRight : CurrentEquipmentKind.TrophyRight;
+          }
+          return equipmentKind == EquipmentKind.Ring ? CurrentEquipmentKind.RingLeft : CurrentEquipmentKind.TrophyLeft;
+        }
+      }
+      var res = (CurrentEquipmentKind)equipmentKind;
+      return res;
+    }
+
+    EquipmentKind FromCurrentEquipmentKind(CurrentEquipmentKind currentEquipmentKind, out CurrentEquipmentPosition pos)
+    {
+      pos = CurrentEquipmentPosition.Left;
+      if (currentEquipmentKind == CurrentEquipmentKind.RingRight)
+      {
+        pos = CurrentEquipmentPosition.Right;
+        return EquipmentKind.Ring;
+      }
+      if (currentEquipmentKind == CurrentEquipmentKind.TrophyRight)
+      {
+        pos = CurrentEquipmentPosition.Right;
+        return EquipmentKind.Trophy;
+      }
+      var res = (EquipmentKind)currentEquipmentKind;
+      return res;
+    }
+
+    public bool MoveEquipment(Inventory from, CurrentEquipment to, Equipment eq,
+                              CurrentEquipmentKind ek, bool primary = true)
     {
       bool removed = from.Remove(eq);
       if (removed)
@@ -229,7 +286,7 @@ namespace Roguelike.Tiles
       return removed;
     }
 
-    public bool MoveEquipment(CurrentEquipment from, Inventory to, Equipment eq, EquipmentKind ek, bool primary = true)
+    public bool MoveEquipment(CurrentEquipment from, Inventory to, Equipment eq, CurrentEquipmentKind ek, bool primary = true)
     {
       bool done = SetEquipment(ek, null, primary);
       if (done)
@@ -248,9 +305,9 @@ namespace Roguelike.Tiles
       return done;
     }
 
-    public Dictionary<EquipmentKind, Equipment> GetActiveEquipment()
+    public Dictionary<CurrentEquipmentKind, Equipment> GetActiveEquipment()
     {
-      var result = new Dictionary<EquipmentKind, Equipment>();
+      var result = new Dictionary<CurrentEquipmentKind, Equipment>();
       foreach (var pos in CurrentEquipment.PrimaryEquipment)//PrimaryEquipment has all kinds
       {
         var eq = CurrentEquipment.SpareEquipmentUsed[pos.Key] ? CurrentEquipment.SpareEquipment[pos.Key] : CurrentEquipment.PrimaryEquipment[pos.Key];
@@ -260,25 +317,24 @@ namespace Roguelike.Tiles
       return result;
     }
 
-    public bool MakeActive(EquipmentKind kind, Equipment eq, bool primary)
+    public bool MakeActive(CurrentEquipmentKind kind, Equipment eq, bool primary)
     {
       return CurrentEquipment.SpareEquipmentUsed[kind] = !primary;
     }
 
-    bool SetEquipment(EquipmentKind kind, Equipment eq, bool primary = true)
+    public bool SetEquipment(CurrentEquipmentKind kind, Equipment eq, bool primary = true)
     {
       //EventsManager.Assert(Inventory.Contains(eq), "Inventory.Contains(eq)");
       if (eq != null)
       {
-        var matches = kind == eq.EquipmentKind;
-        if (eq.EquipmentKind == EquipmentKind.RingLeft && kind == EquipmentKind.RingRight ||
-          eq.EquipmentKind == EquipmentKind.RingRight && kind == EquipmentKind.RingLeft)
-          matches = true;
+        CurrentEquipmentPosition pos1;
+        var ek = FromCurrentEquipmentKind(kind, out pos1);
+        var matches = ek == eq.EquipmentKind;
         if (!matches)
           return false;//TODO action
       }
 
-      if(primary)
+      if (primary)
         CurrentEquipment.PrimaryEquipment[kind] = eq;
       else
         CurrentEquipment.SpareEquipment[kind] = eq;
@@ -288,10 +344,13 @@ namespace Roguelike.Tiles
       RecalculateStatFactors(false);
 
       LootAction ac = null;
+      CurrentEquipmentPosition pos;
       if (eq != null)
-        ac = new LootAction(eq) { Info = Name + " put on " + eq, LootActionKind = LootActionKind.PutOn, EquipmentKind = eq.EquipmentKind };
+        ac = new LootAction(eq) { Info = Name + " put on " + eq, LootActionKind = LootActionKind.PutOn,
+          EquipmentKind = eq.EquipmentKind };
       else
-        ac = new LootAction(null) { Info = Name + " took off " + kind, LootActionKind = LootActionKind.TookOff, EquipmentKind = kind };
+        ac = new LootAction(null) { Info = Name + " took off " + kind, LootActionKind = LootActionKind.TookOff,
+          EquipmentKind = FromCurrentEquipmentKind(kind, out pos) };//TODO send CurrentEquipmentKind
       AppendAction(ac);
 
       return true;
@@ -333,9 +392,9 @@ namespace Roguelike.Tiles
 
     private void AccumulateEqFactors(bool positive)
     {
-      var eqipKinds = Enum.GetValues(typeof(EquipmentKind)).Cast<EquipmentKind>();
+      var eqipKinds = Enum.GetValues(typeof(CurrentEquipmentKind)).Cast<CurrentEquipmentKind>();
 
-      foreach (EquipmentKind ek in eqipKinds)
+      foreach (var ek in eqipKinds)
       {
         if (currentEquipment.SpareEquipmentUsed.ContainsKey(ek))//old game save ?
         {

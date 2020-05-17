@@ -94,14 +94,20 @@ namespace RoguelikeUnitTests
         
     protected Jewellery AddJewelleryToInv(Roguelike.RoguelikeGame game, EntityStatKind statKind)
     {
-      var juw = game.GameManager.LootGenerator.LootFactory.EquipmentFactory.GetRandomJewellery(statKind);
-      Assert.AreEqual(juw.PrimaryStatKind, EntityStatKind.Defence);
-      Assert.IsTrue(juw.PrimaryStatValue > 0);
+      Jewellery juw = GenerateJewellery(game, statKind);
 
       AddItemToInv(juw);
       return juw;
     }
-        
+
+    public Jewellery GenerateJewellery(RoguelikeGame game, EntityStatKind statKind)
+    {
+      var juw = game.GameManager.LootGenerator.LootFactory.EquipmentFactory.GetRandomJewellery(statKind);
+      Assert.AreEqual(juw.PrimaryStatKind, EntityStatKind.Defence);
+      Assert.IsTrue(juw.PrimaryStatValue > 0);
+      return juw;
+    }
+
     protected void AddItemToInv(Loot loot)
     {
       game.Hero.Inventory.Add(loot);
