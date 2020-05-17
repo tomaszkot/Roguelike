@@ -191,7 +191,7 @@ namespace Roguelike.Tiles
 
     public bool MoveEquipmentCurrent2Inv(Equipment eq, EquipmentKind ek, CurrentEquipmentPosition pos)
     {
-      var cek = FromEquipmentKind(eq.EquipmentKind, pos);
+      var cek = Equipment.FromEquipmentKind(eq.EquipmentKind, pos);
       return MoveEquipment(CurrentEquipment, Inventory, eq, cek);
     }
 
@@ -202,14 +202,14 @@ namespace Roguelike.Tiles
       if (eq.EquipmentKind == EquipmentKind.Ring || eq.EquipmentKind == EquipmentKind.Trophy)
         cep = CurrentEquipmentPosition.Left;
       //TODO handle right
-      var cek = FromEquipmentKind(eq.EquipmentKind, cep);
+      var cek = Equipment.FromEquipmentKind(eq.EquipmentKind, cep);
       var currentEq = activeSet[cek];
       if (currentEq != null)
       {
         if (eq.EquipmentKind == EquipmentKind.Ring || eq.EquipmentKind == EquipmentKind.Trophy)
         {
           cep = CurrentEquipmentPosition.Right;
-          cek = FromEquipmentKind(eq.EquipmentKind, cep);
+          cek = Equipment.FromEquipmentKind(eq.EquipmentKind, cep);
           var currentEqRight = activeSet[cek];
           if (currentEqRight == null)
           {
@@ -226,51 +226,13 @@ namespace Roguelike.Tiles
           if (!MoveEquipmentCurrent2Inv(currentEq, cep))
             return false;
         }
-        var destKind = FromEquipmentKind(eq.EquipmentKind, cep);
+        var destKind = Equipment.FromEquipmentKind(eq.EquipmentKind, cep);
         return MoveEquipment(Inventory, CurrentEquipment, eq, destKind);
       }
       
       return false;
     }
-
-    CurrentEquipmentKind FromEquipmentKind(EquipmentKind equipmentKind, CurrentEquipmentPosition pos)
-    {
-      //ring or trophy can be also right
-      //if (pos == CurrentEquipmentPosition.Right)
-      {
-        if (equipmentKind == EquipmentKind.Ring || equipmentKind == EquipmentKind.Trophy)
-        {
-          Assert(pos != CurrentEquipmentPosition.Unset, "FromEquipmentKind " + equipmentKind + " " + pos);
-          if (pos == CurrentEquipmentPosition.Unset)
-            return CurrentEquipmentKind.Unset;
-          if (pos == CurrentEquipmentPosition.Right)
-          {
-            return equipmentKind == EquipmentKind.Ring ? CurrentEquipmentKind.RingRight : CurrentEquipmentKind.TrophyRight;
-          }
-          return equipmentKind == EquipmentKind.Ring ? CurrentEquipmentKind.RingLeft : CurrentEquipmentKind.TrophyLeft;
-        }
-      }
-      var res = (CurrentEquipmentKind)equipmentKind;
-      return res;
-    }
-
-    EquipmentKind FromCurrentEquipmentKind(CurrentEquipmentKind currentEquipmentKind, out CurrentEquipmentPosition pos)
-    {
-      pos = CurrentEquipmentPosition.Left;
-      if (currentEquipmentKind == CurrentEquipmentKind.RingRight)
-      {
-        pos = CurrentEquipmentPosition.Right;
-        return EquipmentKind.Ring;
-      }
-      if (currentEquipmentKind == CurrentEquipmentKind.TrophyRight)
-      {
-        pos = CurrentEquipmentPosition.Right;
-        return EquipmentKind.Trophy;
-      }
-      var res = (EquipmentKind)currentEquipmentKind;
-      return res;
-    }
-
+        
     public bool MoveEquipment(Inventory from, CurrentEquipment to, Equipment eq,
                               CurrentEquipmentKind ek, bool primary = true)
     {
@@ -328,7 +290,7 @@ namespace Roguelike.Tiles
       if (eq != null)
       {
         CurrentEquipmentPosition pos1;
-        var ek = FromCurrentEquipmentKind(kind, out pos1);
+        var ek = Equipment.FromCurrentEquipmentKind(kind, out pos1);
         var matches = ek == eq.EquipmentKind;
         if (!matches)
           return false;//TODO action
@@ -350,7 +312,7 @@ namespace Roguelike.Tiles
           EquipmentKind = eq.EquipmentKind };
       else
         ac = new LootAction(null) { Info = Name + " took off " + kind, LootActionKind = LootActionKind.TookOff,
-          EquipmentKind = FromCurrentEquipmentKind(kind, out pos) };//TODO send CurrentEquipmentKind
+          EquipmentKind = Equipment.FromCurrentEquipmentKind(kind, out pos) };//TODO send CurrentEquipmentKind
       AppendAction(ac);
 
       return true;
