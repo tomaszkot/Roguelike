@@ -92,6 +92,7 @@
     <Compile Include="LootFactories\EquipmentFactory.cs" />
     <Compile Include="LootFactories\AbstractLootFactory.cs" />
     <Compile Include="LootFactories\LootFactory.cs" />
+    <Compile Include="LootFactories\MiscLootFactory.cs" />
     <Compile Include="LootFactories\ScrollsFactory.cs" />
     <Compile Include="Managers\SoundManager.cs" />
     <Compile Include="Policies\AttackPolicy.cs" />

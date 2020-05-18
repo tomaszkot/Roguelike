@@ -13,6 +13,7 @@ namespace Roguelike.LootFactories
   {
     public EquipmentFactory EquipmentFactory { get; set; }
     public ScrollsFactory ScrollsFactory { get; set; }
+    public MiscLootFactory MiscLootFactory { get; set; }
     List<AbstractLootFactory> factories = new List<AbstractLootFactory>();
 
     public LootFactory(Container container) : base(container)
@@ -23,8 +24,11 @@ namespace Roguelike.LootFactories
     {
       EquipmentFactory = container.GetInstance<EquipmentFactory>();
       ScrollsFactory = container.GetInstance<ScrollsFactory>();
+      MiscLootFactory = container.GetInstance<MiscLootFactory>();
+
       factories.Add(EquipmentFactory);
       factories.Add(ScrollsFactory);
+      factories.Add(MiscLootFactory);
     }
 
     public override Loot GetByTag(string tagPart)
