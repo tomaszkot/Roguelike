@@ -1,5 +1,6 @@
 ﻿using Roguelike.Events;
 using Roguelike.Tiles;
+using Roguelike.Tiles.Looting;
 using SimpleInjector;
 using System;
 using System.Collections.Generic;
@@ -62,6 +63,17 @@ namespace Roguelike.Managers
           Player.PlaySound(sndName);
         }
       }
+      else if (e is LootAction)
+      {
+        var la = e as LootAction;
+        if (la.LootActionKind == LootActionKind.Consumed)
+        {
+          if(la.Loot is Potion /*|| la.Loot is Bibmer*/)
+            Player.PlaySound("drink");
+          else
+            Player.PlaySound("eat_chip");
+        }
+      }
       else if (e is InteractiveTileAction)
       {
         //var door = (e.EventData as DoorStateChangedAction).Door;
@@ -88,7 +100,7 @@ namespace Roguelike.Managers
       else if (e is SoundRequestAction)
       {
         var snd = e as SoundRequestAction;
-        if(!string.IsNullOrEmpty(snd.SoundName))
+        if (!string.IsNullOrEmpty(snd.SoundName))
           Player.PlaySound(snd.SoundName);
       }
       else if (e is LivingEntityAction)
