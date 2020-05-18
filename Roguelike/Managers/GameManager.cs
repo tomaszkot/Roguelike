@@ -194,6 +194,11 @@ namespace Roguelike.Managers
 
     public bool AddLootReward(Loot item, Tile positionSource)
     {
+      return AddLootToNode(item, positionSource);
+    }
+
+    public bool AddLootToNode(Loot item, Tile positionSource)
+    {
       Tile dest = null;
       var tileAtPos = context.CurrentNode.GetTile(positionSource.Point);
       if (tileAtPos.IsEmpty)
@@ -203,11 +208,6 @@ namespace Roguelike.Managers
       if (dest != null)
       {
         var set = ReplaceTileByLoot(item, dest.Point);
-        //var set = context.CurrentNode.SetTile(item, dest.Point);
-        //if (set)
-        //  Logger.LogInfo("AddLootReward " + item + " set = " + set);
-        //else
-        //  Logger.LogError("AddLootReward failed " + item + " set = " + set);
         return set;
       }
 
