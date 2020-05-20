@@ -328,7 +328,7 @@ namespace Roguelike.Tiles
         EventsManager.AppendAction(ac);
     }
 
-    protected void Assert(bool check, string desc)
+    protected void Assert(bool check, string desc = "")
     {
       if (EventsManager != null)
         EventsManager.Assert(check, desc);

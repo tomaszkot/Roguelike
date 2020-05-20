@@ -23,7 +23,7 @@ namespace Roguelike.LootFactories
       {
         var scroll = new Scroll();
         scroll.tag1 = tag;
-        scroll.Kind = scroll.DiscoverKindFromName<SpellKind>(tag);
+        scroll.Kind = Scroll.DiscoverKindFromName(tag);
         return scroll;
       };
       var names = new[] { "FireBallScroll" , "IdentifyScroll" };
@@ -56,10 +56,14 @@ namespace Roguelike.LootFactories
     //  return sc.CloneAsScroll();
     //}
 
-    //public Loot GetByKind(Spells.SpellKind kind)
-    //{
-    //  return scrolls.Where(i => i.Kind == kind).Single().CloneAsScroll();
-    //}
+    public Loot GetByKind(Spells.SpellKind kind)
+    {
+      var tile = factory.FirstOrDefault(i => Scroll.DiscoverKindFromName(i.Key) == kind);
+      if (tile.Key != null)
+        return tile.Value(tile.Key);
+
+      return null;
+    }
 
     //protected override void Create()
     //{

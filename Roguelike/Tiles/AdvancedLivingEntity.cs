@@ -128,7 +128,7 @@ namespace Roguelike.Tiles
         AppendAction(new LootAction(consumable.Loot) { LootActionKind = LootActionKind.Consumed });
       }
       else
-        Debug.Assert(false);
+        Assert(false);
       //else if (loot is Hooch)
       //  Hero.AddLastingEffect(LivingEntity.EffectType.Hooch, 6);
 

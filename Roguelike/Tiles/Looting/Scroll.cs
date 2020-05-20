@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Roguelike.Tiles.Looting
 {
-  public class Scroll : StackedLoot, ICloneable
+  public class Scroll : StackedLoot//, ICloneable
   {
     //LivingEntity dummy = LivingEntity.CreateDummy();
     SpellKind kind;
@@ -108,9 +108,14 @@ namespace Roguelike.Tiles.Looting
         case SpellKind.CallGod:
           desc = "Teleports a god near to the hero";
           break;
+        case SpellKind.Identify:
+          desc = "Reveals attributes of a magic/unique item";
+          break;
         default:
           break;
       }
+
+      primaryStatDesc = desc;
     }
 
     //public bool EnemyRequired { get { return spell.EnemyRequired; } }
@@ -142,6 +147,11 @@ namespace Roguelike.Tiles.Looting
       PositionInPage = -1;
     }
 
+    public static SpellKind DiscoverKindFromName(string name)
+    {
+      return DiscoverKindFromName<SpellKind>(name);
+    }
+
     public override string ToString()
     {
       var res = Name;
@@ -171,6 +181,11 @@ namespace Roguelike.Tiles.Looting
     public Spell CreateSpell(LivingEntity caller)
     {
       return CreateSpell(Kind, caller);
+    }
+
+    public override string GetId()
+    {
+      return base.GetId() + "_" + Kind;
     }
 
     public static Spell CreateSpell(SpellKind Kind, LivingEntity caller)
@@ -234,20 +249,17 @@ namespace Roguelike.Tiles.Looting
       return null;
     }
 
-    public object Clone()
-    {
-      return MemberwiseClone();
-    }
+    //public object Clone()
+    //{
+    //  return MemberwiseClone();
+    //}
 
-    public Scroll CloneAsScroll()
-    {
-      return Clone() as Scroll;
-    }
+    //public Scroll CloneAsScroll()
+    //{
+    //  return Clone() as Scroll;
+    //}
 
-    public override string GetId()
-    {
-      return base.GetId() + "_"+Kind;
-    }
+    
 
     //public override string GetPrimaryStatDescription()
     //{

@@ -9,6 +9,7 @@ using Dungeons;
 using Roguelike.Tiles.Abstract;
 using Roguelike.Tiles.Looting;
 using SimpleInjector;
+using System.Linq;
 
 namespace Roguelike.Tiles
 {
@@ -43,7 +44,20 @@ namespace Roguelike.Tiles
 #if UNITY_EDITOR
       
 #endif
+    }
 
+    public bool Identify(Equipment eq)
+    {
+      var scroll = Inventory.GetItems<Scroll>().Where(i=> i.Kind == Spells.SpellKind.Identify).FirstOrDefault();
+      if (scroll != null)
+      {
+        Inventory.Remove(scroll);
+        if (eq.Identify())
+        {
+          return true;
+        }
+      }
+      return false;
     }
 
     public override string ToString()

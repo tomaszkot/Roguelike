@@ -1,6 +1,7 @@
 ﻿using NUnit.Framework;
 using Roguelike.Tiles;
 using Roguelike.Tiles.Looting;
+using System.Linq;
 
 namespace RoguelikeUnitTests
 {
@@ -111,6 +112,29 @@ namespace RoguelikeUnitTests
       Assert.AreEqual(heroLoaded.Inventory.GetStackedCount(mush1), 1);
       Assert.AreEqual(heroLoaded.Inventory.GetStackedCount(mush2), 2);
       Assert.AreEqual(heroLoaded.Inventory.GetStackedCount(plant2), 2);
+    }
+
+    [Test]
+    public void ScrollIdentifyTest()
+    {
+      var game = CreateGame();
+      var hero = game.Hero;
+
+      var scroll = game.GameManager.LootGenerator.LootFactory.ScrollsFactory.GetByKind(Roguelike.Spells.SpellKind.Identify);
+      Assert.NotNull(scroll);
+      Assert.True(hero.Inventory.Add(scroll));
+      Assert.True(hero.Inventory.Contains(scroll));
+
+      var wpn = game.GameManager.LootGenerator.GetRandomEquipment(EquipmentKind.Weapon);
+      Assert.IsFalse(wpn.GetMagicStats().Any());
+      wpn.MakeMagic();
+      Assert.False(wpn.GetMagicStats().Any());
+
+      //identify
+      hero.Identify(wpn);
+      Assert.False(hero.Inventory.Contains(scroll));
+      Assert.True(wpn.GetMagicStats().Any());
+
     }
 
     [Test]
