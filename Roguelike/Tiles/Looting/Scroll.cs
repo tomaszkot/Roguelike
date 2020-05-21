@@ -145,6 +145,7 @@ namespace Roguelike.Tiles.Looting
       Price = 40;
       Kind = kind;
       PositionInPage = -1;
+      LootKind = LootKind.Scroll;
     }
 
     public static SpellKind DiscoverKindFromName(string name)

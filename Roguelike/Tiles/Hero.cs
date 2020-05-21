@@ -54,6 +54,9 @@ namespace Roguelike.Tiles
         Inventory.Remove(scroll);
         if (eq.Identify())
         {
+          if(CurrentEquipment.PrimaryEquipment.Values.Contains(eq) ||
+            CurrentEquipment.SpareEquipment.Values.Contains(eq))
+            RecalculateStatFactors(false);
           return true;
         }
       }

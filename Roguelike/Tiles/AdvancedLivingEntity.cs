@@ -18,6 +18,7 @@ namespace Roguelike.Tiles
   public class AdvancedLivingEntity : LivingEntity, IPersistable, IEquipable
   {
     public event EventHandler ExpChanged;
+    public event EventHandler StatsRecalculated;
     protected CurrentEquipment currentEquipment = new CurrentEquipment();
     protected Inventory inventory = null;
 
@@ -34,11 +35,10 @@ namespace Roguelike.Tiles
     protected bool canAdvanceInExp = false;
     int levelUpPoints;
     Dictionary<SpellKind, int> coolingDownSpells = new Dictionary<SpellKind, int>();
-
+    
     public Scroll ActiveScroll
     {
       get; set;
-
     }
 
     public AdvancedLivingEntity(Point point, char symbol) : base(point, symbol)
@@ -345,6 +345,9 @@ namespace Roguelike.Tiles
       //}
 
       AccumulateEqFactors(false);
+
+      if (StatsRecalculated != null)
+        StatsRecalculated(this, EventArgs.Empty);
     }
 
     public bool CanUseEquipment(Equipment eq, EntityStat eqStat)
@@ -362,7 +365,7 @@ namespace Roguelike.Tiles
         {
           bool spareUsed = currentEquipment.SpareEquipmentUsed[ek];
           var eq = spareUsed ? currentEquipment.SpareEquipment[ek] : currentEquipment.PrimaryEquipment[ek];
-          if (eq != null)
+          if (eq != null && eq.IsIdentified)
           {
             var stats = eq.GetStats();
             //var att = stats.Stats[EntityStatKind.Attack];
