@@ -28,7 +28,7 @@ namespace Roguelike.Serialization
       worldSaver();
 
       var gameState = gm.CreateGameState();
-      gm.Persister.SaveGameState(gameState);
+      gm.Persister.SaveGameState(gm.Hero.Name,gameState);
 
       //restore hero
       gm.CurrentNode.SetTile(gm.Hero, gm.Hero.Point);
@@ -36,9 +36,9 @@ namespace Roguelike.Serialization
 
     public void Load(GameManager gm, Func<Hero, GameState, AbstractGameLevel> worldLoader)
     {
-      var hero = gm.Persister.LoadHero();
+      var hero = gm.Persister.LoadHero(gm.Hero.Name);
 
-      var gs = gm.Persister.LoadGameState();
+      var gs = gm.Persister.LoadGameState(gm.Hero.Name);
 
       AbstractGameLevel node = null;
       node = worldLoader(hero, gs);

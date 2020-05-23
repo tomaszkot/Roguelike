@@ -132,9 +132,9 @@ namespace Roguelike.Managers
         InitNodeOnLoad(node);
     }
 
-    public TileContainers.GameLevel LoadLevel(int index)
+    public TileContainers.GameLevel LoadLevel(string heroName, int index)
     {
-      var level = Persister.LoadLevel(index);
+      var level = Persister.LoadLevel(heroName, index);
       InitNode(level, true);
       return level;
     }

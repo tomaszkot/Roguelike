@@ -6,12 +6,12 @@ namespace Roguelike.Serialization
   public interface IPersister
   {
     void SaveHero(Hero hero);
-    Hero LoadHero();
+    Hero LoadHero(string heroName);
     
-    void SaveGameState(GameState gameState);
-    GameState LoadGameState();
+    void SaveGameState(string heroName, GameState gameState);
+    GameState LoadGameState(string heroName);
 
-    void SaveLevel(GameLevel level);
-    GameLevel LoadLevel(int index);
+    void SaveLevel(string heroName, GameLevel level);
+    GameLevel LoadLevel(string heroName, int index);
   }
 }

@@ -74,7 +74,7 @@ namespace Roguelike
           var maxLevel = gs.HeroPathValue.LevelIndex;//TODO gs shall have maxLevel, hero might have go upper. Maybe just count level files in dir ?
           for (var i = 0; i <= maxLevel; i++)
           {
-            var level = GameManager.LoadLevel(i);
+            var level = GameManager.LoadLevel(hero.Name, i);
             levels.Add(level);
           }
           lvl = levels[gs.HeroPathValue.LevelIndex];
@@ -85,7 +85,7 @@ namespace Roguelike
       {
         for (var i = 0; i < levels.Count; i++)
         {
-          GameManager.Persister.SaveLevel(levels[i]);
+          GameManager.Persister.SaveLevel(GameManager.Hero.Name, levels[i]);
         }
       };
 
