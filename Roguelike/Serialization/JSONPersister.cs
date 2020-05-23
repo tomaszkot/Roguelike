@@ -125,7 +125,7 @@ namespace Roguelike.Serialization
       var path = GetFilesPath(heroName);
       parts.Add(path);
       //if (supportManyLevels && fileKind == FileKind.GameLevel)
-      if(GameLevelsFolder.Any())
+      if(GameLevelsFolder.Any() && fileKind == FileKind.GameLevel)
         parts.Add(GameLevelsFolder);
      
       var fileName = fileKind.ToString() + fileSuffix + extension;
