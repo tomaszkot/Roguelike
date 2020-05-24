@@ -45,6 +45,7 @@ namespace Roguelike.Managers
 
     public EnemiesManager EnemiesManager { get => enemiesManager; set => enemiesManager = value; }
     public Hero Hero { get => Context.Hero; }
+    public GameState gameState = new GameState();
     public bool HeroTurn { get => Context.HeroTurn; }
 
     //public EventsManager ActionsManager { get => EventsManager; set => EventsManager = value; }
@@ -438,15 +439,15 @@ namespace Roguelike.Managers
 
     public string GetCurrentDungeonDesc()
     {
-      GameState gameState = CreateGameState();
+      GameState gameState = PrepareGameStateForSave();
       return gameState.ToString();
     }
 
     Func<Hero, GameState, AbstractGameLevel> worldLoader;
 
-    public virtual void Load()
+    public virtual void Load(string heroName)
     {
-      persistancyWorker.Load(this, WorldLoader);
+      persistancyWorker.Load(heroName, this, WorldLoader);
     }
 
     PersistancyWorker persistancyWorker = new PersistancyWorker();
@@ -456,12 +457,11 @@ namespace Roguelike.Managers
       persistancyWorker.Save(this, WorldSaver);
     }
 
-    public virtual GameState CreateGameState()
+    public virtual GameState PrepareGameStateForSave()
     {
-      GameState gameState = new GameState();
-      gameState.LastSaved = DateTime.Now;
+      gameState.GameInfo.LastSaved = DateTime.Now;
       gameState.HeroPathValue.Pit = "";
-      gameState.LastSaved = DateTime.Now;
+      
       if (CurrentNode is TileContainers.GameLevel)//TODO 
       {
         var dl = CurrentNode as TileContainers.GameLevel;
@@ -558,9 +558,12 @@ namespace Roguelike.Managers
           EnemiesManager.MakeEntitiesMove();
           
         }
-
-        
       }
+    }
+
+    public void SetGameState(GameState gameState)
+    {
+      this.gameState = gameState;
     }
   }
 }

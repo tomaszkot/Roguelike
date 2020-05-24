@@ -10,10 +10,29 @@ using System.Threading.Tasks;
 
 namespace Roguelike
 {
+  public class GameInfo
+  {
+    //public string FileName { get; set; }
+    //public Hero Hero { get; set; }
+    //public int LastLevelIndex { get; set; }
+    public Difficulty Difficulty { get; set; }
+    public string GameVersion { get; set; }
+    public bool IsPlayerPermanentlyDead { get; set; }
+    public bool PermanentDeath { get; set; }
+    public DateTime LastSaved { get; set; }
+    //public DateTime LastPlayed { get; set; }
+    //public GameSession Session = new GameSession();
+
+    public override string ToString()
+    {
+      return Difficulty + ", "+ PermanentDeath;
+    }
+  };
+
+
+
   public class GameState:  IPersistable
   {
-    
-
     public class HeroPath
     {
       public string World { get; set; }
@@ -26,7 +45,7 @@ namespace Roguelike
       }
     }
 
-    public DateTime LastSaved { get; set; }
+    public GameInfo GameInfo { get; set; } = new GameInfo();
     public HeroPath HeroPathValue { get; set; } = new HeroPath();
 
     [JsonIgnore]
@@ -34,7 +53,7 @@ namespace Roguelike
 
     public override string ToString()
     {
-      return HeroPathValue.ToString();
+      return GameInfo.ToString() + ";" +  HeroPathValue.ToString();
     }
 
   }

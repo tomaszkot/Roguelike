@@ -33,7 +33,7 @@ namespace RoguelikeUnitTests
 
       game.GameManager.Save();
 
-      game.GameManager.Load();
+      game.GameManager.Load(hero.Name);
 
       Assert.AreNotEqual(game.Hero, hero);
       //after load node shall be different
@@ -59,7 +59,7 @@ namespace RoguelikeUnitTests
         Assert.AreEqual(game.Hero.Inventory.Items.Count, 1);
 
         game.GameManager.Save();
-        game.GameManager.Load();
+        game.GameManager.Load(hero.Name);
 
         Assert.AreEqual(game.GameManager.Hero.Name, heroName);
         Assert.AreEqual(game.Hero.Inventory.Items.Count, 1);

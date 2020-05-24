@@ -40,7 +40,7 @@ namespace RoguelikeUnitTests
       Assert.AreEqual(goldInv.Count, 20);
 
       game.GameManager.Save();
-      game.GameManager.Load();
+      game.GameManager.Load(hero.Name);
 
       var heroLoaded = game.GameManager.Hero;
       Assert.AreEqual(heroLoaded.Inventory.Items.Count, 1);
@@ -64,7 +64,7 @@ namespace RoguelikeUnitTests
       Assert.AreEqual(hero.Inventory.Items[0].tag1, "rusty_sword");
 
       game.GameManager.Save();
-      game.GameManager.Load();
+      game.GameManager.Load(hero.Name);
 
       var heroLoaded = game.GameManager.Hero;
       Assert.AreEqual(heroLoaded.Inventory.Items.Count, 2);
@@ -106,7 +106,7 @@ namespace RoguelikeUnitTests
       Assert.AreEqual(hero.Inventory.GetStackedCount(plant2), 2);
       
       game.GameManager.Save();
-      game.GameManager.Load();
+      game.GameManager.Load(hero.Name);
 
       var heroLoaded = game.GameManager.Hero;
       Assert.AreEqual(heroLoaded.Inventory.GetStackedCount(mush1), 1);

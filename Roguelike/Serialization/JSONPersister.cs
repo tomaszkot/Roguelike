@@ -114,7 +114,7 @@ namespace Roguelike.Serialization
 
     public static string RootPath { get; set; } = Path.GetTempPath();
     
-    string GamePath
+    public string GamePath
     {
       get{ return RootPath + GameFolder; }
     }

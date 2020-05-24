@@ -123,7 +123,7 @@ namespace RoguelikeConsoleRunner
       }
       else if (key == ConsoleKey.L)
       {
-        GameManager.Load();
+        //GameManager.Load();
       }
       else if (key == ConsoleKey.Spacebar)
       {
