@@ -20,7 +20,7 @@ namespace Roguelike
       var container = new Container();
       container.Options.ConstructorResolutionBehavior = new GreediestConstructorBehavior();
       container.Register<Dungeons.IDungeonGenerator, LevelGenerator>();
-      container.Register<JSONPersister, JSONPersister>();
+      container.Register<IPersister, JSONPersister>();
       container.Register<GameManager, GameManager>();
       container.Register<Dungeons.TileContainers.DungeonNode, Roguelike.Generators.TileContainers.DungeonNode>();
       container.Register<Dungeons.Tiles.Door, Roguelike.Tiles.Door>();

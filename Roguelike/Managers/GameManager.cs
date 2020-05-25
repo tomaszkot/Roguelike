@@ -55,7 +55,11 @@ namespace Roguelike.Managers
     public AbstractGameLevel CurrentNode { get => context.CurrentNode; }
     public AlliesManager AlliesManager { get => alliesManager; set => alliesManager = value; }
     public LootGenerator LootGenerator { get => lootGenerator; set => lootGenerator = value; }
-    public IPersister Persister { get => persister; set => persister = value; }
+    public IPersister Persister
+    {
+      get => persister;
+      set => persister = value;
+    }
     public ILogger Logger { get => logger; set => logger = value; }
     public Func<Tile, InteractionResult> Interact;
     public Func<int, Stairs, InteractionResult> DungeonLevelStairsHandler;
@@ -81,7 +85,7 @@ namespace Roguelike.Managers
       enemiesManager = new EnemiesManager(Context, EventsManager, Container);
       AlliesManager = new AlliesManager(Context, EventsManager, Container);
 
-      Persister = container.GetInstance<JSONPersister>();
+      Persister = container.GetInstance<IPersister>();
 
       soundManager = new SoundManager(this, container);
     }
