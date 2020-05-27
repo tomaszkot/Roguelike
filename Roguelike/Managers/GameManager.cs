@@ -45,7 +45,7 @@ namespace Roguelike.Managers
 
     public EnemiesManager EnemiesManager { get => enemiesManager; set => enemiesManager = value; }
     public Hero Hero { get => Context.Hero; }
-    public GameState gameState = new GameState();
+    protected GameState gameState = new GameState();
     public bool HeroTurn { get => Context.HeroTurn; }
 
     //public EventsManager ActionsManager { get => EventsManager; set => EventsManager = value; }
@@ -67,6 +67,8 @@ namespace Roguelike.Managers
     public Container Container { get; set; }
     public Func<Hero, GameState, AbstractGameLevel> WorldLoader { get => worldLoader; set => worldLoader = value; }
     public Action WorldSaver { get; set; }
+    public GameState GameState { get => gameState; }
+
     public SoundManager soundManager;
 
     public GameManager(Container container)

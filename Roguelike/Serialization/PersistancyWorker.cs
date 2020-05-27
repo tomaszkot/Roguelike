@@ -15,6 +15,7 @@ namespace Roguelike.Serialization
       {
 #if DEBUG
         var heros = gm.CurrentNode.GetTiles<Hero>();
+
         var heroInNode = heros.SingleOrDefault();
         Debug.Assert(heroInNode != null);
 #endif
