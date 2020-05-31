@@ -31,7 +31,7 @@ namespace Roguelike.Tiles
     public int Level { get; set; } = 1;
     public int Experience { get; private set; }
     public int NextLevelExperience { get; set; }
-    public int AvailableExpPoints { get; set; }
+    public int AvailableExpPoints { get; set; } = 3;
     protected bool canAdvanceInExp = false;
     int levelUpPoints;
     Dictionary<SpellKind, int> coolingDownSpells = new Dictionary<SpellKind, int>();
@@ -309,10 +309,13 @@ namespace Roguelike.Tiles
       CurrentEquipmentPosition pos;
       if (eq != null)
         ac = new LootAction(eq) { Info = Name + " put on " + eq, LootActionKind = LootActionKind.PutOn,
-          EquipmentKind = eq.EquipmentKind };
+          EquipmentKind = eq.EquipmentKind, CurrentEquipmentKind = kind
+        };
       else
-        ac = new LootAction(null) { Info = Name + " took off " + kind, LootActionKind = LootActionKind.TookOff,
-          EquipmentKind = Equipment.FromCurrentEquipmentKind(kind, out pos) };//TODO send CurrentEquipmentKind
+        ac = new LootAction(null) { Info = Name + " took off " + kind, LootActionKind = LootActionKind.PutOff,
+          EquipmentKind = Equipment.FromCurrentEquipmentKind(kind, out pos),
+          CurrentEquipmentKind = kind
+        };
       AppendAction(ac);
 
       return true;

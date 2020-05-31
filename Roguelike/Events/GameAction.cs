@@ -103,7 +103,7 @@ namespace Roguelike
       //  }
       //}
     }
-    public enum LootActionKind { Generated, Collected, PutOn, TookOff, Crafted, SpecialDrunk, Enchanted, Consumed, Identified }
+    public enum LootActionKind { Generated, Collected, PutOn, PutOff, Crafted, SpecialDrunk, Enchanted, Consumed, Identified }
     public class LootAction : GameAction
     {
       
@@ -116,6 +116,7 @@ namespace Roguelike
       //TODO can be named Kind ?
       public LootActionKind LootActionKind { get; set; }
       public EquipmentKind EquipmentKind { get; set; }
+      public CurrentEquipmentKind CurrentEquipmentKind { get; set; }
 
       public LootAction(Loot loot) { Loot = loot; }
     }
