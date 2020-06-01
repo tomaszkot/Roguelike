@@ -388,10 +388,12 @@ namespace Roguelike.Managers
         }
         else if (tile is Barrel)
         {
-          var tileDest = LootGenerator.TryGetRandomLootByDiceRoll(LootSourceKind.Barrel);
-          bool repl = ReplaceTileByLoot(tileDest, tile.Point);
-          Assert(repl, "ReplaceTileByLoot "+ tileDest);
-          Debug.WriteLine("ReplaceTileByLoot " + tileDest + " " + repl);
+          //var tileDest = LootGenerator.TryGetRandomLootByDiceRoll(LootSourceKind.Barrel);
+          //bool repl = ReplaceTileByLoot(tileDest, tile.Point);
+          //Assert(repl, "ReplaceTileByLoot "+ tileDest);
+          //Debug.WriteLine("ReplaceTileByLoot " + tileDest + " " + repl);
+          Context.ApplyPhysicalAttackPolicy(Hero, tile, (p) => OnHeroPolicyApplied(this, p));
+          return InteractionResult.Attacked;
         }
         else if (tile is Chest)
         {
@@ -465,7 +467,7 @@ namespace Roguelike.Managers
 
     public virtual GameState PrepareGameStateForSave()
     {
-      gameState.GameInfo.LastSaved = DateTime.Now;
+      gameState.Settings.CoreInfo.LastSaved = DateTime.Now;
       gameState.HeroPathValue.Pit = "";
       
       if (CurrentNode is TileContainers.GameLevel)//TODO 

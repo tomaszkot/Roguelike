@@ -1,92 +1,113 @@
-﻿namespace Roguelike
+﻿using System;
+
+namespace Roguelike
 {
-  /// <summary>
-  /// These values shall not be renamed cause old saves will not work anymore!
-  /// </summary>
-  public enum GameControllingMode
+  namespace Settings
   {
-    TwoButtons,//deprecated the same as MouseAndKeyboard
-    MouseAndKeyboard,
-    TouchNoButtons,
-    TouchTwoButtons
-  };
-
-  //[Serializable]
-  public class RpgGameSettings 
-  {
-    GameControllingMode gameControllingMode = GameControllingMode.MouseAndKeyboard;
-    public bool TurnOffSpellAfterUseOnTouchMode { get; set; }
-    public bool SoundOn { get; set; }
-    public bool MusicOn { get; set; }
-    public bool TipsOn { get; set; }
-    public bool GodsVoiceOn { get; set; }
-    public bool ShowShortcuts { get; set; }
-    public bool AutomaticallyRestMerchantInv { get; set; }
-    public float DefaultMusicVolume
+    /// <summary>
+    /// These values shall not be renamed cause old saves will not work anymore!
+    /// </summary>
+    public enum GameControllingMode
     {
-      get;
-      set;
-    }
+      TwoButtons,//deprecated the same as MouseAndKeyboard
+      MouseAndKeyboard,
+      TouchNoButtons,
+      TouchTwoButtons
+    };
 
-    public float DefaultSoundVolume
+    public class CoreInfo
     {
-      get;
-      set;
-    }
+      public Difficulty Difficulty { get; set; }
+      public string GameVersion { get; set; }
+      public bool IsPlayerPermanentlyDead { get; set; }
+      public bool PermanentDeath { get; set; }
+      public DateTime LastSaved { get; set; }
+      //public GameSession Session = new GameSession();
 
-    public GameControllingMode GameControllingMode
-    {
-      get
+      public override string ToString()
       {
-        return gameControllingMode;
+        return Difficulty + ", " + PermanentDeath;
       }
+    };
 
-      set
+    public class SoundMusic
+    {
+      public bool SoundOn { get; set; } = true;
+      public bool MusicOn { get; set; } = true;
+      public bool GodsVoiceOn { get; set; } = true;
+
+      public float DefaultMusicVolume
       {
-        gameControllingMode = value;
-        if (gameControllingMode == GameControllingMode.TouchTwoButtons)
+        get;
+        set;
+      } = .25f;
+
+      public float DefaultSoundVolume
+      {
+        get;
+        set;
+      } = 1f;
+    };
+
+    public class Mechanics
+    {
+      public bool TurnOffSpellAfterUseOnTouchMode { get; set; }
+      public bool AutoPutOnBetterEquipment { get; set; } = true;
+      public bool AllowInPlaceInventoryCrafting { get; set; } = true;
+    }
+
+    public class Input
+    {
+      GameControllingMode gameControllingMode = GameControllingMode.MouseAndKeyboard;
+      public GameControllingMode GameControllingMode
+      {
+        get
         {
-          //int k = 0;
+          return gameControllingMode;
+        }
+
+        set
+        {
+          gameControllingMode = value;
         }
       }
     }
-    bool autoPutOnBetterEquipment;
-    bool allowInPlaceInventoryCrafting = true;
 
-    public bool AutoPutOnBetterEquipment
+    public class View
     {
-      get { return autoPutOnBetterEquipment; }
-      set { autoPutOnBetterEquipment = value; }
+      public bool HintsOn { get; set; } = true;
+      public bool ShowShortcuts { get; set; } = true;
     }
 
-    public bool AllowInPlaceInventoryCrafting { get => allowInPlaceInventoryCrafting; set => allowInPlaceInventoryCrafting = value; }
-
-    public RpgGameSettings()
+    //[Serializable]
+    public class RpgGameSettings
     {
-      AutoPutOnBetterEquipment = true;
-      gameControllingMode = GameControllingMode.MouseAndKeyboard;
-      SoundOn = true;
-      MusicOn = true;
-      TipsOn = true;
-      GodsVoiceOn = true;
-      AutomaticallyRestMerchantInv = true;
-      DefaultMusicVolume = .25f;
-      DefaultSoundVolume = 1f;
-      ShowShortcuts = true;
+      public CoreInfo CoreInfo { get; set; } = new CoreInfo();
+      public SoundMusic SoundMusic { get; set; } = new SoundMusic();
+      public Mechanics Mechanics { get; set; } = new Mechanics();
+      public Input Input { get; set; } = new Input();
+      public View View { get; set; } = new View();
+
+      public RpgGameSettings()
+      {
+      }
+
+      public override string ToString()
+      {
+        return CoreInfo.ToString() +  base.ToString();
+      }
+
+      //void Save()
+      //{
+      //	PlayerPrefs.SetInt("DifficultyLevel", (int)DifficultyLevel);
+      //	PlayerPrefs.SetInt("EverShownToUser", EverShownToUser ? 1 : 0);
+      //}
+
+      //void Load()
+      //{
+      //	difficultyLevel = (Difficulty)PlayerPrefs.GetInt("DifficultyLevel", (int)Difficulty.Easy);
+      //	everShownToUser = PlayerPrefs.GetInt("EverShownToUser", 1) == 1 ? true : false;
+      //}
     }
-
-    //public bool PermanentDeath { get; set; }
-
-    //void Save()
-    //{
-    //	PlayerPrefs.SetInt("DifficultyLevel", (int)DifficultyLevel);
-    //	PlayerPrefs.SetInt("EverShownToUser", EverShownToUser ? 1 : 0);
-    //}
-
-    //void Load()
-    //{
-    //	difficultyLevel = (Difficulty)PlayerPrefs.GetInt("DifficultyLevel", (int)Difficulty.Easy);
-    //	everShownToUser = PlayerPrefs.GetInt("EverShownToUser", 1) == 1 ? true : false;
-    //}
   }
 }

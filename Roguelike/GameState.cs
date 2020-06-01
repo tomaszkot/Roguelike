@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using Roguelike.Serialization;
+using Roguelike.Settings;
 using Roguelike.TileContainers;
 using Roguelike.Tiles;
 using System;
@@ -10,27 +11,7 @@ using System.Threading.Tasks;
 
 namespace Roguelike
 {
-  public class GameInfo
-  {
-    //public string FileName { get; set; }
-    //public Hero Hero { get; set; }
-    //public int LastLevelIndex { get; set; }
-    public Difficulty Difficulty { get; set; }
-    public string GameVersion { get; set; }
-    public bool IsPlayerPermanentlyDead { get; set; }
-    public bool PermanentDeath { get; set; }
-    public DateTime LastSaved { get; set; }
-    //public DateTime LastPlayed { get; set; }
-    //public GameSession Session = new GameSession();
-
-    public override string ToString()
-    {
-      return Difficulty + ", "+ PermanentDeath;
-    }
-  };
-
-
-
+      
   public class GameState:  IPersistable
   {
     public class HeroPath
@@ -44,8 +25,8 @@ namespace Roguelike
         return Pit.Any() ? this.World + " " + Pit + " " + LevelIndex  : World;
       }
     }
-
-    public GameInfo GameInfo { get; set; } = new GameInfo();
+        
+    public RpgGameSettings Settings { get; set; } = new RpgGameSettings();
     public HeroPath HeroPathValue { get; set; } = new HeroPath();
 
     [JsonIgnore]
@@ -53,7 +34,7 @@ namespace Roguelike
 
     public override string ToString()
     {
-      return GameInfo.ToString() + ";" +  HeroPathValue.ToString();
+      return Settings.ToString() + ";" +  HeroPathValue.ToString();
     }
 
   }

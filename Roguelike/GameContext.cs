@@ -47,7 +47,7 @@ namespace Roguelike
 
     //actions (move, attack) count in turn - typically 1
     Dictionary<TurnOwner, int> turnActionsCount = new Dictionary<TurnOwner, int>();
-    public Action<Policy, LivingEntity , LivingEntity > AttackPolicyInitializer;
+    public Action<Policy, LivingEntity , Tile > AttackPolicyInitializer;
 
     public GameContext(Container container)
     {
@@ -67,9 +67,10 @@ namespace Roguelike
     {
     }
 
-    public void ApplyPhysicalAttackPolicy(LivingEntity attacker, LivingEntity target, Action<Policy> AfterApply)
+    public void ApplyPhysicalAttackPolicy(LivingEntity attacker, Tile target, Action<Policy> AfterApply)
     {
       var attackPolicy = Container.GetInstance<AttackPolicy>();
+
       if (AttackPolicyInitializer != null)
         AttackPolicyInitializer(attackPolicy, attacker, target);
       attackPolicy.OnApplied += (s, e) => AfterApply(e);

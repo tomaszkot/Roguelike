@@ -10,13 +10,13 @@ namespace Roguelike.Policies
   public class AttackPolicy : Policy
   {
     protected LivingEntity attacker;
-    protected LivingEntity victim;
+    protected Dungeons.Tiles.Tile victim;//typically LivingEntity
 
     public AttackPolicy()
     {
     }
 
-    public virtual void Apply(LivingEntity attacker, LivingEntity victim)
+    public virtual void Apply(LivingEntity attacker, Dungeons.Tiles.Tile victim)
     {
       this.attacker = attacker;
       this.victim = victim;
@@ -28,8 +28,12 @@ namespace Roguelike.Policies
 
     protected override void ReportApplied(LivingEntity attacker)
     {
-      if (attacker.CalculateIfHitWillHappen(victim))
-        attacker.ApplyPhysicalDamage(victim);
+      var le = victim as LivingEntity;
+      if (le != null)
+      {
+        if (attacker.CalculateIfHitWillHappen(le))
+          attacker.ApplyPhysicalDamage(le);
+      }
 
       base.ReportApplied(attacker);
     }

@@ -113,7 +113,6 @@
     <Compile Include="Managers\EntitiesManager.cs" />
     <Compile Include="Managers\EventsManager.cs" />
     <Compile Include="Managers\GameManager.cs" />
-    <Compile Include="Managers\InputManager.cs" />
     <Compile Include="Managers\LastActions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Serialization\IPersister.cs" />
