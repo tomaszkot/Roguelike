@@ -343,15 +343,15 @@ namespace Roguelike.Managers
       bool tileIsDoor = tile is Tiles.Door;
       bool tileIsDoorBySumbol = tile.Symbol == Constants.SymbolDoor;
 
-      if (tile is Enemy)
+      if (tile is Enemy || tile is Dungeons.Tiles.Wall)
       {
         //Logger.LogInfo("Hero attacks " + tile);
-        var en = tile as Enemy;
+       // var en = tile as Enemy;
         //if(!en.Alive)
         //  Logger.LogError("Hero attacks dead!" );
         //else
         //  Logger.LogInfo("Hero attacks en health = "+en.Stats.Health);
-        Context.ApplyPhysicalAttackPolicy(Hero, en, (p) => OnHeroPolicyApplied(this, p));
+        Context.ApplyPhysicalAttackPolicy(Hero, tile, (p) => OnHeroPolicyApplied(this, p));
 
         return InteractionResult.Attacked;
       }
@@ -388,11 +388,7 @@ namespace Roguelike.Managers
         }
         else if (tile is Barrel)
         {
-          //var tileDest = LootGenerator.TryGetRandomLootByDiceRoll(LootSourceKind.Barrel);
-          //bool repl = ReplaceTileByLoot(tileDest, tile.Point);
-          //Assert(repl, "ReplaceTileByLoot "+ tileDest);
-          //Debug.WriteLine("ReplaceTileByLoot " + tileDest + " " + repl);
-          Context.ApplyPhysicalAttackPolicy(Hero, tile, (p) => OnHeroPolicyApplied(this, p));
+          Context.ApplyPhysicalAttackPolicy(Hero, tile, (policy) => OnHeroPolicyApplied(this, policy));
           return InteractionResult.Attacked;
         }
         else if (tile is Chest)
@@ -407,16 +403,27 @@ namespace Roguelike.Managers
         }
         return InteractionResult.Blocked;//blok hero by default
       }
-      else if (tile is Dungeons.Tiles.IObstacle)
-      {
-        return InteractionResult.Blocked;//blok hero by default
-      }
+      //else if (tile is Dungeons.Tiles.IObstacle)
+      //{
+      //  return InteractionResult.Blocked;//blok hero by default
+      //}
       return InteractionResult.None;
     }
 
-    public void OnHeroPolicyApplied(object sender, Policies.Policy e)
+    public void OnHeroPolicyApplied(object sender, Policies.Policy policy)
     {
-      if(e is AttackPolicy || e is SpellCastPolicy)
+      if (policy.Kind == PolicyKind.Attack)
+      {
+        var attackPolicy = policy as AttackPolicy;
+        if (attackPolicy.Victim is Barrel)
+        {
+          var tileDest = LootGenerator.TryGetRandomLootByDiceRoll(LootSourceKind.Barrel);
+          bool repl = ReplaceTileByLoot(tileDest, attackPolicy.Victim.Point);
+          Assert(repl, "ReplaceTileByLoot " + tileDest);
+          Debug.WriteLine("ReplaceTileByLoot " + tileDest + " " + repl);
+        }
+      }
+      if (policy is AttackPolicy || policy is SpellCastPolicy)
         RemoveDeadEnemies();
       context.IncreaseActions(TurnOwner.Hero);
       context.MoveToNextTurnOwner();

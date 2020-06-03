@@ -1,4 +1,5 @@
-﻿using Roguelike.Tiles;
+﻿using Dungeons.Tiles;
+using Roguelike.Tiles;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,11 +11,14 @@ namespace Roguelike.Policies
   public class AttackPolicy : Policy
   {
     protected LivingEntity attacker;
-    protected Dungeons.Tiles.Tile victim;//typically LivingEntity
+    private Dungeons.Tiles.Tile victim;//typically LivingEntity
 
     public AttackPolicy()
     {
+      Kind = PolicyKind.Attack;
     }
+
+    public Tile Victim { get => victim; protected set => victim = value; }
 
     public virtual void Apply(LivingEntity attacker, Dungeons.Tiles.Tile victim)
     {
@@ -34,7 +38,7 @@ namespace Roguelike.Policies
         if (attacker.CalculateIfHitWillHappen(le))
           attacker.ApplyPhysicalDamage(le);
       }
-
+      
       base.ReportApplied(attacker);
     }
 

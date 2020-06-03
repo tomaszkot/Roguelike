@@ -22,7 +22,7 @@ namespace Roguelike.Policies
 
     public MovePolicy()
     {
-
+      Kind = PolicyKind.Move;
     }
 
     public bool Apply(AbstractGameLevel level, LivingEntity entity, Point newPos)

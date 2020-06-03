@@ -11,7 +11,7 @@ namespace Roguelike.Tiles.Interactive
 {
   public enum StairsKind { Unset, PitDown, PitUp, LevelUp, LevelDown };
 
-  public class Stairs : InteractiveTile, IObstacle
+  public class Stairs : InteractiveTile
   {
     StairsKind kind;
     public string pitName = "";
