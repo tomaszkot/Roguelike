@@ -386,21 +386,21 @@ namespace Roguelike.Managers
               return DungeonLevelStairsHandler(destLevelIndex, stairs);
           }
         }
-        else if (tile is Barrel)
+        else //if (tile is Barrel)
         {
           Context.ApplyPhysicalAttackPolicy(Hero, tile, (policy) => OnHeroPolicyApplied(this, policy));
           return InteractionResult.Attacked;
         }
-        else if (tile is Chest)
-        {
-          var chest = tile as Chest;
-          var loot = LootGenerator.TryGetRandomLootByDiceRoll(chest.LootSourceKind);
-          if (loot != null)
-          {
-            bool replaced = ReplaceTileByLoot(loot, tile.Point);
-          }
+        //else if (tile is Chest)
+        //{
+        //  var chest = tile as Chest;
+        //  var loot = LootGenerator.TryGetRandomLootByDiceRoll(chest.LootSourceKind);
+        //  if (loot != null)
+        //  {
+        //    bool replaced = ReplaceTileByLoot(loot, tile.Point);
+        //  }
           
-        }
+        //}
         return InteractionResult.Blocked;//blok hero by default
       }
       //else if (tile is Dungeons.Tiles.IObstacle)
@@ -415,9 +415,12 @@ namespace Roguelike.Managers
       if (policy.Kind == PolicyKind.Attack)
       {
         var attackPolicy = policy as AttackPolicy;
-        if (attackPolicy.Victim is Barrel)
+        if (attackPolicy.Victim is Barrel || attackPolicy.Victim is Chest)
         {
-          var tileDest = LootGenerator.TryGetRandomLootByDiceRoll(LootSourceKind.Barrel);
+          var lsk = LootSourceKind.Barrel;
+          if (attackPolicy.Victim is Chest)
+            lsk = (attackPolicy.Victim as Chest).LootSourceKind;
+          var tileDest = LootGenerator.TryGetRandomLootByDiceRoll(lsk);
           bool repl = ReplaceTileByLoot(tileDest, attackPolicy.Victim.Point);
           Assert(repl, "ReplaceTileByLoot " + tileDest);
           Debug.WriteLine("ReplaceTileByLoot " + tileDest + " " + repl);

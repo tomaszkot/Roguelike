@@ -1,13 +1,8 @@
 ﻿using NUnit.Framework;
 using Roguelike.Managers;
-using Roguelike.TileContainers;
 using Roguelike.Tiles;
 using Roguelike.Tiles.Interactive;
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace RoguelikeUnitTests
 {

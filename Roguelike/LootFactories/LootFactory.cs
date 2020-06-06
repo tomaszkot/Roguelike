@@ -1,4 +1,5 @@
-﻿using Roguelike.Managers;
+﻿using Dungeons.Core;
+using Roguelike.Managers;
 using Roguelike.Tiles;
 using SimpleInjector;
 using System.Collections.Generic;
@@ -69,7 +70,9 @@ namespace Roguelike.LootFactories
 
     public override Loot GetRandom()
     {
-      return null;
+      var index = RandHelper.GetRandomInt(factories.Count);
+      var lootCreator = factories[index];
+      return lootCreator.GetRandom();
     }
 
   }

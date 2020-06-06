@@ -1,4 +1,5 @@
-﻿using Roguelike.Attributes;
+﻿using Dungeons.Core;
+using Roguelike.Attributes;
 using Roguelike.Generators;
 using Roguelike.Tiles;
 using SimpleInjector;
@@ -12,6 +13,13 @@ namespace Roguelike.LootFactories
 
     public EquipmentFactory(Container container) : base(container)
     {
+    }
+
+    public override Loot GetRandom()
+    {
+      var index = RandHelper.GetRandomEnumValue<EquipmentKind>(new[] { EquipmentKind.God, EquipmentKind .Trophy, EquipmentKind.Unset});
+      var lootCreator = lootCreators[index];
+      return lootCreator.GetRandom();
     }
 
     public override Loot GetByTag(string tagPart)
@@ -44,12 +52,7 @@ namespace Roguelike.LootFactories
     protected virtual void CreateKindFactories()
     {
     }
-
-    public override Loot GetRandom()
-    {
-      return null;
-    }
-
+       
     protected override void Create()
     {
       CreateKindFactories();
@@ -107,7 +110,7 @@ namespace Roguelike.LootFactories
       return eq;
     }
 
-    private Equipment GetRandomArmor()
+    public virtual Equipment GetRandomArmor()
     {
       var item = new Equipment(EquipmentKind.Armor);
       item.Name = "Armor";
