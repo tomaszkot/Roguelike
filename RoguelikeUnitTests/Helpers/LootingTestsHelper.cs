@@ -97,8 +97,12 @@ namespace RoguelikeUnitTests.Helpers
         createdTiles.Add(tile);
       }
 
-      foreach(var tile in createdTiles)
+      foreach (var tile in createdTiles)
+      {
         game.GameManager.InteractHeroWith(tile);
+        game.GameManager.MakeGameTick();//make allies move
+        game.GameManager.MakeGameTick();//make enemies move
+      }
     }
   }
 }

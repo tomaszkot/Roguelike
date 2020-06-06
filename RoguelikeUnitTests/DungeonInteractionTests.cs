@@ -45,7 +45,7 @@ namespace RoguelikeUnitTests
       Assert.AreEqual(game.Level.GetTile(pt), barrels.First());
 
       var res = game.GameManager.InteractHeroWith(barrels.First());
-      Assert.AreEqual(res, InteractionResult.Blocked);
+      Assert.AreEqual(res, InteractionResult.Attacked);
       var barrels1 = game.Level.GetTiles<Barrel>();
       Assert.AreEqual(barrels1.Count, barrels.Count-1);
       Assert.AreNotEqual(game.Level.GetTile(pt), barrels.First());

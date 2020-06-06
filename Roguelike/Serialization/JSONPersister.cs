@@ -21,12 +21,6 @@ namespace Roguelike.Serialization
   {
     protected const string extension = ".json";
     protected enum FileKind { Hero, GameLevel, GameState }
-    //bool supportManyLevels = false;
-
-    //public JSONPersister(bool supportManyLevels)
-    //{
-    //  this.supportManyLevels = supportManyLevels;
-    //}
 
     public void Save<T>(T entity, string filePath)
     {
@@ -112,11 +106,12 @@ namespace Roguelike.Serialization
         return false;
     }
 
-    public static string RootPath { get; set; } = Path.GetTempPath();
+    //Application.persistentDataPath
+    public static string RootPath { get; set; } = Path.Combine(Path.GetTempPath(), GameName);
     
     public string GamePath
     {
-      get{ return RootPath + GameFolder; }
+      get{ return RootPath /*+ GameFolder*/; }
     }
 
     protected string GetFullFilePath(FileKind fileKind, string heroName, string fileSuffix = "")//, string fileName)
@@ -141,9 +136,9 @@ namespace Roguelike.Serialization
 
     protected virtual string GameLevelsFolder { get { return ""; } }
 
-    protected virtual string GameName { get { return "Roguelike"; } }
+    protected static string GameName { get { return "Roguelike"; } }
 
-    protected virtual string GameFolder { get { return GameName; } }
+    //protected virtual string GameFolder { get { return GameName; } }
 
     public void SaveHero(Hero hero)
     {
