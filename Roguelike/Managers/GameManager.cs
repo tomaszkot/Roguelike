@@ -421,9 +421,15 @@ namespace Roguelike.Managers
           if (attackPolicy.Victim is Chest)
             lsk = (attackPolicy.Victim as Chest).LootSourceKind;
           var tileDest = LootGenerator.TryGetRandomLootByDiceRoll(lsk);
-          bool repl = ReplaceTileByLoot(tileDest, attackPolicy.Victim.Point);
-          Assert(repl, "ReplaceTileByLoot " + tileDest);
-          Debug.WriteLine("ReplaceTileByLoot " + tileDest + " " + repl);
+          //AddLootReward
+          if (attackPolicy.Victim is Barrel)
+          {
+            bool repl = ReplaceTileByLoot(tileDest, attackPolicy.Victim.Point);
+            Assert(repl, "ReplaceTileByLoot " + tileDest);
+            Debug.WriteLine("ReplaceTileByLoot " + tileDest + " " + repl);
+          }
+          else
+            AddLootReward(tileDest, attackPolicy.Victim);
         }
       }
       if (policy is AttackPolicy || policy is SpellCastPolicy)
@@ -508,13 +514,13 @@ namespace Roguelike.Managers
       return new MoveResult(false, pos);
     }
 
-    public bool CollectLoot(Loot lootTile)
+    public bool CollectLoot(Loot lootTile, bool fromDistance)
     {
       if (Hero.Inventory.Add(lootTile))
       {
         //Hero.Inventory.Print(logger, "loot added");
         CurrentNode.RemoveLoot(lootTile.Point);
-        this.EventsManager.AppendAction(new LootAction(lootTile) { LootActionKind = LootActionKind.Collected });
+        EventsManager.AppendAction(new LootAction(lootTile) { LootActionKind = LootActionKind.Collected, CollectedFromDistance = fromDistance });
         if (lootTile is Equipment)
         {
           var eq = lootTile as Equipment;
@@ -531,7 +537,7 @@ namespace Roguelike.Managers
       var lootTile = CurrentNode.GetLootTile(Hero.Point);
       if (lootTile != null)
       {
-        return CollectLoot(lootTile);
+        return CollectLoot(lootTile, false);
       }
 
       return false;

@@ -117,6 +117,7 @@ namespace Roguelike
       public LootActionKind LootActionKind { get; set; }
       public EquipmentKind EquipmentKind { get; set; }
       public CurrentEquipmentKind CurrentEquipmentKind { get; set; }
+      public bool CollectedFromDistance { get; set; }
 
       public LootAction(Loot loot) { Loot = loot; }
     }
