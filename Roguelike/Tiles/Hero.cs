@@ -41,9 +41,6 @@ namespace Roguelike.Tiles
 #if ASCII_BUILD
       color = ConsoleColor.Yellow;
 #endif
-#if UNITY_EDITOR
-      
-#endif
     }
 
     public bool Identify(Equipment eq)

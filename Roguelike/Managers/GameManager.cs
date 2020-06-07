@@ -419,9 +419,13 @@ namespace Roguelike.Managers
         {
           var lsk = LootSourceKind.Barrel;
           if (attackPolicy.Victim is Chest)
-            lsk = (attackPolicy.Victim as Chest).LootSourceKind;
+          {
+            var chest = (attackPolicy.Victim as Chest);
+            if(!chest.Closed)
+              return;
+            lsk = chest.LootSourceKind;
+          }
           var tileDest = LootGenerator.TryGetRandomLootByDiceRoll(lsk);
-          //AddLootReward
           if (attackPolicy.Victim is Barrel)
           {
             bool repl = ReplaceTileByLoot(tileDest, attackPolicy.Victim.Point, false, attackPolicy.Victim);

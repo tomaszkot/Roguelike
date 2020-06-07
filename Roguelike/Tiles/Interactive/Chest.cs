@@ -11,6 +11,7 @@ namespace Roguelike.Tiles.Interactive
   {
     public const char ChestSymbol = '~';
     public ChestKind ChestKind { get; set; }
+    public bool Closed { get; set; } = true;
 
     public Chest() : base(ChestSymbol)
     {

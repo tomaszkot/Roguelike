@@ -154,9 +154,6 @@ namespace Roguelike.Tiles
       var ga = new LivingEntityAction(LivingEntityActionKind.GainedDamage) { InvolvedValue = inflicted, InvolvedEntity = this };
       var desc = "received damage: " + inflicted.Formatted();
       ga.Info = Name.ToString() + " " + desc;
-#if UNITY_EDITOR
-      ga.Info += "UE , Health = " + Stats.Health.Formatted();
-#endif
       AppendAction(ga);
 
       PlaySound("punch");
@@ -210,9 +207,7 @@ namespace Roguelike.Tiles
       var ga = new LivingEntityAction(LivingEntityActionKind.GainedDamage) { InvolvedValue = amount, InvolvedEntity = this };
       var desc = damageDesc ?? "received damage: " + amount.Formatted();
       ga.Info = Name.ToString() + " " + desc;
-#if UNITY_EDITOR
-      ga.Info += "UE , Health = " + Stats.Health.Formatted();
-#endif
+
       AppendAction(ga);
       PlaySound(sound);
 
