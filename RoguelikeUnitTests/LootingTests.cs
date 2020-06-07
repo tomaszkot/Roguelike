@@ -23,7 +23,7 @@ namespace RoguelikeUnitTests
         for (int i = 0; i < 10; i++)
         {
           var pot = env.LootGenerator.GetRandomLoot(LootKind.Potion);
-          var added = game.GameManager.AddLootReward(pot, env.Game.Hero);
+          var added = game.GameManager.AddLootReward(pot, env.Game.Hero, false);
           Assert.True(added);
           var dist = pot.DistanceFrom(env.Game.Hero);
           Assert.Less(dist, 5);

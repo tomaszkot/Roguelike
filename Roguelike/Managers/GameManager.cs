@@ -186,25 +186,25 @@ namespace Roguelike.Managers
           var loot = LootGenerator.TryGetRandomLootByDiceRoll(LootSourceKind.Enemy);
           if (loot != null)
           {
-            AddLootReward(loot, lea.InvolvedEntity);
+            AddLootReward(loot, lea.InvolvedEntity, false);
             //ReplaceTileByLoot(loot, lea.InvolvedEntity.Point);
             //ReplaceTile(loot, lea.InvolvedEntity.Point);
           }
           var extraLootItems = GetExtraLoot();
           foreach (var extraLoot in extraLootItems)
           {
-            AddLootReward(extraLoot, lea.InvolvedEntity);
+            AddLootReward(extraLoot, lea.InvolvedEntity, true);
           }
         }
       }
     }
 
-    public bool AddLootReward(Loot item, Tile positionSource)
+    public bool AddLootReward(Loot item, Tile positionSource, bool animated)
     {
-      return AddLootToNode(item, positionSource);
+      return AddLootToNode(item, positionSource, animated);
     }
 
-    public bool AddLootToNode(Loot item, Tile positionSource)
+    public bool AddLootToNode(Loot item, Tile positionSource, bool animated)
     {
       Tile dest = null;
       var tileAtPos = context.CurrentNode.GetTile(positionSource.Point);
@@ -214,7 +214,7 @@ namespace Roguelike.Managers
         dest = context.CurrentNode.GetClosestEmpty(positionSource, true);
       if (dest != null)
       {
-        var set = ReplaceTileByLoot(item, dest.Point);
+        var set = ReplaceTileByLoot(item, dest.Point, animated, positionSource);
         return set;
       }
 
@@ -424,12 +424,12 @@ namespace Roguelike.Managers
           //AddLootReward
           if (attackPolicy.Victim is Barrel)
           {
-            bool repl = ReplaceTileByLoot(tileDest, attackPolicy.Victim.Point);
+            bool repl = ReplaceTileByLoot(tileDest, attackPolicy.Victim.Point, false, attackPolicy.Victim);
             Assert(repl, "ReplaceTileByLoot " + tileDest);
             Debug.WriteLine("ReplaceTileByLoot " + tileDest + " " + repl);
           }
           else
-            AddLootReward(tileDest, attackPolicy.Victim);
+            AddLootReward(tileDest, attackPolicy.Victim, true);
         }
       }
       if (policy is AttackPolicy || policy is SpellCastPolicy)
@@ -438,7 +438,7 @@ namespace Roguelike.Managers
       context.MoveToNextTurnOwner();
     }
 
-    public bool ReplaceTileByLoot(Loot loot, Point point)
+    public bool ReplaceTileByLoot(Loot loot, Point point, bool animated, Tile positionSource)
     {
       //Assert(loot is Loot || loot.IsEmpty, "ReplaceTileByLoot failed");
       var prevTile = CurrentNode.ReplaceTile(loot, point);
@@ -448,7 +448,7 @@ namespace Roguelike.Managers
         if(it!=null)
           this.EventsManager.AppendAction(new InteractiveTileAction(it) { KindValue = InteractiveTileAction.Kind.Destroyed });
 
-        this.EventsManager.AppendAction(new LootAction(loot) { LootActionKind = LootActionKind.Generated });
+        this.EventsManager.AppendAction(new LootAction(loot) { LootActionKind = LootActionKind.Generated, GenerationAnimated = animated, Source = positionSource });
         return true;
       }
 
