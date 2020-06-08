@@ -85,12 +85,12 @@ namespace Roguelike
 
     public class InteractiveTileAction : GameAction
     {
-      public enum Kind { Unset, DoorsUnlocked, DoorsLocked, Destroyed }
+      public enum Kind { Unset, DoorsUnlocked, DoorsLocked, Destroyed, ChestOpened }
       public Tiles.InteractiveTile Tile { get; set; }
       public Kind KindValue { get; set; }
       public InteractiveTileAction(Tiles.InteractiveTile tile) { Tile = tile; }
-      //public Tiles.Door Door { get; set; }
-
+      public InteractiveTileAction() { }
+      
       //public override string GetSound
       //{
       //  get
@@ -122,6 +122,7 @@ namespace Roguelike
       public Tile Source { get; set; }
 
       public LootAction(Loot loot) { Loot = loot; }
+      public LootAction() { }
     }
 
     public enum HeroActionKind { LeveledUp, ChangedLevel, Moved };

@@ -165,18 +165,17 @@ namespace Roguelike.Generators
 
     internal Loot TryGetRandomLootByDiceRoll(LootSourceKind lsk)
     {
+      //return null;
       LootKind lootKind = LootKind.Unset;
       if (lsk == LootSourceKind.DeluxeGoldChest ||
-        lsk == LootSourceKind.GoldChest 
-        //lsk == LootSourceKind.PlainChest
+        lsk == LootSourceKind.GoldChest
         )
       {
-        if (lsk != LootSourceKind.PlainChest)
-          lootKind = LootKind.Equipment;
+        lootKind = LootKind.Equipment;
       }
       else
         lootKind = Probability.RollDiceForKind(lsk);
-           
+
       if (lootKind == LootKind.Equipment)
       {
         var eqClass = Probability.RollDice(lsk);

@@ -187,8 +187,6 @@ namespace Roguelike.Managers
           if (loot != null)
           {
             AddLootReward(loot, lea.InvolvedEntity, false);
-            //ReplaceTileByLoot(loot, lea.InvolvedEntity.Point);
-            //ReplaceTile(loot, lea.InvolvedEntity.Point);
           }
           var extraLootItems = GetExtraLoot();
           foreach (var extraLoot in extraLootItems)
@@ -199,22 +197,29 @@ namespace Roguelike.Managers
       }
     }
 
-    public bool AddLootReward(Loot item, Tile positionSource, bool animated)
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="item"></param>
+    /// <param name="lootSource">Barrel, Chest, Enemy...</param>
+    /// <param name="animated"></param>
+    /// <returns></returns>
+    public bool AddLootReward(Loot item, Tile lootSource, bool animated)
     {
-      return AddLootToNode(item, positionSource, animated);
+      return AddLootToNode(item, lootSource, animated);
     }
 
-    public bool AddLootToNode(Loot item, Tile positionSource, bool animated)
+    public bool AddLootToNode(Loot item, Tile lootSource, bool animated)
     {
       Tile dest = null;
-      var tileAtPos = context.CurrentNode.GetTile(positionSource.Point);
+      var tileAtPos = context.CurrentNode.GetTile(lootSource.Point);
       if (tileAtPos.IsEmpty)
         dest = tileAtPos;
       else
-        dest = context.CurrentNode.GetClosestEmpty(positionSource, true);
+        dest = context.CurrentNode.GetClosestEmpty(lootSource, true);
       if (dest != null)
       {
-        var set = ReplaceTileByLoot(item, dest.Point, animated, positionSource);
+        var set = ReplaceTileByLoot(item, dest.Point, animated, lootSource);
         return set;
       }
 
@@ -386,21 +391,11 @@ namespace Roguelike.Managers
               return DungeonLevelStairsHandler(destLevelIndex, stairs);
           }
         }
-        else //if (tile is Barrel)
+        else 
         {
           Context.ApplyPhysicalAttackPolicy(Hero, tile, (policy) => OnHeroPolicyApplied(this, policy));
           return InteractionResult.Attacked;
         }
-        //else if (tile is Chest)
-        //{
-        //  var chest = tile as Chest;
-        //  var loot = LootGenerator.TryGetRandomLootByDiceRoll(chest.LootSourceKind);
-        //  if (loot != null)
-        //  {
-        //    bool replaced = ReplaceTileByLoot(loot, tile.Point);
-        //  }
-          
-        //}
         return InteractionResult.Blocked;//blok hero by default
       }
       //else if (tile is Dungeons.Tiles.IObstacle)
@@ -418,22 +413,26 @@ namespace Roguelike.Managers
         if (attackPolicy.Victim is Barrel || attackPolicy.Victim is Chest)
         {
           var lsk = LootSourceKind.Barrel;
+          Chest chest = null;
           if (attackPolicy.Victim is Chest)
           {
-            var chest = (attackPolicy.Victim as Chest);
+            chest = (attackPolicy.Victim as Chest);
             if(!chest.Closed)
               return;
             lsk = chest.LootSourceKind;
           }
-          var tileDest = LootGenerator.TryGetRandomLootByDiceRoll(lsk);
+          var loot = LootGenerator.TryGetRandomLootByDiceRoll(lsk);
           if (attackPolicy.Victim is Barrel)
           {
-            bool repl = ReplaceTileByLoot(tileDest, attackPolicy.Victim.Point, false, attackPolicy.Victim);
-            Assert(repl, "ReplaceTileByLoot " + tileDest);
-            Debug.WriteLine("ReplaceTileByLoot " + tileDest + " " + repl);
+            bool repl = ReplaceTileByLoot(loot, attackPolicy.Victim.Point, false, attackPolicy.Victim);
+            Assert(repl, "ReplaceTileByLoot " + loot);
+            Debug.WriteLine("ReplaceTileByLoot " + loot + " " + repl);
           }
           else
-            AddLootReward(tileDest, attackPolicy.Victim, true);
+          {
+            AppendAction <InteractiveTileAction>((InteractiveTileAction ac) => { ac.Tile = chest; ac.KindValue = InteractiveTileAction.Kind.ChestOpened; });
+            AddLootReward(loot, attackPolicy.Victim, true);//add loot at closest empty
+          }
         }
       }
       if (policy is AttackPolicy || policy is SpellCastPolicy)
@@ -442,19 +441,42 @@ namespace Roguelike.Managers
       context.MoveToNextTurnOwner();
     }
 
+    void AppendAction<T>(Action<T> init) where T : GameAction, new()
+    {
+      var action = new T();
+      if (init != null)
+        init(action);
+
+      this.EventsManager.AppendAction(action);
+    }
+
     public bool ReplaceTileByLoot(Loot loot, Point point, bool animated, Tile positionSource)
     {
       //Assert(loot is Loot || loot.IsEmpty, "ReplaceTileByLoot failed");
       var prevTile = CurrentNode.ReplaceTile(loot, point);
-      if (prevTile != null)
+      if (prevTile != null)//this normally shall always be not null
       {
         var it = prevTile as InteractiveTile;
-        if(it!=null)
-          this.EventsManager.AppendAction(new InteractiveTileAction(it) { KindValue = InteractiveTileAction.Kind.Destroyed });
+        if (it != null)//barrel could be destroyed
+        {
+          //bool lootGenerated = false;
+          if (it == positionSource)
+            AppendAction<InteractiveTileAction>((InteractiveTileAction ac) => { ac.Tile = it; ac.KindValue = InteractiveTileAction.Kind.Destroyed; });
+          //else if (positionSource is Chest)
+          //{
+          //  var chest = positionSource as Chest;
+          //  if(chest.Closed)
+          //    AppendAction <InteractiveTileAction>((InteractiveTileAction ac) => { ac.Tile = it; ac.KindValue = InteractiveTileAction.Kind.ChestOpened; });
+          //}
+        }
 
-        this.EventsManager.AppendAction(new LootAction(loot) { LootActionKind = LootActionKind.Generated, GenerationAnimated = animated, Source = positionSource });
+        AppendAction<LootAction>( (LootAction ac) => { ac.Loot = loot;  ac.LootActionKind = LootActionKind.Generated; ac.GenerationAnimated = animated; ac.Source = positionSource; });
         return true;
       }
+      //else if (positionSource is InteractiveTile)
+      //{
+      //  AppendAction<InteractiveTileAction>((InteractiveTileAction ac) => { ac.Tile = positionSource as InteractiveTile; ac.KindValue = InteractiveTileAction.Kind.Destroyed; });
+      //}
 
       return false;
     }
