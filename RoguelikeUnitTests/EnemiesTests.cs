@@ -1,5 +1,9 @@
 ﻿using NUnit.Framework;
+using Roguelike.Attributes;
+using Roguelike.Managers;
 using Roguelike.Tiles;
+using Roguelike.Tiles.Interactive;
+using System.Linq;
 
 namespace RoguelikeUnitTests
 {
@@ -44,8 +48,63 @@ namespace RoguelikeUnitTests
       Assert.Greater(GetHitAttackValue(chemp), enemyHit);
       Assert.Greater(GetHitAttackValue(boss), GetHitAttackValue(chemp));
 
-      enemy.SetLevel(enemy.Level+1);
+      enemy.SetLevel(enemy.Level + 1);
       Assert.Greater(GetHitAttackValue(enemy), enemyHit);
+    }
+
+    void GoDown()
+    {
+      var down = game.Level.GetTiles<Stairs>().Where(i => i.StairsKind == StairsKind.LevelDown).Single();
+
+      //hero shall be on the level
+      Assert.NotNull(game.Level.GetTiles<Hero>().SingleOrDefault());
+
+      var result = game.GameManager.InteractHeroWith(down);
+      Assert.AreEqual(result, InteractionResult.ContextSwitched);
+    }
+
+    [Test]
+    public void TestPowerIncrease()
+    {
+      var game = CreateGame();
+      Enemy lastPlain = null;
+      Enemy lastChemp = null;
+      Enemy lastBoss = null;
+
+      EntityStatKind[] statKinds = new[] { EntityStatKind.Attack, EntityStatKind.Defence, EntityStatKind.Magic };
+
+      for (var levelIndex = 0; levelIndex < 10; levelIndex++)
+      {
+        var enemies = game.GameManager.EnemiesManager.Enemies.Cast<Enemy>().ToList();
+        Assert.Greater(enemies.Count, 2);
+
+        var boss = enemies.Where(i=> i.PowerKind == EnemyPowerKind.Plain).First();
+        boss.SetBoss();
+        Assert.AreEqual(boss.PowerKind, EnemyPowerKind.Boss);
+        var chemp = enemies.Where(i => i.PowerKind == EnemyPowerKind.Champion).First();
+        var plain = enemies.Where(i => i.PowerKind == EnemyPowerKind.Plain).First();
+
+        if (levelIndex > 0)
+        {
+          Assert.Greater(plain.Level, lastPlain.Level);
+          Assert.Greater(chemp.Level, lastChemp.Level);
+          Assert.Greater(boss.Level, lastBoss.Level);
+
+          foreach (var esk in statKinds)
+          {
+            Assert.Greater(plain.Stats.GetStat(esk).Value.TotalValue, lastPlain.Stats.GetStat(esk).Value.TotalValue);
+            Assert.Greater(chemp.Stats.GetStat(esk).Value.TotalValue, lastChemp.Stats.GetStat(esk).Value.TotalValue);
+            Assert.Greater(boss.Stats.GetStat(esk).Value.TotalValue, lastBoss.Stats.GetStat(esk).Value.TotalValue);
+          }
+
+        }
+        lastPlain = plain;
+        lastChemp = chemp;
+        lastBoss = boss;
+
+        GoDown();
+      }
+      
     }
   }
 }

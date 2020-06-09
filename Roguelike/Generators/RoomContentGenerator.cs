@@ -148,10 +148,20 @@ namespace Roguelike.Generators
           RandHelper.GetRandomElem<Enemy>(packEnemies).SetNonPlain(false);
         }
 
+        SetPower(packEnemies);
+
         PlaceEnemiesPack(packEnemies);
       }
 
       logger.LogInfo("room totsl enemies: " + node.GetTiles<Enemy>().Count);
+    }
+
+    private void SetPower(List<Enemy> packEnemies)
+    {
+      foreach (var en in packEnemies)
+      {
+        en.SetLevel(levelIndex);
+      }
     }
 
     bool placeEnemiesPackClosely = true;
@@ -167,8 +177,7 @@ namespace Roguelike.Generators
 
         }
       }
-
-
+      
       if (placeEnemiesPackClosely)
       {
         var emptyCells = node.GetEmptyTiles();
