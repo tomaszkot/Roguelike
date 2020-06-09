@@ -63,6 +63,15 @@ namespace RoguelikeUnitTests
       Assert.AreEqual(result, InteractionResult.ContextSwitched);
     }
 
+    //[Test]
+    //public void TestDaIncrease()
+    //{
+    //  var game = CreateGame();
+    //  Enemy lastPlain = null;
+    //  Enemy lastChemp = null;
+    //  Enemy lastBoss = null;
+    //}
+
     [Test]
     public void TestPowerIncrease()
     {
@@ -70,15 +79,19 @@ namespace RoguelikeUnitTests
       Enemy lastPlain = null;
       Enemy lastChemp = null;
       Enemy lastBoss = null;
+      var hero = game.Level.GetTiles<Hero>().SingleOrDefault();
 
       EntityStatKind[] statKinds = new[] { EntityStatKind.Attack, EntityStatKind.Defence, EntityStatKind.Magic };
+      float lastDamageFromPlain = 0;
+      float lastDamageFromChemp = 0;
+      float lastDamageFromBoss = 0;
 
       for (var levelIndex = 0; levelIndex < 10; levelIndex++)
       {
         var enemies = game.GameManager.EnemiesManager.Enemies.Cast<Enemy>().ToList();
         Assert.Greater(enemies.Count, 2);
 
-        var boss = enemies.Where(i=> i.PowerKind == EnemyPowerKind.Plain).First();
+        var boss = enemies.Where(i => i.PowerKind == EnemyPowerKind.Plain).First();
         boss.SetBoss();
         Assert.AreEqual(boss.PowerKind, EnemyPowerKind.Boss);
         var chemp = enemies.Where(i => i.PowerKind == EnemyPowerKind.Champion).First();
@@ -96,15 +109,36 @@ namespace RoguelikeUnitTests
             Assert.Greater(chemp.Stats.GetStat(esk).Value.TotalValue, lastChemp.Stats.GetStat(esk).Value.TotalValue);
             Assert.Greater(boss.Stats.GetStat(esk).Value.TotalValue, lastBoss.Stats.GetStat(esk).Value.TotalValue);
           }
-
         }
+
+        float diffPlain = CheckHit(hero, lastDamageFromPlain, plain);
+        float diffChemp = CheckHit(hero, lastDamageFromChemp, chemp);
+        float diffBoss = CheckHit(hero, lastDamageFromBoss, boss);
+
+        lastDamageFromPlain = diffPlain;
+        lastDamageFromChemp = diffChemp;
+        lastDamageFromBoss = diffBoss;
+
         lastPlain = plain;
         lastChemp = chemp;
         lastBoss = boss;
 
+
+
         GoDown();
       }
-      
+
+    }
+
+    private static float CheckHit(Hero hero, float lastDamageFromPlain, Enemy plain)
+    {
+      var healthBefore = hero.Stats.Health;
+      hero.OnPhysicalHit(plain);
+      var healthAfter = hero.Stats.Health;
+      Assert.Greater(healthBefore, healthAfter);
+      var diffPlain = healthBefore - healthAfter;
+      Assert.Greater(diffPlain, lastDamageFromPlain);
+      return diffPlain;
     }
   }
 }
