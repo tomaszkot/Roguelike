@@ -104,6 +104,8 @@ namespace RoguelikeConsoleRunner
       }
     }
 
+    string HeroName = "";
+
     protected override bool HandleKey(ConsoleKeyInfo info)
     {
       int vertical = 0;
@@ -120,10 +122,12 @@ namespace RoguelikeConsoleRunner
       else if (key == ConsoleKey.S)
       {
         GameManager.Save();
+        HeroName = GameManager.Hero.Name;
       }
       else if (key == ConsoleKey.L)
       {
-        //GameManager.Load();
+        if(HeroName.Any())
+         GameManager.Load(HeroName);
       }
       else if (key == ConsoleKey.Spacebar)
       {

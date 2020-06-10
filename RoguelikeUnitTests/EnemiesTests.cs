@@ -63,15 +63,6 @@ namespace RoguelikeUnitTests
       Assert.AreEqual(result, InteractionResult.ContextSwitched);
     }
 
-    //[Test]
-    //public void TestDaIncrease()
-    //{
-    //  var game = CreateGame();
-    //  Enemy lastPlain = null;
-    //  Enemy lastChemp = null;
-    //  Enemy lastBoss = null;
-    //}
-
     [Test]
     public void TestPowerIncrease()
     {
