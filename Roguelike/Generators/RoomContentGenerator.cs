@@ -19,6 +19,7 @@ namespace Roguelike.Generators
     protected Dungeons.TileContainers.DungeonNode node;
     protected GenerationInfo gi;
     Container container;
+    protected LootGenerator lootGen;
 
     public virtual void Run(Dungeons.TileContainers.DungeonNode node, int levelIndex, int nodeIndex, GenerationInfo gi, Container container)
     {
@@ -27,6 +28,7 @@ namespace Roguelike.Generators
       this.levelIndex = levelIndex;
       this.gi = gi;
       this.logger = container.GetInstance<ILogger>();
+      lootGen = container.GetInstance<LootGenerator>();
 
       GenerateLoot();
       GenerateInteractive();
