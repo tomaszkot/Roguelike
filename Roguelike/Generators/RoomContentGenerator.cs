@@ -115,7 +115,16 @@ namespace Roguelike.Generators
 
     protected virtual bool ShallGenerateChampion(string enemy, int packIndex)
     {
-      return true;
+      var rand = RandHelper.GetRandomDouble();
+      if(rand >= 0.5f)
+        return true;
+      if (gi.GeneratedChempionsCount == 0 && this.node.NodeIndex > gi.NumberOfRooms/2)
+        return true;
+
+      if (gi.GeneratedChempionsCount == 1 && this.node.NodeIndex == gi.NumberOfRooms-1)
+        return true;
+
+      return false;
     }
 
     protected virtual List<Enemy> CreateEnemiesPack(string enemyName, int packIndex)
@@ -148,6 +157,7 @@ namespace Roguelike.Generators
         if (packEnemies.Any() && ShallGenerateChampion(enemyName, packIndex))
         {
           RandHelper.GetRandomElem<Enemy>(packEnemies).SetNonPlain(false);
+          gi.GeneratedChempionsCount++;
         }
 
         SetPower(packEnemies);

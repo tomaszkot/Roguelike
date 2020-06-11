@@ -43,9 +43,17 @@ namespace Roguelike
     {
       {"rat", RatSymbol},
       {"bat", BatSymbol},
+      {"spider", SpiderSymbol},
+      {"skeleton", SkeletonSymbol},
       {"snake", SnakeSymbol},
       {"wolf", WolfSymbol},
       {"bear", CommonEnemySymbol},
+      {"boar", CommonEnemySymbol},
+      {"lynx", CommonEnemySymbol},
+      {"wolverine", CommonEnemySymbol},
+      
     };
+
+
   }
 }

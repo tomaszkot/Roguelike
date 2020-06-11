@@ -117,6 +117,25 @@ namespace RoguelikeUnitTests
       }
     }
 
+
+    [Test]
+    public void ChempionsCount()
+    {
+      //game can have 1-n levels (sub-dungeons)
+      var game = CreateGame(false);
+      Assert.Null(game.Hero);
+      var gi = new Roguelike.GenerationInfo();
+      gi.NumberOfRooms = 5;
+      var level_0 = game.GenerateLevel(0, gi);
+      Assert.AreEqual(level_0.Nodes.Count, 5);
+      var enemies = level_0.GetTiles<Enemy>();
+      Assert.Greater(enemies.Count, 5);
+      var chemps = enemies.Where(i => i.PowerKind == EnemyPowerKind.Champion).Count();
+      Assert.Greater(chemps, 0);
+      Assert.Less(chemps, gi.NumberOfRooms);
+
+    }
+
     [Test]
     public void FixedRoomSize()
     {

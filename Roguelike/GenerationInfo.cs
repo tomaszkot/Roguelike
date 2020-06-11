@@ -27,6 +27,8 @@ namespace Roguelike
 
     public const int MaxLevels = 2;//-1 endless
 
+    public int GeneratedChempionsCount = 0;
+
     public override void MakeEmpty()
     {
       base.MakeEmpty();
