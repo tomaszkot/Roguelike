@@ -25,6 +25,8 @@ namespace Roguelike
 
     public bool GenerateInteractiveTiles { get; set; } = true && !ForceEmpty;
 
+    public const int MaxLevels = 2;//-1 endless
+
     public override void MakeEmpty()
     {
       base.MakeEmpty();

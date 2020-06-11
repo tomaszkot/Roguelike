@@ -329,5 +329,10 @@ namespace Roguelike.TileContainers
     {
       return GetType().Name + " " + GetHashCode() + " " + base.ToString();
     }
+
+    public Stairs GetStairs(StairsKind kind)
+    {
+      return GetTiles<Stairs>().Where(s => s.StairsKind == kind).FirstOrDefault();
+    }
   }
 }
