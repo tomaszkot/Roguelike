@@ -23,7 +23,7 @@ namespace Dungeons
     //global switch
     public const bool ForceEmpty = false;
 
-    public int ForcedNumberOfEnemiesInRoom { get; set; } = 0;//0 means field is not used
+    public int ForcedNumberOfEnemiesInRoom { get; set; } = -1;//-1 means field is not used
     public bool GenerateOuterWalls = true && !ForceEmpty;
     public bool GenerateRandomInterior = true && !ForceEmpty;
     public bool GenerateRandomStonesBlocks = true && !ForceEmpty;
@@ -31,12 +31,12 @@ namespace Dungeons
     internal bool GenerateEmptyTiles = true;
 
     public bool FirstNodeSmaller = false;
-    const int minSize = 8;
+    const int minSize = 10;
     public Size MinNodeSize = new Size(minSize, minSize);
     public Size MaxNodeSize = new Size(12, 14);
     public Size ForcedChilldIslandSize = new Size(0, 0);
 
-    public readonly int MinSubMazeNodeSize = 5;
+    public readonly int MinSubMazeNodeSize = 6;
     public readonly int MinSimpleInteriorSize = 3;
     public int MinRoomLeft = 6;
 

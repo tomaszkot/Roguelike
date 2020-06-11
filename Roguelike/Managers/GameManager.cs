@@ -106,7 +106,7 @@ namespace Roguelike.Managers
       return new EnemiesManager(Context, EventsManager, Container);
     }
 
-    public void SetContext(AbstractGameLevel node, Hero hero, GameContextSwitchKind kind, Stairs stairs = null)
+    public virtual void SetContext(AbstractGameLevel node, Hero hero, GameContextSwitchKind kind, Stairs stairs = null)
     {
       LootGenerator.LevelIndex = node.Index;
       if (kind == GameContextSwitchKind.NewGame)
@@ -115,6 +115,7 @@ namespace Roguelike.Managers
           hero.DungeonNodeIndex = node.GeneratorNodes.First().NodeIndex;//TODOs
         else
           hero.DungeonNodeIndex = 0;//TODO
+                
       }
 
       Context.Hero = hero;
