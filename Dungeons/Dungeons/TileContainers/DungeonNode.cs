@@ -101,6 +101,7 @@ namespace Dungeons
       public Container Container { get; set; }
 
       public EventHandler<DungeonNode> CustomInteriorDecorator;
+      public EventHandler<DungeonNode> BeforeInteriorGenerated;
       ILogger logger;
 
       //ctors
@@ -245,6 +246,9 @@ namespace Dungeons
           PlaceEmptyTiles();
         if (generationInfo.GenerateOuterWalls)
           GenerateOuterWalls();
+
+        if(BeforeInteriorGenerated!=null)
+          BeforeInteriorGenerated(this, this);
 
         interiorGenerator.GenerateRandomInterior(CustomInteriorDecorator);
 

@@ -560,22 +560,30 @@ namespace Roguelike.Tiles
       lea.InvolvedEntity = this;
       lea.EffectType = eff;
       var targetName = Name.ToString();
-      if (newOne)
+
+      if (eff == EffectType.ConsumedFood)
       {
-        if (fromHit && eff != EffectType.Hooch)
-          lea.Info = "Hitting " + targetName + " caused effect : " + eff;
-        else
-          lea.Info = targetName + " experienced " + eff + " effect";
-        if (amount > 0)
-        {
-          lea.Info += ", received damage: " + amount.Formatted();
-        }
+        lea.Info += targetName + " consured: ?";
       }
       else
       {
-        if (amount == 0)
-          return;
-        lea.Info = "Effect " + eff + " applied, " + targetName + " received damage: " + amount.Formatted();
+        if (newOne)
+        {
+          if (fromHit && eff != EffectType.Hooch)
+            lea.Info = "Hitting " + targetName + " caused effect : " + eff;
+          else
+            lea.Info = targetName + " experienced " + eff + " effect";
+          if (amount > 0)
+          {
+            lea.Info += ", received damage: " + amount.Formatted();
+          }
+        }
+        else
+        {
+          if (amount == 0)
+            return;
+          lea.Info = "Effect " + eff + " applied, " + targetName + " received damage: " + amount.Formatted();
+        }
       }
       lea.Level = ActionLevel.Important;
       AppendAction(lea);

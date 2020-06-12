@@ -31,9 +31,9 @@ namespace Dungeons
     internal bool GenerateEmptyTiles = true;
 
     public bool FirstNodeSmaller = false;
-    const int minSize = 10;
+    const int minSize = 13;
     public Size MinNodeSize = new Size(minSize, minSize);
-    public Size MaxNodeSize = new Size(12, 14);
+    public Size MaxNodeSize = new Size(15, 18);
     public Size ForcedChilldIslandSize = new Size(0, 0);
 
     public readonly int MinSubMazeNodeSize = 6;

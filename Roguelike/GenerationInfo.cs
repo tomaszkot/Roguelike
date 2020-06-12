@@ -25,7 +25,7 @@ namespace Roguelike
 
     public bool GenerateInteractiveTiles { get; set; } = true && !ForceEmpty;
 
-    public const int MaxLevels = 2;//-1 endless
+    public const int MaxLevelIndex = 0;//-1 endless
 
     public int GeneratedChempionsCount = 0;
 

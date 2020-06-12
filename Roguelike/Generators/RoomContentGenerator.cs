@@ -54,7 +54,7 @@ namespace Roguelike.Generators
       if (this.gi != null && !gi.GenerateLoot)
         return;
 
-      int lootNumber = RandHelper.GetRandomInt(4);//TODO
+      int lootNumber = RandHelper.GetRandomInt(2);//TODO
       lootNumber++;//at least one
       for (int i = 0; i < lootNumber; i++)
       {

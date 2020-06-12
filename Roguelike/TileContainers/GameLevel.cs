@@ -1,6 +1,7 @@
 ﻿using Dungeons;
 using Dungeons.Core;
 using Dungeons.TileContainers;
+using Dungeons.Tiles;
 using Newtonsoft.Json;
 using Roguelike.Serialization;
 using Roguelike.Tiles;
@@ -111,7 +112,10 @@ namespace Roguelike.TileContainers
           {
             if (dt.Symbol != tile.Symbol)
             {
-              Logger.LogError("dt.Symbol != tile.Symbol [" + dt.Symbol + "," + tile.Symbol + "] " + tile.Point + " ");
+              if (!(dt is Wall && tile is Stairs))//TODO
+              {
+                Logger.LogError("dt.Symbol != tile.Symbol [" + dt.Symbol + "," + tile.Symbol + "] " + tile.Point + " ");
+              }
             }
             if (!dt.Revealed && tile.Revealed)
               dt.Revealed = true;

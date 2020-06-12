@@ -332,8 +332,18 @@ namespace Roguelike.TileContainers
 
     public Stairs GetStairs(StairsKind kind)
     {
-      return GetTiles<Stairs>().Where(s => s.StairsKind == kind).FirstOrDefault();
+      return GetAllStairs(kind).FirstOrDefault();
     }
-        
+
+    private IEnumerable<Stairs> GetAllStairs(StairsKind kind)
+    {
+      return GetTiles<Stairs>().Where(s => s.StairsKind == kind);
+    }
+
+    public Stairs GetPitStairs(string pitName)
+    {
+      return GetAllStairs(StairsKind.PitDown).Where(i=> i.PitName == pitName).SingleOrDefault();
+    }
+
   }
 }
