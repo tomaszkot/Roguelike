@@ -122,7 +122,10 @@ namespace Roguelike.Tiles
           var pot = consumable.Loot as Potion;
           Debug.Assert(pot != null && pot.Kind == PotionKind.Poison);
         }
-        Stats.IncreaseStatFactor(consumable.EnhancedStat);
+        //Stats.IncreaseStatFactor(consumable.EnhancedStat);
+        var inc = consumable.GetStatIncrease(this);
+        this.Stats.IncreaseStatDynamicValue(consumable.EnhancedStat, inc);
+
         var stacked = consumable.Loot as StackedLoot;
         inventory.Remove(stacked);
         AppendAction(new LootAction(consumable.Loot) { LootActionKind = LootActionKind.Consumed });

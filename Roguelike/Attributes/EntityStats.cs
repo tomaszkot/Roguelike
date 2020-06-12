@@ -324,12 +324,12 @@ namespace Roguelike.Attributes
     //  return cloned;
     //}
 
-    internal void IncreaseStatFactor(EntityStatKind sk)
-    {
-      var inc = this[sk].TotalValue / 2;
-      IncreaseStatDynamicValue(sk, inc);
-      //IncreaseStatFactor(sk, loot.Amount);
-    }
+    //internal void IncreaseStatFactor(EntityStatKind sk)
+    //{
+    //  var inc = this[sk].TotalValue / 2;
+    //  IncreaseStatDynamicValue(sk, inc);
+    //  //IncreaseStatFactor(sk, loot.Amount);
+    //}
 
     internal void IncreaseStatFactor(EntityStatKind sk, float percent)
     {
