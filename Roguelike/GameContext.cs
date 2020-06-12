@@ -121,7 +121,7 @@ namespace Roguelike
       {
         EventsManager.AppendAction(new LivingEntityAction(kind: LivingEntityActionKind.Moved)
         {
-          Info = entity + " moved",
+          Info = entity.Name + " moved",
           InvolvedEntity = entity,
           MovePolicy = movePolicy
         });
