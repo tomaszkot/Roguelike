@@ -118,5 +118,14 @@ namespace RoguelikeUnitTests
     public void Cleanup()
     { 
     }
+
+    protected void GotoNextHeroTurn(Roguelike.RoguelikeGame game)
+    {
+      Assert.AreEqual(game.GameManager.Context.TurnOwner, Roguelike.TurnOwner.Allies);
+      game.MakeGameTick();//make allies move
+      Assert.AreEqual(game.GameManager.Context.TurnOwner, Roguelike.TurnOwner.Enemies);
+      game.MakeGameTick();//make enemies move
+      Assert.True(game.GameManager.HeroTurn);
+    }
   }
 }

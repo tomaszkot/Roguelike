@@ -1,4 +1,6 @@
-﻿namespace Roguelike.Attributes
+﻿using System;
+
+namespace Roguelike.Attributes
 {
   public class StatValue
   {
@@ -112,11 +114,11 @@
       if (other.Subtracted != 0)
         Subtracted /= other.Subtracted;
     }
-
-    //public object Clone()
-    //{
-    //  var clone = MemberwiseClone();
-    //  return clone;
-    //}
+        
+    public object Clone()
+    {
+      var clone = MemberwiseClone();
+      return clone;
+    }
   }
 }

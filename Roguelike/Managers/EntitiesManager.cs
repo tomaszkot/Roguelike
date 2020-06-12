@@ -156,6 +156,10 @@ namespace Roguelike.Managers
 
     private void OnTurnOwnerChanged(object sender, TurnOwner turnOwner)
     {
+      if (turnOwner == TurnOwner.Hero)
+      {
+        Hero.ApplyLastingEffects();
+      }
       //if (turnOwner == TurnOwner.Allies)
       //  MoveHeroAllies();
     }

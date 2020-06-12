@@ -51,7 +51,7 @@ namespace RoguelikeUnitTests
       enemy.PrefferedFightStyle = PrefferedFightStyle.Magic;//use spells
       var heroHealth = hero.Stats.Health;
       var mana = enemy.Stats.Mana;
-      
+
       Assert.True(game.GameManager.HeroTurn);
       var emptyHeroNeib = game.Level.GetEmptyNeighborhoodPoint(game.Hero);
       game.GameManager.HandleHeroShift(emptyHeroNeib.Item2);
@@ -61,13 +61,12 @@ namespace RoguelikeUnitTests
       var set = game.Level.SetTile(enemy, emptyHeroNeib.Item1);
       Assert.True(set);
 
-      game.MakeGameTick();//make allies move
-      Assert.AreEqual(game.GameManager.Context.TurnOwner, Roguelike.TurnOwner.Enemies);
-      game.MakeGameTick();//make enemies move
-      Assert.True(game.GameManager.HeroTurn);
+      GotoNextHeroTurn(game);
 
       Assert.Greater(heroHealth, hero.Stats.Health);
       Assert.Greater(mana, enemy.Stats.Mana);//used mana
     }
+
+    
   }
 }

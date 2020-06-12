@@ -76,14 +76,7 @@ namespace Roguelike.Attributes
     //{
     //  Stat.Divide(value);
     //}
-
-    //public object Clone()
-    //{
-    //  var clone = MemberwiseClone() as EntityStat;
-    //  clone.Stat = this.Stat.Clone() as StatValue;
-    //  return clone;
-    //}
-
+        
     //public float TotalValue
     //{
     //  get { return stat.TotalValue; }
@@ -151,5 +144,11 @@ namespace Roguelike.Attributes
       return val;
     }
 
+    public object Clone()
+    {
+      var clone = MemberwiseClone() as EntityStat;
+      clone.Value = this.Value.Clone() as StatValue;
+      return clone;
+    }
   }
 }

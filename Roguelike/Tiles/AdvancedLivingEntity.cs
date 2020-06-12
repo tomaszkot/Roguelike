@@ -122,13 +122,16 @@ namespace Roguelike.Tiles
           var pot = consumable.Loot as Potion;
           Debug.Assert(pot != null && pot.Kind == PotionKind.Poison);
         }
-        //Stats.IncreaseStatFactor(consumable.EnhancedStat);
-        var inc = consumable.GetStatIncrease(this);
-        this.Stats.IncreaseStatDynamicValue(consumable.EnhancedStat, inc);
+
+        //float inc = consumable.GetStatIncrease(this);
+        //DoConsume(consumable.EnhancedStat, inc);
 
         var stacked = consumable.Loot as StackedLoot;
         inventory.Remove(stacked);
         AppendAction(new LootAction(consumable.Loot) { LootActionKind = LootActionKind.Consumed });
+        var turns = consumable is Potion ? 1 : 5;
+        var incPercentage = consumable is Potion ? 50 : 10;
+        AddLastingEffect(EffectType.ConsumedFood, turns, consumable.EnhancedStat, incPercentage);
       }
       else
         Assert(false);
@@ -137,7 +140,7 @@ namespace Roguelike.Tiles
 
       //return ac;
     }
-
+        
     //public void IncreaseStatByLevelUpPoint(EntityStatKind stat)
     //{
     //  if (LevelUpPoints == 0)

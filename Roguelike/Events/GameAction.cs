@@ -187,6 +187,7 @@ namespace Roguelike
         this.Kind = kind;
       }
 
+      public EffectType EffectType { get; set; }
       public MovePolicy MovePolicy { get; set; }
 
       public LivingEntity InvolvedEntity { get; set; }
