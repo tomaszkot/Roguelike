@@ -203,6 +203,11 @@ namespace Roguelike.Tiles
 
     public bool HandleEquipmentFound(Equipment eq)
     {
+      if (!eq.IsIdentified)
+      {
+        return false;
+      }
+
       var activeSet = GetActiveEquipment();//primary or secondary 
       var cep = CurrentEquipmentPosition.Unset;
       if (eq.EquipmentKind == EquipmentKind.Ring || eq.EquipmentKind == EquipmentKind.Trophy)

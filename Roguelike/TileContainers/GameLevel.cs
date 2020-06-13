@@ -112,7 +112,7 @@ namespace Roguelike.TileContainers
           {
             if (dt.Symbol != tile.Symbol)
             {
-              if (!(dt is Wall && tile is Stairs))//TODO
+              if (!(dt.Symbol == Constants.SymbolWall && tile.Symbol == Constants.SymbolDoor))//TODO
               {
                 Logger.LogError("dt.Symbol != tile.Symbol [" + dt.Symbol + "," + tile.Symbol + "] " + tile.Point + " ");
               }

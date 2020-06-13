@@ -15,7 +15,7 @@ namespace Roguelike.Tiles
     {
       Kind = InteractiveTileKind.Barrel;
       Name = Kind.ToString();
-      BarrelKind = BarrelKind.Barrel;
+      //BarrelKind = RandHelper.GetRandomDouble() < 0.5 ? BarrelKind.Barrel : BarrelKind.PileOfSkulls;
     }
 
     public Barrel() : this(new Point().Invalid())

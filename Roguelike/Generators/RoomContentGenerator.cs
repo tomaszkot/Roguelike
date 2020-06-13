@@ -40,11 +40,14 @@ namespace Roguelike.Generators
       if (this.gi != null && !gi.GenerateInteractiveTiles)
         return;
 
-      int lootNumber = RandHelper.GetRandomInt(4);//TODO
-      lootNumber++;//at least one
-      for (int i = 0; i < lootNumber; i++)
+      int barrelsNumber = RandHelper.GetRandomInt(4);//TODO
+      barrelsNumber++;//at least one
+      if(node.Width > 15 || node.Height > 15)
+        barrelsNumber++;
+      for (int i = 0; i < barrelsNumber; i++)
       {
-        node.SetTileAtRandomPosition<Barrel>();
+        var barrel = node.SetTileAtRandomPosition<Barrel>();
+        barrel.BarrelKind = RandHelper.GetRandomDouble() < 0.5 ? BarrelKind.Barrel : BarrelKind.PileOfSkulls;
       }
     }
 

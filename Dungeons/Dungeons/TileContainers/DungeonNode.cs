@@ -444,7 +444,7 @@ namespace Dungeons
         }
         if (point.X >= Width || point.Y >= Height)
         {
-          Log("SetTile failed, point.X >= Width || point.Y >= Height for: " + point, true);
+          Log("SetTile failed, node:" + this + ", point.X >= Width || point.Y >= Height point: " + point + ", tile: " + tile, true);
           return false;
         }
 
