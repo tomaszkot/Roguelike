@@ -40,7 +40,9 @@ namespace Roguelike.Generators
       if (this.gi != null && !gi.GenerateInteractiveTiles)
         return;
 
-      int barrelsNumber = RandHelper.GetRandomInt(4);//TODO
+      int barrelsNumber = RandHelper.GetRandomInt(7);//TODO
+      if (node.IsChildIsland)
+        barrelsNumber = 4;
       barrelsNumber++;//at least one
       if(node.Width > 15 || node.Height > 15)
         barrelsNumber++;
@@ -48,6 +50,8 @@ namespace Roguelike.Generators
       {
         var barrel = node.SetTileAtRandomPosition<Barrel>();
         barrel.BarrelKind = RandHelper.GetRandomDouble() < 0.5 ? BarrelKind.Barrel : BarrelKind.PileOfSkulls;
+        //barrel.BarrelKind = BarrelKind.Barrel;
+        //barrel.BarrelKind = BarrelKind.PileOfSkulls;
       }
     }
 

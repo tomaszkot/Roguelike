@@ -35,7 +35,6 @@ namespace Roguelike.Generators
     Looting probability = new Looting();
 
     public Looting Probability { get => probability; set => probability = value; }
-    //public EquipmentFactory EquipmentFactory { get => lootFactory.EquipmentFactory; }
     public int LevelIndex { get; internal set; } = -1;
     public Container Container { get; set; }
     public LootFactory LootFactory { get => lootFactory; set => lootFactory = value; }
@@ -72,7 +71,7 @@ namespace Roguelike.Generators
         {
           var val = .2f;
           if (lk == LootKind.Potion)
-            val *= 1.25f;
+            val *= 1.5f;
           lkChance.SetChance(lk, val);
         }
         probability.SetLootingChance(lootSource, lkChance);
