@@ -72,6 +72,13 @@ namespace Roguelike.InfoScreens
       //  if (display.HasValue && display.Value == false)
       //    return;
       //}
+      if (ac is LivingEntityAction)
+      {
+        var leac = ac as LivingEntityAction;
+        if (leac.Kind == LivingEntityActionKind.Moved)
+          return;
+      }
+
 
       if (reverse)
         actions.Insert(0, ac);
