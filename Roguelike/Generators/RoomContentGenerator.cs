@@ -49,7 +49,7 @@ namespace Roguelike.Generators
       for (int i = 0; i < barrelsNumber; i++)
       {
         var barrel = node.SetTileAtRandomPosition<Barrel>();
-        barrel.BarrelKind = RandHelper.GetRandomDouble() < 0.5 ? BarrelKind.Barrel : BarrelKind.PileOfSkulls;
+        barrel.BarrelKind = RandHelper.GetRandomDouble() < 0.75 ? BarrelKind.Barrel : BarrelKind.PileOfSkulls;
         //barrel.BarrelKind = BarrelKind.Barrel;
         //barrel.BarrelKind = BarrelKind.PileOfSkulls;
       }
