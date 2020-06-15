@@ -40,7 +40,7 @@ namespace Roguelike.Generators
       if (this.gi != null && !gi.GenerateInteractiveTiles)
         return;
 
-      int barrelsNumber = RandHelper.GetRandomInt(7);//TODO
+      int barrelsNumber = RandHelper.GetRandomInt(5);//TODO
       if (node.IsChildIsland)
         barrelsNumber = 4;
       barrelsNumber++;//at least one
@@ -66,10 +66,6 @@ namespace Roguelike.Generators
       for (int i = 0; i < lootNumber; i++)
       {
         var mush = node.SetTileAtRandomPosition<Mushroom>();
-        //var loot = new Mushroom();
-        //loot.tag1 = "mash3";
-        //loot.SetKind(MushroomKind.Boletus);
-        //bool set = node.SetTile(loot, node.GetFirstEmptyPoint().Value);
       }
     }
 
