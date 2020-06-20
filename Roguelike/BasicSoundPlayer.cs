@@ -15,11 +15,12 @@ namespace Roguelike
     {
       try
       {
-        var sp = new SoundPlayer();
-        var filePath = Path.Combine(Environment.CurrentDirectory, "sounds\\" + soundFileName + ".wav");
-        var ex = File.Exists(filePath);
-        sp.SoundLocation = filePath;
-        sp.Play();
+        return;
+        //var sp = new SoundPlayer();
+        //var filePath = Path.Combine(Environment.CurrentDirectory, "sounds\\" + soundFileName + ".wav");
+        //var ex = File.Exists(filePath);
+        //sp.SoundLocation = filePath;
+        //sp.Play();
       }
       catch (Exception )
       {

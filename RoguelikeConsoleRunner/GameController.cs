@@ -167,21 +167,24 @@ namespace RoguelikeConsoleRunner
       {
         if (key == ConsoleKey.N)
         {
-          
           //next level
-          var down = GameManager.CurrentNode.GetTiles<Stairs>().Where(i=> i.StairsKind == StairsKind.LevelDown).FirstOrDefault();
-          if (down != null)
-            GameManager.InteractHeroWith(down);
-          else
-          {
-            down = GameManager.CurrentNode.GetTiles<Stairs>().Where(i => i.StairsKind == StairsKind.PitDown).FirstOrDefault();
-            if (down != null)
-              GameManager.InteractHeroWith(down);
-          }
+          HandleNextLevelDown();
         }
       }
       return base.HandleKey(info);
 
+    }
+
+    protected virtual bool HandleNextLevelDown()
+    {
+      var down = GameManager.CurrentNode.GetStairs(StairsKind.LevelDown);
+      if (down != null)
+      {
+        GameManager.InteractHeroWith(down);
+        return true;
+      }
+
+      return false;
     }
 
     protected override void Redraw()

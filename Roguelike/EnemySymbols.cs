@@ -54,6 +54,13 @@ namespace Roguelike
       
     };
 
+    public static char GetSymbolFromName(string name)
+    {
+      if(EnemiesToSymbols.ContainsKey(name))
+        return EnemiesToSymbols[name];
+      return '\0';
+    }
+
 
   }
 }

@@ -6,7 +6,15 @@ namespace Dungeons.Tiles
 {
   public class Door : Tile
   {
-    public string BossBehind { get; set; }
+    string bossBehind;
+    public string BossBehind
+    {
+      get { return bossBehind; }
+      set {
+        bossBehind = value;
+        Color = ConsoleColor.Red;
+      }
+    }
 
     public Door(Point point) : base(point, Constants.SymbolDoor)
     {

@@ -74,8 +74,17 @@ namespace DungeonsConsoleRunner
         screen.PrintInfo.PrintNodeIndexes = !screen.PrintInfo.PrintNodeIndexes;
         Redraw();
       }
+      if (input == ConsoleKey.V)
+      {
+        RevealAll();
+      }
 
       return exit;
+    }
+
+    protected virtual void RevealAll()
+    {
+      
     }
 
     protected void Reload()
