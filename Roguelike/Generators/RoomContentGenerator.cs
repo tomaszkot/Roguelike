@@ -20,6 +20,7 @@ namespace Roguelike.Generators
     protected GenerationInfo gi;
     Container container;
     protected LootGenerator lootGen;
+    public string LevelBossName { get; set; }
 
     public virtual void Run(Dungeons.TileContainers.DungeonNode node, int levelIndex, int nodeIndex, GenerationInfo gi, Container container)
     {
@@ -30,11 +31,36 @@ namespace Roguelike.Generators
       this.logger = container.GetInstance<ILogger>();
       lootGen = container.GetInstance<LootGenerator>();
 
+      if (node.ContentGenerated)
+      {
+        EnsureBoss();
+        return;
+      }
+            
       GenerateLoot();
       GenerateInteractive();
       GenerateEnemies();
+      node.ContentGenerated = true;
     }
 
+    protected Enemy CreateBoss(string name, char symbol)
+    {
+      var enemy = new Tiles.Enemy();
+      enemy.tag1 = name;// "Miller";
+      enemy.Name = name;// "Miller";
+      enemy.Symbol = symbol;// EnemySymbols.QuestBoss;
+      enemy.SetNonPlain(true);
+      //var empty = node.GetRandomEmptyTile();
+      //if (empty != null)
+      //  node.SetTile(enemy, empty.Point);
+      //else
+      //{
+      //  this.logger.LogError("no room for boss!!!");
+      //}
+
+      return enemy;
+    }
+        
     protected virtual void GenerateInteractive()
     {
       if (this.gi != null && !gi.GenerateInteractiveTiles)
@@ -42,10 +68,21 @@ namespace Roguelike.Generators
 
       int barrelsNumber = RandHelper.GetRandomInt(5);//TODO
       if (node.IsChildIsland)
-        barrelsNumber = 4;
+      {
+        barrelsNumber = 2;
+        AddPlainChest();
+        node.SetTileAtRandomPosition<Barrel>();
+      }
       barrelsNumber++;//at least one
-      if(node.Width > 15 || node.Height > 15)
+      if (RandHelper.GetRandomDouble() < 0.5)
         barrelsNumber++;
+
+      if (node.Width > 15 || node.Height > 15)
+      {
+        barrelsNumber += 2;
+        if(!node.IsChildIsland)
+          AddPlainChest();
+      }
       for (int i = 0; i < barrelsNumber; i++)
       {
         var barrel = node.SetTileAtRandomPosition<Barrel>();
@@ -55,6 +92,11 @@ namespace Roguelike.Generators
       }
     }
 
+    private void AddPlainChest()
+    {
+      var chest = new Chest() { ChestKind = ChestKind.Plain };
+      node.SetTileAtRandomPosition(chest);
+    }
 
     protected virtual void GenerateLoot()
     {
@@ -131,7 +173,7 @@ namespace Roguelike.Generators
       return true;
     }
 
-    protected virtual List<Enemy> CreateEnemiesPack(string enemyName, int packIndex)
+    protected virtual List<Enemy> CreateEnemiesPack(string enemyName)
     {
       List<Enemy> enemiesPack = new List<Enemy>();
       
@@ -156,23 +198,43 @@ namespace Roguelike.Generators
       for (int packIndex = 0; packIndex < enemyNames.Count; packIndex++)
       {
         var enemyName = enemyNames[packIndex];
-        var packEnemies = CreateEnemiesPack(enemyName, packIndex);
-        
-        if (packEnemies.Any() && ShallGenerateChampion(enemyName, packIndex))
-        {
-          RandHelper.GetRandomElem<Enemy>(packEnemies).SetNonPlain(false);
-          gi.GeneratedChempionsCount++;
-        }
-
-        SetPower(packEnemies);
-
-        PlaceEnemiesPack(packEnemies);
+        CreateEnemiesPack(packIndex, enemyName);
       }
 
       logger.LogInfo("room totsl enemies: " + node.GetTiles<Enemy>().Count);
     }
 
-    private void SetPower(List<Enemy> packEnemies)
+    //protected void CreateEnemiesPack(string enemyName)
+    //{
+    //  CreateEnemiesPack(-1, enemyName);
+    //}
+
+    protected void CreateEnemiesPack(int packIndex, string enemyName, bool addBoss = false)
+    {
+      var packEnemies = CreateEnemiesPack(enemyName);
+
+      if (packEnemies.Any() && ShallGenerateChampion(enemyName, packIndex))
+      {
+        RandHelper.GetRandomElem<Enemy>(packEnemies).SetNonPlain(false);
+        gi.GeneratedChempionsCount++;
+      }
+
+      if (addBoss)
+      {
+        //var en = packEnemies.Where(i => i.PowerKind == EnemyPowerKind.Plain).FirstOrDefault();
+        //if(en)
+        var bossSymbol = EnemySymbols.GetSymbolFromName(LevelBossName);
+        if (bossSymbol == '\0')
+          bossSymbol = EnemySymbols.QuestBoss;
+        packEnemies.Add(CreateBoss(enemyName, bossSymbol));
+      }
+
+      SetPowerFromLevel(packEnemies);
+
+      PlaceEnemiesPack(packEnemies);
+    }
+
+    private void SetPowerFromLevel(List<Enemy> packEnemies)
     {
       foreach (var en in packEnemies)
       {
@@ -247,6 +309,17 @@ namespace Roguelike.Generators
       var selEnemyNames = new List<string>();
       selEnemyNames.Add(chosen);
       return selEnemyNames;
+    }
+
+    public void EnsureBoss()
+    {
+      if (!string.IsNullOrEmpty(LevelBossName))
+      {
+        CreateEnemiesPack(-1, LevelBossName, true);
+        //return CreateBoss(LevelBossName, bossSymbol);
+      }
+
+      return ;
     }
   }
 }

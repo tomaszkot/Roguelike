@@ -41,7 +41,8 @@ namespace Dungeons.ASCIIDisplay
 
     public void Redraw(Tile tile, bool alsoNeibs)
     {
-      DungeonPresenter.RefreshPosition(Dungeon, null, tile.Point.X, tile.Point.Y);
+      if(tile!=null)
+        DungeonPresenter.RefreshPosition(Dungeon, null, tile.Point.X, tile.Point.Y);
       if(alsoNeibs)
         RefreshNeibs(tile);
     }

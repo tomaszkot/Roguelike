@@ -50,6 +50,7 @@ namespace Dungeons
       protected Tile[,] tiles;
       protected GenerationInfo generationInfo;
       protected static Random random;
+      bool contentGenerated = false;
 
       [XmlIgnore]
       [JsonIgnore]
@@ -437,6 +438,12 @@ namespace Dungeons
           Log("SetTile failed for: " + point, true);
           return false;
         }
+
+        if (tile == null)
+        {
+          int k = 0;
+        }
+
         if (AppendMazeStartPoint != null)
         {
           point.X -= AppendMazeStartPoint.Value.X;
@@ -754,6 +761,7 @@ namespace Dungeons
       }
 
       public bool Created { get => created; set => created = value; }
+      public bool ContentGenerated { get => contentGenerated; set => contentGenerated = value; }
 
       /// <summary>
       /// Delete unreachable doors 
@@ -803,21 +811,23 @@ namespace Dungeons
 
         DoGridAction((int col, int row) =>
         {
-          if (tiles[row, col] != null)
+          var tile = GetTile(new Point(col, row));
+          if (tile != null)///tiles[row, col] != null)
           {
             var revealTile = reveal;
             if (revealTile)
               revealTile = ShallReveal(row, col);
 
-            tiles[row, col].Revealed = revealTile;
+            //tiles[row, col].Revealed = revealTile;
+            tile.Revealed = revealTile;
             if (revealTile)
             {
               revealedTiles.Add(tiles[row, col]);
-            //Debug.WriteLine("reveal " + tiles[row, col]);
-            if (tiles[row, col].DungeonNodeIndex < 0)
+              //Debug.WriteLine("reveal " + tiles[row, col]);
+              if (tile.DungeonNodeIndex < 0)
               {
-              //Debug.WriteLine("reveal < 0" + tiles[row, col]);
-            }
+                //Debug.WriteLine("reveal < 0" + tiles[row, col]);
+              }
             }
           }
         });

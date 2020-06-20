@@ -95,9 +95,9 @@ namespace Roguelike.Tiles
       }
       PowerKind = boss ? EnemyPowerKind.Boss : EnemyPowerKind.Champion;
       if (PowerKind == EnemyPowerKind.Boss)
-        Color = ConsoleColor.DarkMagenta;
+        Color = ConsoleColor.Magenta;
       else
-        Color = ConsoleColor.DarkRed;
+        Color = ConsoleColor.Red;
 
       if (Symbol >= 'a' && Symbol <= 'z')
       {
