@@ -57,6 +57,7 @@
     <Compile Include="Helpers\BaseHelper.cs" />
     <Compile Include="Helpers\LootInfo.cs" />
     <Compile Include="Helpers\LootingTestsHelper.cs" />
+    <Compile Include="InteractionTests.cs" />
     <Compile Include="InventoryTests.cs" />
     <Compile Include="DungeonGenerationTests.cs" />
     <Compile Include="DungeonInteractionTests.cs" />

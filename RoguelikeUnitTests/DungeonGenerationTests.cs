@@ -131,7 +131,7 @@ namespace RoguelikeUnitTests
       var enemies = level_0.GetTiles<Enemy>();
       Assert.Greater(enemies.Count, 5);
       var chemps = enemies.Where(i => i.PowerKind == EnemyPowerKind.Champion).Count();
-      Assert.Greater(chemps, 0);
+      Assert.Greater(chemps, 2);
       Assert.Less(chemps, gi.NumberOfRooms);
 
     }

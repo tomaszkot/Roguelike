@@ -47,5 +47,19 @@ namespace RoguelikeUnitTests
         //Assert.Greater(sum1, 0);
       }
     }
+
+    [Test]
+    public void FoodTest()
+    {
+      //var game = CreateGame(true, 50);
+      //game.GameManager.Get
+      //var lootingProbab = game.GameManager.LootGenerator.Probability;
+
+      //var lootSourceKinds = Enum.GetValues(typeof(LootSourceKind)).Cast<LootSourceKind>();
+      ////iterate chances for: Enemy, Barrel, GoldChest...
+      //foreach (var lootSourceKind in lootSourceKinds)
+      //{
+      //}
+    }
   }
 }

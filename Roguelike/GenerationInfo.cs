@@ -14,6 +14,12 @@ namespace Roguelike
 
   public class GenerationInfo : Dungeons.GenerationInfo
   {
+    public GenerationInfo()
+    {
+      int k = 0;
+      k++;
+    }
+
     public static DebugGenerationInfo DebugInfo = new DebugGenerationInfo();
 
     public const int LevelUpPoints = 5;
@@ -25,7 +31,7 @@ namespace Roguelike
 
     public bool GenerateInteractiveTiles { get; set; } = true && !ForceEmpty;
 
-    public const int MaxLevelIndex = 0;//-1 endless
+    public const int MaxLevelIndex = 0;//0 - only one level, 1 - two levels,./... -1 endless
 
     public int GeneratedChempionsCount = 0;
 

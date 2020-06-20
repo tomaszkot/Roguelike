@@ -157,9 +157,10 @@ namespace RoguelikeUnitTests
     public void Barrels()
     {
       var env = CreateTestEnv();
+      var max = 20;
       var newLootItems = env.TestInteractive<Barrel>(
          (InteractiveTile barrel) => {
-         }
+         }, max
         );
     }
 
@@ -171,7 +172,7 @@ namespace RoguelikeUnitTests
       var lootInfo = env.TestInteractive<Chest>(
          (InteractiveTile chest) => {
            (chest as Chest).ChestKind = ChestKind.Plain;
-         }, 100 * mult, 30 * mult
+         }, 100 * mult, 32 * mult
 
         );
 
@@ -209,7 +210,7 @@ namespace RoguelikeUnitTests
         Assert.Greater(lootItems.Count, 0);
         var potions = lootItems.Where(j => j.LootKind == LootKind.Potion).ToList();
         Assert.Greater(potions.Count, 4);
-        Assert.Less(potions.Count, 18);
+        Assert.Less(potions.Count, 35);
       }
     }
 
@@ -225,7 +226,7 @@ namespace RoguelikeUnitTests
         Assert.Greater(lootItems.Count, 0);
         var food = lootItems.Where(j => j.LootKind == LootKind.Food).ToList();
         Assert.Greater(food.Count, 5);
-        Assert.Less(food.Count, 30);
+        Assert.Less(food.Count, 36);
       }
     }
   }

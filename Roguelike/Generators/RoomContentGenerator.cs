@@ -45,9 +45,10 @@ namespace Roguelike.Generators
 
     protected Enemy CreateBoss(string name, char symbol)
     {
-      var enemy = new Tiles.Enemy();
-      enemy.tag1 = name;// "Miller";
-      enemy.Name = name;// "Miller";
+      var enemy = CreateEnemyInstance(name);
+      //var enemy = new Tiles.Enemy();
+      //enemy.tag1 = name;// "Miller";
+      //enemy.Name = name;// "Miller";
       enemy.Symbol = symbol;// EnemySymbols.QuestBoss;
       enemy.SetNonPlain(true);
       //var empty = node.GetRandomEmptyTile();
@@ -160,17 +161,17 @@ namespace Roguelike.Generators
 
     protected virtual bool ShallGenerateChampion(string enemy, int packIndex)
     {
-      //var rand = RandHelper.GetRandomDouble();
-      //if(rand >= 0.5f)
-      //  return true;
-      //if (gi.GeneratedChempionsCount == 0 && this.node.NodeIndex > gi.NumberOfRooms/2)
-      //  return true;
+      var rand = RandHelper.GetRandomDouble();
+      if (rand >= 0.4f)
+        return true;
+      if (gi.GeneratedChempionsCount == 0 && this.node.NodeIndex > gi.NumberOfRooms / 2)
+        return true;
 
-      //if (gi.GeneratedChempionsCount == 1 && this.node.NodeIndex == gi.NumberOfRooms-1)
-      //  return true;
+      if (gi.GeneratedChempionsCount == 1 && this.node.NodeIndex == gi.NumberOfRooms - 1)
+        return true;
 
-      //return false;
-      return true;
+      return false;
+      //return true;
     }
 
     protected virtual List<Enemy> CreateEnemiesPack(string enemyName)

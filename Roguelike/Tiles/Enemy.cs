@@ -173,6 +173,10 @@ namespace Roguelike.Tiles
 
     }
 
+    public override string ToString()
+    {
+      return base.ToString() + " " + PowerKind;
+    }
 
   }
 }
