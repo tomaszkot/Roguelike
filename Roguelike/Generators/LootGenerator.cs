@@ -238,15 +238,12 @@ namespace Roguelike.Generators
     public virtual Loot GetRandomLoot()
     {
       var loot = new Mushroom();
-      loot.SetKind(MushroomKind.Boletus);
       return loot;
     }
 
     public virtual StackedLoot GetRandomStackedLoot()
     {
       var loot = new Food();
-      loot.SetKind(FoodKind.Plum);
-      loot.tag1 = "plum_mirabelka";
       return loot;
     }
   }

@@ -26,6 +26,11 @@ namespace Roguelike.Managers
       context.ContextSwitched += Context_ContextSwitched;
     }
 
+    public List<Enemy> GetEnemies()
+    {
+      return Enemies.Cast<Enemy>().ToList();
+    }
+
     private void Context_ContextSwitched(object sender, ContextSwitch e)
     {
       //Enemies = Context.CurrentNode.GetTiles<Enemy>();
@@ -123,7 +128,7 @@ namespace Roguelike.Managers
       return false;
     }
 
-    private bool AttackIfPossible(LivingEntity enemy, Hero hero)
+    public bool AttackIfPossible(LivingEntity enemy, Hero hero)
     {
       var enemyCasted = enemy as Enemy;
       if (enemyCasted.PrefferedFightStyle == PrefferedFightStyle.Magic)

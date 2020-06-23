@@ -15,13 +15,25 @@ namespace Roguelike.Tiles
 
   public class InteractiveTile : Dungeons.Tiles.Tile, IObstacle
   {
+    private InteractiveTileKind _kind = InteractiveTileKind.Unset;
+
     public InteractiveTile(char symbol) : base(symbol)
     {
 
     }
 
-    public InteractiveTileKind Kind { get; set; } = InteractiveTileKind.Unset;
-
+    public InteractiveTileKind Kind
+    {
+      get => _kind;
+      set
+      {
+        _kind = value;
+        if (_kind == InteractiveTileKind.TreasureChest)
+        {
+          
+        }
+      }
+    }
     public bool CanBeHitBySpell()
     {
       return false;
@@ -30,6 +42,13 @@ namespace Roguelike.Tiles
     public bool OnHitBy(IMovingDamager damager)
     {
       return false;
+    }
+
+    public override string ToString()
+    {
+      var res = base.ToString();
+      res += ", " + Kind;
+      return res;
     }
   }
 }

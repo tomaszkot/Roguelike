@@ -5,6 +5,7 @@ using Roguelike.Tiles;
 using Roguelike.Tiles.Interactive;
 using Roguelike.Tiles.Looting;
 using RoguelikeUnitTests.Helpers;
+using System;
 using System.Linq;
 
 namespace RoguelikeUnitTests
@@ -169,16 +170,19 @@ namespace RoguelikeUnitTests
     {
       int mult = 3;
       var env = CreateTestEnv();
+      int tilesToCreateCount = 100 * mult;
+      int maxExpectedLootCount = 32 * mult;
+
       var lootInfo = env.TestInteractive<Chest>(
          (InteractiveTile chest) => {
            (chest as Chest).ChestKind = ChestKind.Plain;
-         }, 100 * mult, 32 * mult
+         }, tilesToCreateCount, maxExpectedLootCount
 
         );
 
       var potions = lootInfo.Get<Potion>();
-      Assert.Greater(potions.Count, 3);
-      Assert.Less(potions.Count, 34);
+      Assert.Greater(potions.Count, 10);
+      Assert.Less(potions.Count, 40);
     }
         
     [Test]
@@ -199,9 +203,49 @@ namespace RoguelikeUnitTests
     }
 
     [Test]
+    public void FoodTests()
+    {
+      var env = CreateTestEnv();
+      var gm = env.Game.GameManager;
+
+      //TODO test names
+      {
+        var food = new Roguelike.Tiles.Mushroom();
+        food.SetMushroomKind(MushroomKind.BlueToadstool);
+        Assert.AreEqual(food.tag1, "mash_BlueToadstool1");
+        Assert.AreEqual(food.Kind, FoodKind.Mushroom);
+      }
+      {
+        var food = new Roguelike.Tiles.Food();
+        food.SetKind(FoodKind.Plum);
+        Assert.AreEqual(food.tag1, "plum_mirabelka");
+        Assert.AreEqual(food.Kind, FoodKind.Plum);
+      }
+      {
+        var food = new Roguelike.Tiles.Food();
+        food.SetKind(FoodKind.Meat);
+        food.MakeRoasted();
+        Assert.AreEqual(food.Name, "Roasted Meat");
+        Assert.AreEqual(food.tag1, "meat_roasted");
+        Assert.AreEqual(food.Kind, FoodKind.Meat);
+      }
+
+      {
+        var food = new Roguelike.Tiles.Food();
+        food.SetKind(FoodKind.Fish);
+        food.MakeRoasted();
+        Assert.AreEqual(food.Name, "Roasted Fish");
+        Assert.AreEqual(food.tag1, "fish_roasted");
+        Assert.AreEqual(food.Kind, FoodKind.Fish);
+      }
+      //gm.CurrentNode.set
+    }
+
+    int loopCount = 1;
+    [Test]
     public void KilledEnemyGivesPotionFromTimeToTime()
     {
-      for (int i = 0; i < 2; i++)
+      for (int i = 0; i < loopCount; i++)
       {
         var env = CreateTestEnv(numEnemies: 100);
         var li = new LootInfo(game, null);
@@ -217,9 +261,12 @@ namespace RoguelikeUnitTests
     [Test]
     public void KilledEnemyGivesFoodFromTimeToTime()
     {
-      for (int i = 0; i < 2; i++)
+      for (int ind = 0; ind < loopCount; ind++)
       {
         var env = CreateTestEnv(numEnemies: 100);
+        var enemies = env.Enemies;
+        Assert.AreEqual(enemies.Count, 100);
+
         var li = new LootInfo(game, null);
         env.KillAllEnemies();
         var lootItems = li.GetDiff();
@@ -227,6 +274,16 @@ namespace RoguelikeUnitTests
         var food = lootItems.Where(j => j.LootKind == LootKind.Food).ToList();
         Assert.Greater(food.Count, 5);
         Assert.Less(food.Count, 36);
+
+        var foodCasted = food.Cast<Food>().ToList();
+        var foodTypes = foodCasted.GroupBy(f => f.Kind).ToList();
+        var allKinds = Enum.GetValues(typeof(FoodKind)).Cast<FoodKind>().Where(i=> i != FoodKind.Unset).ToList();
+        //Assert.AreEqual(foodTypes.Count, allKinds.Count);
+        foreach (var gr in foodTypes)
+        {
+          var count = gr.Count();
+          Assert.Less(count, 10);
+        }
       }
     }
   }

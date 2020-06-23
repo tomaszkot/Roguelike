@@ -78,16 +78,16 @@ namespace RoguelikeUnitTests
       var hero = game.Hero;
 
       var mush1 = new Mushroom();
-      mush1.SetKind(MushroomKind.Boletus);
+      mush1.SetMushroomKind(MushroomKind.Boletus);
       hero.Inventory.Add(mush1);
 
       var mush2 = new Mushroom();
-      mush2.SetKind(MushroomKind.RedToadstool);
+      mush2.SetMushroomKind(MushroomKind.RedToadstool);
       hero.Inventory.Add(mush2);
       Assert.AreEqual(hero.Inventory.Items.Count, 2);
 
       var mush3 = new Mushroom();
-      mush3.SetKind(MushroomKind.RedToadstool);
+      mush3.SetMushroomKind(MushroomKind.RedToadstool);
       hero.Inventory.Add(mush3);
       Assert.AreEqual(hero.Inventory.Items.Count, 2);
 

@@ -48,31 +48,32 @@ namespace RoguelikeUnitTests
       Assert.Null(game.Hero);
 
       game.SetMaxLevelIndex(1);//there will be level0, level1
-      var level0 = game.GenerateLevel(0);
+      var levelZero = game.GenerateLevel(0);
 
-      Assert.NotNull(level0);
-      Assert.AreEqual(level0.Index, 0);//1st level has index 0
+      Assert.NotNull(levelZero);
+      Assert.AreEqual(levelZero.Index, 0);//1st level has index 0
 
-      Assert.AreEqual(level0, game.Level);
-      Assert.NotNull(level0.GetTiles<Hero>().SingleOrDefault());
+      Assert.AreEqual(levelZero, game.Level);
+      Assert.NotNull(levelZero.GetTiles<Hero>().SingleOrDefault());
 
-      Assert.NotNull(level0.GetTiles().Where(i => i.IsEmpty).FirstOrDefault());
-      level0.DoGridAction((int col, int row) =>
+      Assert.NotNull(levelZero.GetTiles().Where(i => i.IsEmpty).FirstOrDefault());
+      levelZero.DoGridAction((int col, int row) =>
       {
-        if (level0.Tiles[row, col] == null)
+        if (levelZero.Tiles[row, col] == null)
         {
-          var tile = level0.GetTile(new Point(col, row));
-          Assert.NotNull(tile);
-          Assert.True(tile is Loot);
+          //it can be out of walls
+          //var tile = levelZero.GetTile(new Point(col, row));
+          //Assert.NotNull(tile);
+          //Assert.True(tile is Loot);
         }
       });
 
       //1st level0 has only stairs down
-      Assert.AreEqual(level0.GetTiles<Stairs>().Count, 1);
-      Assert.AreEqual(level0.GetTiles<Stairs>()[0].StairsKind, StairsKind.LevelDown);
+      Assert.AreEqual(levelZero.GetTiles<Stairs>().Count, 1);
+      Assert.AreEqual(levelZero.GetTiles<Stairs>()[0].StairsKind, StairsKind.LevelDown);
 
       var level1 = game.GenerateLevel(1);
-      Assert.AreNotEqual(level0, level1);
+      Assert.AreNotEqual(levelZero, level1);
 
       //last level has NOT stairs down, but shall have up ones
       Assert.AreEqual(level1.GetTiles<Stairs>().Count, 1);
@@ -125,8 +126,13 @@ namespace RoguelikeUnitTests
       var game = CreateGame(false);
       Assert.Null(game.Hero);
       var gi = new Roguelike.GenerationInfo();
-      gi.NumberOfRooms = 5;
+      Assert.Greater(gi.NumberOfRooms, 3);
+      Assert.Greater(gi.ForcedNumberOfEnemiesInRoom, 2);
+      //gi.NumberOfRooms = 5;
+      //gi.ForcedNumberOfEnemiesInRoom = 4;
+
       var level_0 = game.GenerateLevel(0, gi);
+
       Assert.AreEqual(level_0.Nodes.Count, 5);
       var enemies = level_0.GetTiles<Enemy>();
       Assert.Greater(enemies.Count, 5);

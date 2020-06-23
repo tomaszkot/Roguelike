@@ -30,6 +30,7 @@ namespace Roguelike.Tiles.Interactive
     {
       Symbol = ChestSymbol;
       Name = "Chest";
+      
       Kind = InteractiveTileKind.TreasureChest;
     }
 

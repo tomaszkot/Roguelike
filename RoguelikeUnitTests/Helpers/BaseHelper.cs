@@ -1,7 +1,9 @@
-﻿using Dungeons.Tiles;
+﻿using System.Collections.Generic;
+using Dungeons.Tiles;
 using Roguelike;
 using Roguelike.Generators;
 using Roguelike.Managers;
+using Roguelike.Tiles;
 
 namespace RoguelikeUnitTests.Helpers
 {
@@ -25,6 +27,7 @@ namespace RoguelikeUnitTests.Helpers
     }
 
     public RoguelikeGame Game { get => game; set => game = value; }
+    public List<Enemy> Enemies { get; internal set; }
 
     public T AddTile<T>() where T : Tile, new()
     {

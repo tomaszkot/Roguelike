@@ -24,7 +24,7 @@ namespace RoguelikeUnitTests.Helpers
     public List<LootKind> AssertLootKindFromEnemies(LootKind[] expectedKinds)
     {
       var res = new List<LootKind>();
-      var enemies = game.GameManager.EnemiesManager.Enemies;
+      var enemies = Enemies;
       Assert.GreaterOrEqual(enemies.Count, 5);
       var li = new LootInfo(game, null);
       KillAllEnemies();
@@ -44,7 +44,7 @@ namespace RoguelikeUnitTests.Helpers
 
     public void KillAllEnemies()
     {
-      var enemies = game.GameManager.EnemiesManager.Enemies;
+      var enemies = Enemies;//game.GameManager.EnemiesManager.Enemies;
       for (int i = 0; i < enemies.Count; i++)
       {
         var en = enemies[i];

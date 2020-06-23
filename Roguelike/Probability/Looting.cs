@@ -45,7 +45,7 @@ namespace Roguelike.Probability
     public LootKind RollDiceForKind(LootSourceKind lsk)
     {
       var chance = lootKindChances[lsk];
-      var lk  = chance.RollDice(LootKind.Unset);
+      var lk  = chance.RollDice(LootKind.Unset, new LootKind[] {LootKind.Other, LootKind.Seal, LootKind.SealPart });
       if (lk != LootKind.Gold && lk != LootKind.Equipment && lk != LootKind.Unset)
       {
         int k = 0;
@@ -56,7 +56,7 @@ namespace Roguelike.Probability
 
     public EquipmentClass RollDice(LootSourceKind lsk)
     {
-      return equipmentClassChances[lsk].RollDice(EquipmentClass.Unset);
+      return equipmentClassChances[lsk].RollDice(EquipmentClass.Unset, new EquipmentClass[]{ });
     }
 
   }

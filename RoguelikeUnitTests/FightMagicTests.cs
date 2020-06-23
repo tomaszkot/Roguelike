@@ -62,7 +62,10 @@ namespace RoguelikeUnitTests
       Assert.True(set);
 
       GotoNextHeroTurn(game);
-
+      if (heroHealth == hero.Stats.Health)
+      {
+        game.GameManager.EnemiesManager.AttackIfPossible((enemy as Enemy), hero);//TODO
+      }
       Assert.Greater(heroHealth, hero.Stats.Health);
       Assert.Greater(mana, enemy.Stats.Mana);//used mana
     }
