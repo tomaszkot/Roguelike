@@ -232,10 +232,26 @@ namespace RoguelikeUnitTests
 
       {
         var food = new Roguelike.Tiles.Food();
+        food.SetKind(FoodKind.Meat);
+        Assert.AreEqual(food.Name, "Raw Meat");
+        Assert.AreEqual(food.tag1, "meat_raw");
+        Assert.AreEqual(food.Kind, FoodKind.Meat);
+      }
+
+      {
+        var food = new Roguelike.Tiles.Food();
         food.SetKind(FoodKind.Fish);
         food.MakeRoasted();
         Assert.AreEqual(food.Name, "Roasted Fish");
         Assert.AreEqual(food.tag1, "fish_roasted");
+        Assert.AreEqual(food.Kind, FoodKind.Fish);
+      }
+
+      {
+        var food = new Roguelike.Tiles.Food();
+        food.SetKind(FoodKind.Fish);
+        Assert.AreEqual(food.Name, "Raw Fish");
+        Assert.AreEqual(food.tag1, "fish_raw");
         Assert.AreEqual(food.Kind, FoodKind.Fish);
       }
       //gm.CurrentNode.set
