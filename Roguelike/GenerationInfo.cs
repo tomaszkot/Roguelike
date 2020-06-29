@@ -16,7 +16,8 @@ namespace Roguelike
   {
     public GenerationInfo()
     {
-      NumberOfRooms = 5;
+      NumberOfRooms = 1;
+      GenerateEnemies = false;
     }
     public const int MaxLevelIndex = 0;//0 - only one level, 1 - two levels,./... -1 endless
 

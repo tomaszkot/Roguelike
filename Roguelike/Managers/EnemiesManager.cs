@@ -148,12 +148,6 @@ namespace Roguelike.Managers
       if (victim != null)
       {
         Context.ApplyPhysicalAttackPolicy(enemy, hero, (pol)=> OnPolicyApplied(pol));
-        //var enemyAttackPollicy = container.GetInstance<AttackPolicy>();
-        //enemyAttackPollicy.OnApplied += (s,e)=>OnPolicyApplied(e);
-        //enemyAttackPollicy.Apply(enemy, hero);
-        //if (enCasted != null)
-        //  gm.AppendAction(new EnemyAction() { KindValue = EnemyAction.Kind.AttackingHero, Enemy = enCasted })/*;*/
-
         return true;
       }
 

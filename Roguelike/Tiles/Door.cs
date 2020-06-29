@@ -1,16 +1,23 @@
 ﻿using Dungeons.Core;
 using System;
-using System.Collections.Generic;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Roguelike.Tiles
 {
   public class Door : Dungeons.Tiles.Door
   {
     public bool Opened { get; set; }
+
+    string bossBehind = "";
+    public string BossBehind
+    {
+      get { return bossBehind; }
+      set
+      {
+        bossBehind = value;
+        Color = ConsoleColor.Red;
+      }
+    }
 
     public Door(Point point) : base(point)
     {
