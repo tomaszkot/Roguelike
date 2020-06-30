@@ -54,8 +54,8 @@ namespace RoguelikeUnitTests
 
     void GoDown()
     {
-      var down = game.Level.GetTiles<Stairs>().Where(i => i.StairsKind == StairsKind.LevelDown).Single();
-
+      var down = game.Level.GetTiles<Stairs>().Where(i => i.StairsKind == StairsKind.LevelDown).SingleOrDefault();
+      Assert.NotNull(down);
       //hero shall be on the level
       Assert.NotNull(game.Level.GetTiles<Hero>().SingleOrDefault());
 
@@ -76,8 +76,9 @@ namespace RoguelikeUnitTests
       float lastDamageFromPlain = 0;
       float lastDamageFromChemp = 0;
       float lastDamageFromBoss = 0;
+      Assert.Greater(Roguelike.GenerationInfo.MaxLevelIndex, 0);
 
-      for (var levelIndex = 0; levelIndex < 10; levelIndex++)
+      for (var levelIndex = 0; levelIndex < Roguelike.GenerationInfo.MaxLevelIndex; levelIndex++)
       {
         var enemies = game.GameManager.EnemiesManager.Enemies.Cast<Enemy>().ToList();
         Assert.Greater(enemies.Count, 2);
@@ -113,9 +114,7 @@ namespace RoguelikeUnitTests
         lastPlain = plain;
         lastChemp = chemp;
         lastBoss = boss;
-
-
-
+        
         GoDown();
       }
 

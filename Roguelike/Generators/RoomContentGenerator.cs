@@ -162,10 +162,10 @@ namespace Roguelike.Generators
       var rand = RandHelper.GetRandomDouble();
       if (rand >= 0.4f)
         return true;
-      if (gi.GeneratedChempionsCount == 0 && this.node.NodeIndex > gi.NumberOfRooms / 2)
+      if (gi.GeneratedInfo.ChempionsCount == 0 && this.node.NodeIndex > gi.NumberOfRooms / 2)
         return true;
 
-      if (gi.GeneratedChempionsCount == 1 && this.node.NodeIndex == gi.NumberOfRooms - 1)
+      if (gi.GeneratedInfo.ChempionsCount == 1 && this.node.NodeIndex == gi.NumberOfRooms - 1)
         return true;
 
       return false;
@@ -215,7 +215,7 @@ namespace Roguelike.Generators
       if (packEnemies.Any() && ShallGenerateChampion(enemyName, packIndex))
       {
         RandHelper.GetRandomElem<Enemy>(packEnemies).SetNonPlain(false);
-        gi.GeneratedChempionsCount++;
+        gi.GeneratedInfo.ChempionsCount++;
       }
 
       if (addBoss)

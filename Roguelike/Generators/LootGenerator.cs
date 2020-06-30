@@ -218,6 +218,10 @@ namespace Roguelike.Generators
         res = GetRandomEquipment(EquipmentClass.Plain);
       else if (kind == LootKind.Potion)
         res = GetRandomPotion();
+      else if (kind == LootKind.Food)
+        res = new Food();
+      else if (kind == LootKind.Plant)
+        res = new Plant();
       else
         res = GetRandomLoot();
 

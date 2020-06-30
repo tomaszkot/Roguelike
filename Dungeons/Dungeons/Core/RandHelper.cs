@@ -61,9 +61,9 @@ namespace Dungeons.Core
     }
 
 
-    public static T GetRandomEnumValue<T>()// where T : IConvertible
+    public static T GetRandomEnumValue<T>() where T : IConvertible
     {
-      return GetRandomEnumValue(new T[] { });
+      return GetRandomEnumValue<T>(true);
     }
 
     public static T GetRandomEnumValue<T>(T[] skip)// where T : IConvertible

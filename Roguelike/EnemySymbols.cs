@@ -50,6 +50,7 @@ namespace Roguelike
       {"bear", CommonEnemySymbol},
       {"boar", CommonEnemySymbol},
       {"lynx", CommonEnemySymbol},
+      {"worm", CommonEnemySymbol},
       {"wolverine", CommonEnemySymbol},
       
     };

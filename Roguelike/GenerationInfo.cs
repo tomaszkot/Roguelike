@@ -14,13 +14,22 @@ namespace Roguelike
 
   public class GenerationInfo : Dungeons.GenerationInfo
   {
+    public class Generated
+    {
+      public int ChempionsCount = 0;
+    }
+
+    public Generated GeneratedInfo = new Generated();
+
     public GenerationInfo()
     {
-      NumberOfRooms = 1;
-      GenerateEnemies = false;
+      //TMP!!!
+      //NumberOfRooms = 1;
+      //GenerateEnemies = false;
+      //ForcedNumberOfEnemiesInRoom = 1;
     }
-    public const int MaxLevelIndex = 10;//0 - only one level, 1 - two levels,./... -1 endless
-    public int ForcedNumberOfEnemiesInRoom { get; set; } = 0;//-1 means field is not used
+    public const int MaxLevelIndex = 2;//0 - only one level, 1 - two levels,./... -1 endless
+    public int ForcedNumberOfEnemiesInRoom { get; set; } = 5;//-1 means field is not used
     public static DebugGenerationInfo DebugInfo = new DebugGenerationInfo();
 
     public const int LevelUpPoints = 5;
@@ -31,9 +40,7 @@ namespace Roguelike
     public bool GenerateLoot { get; set; } = true && !ForceEmpty;
 
     public bool GenerateInteractiveTiles { get; set; } = true && !ForceEmpty;
-
-    
-    public int GeneratedChempionsCount = 0;
+        
 
     public override void MakeEmpty()
     {

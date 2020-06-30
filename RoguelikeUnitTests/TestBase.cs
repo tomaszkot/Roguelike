@@ -104,7 +104,7 @@ namespace RoguelikeUnitTests
         info.NumberOfRooms = numberOfRooms;
         game.GenerateLevel(0, info);
         Assert.GreaterOrEqual(game.GameManager.EnemiesManager.Enemies.Count, numEnemies);//some are auto generated
-        Assert.Less(game.GameManager.EnemiesManager.Enemies.Count, numEnemies*3);
+        Assert.Less(game.GameManager.EnemiesManager.Enemies.Count, numEnemies*4);
       }
       return game;
     }
