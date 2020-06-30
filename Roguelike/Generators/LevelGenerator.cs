@@ -14,7 +14,7 @@ namespace Roguelike.Generators
   public class LevelGenerator : Dungeons.DungeonGenerator
   {
     public ILogger Logger { get; set; }
-    public int MaxLevelIndex { get; set; } = 1000;
+    public int MaxLevelIndex { get; set; }
     public int LevelIndex { get; set; }
     public EventHandler<DungeonNode> CustomInteriorDecorator;
     public bool StairsUpOnLevel0 { get; set; }
@@ -22,6 +22,7 @@ namespace Roguelike.Generators
     public LevelGenerator(Container container) : base(container)
     {
       Logger = container.GetInstance<ILogger>();
+      MaxLevelIndex = GenerationInfo.MaxLevelIndex;
     }
 
     public override DungeonLevel Generate(int levelIndex, Dungeons.GenerationInfo info = null, LayouterOptions opt = null)

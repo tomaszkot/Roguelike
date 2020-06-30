@@ -20,7 +20,7 @@ namespace Roguelike
       GenerateEnemies = false;
     }
     public const int MaxLevelIndex = 0;//0 - only one level, 1 - two levels,./... -1 endless
-
+    public int ForcedNumberOfEnemiesInRoom { get; set; } = 0;//-1 means field is not used
     public static DebugGenerationInfo DebugInfo = new DebugGenerationInfo();
 
     public const int LevelUpPoints = 5;

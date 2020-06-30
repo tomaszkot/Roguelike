@@ -271,8 +271,8 @@ namespace Roguelike.TileContainers
             }
             if (
                tile == null
-              || tile is Loot
-              || (tile is Dungeons.Tiles.Door  /*&& !EnemyCanPassDoors*/)
+              //|| tile is Loot
+              || (tile is Roguelike.Tiles.Door  /*&& !EnemyCanPassDoors*/ && !(tile as Roguelike.Tiles.Door).Opened)
 
               )
               value = 0;
