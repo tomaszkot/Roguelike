@@ -72,7 +72,7 @@ namespace Roguelike.Generators
         Stairs stairs = new Stairs() { StairsKind = StairsKind.LevelDown, Symbol = '>' };
         var maze = mazeNodes[indexWithStairsDown];
 
-        var tile = maze.GetEmptyTiles().LastOrDefault();
+        var tile = maze.GetRandomEmptyTile();
         if (tile != null)
           maze.SetTile(stairs, tile.Point);
         else
