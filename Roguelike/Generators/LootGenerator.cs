@@ -149,6 +149,12 @@ namespace Roguelike.Generators
       return GetLootByName(tileName) as T;
     }
 
+    public virtual Equipment GetRandomEquipment()
+    {
+      var kind = GetPossibleEqKind();
+      return GetRandomEquipment(kind);
+    }
+
     public virtual Equipment GetRandomEquipment(EquipmentKind kind)
     {
       var eq = LootFactory.EquipmentFactory.GetRandom(kind);
@@ -172,6 +178,8 @@ namespace Roguelike.Generators
       {
         lootKind = LootKind.Equipment;
       }
+      else if(lsk == LootSourceKind.PlainChest)
+        return GetRandomLoot();//some cheap loot
       else
         lootKind = Probability.RollDiceForKind(lsk);
 
@@ -186,15 +194,20 @@ namespace Roguelike.Generators
       }
 
       if (lootKind == LootKind.Unset)
-        return null;//lootKind = RandHelper.GetRandomEnumValue<LootKind>(true);
+        return null;
 
       return GetRandomLoot(lootKind);
     }
 
     protected virtual Equipment GetRandomEquipment(EquipmentClass eqClass)
     {
-      var randedEnum = RandHelper.GetRandomEnumValue<EquipmentKind>(new[] { EquipmentKind.Trophy, EquipmentKind.God, EquipmentKind.Unset });
+      var randedEnum = GetPossibleEqKind();
       return LootFactory.EquipmentFactory.GetRandom(randedEnum, eqClass);
+    }
+
+    private static EquipmentKind GetPossibleEqKind()
+    {
+      return RandHelper.GetRandomEnumValue<EquipmentKind>(new[] { EquipmentKind.Trophy, EquipmentKind.God, EquipmentKind.Unset });
     }
 
     public virtual Loot GetRandomJewellery()
@@ -210,8 +223,7 @@ namespace Roguelike.Generators
     public virtual Loot GetRandomLoot(LootKind kind)
     {
       Loot res = null;
-      //if(kind == LootKind.Potion)
-      //  return  new PotionKind
+
       if (kind == LootKind.Gold)
         res = new Gold();
       else if (kind == LootKind.Equipment)
@@ -223,7 +235,7 @@ namespace Roguelike.Generators
       else if (kind == LootKind.Plant)
         res = new Plant();
       else
-        res = GetRandomLoot();
+        res = new Mushroom();
 
       if(res is Equipment)
         EnasureLevelIndex(res as Equipment);
@@ -239,16 +251,14 @@ namespace Roguelike.Generators
       return potion;
     }
 
+    //a cheap loot generated randomly on the level
     public virtual Loot GetRandomLoot()
     {
-      var loot = new Mushroom();
+      var enumVal = RandHelper.GetRandomEnumValue<LootKind>(new[] { LootKind.Other, LootKind.Gem, LootKind.Recipe, LootKind.Seal, LootKind.SealPart, LootKind.Unset});
+      var loot = GetRandomLoot(enumVal);
       return loot;
     }
 
-    public virtual StackedLoot GetRandomStackedLoot()
-    {
-      var loot = new Food();
-      return loot;
-    }
+    
   }
 }

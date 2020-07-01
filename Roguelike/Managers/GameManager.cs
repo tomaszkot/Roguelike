@@ -433,6 +433,18 @@ namespace Roguelike.Managers
           {
             AppendAction <InteractiveTileAction>((InteractiveTileAction ac) => { ac.Tile = chest; ac.KindValue = InteractiveTileAction.Kind.ChestOpened; });
             AddLootReward(loot, attackPolicy.Victim, true);//add loot at closest empty
+            if (chest.ChestKind == ChestKind.GoldDeluxe ||
+              chest.ChestKind == ChestKind.Gold)
+            {
+              var lootEx1 = AddExtraLoot(attackPolicy.Victim, false);
+              AddLootReward(lootEx1, attackPolicy.Victim, true);
+
+              if (chest.ChestKind == ChestKind.GoldDeluxe)
+              {
+                var lootEx2 = AddExtraLoot(attackPolicy.Victim, true);
+                AddLootReward(lootEx2, attackPolicy.Victim, true);
+              }
+              }
           }
         }
       }
@@ -440,6 +452,34 @@ namespace Roguelike.Managers
         RemoveDeadEnemies();
       context.IncreaseActions(TurnOwner.Hero);
       context.MoveToNextTurnOwner();
+    }
+
+    private Loot AddExtraLoot(Tile victim, bool nonEquipment)
+    {
+      if (victim is Chest)
+      {
+        var chest = victim as Chest;
+        if(
+          chest.ChestKind == ChestKind.Gold ||
+          chest.ChestKind == ChestKind.GoldDeluxe
+          )
+        {
+          if (nonEquipment)
+          {
+            return lootGenerator.GetRandomLoot();//TODO Equipment might happen
+          }
+          else
+          {
+            var eq = lootGenerator.GetRandomEquipment();
+            if (eq.IsPlain())
+              eq.MakeMagic(true);
+
+            return eq;
+          }
+        }
+      }
+
+      return lootGenerator.GetRandomLoot();
     }
 
     void AppendAction<T>(Action<T> init) where T : GameAction, new()

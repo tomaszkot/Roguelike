@@ -22,7 +22,7 @@ namespace Roguelike.Generators
     public LevelGenerator(Container container) : base(container)
     {
       Logger = container.GetInstance<ILogger>();
-      MaxLevelIndex = GenerationInfo.MaxLevelIndex;
+      MaxLevelIndex  = GenerationInfo.MaxLevelIndex;
     }
 
     public override DungeonLevel Generate(int levelIndex, Dungeons.GenerationInfo info = null, LayouterOptions opt = null)

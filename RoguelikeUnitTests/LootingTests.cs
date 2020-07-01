@@ -188,18 +188,34 @@ namespace RoguelikeUnitTests
     [Test]
     public void GoldChests()
     {
-      int mult = 1;
+      TestValuableChests(false);
+    }
+
+    [Test]
+    public void GoldDeluxeChests()
+    {
+      TestValuableChests(true);
+    }
+
+    private void TestValuableChests(bool deluxe)
+    {
+      int numberOfChests = 20;
       var env = CreateTestEnv();
       var lootInfo = env.TestInteractive<Chest>(
-         (InteractiveTile chest) => {
-           (chest as Chest).ChestKind = ChestKind.Gold;
-         }, 20 * mult, 20 * mult, 20 * mult
+         (InteractiveTile chest) =>
+         {
+           (chest as Chest).ChestKind = deluxe ? ChestKind.GoldDeluxe : ChestKind.Gold;
+         }, numberOfChests, numberOfChests * 3, (int)(numberOfChests * 1.5f)
 
         );
 
-      var lootItems = lootInfo.Get<Equipment>();
-      Assert.AreEqual(lootItems.Count, 20);
-      lootItems.ForEach(i=> Assert.AreEqual(i.Class, EquipmentClass.Unique));
+      var lootItems = lootInfo.Get<Loot>();
+      Assert.GreaterOrEqual(lootItems.Count, deluxe ? 60 : 40);
+      //lootItems.ForEach(i=> Assert.AreEqual(i.Class, EquipmentClass.Unique));
+      var eqItems = lootInfo.Get<Equipment>();
+      Assert.GreaterOrEqual(eqItems.Where(i => i.Class == EquipmentClass.Unique).Count(), numberOfChests);
+      var magicItems = eqItems.Where(i => i.Class == EquipmentClass.Magic).ToList();
+      Assert.GreaterOrEqual(lootItems.Count, 40);
     }
 
     [Test]

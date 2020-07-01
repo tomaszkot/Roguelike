@@ -33,6 +33,9 @@ namespace RoguelikeUnitTests
     {
       Container = new Roguelike.ContainerConfigurator().Container;
       Container.Register<ISoundPlayer, BasicSoundPlayer>();
+      var gi = new GenerationInfo();
+      Assert.Greater(gi.NumberOfRooms, 1);
+      Assert.Greater(gi.ForcedNumberOfEnemiesInRoom, 2);
     }
 
     protected T GenerateRandomEqOnLevelAndCollectIt<T>() where T : Equipment, new()

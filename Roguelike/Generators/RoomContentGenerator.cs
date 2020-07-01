@@ -106,7 +106,8 @@ namespace Roguelike.Generators
       lootNumber++;//at least one
       for (int i = 0; i < lootNumber; i++)
       {
-        var mush = node.SetTileAtRandomPosition<Mushroom>();
+        lootGen.GetRandomLoot();
+        //var mush = node.SetTileAtRandomPosition<Mushroom>();
       }
     }
 
@@ -226,6 +227,9 @@ namespace Roguelike.Generators
         if (bossSymbol == '\0')
           bossSymbol = EnemySymbols.QuestBoss;
         packEnemies.Add(CreateBoss(enemyName, bossSymbol));
+
+        var chest = node.SetTileAtRandomPosition<Chest>();
+        chest.ChestKind = ChestKind.GoldDeluxe;
       }
 
       SetPowerFromLevel(packEnemies);

@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Dungeons.Tiles;
+using NUnit.Framework;
 using Roguelike;
 using Roguelike.Generators;
 using Roguelike.Managers;
@@ -24,6 +25,9 @@ namespace RoguelikeUnitTests.Helpers
     {
       this.game = game;
       this.test = test;
+      var gi = new GenerationInfo();
+      Assert.Greater(gi.NumberOfRooms, 1);
+      Assert.Greater(gi.ForcedNumberOfEnemiesInRoom, 2);
     }
 
     public RoguelikeGame Game { get => game; set => game = value; }
