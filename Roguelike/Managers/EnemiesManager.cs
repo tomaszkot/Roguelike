@@ -60,6 +60,11 @@ namespace Roguelike.Managers
       foreach (var enemy in enemies)
       {
         Debug.Assert(context.CurrentNode.GetTiles<Enemy>().Any(i => i == enemy));
+        if (enemy == enemies.Last())
+        {
+          int kk = 0;
+          kk++;
+        }
         var target = Hero;
         if (AttackIfPossible(enemy, target))
         {
@@ -78,6 +83,10 @@ namespace Roguelike.Managers
           MakeRandomMove(enemy);
         }
       }
+
+      var notIdle = entities.Where(i => i.State != EntityState.Idle).ToList();
+      int k = 0;
+      k++;
     }
 
     public override void MakeRandomMove(LivingEntity entity)

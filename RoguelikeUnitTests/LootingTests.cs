@@ -168,10 +168,10 @@ namespace RoguelikeUnitTests
     [Test]
     public void PlainChests()
     {
-      int mult = 3;
+      int mult = 1;
       var env = CreateTestEnv();
       int tilesToCreateCount = 100 * mult;
-      int maxExpectedLootCount = 32 * mult;
+      int maxExpectedLootCount = 100;// 32 * mult;
 
       var lootInfo = env.TestInteractive<Chest>(
          (InteractiveTile chest) => {
@@ -181,8 +181,12 @@ namespace RoguelikeUnitTests
         );
 
       var potions = lootInfo.Get<Potion>();
-      Assert.Greater(potions.Count, 10);
+      Assert.Greater(potions.Count, 9);
       Assert.Less(potions.Count, 40);
+
+      var mushes = lootInfo.Get<Mushroom>();
+      Assert.Greater(mushes.Count, 2);
+      Assert.Less(potions.Count, 20);
     }
         
     [Test]

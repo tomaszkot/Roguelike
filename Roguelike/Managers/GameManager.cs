@@ -436,12 +436,12 @@ namespace Roguelike.Managers
             if (chest.ChestKind == ChestKind.GoldDeluxe ||
               chest.ChestKind == ChestKind.Gold)
             {
-              var lootEx1 = AddExtraLoot(attackPolicy.Victim, false);
+              var lootEx1 = GetExtraLoot(attackPolicy.Victim, false);
               AddLootReward(lootEx1, attackPolicy.Victim, true);
 
               if (chest.ChestKind == ChestKind.GoldDeluxe)
               {
-                var lootEx2 = AddExtraLoot(attackPolicy.Victim, true);
+                var lootEx2 = GetExtraLoot(attackPolicy.Victim, true);
                 AddLootReward(lootEx2, attackPolicy.Victim, true);
               }
               }
@@ -454,7 +454,7 @@ namespace Roguelike.Managers
       context.MoveToNextTurnOwner();
     }
 
-    private Loot AddExtraLoot(Tile victim, bool nonEquipment)
+    private Loot GetExtraLoot(Tile victim, bool nonEquipment)
     {
       if (victim is Chest)
       {

@@ -1,4 +1,5 @@
 ﻿using NUnit.Framework;
+using Roguelike;
 using Roguelike.Managers;
 using Roguelike.Tiles;
 using Roguelike.Tiles.Interactive;
@@ -62,22 +63,24 @@ namespace RoguelikeUnitTests
     [Test]
     public void StairsTest()
     {
+      Assert.Greater(GenerationInfo.MaxLevelIndex, 0);
       var game = CreateGame();
       game.SetMaxLevelIndex(1);
 
       Assert.AreEqual(game.Level.Index, 0);
-      var level0 = game.Level;
-      var down = game.Level.GetTiles<Stairs>().Where(i=> i.StairsKind == StairsKind.LevelDown).Single();
+      var levelZero = game.Level;
+      var stairs = game.Level.GetTiles<Stairs>().ToList();
+      var down = stairs.Where(i=> i.StairsKind == StairsKind.LevelDown).Single();
 
       //hero shall be on the level
       Assert.NotNull(game.Level.GetTiles<Hero>().SingleOrDefault());
 
       var result = game.GameManager.InteractHeroWith(down);
       Assert.AreEqual(result, InteractionResult.ContextSwitched);
-      Assert.AreNotEqual(level0, game.Level);
+      Assert.AreNotEqual(levelZero, game.Level);
       Assert.AreEqual(game.Level.Index, 1);
       Assert.NotNull(game.Level.GetTiles<Hero>().SingleOrDefault());
-      Assert.Null(level0.GetTiles<Hero>().SingleOrDefault());//old level shall not have hero
+      Assert.Null(levelZero.GetTiles<Hero>().SingleOrDefault());//old level shall not have hero
 
       down = game.Level.GetTiles<Stairs>().Where(i => i.StairsKind == StairsKind.LevelDown).SingleOrDefault();
       Assert.Null(down);//max level 1
@@ -86,7 +89,7 @@ namespace RoguelikeUnitTests
       Assert.AreEqual(result, InteractionResult.ContextSwitched);
 
       Assert.NotNull(game.Level.GetTiles<Hero>().SingleOrDefault());
-      Assert.AreEqual(game.Level, level0);
+      Assert.AreEqual(game.Level, levelZero);
     }
 
   }

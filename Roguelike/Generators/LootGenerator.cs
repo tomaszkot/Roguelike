@@ -231,9 +231,17 @@ namespace Roguelike.Generators
       else if (kind == LootKind.Potion)
         res = GetRandomPotion();
       else if (kind == LootKind.Food)
-        res = new Food();
+      {
+        var enumVal = RandHelper.GetRandomEnumValue<FoodKind>(true);
+        if(enumVal == FoodKind.Mushroom)
+          res = new Mushroom();
+        else
+          res = new Food();
+      }
       else if (kind == LootKind.Plant)
         res = new Plant();
+      else if (kind == LootKind.Scroll)
+        res = new Scroll(Spells.SpellKind.FireBall);
       else
         res = new Mushroom();
 

@@ -103,11 +103,12 @@ namespace Roguelike.Generators
         return;
 
       int lootNumber = RandHelper.GetRandomInt(2);//TODO
-      lootNumber++;//at least one
+      if(lootNumber == 0)
+        lootNumber++;//at least one
       for (int i = 0; i < lootNumber; i++)
       {
-        lootGen.GetRandomLoot();
-        //var mush = node.SetTileAtRandomPosition<Mushroom>();
+        var loot = lootGen.GetRandomLoot();
+        node.SetTileAtRandomPosition(loot);
       }
     }
 
@@ -160,6 +161,8 @@ namespace Roguelike.Generators
 
     protected virtual bool ShallGenerateChampion(string enemy, int packIndex)
     {
+      if (gi.GeneratedInfo.ChempionsCount == gi.NumberOfRooms - 1)
+        return false;
       var rand = RandHelper.GetRandomDouble();
       if (rand >= 0.4f)
         return true;
