@@ -25,20 +25,48 @@ namespace RoguelikeUnitTests
     {
       var game = CreateGame();
       var hero = game.Hero;
-      
+
       var enemy = game.GameManager.EnemiesManager.Enemies.First();
       var enemyHealth = enemy.Stats.Health;
       var mana = hero.Stats.Mana;
 
       Assert.True(game.GameManager.HeroTurn);
-
-      var scroll = new Scroll(Roguelike.Spells.SpellKind.FireBall);
-      game.GameManager.Context.ApplySpellAttackPolicy(hero, enemy, scroll, null, (p) => game.GameManager.OnHeroPolicyApplied(this, p));
+            
+      UseScroll(game, hero, enemy);
 
       Assert.Greater(enemyHealth, enemy.Stats.Health);
       Assert.Greater(mana, hero.Stats.Mana);
 
       Assert.False(game.GameManager.HeroTurn);
+    }
+
+    private void UseScroll(Roguelike.RoguelikeGame game, Hero hero, LivingEntity enemy)
+    {
+      var scroll = new Scroll(Roguelike.Spells.SpellKind.FireBall);
+      game.GameManager.Context.ApplySpellAttackPolicy(hero, enemy, scroll, null, (p) => game.GameManager.OnHeroPolicyApplied(this, p));
+      
+    }
+
+    [Test]
+    public void KillEnemy()
+    {
+      var game = CreateGame();
+      var hero = game.Hero;
+
+      var initEnemyCount = game.GameManager.EnemiesManager.Enemies.Count;
+      Assert.Greater(initEnemyCount, 0);
+      Assert.AreEqual(initEnemyCount, game.GameManager.CurrentNode.GetTiles<Enemy>().Count);
+
+      var enemy = game.GameManager.EnemiesManager.Enemies.First();
+      while (enemy.Alive)
+      {
+        UseScroll(game, hero, enemy);
+        GotoNextHeroTurn(game);
+      }
+
+      var finalEnemyCount = game.GameManager.EnemiesManager.Enemies.Count;
+      Assert.AreEqual(finalEnemyCount, initEnemyCount - 1);
+      Assert.AreEqual(finalEnemyCount, game.GameManager.CurrentNode.GetTiles<Enemy>().Count);
     }
 
     [Test]

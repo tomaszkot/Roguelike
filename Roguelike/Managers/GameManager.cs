@@ -421,7 +421,7 @@ namespace Roguelike.Managers
           lsk = chest.LootSourceKind;
         }
 
-        if (attackPolicy.Victim is Barrel && RandHelper.GetRandomDouble() < .1)
+        if (attackPolicy.Victim is Barrel && RandHelper.GetRandomDouble() < GenerationInfo.ChanceToGenerateEnemyFromBarrel)
         {
           var enemy = CurrentNode.SpawnEnemy(attackPolicy.Victim);
           EnemiesManager.Enemies.Add(enemy);

@@ -145,6 +145,12 @@ namespace RoguelikeUnitTests
       GotoNextHeroTurn(game);
     }
 
+    public void InteractHeroWith(Enemy tile)
+    {
+      Game.GameManager.InteractHeroWith(tile);
+      GotoNextHeroTurn(game);
+    }
+
     protected void GotoNextHeroTurn(Roguelike.RoguelikeGame game)
     {
       Assert.AreEqual(game.GameManager.Context.TurnOwner, Roguelike.TurnOwner.Allies);
