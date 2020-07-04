@@ -17,6 +17,7 @@ namespace RoguelikeUnitTests
       var game = CreateGame(autoLoadLevel, numEnemies, numRooms);
       helper = new T();
 
+      helper.Test = this;
       helper.Enemies = this.GetLimitedEnemies();
       helper.Game = game;
       return helper as T;

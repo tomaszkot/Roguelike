@@ -97,11 +97,15 @@ namespace RoguelikeUnitTests.Helpers
         createdTiles.Add(tile);
       }
 
-      foreach (var tile in createdTiles)
+      for(int i=0;i<createdTiles.Count;i++)
       {
-        game.GameManager.InteractHeroWith(tile);
-        game.GameManager.MakeGameTick();//make allies move
-        game.GameManager.MakeGameTick();//make enemies move
+        var tile = createdTiles[i];
+        var to = game.GameManager.Context.TurnOwner;
+        var tac = game.GameManager.Context.TurnActionsCount;
+        var ni = game.GameManager.EnemiesManager.GetEnemies().Where(e => e.State != EntityState.Idle).ToList();
+
+        Assert.AreEqual(game.GameManager.Context.TurnOwner, TurnOwner.Hero);
+        test.InteractHeroWith(tile as InteractiveTile);
       }
     }
   }

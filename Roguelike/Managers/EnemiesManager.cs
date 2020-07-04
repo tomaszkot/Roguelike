@@ -85,8 +85,8 @@ namespace Roguelike.Managers
       }
 
       var notIdle = entities.Where(i => i.State != EntityState.Idle).ToList();
-      int k = 0;
-      k++;
+      if (notIdle.Any())
+        OnPolicyAppliedAllIdle();//Barrels() ut failed witout it
     }
 
     public override void MakeRandomMove(LivingEntity entity)

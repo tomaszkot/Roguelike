@@ -139,7 +139,7 @@ namespace RoguelikeUnitTests
     { 
     }
 
-    protected void InteractHeroWith(InteractiveTile tile)
+    public void InteractHeroWith(InteractiveTile tile)
     {
       Game.GameManager.InteractHeroWith(tile);
       GotoNextHeroTurn(game);
@@ -148,9 +148,22 @@ namespace RoguelikeUnitTests
     protected void GotoNextHeroTurn(Roguelike.RoguelikeGame game)
     {
       Assert.AreEqual(game.GameManager.Context.TurnOwner, Roguelike.TurnOwner.Allies);
+      game.GameManager.Logger.LogInfo("make allies move");
       game.MakeGameTick();//make allies move
       Assert.AreEqual(game.GameManager.Context.TurnOwner, Roguelike.TurnOwner.Enemies);
+      var pend = game.GameManager.Context.PendingTurnOwnerApply;
+      var to = game.GameManager.Context.TurnOwner;
+      var tac = game.GameManager.Context.TurnActionsCount;
+      var ni = game.GameManager.EnemiesManager.GetEnemies().Where(e => e.State != EntityState.Idle).ToList();
+      //game.GameManager.Logger.LogInfo("make enemies move " + game.GameManager.Context.PendingTurnOwnerApply);
       game.MakeGameTick();//make enemies move
+      if (!game.GameManager.HeroTurn)
+      {
+        var tac1 = game.GameManager.Context.TurnActionsCount;
+        int k = 0;
+        k++;
+      }
+
       Assert.True(game.GameManager.HeroTurn);
     }
   }

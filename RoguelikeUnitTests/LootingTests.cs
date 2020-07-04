@@ -158,11 +158,16 @@ namespace RoguelikeUnitTests
     public void Barrels()
     {
       var env = CreateTestEnv();
-      var max = 20;
+      var max = 100;
+      var enemiesBefore = env.Game.Level.GetTiles<Enemy>();
       var newLootItems = env.TestInteractive<Barrel>(
          (InteractiveTile barrel) => {
-         }, max
+         }, max, 50, 1
         );
+      var enemiesAfter = env.Game.Level.GetTiles<Enemy>();
+      Assert.Greater(enemiesAfter.Count, enemiesBefore.Count);
+      Assert.Greater(enemiesAfter.Count - enemiesBefore.Count, 5);
+      Assert.AreEqual(enemiesAfter.Count, Game.GameManager.EnemiesManager.Enemies.Count);
     }
 
     [Test]
@@ -185,7 +190,7 @@ namespace RoguelikeUnitTests
       Assert.Less(potions.Count, 40);
 
       var mushes = lootInfo.Get<Mushroom>();
-      Assert.Greater(mushes.Count, 2);
+      Assert.Greater(mushes.Count, 1);
       Assert.Less(potions.Count, 20);
     }
         

@@ -290,15 +290,16 @@ namespace Roguelike.TileContainers
       return findPathMatrix;
     }
 
-    internal Tile ReplaceTile(Tile loot, Point point)
+    internal Tile ReplaceTile(Tile replacer, Point point)
     {
-      Tile toUse = loot;
-      if (loot == null)
+      Tile toUse = replacer;
+      if (replacer == null)
         toUse = new Tile();
       var prev = GetTile(point);
       if (SetTile(toUse, point))
       {
-        Tiles[point.Y, point.X] = new Tile(point);//reset old one, as loot is not hold in Tiles table
+        if(replacer is Loot)
+          Tiles[point.Y, point.X] = new Tile(point);//reset old one, as loot is not hold in Tiles table
         return prev;
       }
       return null;
@@ -345,5 +346,16 @@ namespace Roguelike.TileContainers
       return GetAllStairs(StairsKind.PitDown).Where(i=> i.PitName == pitName).SingleOrDefault();
     }
 
+    internal int GetSpawnEnemyLevel()
+    {
+      return Index;
+    }
+
+    internal Enemy SpawnEnemy(Tile position)
+    {
+      var enemy = new Enemy(EnemySymbols.SkeletonSymbol);
+      enemy.SetLevel(GetSpawnEnemyLevel());
+      return enemy;
+    }
   }
 }

@@ -220,7 +220,7 @@ namespace Roguelike.Managers
         dest = context.CurrentNode.GetClosestEmpty(lootSource, true);
       if (dest != null)
       {
-        var set = ReplaceTileByLoot(item, dest.Point, animated, lootSource);
+        var set = ReplaceTile<Loot>(item, dest.Point, animated, lootSource);
         return set;
       }
 
@@ -406,47 +406,61 @@ namespace Roguelike.Managers
       return InteractionResult.None;
     }
 
+    void HandlePolicyApplied(Policies.Policy policy)
+    {
+      var attackPolicy = policy as AttackPolicy;
+      if (attackPolicy.Victim is Barrel || attackPolicy.Victim is Chest)
+      {
+        var lsk = LootSourceKind.Barrel;
+        Chest chest = null;
+        if (attackPolicy.Victim is Chest)
+        {
+          chest = (attackPolicy.Victim as Chest);
+          if (!chest.Closed)
+            return;
+          lsk = chest.LootSourceKind;
+        }
+
+        if (attackPolicy.Victim is Barrel && RandHelper.GetRandomDouble() < .1)
+        {
+          var enemy = CurrentNode.SpawnEnemy(attackPolicy.Victim);
+          EnemiesManager.Enemies.Add(enemy);
+          ReplaceTile<Enemy>(enemy, attackPolicy.Victim.Point, false, attackPolicy.Victim);
+          return;
+        }
+
+        Loot loot = LootGenerator.TryGetRandomLootByDiceRoll(lsk);
+        if (attackPolicy.Victim is Barrel)
+        {
+          bool repl = ReplaceTile<Loot>(loot, attackPolicy.Victim.Point, false, attackPolicy.Victim);
+          Assert(repl, "ReplaceTileByLoot " + loot);
+          Debug.WriteLine("ReplaceTileByLoot " + loot + " " + repl);
+        }
+        else
+        {
+          AppendAction<InteractiveTileAction>((InteractiveTileAction ac) => { ac.Tile = chest; ac.KindValue = InteractiveTileAction.Kind.ChestOpened; });
+          AddLootReward(loot, attackPolicy.Victim, true);//add loot at closest empty
+          if (chest.ChestKind == ChestKind.GoldDeluxe ||
+            chest.ChestKind == ChestKind.Gold)
+          {
+            var lootEx1 = GetExtraLoot(attackPolicy.Victim, false);
+            AddLootReward(lootEx1, attackPolicy.Victim, true);
+
+            if (chest.ChestKind == ChestKind.GoldDeluxe)
+            {
+              var lootEx2 = GetExtraLoot(attackPolicy.Victim, true);
+              AddLootReward(lootEx2, attackPolicy.Victim, true);
+            }
+          }
+        }
+      }
+    }
+
     public void OnHeroPolicyApplied(object sender, Policies.Policy policy)
     {
       if (policy.Kind == PolicyKind.Attack)
       {
-        var attackPolicy = policy as AttackPolicy;
-        if (attackPolicy.Victim is Barrel || attackPolicy.Victim is Chest)
-        {
-          var lsk = LootSourceKind.Barrel;
-          Chest chest = null;
-          if (attackPolicy.Victim is Chest)
-          {
-            chest = (attackPolicy.Victim as Chest);
-            if(!chest.Closed)
-              return;
-            lsk = chest.LootSourceKind;
-          }
-          var loot = LootGenerator.TryGetRandomLootByDiceRoll(lsk);
-          if (attackPolicy.Victim is Barrel)
-          {
-            bool repl = ReplaceTileByLoot(loot, attackPolicy.Victim.Point, false, attackPolicy.Victim);
-            Assert(repl, "ReplaceTileByLoot " + loot);
-            Debug.WriteLine("ReplaceTileByLoot " + loot + " " + repl);
-          }
-          else
-          {
-            AppendAction <InteractiveTileAction>((InteractiveTileAction ac) => { ac.Tile = chest; ac.KindValue = InteractiveTileAction.Kind.ChestOpened; });
-            AddLootReward(loot, attackPolicy.Victim, true);//add loot at closest empty
-            if (chest.ChestKind == ChestKind.GoldDeluxe ||
-              chest.ChestKind == ChestKind.Gold)
-            {
-              var lootEx1 = GetExtraLoot(attackPolicy.Victim, false);
-              AddLootReward(lootEx1, attackPolicy.Victim, true);
-
-              if (chest.ChestKind == ChestKind.GoldDeluxe)
-              {
-                var lootEx2 = GetExtraLoot(attackPolicy.Victim, true);
-                AddLootReward(lootEx2, attackPolicy.Victim, true);
-              }
-              }
-          }
-        }
+        HandlePolicyApplied(policy);
       }
       if (policy is AttackPolicy || policy is SpellCastPolicy)
         RemoveDeadEnemies();
@@ -491,10 +505,10 @@ namespace Roguelike.Managers
       this.EventsManager.AppendAction(action);
     }
 
-    public bool ReplaceTileByLoot(Loot loot, Point point, bool animated, Tile positionSource)
+    public bool ReplaceTile<T>(T replacer, Point point, bool animated, Tile positionSource) where T : Tile//T can be Loot, Enemy
     {
       //Assert(loot is Loot || loot.IsEmpty, "ReplaceTileByLoot failed");
-      var prevTile = CurrentNode.ReplaceTile(loot, point);
+      var prevTile = CurrentNode.ReplaceTile(replacer, point);
       if (prevTile != null)//this normally shall always be not null
       {
         var it = prevTile as InteractiveTile;
@@ -503,22 +517,20 @@ namespace Roguelike.Managers
           //bool lootGenerated = false;
           if (it == positionSource)
             AppendAction<InteractiveTileAction>((InteractiveTileAction ac) => { ac.Tile = it; ac.KindValue = InteractiveTileAction.Kind.Destroyed; });
-          //else if (positionSource is Chest)
-          //{
-          //  var chest = positionSource as Chest;
-          //  if(chest.Closed)
-          //    AppendAction <InteractiveTileAction>((InteractiveTileAction ac) => { ac.Tile = it; ac.KindValue = InteractiveTileAction.Kind.ChestOpened; });
-          //}
         }
-
-        AppendAction<LootAction>( (LootAction ac) => { ac.Loot = loot;  ac.LootActionKind = LootActionKind.Generated; ac.GenerationAnimated = animated; ac.Source = positionSource; });
+        var loot = replacer as Loot;
+        if (loot != null)
+          AppendAction<LootAction>((LootAction ac) => { ac.Loot = loot; ac.LootActionKind = LootActionKind.Generated; ac.GenerationAnimated = animated; ac.Source = positionSource; });
+        else
+        {
+          if (replacer != null)
+          {
+            var enemy = replacer as Enemy;
+            AppendAction<EnemyAction>((EnemyAction ac) => { ac.Enemy = enemy; ac.Kind = EnemyActionKind.AppendedToLevel; ac.Info = enemy.Name + " spawned"; });
+          }
+        }
         return true;
       }
-      //else if (positionSource is InteractiveTile)
-      //{
-      //  AppendAction<InteractiveTileAction>((InteractiveTileAction ac) => { ac.Tile = positionSource as InteractiveTile; ac.KindValue = InteractiveTileAction.Kind.Destroyed; });
-      //}
-
       return false;
     }
 

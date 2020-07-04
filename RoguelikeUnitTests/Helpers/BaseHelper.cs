@@ -32,6 +32,7 @@ namespace RoguelikeUnitTests.Helpers
 
     public RoguelikeGame Game { get => game; set => game = value; }
     public List<Enemy> Enemies { get; internal set; }
+    public TestBase Test { get => test; set => test = value; }
 
     public T AddTile<T>() where T : Tile, new()
     {
