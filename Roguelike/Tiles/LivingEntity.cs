@@ -160,6 +160,8 @@ namespace Roguelike.Tiles
           alive = value;
           if (!alive)
           {
+            if (eventsManager == null)
+              throw new Exception("eventsManager == null "+this);
             AppendAction(new LivingEntityAction(LivingEntityActionKind.Died) { InvolvedEntity = this, Level = ActionLevel.Important, Info = Name +" Died" });
           }
         }

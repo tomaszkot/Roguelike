@@ -3,6 +3,7 @@ using Dungeons.Core;
 using Dungeons.Tiles;
 using Newtonsoft.Json;
 using Roguelike.Abstract;
+using Roguelike.Managers;
 using Roguelike.Tiles;
 using Roguelike.Tiles.Interactive;
 using SimpleInjector;
@@ -351,10 +352,11 @@ namespace Roguelike.TileContainers
       return Index;
     }
 
-    internal Enemy SpawnEnemy(Tile position)
+    internal Enemy SpawnEnemy(Tile position, EventsManager em)
     {
       var enemy = new Enemy(EnemySymbols.SkeletonSymbol);
       enemy.SetLevel(GetSpawnEnemyLevel());
+      enemy.EventsManager = em;
       enemy.tag1 = EnemySymbols.EnemiesToSymbols.Where(i => i.Value == EnemySymbols.SkeletonSymbol).Single().Key;
       return enemy;
     }

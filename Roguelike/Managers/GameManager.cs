@@ -423,7 +423,7 @@ namespace Roguelike.Managers
 
         if (attackPolicy.Victim is Barrel && RandHelper.GetRandomDouble() < GenerationInfo.ChanceToGenerateEnemyFromBarrel)
         {
-          var enemy = CurrentNode.SpawnEnemy(attackPolicy.Victim);
+          var enemy = CurrentNode.SpawnEnemy(attackPolicy.Victim, EventsManager);
           EnemiesManager.Enemies.Add(enemy);
           ReplaceTile<Enemy>(enemy, attackPolicy.Victim.Point, false, attackPolicy.Victim);
           return;
