@@ -8,7 +8,7 @@ namespace Roguelike.Abstract
 {
   public interface IObstacle : Dungeons.Tiles.IObstacle
   {
-    bool OnHitBy(IMovingDamager damager);
+    bool OnHitBy(ISpell damager);
     bool CanBeHitBySpell();
   }
 }

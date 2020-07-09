@@ -26,16 +26,38 @@ namespace Roguelike.Spells
     Unset, FireBall, CrackedStone, Skeleton, Trap, IceBall, PoisonBall, Transform,
     Frighten, Healing, ManaShield, Telekinesis, StonedBall, LightingBall
         //,MindControl
-        , Mana, BushTrap, Rage, Weaken, NESWFireBall, Teleport, IronSkin, ResistAll, Inaccuracy, CallMerchant, CallGod, Identify
+        , Mana, BushTrap, Rage, Weaken, NESWFireBall, Teleport, IronSkin, ResistAll, Inaccuracy, /*CallMerchant, CallGod,*/ Identify, Portal
   }
 
-  public class Spell : IMovingDamager
+  public class Spell : ISpell
   {
     protected float manaCost;
-    public int CoolingDown;
+   
     float manaCostMultiplicator = 20;
     public bool SendByGod { get; set; }
     public FightItem FightItem { get; internal set; }
+    protected float damage = 0f;
+
+    //Returns damage based on Spell level.
+    //Spell level depends on the magic amount owner has.
+    //For enemies magic amount is increased automatically as other stats.
+    public float Damage
+    {
+      get
+      {
+        var level = GetCurrentLevel();
+        var dmg = CalcDamage(level);
+        return dmg;
+      }
+    }
+
+    protected virtual float CalcDamage(int magicLevel)
+    {
+      //TODO
+      //var dmg = damage + (damage * ((magicLevel - 1) * (damageMultiplicator + magicLevel * magicLevel / 2) / 100.0f));
+      //return (float)Math.Ceiling(dmg);
+      return magicLevel;
+    }
 
     //public int GetExtraChanceForCausingEffect(LivingEntity caster)
     //{
@@ -73,30 +95,9 @@ namespace Roguelike.Spells
       this.Caller.ReduceMana(ManaCost);
     }
 
-    protected float damage;
-    //float damageMultiplicator = 45.0f;//%
+    public int CoolingDown { get; set; } = 0;
 
-    //Returns damage based on Spell level.
-    //Spell level depends on the magic amount owner has.
-    //For enemies magic amount is increased automatically as other stats.
-    public float Damage
-    {
-      get
-      {
-        var level = GetCurrentLevel();
-        var dmg = CalcDamage(level);
-        return dmg;
-      }
-    }
-
-    protected virtual float CalcDamage(int magicLevel)
-    {
-      //TODO
-      //var dmg = damage + (damage * ((magicLevel - 1) * (damageMultiplicator + magicLevel * magicLevel / 2) / 100.0f));
-      //return (float)Math.Ceiling(dmg);
-      return magicLevel;
-    }
-
+   
     //[XmlIgnore]
     [JsonIgnore]
     public LivingEntity Caller

@@ -142,7 +142,7 @@ namespace Roguelike.Managers
       var enemyCasted = enemy as Enemy;
       if (enemyCasted.PrefferedFightStyle == PrefferedFightStyle.Magic)
       {
-        if(enemyCasted.DistanceFrom(hero) < 8)
+        if(enemyCasted.DistanceFrom(hero) < 8)//TODO
         {
           var scroll = new Scroll(Spells.SpellKind.FireBall);
           Context.ApplySpellAttackPolicy(enemy, hero, scroll, null,

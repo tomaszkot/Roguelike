@@ -7,8 +7,9 @@ using Roguelike.Tiles;
 
 namespace Roguelike.Abstract
 {
-  public class IMovingDamager
+  public interface ISpell
   {
     LivingEntity Caller { get; set; }
+    int CoolingDown { get; set; }
   }
 }

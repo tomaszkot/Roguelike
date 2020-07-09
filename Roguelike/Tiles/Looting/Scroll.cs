@@ -1,5 +1,7 @@
-﻿using Roguelike.Attributes;
+﻿using Roguelike.Abstract;
+using Roguelike.Attributes;
 using Roguelike.Spells;
+using Roguelike.Tiles.Interactive;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -102,14 +104,17 @@ namespace Roguelike.Tiles.Looting
         case SpellKind.Inaccuracy:
           desc = "Reduces the Chance to Hit statistic of the victim";
           break;
-        case SpellKind.CallMerchant:
-          desc = "Teleports a merchant near to the hero";
-          break;
-        case SpellKind.CallGod:
-          desc = "Teleports a god near to the hero";
-          break;
+        //case SpellKind.CallMerchant:
+        //  desc = "Teleports a merchant near to the hero";
+        //  break;
+        //case SpellKind.CallGod:
+        //  desc = "Teleports a god near to the hero";
+        //  break;
         case SpellKind.Identify:
           desc = "Reveals attributes of a magic/unique item";
+          break;
+        case SpellKind.Portal:
+          desc = "Allows to teleport to a known point of the world";
           break;
         default:
           break;
@@ -133,12 +138,12 @@ namespace Roguelike.Tiles.Looting
       return desc;
     }
 
-    public Scroll() : this(SpellKind.FireBall)
+    public Scroll() : this(SpellKind.Unset)
     {
 
     }
 
-    public Scroll(SpellKind kind = SpellKind.FireBall)
+    public Scroll(SpellKind kind = SpellKind.Unset)
     {
       //dummy.Stats.SetNominal(EntityStatKind.Magic, LivingEntity.BaseMagic.TotalValue);
       Symbol = '?';
@@ -179,9 +184,15 @@ namespace Roguelike.Tiles.Looting
     //  return feat;
     //}
 
-    public Spell CreateSpell(LivingEntity caller)
+    public ISpell CreateSpell(LivingEntity caller)
     {
       return CreateSpell(Kind, caller);
+    }
+
+    public T CreateSpell<T>(LivingEntity caller) where T : class, ISpell
+    {
+      var ispell =  CreateSpell(Kind, caller);
+      return ispell as T;
     }
 
     public override string GetId()
@@ -189,7 +200,7 @@ namespace Roguelike.Tiles.Looting
       return base.GetId() + "_" + Kind;
     }
 
-    public static Spell CreateSpell(SpellKind Kind, LivingEntity caller)
+    public static ISpell CreateSpell(SpellKind Kind, LivingEntity caller)
     {
       switch (Kind)
       {
@@ -233,19 +244,21 @@ namespace Roguelike.Tiles.Looting
       //    return new InaccuracySpell(caller);
       //  case SpellKind.IronSkin:
       //    return new IronSkinSpell(caller);
-      //  case SpellKind.Teleport:
-      //    return new TeleportSpell(caller);
-      //  case SpellKind.CallMerchant:
-      //    return new CallMerchantSpell(caller);
-      //  case SpellKind.CallGod:
-      //    return new CallGodSpell(caller);
-      //  case SpellKind.LightingBall:
-      //    return new LightingBallSpell(caller);
-      //  case SpellKind.ResistAll:
-      //    return new ResistAllSpell(caller);
-      //  default:
-      //    break;
-      //    throw new Exception("CreateSpell ???");
+        case SpellKind.Teleport:
+          return new TeleportSpell(caller);
+        case SpellKind.Portal:
+          return new Portal(caller);
+          //  case SpellKind.CallMerchant:
+          //    return new CallMerchantSpell(caller);
+          //  case SpellKind.CallGod:
+          //    return new CallGodSpell(caller);
+          //  case SpellKind.LightingBall:
+          //    return new LightingBallSpell(caller);
+          //  case SpellKind.ResistAll:
+          //    return new ResistAllSpell(caller);
+          //  default:
+          //    break;
+          //    throw new Exception("CreateSpell ???");
       }
       return null;
     }

@@ -854,7 +854,7 @@ namespace Roguelike.Tiles
       return EntityStatKind.Unset;
     }
 
-    public bool OnHitBy(Roguelike.Abstract.IMovingDamager md)
+    public bool OnHitBy(Roguelike.Abstract.ISpell md)
     {
       if (md is Spell)
       {

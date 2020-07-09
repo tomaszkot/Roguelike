@@ -1,5 +1,6 @@
 ﻿using NUnit.Framework;
 using Roguelike.Policies;
+using Roguelike.Spells;
 using Roguelike.Tiles;
 using Roguelike.Tiles.Looting;
 using System.Linq;
@@ -15,7 +16,7 @@ namespace RoguelikeUnitTests
       var game = CreateGame();
       var hero = game.Hero;
       var fireBallScroll = new Scroll(Roguelike.Spells.SpellKind.FireBall);
-      var spell = fireBallScroll.CreateSpell(hero);
+      var spell = fireBallScroll.CreateSpell<OffensiveSpell>(hero);
       Assert.Greater(spell.Damage, 0);
       
     }

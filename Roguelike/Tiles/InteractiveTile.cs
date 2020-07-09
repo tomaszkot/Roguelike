@@ -39,7 +39,7 @@ namespace Roguelike.Tiles
       return false;
     }
 
-    public bool OnHitBy(IMovingDamager damager)
+    public bool OnHitBy(ISpell damager)
     {
       return false;
     }
