@@ -505,6 +505,22 @@ namespace Roguelike.Managers
       this.EventsManager.AppendAction(action);
     }
 
+    public bool AppendTileByScrollUsage<T>(T tile, Point pt) where T : Tile
+    {
+      bool appended = AppendTile(tile, pt);
+      if (appended)
+      {
+        if (tile is Portal)
+        {
+          var portalScroll = Hero.Inventory.GetItems<Roguelike.Tiles.Looting.Scroll>().Where(i => i.Kind == Spells.SpellKind.Portal).FirstOrDefault();
+          return Hero.Inventory.Remove(portalScroll);
+        }
+        else
+          Assert(false, "AppendTileByScrollUsage unknown tile!");
+      }
+      return appended;
+    }
+
     public bool AppendTile(Tile tile, Point point)
     {
       var prevTile = CurrentNode.ReplaceTile(tile, point);
