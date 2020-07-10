@@ -291,7 +291,7 @@ namespace Roguelike.TileContainers
       return findPathMatrix;
     }
 
-    internal Tile ReplaceTile(Tile replacer, Point point)
+    public Tile ReplaceTile(Tile replacer, Point point)
     {
       Tile toUse = replacer;
       if (replacer == null)

@@ -83,11 +83,12 @@ namespace Roguelike
 
     }
 
+    public enum InteractiveActionKind { Unset, DoorsUnlocked, DoorsLocked, Destroyed, ChestOpened, AppendedToLevel }
     public class InteractiveTileAction : GameAction
     {
-      public enum Kind { Unset, DoorsUnlocked, DoorsLocked, Destroyed, ChestOpened }
+      
       public Tiles.InteractiveTile Tile { get; set; }
-      public Kind KindValue { get; set; }
+      public InteractiveActionKind InteractiveKind { get; set; }
       public InteractiveTileAction(Tiles.InteractiveTile tile) { Tile = tile; }
       public InteractiveTileAction() { }
       

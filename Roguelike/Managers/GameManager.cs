@@ -438,7 +438,7 @@ namespace Roguelike.Managers
         }
         else
         {
-          AppendAction<InteractiveTileAction>((InteractiveTileAction ac) => { ac.Tile = chest; ac.KindValue = InteractiveTileAction.Kind.ChestOpened; });
+          AppendAction<InteractiveTileAction>((InteractiveTileAction ac) => { ac.Tile = chest; ac.InteractiveKind = InteractiveActionKind.ChestOpened; });
           AddLootReward(loot, attackPolicy.Victim, true);//add loot at closest empty
           if (chest.ChestKind == ChestKind.GoldDeluxe ||
             chest.ChestKind == ChestKind.Gold)
@@ -505,6 +505,24 @@ namespace Roguelike.Managers
       this.EventsManager.AppendAction(action);
     }
 
+    public bool AppendTile(Tile tile, Point point)
+    {
+      var prevTile = CurrentNode.ReplaceTile(tile, point);
+      if (prevTile != null)//this normally shall always be not null
+      {
+        if (tile is InteractiveTile)
+        {
+          AppendAction<InteractiveTileAction>((InteractiveTileAction ac) => { ac.Tile = tile as InteractiveTile;
+                        ac.InteractiveKind = InteractiveActionKind.AppendedToLevel; });
+        }
+        else
+          Assert(false, "AppendTile unknown tile!");
+        return true;
+      }
+
+      return false;
+    }
+
     public bool ReplaceTile<T>(T replacer, Point point, bool animated, Tile positionSource) where T : Tile//T can be Loot, Enemy
     {
       //Assert(loot is Loot || loot.IsEmpty, "ReplaceTileByLoot failed");
@@ -516,7 +534,7 @@ namespace Roguelike.Managers
         {
           //bool lootGenerated = false;
           if (it == positionSource)
-            AppendAction<InteractiveTileAction>((InteractiveTileAction ac) => { ac.Tile = it; ac.KindValue = InteractiveTileAction.Kind.Destroyed; });
+            AppendAction<InteractiveTileAction>((InteractiveTileAction ac) => { ac.Tile = it; ac.InteractiveKind = InteractiveActionKind.Destroyed; });
         }
         var loot = replacer as Loot;
         if (loot != null)
