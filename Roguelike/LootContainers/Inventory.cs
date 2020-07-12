@@ -195,6 +195,7 @@ namespace Roguelike.LootContainers
               itemToRemove = item;
 
             sendSignal = true;
+            res = true;
           }
           else
             Assert(false);
