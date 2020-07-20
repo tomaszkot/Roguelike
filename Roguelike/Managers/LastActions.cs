@@ -1,11 +1,7 @@
 ﻿using Dungeons.ASCIIDisplay.Presenters;
-using Dungeons.Tiles;
 using Roguelike.Events;
-using Roguelike.Tiles;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace Roguelike.InfoScreens
 {
@@ -18,35 +14,6 @@ namespace Roguelike.InfoScreens
 
     public LastActions()
     {
-
-      //Func<HeroAction, bool?> acHero = (HeroAction x) =>
-      //{
-      //  if (x.KindValue == HeroAction.Kind.Moved)
-      //    return false;
-      //  return true;
-      //};
-      //Func<LootAction, bool?> acLoot = (LootAction x) =>
-      //{
-      //  if (x.KindValue == LootAction.Kind.Generated)
-      //    return false;
-      //  return true;
-      //};
-      //Func<EnemyAction, bool?> acEnemy = (EnemyAction x) =>
-      //{
-      //  if (x.KindValue == EnemyAction.Kind.Moved)
-      //    return false;
-      //  if (x.KindValue == EnemyAction.Kind.ChasingPlayer)
-      //    return false;
-      //  if (x.KindValue == EnemyAction.Kind.AppendedToLevel)
-      //    return false;
-      //  return true;
-      //};
-      //actionsSwitch = new TypeSwitch<GameAction, bool?>()
-      // .Case(acHero)
-      //  .Case(acEnemy)
-      //  .Case(acLoot)
-      // ;
-
       for (int i = 0; i < MaxSize; i++)
       {
         Add("");
@@ -66,12 +33,6 @@ namespace Roguelike.InfoScreens
       if (ac.Info.Trim() == string.Empty)
         return;
 
-      //if (actionsSwitch.ContainsSwitch(ac.GetType()))
-      //{
-      //  var display = actionsSwitch.Switch(ac);
-      //  if (display.HasValue && display.Value == false)
-      //    return;
-      //}
       if (ac is LivingEntityAction)
       {
         var leac = ac as LivingEntityAction;
@@ -94,8 +55,7 @@ namespace Roguelike.InfoScreens
           actions.RemoveAt(0);
       }
     }
-
-
+    
     internal void Add(string action, ActionLevel level = ActionLevel.Normal)
     {
       var ac = new GameAction() { Info = action, Level = level };

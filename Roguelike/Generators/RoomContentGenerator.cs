@@ -152,8 +152,10 @@ namespace Roguelike.Generators
     protected virtual bool PlaceEnemy(Enemy enemy, Dungeons.TileContainers.DungeonNode node, Point pt)
     {
       var res = node.SetTile(enemy, pt);
-      if(res)
-        logger.LogInfo("placed " + enemy + " at :" + enemy.Point);
+      if (res)
+      {
+        // logger.LogInfo("placed " + enemy + " at :" + enemy.Point);
+      }
       else
         logger.LogError("not placed ! " + enemy + " at :" + enemy.Point);
       return res;

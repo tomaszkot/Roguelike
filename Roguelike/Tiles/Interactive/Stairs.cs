@@ -20,6 +20,7 @@ namespace Roguelike.Tiles.Interactive
       get { return pitName; }
       set { pitName = value; }
     }
+
     public StairsKind StairsKind
     {
       get => kind;

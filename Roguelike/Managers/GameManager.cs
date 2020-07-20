@@ -149,6 +149,11 @@ namespace Roguelike.Managers
 
     private void EventsManager_ActionAppended(object sender, GameAction e)
     {
+      OnActionAppended(e);
+    }
+
+    protected virtual void OnActionAppended(GameAction e)
+    {
       //var pac = e as PolicyAppliedAction;
       //if (pac!=null)
       //{
@@ -163,7 +168,7 @@ namespace Roguelike.Managers
       if (!isLivingEntityAction)
       {
         var gsa = e as GameStateAction;
-        if(gsa!=null)
+        if (gsa != null)
           Logger.LogInfo(gsa.Info);
         return;
       }
@@ -392,7 +397,11 @@ namespace Roguelike.Managers
               return DungeonLevelStairsHandler(destLevelIndex, stairs);
           }
         }
-        else 
+        else if(tile is Portal)
+        {
+          return HandlePortalCollision(tile as Portal);
+        }
+        else
         {
           Context.ApplyPhysicalAttackPolicy(Hero, tile, (policy) => OnHeroPolicyApplied(this, policy));
           return InteractionResult.Attacked;
@@ -404,6 +413,11 @@ namespace Roguelike.Managers
       //  return InteractionResult.Blocked;//blok hero by default
       //}
       return InteractionResult.None;
+    }
+
+    protected virtual InteractionResult HandlePortalCollision(Portal portal)
+    {
+      return InteractionResult.Blocked;
     }
 
     void HandlePolicyApplied(Policies.Policy policy)
@@ -438,7 +452,7 @@ namespace Roguelike.Managers
         }
         else
         {
-          AppendAction<InteractiveTileAction>((InteractiveTileAction ac) => { ac.Tile = chest; ac.InteractiveKind = InteractiveActionKind.ChestOpened; });
+          AppendAction<InteractiveTileAction>((InteractiveTileAction ac) => { ac.InvolvedTile = chest; ac.InteractiveKind = InteractiveActionKind.ChestOpened; });
           AddLootReward(loot, attackPolicy.Victim, true);//add loot at closest empty
           if (chest.ChestKind == ChestKind.GoldDeluxe ||
             chest.ChestKind == ChestKind.Gold)
@@ -496,7 +510,7 @@ namespace Roguelike.Managers
       return lootGenerator.GetRandomLoot();
     }
 
-    void AppendAction<T>(Action<T> init) where T : GameAction, new()
+    protected void AppendAction<T>(Action<T> init) where T : GameAction, new()
     {
       var action = new T();
       if (init != null)
@@ -528,7 +542,7 @@ namespace Roguelike.Managers
       {
         if (tile is InteractiveTile)
         {
-          AppendAction<InteractiveTileAction>((InteractiveTileAction ac) => { ac.Tile = tile as InteractiveTile;
+          AppendAction<InteractiveTileAction>((InteractiveTileAction ac) => { ac.InvolvedTile = tile as InteractiveTile;
                         ac.InteractiveKind = InteractiveActionKind.AppendedToLevel; });
         }
         else
@@ -539,10 +553,11 @@ namespace Roguelike.Managers
       return false;
     }
 
-    public bool ReplaceTile<T>(T replacer, Point point, bool animated, Tile positionSource) where T : Tile//T can be Loot, Enemy
+    public bool ReplaceTile<T>(T replacer, Point point, bool animated, Tile positionSource, AbstractGameLevel level = null) where T : Tile//T can be Loot, Enemy
     {
       //Assert(loot is Loot || loot.IsEmpty, "ReplaceTileByLoot failed");
-      var prevTile = CurrentNode.ReplaceTile(replacer, point);
+      var node = level ?? CurrentNode;
+      var prevTile = node.ReplaceTile(replacer, point);
       if (prevTile != null)//this normally shall always be not null
       {
         var it = prevTile as InteractiveTile;
@@ -550,7 +565,7 @@ namespace Roguelike.Managers
         {
           //bool lootGenerated = false;
           if (it == positionSource)
-            AppendAction<InteractiveTileAction>((InteractiveTileAction ac) => { ac.Tile = it; ac.InteractiveKind = InteractiveActionKind.Destroyed; });
+            AppendAction<InteractiveTileAction>((InteractiveTileAction ac) => { ac.InvolvedTile = it; ac.InteractiveKind = InteractiveActionKind.Destroyed; });
         }
         var loot = replacer as Loot;
         if (loot != null)
@@ -560,7 +575,8 @@ namespace Roguelike.Managers
           if (replacer != null)
           {
             var enemy = replacer as Enemy;
-            AppendAction<EnemyAction>((EnemyAction ac) => { ac.Enemy = enemy; ac.Kind = EnemyActionKind.AppendedToLevel; ac.Info = enemy.Name + " spawned"; });
+            if(enemy!=null)
+              AppendAction<EnemyAction>((EnemyAction ac) => { ac.Enemy = enemy; ac.Kind = EnemyActionKind.AppendedToLevel; ac.Info = enemy.Name + " spawned"; });
           }
         }
         return true;

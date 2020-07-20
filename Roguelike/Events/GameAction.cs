@@ -83,26 +83,15 @@ namespace Roguelike
 
     }
 
-    public enum InteractiveActionKind { Unset, DoorsUnlocked, DoorsLocked, Destroyed, ChestOpened, AppendedToLevel }
+    public enum InteractiveActionKind { Unset, DoorsUnlocked, DoorsLocked, Destroyed, ChestOpened, AppendedToLevel,
+      HitSrcPortal, HitGroundPortal, GroundPortalApproached }
     public class InteractiveTileAction : GameAction
     {
       
-      public Tiles.InteractiveTile Tile { get; set; }
+      public Tiles.InteractiveTile InvolvedTile { get; set; }
       public InteractiveActionKind InteractiveKind { get; set; }
-      public InteractiveTileAction(Tiles.InteractiveTile tile) { Tile = tile; }
+      public InteractiveTileAction(Tiles.InteractiveTile tile) { InvolvedTile = tile; }
       public InteractiveTileAction() { }
-      
-      //public override string GetSound
-      //{
-      //  get
-      //  {
-      //    if (KindValue == Kind.DoorsLocked)
-      //      return "door_locked";
-      //    else if (KindValue == Kind.DoorsUnlocked)
-      //      return "door_locked";
-      //    return "";
-      //  }
-      //}
     }
     public enum LootActionKind { Generated, Collected, PutOn, PutOff, Crafted, SpecialDrunk, Enchanted, Consumed, Identified }
     public class LootAction : GameAction
@@ -147,7 +136,7 @@ namespace Roguelike
 
     public class TilesRevealedAction : GameAction
     {
-      public List<Tile> Revealed { get; set; }
+      public IList<Tile> Revealed { get; set; }
       public bool Value { get; set; }//revealed or hidden?
     }
 
@@ -197,18 +186,6 @@ namespace Roguelike
       //public TileData TileData { get; set; }
       public double InvolvedValue { get; set; }
 
-      //public override string GetSound()
-      //{
-      //  var sound = "";
-      //  //if (TileData != null)
-      //  //  sound = TileData.GetSound(KindValue);
-      //  if (sound.Any())
-      //    return sound;
-      //  //var KindVa = KindValue.ToString();
-      //  //if (KindValue == Kind.Moved)
-      //  //  return "living_ent_moved";
-      //  return GetType().Name.Replace("Action", "") + Kind;
-      //}
     }
   }
 }
