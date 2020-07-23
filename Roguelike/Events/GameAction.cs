@@ -84,7 +84,7 @@ namespace Roguelike
     }
 
     public enum InteractiveActionKind { Unset, DoorsUnlocked, DoorsLocked, Destroyed, ChestOpened, AppendedToLevel,
-      HitSrcPortal, HitGroundPortal, GroundPortalApproached }
+      HitPortal, HitGroundPortal, GroundPortalApproached }
     public class InteractiveTileAction : GameAction
     {
       
