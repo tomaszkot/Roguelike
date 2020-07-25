@@ -140,7 +140,7 @@ namespace Roguelike
       public bool Value { get; set; }//revealed or hidden?
     }
 
-    public enum EnemyActionKind { Moved, Died, AttackingHero, ChasingPlayer, AppendedToLevel, Teleported, RaiseCall, SpecialAction };
+    public enum EnemyActionKind { Moved, Died, AttackingHero, ChasingPlayer, AppendedToLevel, RaiseCall, SpecialAction };
 
     public class EnemyAction : GameAction
     {
@@ -162,7 +162,7 @@ namespace Roguelike
     public enum LivingEntityActionKind
     {
       Moved, Died, GainedDamage, ExperiencedEffect, Trapped, Interacted, Missed, UsedSpell,
-      FailedToCastSpell, GodsTurn, GodsPowerReleased, StrikedBack, BulkAttack
+      FailedToCastSpell, GodsTurn, GodsPowerReleased, StrikedBack, BulkAttack, Teleported
     }
 
     public class PolicyAppliedAction : GameAction

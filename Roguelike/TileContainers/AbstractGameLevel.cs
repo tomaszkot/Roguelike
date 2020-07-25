@@ -108,9 +108,10 @@ namespace Roguelike.TileContainers
         }
         tile.Point = point;
         Loot[point] = tile as Roguelike.Tiles.Loot;
-        
+
         return true;
       }
+      
       Point? prevPos = tile?.Point;
       var res =  base.SetTile(tile, point, resetOldTile, revealReseted, autoSetTileDungeonIndex);
       if (res && tile is LivingEntity && prevPos!=null)
