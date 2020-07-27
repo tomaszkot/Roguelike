@@ -470,9 +470,13 @@ namespace Roguelike.Managers
       }
     }
 
-    public void OnHeroPolicyApplied(object sender, Policies.Policy policy)
+    public virtual void OnHeroPolicyApplied(Policies.Policy policy)
     {
-      if (policy.Kind == PolicyKind.Attack)
+      if (policy.Kind == PolicyKind.Move)
+      {
+
+      }
+      else if (policy.Kind == PolicyKind.Attack)
       {
         HandlePolicyApplied(policy);
       }
@@ -480,6 +484,11 @@ namespace Roguelike.Managers
         RemoveDeadEnemies();
       context.IncreaseActions(TurnOwner.Hero);
       context.MoveToNextTurnOwner();
+    }
+
+    public void OnHeroPolicyApplied(object sender, Policies.Policy policy)
+    {
+      OnHeroPolicyApplied(policy);
     }
 
     private Loot GetExtraLoot(Tile victim, bool nonEquipment)
