@@ -86,12 +86,12 @@ namespace Roguelike.Generators
     EquipmentClassChances CreateLootingChancesForEquipmentClass
     (
       LootSourceKind lootSourceKind,
-      EquipmentClassChances enemy
+      EquipmentClassChances eqClassChances
       )
     {
       if (lootSourceKind == LootSourceKind.Barrel)
       {
-        return enemy.Clone(.5f);
+        return eqClassChances.Clone(.5f);
       }
       else
       {
@@ -103,7 +103,7 @@ namespace Roguelike.Generators
         }
         else if (lootSourceKind == LootSourceKind.PlainChest)
         {
-          return enemy.Clone(1);
+          return eqClassChances.Clone(1);
         }
         else
           Debug.Assert(false);

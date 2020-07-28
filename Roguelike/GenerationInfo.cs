@@ -25,7 +25,7 @@
     public int ForcedNumberOfEnemiesInRoom { get; set; } = 5;//-1 means field is not used
     public static DebugGenerationInfo DebugInfo = new DebugGenerationInfo();
 
-    public const float ChanceToGenerateEnemyFromBarrel = 1f;
+    public const float ChanceToGenerateEnemyFromBarrel = .15f;
     public const int LevelUpPoints = 5;
     public const float NextExperienceIncrease = 1.002f;
 

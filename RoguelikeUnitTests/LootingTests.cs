@@ -158,11 +158,11 @@ namespace RoguelikeUnitTests
     public void Barrels()
     {
       var env = CreateTestEnv();
-      var max = 100;
+      var numberOfInterTiles = 100;
       var enemiesBefore = env.Game.Level.GetTiles<Enemy>();
       var newLootItems = env.TestInteractive<Barrel>(
          (InteractiveTile barrel) => {
-         }, max, 50, 1
+         }, numberOfInterTiles, 50, 1
         );
       var enemiesAfter = env.Game.Level.GetTiles<Enemy>();
       Assert.Greater(enemiesAfter.Count, enemiesBefore.Count);

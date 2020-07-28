@@ -83,6 +83,16 @@ namespace Roguelike
 
     }
 
+    /// <summary>
+    /// /////////////////////////////////////////////
+    /// </summary>
+    public enum MerchantActionKind { Unset, Engaged }
+    public class MerchantAction : GameAction
+    {
+      public Tiles.Merchant InvolvedTile { get; set; }
+      public MerchantActionKind MerchantActionKind { get; set; }
+    }
+
     public enum InteractiveActionKind { Unset, DoorsUnlocked, DoorsLocked, Destroyed, ChestOpened, AppendedToLevel,
       HitPortal, HitGroundPortal, GroundPortalApproached }
     public class InteractiveTileAction : GameAction
@@ -93,6 +103,10 @@ namespace Roguelike
       public InteractiveTileAction(Tiles.InteractiveTile tile) { InvolvedTile = tile; }
       public InteractiveTileAction() { }
     }
+
+    /// <summary>
+    /// ///////////////
+    /// </summary>
     public enum LootActionKind { Generated, Collected, PutOn, PutOff, Crafted, SpecialDrunk, Enchanted, Consumed, Identified }
     public class LootAction : GameAction
     {

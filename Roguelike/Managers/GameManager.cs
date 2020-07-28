@@ -357,7 +357,7 @@ namespace Roguelike.Managers
       if (tile is Enemy || tile is Dungeons.Tiles.Wall)
       {
         //Logger.LogInfo("Hero attacks " + tile);
-       // var en = tile as Enemy;
+        // var en = tile as Enemy;
         //if(!en.Alive)
         //  Logger.LogError("Hero attacks dead!" );
         //else
@@ -365,6 +365,11 @@ namespace Roguelike.Managers
         Context.ApplyPhysicalAttackPolicy(Hero, tile, (p) => OnHeroPolicyApplied(this, p));
 
         return InteractionResult.Attacked;
+      }
+      else if (tile is Merchant)
+      {
+        AppendAction<MerchantAction>((MerchantAction ac) => { ac.MerchantActionKind = MerchantActionKind.Engaged; ac.InvolvedTile = tile as Merchant; });
+        return InteractionResult.Blocked;
       }
       else if (tileIsDoor || tileIsDoorBySumbol)
       {
@@ -397,7 +402,7 @@ namespace Roguelike.Managers
               return DungeonLevelStairsHandler(destLevelIndex, stairs);
           }
         }
-        else if(tile is Portal)
+        else if (tile is Portal)
         {
           return HandlePortalCollision(tile as Portal);
         }

@@ -122,6 +122,7 @@
     <Compile Include="Tiles\Abstract\IConsumable.cs" />
     <Compile Include="Tiles\Abstract\IMovingDamager.cs" />
     <Compile Include="Tiles\AdvancedLivingEntity.cs" />
+    <Compile Include="Tiles\Ally.cs" />
     <Compile Include="Tiles\Barrel.cs" />
     <Compile Include="Tiles\CrackedStone.cs" />
     <Compile Include="Tiles\Interactive\Portal.cs" />

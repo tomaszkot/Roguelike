@@ -50,7 +50,7 @@ namespace Roguelike.Managers
 
     public override void MakeEntitiesMove(LivingEntity skip = null)
     {
-      var enemies = this.Enemies.Where(i => i.Revealed && i.Alive).ToList();
+      var enemies = GetEnemiesToMove();
       //context.Logger.LogInfo("MakeEntitiesMove "+ enemies.Count);
       if (!enemies.Any())
       {
@@ -84,9 +84,14 @@ namespace Roguelike.Managers
         }
       }
 
-      var notIdle = entities.Where(i => i.State != EntityState.Idle).ToList();
-      if (notIdle.Any())
-        OnPolicyAppliedAllIdle();//Barrels() ut failed witout it
+      //var notIdle = entities.Where(i => i.State != EntityState.Idle).ToList();
+      //if (notIdle.Any())
+      //  OnPolicyAppliedAllIdle();//Barrels() ut failed without it
+    }
+
+    private List<LivingEntity> GetEnemiesToMove()
+    {
+      return this.Enemies.Where(i => i.Revealed && i.Alive).ToList();
     }
 
     public override void MakeRandomMove(LivingEntity entity)
