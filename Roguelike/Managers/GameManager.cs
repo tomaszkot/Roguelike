@@ -16,6 +16,7 @@ using Roguelike.Tiles.Interactive;
 using Roguelike.Policies;
 using Dungeons;
 using Dungeons.TileContainers;
+using Roguelike.LootContainers;
 
 namespace Roguelike.Managers
 {
@@ -731,6 +732,34 @@ namespace Roguelike.Managers
     public void SetGameState(GameState gameState)
     {
       this.gameState = gameState;
+    }
+
+    //public bool SellItem(Loot loot, Inventory src, Inventory dest)
+    //{
+      
+    //  return false;
+    //}
+
+    public bool SellItem(Loot loot, AdvancedLivingEntity src, AdvancedLivingEntity dest)
+    {
+      if(dest.Gold < loot.Price)
+        return false;
+      if (!dest.Inventory.CanAddLoot(loot))
+        return false;
+
+      var removed = src.Inventory.Remove(loot);
+      if(!removed)
+        return false;
+
+      bool added = dest.Inventory.Add(loot);
+      if(!added)//TODO revert item to src inv
+        return false;
+
+      var price = (int)(loot.Price * dest.Inventory.PriceFactor);
+      dest.Gold -= price;
+      src.Gold += price;
+
+      return true;
     }
   }
 }

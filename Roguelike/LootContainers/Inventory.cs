@@ -7,6 +7,7 @@ using Roguelike.Managers;
 using Roguelike.Events;
 using Newtonsoft.Json;
 using Roguelike.Tiles.Looting;
+using System;
 
 namespace Roguelike.LootContainers
 {
@@ -19,6 +20,7 @@ namespace Roguelike.LootContainers
     public int CurrentPageIndex { get; set; }
     public float PriceFactor { get; set; }
     List<Loot> items = new List<Loot>();
+    public int Capacity { get; set; }//how many items there can be?
 
     [JsonIgnore]
     public EventsManager EventsManager { get; set; }
@@ -240,5 +242,10 @@ namespace Roguelike.LootContainers
         return Items.Count;
       }
     }
- }
+
+    internal bool CanAddLoot(Loot loot)
+    {
+      return Capacity > Items.Count;//TODO stacked
+    }
+  }
 }

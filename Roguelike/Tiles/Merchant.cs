@@ -23,7 +23,9 @@ namespace Roguelike.Tiles
       Stats.SetNominal(EntityStatKind.Defence, 10);
       Stats.SetNominal(EntityStatKind.Dexterity, 10);
 
+      Gold = 100000;
       CreateInventory();
+      Inventory.Capacity = 24;//TODO
 
       Dirty = true;//TODO
 #if ASCII_BUILD

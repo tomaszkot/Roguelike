@@ -31,9 +31,13 @@ namespace Roguelike.Tiles
     public int Level { get; set; } = 1;
     public int Experience { get; private set; }
     public int NextLevelExperience { get; set; }
+    public int Gold { get; set; }
+
     public int AvailableExpPoints { get; set; } = 3;
     protected bool canAdvanceInExp = false;
     int levelUpPoints;
+
+
     Dictionary<SpellKind, int> coolingDownSpells = new Dictionary<SpellKind, int>();
     
     public Scroll ActiveScroll
