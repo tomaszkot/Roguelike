@@ -16,7 +16,7 @@ namespace RoguelikeUnitTests
 
       var wpn = game.GameManager.GenerateRandomEquipment(EquipmentKind.Weapon);
       //hero.Inventory.Add(wpn);
-     //TODO
+      //TODO
       //var ca = hero.GetCurrentValue(EntityStatKind.Attack);
       //var ta = hero.GetTotalValue(EntityStatKind.Attack);
       //Assert.AreEqual(hero.Stats.Attack, hero.Stats.Strength);
@@ -104,7 +104,7 @@ namespace RoguelikeUnitTests
       hero.Inventory.Add(plant2);
       Assert.AreEqual(hero.Inventory.Items.Count, 3);
       Assert.AreEqual(hero.Inventory.GetStackedCount(plant2), 2);
-      
+
       game.GameManager.Save();
       game.GameManager.Load(hero.Name);
 
@@ -146,6 +146,21 @@ namespace RoguelikeUnitTests
       var loot = game.GameManager.LootGenerator.GetRandomLoot(LootKind.Scroll);
       Assert.NotNull(loot.tag1);
       Assert.True(hero.Inventory.Add(loot));
+    }
+
+    [Test]
+    public void PriceTests()
+    {
+      var game = CreateGame();
+      var hero = game.Hero;
+      var loot = game.GameManager.LootGenerator.GetRandomLoot(LootKind.Scroll);
+      Assert.True(hero.Inventory.Add(loot));
+      var priceInHeroInv = hero.GetPrice(loot);
+      Assert.AreEqual(priceInHeroInv, loot.Price);
+      var merch = new Merchant();
+      Assert.True(game.GameManager.SellItem(loot, hero, merch));
+      var priceInMerchInv = merch.GetPrice(loot);
+      Assert.Greater(priceInMerchInv, priceInHeroInv);
     }
   }
 }

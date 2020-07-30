@@ -143,7 +143,7 @@ namespace Roguelike.Tiles.Looting
 
     }
 
-    public Scroll(SpellKind kind = SpellKind.Unset)
+    public Scroll(SpellKind kind = SpellKind.Unset) : base()
     {
       //dummy.Stats.SetNominal(EntityStatKind.Magic, LivingEntity.BaseMagic.TotalValue);
       Symbol = '?';

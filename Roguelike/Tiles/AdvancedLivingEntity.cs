@@ -23,7 +23,7 @@ namespace Roguelike.Tiles
     protected Inventory inventory = null;
 
     //[JsonIgnoreAttribute]
-    public Inventory Inventory { get => inventory; set => inventory = value; }
+    public virtual Inventory Inventory { get => inventory; set => inventory = value; }
     //[JsonIgnoreAttribute]
     public CurrentEquipment CurrentEquipment { get => currentEquipment; set => currentEquipment = value; }
     public event EventHandler<EntityStatKind> StatLeveledUp;
@@ -47,6 +47,11 @@ namespace Roguelike.Tiles
 
     public AdvancedLivingEntity(Point point, char symbol) : base(point, symbol)
     {
+    }
+
+    public int GetPrice(Loot loot)
+    {
+      return (int)(loot.Price * Inventory.PriceFactor);
     }
 
     public new static AdvancedLivingEntity CreateDummy()
@@ -184,7 +189,7 @@ namespace Roguelike.Tiles
 
     protected virtual void CreateInventory()
     {
-      this.inventory = new Inventory();
+      this.Inventory = new Inventory();
     }
 
     public bool MoveEquipmentInv2Current(Equipment eq, CurrentEquipmentKind ek)

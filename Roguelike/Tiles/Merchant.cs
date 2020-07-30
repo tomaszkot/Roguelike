@@ -1,5 +1,6 @@
 ﻿using Dungeons.Core;
 using Roguelike.Attributes;
+using Roguelike.LootContainers;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -31,6 +32,16 @@ namespace Roguelike.Tiles
 #if ASCII_BUILD
       color = ConsoleColor.Yellow;
 #endif
+    }
+
+    public override Inventory Inventory 
+    { 
+      get => base.Inventory; 
+      set 
+      {
+        base.Inventory = value;
+        Inventory.PriceFactor = 4;
+      }
     }
   }
 }

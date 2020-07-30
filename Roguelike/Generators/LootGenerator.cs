@@ -151,12 +151,28 @@ namespace Roguelike.Generators
 
     public virtual Equipment GetRandomEquipment()
     {
+      if(LevelIndex <=0)
+        Container.GetInstance<ILogger>().LogError("GetRandomEquipment LevelIndex <=0!!!");
+      return GetRandomEquipment(LevelIndex);
+    }
+
+    public virtual Equipment GetRandomEquipment(int level)
+    {
       var kind = GetPossibleEqKind();
-      return GetRandomEquipment(kind);
+      return GetRandomEquipment(kind, level);
     }
 
     public virtual Equipment GetRandomEquipment(EquipmentKind kind)
     {
+      if (LevelIndex <= 0)
+        Container.GetInstance<ILogger>().LogError("GetRandomEquipment (kind) LevelIndex <=0!!!");
+
+      return GetRandomEquipment(kind, LevelIndex);
+    }
+
+    public virtual Equipment GetRandomEquipment(EquipmentKind kind, int level)
+    {
+      //TODO level!
       var eq = LootFactory.EquipmentFactory.GetRandom(kind);
       EnasureLevelIndex(eq);
       return eq;

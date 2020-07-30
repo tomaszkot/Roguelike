@@ -28,6 +28,7 @@ namespace Roguelike.LootContainers
     public Inventory()
     {
       PriceFactor = 1;
+      Capacity = 12;
     }
 
     public List<ListItem> ToASCIIList()
@@ -132,13 +133,17 @@ namespace Roguelike.LootContainers
 
       if (!exist)
       {
-        //item.Collected = true;
+        if (Capacity <= ItemsCount)
+          return false;
+
         if (item.StackedInInventory)
         {
           SetStackCount(itemStacked, itemStacked.Count);
         }
         else
+        {
           Items.Add(item);
+        }
 
         changed = true;
       }
@@ -245,7 +250,7 @@ namespace Roguelike.LootContainers
 
     internal bool CanAddLoot(Loot loot)
     {
-      return Capacity > Items.Count;//TODO stacked
+      return Capacity > Items.Count || (loot.StackedInInventory  && GetStackedCount(loot as StackedLoot) > 0) ;//TODO stacked
     }
   }
 }

@@ -17,6 +17,7 @@ using Roguelike.Policies;
 using Dungeons;
 using Dungeons.TileContainers;
 using Roguelike.LootContainers;
+using Roguelike.Tiles.Looting;
 
 namespace Roguelike.Managers
 {
@@ -109,7 +110,7 @@ namespace Roguelike.Managers
 
     public virtual void SetContext(AbstractGameLevel node, Hero hero, GameContextSwitchKind kind, Stairs stairs = null)
     {
-      LootGenerator.LevelIndex = node.Index;
+      LootGenerator.LevelIndex = node.Index;//TODO
       if (kind == GameContextSwitchKind.NewGame)
       {
         if (node.GeneratorNodes != null && node.GeneratorNodes.Any())
@@ -513,7 +514,7 @@ namespace Roguelike.Managers
           }
           else
           {
-            var eq = lootGenerator.GetRandomEquipment();
+            var eq = lootGenerator.GetRandomEquipment(Hero.Level);
             if (eq.IsPlain())
               eq.MakeMagic(true);
 
@@ -705,7 +706,7 @@ namespace Roguelike.Managers
 
     public virtual Equipment GenerateRandomEquipment(EquipmentKind kind)
     {
-      return lootGenerator.GetRandomEquipment(kind);
+      return lootGenerator.GetRandomEquipment(kind, Hero.Level);
     }
 
     public void MakeGameTick()
@@ -760,6 +761,89 @@ namespace Roguelike.Managers
       src.Gold += price;
 
       return true;
+    }
+
+    private void AddEqToMerchant(Merchant merch, Array lootKinds)//GameLevel level
+    {
+      for (int numOfLootPerKind = 0; numOfLootPerKind < 2; numOfLootPerKind++)
+      {
+        foreach (EquipmentKind lk in lootKinds)
+        {
+          if (lk == EquipmentKind.Trophy || lk == EquipmentKind.Unset || lk == EquipmentKind.God)
+            continue;
+
+          int levelIndex = Hero.Level;
+          var loot = lootGenerator.GetRandomEquipment(lk, levelIndex);
+          if (loot != null && !merch.Inventory.Items.Any(i => i.tag1 == loot.tag1))
+          {
+            loot.Revealed = true;
+            merch.Inventory.Add(loot);
+          }
+        }
+      }
+
+
+      //var eqs = merch.Inventory.Items.Where(i => i is Equipment).Cast<Equipment>().ToList();
+      //if (!eqs.Where(i => i.Enchantable).Any())
+      //{
+      //  var eq = CommonRandHelper.GetRandomElem<Equipment>(eqs);
+      //  eq.MakeEnchantable();
+      //}
+    }
+
+    void PopulateMerchantInv(Merchant merch)
+    {
+      var lootKinds = Enum.GetValues(typeof(LootKind));
+      
+      AddEqToMerchant(merch, lootKinds);
+
+      //TODO
+      //if (level.LevelIndex > 1)
+      //{
+      //  var loot = gm.LootManager.GenerateRecipe(null);
+      //  loot.Revealed = true;
+      //  merch.Inventory.Add(loot);
+      //}
+
+      //if (level.LevelIndex > 0)
+      //{
+      //  for (int i = 0; i < 4; i++)
+      //  {
+      //    var loot = new MagicDust();
+      //    loot.Revealed = true;
+      //    merch.Inventory.Add(loot);
+      //  }
+      //  merch.Inventory.Add(new Hooch() { Revealed = true });
+      //}
+
+      int magicCount = 0;
+      int tries = 0;
+      while (magicCount< 2 && tries< 50)//TODO
+      {
+        var loot = RandHelper.GetRandomElem<Loot>(merch.Inventory.Items) as Equipment;
+        if (loot != null && loot.Class == EquipmentClass.Plain)
+        {
+          loot.SetClass(EquipmentClass.Magic, Hero.Level, null, magicCount == 0);
+          magicCount++;
+        }
+        tries++;
+      }
+
+      //TODO scrolls
+
+      int maxPotions = 4;
+      for (int numOfLootPerKind = 0; numOfLootPerKind < maxPotions; numOfLootPerKind++)
+      {
+        var hp = new Potion();
+        hp.SetKind(PotionKind.Health);
+        hp.Revealed = true;
+        merch.Inventory.Add(hp);
+
+        var mp = new Potion();
+        hp.SetKind(PotionKind.Mana);
+        mp.Revealed = true;
+        merch.Inventory.Add(mp);
+      }
     }
   }
 }
