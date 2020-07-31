@@ -179,7 +179,7 @@ namespace Roguelike.LootContainers
       }
     }
 
-    public bool Remove(Loot item)
+    public bool Remove(Loot item, int stackedCount = 1)
     {
       var res = false;
       Assert(false, "loot");
@@ -193,12 +193,12 @@ namespace Roguelike.LootContainers
         if (stackedItem != null)
         {
           var stackedItemCount = GetStackedCount(stackedItem);
-          if (stackedItemCount > 0)
+          if (stackedItemCount >= stackedCount)
           {
             Assert(stackedItemCount > 0);
-            stackedItemCount--;
+            stackedItemCount -= stackedCount;
             SetStackCount(stackedItem, stackedItemCount);
-            if(stackedItemCount == 0)
+            if(stackedItemCount <= 0)
               itemToRemove = item;
 
             sendSignal = true;

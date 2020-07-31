@@ -741,22 +741,31 @@ namespace Roguelike.Managers
     //  return false;
     //}
 
-    public bool SellItem(Loot loot, AdvancedLivingEntity src, AdvancedLivingEntity dest)
+    public bool SellItem
+    (
+      Loot loot, AdvancedLivingEntity src, AdvancedLivingEntity dest,
+      int stackedCount = 1//in case of stacked there can be one than more sold at time
+    )
     {
       if(dest.Gold < loot.Price)
         return false;
       if (!dest.Inventory.CanAddLoot(loot))
         return false;
 
-      var removed = src.Inventory.Remove(loot);
+      var removed = src.Inventory.Remove(loot, stackedCount);
       if(!removed)
         return false;
+
+      if (loot.StackedInInventory)
+      {
+        loot = (loot as StackedLoot).Clone(stackedCount);
+      }
 
       bool added = dest.Inventory.Add(loot);
       if(!added)//TODO revert item to src inv
         return false;
 
-      var price = (int)(loot.Price * dest.Inventory.PriceFactor);
+      var price = (int)(loot.Price * src.Inventory.PriceFactor* stackedCount);
       dest.Gold -= price;
       src.Gold += price;
 
@@ -791,7 +800,7 @@ namespace Roguelike.Managers
       //}
     }
 
-    void PopulateMerchantInv(Merchant merch)
+    protected void PopulateMerchantInv(Merchant merch)
     {
       var lootKinds = Enum.GetValues(typeof(LootKind));
       

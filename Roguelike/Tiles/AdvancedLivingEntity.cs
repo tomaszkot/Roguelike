@@ -51,7 +51,11 @@ namespace Roguelike.Tiles
 
     public int GetPrice(Loot loot)
     {
-      return (int)(loot.Price * Inventory.PriceFactor);
+      int count = 1;
+      if (loot.StackedInInventory)
+        count = (loot as StackedLoot).Count;
+      var price = (int)(loot.Price * Inventory.PriceFactor)* count;
+      return price;
     }
 
     public new static AdvancedLivingEntity CreateDummy()
