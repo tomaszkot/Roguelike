@@ -37,7 +37,6 @@ namespace Roguelike.Tiles
     protected bool canAdvanceInExp = false;
     int levelUpPoints;
 
-
     Dictionary<SpellKind, int> coolingDownSpells = new Dictionary<SpellKind, int>();
     
     public Scroll ActiveScroll

@@ -28,7 +28,7 @@ namespace Roguelike.LootContainers
     public Inventory()
     {
       PriceFactor = 1;
-      Capacity = 12;
+      Capacity = 48;
     }
 
     public List<ListItem> ToASCIIList()
@@ -134,7 +134,10 @@ namespace Roguelike.LootContainers
       if (!exist)
       {
         if (Capacity <= ItemsCount)
+        {
+          Assert(false, "Capacity <= ItemsCount");
           return false;
+        }
 
         if (item.StackedInInventory)
         {
@@ -165,17 +168,23 @@ namespace Roguelike.LootContainers
         }
       }
 
-      if (changed && notifyObservers && EventsManager != null)
-        EventsManager.AppendAction(new InventoryAction(this) { Kind = InventoryActionKind.ItemAdded, Item = item });
+      if (changed && notifyObservers)
+        AppendAction(new InventoryAction(this) { Kind = InventoryActionKind.ItemAdded, Item = item });
 
       return changed;
     }
 
+    private void AppendAction(GameAction ac)
+    {
+      if(EventsManager!=null)
+        EventsManager.AppendAction(ac);
+    }
+
     public void Assert(bool assert, string info = "assert failed")
     {
-      if (EventsManager != null && !assert)
+      if (!assert)
       {
-        EventsManager.AppendAction(new Events.GameStateAction() { Type= Events.GameStateAction.ActionType.Assert, Info = info });
+        AppendAction(new Events.GameStateAction() { Type= Events.GameStateAction.ActionType.Assert, Info = info });
       }
     }
 

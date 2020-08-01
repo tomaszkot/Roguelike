@@ -12,8 +12,6 @@ using SimpleInjector;
 
 namespace Roguelike.Managers
 {
-  
-
   public class EntitiesManager
   {
     public Hero Hero { get => context.Hero; }

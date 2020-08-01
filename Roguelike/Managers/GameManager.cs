@@ -117,7 +117,6 @@ namespace Roguelike.Managers
           hero.DungeonNodeIndex = node.GeneratorNodes.First().NodeIndex;//TODOs
         else
           hero.DungeonNodeIndex = 0;//TODO
-                
       }
 
       Context.Hero = hero;
@@ -735,26 +734,35 @@ namespace Roguelike.Managers
       this.gameState = gameState;
     }
 
-    //public bool SellItem(Loot loot, Inventory src, Inventory dest)
-    //{
-      
-    //  return false;
-    //}
-
     public bool SellItem
     (
-      Loot loot, AdvancedLivingEntity src, AdvancedLivingEntity dest,
+      Loot loot, 
+      AdvancedLivingEntity src, 
+      AdvancedLivingEntity dest,
       int stackedCount = 1//in case of stacked there can be one than more sold at time
     )
     {
-      if(dest.Gold < loot.Price)
+      var price = (int)(loot.Price * src.Inventory.PriceFactor * stackedCount);
+
+      if (dest.Gold < price)
+      {
+        logger.LogInfo("dest.Gold < loot.Price");
+        soundManager.PlayBeepSound();
         return false;
+      }
       if (!dest.Inventory.CanAddLoot(loot))
+      {
+        logger.LogInfo("!dest.Inventory.CanAddLoot(loot)");
+        soundManager.PlayBeepSound();
         return false;
+      }
 
       var removed = src.Inventory.Remove(loot, stackedCount);
-      if(!removed)
+      if (!removed)
+      {
+        logger.LogError("!removed");
         return false;
+      }
 
       if (loot.StackedInInventory)
       {
@@ -762,12 +770,16 @@ namespace Roguelike.Managers
       }
 
       bool added = dest.Inventory.Add(loot);
-      if(!added)//TODO revert item to src inv
+      if (!added)//TODO revert item to src inv
+      {
+        logger.LogError("!added");
         return false;
+      }
 
-      var price = (int)(loot.Price * src.Inventory.PriceFactor* stackedCount);
+      
       dest.Gold -= price;
       src.Gold += price;
+      soundManager.PlaySound("COINS_Rattle_04_mono");//coind_drop
 
       return true;
     }

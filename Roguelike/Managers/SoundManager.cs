@@ -44,6 +44,11 @@ namespace Roguelike.Managers
         sndToPlay = snd;
     }
 
+    public void PlayBeepSound()
+    {
+      PlaySound("beep");
+    }
+
   private void EventsManager_ActionAppended(object sender, Events.GameAction e)
   {
       if (Player == null)

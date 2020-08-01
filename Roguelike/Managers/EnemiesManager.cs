@@ -40,8 +40,10 @@ namespace Roguelike.Managers
 
     private void OnTurnOwnerChanged(object sender, TurnOwner turnOwner)
     {
-      //if(turnOwner == TurnOwner.Enemies)
-      // MakeEntitiesMove();
+      if (turnOwner == TurnOwner.Enemies)
+      { 
+      
+      }
     }
 
     public void MakeMove(LivingEntity enemy)
@@ -65,6 +67,10 @@ namespace Roguelike.Managers
           int kk = 0;
           kk++;
         }
+        enemy.ApplyLastingEffects();
+        if (!enemy.Alive)
+          continue;
+
         var target = Hero;
         if (AttackIfPossible(enemy, target))
         {

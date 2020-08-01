@@ -1,17 +1,13 @@
 ﻿using Dungeons.Core;
 using Dungeons.Tiles;
 using Newtonsoft.Json;
-using Roguelike.Abstract;
 using Roguelike.Attributes;
 using Roguelike.Effects;
 using Roguelike.Events;
 using Roguelike.Managers;
-using Roguelike.Policies;
 using Roguelike.Spells;
-using Roguelike.Tiles.Abstract;
 using Roguelike.Tiles.Looting;
 using Roguelike.Utils;
-using SimpleInjector;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -47,7 +43,6 @@ namespace Roguelike.Tiles
     };
 
     public static Point DefaultInitialPoint = new Point(0, 0);
-    //public event EventHandler<GenericEventArgs<LivingEntity>> Died;
     public Point PrevPoint;
     public Point InitialPoint = DefaultInitialPoint;
     EntityStats stats = new EntityStats();
@@ -81,6 +76,7 @@ namespace Roguelike.Tiles
     public event EventHandler<LastingEffect> LastingEffectStarted;
     public event EventHandler<LastingEffect> LastingEffectApplied;
     public event EventHandler<LastingEffect> LastingEffectDone;
+    public bool IsWounded { get; private set; }
 
     static LivingEntity()
     {
@@ -109,7 +105,6 @@ namespace Roguelike.Tiles
         SetChanceToExperienceEffect(et, chance);
       }
 
-      //this.EventsManager = eventsManager;
       lastingEffSubtractions[EffectType.Rage] = 0;
       lastingEffSubtractions[EffectType.Weaken] = 0;
       lastingEffSubtractions[EffectType.Inaccuracy] = 0;
@@ -211,7 +206,15 @@ namespace Roguelike.Tiles
       //{
       //  PlayPunchSound();
       //}
-      DieIfShould(EffectType.None);
+      var dead = DieIfShould(EffectType.None);
+      if (!dead && IsWounded && !lastingEffects.Any(i => i.Type == EffectType.Bleeding))
+      {
+        var effectInfo = CalcLastingEffDamage(inflicted, attacker, null, null);
+        if (effectInfo.Turns <= 0)
+          effectInfo.Turns = 3;//TODO
+        this.AddLastingEffect(EffectType.Bleeding, effectInfo.Turns, effectInfo.Damage);
+      }
+
       return inflicted;
     }
 
@@ -319,7 +322,7 @@ namespace Roguelike.Tiles
     LastingEffectCalcInfo CalcLastingEffDamage(float amount, LivingEntity attacker = null, Spell spell = null, FightItem fi = null)
     {
       LastingEffectCalcInfo effectInfo = new LastingEffectCalcInfo();
-      var et = new Tuple<EffectType, int>(EffectType.None, 0);
+      var et = new Tuple<EffectType, int>(EffectType.None, 3);
       float effectDamage = 0;
       if (attacker != null && spell == null && amount > 0)
       {
@@ -900,6 +903,21 @@ namespace Roguelike.Tiles
       //  GameManager.Instance.AppendDiagnosticsUnityLogError(new Exception("OnHitBy - not supported"));
       //}
       return true;
+    }
+
+    public event EventHandler Wounded;
+
+    public void SetIsWounded()
+    {
+      if (IsWounded)
+        return;
+
+      IsWounded = true;
+      var def = Stats.GetStat(EntityStatKind.Defence);
+      def.Subtract(def.Value.TotalValue/2);
+      
+      if (Wounded != null)
+        Wounded(this, EventArgs.Empty);
     }
   }
 }
