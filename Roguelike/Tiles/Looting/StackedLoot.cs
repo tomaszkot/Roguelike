@@ -1,0 +1,38 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Roguelike.Tiles.Looting
+{
+  public class StackedLoot : Loot
+  {
+    private int count = 1;
+
+    public int Count
+    {
+      get => count;
+      set => count = value;
+    }
+
+    public virtual string GetId()
+    {
+      return GetType().ToString();
+    }
+
+    public StackedLoot()
+    {
+      int k = 0;
+      k++;
+    }
+
+    public StackedLoot Clone(int count)
+    {
+      var dest = this.MemberwiseClone() as StackedLoot;
+      dest.Id = Guid.NewGuid();
+      dest.Count = count;
+      return dest;
+    }
+  }
+}
