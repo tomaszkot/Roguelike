@@ -25,5 +25,41 @@ namespace RoguelikeUnitTests
       hero.Consume(food);
       Assert.Greater(hero.Stats.Health, heroHealth);
     }
+
+    //[Test]
+    //public void TestHooch()
+    //{
+    //  var attack = Hero.Stats.Stats[EntityStatKind.Strength].CurrentValue;
+    //  var chanceToHit = Hero.Stats.Stats[EntityStatKind.ChanceToHit].CurrentValue;
+
+    //  var hooch = new Hooch();
+    //  var added = Hero.Inventory.Add(hooch);
+
+    //  Hero.Consume(hooch);
+    //  Assert.IsTrue(Hero.LastingEffects.Any());
+    //  Assert.IsTrue(Hero.LastingEffects.Where(i => i.Type == Roguelike.Tiles.LivingEntity.EffectType.Hooch).Any());
+
+    //  var hoochAttack = Hero.Stats.Stats[EntityStatKind.Strength];
+    //  var hoochChanceToHit = Hero.Stats.Stats[EntityStatKind.ChanceToHit];
+    //  AssertGreater(hoochAttack.CurrentValue, attack);
+    //  AssertLess(hoochChanceToHit.CurrentValue, chanceToHit);
+
+    //  SkipTurns(1);
+
+    //  //still on
+    //  hoochAttack = Hero.Stats.Stats[EntityStatKind.Strength];
+    //  hoochChanceToHit = Hero.Stats.Stats[EntityStatKind.ChanceToHit];
+    //  AssertGreater(hoochAttack.CurrentValue, attack);
+    //  AssertLess(hoochChanceToHit.CurrentValue, chanceToHit);
+
+    //  SkipTurns(6);
+
+    //  //now shall be off
+    //  Assert.IsFalse(Hero.LastingEffects.Where(i => i.Type == Roguelike.Tiles.LivingEntity.EffectType.Hooch).Any());
+    //  hoochAttack = Hero.Stats.Stats[EntityStatKind.Strength];
+    //  hoochChanceToHit = Hero.Stats.Stats[EntityStatKind.ChanceToHit];
+    //  Assert.AreEqual(hoochAttack.CurrentValue, attack);
+    //  Assert.AreEqual(hoochChanceToHit.CurrentValue, chanceToHit);
+    //}
   }
 }

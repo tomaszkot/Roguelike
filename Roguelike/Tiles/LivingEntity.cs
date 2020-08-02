@@ -173,8 +173,44 @@ namespace Roguelike.Tiles
 
     internal bool CalculateIfHitWillHappen(LivingEntity target)
     {
-      return true;
+      var randVal = RandHelper.Random.NextDouble();
+      var hitWillHappen = CalculateIfStatChanceApplied(EntityStatKind.ChanceToHit, target);
+      return hitWillHappen;
     }
+
+    internal bool CalculateIfStatChanceApplied(EntityStatKind esk, LivingEntity target = null, FightItem fi = null)
+    {
+      var randVal = (float)RandHelper.Random.NextDouble();
+      var chance = GetEffectChance(esk);
+      //if (fi != null && fi is ThrowingKnife)
+      //{
+      //  chance = fi.GetFactor(false);
+      //}
+      if (target != null)
+      {
+        if (esk == EntityStatKind.ChanceToHit)
+        {
+          if (ShouldEvade(target, EntityStatKind.ChanceToEvadeMeleeAttack, null))
+          {
+            return false;
+          }
+        }
+      }
+      return randVal > 0 && (randVal * 100 <= chance);
+    }
+
+    virtual protected bool ShouldEvade(LivingEntity target, EntityStatKind esk, Spell spell)
+    {
+      var avoidCh = target.GetCurrentValue(esk);
+      var randValCh = (float)RandHelper.Random.NextDouble();
+      if (randValCh * 100 <= avoidCh)
+      {
+        return true;
+      }
+      return false;
+
+    }
+
 
     public float OnPhysicalHit(LivingEntity attacker)
     {
@@ -918,6 +954,16 @@ namespace Roguelike.Tiles
       
       if (Wounded != null)
         Wounded(this, EventArgs.Empty);
+    }
+
+    public virtual float GetChanceToHit()
+    {
+      return GetEffectChance(EntityStatKind.ChanceToHit);
+    }
+
+    public virtual float GetEffectChance(EntityStatKind esk)
+    {
+      return GetCurrentValue(esk);
     }
   }
 }

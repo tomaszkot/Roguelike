@@ -130,16 +130,21 @@
     <Compile Include="Tiles\InteractiveTile.cs" />
     <Compile Include="Tiles\Interactive\Chest.cs" />
     <Compile Include="Tiles\Looting\Gem.cs" />
+    <Compile Include="Tiles\Looting\Hooch.cs" />
     <Compile Include="Tiles\Looting\Jewellery.cs" />
     <Compile Include="Tiles\Lever.cs" />
     <Compile Include="Tiles\Looting\FightItem.cs" />
     <Compile Include="Tiles\Looting\Gold.cs" />
+    <Compile Include="Tiles\Looting\MagicDust.cs" />
     <Compile Include="Tiles\Looting\Potion.cs" />
     <Compile Include="Tiles\Looting\Scroll.cs" />
+    <Compile Include="Tiles\Looting\SpecialPotion.cs" />
     <Compile Include="Tiles\Looting\StackedLoot.cs" />
+    <Compile Include="Tiles\Looting\Sulfur.cs" />
     <Compile Include="Tiles\Merchant.cs" />
     <Compile Include="Tiles\Looting\Mushroom.cs" />
     <Compile Include="Tiles\Looting\Plant.cs" />
+    <Compile Include="Tiles\Looting\Recipe.cs" />
     <Compile Include="Tiles\Trap.cs" />
     <Compile Include="Utils\SerializableDictionary.cs" />
     <Compile Include="TileContainers\GameLevel.cs" />
@@ -171,7 +176,9 @@
       <Name>Dungeons</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Crafting\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>if  "$(SolutionName)" == "OuaDIISln" xcopy  "$(TargetPath)" "$(SolutionDir)\Assets\Dlls" /Y
