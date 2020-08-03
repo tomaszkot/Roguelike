@@ -1,5 +1,6 @@
 ﻿using Dungeons.Core;
 using Roguelike.Attributes;
+using Roguelike.Tiles.Looting;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -17,10 +18,54 @@ namespace Roguelike.Tiles
     EntityStats requiredStats = new EntityStats();
     public bool IsIdentified { get; set; } = true;
     public event EventHandler<Loot> Identified;
+    public bool Enchantable { get; set; }
+    List<GemKind> enchants = new List<GemKind>();
 
     public Equipment() : this(EquipmentKind.Unset)
     {
       
+    }
+
+    public void MakeEnchantable()
+    {
+      Enchantable = true;
+      var priceInc = ((float)Price) / 5;
+      if (priceInc == 0)
+        priceInc = 1;
+      priceInc *= GetMaxEnchants();
+      Price += (int)priceInc;
+    }
+
+    public List<GemKind> Enchants
+    {
+      get
+      {
+        return enchants;
+      }
+
+      set
+      {
+        enchants = value;
+      }
+    }
+
+    public int GetMaxEnchants()
+    {
+      if (!Enchantable)
+        return 0;
+      if (Class == EquipmentClass.Unique)
+      {
+        if (this is Trophy)
+        {
+          return 2;
+        }
+        else
+          return 0;
+      }
+      if (Class == EquipmentClass.Magic)
+        return IsSecondMagicLevel ? 1 : 2;
+
+      return 3;
     }
 
     public Equipment(EquipmentKind kind = EquipmentKind.Unset)//default arg for serialization
@@ -96,27 +141,15 @@ namespace Roguelike.Tiles
         kind = value;
       }
     }
-    
-    //public static LootKind[] GetPossibleLootKindsForCrafting()
-    //{
-    //  return possibleLootKinds;
-    //}
 
-    //internal LootKind GetLootKind()
-    //{
-    //  //if (EquipmentKind == EquipmentKind.Weapon)
-    //  //  return LootKind.Weapon;
-    //  //else if (EquipmentKind == EquipmentKind.Amulet || EquipmentKind == EquipmentKind.RingLeft || EquipmentKind == EquipmentKind.RingRight)
-    //  //  return LootKind.Jewellery;
-    //  //else if (EquipmentKind == EquipmentKind.Armor || EquipmentKind == EquipmentKind.Shield || EquipmentKind == EquipmentKind.Helmet)
-    //  //  return LootKind.Armor;
-    //  //else if (EquipmentKind == EquipmentKind.TrophyLeft)//|| Type == EquipmentKind.TrophyRight)
-    //  //  return LootKind.Trophy;
-    //  //return LootKind.Other;
-    //  return LootKind.Equipment;
-    //}
+    readonly static EquipmentKind[] possibleLootKinds = new EquipmentKind[] { EquipmentKind.Armor, EquipmentKind.Weapon, EquipmentKind.Amulet, 
+      EquipmentKind.Ring, EquipmentKind.Helmet, EquipmentKind.Glove, EquipmentKind.Shield};
 
-    
+    public static EquipmentKind[] GetPossibleLootKindsForCrafting()
+    {
+      return possibleLootKinds;
+    }
+
     public EntityStatKind PrimaryStatKind
     {
       get
@@ -497,6 +530,14 @@ namespace Roguelike.Tiles
       }
       var res = (CurrentEquipmentKind)equipmentKind;
       return res;
+    }
+
+    public bool WasCrafted;
+    public RecipeKind CraftingRecipe;
+
+    public bool WasCraftedBy(RecipeKind rec)
+    {
+      return WasCrafted && CraftingRecipe == rec;
     }
   }
 }

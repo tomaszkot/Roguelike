@@ -14,12 +14,17 @@ namespace Roguelike.Tiles.Looting
   {
     public PotionKind Kind { get; private set; }
 
-    public Potion()
+    public Potion() : this(PotionKind.Health)
+    { 
+    
+    }
+
+    public Potion(PotionKind kind)
     {
       Price = 5;
       Symbol = PotionSymbol;
       LootKind = LootKind.Potion;
-      SetKind(PotionKind.Health);
+      SetKind(kind);
     }
 
     public EffectType EffectType { get; set; }
