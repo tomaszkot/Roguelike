@@ -11,6 +11,7 @@ namespace Roguelike.LootFactories
   {
     protected Dictionary<string, Func<string, Loot>> factory =
      new Dictionary<string, Func<string, Loot>>();
+    List<Recipe> recipesPrototypes = new List<Recipe>();
 
     public MiscLootFactory(Container container) : base(container)
     {
@@ -34,6 +35,32 @@ namespace Roguelike.LootFactories
       foreach (var name in names)
       {
         factory[name] = createPotion;
+      }
+
+      Func<RecipeKind, Recipe> createRecipeFromKind = (RecipeKind kind) =>
+      {
+        var loot = new Recipe();
+        loot.Kind = kind;
+
+        return loot;
+      };
+            
+      var kinds = new[] { RecipeKind.OneEq };
+      foreach (var kind in kinds)
+      {
+        recipesPrototypes.Add(createRecipeFromKind(kind));
+      }
+
+      Func<string, Loot> createRecipe = (string tag) =>
+      {
+        var proto = recipesPrototypes.Where(i => i.tag1 == tag).Single();
+        return proto.Clone();
+      };
+
+      names = new[] { "craft_one_eq" };
+      foreach (var name in names)
+      {
+        factory[name] = createRecipe;
       }
     }
 

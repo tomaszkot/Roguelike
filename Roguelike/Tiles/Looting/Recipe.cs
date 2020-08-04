@@ -45,39 +45,42 @@ namespace Roguelike.Tiles.Looting
       
     }
 
-    public string GetPrimaryStatDescription()
+    public override string PrimaryStatDescription
     {
-      var desc = "";
-      switch (Kind)
+      get
       {
-        case RecipeKind.Custom:
-          desc = "Can craft anything, provided ingredients are valid";
-          break;
-        case RecipeKind.ThreeGems:
-          desc = "Turns three gems into a better one";
-          break;
-        case RecipeKind.OneEq:
-          desc = "Turns given equipment into other kind of equipment";
-          break;
-        case RecipeKind.Potion:
-          desc = "Turns potion into other kind of potion";
-          break;
-        case RecipeKind.TwoEq:
-          desc = "Turns two equipments into one of better quality";
-          break;
-        case RecipeKind.Gem:
-          desc = "Turns given gem into other kind of gem";
-          break;
-        case RecipeKind.Toadstool2Potions:
-          desc = "Turns given toadstool into potions";
-          break;
-        case RecipeKind.ExplosiveCocktail:
-          desc = "Turns Hooch plus Sulfur into Explosive Cocktail";
-          break;
-        default:
-          break;
+        var desc = "";
+        switch (Kind)
+        {
+          case RecipeKind.Custom:
+            desc = "Can craft anything, provided ingredients are valid";
+            break;
+          case RecipeKind.ThreeGems:
+            desc = "Turns three gems into a better one";
+            break;
+          case RecipeKind.OneEq:
+            desc = "Turns given equipment into other kind of equipment";
+            break;
+          case RecipeKind.Potion:
+            desc = "Turns potion into other kind of potion";
+            break;
+          case RecipeKind.TwoEq:
+            desc = "Turns two equipments into one of better quality";
+            break;
+          case RecipeKind.Gem:
+            desc = "Turns given gem into other kind of gem";
+            break;
+          case RecipeKind.Toadstool2Potions:
+            desc = "Turns given toadstool into potions";
+            break;
+          case RecipeKind.ExplosiveCocktail:
+            desc = "Turns Hooch plus Sulfur into Explosive Cocktail";
+            break;
+          default:
+            break;
+        }
+        return desc;
       }
-      return desc;
     }
 
     public override string[] GetExtraStatDescription()
@@ -92,6 +95,11 @@ namespace Roguelike.Tiles.Looting
       return extraStatDescription;
     }
 
+    public Recipe Clone()
+    {
+      return MemberwiseClone() as Recipe;
+    }
+
     public RecipeKind Kind
     {
       get
@@ -103,6 +111,7 @@ namespace Roguelike.Tiles.Looting
       {
         kind = value;
         Name = kind+ " Recipe";
+        DisplayedName = Name;
         tag1 = "craft_";
         switch (kind)
         {
@@ -146,6 +155,9 @@ namespace Roguelike.Tiles.Looting
           default:
             break;
         }
+
+        
+
       }
     }
   }

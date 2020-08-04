@@ -1,5 +1,6 @@
 ﻿using Dungeons.Core;
 using Roguelike.Abstract;
+using Roguelike.Crafting;
 using Roguelike.Generators;
 using Roguelike.LootFactories;
 using Roguelike.Managers;
@@ -33,6 +34,7 @@ namespace Roguelike
       container.Register<AbstractLootFactory, LootFactory>();
       container.Register<SpellCastPolicy, SpellCastPolicy>();
       container.Register<IProjectilesFactory, ProjectilesFactory>();
+      container.Register<LootCrafterBase, LootCrafter>();
       //container.Register <MovePolicy, MovePolicy>();//move to exe
       Container = container;
 

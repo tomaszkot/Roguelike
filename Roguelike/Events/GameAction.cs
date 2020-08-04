@@ -70,9 +70,9 @@ namespace Roguelike
     {
       public Loot Item { get; set; }
       public InventoryActionKind Kind { get; set; }
-      public Inventory Inv { get; set ; }
+      public InventoryBase Inv { get; set ; }
 
-      public InventoryAction(Inventory inv)
+      public InventoryAction(InventoryBase inv)
       {
         Inv = inv;
       }

@@ -7,27 +7,21 @@ using Roguelike.Managers;
 using Roguelike.Events;
 using Newtonsoft.Json;
 using Roguelike.Tiles.Looting;
-using System;
 
 namespace Roguelike.LootContainers
 {
   public class InventoryBase
   {
-  }
-
-  public class Inventory : InventoryBase
-  {
     public int CurrentPageIndex { get; set; }
-    public float PriceFactor { get; set; }
+    public float PriceFactor { get; set; } = 1;
     List<Loot> items = new List<Loot>();
     public int Capacity { get; set; }//how many items there can be?
 
     [JsonIgnore]
     public EventsManager EventsManager { get; set; }
 
-    public Inventory()
+    public InventoryBase()
     {
-      PriceFactor = 1;
       Capacity = 48;
     }
 
@@ -261,5 +255,9 @@ namespace Roguelike.LootContainers
     {
       return Capacity > Items.Count || (loot.StackedInInventory  && GetStackedCount(loot as StackedLoot) > 0) ;//TODO stacked
     }
+  }
+
+  public class Inventory : InventoryBase
+  {
   }
 }
