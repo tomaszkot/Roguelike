@@ -736,28 +736,47 @@ namespace Roguelike.Managers
 
     public bool SellItem
     (
-      Loot loot, 
-      AdvancedLivingEntity src, 
+      Loot loot,
+      AdvancedLivingEntity src,
       AdvancedLivingEntity dest,
       int stackedCount = 1//in case of stacked there can be one than more sold at time
     )
     {
-      var price = (int)(loot.Price * src.Inventory.PriceFactor * stackedCount);
+      return SellItem(loot, src, src.Inventory, dest, dest.Inventory, stackedCount);
+    }
 
-      if (dest.Gold < price)
+    public bool SellItem
+    (
+      Loot loot, 
+      AdvancedLivingEntity src,
+      InventoryBase srcInv,
+      AdvancedLivingEntity dest,
+      InventoryBase destInv,
+      int stackedCount = 1//in case of stacked there can be one than more sold at time
+    )
+    {
+      bool goldInvolved = src != dest;
+
+      var price = 0;
+      if (goldInvolved)
       {
-        logger.LogInfo("dest.Gold < loot.Price");
-        soundManager.PlayBeepSound();
-        return false;
+        price = (int)(loot.Price * srcInv.PriceFactor * stackedCount);
+
+        if (dest.Gold < price)
+        {
+          logger.LogInfo("dest.Gold < loot.Price");
+          soundManager.PlayBeepSound();
+          return false;
+        }
       }
-      if (!dest.Inventory.CanAddLoot(loot))
+      if (!destInv.CanAddLoot(loot))
       {
         logger.LogInfo("!dest.Inventory.CanAddLoot(loot)");
         soundManager.PlayBeepSound();
         return false;
       }
 
-      var removed = src.Inventory.Remove(loot, stackedCount);
+      var removed = srcInv.Remove(loot, stackedCount);
       if (!removed)
       {
         logger.LogError("!removed");
@@ -769,18 +788,19 @@ namespace Roguelike.Managers
         loot = (loot as StackedLoot).Clone(stackedCount);
       }
 
-      bool added = dest.Inventory.Add(loot);
+      bool added = destInv.Add(loot);
       if (!added)//TODO revert item to src inv
       {
         logger.LogError("!added");
         return false;
       }
 
-      
-      dest.Gold -= price;
-      src.Gold += price;
-      soundManager.PlaySound("COINS_Rattle_04_mono");//coind_drop
-
+      if (goldInvolved)
+      {
+        dest.Gold -= price;
+        src.Gold += price;
+        soundManager.PlaySound("COINS_Rattle_04_mono");//coind_drop
+      }
       return true;
     }
 

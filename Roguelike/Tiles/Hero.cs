@@ -17,6 +17,7 @@ namespace Roguelike.Tiles
   {
     public static int FirstNextLevelExperienceThreshold = 15;
     protected Container container;
+    public Roguelike.LootContainers.Crafting Crafting { get; set; }
 
     public Hero(): base(new Point().Invalid(), '@')
     {
@@ -34,6 +35,7 @@ namespace Roguelike.Tiles
       NextLevelExperience = FirstNextLevelExperienceThreshold;
 
       CreateInventory();
+      Crafting = new Roguelike.LootContainers.Crafting();
 
       Dirty = true;//TODO
 

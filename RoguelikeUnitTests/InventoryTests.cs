@@ -158,7 +158,7 @@ namespace RoguelikeUnitTests
       var priceInHeroInv = hero.GetPrice(loot);
       Assert.AreEqual(priceInHeroInv, loot.Price);
       var merch = new Merchant();
-      Assert.True(game.GameManager.SellItem(loot, hero, merch));
+      Assert.True(game.GameManager.SellItem(loot, hero, hero.Inventory, merch, merch.Inventory));
       var priceInMerchInv = merch.GetPrice(loot);
       Assert.Greater(priceInMerchInv, priceInHeroInv);
     }

@@ -89,7 +89,9 @@
     <Compile Include="Generators\LootGenerator.cs" />
     <Compile Include="Generators\ProjectilesFactory.cs" />
     <Compile Include="Generators\RoomContentGenerator.cs" />
+    <Compile Include="LootContainers\Crafting.cs" />
     <Compile Include="LootContainers\Inventory.cs" />
+    <Compile Include="LootContainers\InventoryBase.cs" />
     <Compile Include="LootExtensions.cs" />
     <Compile Include="LootFactories\EquipmentFactory.cs" />
     <Compile Include="LootFactories\AbstractLootFactory.cs" />
