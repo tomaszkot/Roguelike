@@ -266,7 +266,7 @@ namespace Roguelike.LootContainers
     }
 
     [JsonIgnore]
-    public Container Container { get; set; }
+    internal Container Container { get; set; }
 
     internal bool CanAddLoot(Loot loot)
     {

@@ -44,6 +44,8 @@ namespace Roguelike.Crafting
 
     public override Tuple<Loot, string> Craft(Recipe recipe, List<Loot> lootToConvert)
     {
+      if(recipe == null)
+        return ReturnCraftingError("Recipe not set");
       LastCraftStackedCount = 0;
       if (lootToConvert.Count(i => i is MagicDust) != recipe.MagicDustRequired)
       {
