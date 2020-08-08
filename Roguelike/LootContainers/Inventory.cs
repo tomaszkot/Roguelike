@@ -7,10 +7,13 @@ using Roguelike.Managers;
 using Roguelike.Events;
 using Newtonsoft.Json;
 using Roguelike.Tiles.Looting;
+using SimpleInjector;
+using System;
 
 namespace Roguelike.LootContainers
 {
   public class Inventory : InventoryBase
   {
+    
   }
 }

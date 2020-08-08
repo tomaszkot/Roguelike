@@ -186,7 +186,7 @@ namespace RoguelikeUnitTests
         );
 
       var potions = lootInfo.Get<Potion>();
-      Assert.Greater(potions.Count, 9);
+      Assert.Greater(potions.Count, 8);
       Assert.Less(potions.Count, 40);
 
       var mushes = lootInfo.Get<Mushroom>();

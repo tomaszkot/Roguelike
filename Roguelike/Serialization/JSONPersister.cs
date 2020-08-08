@@ -60,7 +60,9 @@ namespace Roguelike.Serialization
           return null;
         }
         ITraceWriter traceWriter = null;// new MemoryTraceWriter();
-        JsonSerializerSettings settings = new JsonSerializerSettings { TraceWriter = traceWriter, TypeNameHandling = TypeNameHandling.All };
+        JsonSerializerSettings settings = new JsonSerializerSettings 
+        { TraceWriter = traceWriter, TypeNameHandling = TypeNameHandling.All };
+        //container.Options.DefaultScopedLifestyle = new ExecutionContextScopeLifestyle();
         //settings.TypeNameAssemblyFormatHandling = TypeNameAssemblyFormatHandling.Full;
         settings.Converters.Add(new Newtonsoft.Json.Converters.StringEnumConverter());
         entity = JsonConvert.DeserializeObject<T>(json, settings);
@@ -72,10 +74,10 @@ namespace Roguelike.Serialization
         //else
         //  Debug.Log("Engine_JsonDeserializer no weapon ");
       }
-      catch (Exception)
+      catch (Exception ex)
       {
+        Debug.WriteLine(ex);
         throw;
-        //Debug.LogError(ex);
       }
 
       return entity;

@@ -182,7 +182,7 @@ namespace Roguelike.Crafting
       }
       else if (lootToConvert.Count == 2 && eqs.Count == 2 && (recipe.Kind == RecipeKind.Custom || recipe.Kind == RecipeKind.TwoEq))
       {
-        //return CraftTwoEq(eqs);
+        return CraftTwoEq(eqs);
       }
 
       //else if (recipe.Kind == RecipeKind.Custom && eqs.Count == 1)
@@ -249,70 +249,72 @@ namespace Roguelike.Crafting
     //  return ReturnCraftedLoot(eqs[0]);
     //}
 
-    //private Tuple<Loot, string> CraftTwoEq(List<Equipment> eqs)
-    //{
-    //  var eq1 = eqs[0];
-    //  var eq2 = eqs[1];
-    //  if (eq1.Type != eq2.Type)
-    //    return ReturnCraftingError("Equipment for crafting must be of the same type");
+    private Tuple<Loot, string> CraftTwoEq(List<Equipment> eqs)
+    {
+
+      var eq1 = eqs[0];
+      var eq2 = eqs[1];
+      if (eq1.EquipmentKind != eq2.EquipmentKind)
+        return ReturnCraftingError("Equipment for crafting must be of the same type");
+      return ReturnCraftingError("TODO");
     //  if (eq1.WasCraftedBy(RecipeKind.TwoEq) || eq2.WasCraftedBy(RecipeKind.TwoEq))
     //    return ReturnCraftingError("Can not craft equipment which was already crafted in pairs"); ;
     //  var destEq = eq1.Price > eq2.Price ? eq1 : eq2;
 
-    //  var srcEq = destEq == eq1 ? eq2 : eq1;
-    //  var srcHadEmptyEnch = srcEq.Enchantable && srcEq.Enchants.Count < srcEq.GetMaxEnchants();
-    //  var destHadEmptyEnch = destEq.Enchantable && destEq.Enchants.Count < destEq.GetMaxEnchants();
+      //  var srcEq = destEq == eq1 ? eq2 : eq1;
+      //  var srcHadEmptyEnch = srcEq.Enchantable && srcEq.Enchants.Count < srcEq.GetMaxEnchants();
+      //  var destHadEmptyEnch = destEq.Enchantable && destEq.Enchants.Count < destEq.GetMaxEnchants();
 
-    //  destEq = destEq.Clone() as Equipment;
-    //  float priceInc = 0;
-    //  var enhPr = GetEnhStatValue(destEq.PrimaryStatValue, destEq.Price, srcEq.Price);
-    //  destEq.PrimaryStatValue += enhPr;
-    //  priceInc += destEq.GetPriceForFactor(destEq.PrimaryStat, enhPr);
+      //  destEq = destEq.Clone() as Equipment;
+      //  float priceInc = 0;
+      //  var enhPr = GetEnhStatValue(destEq.PrimaryStatValue, destEq.Price, srcEq.Price);
+      //  destEq.PrimaryStatValue += enhPr;
+      //  priceInc += destEq.GetPriceForFactor(destEq.PrimaryStat, enhPr);
 
-    //  destStats = destEq.GetMagicStats();
-    //  var srcStats = srcEq.GetMagicStats();
-    //  var srcDiffStats1 = srcStats.Where(i => !destStats.Any(j => j.Key == i.Key)).ToList();
+      //  destStats = destEq.GetMagicStats();
+      //  var srcStats = srcEq.GetMagicStats();
+      //  var srcDiffStats1 = srcStats.Where(i => !destStats.Any(j => j.Key == i.Key)).ToList();
 
-    //  if (destStats.Count < 3 && srcDiffStats1.Any())
-    //  {
-    //    var countToAdd = 3 - destStats.Count;
-    //    foreach (var statToAdd in srcDiffStats1)
-    //    {
-    //      if (destEq.Class == EquipmentClass.Plain)
-    //        destEq.Class = EquipmentClass.Magic;
-    //      destEq.SetMagicStat(statToAdd.Key, statToAdd.Value);
-    //      countToAdd--;
-    //      priceInc += destEq.GetPriceForFactor(statToAdd.Key, (int)statToAdd.Value.Factor);
-    //      if (countToAdd == 0)
-    //        break;
-    //    }
-    //  }
-    //  else
-    //  {
-    //    foreach (var destStat in destStats)
-    //    {
-    //      var enh = GetEnhStatValue(destStat.Value.Factor, destEq.Price, srcEq.Price);
-    //      destStat.Value.Factor += enh;
-    //      priceInc += destEq.GetPriceForFactor(destStat.Key, (int)enh);
-    //      destEq.SetMagicStat(destStat.Key, destStat.Value);
-    //    }
-    //  }
+      //  if (destStats.Count < 3 && srcDiffStats1.Any())
+      //  {
+      //    var countToAdd = 3 - destStats.Count;
+      //    foreach (var statToAdd in srcDiffStats1)
+      //    {
+      //      if (destEq.Class == EquipmentClass.Plain)
+      //        destEq.Class = EquipmentClass.Magic;
+      //      destEq.SetMagicStat(statToAdd.Key, statToAdd.Value);
+      //      countToAdd--;
+      //      priceInc += destEq.GetPriceForFactor(statToAdd.Key, (int)statToAdd.Value.Factor);
+      //      if (countToAdd == 0)
+      //        break;
+      //    }
+      //  }
+      //  else
+      //  {
+      //    foreach (var destStat in destStats)
+      //    {
+      //      var enh = GetEnhStatValue(destStat.Value.Factor, destEq.Price, srcEq.Price);
+      //      destStat.Value.Factor += enh;
+      //      priceInc += destEq.GetPriceForFactor(destStat.Key, (int)enh);
+      //      destEq.SetMagicStat(destStat.Key, destStat.Value);
+      //    }
+      //  }
 
-    //  if (srcHadEmptyEnch || destHadEmptyEnch)
-    //  {
-    //    if (destEq.GetMagicStats().Count < 3 && !destEq.Enchantable)
-    //      destEq.MakeEnchantable();
-    //  }
-    //  destEq.WasCrafted = true;
-    //  destEq.CraftingRecipe = RecipeKind.TwoEq;
+      //  if (srcHadEmptyEnch || destHadEmptyEnch)
+      //  {
+      //    if (destEq.GetMagicStats().Count < 3 && !destEq.Enchantable)
+      //      destEq.MakeEnchantable();
+      //  }
+      //  destEq.WasCrafted = true;
+      //  destEq.CraftingRecipe = RecipeKind.TwoEq;
 
-    //  //I noticed price is too high comparing to unique items, maybe price should be calculated from scratch ?
-    //  //priceInc /= 2;
+      //  //I noticed price is too high comparing to unique items, maybe price should be calculated from scratch ?
+      //  //priceInc /= 2;
 
-    //  destEq.Price += (int)priceInc;
+      //  destEq.Price += (int)priceInc;
 
-    //  return ReturnCraftedLoot(destEq);
-    //}
+      //  return ReturnCraftedLoot(destEq);
+    }
 
     private Tuple<Loot, string> CraftOneEq(Equipment srcEq)
     {

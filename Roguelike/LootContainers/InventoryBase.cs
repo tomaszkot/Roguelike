@@ -20,16 +20,10 @@ namespace Roguelike.LootContainers
     public float PriceFactor { get; set; } = 1;
     List<Loot> items = new List<Loot>();
     public int Capacity { get; set; }//how many items there can be?
-    Container container;
+    public string Owner { get; set; } = "";
 
     [JsonIgnore]
     public EventsManager EventsManager { get; set; }
-
-    public InventoryBase(Container container) : this()
-    {
-      this.container = container;
-      
-    }
 
     public InventoryBase()
     {
@@ -174,19 +168,19 @@ namespace Roguelike.LootContainers
       }
 
       if (changed && notifyObservers)
-        AppendAction(new InventoryAction(this) { Kind = InventoryActionKind.ItemAdded, Item = item });
+        AppendAction(new InventoryAction(this) { Kind = InventoryActionKind.ItemAdded, Loot = item, Inv = this });
 
       return changed;
     }
 
     private void AppendAction(GameAction ac)
     {
-      if (EventsManager == null)
+      if (EventsManager == null && Container!=null)
         EventsManager = Container.GetInstance<EventsManager>();
       if (EventsManager != null)
         EventsManager.AppendAction(ac);
       else
-        Debug.Assert(false, "AppendAction EventsManager == null");
+        Debug.Assert(false, Owner + " AppendAction EventsManager == null");
     }
 
     public void Assert(bool assert, string info = "assert failed")
@@ -240,7 +234,7 @@ namespace Roguelike.LootContainers
       }
       if (sendSignal)
       {
-        AppendAction(new InventoryAction(this) { Kind = InventoryActionKind.ItemRemoved, Item = item });
+        AppendAction(new InventoryAction(this) { Kind = InventoryActionKind.ItemRemoved, Loot = item , Inv = this});
       }
       //else
       //  UnreportedRemovals.Add(item);
@@ -266,7 +260,13 @@ namespace Roguelike.LootContainers
       }
     }
 
-    public Container Container { get; internal set; }
+    public Loot Get(Loot loot)
+    {
+      return Items.Where(i => i == loot).SingleOrDefault();
+    }
+
+    [JsonIgnore]
+    public Container Container { get; set; }
 
     internal bool CanAddLoot(Loot loot)
     {

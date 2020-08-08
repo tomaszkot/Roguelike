@@ -67,13 +67,15 @@ namespace Roguelike.Tiles
       return base.ToString();// + Data.AssetName;
     }
 
-    public virtual void OnContextSwitched(EventsManager eventsManager, Container container)
+    public virtual void OnContextSwitched(Container container)
     {
       this.container = container;
-      Inventory.EventsManager = eventsManager;//TODO
-      Crafting.Container = container;
-    }
 
-    
+      Inventory.Owner = "Hero.Inv";
+      Inventory.Container = container;
+      Crafting.Container = container;
+      Crafting.InvItems.Owner = "Crafting.InvItems";
+      Crafting.Recipes.Owner = "Crafting.Recipes";
+    }
   }
 }

@@ -1,6 +1,7 @@
 ﻿using Dungeons.Core;
 using Roguelike.Attributes;
 using Roguelike.LootContainers;
+using SimpleInjector;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -42,6 +43,12 @@ namespace Roguelike.Tiles
         base.Inventory = value;
         Inventory.PriceFactor = 4;
       }
+    }
+
+    internal void OnContextSwitched(Container container)
+    {
+      Inventory.Container = container;
+      Inventory.Owner = "Merchant";
     }
   }
 }

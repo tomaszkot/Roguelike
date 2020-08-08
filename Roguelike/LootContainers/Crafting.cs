@@ -1,4 +1,5 @@
-﻿using SimpleInjector;
+﻿using Newtonsoft.Json;
+using SimpleInjector;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,6 +14,7 @@ namespace Roguelike.LootContainers
     public InventoryBase InvItems { get; set; }
     Container container;
 
+    [JsonIgnore]
     public Container Container 
     { 
       set 

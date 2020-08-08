@@ -2,7 +2,7 @@
 using Roguelike.Utils;
 using System;
 
-namespace Roguelike.TileParts
+namespace Roguelike.LootContainers
 {
   public class CurrentEquipment 
   {

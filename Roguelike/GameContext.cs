@@ -137,8 +137,10 @@ namespace Roguelike
       }
 
       this.Hero = hero;
-      hero.OnContextSwitched(EventsManager, Container);
-
+      hero.OnContextSwitched(Container);
+      var merchs = node.GetTiles<Merchant>();
+      foreach(var merch in merchs)
+        merch.OnContextSwitched(Container);
 
       if (!Hero.Point.IsValid() || context == GameContextSwitchKind.DungeonSwitched)
       {

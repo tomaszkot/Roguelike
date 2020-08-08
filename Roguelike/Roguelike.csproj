@@ -111,7 +111,7 @@
     <Compile Include="Spells\DefensiveSpell.cs" />
     <Compile Include="Spells\Spell.cs" />
     <Compile Include="Spells\Spells.cs" />
-    <Compile Include="TileParts\CurrentEquipment.cs" />
+    <Compile Include="LootContainers\CurrentEquipment.cs" />
     <Compile Include="LootExtendedInfo.cs" />
     <Compile Include="Managers\EnemiesManager.cs" />
     <Compile Include="Managers\EntitiesManager.cs" />

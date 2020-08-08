@@ -52,7 +52,9 @@ namespace Roguelike.Tiles
     {
       int count = 1;
       if (loot.StackedInInventory)
-        count = (loot as StackedLoot).Count;
+      {
+        count = this.Inventory.GetStackedCount(loot as StackedLoot);
+      }
       var price = (int)(loot.Price * Inventory.PriceFactor)* count;
       return price;
     }
@@ -189,6 +191,7 @@ namespace Roguelike.Tiles
     [JsonIgnore]
     public bool Dirty { get; set; }
     public int PrevLevelExperience { get; private set; }
+    CurrentEquipment IEquipable.CurrentEquipment { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 
     protected virtual void CreateInventory()
     {
@@ -331,14 +334,25 @@ namespace Roguelike.Tiles
       LootAction ac = null;
       CurrentEquipmentPosition pos;
       if (eq != null)
-        ac = new LootAction(eq) { Info = Name + " put on " + eq, LootActionKind = LootActionKind.PutOn,
-          EquipmentKind = eq.EquipmentKind, CurrentEquipmentKind = kind
+      {
+        ac = new LootAction(eq)
+        {
+          Info = Name + " put on " + eq,
+          LootActionKind = LootActionKind.PutOn,
+          EquipmentKind = eq.EquipmentKind,
+          CurrentEquipmentKind = kind
         };
+      }
       else
-        ac = new LootAction(null) { Info = Name + " took off " + kind, LootActionKind = LootActionKind.PutOff,
+      {
+        ac = new LootAction(null)
+        {
+          Info = Name + " took off " + kind,
+          LootActionKind = LootActionKind.PutOff,
           EquipmentKind = Equipment.FromCurrentEquipmentKind(kind, out pos),
           CurrentEquipmentKind = kind
         };
+      }
       AppendAction(ac);
 
       return true;
