@@ -21,7 +21,7 @@ namespace Roguelike.Tiles
   public enum LootSourceKind { Enemy, PlainChest, GoldChest, DeluxeGoldChest, Barrel }
   public enum EquipmentClass { Unset, Plain, Magic, MagicSecLevel, Unique }
 
-  public class Loot : Tile//, IDescriptable
+  public abstract class Loot : Tile//, IDescriptable
   {
     //public static EntityStatKind[] AttackingExtendedStats = new[] { EntityStatKind.Attack, EntityStatKind.FireAttack, 
     //EntityStatKind.PoisonAttack, EntityStatKind.ColdAttack };
@@ -58,23 +58,19 @@ namespace Roguelike.Tiles
 
     public int PositionInPage { get; set; }
     public int PageIndex { get; set; }
-    //public bool Collected { get; set; }
-    //public Guid StackedInventoryId { get; set; }
-
+    
     public virtual bool Positionable
     {
       get { return false; }
     }
 
     protected string primaryStatDesc = "?";
-
-    //public bool StackedInInventory { get { return StackedInventoryId != Guid.Empty; } }
+        
     public bool StackedInInventory
     {
       get { return this is Roguelike.Tiles.Looting.StackedLoot; }
     }
-    //public int StackedInInventoryCount { get; set; }
-
+    
     public Guid Id
     {
       get
@@ -172,9 +168,9 @@ namespace Roguelike.Tiles
       return this.GetType() == other.GetType();
     }
 
-    public virtual string PrimaryStatDescription
+    public abstract string PrimaryStatDescription
     {
-      get { return primaryStatDesc; }
+      get;
     }
 
     protected string[] extraStatDescription;

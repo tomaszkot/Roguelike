@@ -21,9 +21,9 @@ namespace Roguelike.Tiles.Looting
       //StackedInventoryId = new Guid(Guid);
     }
 
-    public string GetPrimaryStatDescription()
+    public override string PrimaryStatDescription
     {
-      return "Part of crafting recipe";
+      get { return "Part of crafting recipe"; }
     }
   }
 }

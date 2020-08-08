@@ -77,7 +77,6 @@ namespace Roguelike.Tiles.Looting
       enhancmentProps[EquipmentKind.Amulet] = Juw;
       enhancmentProps[EquipmentKind.Ring] = Juw;
       enhancmentProps[EquipmentKind.Trophy] = Juw;
-      //enhancmentProps[EquipmentKind.TrophyRight] = Juw;
 
       enhancmentProps[EquipmentKind.Weapon] = wpn;
     }
@@ -144,18 +143,21 @@ namespace Roguelike.Tiles.Looting
     //  return false;
     //}
 
-    //public override string GetPrimaryStatDescription()
-    //{
-    //  string desc = "Enchants equipment. ";
-    //  var gm = GameManager.Instance;
-    //  if (gm.GameSettings.AllowInPlaceInventoryCrafting)
-    //    desc += "Drop it on the item in the Inventory.";
-    //  else
-    //    desc += "Use it with Custom Recipe on Crafting Panel.";
+    public override string PrimaryStatDescription
+    {
+      get
+      {
+        string desc = "Enchants equipment. ";
+        var allowInPlaceInventoryCrafting = true;
+        if (allowInPlaceInventoryCrafting)
+          desc += "Drop it on the item in the Inventory.";
+        else
+          desc += "Use it with Custom Recipe on Crafting Panel.";
 
 
-    //  return desc;
-    //}
+        return desc;
+      }
+    }
 
     int GetResistValue()
     {

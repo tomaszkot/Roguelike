@@ -22,14 +22,14 @@ namespace RoguelikeUnitTests
       Assert.True(!game.Hero.Inventory.Contains(loot));
     }
 
-    [Test]
-    public void LootCollect()
-    {
-      var game = CreateGame();
-      Loot loot = new Loot();
-      CollectLoot(game, loot);
+    //[Test]
+    //public void LootCollect()
+    //{
+    //  var game = CreateGame();
+    //  Loot loot = new Loot();
+    //  CollectLoot(game, loot);
       
-    }
+    //}
 
     [Test]
     public void DestroyBarrel()

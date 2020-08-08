@@ -263,11 +263,6 @@ namespace Roguelike.Tiles.Looting
       return null;
     }
 
-    //public object Clone()
-    //{
-    //  return MemberwiseClone();
-    //}
-
     //public Scroll CloneAsScroll()
     //{
     //  return Clone() as Scroll;
@@ -275,9 +270,9 @@ namespace Roguelike.Tiles.Looting
 
     
 
-    //public override string GetPrimaryStatDescription()
-    //{
-    //  return " Level: " + Level;
-    //}
+    public override string PrimaryStatDescription
+    {
+      get { return primaryStatDesc; }
+    }
   }
 }

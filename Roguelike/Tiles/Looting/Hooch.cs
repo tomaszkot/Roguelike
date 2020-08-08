@@ -26,10 +26,9 @@ namespace Roguelike.Tiles.Looting
 //      StackedInventoryId = new Guid(HoochGuid);
     }
 
-    public string GetPrimaryStatDescription()
+    public override string PrimaryStatDescription
     {
-      return "Powerful liquid, can be drunk or used as part of a recipe.";
-      
+      get { return "Powerful liquid, can be drunk or used as part of a recipe."; }
     }
 
     string[] extDesc;

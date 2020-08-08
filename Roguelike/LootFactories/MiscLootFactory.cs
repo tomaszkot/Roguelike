@@ -62,6 +62,11 @@ namespace Roguelike.LootFactories
       {
         factory[name] = createRecipe;
       }
+
+      factory["magic_dust"] = (string tag) =>
+      {
+        return new MagicDust();
+      };
     }
 
     public override Loot GetByName(string name)

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Roguelike.Tiles.Looting
 {
-  public class StackedLoot : Loot
+  public abstract class StackedLoot : Loot
   {
     private int count = 1;
 

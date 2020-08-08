@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SimpleInjector;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,6 +11,17 @@ namespace Roguelike.LootContainers
   {
     public InventoryBase Recipes { get; set; }
     public InventoryBase InvItems { get; set; }
+    Container container;
+
+    public Container Container 
+    { 
+      set 
+      {
+        container = value;
+        Recipes.Container = value;
+        InvItems.Container = value;
+      } 
+    }
 
     public Crafting()
     {
@@ -17,7 +29,7 @@ namespace Roguelike.LootContainers
       Recipes.Capacity = 14;
 
       InvItems = new InventoryBase();
-      Recipes.Capacity = 21;
+      InvItems.Capacity = 21;
     }
   }
 }

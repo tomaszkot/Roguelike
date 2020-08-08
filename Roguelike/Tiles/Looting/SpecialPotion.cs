@@ -78,17 +78,18 @@ namespace Roguelike.Tiles.Looting
       return BigPotion ? 5 : 1;
     }
 
-
-
     public EntityStatKind GetDestStat()
     {
       return Kind == SpecialPotionKind.Strength ? EntityStatKind.Strength : EntityStatKind.Magic;
     }
 
-    public string GetPrimaryStatDescription()
+    public override string PrimaryStatDescription
     {
-      var desc = "Permamently adds " + GetEnhValue() + " to " + GetDestStat();// + ".";
-      return desc;
+      get
+      {
+        var desc = "Permamently adds " + GetEnhValue() + " to " + GetDestStat();
+        return desc;
+      }
     }
 
     public override string[] GetExtraStatDescription()

@@ -16,7 +16,6 @@ namespace Roguelike.Tiles.Looting
 
     public Potion() : this(PotionKind.Health)
     { 
-    
     }
 
     public Potion(PotionKind kind)
@@ -60,6 +59,8 @@ namespace Roguelike.Tiles.Looting
         primaryStatDesc = "Remove poison effect";
       }
     }
+
+    public override string PrimaryStatDescription => primaryStatDesc;
 
     public EntityStatKind EnhancedStat
     {

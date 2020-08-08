@@ -39,7 +39,6 @@ namespace Roguelike.Tiles
 
       DisplayedName = Name;
       SetPrimaryStatDesc();
-     
     }
 
     void SetPrimaryStatDesc()
@@ -62,5 +61,7 @@ namespace Roguelike.Tiles
     {
       return base.GetId() + "_" + Kind;
     }
+
+    public override string PrimaryStatDescription => primaryStatDesc;
   }
 }

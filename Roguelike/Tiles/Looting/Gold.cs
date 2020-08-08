@@ -25,9 +25,9 @@ namespace Roguelike.Tiles.Looting
       
     }
 
-    //public override string GetPrimaryStatDescription()
-    //{
-    //  return Amount + " gold coins";
-    //}
+    public override string PrimaryStatDescription
+    {
+      get{ return Count + " gold coins"; }
+    }
   }
 }

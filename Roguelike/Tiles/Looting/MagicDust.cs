@@ -22,9 +22,9 @@ namespace Roguelike.Tiles.Looting
       //Revealed = true;
     }
 
-    public string GetPrimaryStatDescription()
+    public override string PrimaryStatDescription
     {
-      return "Part of a crafting recipe";
+      get { return "Part of a crafting recipe"; }
     }
   }
 }

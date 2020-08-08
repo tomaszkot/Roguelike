@@ -21,9 +21,9 @@ namespace Roguelike.Tiles.Looting
       //auxFactorName = "ChanceToBurnNeighbor";
     }
 
-    public string GetPrimaryStatDescription()
+    public override string PrimaryStatDescription
     {
-      return "Explodes hurting the victim and nearby entities with fire";
+      get { return "Explodes hurting the victim and nearby entities with fire"; }
     }
   }
 }

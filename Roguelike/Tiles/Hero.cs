@@ -71,6 +71,7 @@ namespace Roguelike.Tiles
     {
       this.container = container;
       Inventory.EventsManager = eventsManager;//TODO
+      Crafting.Container = container;
     }
 
     

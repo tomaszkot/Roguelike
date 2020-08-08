@@ -160,6 +160,8 @@ namespace Roguelike.Tiles
       primaryStatDesc = desc;
     }
 
+    public override string PrimaryStatDescription => primaryStatDesc;
+
     public override string GetId()
     {
       return base.GetId() + "_" + Kind;

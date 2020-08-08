@@ -5,11 +5,12 @@ using Roguelike.Events;
 using Roguelike.Managers;
 using Roguelike.Tiles;
 using Roguelike.Tiles.Looting;
+using SimpleInjector;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 
 namespace Roguelike.LootContainers
 {
@@ -19,9 +20,16 @@ namespace Roguelike.LootContainers
     public float PriceFactor { get; set; } = 1;
     List<Loot> items = new List<Loot>();
     public int Capacity { get; set; }//how many items there can be?
+    Container container;
 
     [JsonIgnore]
     public EventsManager EventsManager { get; set; }
+
+    public InventoryBase(Container container) : this()
+    {
+      this.container = container;
+      
+    }
 
     public InventoryBase()
     {
@@ -173,8 +181,12 @@ namespace Roguelike.LootContainers
 
     private void AppendAction(GameAction ac)
     {
+      if (EventsManager == null)
+        EventsManager = Container.GetInstance<EventsManager>();
       if (EventsManager != null)
         EventsManager.AppendAction(ac);
+      else
+        Debug.Assert(false, "AppendAction EventsManager == null");
     }
 
     public void Assert(bool assert, string info = "assert failed")
@@ -226,9 +238,9 @@ namespace Roguelike.LootContainers
           return false;
         }
       }
-      if (sendSignal && EventsManager != null)
+      if (sendSignal)
       {
-        EventsManager.AppendAction(new InventoryAction(this) { Kind = InventoryActionKind.ItemRemoved, Item = item });
+        AppendAction(new InventoryAction(this) { Kind = InventoryActionKind.ItemRemoved, Item = item });
       }
       //else
       //  UnreportedRemovals.Add(item);
@@ -253,6 +265,8 @@ namespace Roguelike.LootContainers
         return Items.Count;
       }
     }
+
+    public Container Container { get; internal set; }
 
     internal bool CanAddLoot(Loot loot)
     {
