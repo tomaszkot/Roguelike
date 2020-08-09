@@ -5,19 +5,17 @@ using System.Text;
 
 namespace Roguelike.Tiles.Looting
 {
-  public enum RecipeKind { Custom, ThreeGems, OneEq, Potion, TwoEq, Gem, Toadstool2Potions, ExplosiveCocktail }
+  public enum RecipeKind { Unset, Custom, ThreeGems, OneEq, Potion, TwoEq, Gem, Toadstool2Potions, ExplosiveCocktail }
 
   public class Recipe : Loot
   {
     RecipeKind kind;
     public int MinDropDungeonLevel = 0;
 
-
     public int MagicDustRequired { get; set; }
 
-    public Recipe() : this(RecipeKind.Custom)
+    public Recipe() : this(RecipeKind.Unset)
     {
-      
     }
 
     public override string ToString()
