@@ -9,7 +9,7 @@ namespace Roguelike.Tiles
     Unknown, Strength, Magic
   }
 
-  public class Mushroom : Food// StackedLoot, IConsumable
+  public class Mushroom : Food
   {
     public MushroomKind MushroomKind;
     public PotionKind SrcPotion { get; set; }

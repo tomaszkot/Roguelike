@@ -5,9 +5,9 @@ using System.Text;
 
 namespace Roguelike.Tiles.Looting
 {
-  public class MagicDust : Loot
+  public class MagicDust : StackedLoot
   {
-    public const string MagicDustGuid = "4fe06985-47d3-2b24-bddf-99a4af2b1dfc";
+    //public const string MagicDustGuid = "4fe06985-47d3-2b24-bddf-99a4af2b1dfc";
 
     public MagicDust()
     {
