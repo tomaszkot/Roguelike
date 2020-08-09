@@ -14,6 +14,9 @@ namespace Roguelike.LootContainers
 {
   public class Inventory : InventoryBase
   {
-    
+    public Inventory() : base()
+    {
+      
+    }
   }
 }

@@ -14,6 +14,9 @@ using System.Linq;
 
 namespace Roguelike.LootContainers
 {
+  public enum InvOwner { Unset, Hero, Merchant }
+  public enum InvBasketKind { Unset, Hero, Merchant, CraftingRecipe, CraftingInvItems }
+
   public class InventoryBase
   {
     public int CurrentPageIndex { get; set; }
@@ -21,6 +24,8 @@ namespace Roguelike.LootContainers
     List<Loot> items = new List<Loot>();
     public int Capacity { get; set; }//how many items there can be?
     public string Owner { get; set; } = "";
+    public InvOwner InvOwner { get; set; }
+    public InvBasketKind InvBasketKind { get; set; }
 
     [JsonIgnore]
     public EventsManager EventsManager { get; set; }

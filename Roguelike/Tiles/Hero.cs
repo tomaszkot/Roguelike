@@ -10,6 +10,7 @@ using Roguelike.Tiles.Abstract;
 using Roguelike.Tiles.Looting;
 using SimpleInjector;
 using System.Linq;
+using Roguelike.LootContainers;
 
 namespace Roguelike.Tiles
 {
@@ -35,8 +36,11 @@ namespace Roguelike.Tiles
       NextLevelExperience = FirstNextLevelExperienceThreshold;
 
       CreateInventory();
-      Crafting = new Roguelike.LootContainers.Crafting();
+      Inventory.InvOwner = InvOwner.Hero;
+      Inventory.InvBasketKind = InvBasketKind.Hero;
 
+      Crafting = new Roguelike.LootContainers.Crafting();
+      
       Dirty = true;//TODO
 
       

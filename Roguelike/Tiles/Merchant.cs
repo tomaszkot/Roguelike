@@ -42,6 +42,7 @@ namespace Roguelike.Tiles
       {
         base.Inventory = value;
         Inventory.PriceFactor = 4;
+        Inventory.InvBasketKind = InvBasketKind.Hero;
       }
     }
 
