@@ -130,6 +130,7 @@
     <Compile Include="Tiles\Barrel.cs" />
     <Compile Include="Tiles\CrackedStone.cs" />
     <Compile Include="Tiles\Interactive\Portal.cs" />
+    <Compile Include="Tiles\Looting\Cord.cs" />
     <Compile Include="Tiles\Looting\ExplosiveCocktail.cs" />
     <Compile Include="Tiles\Looting\Food.cs" />
     <Compile Include="Tiles\InteractiveTile.cs" />
@@ -146,6 +147,7 @@
     <Compile Include="Tiles\Looting\SpecialPotion.cs" />
     <Compile Include="Tiles\Looting\StackedLoot.cs" />
     <Compile Include="Tiles\Looting\Sulfur.cs" />
+    <Compile Include="Tiles\Looting\TinyTrophy.cs" />
     <Compile Include="Tiles\Looting\Trophy.cs" />
     <Compile Include="Tiles\Merchant.cs" />
     <Compile Include="Tiles\Looting\Mushroom.cs" />

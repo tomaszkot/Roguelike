@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Roguelike.Tiles.Looting
 {
-  public enum RecipeKind { Unset, Custom, ThreeGems, OneEq, Potion, TwoEq, Gem, Toadstool2Potions, ExplosiveCocktail }
+  public enum RecipeKind { Unset, Custom, ThreeGems, OneEq, Potion, TwoEq, Gem, Toadstool2Potions, ExplosiveCocktail, Pendant }
 
   public class Recipe : Loot
   {

@@ -5,6 +5,11 @@ using System.Linq;
 
 namespace Roguelike.Tiles
 {
+  class Strings
+  {
+    public const string PartOfCraftingRecipe = "Part of the crafting recipe.";
+  }
+
   public enum EquipmentKind { Unset, Weapon, Armor, Helmet, Shield, Ring, Amulet,
                               Trophy, Glove, God }
 
@@ -16,8 +21,9 @@ namespace Roguelike.Tiles
 
   public enum CurrentEquipmentPosition { Unset, Left, Right}
 
-  public enum LootKind { Unset, Gold, Potion, Scroll, Equipment, Other, Gem,
-                         Recipe, Seal, SealPart, Food, Plant }
+  public enum LootKind { Unset, Other, Gold, Potion, Scroll, Equipment, Gem,
+                         Recipe, Seal, SealPart, Food, Plant, TinyTrophy}
+
   public enum LootSourceKind { Enemy, PlainChest, GoldChest, DeluxeGoldChest, Barrel }
   public enum EquipmentClass { Unset, Plain, Magic, MagicSecLevel, Unique }
 

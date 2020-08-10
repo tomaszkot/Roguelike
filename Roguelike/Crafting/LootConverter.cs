@@ -1,12 +1,14 @@
 ﻿using Dungeons.Core;
 using Roguelike.Attributes;
 using Roguelike.Generators;
+using Roguelike.LootFactories;
 using Roguelike.Tiles;
 using Roguelike.Tiles.Looting;
 using SimpleInjector;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 
 namespace Roguelike.Crafting
 {
@@ -35,10 +37,22 @@ namespace Roguelike.Crafting
   public class LootCrafter : LootCrafterBase
   {
     Container container;
+    EquipmentFactory equipmentFactory;
+    const string InvalidIngredients = "Invalid ingredients";
 
     public LootCrafter(Container container)
     {
       this.container = container;
+      equipmentFactory = container.GetInstance<EquipmentFactory>();
+    }
+
+    Jewellery createJewellery(EquipmentKind kind, int minDropDungeonLevel)
+    {
+      var juwell = new Jewellery();
+      juwell.EquipmentKind = kind;
+      juwell.MinDropDungeonLevel = minDropDungeonLevel;
+      juwell.Price = 10;
+      return juwell;
     }
 
     public override Tuple<Loot, string> Craft(Recipe recipe, List<Loot> lootToConvert)
@@ -64,6 +78,22 @@ namespace Roguelike.Crafting
         if (recipe.Kind == RecipeKind.Custom)
         {
           return HandleCustomRecipe(lootToConvert);
+        }
+
+        if (recipe.Kind == RecipeKind.Pendant)
+        {
+          var cords = lootToConvert.Where(i => i is Cord).Count();
+          if (cords != 0)
+            return ReturnCraftingError(InvalidIngredients);
+
+          var tinyTrophyCount = lootToConvert.Where(i => i is TinyTrophy).Count();
+          if(tinyTrophyCount == 0 || tinyTrophyCount > 3)
+            return ReturnCraftingError("Amount of ornaments must be between 1-3");
+
+          var amulet = createJewellery(EquipmentKind.Amulet, 1);
+          string err;
+          amulet.Enchant(EntityStatKind.Attack, 5, GemKind.Diamond, out err);//TODO
+          return ReturnCraftedLoot(amulet);
         }
 
         if ((recipe.Kind == RecipeKind.Custom || recipe.Kind == RecipeKind.ExplosiveCocktail) &&
@@ -168,7 +198,7 @@ namespace Roguelike.Crafting
         }
       }
 
-      return ReturnCraftingError("Invalid ingredients");
+      return ReturnCraftingError(InvalidIngredients);
     }
 
     private Tuple<Loot, string> HandleCustomRecipe(List<Loot> lootToConvert)
