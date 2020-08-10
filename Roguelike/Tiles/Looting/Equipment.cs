@@ -539,5 +539,32 @@ namespace Roguelike.Tiles
     {
       return WasCrafted && CraftingRecipe == rec;
     }
+
+    public bool Enchant(EntityStatKind kind, int val, GemKind gk, out string error)
+    {
+      error = "";
+      if (Class == EquipmentClass.Unique && !(this is Trophy))
+      {
+        error = "Unique item can not be enchanted";
+        return false;
+      }
+      var maxEnchantsPossible = GetMaxEnchants();
+      if (maxEnchantsPossible == 0)
+      {
+        error = "Not possible to enchant " + Name + ", this item is not enchantable";
+        return false;
+      }
+      if (Enchants.Count == maxEnchantsPossible)
+      {
+        error = "Max enchanting level reached";
+        return false;
+      }
+
+      MakeMagic(kind, val);
+      Enchants.Add(gk);
+
+      Price += (int)(GetPriceForFactor(kind, val));// *.9f);//crafted loot - price too hight comp to uniq.
+      return true;
+    }
   }
 }

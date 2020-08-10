@@ -118,30 +118,29 @@ namespace Roguelike.Tiles.Looting
 
     int resistMult = 3;
 
-    //public bool ApplyTo(Equipment eq, out string error)
-    //{
-    //  error = "";
-    //  var props = enhancmentProps[this.GemKindValue];
-    //  if (props.ContainsKey(eq.Type))//IsCraftableWith(eq))
-    //  {
-    //    var propsGem = props[eq.Type];
-    //    int val = 0;
-    //    if (eq.Type == EquipmentKind.Amulet || eq.Type == EquipmentKind.Ring || eq.Type == EquipmentKind.TrophyLeft ||
-    //      eq.Type == EquipmentKind.TrophyRight)
-    //    {
-    //      val = otherValues[this.GemSizeValue];
-    //    }
-    //    else
-    //    {
-    //      val = wpnAndArmorValues[this.GemSizeValue];
-    //      if (propsGem == EntityStatKind.ResistCold || propsGem == EntityStatKind.ResistFire || propsGem == EntityStatKind.ResistPoison)
-    //        val = GetResistValue();
-    //    }
-    //    return eq.Enchant(propsGem, val, GemKindValue, out error);
-    //  }
+    public bool ApplyTo(Equipment eq, out string error)
+    {
+      error = "";
+      var props = enhancmentProps[this.GemKindValue];
+      if (props.ContainsKey(eq.EquipmentKind))//IsCraftableWith(eq))
+      {
+        var propsGem = props[eq.EquipmentKind];
+        int val = 0;
+        if (eq.EquipmentKind == EquipmentKind.Amulet || eq.EquipmentKind == EquipmentKind.Ring || eq.EquipmentKind == EquipmentKind.Trophy)
+        {
+          val = otherValues[this.GemSizeValue];
+        }
+        else
+        {
+          val = wpnAndArmorValues[this.GemSizeValue];
+          if (propsGem == EntityStatKind.ResistCold || propsGem == EntityStatKind.ResistFire || propsGem == EntityStatKind.ResistPoison)
+            val = GetResistValue();
+        }
+        return eq.Enchant(propsGem, val, GemKindValue, out error);
+      }
 
-    //  return false;
-    //}
+      return false;
+    }
 
     public override string PrimaryStatDescription
     {
