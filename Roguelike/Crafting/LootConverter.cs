@@ -54,7 +54,7 @@ namespace Roguelike.Crafting
       juwell.Price = 10;
       return juwell;
     }
-
+        
     public override Tuple<Loot, string> Craft(Recipe recipe, List<Loot> lootToConvert)
     {
       if (recipe == null)
@@ -86,13 +86,18 @@ namespace Roguelike.Crafting
           if (cords != 0)
             return ReturnCraftingError(InvalidIngredients);
 
-          var tinyTrophyCount = lootToConvert.Where(i => i is TinyTrophy).Count();
-          if(tinyTrophyCount == 0 || tinyTrophyCount > 3)
+          var tinyTrophies = lootToConvert.Where(i => i is TinyTrophy).Cast<TinyTrophy>().ToList();
+          if(tinyTrophies.Count == 0 || tinyTrophies.Count > 3)
             return ReturnCraftingError("Amount of ornaments must be between 1-3");
 
           var amulet = createJewellery(EquipmentKind.Amulet, 1);
+          //if(amulet)
           string err;
-          amulet.Enchant(EntityStatKind.Attack, 5, GemKind.Diamond, out err);//TODO
+          foreach (var troph in tinyTrophies)
+          {
+            if(!troph.ApplyTo(amulet, out err))
+              ReturnCraftingError(InvalidIngredients);
+          }
           return ReturnCraftedLoot(amulet);
         }
 
@@ -106,17 +111,10 @@ namespace Roguelike.Crafting
           return ReturnCraftedLoot(new ExplosiveCocktail());
         }
 
-        //if ((recipe.Kind == RecipeKind.Custom) &&
-        // lootToConvert.Count == 2 && lootToConvert.Any(i => i is SheepRemains) && lootToConvert.Any(i => i is Sulfur))
-        //{
-        //  return ReturnCraftedLoot(new SheepRemainsStuffed());
-        //}
-
         var allGems = lootToConvert.All(i => i is Gem);
         if ((recipe.Kind == RecipeKind.Custom || recipe.Kind == RecipeKind.ThreeGems) && allGems && lootToConvert.Count == 3)
         {
-          //TODO
-          //return HandleAllGems(lootToConvert);
+          return HandleAllGems(lootToConvert);
         }
         var allHp = lootToConvert.All(i => i.IsPotion(PotionKind.Health));
         var allMp = lootToConvert.All(i => i.IsPotion(PotionKind.Mana));
@@ -225,7 +223,6 @@ namespace Roguelike.Crafting
           var gem = lootToConvert[0] is Gem ? lootToConvert[0] as Gem : lootToConvert[1] as Gem;
           var eq = lootToConvert[0] is Equipment ? lootToConvert[0] as Equipment : lootToConvert[1] as Equipment;
           var err = "";
-          //TODO
           if (gem.ApplyTo(eq, out err))
           {
             return ReturnCraftedLoot(eq);

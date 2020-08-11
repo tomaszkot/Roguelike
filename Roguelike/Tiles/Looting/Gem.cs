@@ -1,14 +1,11 @@
 ﻿using Dungeons.Core;
 using Roguelike.Attributes;
-//using Roguelike.Loot;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+
 
 namespace Roguelike.Tiles.Looting
 {
-  public enum GemKind { Ruby, Emerald, Diamond }
+  public enum GemKind { Ruby, Emerald, Diamond, Amber }
   public enum GemSize { Big, Medium, Small }
 
   public class Gem : StackedLoot
@@ -42,6 +39,30 @@ namespace Roguelike.Tiles.Looting
         SetRandomKindAndLevelSize(gameLevel, !kind.HasValue);
       else
         SetProps();
+    }
+
+    public static EnchantSrc EnchantSrcFromGemKind(GemKind gk)
+    {
+      EnchantSrc src = EnchantSrc.Unset;
+      switch (gk)
+      {
+        case GemKind.Ruby:
+          src = EnchantSrc.Ruby;
+          break;
+        case GemKind.Emerald:
+          src = EnchantSrc.Emerald;
+          break;
+        case GemKind.Diamond:
+          src = EnchantSrc.Diamond;
+          break;
+        case GemKind.Amber:
+          src = EnchantSrc.Amber;
+          break;
+        default:
+          break;
+      }
+
+      return src;
     }
 
     public override string GetId()
@@ -136,7 +157,7 @@ namespace Roguelike.Tiles.Looting
           if (propsGem == EntityStatKind.ResistCold || propsGem == EntityStatKind.ResistFire || propsGem == EntityStatKind.ResistPoison)
             val = GetResistValue();
         }
-        return eq.Enchant(propsGem, val, GemKindValue, out error);
+        return eq.Enchant(propsGem, val, EnchantSrcFromGemKind(GemKindValue), out error);
       }
 
       return false;

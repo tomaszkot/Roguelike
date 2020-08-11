@@ -8,6 +8,8 @@ using System.Linq;
 
 namespace Roguelike.Tiles
 {
+  public enum EnchantSrc { Unset, Ruby, Emerald, Diamond, Amber, Fang, Tusk, Claw  }
+
   public class Equipment : Loot
   {
     public int MinDropDungeonLevel = 100;
@@ -19,7 +21,7 @@ namespace Roguelike.Tiles
     public bool IsIdentified { get; set; } = true;
     public event EventHandler<Loot> Identified;
     public bool Enchantable { get; set; }
-    List<GemKind> enchants = new List<GemKind>();
+    List<EnchantSrc> enchants = new List<EnchantSrc>();
 
     public Equipment() : this(EquipmentKind.Unset)
     {
@@ -36,7 +38,7 @@ namespace Roguelike.Tiles
       Price += (int)priceInc;
     }
 
-    public List<GemKind> Enchants
+    public List<EnchantSrc> Enchants
     {
       get
       {
@@ -541,7 +543,7 @@ namespace Roguelike.Tiles
       return WasCrafted && CraftingRecipe == rec;
     }
 
-    public bool Enchant(EntityStatKind kind, int val, GemKind gk, out string error)
+    public bool Enchant(EntityStatKind kind, int val, EnchantSrc enchantSrc, out string error)
     {
       error = "";
       if (Class == EquipmentClass.Unique && !(this is Trophy))
@@ -562,7 +564,7 @@ namespace Roguelike.Tiles
       }
 
       MakeMagic(kind, val);
-      Enchants.Add(gk);
+      Enchants.Add(enchantSrc);
 
       Price += (int)(GetPriceForFactor(kind, val));// *.9f);//crafted loot - price too hight comp to uniq.
       return true;
