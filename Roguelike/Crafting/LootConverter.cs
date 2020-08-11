@@ -293,7 +293,7 @@ namespace Roguelike.Crafting
         return ReturnCraftingError("Equipment for crafting must be of the same type");
 
       if (eq1.WasCraftedBy(RecipeKind.TwoEq) || eq2.WasCraftedBy(RecipeKind.TwoEq))
-        return ReturnCraftingError("Can not craft equipment which was already crafted in pairs"); ;
+        return ReturnCraftingError("Can not craft equipment which was already crafted in pairs"); 
       var destEq = eq1.Price > eq2.Price ? eq1 : eq2;
 
       var srcEq = destEq == eq1 ? eq2 : eq1;

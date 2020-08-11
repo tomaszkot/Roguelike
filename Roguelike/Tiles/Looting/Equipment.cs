@@ -346,7 +346,7 @@ namespace Roguelike.Tiles
 
     public void MakeMagic(EntityStatKind stat, int statValue)
     {
-      AddMagicStat(stat, false, statValue, false);
+      AddMagicStat(stat, IsSecondMagicLevel, statValue, false);
     }
 
     public void MakeMagicSecLevel(EntityStatKind stat, int statValue)
@@ -380,7 +380,8 @@ namespace Roguelike.Tiles
       Debug.Assert(this.MinDropDungeonLevel >= 0);
       if (this.MinDropDungeonLevel >= 0)
       {
-        Price += Price*this.MinDropDungeonLevel;
+        //Price += Price*this.MinDropDungeonLevel;
+        Price = Price * this.MinDropDungeonLevel;
       }
     }
 
