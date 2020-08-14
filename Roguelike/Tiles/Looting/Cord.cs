@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Roguelike.Tiles.Looting
 {
-  class Cord : StackedLoot
+  public class Cord : StackedLoot
   {
     public string primaryStatDescription = Strings.PartOfCraftingRecipe;
 

@@ -20,7 +20,7 @@ namespace Roguelike.Tiles
     {
       this.EquipmentKind = EquipmentKind.Weapon;
       this.PrimaryStatKind = EntityStatKind.Attack;
-      this.Price = 10;
+      this.Price = 5;
     }
 
     public bool IsMagician()

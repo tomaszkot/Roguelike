@@ -28,14 +28,17 @@ namespace Roguelike.Tiles
       
     }
 
-    public void MakeEnchantable()
+    public bool MakeEnchantable()
     {
+      if (!IsIdentified)
+        return false;
       Enchantable = true;
       var priceInc = ((float)Price) / 5;
       if (priceInc == 0)
         priceInc = 1;
       priceInc *= GetMaxEnchants();
       Price += (int)priceInc;
+      return true;
     }
 
     public List<EnchantSrc> Enchants
@@ -273,6 +276,11 @@ namespace Roguelike.Tiles
       return esk;
     }
 
+    public void MakeMagic(EntityStatKind stat, int statValue, AddMagicStatReason reason = AddMagicStatReason.Unset)
+    {
+      AddMagicStat(stat, IsSecondMagicLevel, statValue, false, reason);
+    }
+
     public void MakeMagic(bool magicOfSecondLevel = false)
     {
       Debug.Assert(levelIndex >= 0);
@@ -345,35 +353,37 @@ namespace Roguelike.Tiles
         value = 2;
       AddMagicStat(stat, secLevel, value, false);
     }
-
-    public void MakeMagic(EntityStatKind stat, int statValue)
-    {
-      AddMagicStat(stat, IsSecondMagicLevel, statValue, false);
-    }
-
+        
     public void MakeMagicSecLevel(EntityStatKind stat, int statValue)
     {
       AddMagicStat(stat, true, statValue, false);
     }
 
     EntityStats unidentifiedStats;
+    public enum AddMagicStatReason { Unset, Enchant};
 
-    void AddMagicStat(EntityStatKind stat, bool secLevel, int statValue, bool incrementFactor = false)
+    void AddMagicStat(EntityStatKind stat, bool secLevel, int statValue, bool incrementFactor = false, AddMagicStatReason reason = AddMagicStatReason.Unset)
     {
       var factorBefore = ExtendedInfo.Stats.GetFactor(stat);
       if (factorBefore > 0 && incrementFactor)
         statValue += statValue;
-      SetClass(EquipmentClass.Magic);//we shall not lost that info
-
-      if (unidentifiedStats == null)
+      if (reason != AddMagicStatReason.Enchant)
       {
-        unidentifiedStats = new EntityStats();
-        Price *= 2;
-      }
+        SetClass(EquipmentClass.Magic);//we shall not lost that info
 
-      //ExtendedInfo.Stats.SetFactor(stat, statValue);
-      unidentifiedStats.SetFactor(stat, statValue);
-      IsSecondMagicLevel = secLevel;
+        if (unidentifiedStats == null)
+        {
+          unidentifiedStats = new EntityStats();
+          Price *= 2;
+        }
+        unidentifiedStats.SetFactor(stat, statValue);
+        IsSecondMagicLevel = secLevel;
+      }
+      else
+      {
+        Price = (int )(Price * 1.5f);
+        ExtendedInfo.Stats.SetFactor(stat, statValue);
+      }
       IncreasePriceBasedOnExtInfo();
     }
 
@@ -382,8 +392,8 @@ namespace Roguelike.Tiles
       Debug.Assert(this.MinDropDungeonLevel >= 0);
       if (this.MinDropDungeonLevel >= 0)
       {
-        //Price += Price*this.MinDropDungeonLevel;
-        Price = Price * this.MinDropDungeonLevel;
+        if(this.MinDropDungeonLevel > 0)
+          Price = Price * this.MinDropDungeonLevel;
       }
     }
 
@@ -545,6 +555,11 @@ namespace Roguelike.Tiles
 
     public bool Enchant(EntityStatKind kind, int val, EnchantSrc enchantSrc, out string error)
     {
+      return Enchant(new EntityStatKind[] { kind }, val, enchantSrc, out error);
+    }
+
+    public bool Enchant(EntityStatKind[] kinds, int val, EnchantSrc enchantSrc, out string error)
+    {
       error = "";
       if (Class == EquipmentClass.Unique && !(this is Trophy))
       {
@@ -562,11 +577,12 @@ namespace Roguelike.Tiles
         error = "Max enchanting level reached";
         return false;
       }
-
-      MakeMagic(kind, val);
-      Enchants.Add(enchantSrc);
-
-      Price += (int)(GetPriceForFactor(kind, val));// *.9f);//crafted loot - price too hight comp to uniq.
+      foreach (var kind in kinds)
+      {
+        MakeMagic(kind, val, AddMagicStatReason.Enchant);
+        Price += (int)(GetPriceForFactor(kind, val));// *.9f);//crafted loot - price too hight comp to uniq.
+      }
+      Enchants.Add(enchantSrc);//onlyone slot is occupied
       return true;
     }
   }

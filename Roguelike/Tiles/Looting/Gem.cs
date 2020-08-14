@@ -1,7 +1,8 @@
 ﻿using Dungeons.Core;
 using Roguelike.Attributes;
+using System;
 using System.Collections.Generic;
-
+using System.Linq;
 
 namespace Roguelike.Tiles.Looting
 {
@@ -89,11 +90,17 @@ namespace Roguelike.Tiles.Looting
       enhancmentProps[GemKind.Diamond] = enhancmentPropsDiam;
     }
 
-    private static void PopulateProps(Dictionary<EquipmentKind, EntityStatKind> enhancmentProps, EntityStatKind arm, EntityStatKind wpn, EntityStatKind Juw)
+    private static void PopulateProps
+    (
+      Dictionary<EquipmentKind, EntityStatKind> enhancmentProps,
+      EntityStatKind arm, 
+      EntityStatKind wpn, 
+      EntityStatKind Juw
+    )
     {
       enhancmentProps[EquipmentKind.Armor] = arm;
-      enhancmentProps[EquipmentKind.Helmet] = enhancmentProps[EquipmentKind.Armor];
-      enhancmentProps[EquipmentKind.Shield] = enhancmentProps[EquipmentKind.Armor];
+      enhancmentProps[EquipmentKind.Helmet] = arm;
+      enhancmentProps[EquipmentKind.Shield] = arm;
 
       enhancmentProps[EquipmentKind.Amulet] = Juw;
       enhancmentProps[EquipmentKind.Ring] = Juw;
@@ -111,12 +118,10 @@ namespace Roguelike.Tiles.Looting
       if (gameLevel >= 4)
       {
         GemSizeValue = GemSize.Medium;
-       
       }
       if (gameLevel >= 8)
       {
         GemSizeValue = GemSize.Big;
-        
       }
 
       SetProps();
@@ -142,25 +147,56 @@ namespace Roguelike.Tiles.Looting
     public bool ApplyTo(Equipment eq, out string error)
     {
       error = "";
-      var props = enhancmentProps[this.GemKindValue];
-      if (props.ContainsKey(eq.EquipmentKind))//IsCraftableWith(eq))
+      var gemKind = this.GemKindValue;
+      if (gemKind == GemKind.Amber)
+        gemKind = GemKind.Diamond;
+      var props = enhancmentProps[gemKind];
+      if (props.ContainsKey(eq.EquipmentKind))
       {
         var propsGem = props[eq.EquipmentKind];
-        int val = 0;
-        if (eq.EquipmentKind == EquipmentKind.Amulet || eq.EquipmentKind == EquipmentKind.Ring || eq.EquipmentKind == EquipmentKind.Trophy)
+        var propsToSet = new[] { propsGem }.ToList();
+        if (this.GemKindValue == GemKind.Amber)
         {
-          val = otherValues[this.GemSizeValue];
+          var otherKinds = GetOtherKinds(gemKind);
+          foreach (var other in otherKinds)
+            propsToSet.Add(enhancmentProps[other][eq.EquipmentKind]);
         }
-        else
+
+        var values = new  List<int>();
+        foreach (var prop in propsToSet)
         {
-          val = wpnAndArmorValues[this.GemSizeValue];
-          if (propsGem == EntityStatKind.ResistCold || propsGem == EntityStatKind.ResistFire || propsGem == EntityStatKind.ResistPoison)
-            val = GetResistValue();
+          int val = 0;
+          if (eq.EquipmentKind == EquipmentKind.Amulet || eq.EquipmentKind == EquipmentKind.Ring || eq.EquipmentKind == EquipmentKind.Trophy)
+          {
+            val = otherValues[this.GemSizeValue];
+          }
+          else
+          {
+            val = wpnAndArmorValues[this.GemSizeValue];
+            if (prop == EntityStatKind.ResistCold || prop == EntityStatKind.ResistFire || prop == EntityStatKind.ResistPoison)
+              val = GetResistValue();
+          }
+          if (values.Any(i => i != val))
+            throw new Exception("Error on crafting");
+          values.Add(val);
         }
-        return eq.Enchant(propsGem, val, EnchantSrcFromGemKind(GemKindValue), out error);
+
+        var res = eq.Enchant(propsToSet.ToArray(), values.First(), EnchantSrcFromGemKind(GemKindValue), out error);
+        if (!res)
+        {
+          return false;
+        }
+        return true;
       }
 
       return false;
+    }
+
+    private GemKind[] GetOtherKinds(GemKind kind)
+    {
+      var skip = new[] { GemKind.Amber, kind };
+      var values = Enum.GetValues(typeof(GemKind)).Cast<GemKind>().Where(i => !skip.Contains(i)).ToList();
+      return values.ToArray();
     }
 
     public override string PrimaryStatDescription

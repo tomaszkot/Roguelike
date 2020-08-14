@@ -10,7 +10,7 @@ namespace Roguelike.Tiles
   {
     public const char AmulerSymbol = '"';
     public const char RingSymbol = '=';
-
+    public const char PendantSymbol = AmulerSymbol;
 
     public override EquipmentKind EquipmentKind
     {
@@ -33,7 +33,7 @@ namespace Roguelike.Tiles
             break;
           case EquipmentKind.Amulet:
             Symbol = AmulerSymbol;
-            name = "Amulet";
+            name = IsPendant ? "Pendant" : "Amulet";
             includeTypeInToString = false;
             break;
           default:
@@ -44,6 +44,8 @@ namespace Roguelike.Tiles
           Name = name;
       }
     }
+
+    public bool IsPendant { get; set; }
 
     public Jewellery() : base(EquipmentKind.Ring)
     {
