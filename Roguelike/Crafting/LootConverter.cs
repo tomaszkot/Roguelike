@@ -12,23 +12,33 @@ using System.Runtime.InteropServices;
 
 namespace Roguelike.Crafting
 {
+  public class CraftingResult
+  {
+    public string Message { get; set; }
+    public Loot Loot { get; set; }
+
+    public bool Success { get { return Loot != null; } }
+  }
+
   public interface ILootCrafter
   {
-    Tuple<Loot, string> Craft(Recipe recipe, List<Loot> lootToCraft);
+    CraftingResult Craft(Recipe recipe, List<Loot> lootToCraft);
   }
 
   public abstract class LootCrafterBase : ILootCrafter
   {
-    public abstract Tuple<Loot, string> Craft(Recipe recipe, List<Loot> lootToCraft);
+    static CraftingResult error = new CraftingResult();
+    public abstract CraftingResult Craft(Recipe recipe, List<Loot> lootToCraft);
 
-    protected Tuple<Loot, string> ReturnCraftedLoot(Loot loot)
+    protected CraftingResult ReturnCraftedLoot(Loot loot)
     {
-      return new Tuple<Loot, string>(loot, string.Empty);
+      return new CraftingResult() { Loot = loot };
     }
 
-    protected Tuple<Loot, string> ReturnCraftingError(string error)
+    protected CraftingResult ReturnCraftingError(string errorMessage)
     {
-      return new Tuple<Loot, string>(null, error);
+      error.Message = errorMessage;
+      return error;
     }
 
     public int LastCraftStackedCount { get; set; }
@@ -55,7 +65,7 @@ namespace Roguelike.Crafting
       return juwell;
     }
         
-    public override Tuple<Loot, string> Craft(Recipe recipe, List<Loot> lootToConvert)
+    public override CraftingResult Craft(Recipe recipe, List<Loot> lootToConvert)
     {
       if (recipe == null)
         return ReturnCraftingError("Recipe not set");
@@ -199,7 +209,7 @@ namespace Roguelike.Crafting
       return ReturnCraftingError(InvalidIngredients);
     }
 
-    private Tuple<Loot, string> HandleCustomRecipe(List<Loot> lootToConvert)
+    private CraftingResult HandleCustomRecipe(List<Loot> lootToConvert)
     {
       if (lootToConvert.Count == 2)
       {
@@ -248,7 +258,7 @@ namespace Roguelike.Crafting
     }
 
 
-    private Tuple<Loot, string> ReturnStealingEq(List<Equipment> eqs, List<SpecialPotion> sps)
+    private CraftingResult ReturnStealingEq(List<Equipment> eqs, List<SpecialPotion> sps)
     {
       if (eqs[0].ExtendedInfo.Stats.GetFactor(EntityStatKind.LifeStealing) > 10 ||
                     eqs[0].ExtendedInfo.Stats.GetFactor(EntityStatKind.ManaStealing) > 10)
@@ -281,7 +291,7 @@ namespace Roguelike.Crafting
       return ReturnCraftedLoot(eqs[0]);
     }
 
-    private Tuple<Loot, string> CraftTwoEq(List<Equipment> eqs)
+    private CraftingResult CraftTwoEq(List<Equipment> eqs)
     {
 
       var eq1 = eqs[0];
@@ -361,7 +371,7 @@ namespace Roguelike.Crafting
       return (int)Math.Ceiling(enh);
     }
 
-    private Tuple<Loot, string> CraftOneEq(Equipment srcEq)
+    private CraftingResult CraftOneEq(Equipment srcEq)
     {
       if (srcEq.WasCraftedBy(RecipeKind.TwoEq))
         return ReturnCraftingError("Can not craft equipment which was already crafted in pairs"); ;
@@ -393,7 +403,7 @@ namespace Roguelike.Crafting
       return ReturnCraftedLoot(destEq);
     }
 
-    private Tuple<Loot, string> HandleAllGems(List<Loot> lootToConvert)
+    private CraftingResult HandleAllGems(List<Loot> lootToConvert)
     {
       if (lootToConvert.Count != 3)
         return ReturnCraftingError("Invalid amount of gems");
