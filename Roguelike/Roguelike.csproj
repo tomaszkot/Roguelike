@@ -131,6 +131,7 @@
     <Compile Include="Tiles\CrackedStone.cs" />
     <Compile Include="Tiles\Interactive\Portal.cs" />
     <Compile Include="Tiles\Looting\Cord.cs" />
+    <Compile Include="Tiles\Looting\Enchanter.cs" />
     <Compile Include="Tiles\Looting\ExplosiveCocktail.cs" />
     <Compile Include="Tiles\Looting\Food.cs" />
     <Compile Include="Tiles\InteractiveTile.cs" />

@@ -83,21 +83,21 @@ namespace Roguelike.Crafting
         if (recipe.Kind == RecipeKind.Pendant)
         {
           var cords = lootToConvert.Where(i => i is Cord).Count();
-          if (cords != 0)
-            return ReturnCraftingError(InvalidIngredients);
+          if (cords == 0)
+            return ReturnCraftingError("Cord is needed by the Recipe");
 
-          var tinyTrophies = lootToConvert.Where(i => i is TinyTrophy).Cast<TinyTrophy>().ToList();
-          if(tinyTrophies.Count == 0 || tinyTrophies.Count > 3)
-            return ReturnCraftingError("Amount of ornaments must be between 1-3");
+          //var tinyTrophies = lootToConvert.Where(i => i is TinyTrophy).Cast<TinyTrophy>().ToList();
+          //if(tinyTrophies.Count == 0 || tinyTrophies.Count > 3)
+          //  return ReturnCraftingError("Amount of ornaments must be between 1-3");
 
           var amulet = createJewellery(EquipmentKind.Amulet, 1);
           //if(amulet)
-          string err;
-          foreach (var troph in tinyTrophies)
-          {
-            if(!troph.ApplyTo(amulet, out err))
-              ReturnCraftingError(InvalidIngredients);
-          }
+          //string err;
+          //foreach (var troph in tinyTrophies)
+          //{
+          //  if(!troph.ApplyTo(amulet, out err))
+          //    ReturnCraftingError(InvalidIngredients);
+          //}
           return ReturnCraftedLoot(amulet);
         }
 
@@ -158,9 +158,9 @@ namespace Roguelike.Crafting
         else if (lootToConvert[0] is Gem && (recipe.Kind == RecipeKind.Custom || recipe.Kind == RecipeKind.Gem))
         {
           var srcGem = lootToConvert[0] as Gem;
-          var destKind = RandHelper.GetRandomEnumValue<GemKind>(new GemKind[] { srcGem.GemKindValue });
+          var destKind = RandHelper.GetRandomEnumValue<GemKind>(new GemKind[] { srcGem.GemKind });
           var destGem = new Gem(destKind);
-          destGem.GemSizeValue = srcGem.GemSizeValue;
+          destGem.EnchanterSize = srcGem.EnchanterSize;
           destGem.SetProps();
           return ReturnCraftedLoot(destGem);
         }
@@ -398,15 +398,15 @@ namespace Roguelike.Crafting
       if (lootToConvert.Count != 3)
         return ReturnCraftingError("Invalid amount of gems");
       List<Gem> gems = lootToConvert.Cast<Gem>().ToList();
-      var allSameKind = gems.All(i => i.GemKindValue == gems[0].GemKindValue);
-      var allSameSize = gems.All(i => i.GemSizeValue == gems[0].GemSizeValue);
+      var allSameKind = gems.All(i => i.GemKind == gems[0].GemKind);
+      var allSameSize = gems.All(i => i.EnchanterSize == gems[0].EnchanterSize);
       if (allSameKind && allSameSize)
       {
-        if (gems[0].GemSizeValue == GemSize.Big)
+        if (gems[0].EnchanterSize == EnchanterSize.Big)
           return ReturnCraftingError("Big gems can not be crafted");
         var gem = new Gem();
-        gem.GemKindValue = gems[0].GemKindValue;
-        gem.GemSizeValue = gems[0].GemSizeValue == GemSize.Small ? GemSize.Medium : GemSize.Big;
+        gem.GemKind = gems[0].GemKind;
+        gem.EnchanterSize = gems[0].EnchanterSize == EnchanterSize.Small ? EnchanterSize.Medium : EnchanterSize.Big;
         gem.SetProps();
         return ReturnCraftedLoot(gem);
       }

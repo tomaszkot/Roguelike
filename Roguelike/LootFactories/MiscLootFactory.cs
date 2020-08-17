@@ -67,6 +67,11 @@ namespace Roguelike.LootFactories
       {
         return new MagicDust();
       };
+
+      factory["cord"] = (string tag) =>
+      {
+        return new Cord();
+      };
     }
 
     public override Loot GetByName(string name)

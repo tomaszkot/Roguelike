@@ -6,15 +6,11 @@ using System.Linq;
 
 namespace Roguelike.Tiles.Looting
 {
-  public enum GemKind { Ruby, Emerald, Diamond, Amber }
-  public enum GemSize { Big, Medium, Small }
+  public enum GemKind { Unset, Ruby, Emerald, Diamond, Amber }
 
-  public class Gem : StackedLoot
+  public class Gem : Enchanter
   {
-    public GemKind GemKindValue;
-    public GemSize GemSizeValue;
-    static Dictionary<GemSize, int> wpnAndArmorValues = new Dictionary<GemSize, int>();
-    static Dictionary<GemSize, int> otherValues = new Dictionary<GemSize, int>();
+    public GemKind GemKind { get; set; }
     static Dictionary<EquipmentKind, EntityStatKind> enhancmentPropsRuby = new Dictionary<EquipmentKind, EntityStatKind>();
     static Dictionary<EquipmentKind, EntityStatKind> enhancmentPropsEmer = new Dictionary<EquipmentKind, EntityStatKind>();
     static Dictionary<EquipmentKind, EntityStatKind> enhancmentPropsDiam = new Dictionary<EquipmentKind, EntityStatKind>();
@@ -33,54 +29,49 @@ namespace Roguelike.Tiles.Looting
       Symbol = '*';
       Name = "Gem";
       if(kind.HasValue)
-        GemKindValue = kind.Value;
-      GemSizeValue = GemSize.Small;
+        GemKind = kind.Value;
+      EnchanterSize = EnchanterSize.Small;
 
       if(gameLevel>=0)
         SetRandomKindAndLevelSize(gameLevel, !kind.HasValue);
       else
         SetProps();
+
+      EnchantSrcFromGemKind();
     }
 
-    public static EnchantSrc EnchantSrcFromGemKind(GemKind gk)
+    public void EnchantSrcFromGemKind()
     {
-      EnchantSrc src = EnchantSrc.Unset;
-      switch (gk)
+      switch (GemKind)
       {
+        case GemKind.Unset:
+          EnchantSrc = EnchantSrc.Unset;
+          break;
         case GemKind.Ruby:
-          src = EnchantSrc.Ruby;
+          EnchantSrc = EnchantSrc.Ruby;
           break;
         case GemKind.Emerald:
-          src = EnchantSrc.Emerald;
+          EnchantSrc = EnchantSrc.Emerald;
           break;
         case GemKind.Diamond:
-          src = EnchantSrc.Diamond;
+          EnchantSrc = EnchantSrc.Diamond;
           break;
         case GemKind.Amber:
-          src = EnchantSrc.Amber;
+          EnchantSrc = EnchantSrc.Amber;
+          //src = EnchantSrc.Amber;
           break;
         default:
           break;
       }
-
-      return src;
     }
 
     public override string GetId()
     {
-      return base.GetId() + "_" + GemKindValue + "_" + GemSizeValue;
+      return base.GetId() + "_" + GemKind + "_" + EnchanterSize;
     }
 
     static Gem()
     {
-      wpnAndArmorValues[GemSize.Big] = 6;
-      wpnAndArmorValues[GemSize.Medium] = 4;
-      wpnAndArmorValues[GemSize.Small] = 2;
-
-      otherValues[GemSize.Big] = 15;
-      otherValues[GemSize.Medium] = 10;
-      otherValues[GemSize.Small] = 5;
-      
       PopulateProps(enhancmentPropsRuby, EntityStatKind.ResistFire, EntityStatKind.FireAttack, EntityStatKind.Health);
       PopulateProps(enhancmentPropsEmer, EntityStatKind.ResistPoison, EntityStatKind.PoisonAttack, EntityStatKind.Mana);
       PopulateProps(enhancmentPropsDiam, EntityStatKind.ResistCold, EntityStatKind.ColdAttack, EntityStatKind.ChanceToHit);
@@ -112,16 +103,16 @@ namespace Roguelike.Tiles.Looting
     public void SetRandomKindAndLevelSize(int gameLevel, bool setKind)
     {
       if(setKind)
-        GemKindValue = RandHelper.GetRandomEnumValue<GemKind>();
-      GemSizeValue = GemSize.Small;
+        GemKind = RandHelper.GetRandomEnumValue<GemKind>();
+      EnchanterSize = EnchanterSize.Small;
       
       if (gameLevel >= 4)
       {
-        GemSizeValue = GemSize.Medium;
+        EnchanterSize = EnchanterSize.Medium;
       }
       if (gameLevel >= 8)
       {
-        GemSizeValue = GemSize.Big;
+        EnchanterSize = EnchanterSize.Big;
       }
 
       SetProps();
@@ -129,16 +120,16 @@ namespace Roguelike.Tiles.Looting
 
     public void SetProps()
     {
-      string gemSize = GemSizeValue.ToString();
-      string gemName = GemKindValue.ToString();
+      string gemName = GemKind.ToString();
       int price = 15;
-      if(GemSizeValue == GemSize.Medium)
+      if(EnchanterSize == EnchanterSize.Medium)
         price *= 2;
-      else if (GemSizeValue == GemSize.Big)
+      else if (EnchanterSize == EnchanterSize.Big)
         price *= 4;
 
-      tag1 = gemName.ToLower() + "_" + gemSize.ToLower();
-      Name = gemSize + " " + gemName;
+      string enchanterSize = EnchanterSize.ToString();
+      tag1 = gemName.ToLower() + "_" + enchanterSize.ToLower();
+      Name = enchanterSize + " " + gemName;
       Price = price;
     }
 
@@ -147,7 +138,7 @@ namespace Roguelike.Tiles.Looting
     public bool ApplyTo(Equipment eq, out string error)
     {
       error = "";
-      var gemKind = this.GemKindValue;
+      var gemKind = this.GemKind;
       if (gemKind == GemKind.Amber)
         gemKind = GemKind.Diamond;
       var props = enhancmentProps[gemKind];
@@ -155,7 +146,7 @@ namespace Roguelike.Tiles.Looting
       {
         var propsGem = props[eq.EquipmentKind];
         var propsToSet = new[] { propsGem }.ToList();
-        if (this.GemKindValue == GemKind.Amber)
+        if (this.GemKind == GemKind.Amber)
         {
           var otherKinds = GetOtherKinds(gemKind);
           foreach (var other in otherKinds)
@@ -168,11 +159,11 @@ namespace Roguelike.Tiles.Looting
           int val = 0;
           if (eq.EquipmentKind == EquipmentKind.Amulet || eq.EquipmentKind == EquipmentKind.Ring || eq.EquipmentKind == EquipmentKind.Trophy)
           {
-            val = otherValues[this.GemSizeValue];
+            val = otherValues[this.EnchanterSize];
           }
           else
           {
-            val = wpnAndArmorValues[this.GemSizeValue];
+            val = wpnAndArmorValues[this.EnchanterSize];
             if (prop == EntityStatKind.ResistCold || prop == EntityStatKind.ResistFire || prop == EntityStatKind.ResistPoison)
               val = GetResistValue();
           }
@@ -181,7 +172,7 @@ namespace Roguelike.Tiles.Looting
           values.Add(val);
         }
 
-        var res = eq.Enchant(propsToSet.ToArray(), values.First(), EnchantSrcFromGemKind(GemKindValue), out error);
+        var res = eq.Enchant(propsToSet.ToArray(), values.First(), this, out error);
         if (!res)
         {
           return false;
@@ -194,7 +185,7 @@ namespace Roguelike.Tiles.Looting
 
     private GemKind[] GetOtherKinds(GemKind kind)
     {
-      var skip = new[] { GemKind.Amber, kind };
+      var skip = new[] { GemKind.Amber, kind, GemKind.Unset };
       var values = Enum.GetValues(typeof(GemKind)).Cast<GemKind>().Where(i => !skip.Contains(i)).ToList();
       return values.ToArray();
     }
@@ -217,12 +208,12 @@ namespace Roguelike.Tiles.Looting
 
     int GetResistValue()
     {
-      var res = (wpnAndArmorValues[this.GemSizeValue]) * resistMult;
-      if (this.GemSizeValue == GemSize.Small)
+      var res = (wpnAndArmorValues[this.EnchanterSize]) * resistMult;
+      if (this.EnchanterSize == EnchanterSize.Small)
         res += 1;
-      else if (this.GemSizeValue == GemSize.Medium)
+      else if (this.EnchanterSize == EnchanterSize.Medium)
         res += 2;
-      else if (this.GemSizeValue == GemSize.Big)
+      else if (this.EnchanterSize == EnchanterSize.Big)
         res += 4;
       return res;
     }
@@ -232,13 +223,13 @@ namespace Roguelike.Tiles.Looting
       if (extraStatDescription == null)
       {
         extraStatDescription = new string[3];
-        string desc = "Weapons: " + enhancmentProps[this.GemKindValue][EquipmentKind.Weapon] + " " + wpnAndArmorValues[this.GemSizeValue];
+        string desc = "Weapons: " + enhancmentProps[this.GemKind][EquipmentKind.Weapon] + " " + wpnAndArmorValues[this.EnchanterSize];
         extraStatDescription[0] = desc;
-        desc = "Armor: " + enhancmentProps[this.GemKindValue][EquipmentKind.Armor] + " " + GetResistValue() + "%";
+        desc = "Armor: " + enhancmentProps[this.GemKind][EquipmentKind.Armor] + " " + GetResistValue() + "%";
         extraStatDescription[1] = desc;
-        desc = "Jewellery: " + enhancmentProps[this.GemKindValue][EquipmentKind.Ring] + " " + otherValues[this.GemSizeValue];
+        desc = "Jewellery: " + enhancmentProps[this.GemKind][EquipmentKind.Ring] + " " + otherValues[this.EnchanterSize];
         
-        if (enhancmentProps[this.GemKindValue][EquipmentKind.Ring] == EntityStatKind.ChanceToHit)
+        if (enhancmentProps[this.GemKind][EquipmentKind.Ring] == EntityStatKind.ChanceToHit)
           desc += "%";
         extraStatDescription[2] = desc;
 

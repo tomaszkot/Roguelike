@@ -8,7 +8,13 @@ using System.Linq;
 
 namespace Roguelike.Tiles
 {
-  public enum EnchantSrc { Unset, Ruby, Emerald, Diamond, Amber, Fang, Tusk, Claw  }
+  public class Enchant
+  {
+    public Enchanter Enchanter { get; set; }
+    public List<EntityStatKind> StatKinds { get; set; } = new List<EntityStatKind>(); 
+    public int StatValue { get; set; }
+  }
+
 
   public class Equipment : Loot
   {
@@ -21,7 +27,7 @@ namespace Roguelike.Tiles
     public bool IsIdentified { get; set; } = true;
     public event EventHandler<Loot> Identified;
     public bool Enchantable { get; set; }
-    List<EnchantSrc> enchants = new List<EnchantSrc>();
+    List<Enchant> enchants = new List<Enchant>();
 
     public Equipment() : this(EquipmentKind.Unset)
     {
@@ -41,7 +47,7 @@ namespace Roguelike.Tiles
       return true;
     }
 
-    public List<EnchantSrc> Enchants
+    public List<Enchant> Enchants
     {
       get
       {
@@ -553,12 +559,12 @@ namespace Roguelike.Tiles
       return WasCrafted && CraftingRecipe == rec;
     }
 
-    public bool Enchant(EntityStatKind kind, int val, EnchantSrc enchantSrc, out string error)
+    public bool Enchant(EntityStatKind kind, int val, Enchanter enchantSrc, out string error)
     {
       return Enchant(new EntityStatKind[] { kind }, val, enchantSrc, out error);
     }
 
-    public bool Enchant(EntityStatKind[] kinds, int val, EnchantSrc enchantSrc, out string error)
+    public bool Enchant(EntityStatKind[] kinds, int val, Enchanter enchantSrc, out string error)
     {
       error = "";
       if (Class == EquipmentClass.Unique && !(this is Trophy))
@@ -577,12 +583,17 @@ namespace Roguelike.Tiles
         error = "Max enchanting level reached";
         return false;
       }
+      var enchant = new Enchant();
+      enchant.StatValue = val;
       foreach (var kind in kinds)
       {
         MakeMagic(kind, val, AddMagicStatReason.Enchant);
         Price += (int)(GetPriceForFactor(kind, val));// *.9f);//crafted loot - price too hight comp to uniq.
+        enchant.StatKinds.Add(kind);
       }
-      Enchants.Add(enchantSrc);//onlyone slot is occupied
+      
+      enchant.Enchanter = enchantSrc;
+      Enchants.Add(enchant);//only one slot is occupied
       return true;
     }
   }

@@ -8,16 +8,11 @@ using System.Threading.Tasks;
 namespace Roguelike.Tiles.Looting
 {
   public enum TinyTrophyKind { Unset, Fang, Tusk, Claw }//Fang-Tooth
-  public enum TinyTrophySize { Small, Medium, Big }
-
-  public class TinyTrophy : StackedLoot
+  
+  public class TinyTrophy : Enchanter
   {
     public TinyTrophyKind TinyTrophyKind { get; set; }
-    public TinyTrophySize TinyTrophySize { get; set; } = TinyTrophySize.Small;
-    public string primaryStatDescription;
 
-    static Dictionary<TinyTrophySize, int> wpnAndArmorValues = new Dictionary<TinyTrophySize, int>();
-    static Dictionary<TinyTrophySize, int> otherValues = new Dictionary<TinyTrophySize, int>();
     static Dictionary<TinyTrophyKind, Dictionary<EquipmentKind, EntityStatKind>> enhancmentProps = new Dictionary<TinyTrophyKind, Dictionary<EquipmentKind, EntityStatKind>>();
     static Dictionary<EquipmentKind, EntityStatKind> enhancmentPropsFang = new Dictionary<EquipmentKind, EntityStatKind>();
     static Dictionary<EquipmentKind, EntityStatKind> enhancmentPropsTusk = new Dictionary<EquipmentKind, EntityStatKind>();
@@ -28,14 +23,6 @@ namespace Roguelike.Tiles.Looting
 
     static TinyTrophy()
     {
-      wpnAndArmorValues[TinyTrophySize.Big] = 6;
-      wpnAndArmorValues[TinyTrophySize.Medium] = 4;
-      wpnAndArmorValues[TinyTrophySize.Small] = 2;
-
-      otherValues[TinyTrophySize.Big] = 15;
-      otherValues[TinyTrophySize.Medium] = 10;
-      otherValues[TinyTrophySize.Small] = 5;
-
       PopulateProps(enhancmentPropsFang, EntityStatKind.Defence, EntityStatKind.ChanceToBulkAttack, EntityStatKind.MeleeAttackDamageReduction);
       PopulateProps(enhancmentPropsTusk, EntityStatKind.Health, EntityStatKind.ChanceToCauseBleeding, EntityStatKind.Strength);
       PopulateProps(enhancmentPropsClaw, EntityStatKind.ChanceToHit, EntityStatKind.ChanceToStrikeBack, EntityStatKind.Dexterity);
@@ -79,16 +66,20 @@ namespace Roguelike.Tiles.Looting
       switch (kind)
       {
         case TinyTrophyKind.Unset:
+          EnchantSrc = EnchantSrc.Unset;
           break;
         case TinyTrophyKind.Fang:
           Name = "Fang";
+          EnchantSrc = EnchantSrc.Fang;
           primaryStatDescription = "Sharp, hard, ready to bite. " + Strings.PartOfCraftingRecipe;
           break;
         case TinyTrophyKind.Tusk:
+          EnchantSrc = EnchantSrc.Tusk;
           Name = "Tusk";
           primaryStatDescription = "Big, sharp, ready to tear somebody apart. " + Strings.PartOfCraftingRecipe;
           break;
         case TinyTrophyKind.Claw:
+          EnchantSrc = EnchantSrc.Claw;
           Name = "Claw";
           primaryStatDescription = "Sharp, hard, ready to claw. " + Strings.PartOfCraftingRecipe;
           break;
@@ -97,22 +88,22 @@ namespace Roguelike.Tiles.Looting
       }
     }
 
-    internal static EnchantSrc EnchantSrcFromTinyTrophyKind(TinyTrophyKind tinyTrophyKind)
-    {
-      switch (tinyTrophyKind)
-      {
-        case TinyTrophyKind.Unset:
-          return EnchantSrc.Unset;
-        case TinyTrophyKind.Fang:
-          return EnchantSrc.Fang;
-        case TinyTrophyKind.Tusk:
-          return EnchantSrc.Tusk;
-        case TinyTrophyKind.Claw:
-          return EnchantSrc.Claw;
-        default:
-          return EnchantSrc.Unset;
-      }
-    }
+    //internal static EnchantSrc EnchantSrcFromTinyTrophyKind(TinyTrophyKind tinyTrophyKind)
+    //{
+    //  switch (tinyTrophyKind)
+    //  {
+    //    case TinyTrophyKind.Unset:
+    //      return EnchantSrc.Unset;
+    //    case TinyTrophyKind.Fang:
+    //      return EnchantSrc.Fang;
+    //    case TinyTrophyKind.Tusk:
+    //      return EnchantSrc.Tusk;
+    //    case TinyTrophyKind.Claw:
+    //      return EnchantSrc.Claw;
+    //    default:
+    //      return EnchantSrc.Unset;
+    //  }
+    //}
 
     public bool ApplyTo(Equipment eq, out string error)
     {
@@ -124,13 +115,13 @@ namespace Roguelike.Tiles.Looting
         int val = 0;
         if (eq.EquipmentKind == EquipmentKind.Amulet || eq.EquipmentKind == EquipmentKind.Ring || eq.EquipmentKind == EquipmentKind.Trophy)
         {
-          val = otherValues[this.TinyTrophySize];
+          val = otherValues[this.EnchanterSize];
         }
         else
         {
-          val = wpnAndArmorValues[this.TinyTrophySize];
+          val = wpnAndArmorValues[this.EnchanterSize];
         }
-        return eq.Enchant(propsGem, val, EnchantSrcFromTinyTrophyKind(TinyTrophyKind), out error);
+        return eq.Enchant(propsGem, val, this, out error);
       }
 
       return false;

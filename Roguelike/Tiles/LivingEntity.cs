@@ -561,9 +561,6 @@ namespace Roguelike.Tiles
 
     private void AddLastingEffect(LastingEffect le)
     {
-      //if(le.Type == EffectType.ConsumedFood)
-      //  lastingEffSubtractions[EffectType.ConsumedFood] = CalcEffectValue(nominalValuePercInc, statValue);
-
       LastingEffects.Add(le);
       bool appAction = true;
       if (LastingEffectStarted != null)
