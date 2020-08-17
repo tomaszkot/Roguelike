@@ -26,7 +26,6 @@ namespace Roguelike.Tiles
         switch (EquipmentKind)
         {
           case EquipmentKind.Ring:
-          //case EquipmentKind.RingRight:
             Symbol = RingSymbol;
             name = "Ring";
             includeTypeInToString = false;
