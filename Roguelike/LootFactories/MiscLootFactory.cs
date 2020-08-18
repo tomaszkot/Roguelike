@@ -37,6 +37,22 @@ namespace Roguelike.LootFactories
         factory[name] = createPotion;
       }
 
+      InitRepices();
+
+      factory["magic_dust"] = (string tag) =>
+      {
+        return new MagicDust();
+      };
+
+      factory["cord"] = (string tag) =>
+      {
+        return new Cord();
+      };
+    }
+
+    private string[] InitRepices()
+    {
+      string[] names;
       Func<RecipeKind, Recipe> createRecipeFromKind = (RecipeKind kind) =>
       {
         var loot = new Recipe();
@@ -44,8 +60,8 @@ namespace Roguelike.LootFactories
 
         return loot;
       };
-            
-      var kinds = new[] { RecipeKind.OneEq };
+
+      var kinds = Enum.GetValues(typeof(RecipeKind)).Cast<RecipeKind>().Where(i => i != RecipeKind.Unset).ToList();
       foreach (var kind in kinds)
       {
         recipesPrototypes.Add(createRecipeFromKind(kind));
@@ -57,21 +73,17 @@ namespace Roguelike.LootFactories
         return proto.Clone();
       };
 
+      var recipeType2Name = new Dictionary<RecipeKind, string>
+      {
+        { RecipeKind.OneEq, "craft_one_eq"},
+      };
       names = new[] { "craft_one_eq" };
       foreach (var name in names)
       {
         factory[name] = createRecipe;
       }
 
-      factory["magic_dust"] = (string tag) =>
-      {
-        return new MagicDust();
-      };
-
-      factory["cord"] = (string tag) =>
-      {
-        return new Cord();
-      };
+      return names;
     }
 
     public override Loot GetByName(string name)
