@@ -128,7 +128,7 @@ namespace Roguelike.Crafting
         }
         var allHp = lootToConvert.All(i => i.IsPotion(PotionKind.Health));
         var allMp = lootToConvert.All(i => i.IsPotion(PotionKind.Mana));
-        if ((recipe.Kind == RecipeKind.Custom || recipe.Kind == RecipeKind.Potion) && (allHp || allMp))
+        if ((recipe.Kind == RecipeKind.Custom || recipe.Kind == RecipeKind.TransformPotion) && (allHp || allMp))
         {
           LastCraftStackedCount = lootToConvert.Count;//TODO
           if (lootToConvert[0].IsPotion(PotionKind.Mana))
@@ -165,7 +165,7 @@ namespace Roguelike.Crafting
           return CraftOneEq(srcEq);
         }
 
-        else if (lootToConvert[0] is Gem && (recipe.Kind == RecipeKind.Custom || recipe.Kind == RecipeKind.Gem))
+        else if (lootToConvert[0] is Gem && (recipe.Kind == RecipeKind.Custom || recipe.Kind == RecipeKind.TransformGem))
         {
           var srcGem = lootToConvert[0] as Gem;
           var destKind = RandHelper.GetRandomEnumValue<GemKind>(new GemKind[] { srcGem.GemKind });

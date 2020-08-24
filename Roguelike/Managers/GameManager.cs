@@ -660,7 +660,10 @@ namespace Roguelike.Managers
 
     public bool CollectLoot(Loot lootTile, bool fromDistance)
     {
-      if (Hero.Inventory.Add(lootTile))
+      InventoryBase inv = Hero.Inventory;
+      if (lootTile is Recipe)
+        inv = Hero.Crafting.InvItems;
+      if (inv.Add(lootTile))
       {
         //Hero.Inventory.Print(logger, "loot added");
         CurrentNode.RemoveLoot(lootTile.Point);

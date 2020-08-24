@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Roguelike.Tiles.Looting
 {
-  public enum RecipeKind { Unset, Custom, ThreeGems, OneEq, Potion, TwoEq, Gem, Toadstool2Potions, ExplosiveCocktail, Pendant }
+  public enum RecipeKind { Unset, Custom, ThreeGems, OneEq, TransformPotion, TwoEq, TransformGem, Toadstool2Potions, ExplosiveCocktail, Pendant }
 
   public class Recipe : Loot
   {
@@ -59,13 +59,13 @@ namespace Roguelike.Tiles.Looting
           case RecipeKind.OneEq:
             desc = "Turns given equipment into other kind of equipment";
             break;
-          case RecipeKind.Potion:
+          case RecipeKind.TransformPotion:
             desc = "Turns potion into other kind of potion";
             break;
           case RecipeKind.TwoEq:
             desc = "Turns two equipments into one of better quality";
             break;
-          case RecipeKind.Gem:
+          case RecipeKind.TransformGem:
             desc = "Turns given gem into other kind of gem";
             break;
           case RecipeKind.Toadstool2Potions:
@@ -73,6 +73,9 @@ namespace Roguelike.Tiles.Looting
             break;
           case RecipeKind.ExplosiveCocktail:
             desc = "Turns Hooch plus Sulfur into Explosive Cocktail";
+            break;
+          case RecipeKind.Pendant:
+            desc = "Turns a piece of cord into a pendant";
             break;
           default:
             break;
@@ -120,7 +123,7 @@ namespace Roguelike.Tiles.Looting
             MinDropDungeonLevel = 5;
             break;
           case RecipeKind.ThreeGems:
-            tag1 += "gems";
+            tag1 += "three_gems";
             Name = "Three Gems";
             break;
           case RecipeKind.OneEq:
@@ -134,12 +137,12 @@ namespace Roguelike.Tiles.Looting
             Price = 30;
             MinDropDungeonLevel = 2;
             break;
-          case RecipeKind.Potion:
-            tag1 += "potions";
+          case RecipeKind.TransformPotion:
+            tag1 += "transform_potion";
             //Name = "";
             break;
-          case RecipeKind.Gem:
-            tag1 += "gem";
+          case RecipeKind.TransformGem:
+            tag1 += "transform_gem";
             //Name = "";
             break;
           case RecipeKind.Toadstool2Potions:
@@ -149,6 +152,9 @@ namespace Roguelike.Tiles.Looting
           case RecipeKind.ExplosiveCocktail:
             tag1 += "expl_cocktail";
             //Name = "";
+            break;
+          case RecipeKind.Pendant:
+            tag1 += "pendant";
             break;
           default:
             break;

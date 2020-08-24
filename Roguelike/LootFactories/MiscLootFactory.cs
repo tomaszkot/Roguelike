@@ -50,9 +50,9 @@ namespace Roguelike.LootFactories
       };
     }
 
-    private string[] InitRepices()
+    private void InitRepices()
     {
-      string[] names;
+      //string[] names;
       Func<RecipeKind, Recipe> createRecipeFromKind = (RecipeKind kind) =>
       {
         var loot = new Recipe();
@@ -73,17 +73,23 @@ namespace Roguelike.LootFactories
         return proto.Clone();
       };
 
-      var recipeType2Name = new Dictionary<RecipeKind, string>
+      //var recipeType2Name = new Dictionary<RecipeKind, string>
+      //{
+      //  { RecipeKind.Custom, "unknown"},
+      //  { RecipeKind.ExplosiveCocktail, "expl_cocktail"},
+      //  { RecipeKind.Gem, "gem"},
+      //  { RecipeKind.OneEq, "craft_one_eq"},
+      //  { RecipeKind.Pendant, "craft_pendant"},
+      //  { RecipeKind.Potion, "transform_potion"},
+      //  { RecipeKind.ThreeGems, "raft_three_gems"},
+      //};
+      //names = new[] { "craft_one_eq" };
+      foreach (var proto in recipesPrototypes)
       {
-        { RecipeKind.OneEq, "craft_one_eq"},
-      };
-      names = new[] { "craft_one_eq" };
-      foreach (var name in names)
-      {
-        factory[name] = createRecipe;
+        factory[proto.tag1] = createRecipe;
       }
 
-      return names;
+      //return names;
     }
 
     public override Loot GetByName(string name)
