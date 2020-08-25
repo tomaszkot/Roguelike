@@ -742,10 +742,11 @@ namespace Roguelike.Managers
       Loot loot,
       AdvancedLivingEntity src,
       AdvancedLivingEntity dest,
+      bool dragDrop = false,
       int stackedCount = 1//in case of stacked there can be one than more sold at time
     )
     {
-      return SellItem(loot, src, src.Inventory, dest, dest.Inventory, stackedCount);
+      return SellItem(loot, src, src.Inventory, dest, dest.Inventory, dragDrop, stackedCount);
     }
 
     public bool SellItem
@@ -755,6 +756,7 @@ namespace Roguelike.Managers
       InventoryBase srcInv,
       AdvancedLivingEntity dest,
       InventoryBase destInv,
+      bool dragDrop = false,
       int stackedCount = 1//in case of stacked there can be one than more sold at time
     )
     {
@@ -791,7 +793,10 @@ namespace Roguelike.Managers
         loot = (loot as StackedLoot).Clone(stackedCount);
       }
 
-      bool added = destInv.Add(loot);
+      var detailedKind = InventoryActionDetailedKind.Unset;
+      if (dragDrop)
+        detailedKind = InventoryActionDetailedKind.TradedDragDrop;
+      bool added = destInv.Add(loot, detailedKind: detailedKind);
       if (!added)//TODO revert item to src inv
       {
         logger.LogError("!added");
