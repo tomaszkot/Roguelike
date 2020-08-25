@@ -119,8 +119,9 @@ namespace Roguelike.LootContainers
     {
       return Items.FirstOrDefault(i => i == loot) as StackedLoot;
     }
-
-    public virtual bool Add(Loot item, bool notifyObservers = true, bool justSwappingHeroInv = false)
+        
+    public virtual bool Add(Loot item, bool notifyObservers = true, bool justSwappingHeroInv = false, 
+      InventoryActionDetailedKind detailedKind = InventoryActionDetailedKind.Unset)
     {
       //Debug.WriteLine("Add(Loot item) " + Thread.CurrentThread.ManagedThreadId);
       var exist = false;
@@ -173,7 +174,7 @@ namespace Roguelike.LootContainers
       }
 
       if (changed && notifyObservers)
-        AppendAction(new InventoryAction(this) { Kind = InventoryActionKind.ItemAdded, Loot = item, Inv = this });
+        AppendAction(new InventoryAction(this) { Kind = InventoryActionKind.ItemAdded, Loot = item, Inv = this, DetailedKind = detailedKind });
 
       return changed;
     }

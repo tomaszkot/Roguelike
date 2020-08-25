@@ -662,8 +662,8 @@ namespace Roguelike.Managers
     {
       InventoryBase inv = Hero.Inventory;
       if (lootTile is Recipe)
-        inv = Hero.Crafting.InvItems;
-      if (inv.Add(lootTile))
+        inv = Hero.Crafting.Recipes;
+      if (inv.Add(lootTile, detailedKind: InventoryActionDetailedKind.Collected))
       {
         //Hero.Inventory.Print(logger, "loot added");
         CurrentNode.RemoveLoot(lootTile.Point);

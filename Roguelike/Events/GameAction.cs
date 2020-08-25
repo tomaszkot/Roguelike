@@ -66,11 +66,14 @@ namespace Roguelike
     }
 
     public enum InventoryActionKind { ItemAdded, ItemRemoved}
+    public enum InventoryActionDetailedKind { Unset, Collected, Traded }
+
     public class InventoryAction : GameAction
     {
       public Loot Loot { get; set; }
       public InventoryActionKind Kind { get; set; }
       public InventoryBase Inv { get; set ; }
+      public InventoryActionDetailedKind DetailedKind { get; set; }
 
       public InventoryAction(InventoryBase inv)
       {
