@@ -12,6 +12,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
+using System.Windows.Markup;
 
 namespace Roguelike.Tiles
 {
@@ -27,11 +28,22 @@ namespace Roguelike.Tiles
     //[JsonIgnoreAttribute]
     public CurrentEquipment CurrentEquipment { get => currentEquipment; set => currentEquipment = value; }
     public event EventHandler<EntityStatKind> StatLeveledUp;
+    public event EventHandler<int> GoldChanged;
     //Character info
     public int Level { get; set; } = 1;
     public int Experience { get; private set; }
     public int NextLevelExperience { get; set; }
-    public int Gold { get; set; }
+
+    int gold;
+    public int Gold 
+    {
+      get { return gold; }
+      set {
+        gold = value;
+        if (GoldChanged != null)
+          GoldChanged(this,gold);
+      } 
+    }
 
     public int AvailableExpPoints { get; set; } = 3;
     protected bool canAdvanceInExp = false;

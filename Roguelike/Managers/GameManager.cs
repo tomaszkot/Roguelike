@@ -737,7 +737,7 @@ namespace Roguelike.Managers
       this.gameState = gameState;
     }
 
-    public bool SellItem
+    public Loot SellItem
     (
       Loot loot,
       AdvancedLivingEntity src,
@@ -749,7 +749,7 @@ namespace Roguelike.Managers
       return SellItem(loot, src, src.Inventory, dest, dest.Inventory, dragDrop, stackedCount);
     }
 
-    public bool SellItem
+    public Loot SellItem
     (
       Loot loot, 
       AdvancedLivingEntity src,
@@ -771,36 +771,36 @@ namespace Roguelike.Managers
         {
           logger.LogInfo("dest.Gold < loot.Price");
           soundManager.PlayBeepSound();
-          return false;
+          return null;
         }
       }
       if (!destInv.CanAddLoot(loot))
       {
         logger.LogInfo("!dest.Inventory.CanAddLoot(loot)");
         soundManager.PlayBeepSound();
-        return false;
+        return null;
       }
 
       var removed = srcInv.Remove(loot, stackedCount);
       if (!removed)
       {
         logger.LogError("!removed");
-        return false;
+        return null;
       }
-
+      Loot sold = loot;
       if (loot.StackedInInventory)
       {
-        loot = (loot as StackedLoot).Clone(stackedCount);
+        sold = (loot as StackedLoot).Clone(stackedCount);
       }
 
       var detailedKind = InventoryActionDetailedKind.Unset;
       if (dragDrop)
         detailedKind = InventoryActionDetailedKind.TradedDragDrop;
-      bool added = destInv.Add(loot, detailedKind: detailedKind);
+      bool added = destInv.Add(sold, detailedKind: detailedKind);
       if (!added)//TODO revert item to src inv
       {
         logger.LogError("!added");
-        return false;
+        return null;
       }
 
       if (goldInvolved)
@@ -809,7 +809,7 @@ namespace Roguelike.Managers
         src.Gold += price;
         soundManager.PlaySound("COINS_Rattle_04_mono");//coind_drop
       }
-      return true;
+      return sold;
     }
 
     private void AddEqToMerchant(Merchant merch, Array lootKinds)//GameLevel level
