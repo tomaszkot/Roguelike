@@ -143,6 +143,7 @@
     <Compile Include="Tiles\Looting\FightItem.cs" />
     <Compile Include="Tiles\Looting\Gold.cs" />
     <Compile Include="Tiles\Looting\MagicDust.cs" />
+    <Compile Include="Tiles\Looting\Misc.cs" />
     <Compile Include="Tiles\Looting\Potion.cs" />
     <Compile Include="Tiles\Looting\Scroll.cs" />
     <Compile Include="Tiles\Looting\SpecialPotion.cs" />

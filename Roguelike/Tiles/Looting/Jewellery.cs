@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -44,7 +45,20 @@ namespace Roguelike.Tiles
       }
     }
 
-    public bool IsPendant { get; set; }
+    bool isPendant;
+    public bool IsPendant 
+    {
+      get { return isPendant; }
+      set {
+        if (EquipmentKind == EquipmentKind.Amulet)
+        {
+          isPendant = value;
+          tag1 = "pendant";
+        }
+        else
+          Debug.Assert(false);
+      } 
+    }
 
     public Jewellery() : base(EquipmentKind.Ring)
     {

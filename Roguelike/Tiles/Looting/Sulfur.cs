@@ -7,8 +7,6 @@ namespace Roguelike.Tiles.Looting
 {
   public class Sulfur : StackedLoot
   {
-    //public const string Guid = "2fe17985-47d3-2b35-bddf-99a4af2b1aaa";
-
     public Sulfur()
     {
       Symbol = '&';

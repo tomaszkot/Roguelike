@@ -48,6 +48,56 @@ namespace Roguelike.LootFactories
       {
         return new Cord();
       };
+
+      factory["pendant"] = (string tag) =>
+      {
+        return new Jewellery() { EquipmentKind = EquipmentKind.Amulet, IsPendant = true };
+      };
+
+      factory["goblet"] = (string tag) =>
+      {
+        return new Goblet() {  };
+      };
+
+      factory["pick"] = (string tag) =>
+      {
+        return new GenericLoot("Pick", "Tool for mining", "pick");
+      };
+
+      factory["skull"] = (string tag) =>
+      {
+        return new GenericLoot("Skull of a giant", "Ancient skull of a gaint, worth a couple of coins", "skull");
+      };
+
+      factory["coin"] = (string tag) =>
+      {
+        return new Gold();
+      };
+
+      var tinyTrophies = new []{ "big_claw", "big_fang", "medium_claw", "medium_fang", "small_claw", "small_fang" };
+      foreach (var tt in tinyTrophies)
+      {
+        var kind = TinyTrophyKind.Unset;
+        if (tt.EndsWith("claw"))
+          kind = TinyTrophyKind.Claw;
+        else if (tt.EndsWith("fang"))
+          kind = TinyTrophyKind.Fang;
+        else if (tt.EndsWith("tusk"))
+          kind = TinyTrophyKind.Tusk;
+
+
+        EnchanterSize enchanterSize = EnchanterSize.Small;
+        if (tt.StartsWith("big"))
+          enchanterSize = EnchanterSize.Big;
+        else if (tt.StartsWith("medium"))
+          enchanterSize = EnchanterSize.Medium;
+
+        factory[tt] = (string tag) =>
+        {
+          return new TinyTrophy(kind) { EnchanterSize = enchanterSize};
+        };
+      }
+      
     }
 
     private void InitRepices()

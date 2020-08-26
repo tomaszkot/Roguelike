@@ -101,6 +101,7 @@ namespace Roguelike.Crafting
           //  return ReturnCraftingError("Amount of ornaments must be between 1-3");
 
           var amulet = createJewellery(EquipmentKind.Amulet, 1);
+          amulet.IsPendant = true;
           //if(amulet)
           //string err;
           //foreach (var troph in tinyTrophies)
