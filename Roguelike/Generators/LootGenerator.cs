@@ -141,6 +141,16 @@ namespace Roguelike.Generators
         return wpn;
       }
 
+      if (loot == null && tileName == "gladius")
+      {
+        var wpn = new Weapon();
+        wpn.tag1 = "gladius";
+        wpn.Damage = 5;
+        wpn.Name = "Gladius";
+        wpn.Price *= 2;
+        return wpn;
+      }
+
       return loot;
     }
 

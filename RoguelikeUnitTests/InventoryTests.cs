@@ -1,4 +1,5 @@
 ﻿using NUnit.Framework;
+using Roguelike.LootContainers;
 using Roguelike.Tiles;
 using Roguelike.Tiles.Looting;
 using System.Linq;
@@ -8,19 +9,19 @@ namespace RoguelikeUnitTests
   [TestFixture]
   class InventoryTests : TestBase
   {
-    [Test]
-    public void HeroOn()
-    {
-      var game = CreateGame();
-      var hero = game.Hero;
+    //[Test]
+    //public void HeroOn()
+    //{
+    //  var game = CreateGame();
+    //  var hero = game.Hero;
 
-      var wpn = game.GameManager.GenerateRandomEquipment(EquipmentKind.Weapon);
-      //hero.Inventory.Add(wpn);
-      //TODO
-      //var ca = hero.GetCurrentValue(EntityStatKind.Attack);
-      //var ta = hero.GetTotalValue(EntityStatKind.Attack);
-      //Assert.AreEqual(hero.Stats.Attack, hero.Stats.Strength);
-    }
+    //  var wpn = game.GameManager.GenerateRandomEquipment(EquipmentKind.Weapon);
+    //  //hero.Inventory.Add(wpn);
+    //  //TODO
+    //  //var ca = hero.GetCurrentValue(EntityStatKind.Attack);
+    //  //var ta = hero.GetTotalValue(EntityStatKind.Attack);
+    //  //Assert.AreEqual(hero.Stats.Attack, hero.Stats.Strength);
+    //}
 
     [Test]
     public void TransferSulfur()
@@ -181,6 +182,30 @@ namespace RoguelikeUnitTests
 
       var priceInMerchInv = merch.GetPrice(loot);
       Assert.Greater(priceInMerchInv, priceInHeroInv);
+    }
+
+    [Test]
+    public void EquipmentPutOnHero()
+    {
+      var game = CreateGame();
+      var hero = game.Hero;
+
+      var wpn1 = game.GameManager.LootGenerator.GetLootByName("rusty_sword") as Weapon;
+      PutEqOnLevelAndCollectIt(wpn1);
+
+      var heroEq = hero.GetActiveEquipment();
+      Assert.AreEqual(heroEq[CurrentEquipmentKind.Weapon], wpn1);
+
+      Assert.False(hero.Inventory.Contains(wpn1));
+
+      var wpn2 = game.GameManager.LootGenerator.GetLootByName("gladius") as Weapon;
+      PutEqOnLevelAndCollectIt(wpn2);
+
+      heroEq = hero.GetActiveEquipment();
+      Assert.AreEqual(heroEq[CurrentEquipmentKind.Weapon], wpn2);
+      Assert.False(hero.Inventory.Contains(wpn2));
+
+      Assert.True(hero.Inventory.Contains(wpn1));
     }
   }
 }
