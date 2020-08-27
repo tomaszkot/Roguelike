@@ -52,8 +52,13 @@ namespace Roguelike.Tiles
       set {
         if (EquipmentKind == EquipmentKind.Amulet)
         {
-          isPendant = value;
-          tag1 = "pendant";
+          if (!isPendant)
+          {
+            isPendant = value;
+            tag1 = "pendant";
+            Name = "Pendant";
+            MakeEnchantable();
+          }
         }
         else
           Debug.Assert(false);
