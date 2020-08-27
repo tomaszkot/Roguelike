@@ -617,5 +617,20 @@ namespace Roguelike.Tiles
       Enchants.Add(enchant);//only one slot is occupied
       return true;
     }
+
+    public static Jewellery CreatePendant()
+    {
+      var juwell = new Jewellery();
+      juwell.EquipmentKind = EquipmentKind.Amulet;
+      juwell.MinDropDungeonLevel = 1;//TODO
+      juwell.Price = 10;
+      juwell.IsPendant = true;
+      return juwell;
+    }
+
+    public override bool IsCraftable()
+    {
+      return base.IsCraftable() || Enchantable;
+    }
   }
 }

@@ -210,7 +210,7 @@ namespace Roguelike.TileContainers
     public List<Tiles.Loot> GetLootTilesNearby(Tile tile)
     {
       List<Tiles.Loot> res = Loot.Values
-        .Where(i=> i.Revealed && i.DistanceFrom(tile.Point) < 5
+        .Where(i=> i.Revealed && i.DistanceFrom(tile.Point) < 8//5
         //&& i.DungeonNodeIndex == tile.DungeonNodeIndex TODO
         )
         .ToList();//TODO 

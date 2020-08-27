@@ -57,14 +57,14 @@ namespace Roguelike.Crafting
       equipmentFactory = container.GetInstance<EquipmentFactory>();
     }
 
-    Jewellery createJewellery(EquipmentKind kind, int minDropDungeonLevel)
-    {
-      var juwell = new Jewellery();
-      juwell.EquipmentKind = kind;
-      juwell.MinDropDungeonLevel = minDropDungeonLevel;
-      juwell.Price = 10;
-      return juwell;
-    }
+    //Jewellery createJewellery(EquipmentKind kind, int minDropDungeonLevel)
+    //{
+    //  var juwell = new Jewellery();
+    //  juwell.EquipmentKind = kind;
+    //  juwell.MinDropDungeonLevel = minDropDungeonLevel;
+    //  juwell.Price = 10;
+    //  return juwell;
+    //}
         
     public override CraftingResult Craft(Recipe recipe, List<Loot> lootToConvert)
     {
@@ -101,8 +101,7 @@ namespace Roguelike.Crafting
           //if(tinyTrophies.Count == 0 || tinyTrophies.Count > 3)
           //  return ReturnCraftingError("Amount of ornaments must be between 1-3");
 
-          var amulet = createJewellery(EquipmentKind.Amulet, 1);
-          amulet.IsPendant = true;
+          var amulet = Equipment.CreatePendant();
           return ReturnCraftedLoot(amulet);
         }
         else if (recipe.Kind == RecipeKind.EnchantEquipment)
@@ -316,7 +315,6 @@ namespace Roguelike.Crafting
 
     private CraftingResult CraftTwoEq(List<Equipment> eqs)
     {
-
       var eq1 = eqs[0];
       var eq2 = eqs[1];
       if (eq1.EquipmentKind != eq2.EquipmentKind)

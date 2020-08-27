@@ -137,6 +137,7 @@ namespace Roguelike.Tiles
     {
       return false;
     }
+    
     public virtual bool IsCraftable()
     {
       return false;
