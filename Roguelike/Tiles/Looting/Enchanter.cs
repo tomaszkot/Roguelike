@@ -25,5 +25,7 @@ namespace Roguelike.Tiles.Looting
       otherValues[EnchanterSize.Medium] = 10;
       otherValues[EnchanterSize.Small] = 5;
     }
+
+    public abstract bool ApplyTo(Equipment eq, out string error);
   }
 }

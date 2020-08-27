@@ -135,7 +135,7 @@ namespace Roguelike.Tiles.Looting
 
     int resistMult = 3;
 
-    public bool ApplyTo(Equipment eq, out string error)
+    public override bool ApplyTo(Equipment eq, out string error)
     {
       error = "";
       var gemKind = this.GemKind;

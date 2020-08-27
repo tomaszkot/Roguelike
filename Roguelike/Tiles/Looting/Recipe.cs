@@ -5,7 +5,8 @@ using System.Text;
 
 namespace Roguelike.Tiles.Looting
 {
-  public enum RecipeKind { Unset, Custom, ThreeGems, OneEq, TransformPotion, TwoEq, TransformGem, Toadstool2Potions, ExplosiveCocktail, Pendant }
+  public enum RecipeKind { Unset, Custom, ThreeGems, OneEq, TransformPotion, TwoEq, TransformGem, Toadstool2Potions, ExplosiveCocktail, Pendant,
+                           EnchantEquipment }
 
   public class Recipe : Loot
   {
@@ -76,6 +77,9 @@ namespace Roguelike.Tiles.Looting
             break;
           case RecipeKind.Pendant:
             desc = "Turns a piece of cord into a pendant";
+            break;
+          case RecipeKind.EnchantEquipment:
+            desc = "Enchants equipment with a gem of hunter's trophy";
             break;
           default:
             break;
@@ -155,6 +159,9 @@ namespace Roguelike.Tiles.Looting
             break;
           case RecipeKind.Pendant:
             tag1 += "pendant";
+            break;
+          case RecipeKind.EnchantEquipment:
+            tag1 += "enchant";
             break;
           default:
             break;

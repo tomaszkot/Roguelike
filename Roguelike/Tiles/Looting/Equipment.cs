@@ -15,7 +15,6 @@ namespace Roguelike.Tiles
     public int StatValue { get; set; }
   }
 
-
   public class Equipment : Loot
   {
     public int MinDropDungeonLevel = 100;
@@ -26,8 +25,11 @@ namespace Roguelike.Tiles
     EntityStats requiredStats = new EntityStats();
     public bool IsIdentified { get; set; } = true;
     public event EventHandler<Loot> Identified;
-    public bool Enchantable { get; set; }
+
+    public bool Enchantable { get { return maxEnchants > 0; } }
     List<Enchant> enchants = new List<Enchant>();
+    int enchantSlots = 0;
+    int maxEnchants = 0;
 
     public Equipment() : this(EquipmentKind.Unset)
     {
@@ -38,13 +40,33 @@ namespace Roguelike.Tiles
     {
       if (!IsIdentified)
         return false;
-      Enchantable = true;
+      if (maxEnchants > 0)
+        return false; //already done
+
+      maxEnchants = GetMaxEnchants();
+      enchantSlots = 1;
+
       var priceInc = ((float)Price) / 5;
       if (priceInc == 0)
         priceInc = 1;
-      priceInc *= GetMaxEnchants();
+      priceInc *= EnchantSlots;
       Price += (int)priceInc;
       return true;
+    }
+
+    public bool MaxEnchantsReached()
+    {
+      return Enchants.Count >= EnchantSlots;
+    }
+
+    public bool IncreaseEnchantSlots()
+    {
+      if (EnchantSlots < maxEnchants)
+      {
+        enchantSlots++;
+        return true;
+      }
+      return false;
     }
 
     public List<Enchant> Enchants
@@ -59,11 +81,9 @@ namespace Roguelike.Tiles
         enchants = value;
       }
     }
-
-    public int GetMaxEnchants()
+        
+    int GetMaxEnchants()
     {
-      if (!Enchantable)
-        return 0;
       if (Class == EquipmentClass.Unique)
       {
         if (this is Trophy)
@@ -324,6 +344,7 @@ namespace Roguelike.Tiles
     public bool IsSecondMagicLevel { get; set; }
     public EntityStat PrimaryStat { get => primaryStat; set => primaryStat = value; }
     public EntityStats RequiredStats { get => requiredStats; set => requiredStats = value; }
+    public int EnchantSlots { get => enchantSlots; }
 
     public List<EntityStat> GetEffectiveRequiredStats()
     {
@@ -572,13 +593,13 @@ namespace Roguelike.Tiles
         error = "Unique item can not be enchanted";
         return false;
       }
-      var maxEnchantsPossible = GetMaxEnchants();
-      if (maxEnchantsPossible == 0)
+
+      if (EnchantSlots == 0)
       {
         error = "Not possible to enchant " + Name + ", this item is not enchantable";
         return false;
       }
-      if (Enchants.Count == maxEnchantsPossible)
+      if (MaxEnchantsReached())
       {
         error = "Max enchanting level reached";
         return false;

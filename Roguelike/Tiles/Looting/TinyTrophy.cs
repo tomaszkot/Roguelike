@@ -105,7 +105,7 @@ namespace Roguelike.Tiles.Looting
     //  }
     //}
 
-    public bool ApplyTo(Equipment eq, out string error)
+    public override bool ApplyTo(Equipment eq, out string error)
     {
       error = "";
       var props = enhancmentProps[this.TinyTrophyKind];

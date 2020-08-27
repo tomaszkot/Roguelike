@@ -18,6 +18,7 @@ namespace Roguelike.Crafting
     public Loot Loot { get; set; }
 
     public bool Success { get { return Loot != null; } }
+    public bool DeleteCraftedLoot { get; set; } = true;
   }
 
   public interface ILootCrafter
@@ -30,9 +31,9 @@ namespace Roguelike.Crafting
     static CraftingResult error = new CraftingResult();
     public abstract CraftingResult Craft(Recipe recipe, List<Loot> lootToCraft);
 
-    protected CraftingResult ReturnCraftedLoot(Loot loot)
+    protected CraftingResult ReturnCraftedLoot(Loot loot, bool deleteCraftedLoot = true)
     {
-      return new CraftingResult() { Loot = loot };
+      return new CraftingResult() { Loot = loot, DeleteCraftedLoot = deleteCraftedLoot };
     }
 
     protected CraftingResult ReturnCraftingError(string errorMessage)
@@ -90,7 +91,7 @@ namespace Roguelike.Crafting
           return HandleCustomRecipe(lootToConvert);
         }
 
-        if (recipe.Kind == RecipeKind.Pendant)
+        else if (recipe.Kind == RecipeKind.Pendant)
         {
           var cords = lootToConvert.Where(i => i is Cord).Count();
           if (cords == 0)
@@ -102,17 +103,38 @@ namespace Roguelike.Crafting
 
           var amulet = createJewellery(EquipmentKind.Amulet, 1);
           amulet.IsPendant = true;
-          //if(amulet)
-          //string err;
-          //foreach (var troph in tinyTrophies)
-          //{
-          //  if(!troph.ApplyTo(amulet, out err))
-          //    ReturnCraftingError(InvalidIngredients);
-          //}
           return ReturnCraftedLoot(amulet);
         }
+        else if (recipe.Kind == RecipeKind.EnchantEquipment)
+        {
+          var equips = lootToConvert.Where(i => i is Equipment);
+          var equipsCount = equips.Count();
+          if (equipsCount == 0)
+            return ReturnCraftingError("Equipment is needed by the Recipe");
+          if (equipsCount > 1)
+            return ReturnCraftingError("One equipment is needed by the Recipe");
+          var enchanters = lootToConvert.Where(i => !(i is Equipment)).ToList();
+          if (enchanters.Any(i => !(i is Enchanter)))
+          {
+            return ReturnCraftingError("Only enchanting items (gems, claws,...)are alowed by the Recipe");
+          }
+          var eq = equips.ElementAt(0) as Equipment;
+          if(!eq.Enchantable)
+            return ReturnCraftingError("Equipment is not enchantable");
+          var freeSlots = eq.EnchantSlots - eq.Enchants.Count;
+          if(freeSlots < enchanters.Count())
+            return ReturnCraftingError("Too many enchantables added");
+          string err;
+          foreach (var ench in enchanters.Cast<Enchanter>())
+          {
+            if (!ench.ApplyTo(eq, out err))
+              ReturnCraftingError(InvalidIngredients);
+          }
 
-        if ((recipe.Kind == RecipeKind.Custom || recipe.Kind == RecipeKind.ExplosiveCocktail) &&
+          return ReturnCraftedLoot(eq, false);
+        }
+
+        else if ((recipe.Kind == RecipeKind.Custom || recipe.Kind == RecipeKind.ExplosiveCocktail) &&
           sulfCount > 0 && hoochCount > 0)
         {
 
@@ -305,8 +327,8 @@ namespace Roguelike.Crafting
       var destEq = eq1.Price > eq2.Price ? eq1 : eq2;
 
       var srcEq = destEq == eq1 ? eq2 : eq1;
-      var srcHadEmptyEnch = srcEq.Enchantable && srcEq.Enchants.Count < srcEq.GetMaxEnchants();
-      var destHadEmptyEnch = destEq.Enchantable && destEq.Enchants.Count < destEq.GetMaxEnchants();
+      var srcHadEmptyEnch = srcEq.Enchantable && !srcEq.MaxEnchantsReached();
+      var destHadEmptyEnch = destEq.Enchantable && !destEq.MaxEnchantsReached();
 
       //destEq = destEq.Clone() as Equipment; //TODo why clone  ?
       float priceInc = 0;
