@@ -8,7 +8,7 @@ namespace Roguelike.Tiles.Looting
   public enum RecipeKind { Unset, Custom, ThreeGems, OneEq, TransformPotion, TwoEq, TransformGem, Toadstool2Potions, ExplosiveCocktail, Pendant,
                            EnchantEquipment }
 
-  public class Recipe : Loot
+  public class Recipe : StackedLoot
   {
     RecipeKind kind;
     public int MinDropDungeonLevel = 0;
@@ -103,6 +103,11 @@ namespace Roguelike.Tiles.Looting
     public Recipe Clone()
     {
       return MemberwiseClone() as Recipe;
+    }
+
+    public override string GetId()
+    {
+      return base.GetId() + Kind;
     }
 
     public RecipeKind Kind

@@ -16,24 +16,23 @@ namespace Roguelike.Tiles.Looting
     static Dictionary<EquipmentKind, EntityStatKind> enhancmentPropsDiam = new Dictionary<EquipmentKind, EntityStatKind>();
     static Dictionary<GemKind, Dictionary<EquipmentKind, EntityStatKind>> enhancmentProps = new Dictionary<GemKind, Dictionary<EquipmentKind, EntityStatKind>>();
 
-    public Gem(int gameLevel) : this(null, gameLevel)
+    public Gem() : this(GemKind.Unset)
+    { 
+    }
+
+    public Gem(int gameLevel) : this(GemKind.Unset, gameLevel)
     {
     }
 
-    public Gem() : this(null, 0)
-    {
-    }
-
-    public Gem(GemKind? kind, int gameLevel = -1)
+    public Gem(GemKind kind = GemKind.Unset, int gameLevel = 0)
     {
       Symbol = '*';
       Name = "Gem";
-      if(kind.HasValue)
-        GemKind = kind.Value;
+      GemKind = kind;
       EnchanterSize = EnchanterSize.Small;
 
       if(gameLevel>=0)
-        SetRandomKindAndLevelSize(gameLevel, !kind.HasValue);
+        SetRandomKindAndLevelSize(gameLevel, kind == GemKind.Unset);
       else
         SetProps();
 

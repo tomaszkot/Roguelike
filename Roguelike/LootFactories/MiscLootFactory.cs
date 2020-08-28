@@ -56,7 +56,7 @@ namespace Roguelike.LootFactories
 
       factory["goblet"] = (string tag) =>
       {
-        return new Goblet() {  };
+        return new Goblet() { };
       };
 
       factory["pick"] = (string tag) =>
@@ -74,7 +74,7 @@ namespace Roguelike.LootFactories
         return new Gold();
       };
 
-      var tinyTrophies = new []{ "big_claw", "big_fang", "medium_claw", "medium_fang", "small_claw", "small_fang" };
+      var tinyTrophies = new[] { "big_claw", "big_fang", "medium_claw", "medium_fang", "small_claw", "small_fang" };
       foreach (var tt in tinyTrophies)
       {
         var kind = TinyTrophyKind.Unset;
@@ -85,7 +85,6 @@ namespace Roguelike.LootFactories
         else if (tt.EndsWith("tusk"))
           kind = TinyTrophyKind.Tusk;
 
-
         EnchanterSize enchanterSize = EnchanterSize.Small;
         if (tt.StartsWith("big"))
           enchanterSize = EnchanterSize.Big;
@@ -94,15 +93,47 @@ namespace Roguelike.LootFactories
 
         factory[tt] = (string tag) =>
         {
-          return new TinyTrophy(kind) { EnchanterSize = enchanterSize};
+          return new TinyTrophy(kind) { EnchanterSize = enchanterSize };
         };
       }
-      
+
+      //gems
+      var gemTagTypes = new[] { "diamond", "emerald", "ruby", "amber" };
+      var gemTagSizes = new[] { "big", "medium", "small" };
+      List<string> gemTags = new List<string>();
+      foreach (var gt in gemTagTypes)
+      {
+        foreach (var gs in gemTagSizes)
+        {
+          gemTags.Add(gt+"_"+ gs);
+        }
+      }
+            
+      foreach (var gemTag in gemTags)
+      {
+        EnchanterSize enchanterSize = EnchanterSize.Small;
+        if (gemTag.EndsWith("big"))
+          enchanterSize = EnchanterSize.Big;
+        else if (gemTag.EndsWith("medium"))
+          enchanterSize = EnchanterSize.Medium;
+
+        GemKind gemKind = GemKind.Diamond;
+        if (gemTag.StartsWith("emerald"))
+          gemKind = GemKind.Emerald;
+        else if (gemTag.StartsWith("ruby"))
+          gemKind = GemKind.Ruby;
+        else if (gemTag.StartsWith("amber"))
+          gemKind = GemKind.Amber;
+
+        factory[gemTag] = (string tag) =>
+        {
+          return new Gem(gemKind) { EnchanterSize = enchanterSize };
+        };
+      }
     }
 
     private void InitRepices()
     {
-      //string[] names;
       Func<RecipeKind, Recipe> createRecipeFromKind = (RecipeKind kind) =>
       {
         var loot = new Recipe();

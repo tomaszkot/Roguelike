@@ -32,6 +32,11 @@ namespace Roguelike.Tiles.Looting
       enhancmentProps[TinyTrophyKind.Claw] = enhancmentPropsClaw;
     }
 
+    public override string GetId()
+    {
+      return base.GetId() + TinyTrophyKind + " " + EnchanterSize;
+    }
+
     private static void PopulateProps
     (
       Dictionary<EquipmentKind, EntityStatKind> enhancmentProps, 

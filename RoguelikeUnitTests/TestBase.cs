@@ -74,7 +74,7 @@ namespace RoguelikeUnitTests
       }
     }
 
-    public void PutEqOnLevelAndCollectIt(Equipment eq)
+    public void PutEqOnLevelAndCollectIt(Loot eq)
     {
       PutLootOnLevel(eq);
       CollectLoot(eq);

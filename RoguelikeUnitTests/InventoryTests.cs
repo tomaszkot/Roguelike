@@ -185,6 +185,83 @@ namespace RoguelikeUnitTests
     }
 
     [Test]
+    public void CountOfStackedRecipe()
+    {
+      var game = CreateGame();
+      var hero = game.Hero;
+
+      Assert.AreEqual(hero.Inventory.ItemsCount, 0);
+
+      var loot1 = game.GameManager.LootGenerator.GetLootByName("craft_one_eq");
+      PutEqOnLevelAndCollectIt(loot1);
+      Assert.AreEqual(hero.Crafting.Recipes.ItemsCount, 1);
+
+      var loot2 = game.GameManager.LootGenerator.GetLootByName("craft_one_eq");
+      PutEqOnLevelAndCollectIt(loot2);
+      Assert.AreEqual(hero.Crafting.Recipes.ItemsCount, 1);
+
+      Assert.AreEqual(hero.Crafting.Recipes.GetStackedCount(loot2 as StackedLoot), 2);
+
+      var loot3 = game.GameManager.LootGenerator.GetLootByName("craft_three_gems");
+      PutEqOnLevelAndCollectIt(loot3);
+      Assert.AreEqual(hero.Crafting.Recipes.ItemsCount, 2);
+      Assert.AreEqual(hero.Crafting.Recipes.GetStackedCount(loot2 as StackedLoot), 2);
+      Assert.AreEqual(hero.Crafting.Recipes.GetStackedCount(loot3 as StackedLoot), 1);
+    }
+
+    [Test]
+    public void CountOfStackedTrophies()
+    {
+      var game = CreateGame();
+      var hero = game.Hero;
+
+      Assert.AreEqual(hero.Inventory.ItemsCount, 0);
+       
+      var loot1 = game.GameManager.LootGenerator.GetLootByName("big_claw") as StackedLoot;
+      Assert.NotNull(loot1);
+      PutEqOnLevelAndCollectIt(loot1);
+      Assert.AreEqual(hero.Inventory.ItemsCount, 1);
+
+      var loot2 = game.GameManager.LootGenerator.GetLootByName("big_claw");
+      PutEqOnLevelAndCollectIt(loot2);
+      Assert.AreEqual(hero.Inventory.ItemsCount, 1);
+      Assert.AreEqual(hero.Inventory.GetStackedCount(loot2 as StackedLoot), 2);
+
+      var loot3 = game.GameManager.LootGenerator.GetLootByName("big_fang");
+      PutEqOnLevelAndCollectIt(loot3);
+      Assert.AreEqual(hero.Inventory.ItemsCount, 2);
+      Assert.AreEqual(hero.Inventory.GetStackedCount(loot2 as StackedLoot), 2);
+      Assert.AreEqual(hero.Inventory.GetStackedCount(loot3 as StackedLoot), 1);
+    }
+
+    [Test]
+    public void CountOfStackedGems()
+    {
+      var game = CreateGame();
+      var hero = game.Hero;
+
+      Assert.AreEqual(hero.Inventory.ItemsCount, 0);
+
+      var lootBase = game.GameManager.LootGenerator.GetLootByName("diamond_big");
+      Assert.NotNull(lootBase);
+      var loot1 = lootBase as StackedLoot;
+      Assert.NotNull(loot1);
+      PutEqOnLevelAndCollectIt(loot1);
+      Assert.AreEqual(hero.Inventory.ItemsCount, 1);
+
+      var loot2 = game.GameManager.LootGenerator.GetLootByName("diamond_big");
+      PutEqOnLevelAndCollectIt(loot2);
+      Assert.AreEqual(hero.Inventory.ItemsCount, 1);
+      Assert.AreEqual(hero.Inventory.GetStackedCount(loot2 as StackedLoot), 2);
+
+      var loot3 = game.GameManager.LootGenerator.GetLootByName("emerald_medium");
+      PutEqOnLevelAndCollectIt(loot3);
+      Assert.AreEqual(hero.Inventory.ItemsCount, 2);
+      Assert.AreEqual(hero.Inventory.GetStackedCount(loot2 as StackedLoot), 2);
+      Assert.AreEqual(hero.Inventory.GetStackedCount(loot3 as StackedLoot), 1);
+    }
+
+    [Test]
     public void EquipmentPutOnHero()
     {
       var game = CreateGame();
