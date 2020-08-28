@@ -307,14 +307,7 @@ namespace Roguelike.Tiles
 
     public Dictionary<CurrentEquipmentKind, Equipment> GetActiveEquipment()
     {
-      var result = new Dictionary<CurrentEquipmentKind, Equipment>();
-      foreach (var pos in CurrentEquipment.PrimaryEquipment)//PrimaryEquipment has all kinds
-      {
-        var eq = CurrentEquipment.SpareEquipmentUsed[pos.Key] ? CurrentEquipment.SpareEquipment[pos.Key] : CurrentEquipment.PrimaryEquipment[pos.Key];
-        result[pos.Key] = eq;
-      }
-
-      return result;
+      return CurrentEquipment.GetActiveEquipment();
     }
 
     public bool MakeActive(CurrentEquipmentKind kind, Equipment eq, bool primary)
@@ -324,20 +317,9 @@ namespace Roguelike.Tiles
 
     public bool SetEquipment(CurrentEquipmentKind kind, Equipment eq, bool primary = true)
     {
-      //EventsManager.Assert(Inventory.Contains(eq), "Inventory.Contains(eq)");
-      if (eq != null)
-      {
-        CurrentEquipmentPosition pos1;
-        var ek = Equipment.FromCurrentEquipmentKind(kind, out pos1);
-        var matches = ek == eq.EquipmentKind;
-        if (!matches)
-          return false;//TODO action
-      }
-
-      if (primary)
-        CurrentEquipment.PrimaryEquipment[kind] = eq;
-      else
-        CurrentEquipment.SpareEquipment[kind] = eq;
+      var set = CurrentEquipment.SetEquipment(kind, eq, primary);
+      if (!set)
+        return false;//TODO LOG
 
       MakeActive(kind, eq, primary);
 

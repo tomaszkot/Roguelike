@@ -17,7 +17,12 @@ namespace Roguelike.LootContainers
   public enum InvOwner { Unset, Hero, Merchant }
   public enum InvBasketKind { Unset, Hero, Merchant, CraftingRecipe, CraftingInvItems }
 
-  public class InventoryBase
+  public interface IInventoryBase
+  {
+    bool Remove(Loot loot, int stackedCount = 1);
+  }
+
+  public class InventoryBase : IInventoryBase
   {
     public int CurrentPageIndex { get; set; }
     public float PriceFactor { get; set; } = 1;
@@ -34,7 +39,7 @@ namespace Roguelike.LootContainers
     {
       Capacity = 48;
     }
-
+        
     public List<ListItem> ToASCIIList()
     {
       var list = this.Items.Select(i => new ListItem() { Text = i.ToString() }).ToList();

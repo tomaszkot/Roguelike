@@ -21,7 +21,7 @@ namespace Roguelike.Tiles
     EquipmentKind kind;
     EntityStat primaryStat;
     EquipmentClass _class;
-    public int RequiredLevel { get; set; }
+    public int RequiredLevel { get; set; } = 1;
     EntityStats requiredStats = new EntityStats();
     public bool IsIdentified { get; set; } = true;
     public event EventHandler<Loot> Identified;
