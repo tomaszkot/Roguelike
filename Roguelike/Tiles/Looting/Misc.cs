@@ -69,6 +69,8 @@ namespace Roguelike.Tiles.Looting
       Kind = kind;
       Description = description;
       tag1 = asset;
+      Name = kind;
+      //LootKind = LootKind.Other;
     }
 
     public override string GetId()
