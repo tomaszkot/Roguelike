@@ -2,10 +2,12 @@
 using Roguelike.Utils;
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Runtime.Remoting.Messaging;
 
 namespace Roguelike.LootContainers
 {
-  public class CurrentEquipment 
+  public class CurrentEquipment : IInventoryBase
   {
     //putOnEquipment - currently worn eq. all values can be not null  
     SerializableDictionary<CurrentEquipmentKind, Equipment> primaryEquipment = new SerializableDictionary<CurrentEquipmentKind, Equipment>();
@@ -29,6 +31,8 @@ namespace Roguelike.LootContainers
 
     //currently only weapon/shield can be not null
     public SerializableDictionary<CurrentEquipmentKind, bool> SpareEquipmentUsed { get; set; } = new SerializableDictionary<CurrentEquipmentKind, bool>();
+    float priceFactor = 1;
+    public float PriceFactor { get => priceFactor; set => priceFactor = value; }
 
     public Dictionary<CurrentEquipmentKind, Equipment> GetActiveEquipment()
     {
@@ -41,7 +45,29 @@ namespace Roguelike.LootContainers
 
       return result;
     }
-        
+
+    public bool Remove(Loot loot, int stackedCount = 1)
+    {
+      var eq = loot as Equipment;
+      SerializableDictionary<CurrentEquipmentKind, Equipment> owner = null;
+      if (PrimaryEquipment.Any(i => i.Value == eq))
+        owner = PrimaryEquipment;
+      else
+        owner = SpareEquipment;
+
+      CurrentEquipmentKind kind = CurrentEquipmentKind.Unset;
+      if (owner.Any(i => i.Value == eq))
+      {
+        kind = owner.First(i => i.Value == eq).Key;
+      }
+      if (kind != CurrentEquipmentKind.Unset)
+      {
+        return SetEquipment(kind, eq, owner == PrimaryEquipment);
+      }
+
+      return false;
+    }
+
     public bool SetEquipment(CurrentEquipmentKind kind, Equipment eq, bool primary = true)
     {
       if (eq != null)

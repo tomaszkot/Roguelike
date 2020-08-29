@@ -20,6 +20,7 @@ namespace Roguelike.LootContainers
   public interface IInventoryBase
   {
     bool Remove(Loot loot, int stackedCount = 1);
+    float PriceFactor { get; set; }
   }
 
   public class InventoryBase : IInventoryBase
