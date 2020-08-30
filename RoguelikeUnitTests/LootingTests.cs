@@ -28,7 +28,7 @@ namespace RoguelikeUnitTests
           Assert.True(added);
           var dist = pot.DistanceFrom(env.Game.Hero);
           Assert.Less(dist, 5);
-          Assert.True(dist < 4 || i>5);
+          Assert.True(dist < 4 || i > 5);
         }
         var newLootItems = lootInfo.GetDiff();
         Assert.AreEqual(newLootItems.Count, 10);
@@ -99,7 +99,7 @@ namespace RoguelikeUnitTests
       env.LootGenerator.Probability.SetLootingChance(LootSourceKind.Enemy, LootKind.Potion, 1);
       env.AssertLootKindFromEnemies(new[] { LootKind.Potion });
     }
-        
+
     [Test]
     public void KilledEnemyForGold()
     {
@@ -117,7 +117,7 @@ namespace RoguelikeUnitTests
       env.LootGenerator.Probability.SetLootingChance(LootSourceKind.Enemy, LootKind.Equipment, .5f);
       env.LootGenerator.Probability.SetLootingChance(LootSourceKind.Enemy, LootKind.Gold, .5f);
       var loots = env.AssertLootKindFromEnemies(new[] { LootKind.Gold, LootKind.Equipment });
-      Assert.AreEqual(loots.GroupBy(i=>i).Count(), 2);
+      Assert.AreEqual(loots.GroupBy(i => i).Count(), 2);
     }
 
     [Test]
@@ -143,7 +143,7 @@ namespace RoguelikeUnitTests
     [Test]
     public void KilledEnemyForEqipAndGoldMoreEq()
     {
-      var env = CreateTestEnv(numEnemies:30);
+      var env = CreateTestEnv(numEnemies: 30);
       env.LootGenerator.Probability = new Roguelike.Probability.Looting();
       env.LootGenerator.Probability.SetLootingChance(LootSourceKind.Enemy, LootKind.Equipment, .75f);
       env.LootGenerator.Probability.SetLootingChance(LootSourceKind.Enemy, LootKind.Gold, .25f);
@@ -161,7 +161,8 @@ namespace RoguelikeUnitTests
       var numberOfInterTiles = 100;
       var enemiesBefore = env.Game.Level.GetTiles<Enemy>();
       var newLootItems = env.TestInteractive<Barrel>(
-         (InteractiveTile barrel) => {
+         (InteractiveTile barrel) =>
+         {
          }, numberOfInterTiles, 50, 1
         );
       var enemiesAfter = env.Game.Level.GetTiles<Enemy>();
@@ -179,7 +180,8 @@ namespace RoguelikeUnitTests
       int maxExpectedLootCount = 100;// 32 * mult;
 
       var lootInfo = env.TestInteractive<Chest>(
-         (InteractiveTile chest) => {
+         (InteractiveTile chest) =>
+         {
            (chest as Chest).ChestKind = ChestKind.Plain;
          }, tilesToCreateCount, maxExpectedLootCount
 
@@ -193,7 +195,7 @@ namespace RoguelikeUnitTests
       Assert.Greater(mushes.Count, 1);
       Assert.Less(potions.Count, 20);
     }
-        
+
     [Test]
     public void GoldChests()
     {
@@ -318,7 +320,7 @@ namespace RoguelikeUnitTests
 
         var foodCasted = food.Cast<Food>().ToList();
         var foodTypes = foodCasted.GroupBy(f => f.Kind).ToList();
-        var allKinds = Enum.GetValues(typeof(FoodKind)).Cast<FoodKind>().Where(i=> i != FoodKind.Unset).ToList();
+        var allKinds = Enum.GetValues(typeof(FoodKind)).Cast<FoodKind>().Where(i => i != FoodKind.Unset).ToList();
         //Assert.AreEqual(foodTypes.Count, allKinds.Count);
         foreach (var gr in foodTypes)
         {
@@ -327,5 +329,6 @@ namespace RoguelikeUnitTests
         }
       }
     }
+        
   }
 }

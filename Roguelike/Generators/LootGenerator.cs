@@ -29,8 +29,8 @@ namespace Roguelike.Generators
 
   public class LootGenerator
   {
+    bool generateWeaponEarly = true;
     LootFactory lootFactory;
-    
     Dictionary<string, Loot> uniqueLoot = new Dictionary<string, Loot>();
     Looting probability = new Looting();
 
@@ -123,6 +123,7 @@ namespace Roguelike.Generators
     protected virtual void PrepareLoot(Loot loot)
     {
       //adjust price...
+
     }
 
     public virtual Loot GetLootByName(string tileName)
@@ -197,6 +198,11 @@ namespace Roguelike.Generators
     internal Loot TryGetRandomLootByDiceRoll(LootSourceKind lsk)
     {
       //return null;
+      if (generateWeaponEarly)
+      { 
+        
+      }
+
       LootKind lootKind = LootKind.Unset;
       if (lsk == LootSourceKind.DeluxeGoldChest ||
         lsk == LootSourceKind.GoldChest

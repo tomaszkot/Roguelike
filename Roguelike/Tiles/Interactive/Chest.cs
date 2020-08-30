@@ -10,15 +10,15 @@ namespace Roguelike.Tiles.Interactive
   public class Chest : InteractiveTile
   {
     public const char ChestSymbol = '~';
-    private ChestKind _chestKind;
+    private ChestKind chestKind = ChestKind.Plain;
 
     public ChestKind ChestKind
     {
-      get => _chestKind;
+      get => chestKind;
       set
       {
-        _chestKind = value;
-        if (_chestKind == ChestKind.Plain)
+        chestKind = value;
+        if (chestKind == ChestKind.Plain)
           Color = ConsoleColor.Cyan;
         else
           Color = ConsoleColor.Yellow;
@@ -46,22 +46,5 @@ namespace Roguelike.Tiles.Interactive
         return LootSourceKind.DeluxeGoldChest;
       }
     }
-
-    //public bool IsGold { get { return ChestKind == ChestKind.Gold; } }
-
-    //    bool generateUniq;
-    //    public bool GenerateUniq
-    //    {
-    //      get { return generateUniq; }
-    //      set
-    //      {
-    //        generateUniq = value;
-    //        if (value && ChestKind == ChestKind.Plain)
-    //          ChestKind = ChestKind.Gold;
-    //#if ASCII_BUILD
-    //      color = ConsoleColor.Yellow;
-    //#endif
-    //      }
-    //}
   }
 }

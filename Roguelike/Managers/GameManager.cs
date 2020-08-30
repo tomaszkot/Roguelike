@@ -227,6 +227,8 @@ namespace Roguelike.Managers
       if (dest != null)
       {
         var set = ReplaceTile<Loot>(item, dest.Point, animated, lootSource);
+        if(set)
+          this.GameState.History.GeneratedLoot.Add(item);
         return set;
       }
 

@@ -11,7 +11,15 @@ using System.Threading.Tasks;
 
 namespace Roguelike
 {
-      
+  public class History
+  {
+    public List<Loot> GeneratedLoot { get; set; }  = new List<Loot>();
+    public int Count(LootKind lk)
+    {
+      return GeneratedLoot.Where(i => i.LootKind == lk).Count();
+    }
+  }
+
   public class GameState:  IPersistable
   {
     public class HeroPath
@@ -28,6 +36,7 @@ namespace Roguelike
         
     public RpgGameSettings Settings { get; set; } = new RpgGameSettings();
     public HeroPath HeroPathValue { get; set; } = new HeroPath();
+    public History History { get; set; } = new History();
 
     [JsonIgnore]
     public bool Dirty { get; set; } = true;//TODO true
