@@ -16,34 +16,51 @@ namespace RoguelikeUnitTests
     [Test]
     public void NewGameTest()
     {
-      var game = CreateGame(false);
-      var hero = game.Hero;
-      Assert.Null(hero);
-      Assert.Null(game.Level);
+      string heroName;
+      GameLevel gameLevel = null;
+      System.Drawing.Point heroPoint;
+      Equipment eq;
+      {
+        var game = CreateGame(false);
+        var hero = game.Hero;
+        Assert.Null(hero);
+        Assert.Null(game.Level);
+        
+        var gameNode = game.GenerateLevel(0);
+        hero = game.Hero;
+        //hero.Name = "Koto";
+        Assert.NotNull(hero);
+        heroName = hero.Name;
 
-      var gameNode = game.GenerateLevel(0);
-      hero = game.Hero;
-      //hero.Name = "Koto";
-      Assert.NotNull(hero);
+        //move hero to rand position.
+        var pt = gameNode.GetFirstEmptyPoint();
+        Assert.AreNotEqual(hero.Point, pt);
+        gameNode.SetTile(hero, pt.Value);
 
-      //move hero to rand position.
-      var pt = gameNode.GetFirstEmptyPoint();
-      Assert.AreNotEqual(hero.Point, pt);
-      gameNode.SetTile(hero, pt.Value);
+        eq = game.GameManager.LootGenerator.GetRandomEquipment();
+        game.GameManager.GameState.History.GeneratedLoot.Add(new LootHistory(eq));
+        gameLevel = game.Level;
+        heroPoint = hero.Point;
 
-      game.GameManager.Save();
+        game.GameManager.Save();
+      }
+      {
+        var game = CreateGame(false);
+        var hero = game.Hero;
+        game.GameManager.Load(heroName);
 
-      game.GameManager.Load(hero.Name);
+        Assert.AreNotEqual(game.Hero, hero);
+        //after load node shall be different
+        Assert.AreNotEqual(gameLevel, game.Level);
+        var heroLoaded = game.Level.GetTiles<Hero>().Single();
+        Assert.NotNull(heroLoaded);
 
-      Assert.AreNotEqual(game.Hero, hero);
-      //after load node shall be different
-      Assert.AreNotEqual(gameNode, game.Level);
-      var heroLoaded = game.Level.GetTiles<Hero>().Single();
-      Assert.NotNull(heroLoaded);
-
-      //hero position shall match
-      Assert.AreEqual(heroLoaded.Point, pt);
-      Assert.AreEqual(heroLoaded, game.Hero);
+        //hero position shall match
+        Assert.AreEqual(heroLoaded.Point, heroPoint);
+        Assert.AreEqual(heroLoaded, game.Hero);
+        Assert.AreEqual(game.GameManager.GameState.History.GeneratedLoot.Count, 1);
+        Assert.AreEqual(game.GameManager.GameState.History.GeneratedLoot[0].Name, eq.Name);
+      }
     }
 
     [Test]

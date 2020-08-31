@@ -11,9 +11,27 @@ using System.Threading.Tasks;
 
 namespace Roguelike
 {
+  public class LootHistory
+  {
+    public string Name { get; set; }
+    public LootKind LootKind { get; set; }
+    public EquipmentKind EquipmentKind { get; set; }
+
+    public LootHistory() { }
+
+    public LootHistory(Loot loot)
+    {
+      Name = loot.Name;
+      LootKind = loot.LootKind;
+      if (loot is Equipment)
+        EquipmentKind = (loot as Equipment).EquipmentKind;
+    }
+  }
+
   public class History
   {
-    public List<Loot> GeneratedLoot { get; set; }  = new List<Loot>();
+    
+    public List<LootHistory> GeneratedLoot { get; set; }  = new List<LootHistory>();
 
     public int Count(LootKind lk)
     {
@@ -22,8 +40,7 @@ namespace Roguelike
 
     public int Count(EquipmentKind ek)
     {
-      var eq = GeneratedLoot.Where(i => i is Equipment).Cast<Equipment>();
-      return eq.Where(i => i.EquipmentKind == ek).Count();
+      return GeneratedLoot.Where(i => i.EquipmentKind == ek).Count();
     }
   }
 

@@ -50,7 +50,7 @@ namespace Roguelike.Tiles
     {
       get { return isPendant; }
       set {
-        if (EquipmentKind == EquipmentKind.Amulet)
+        if (!isPendant || EquipmentKind == EquipmentKind.Amulet)
         {
           if (!isPendant)
           {

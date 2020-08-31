@@ -40,6 +40,7 @@ namespace Roguelike.Serialization
       var hero = gm.Persister.LoadHero(heroName);
 
       var gs = gm.Persister.LoadGameState(heroName);
+      gm.SetGameState(gs);
 
       AbstractGameLevel node = null;
       node = worldLoader(hero, gs);
