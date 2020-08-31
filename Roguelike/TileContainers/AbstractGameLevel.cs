@@ -64,9 +64,11 @@ namespace Roguelike.TileContainers
     public override List<T> GetTiles<T>() 
     {
       var res = base.GetTiles<T>();
-      if(typeof(T) == typeof(Loot))
-        res.AddRange(Loot.Values.Cast<T>());
-      
+      if (typeof(T) == typeof(Loot) || typeof(T).IsSubclassOf(typeof(Loot)))
+      {
+        res.AddRange(Loot.Values.Where(i => i is T).Cast<T>());
+      }
+            
       return res;
     }
 

@@ -21,11 +21,11 @@ namespace RoguelikeUnitTests
       var gi = new GenerationInfo();
       Assert.Greater(gi.NumberOfRooms, 3);
 
-      TestInter<Barrel>(game, true);
-      TestInter<Chest>(game, false);
+      TestInteraction<Barrel>(game, true);
+      TestInteraction<Chest>(game, false);
     }
 
-    private void TestInter<T>(Roguelike.RoguelikeGame game, bool interShallBeDestroyed) where T : InteractiveTile, new()
+    private void TestInteraction<T>(Roguelike.RoguelikeGame game, bool interShallBeDestroyed) where T : InteractiveTile, new()
     {
       var inters = game.Level.GetTiles<T>();
       var intersCount = inters.Count;

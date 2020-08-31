@@ -227,8 +227,6 @@ namespace Roguelike.Managers
       if (dest != null)
       {
         var set = ReplaceTile<Loot>(item, dest.Point, animated, lootSource);
-        if(set)
-          this.GameState.History.GeneratedLoot.Add(item);
         return set;
       }
 
@@ -451,7 +449,7 @@ namespace Roguelike.Managers
           return;
         }
 
-        Loot loot = LootGenerator.TryGetRandomLootByDiceRoll(lsk);
+        var loot = TryGetRandomLootByDiceRoll(lsk);
         if (attackPolicy.Victim is Barrel)
         {
           bool repl = ReplaceTile<Loot>(loot, attackPolicy.Victim.Point, false, attackPolicy.Victim);
@@ -476,6 +474,11 @@ namespace Roguelike.Managers
           }
         }
       }
+    }
+
+    protected virtual Loot TryGetRandomLootByDiceRoll(LootSourceKind lsk)
+    {
+      return LootGenerator.TryGetRandomLootByDiceRoll(lsk);
     }
 
     public virtual void OnHeroPolicyApplied(Policies.Policy policy)
@@ -586,13 +589,16 @@ namespace Roguelike.Managers
         }
         var loot = replacer as Loot;
         if (loot != null)
+        {
           AppendAction<LootAction>((LootAction ac) => { ac.Loot = loot; ac.LootActionKind = LootActionKind.Generated; ac.GenerationAnimated = animated; ac.Source = positionSource; });
+          this.GameState.History.GeneratedLoot.Add(loot);
+        }
         else
         {
           if (replacer != null)
           {
             var enemy = replacer as Enemy;
-            if(enemy!=null)
+            if (enemy != null)
               AppendAction<EnemyAction>((EnemyAction ac) => { ac.Enemy = enemy; ac.Kind = EnemyActionKind.AppendedToLevel; ac.Info = enemy.Name + " spawned"; });
           }
         }

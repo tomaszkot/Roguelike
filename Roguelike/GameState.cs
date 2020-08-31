@@ -14,9 +14,16 @@ namespace Roguelike
   public class History
   {
     public List<Loot> GeneratedLoot { get; set; }  = new List<Loot>();
+
     public int Count(LootKind lk)
     {
       return GeneratedLoot.Where(i => i.LootKind == lk).Count();
+    }
+
+    public int Count(EquipmentKind ek)
+    {
+      var eq = GeneratedLoot.Where(i => i is Equipment).Cast<Equipment>();
+      return eq.Where(i => i.EquipmentKind == ek).Count();
     }
   }
 
