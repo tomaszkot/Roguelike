@@ -26,11 +26,42 @@ namespace Roguelike
       if (loot is Equipment)
         EquipmentKind = (loot as Equipment).EquipmentKind;
     }
+
+    public override bool Equals(object obj)
+    {
+      var other = obj as LootHistory;
+      if (other == null)
+        return false;
+      return this.GetHashCode() == other.GetHashCode(); 
+    }
+
+    public override int GetHashCode()
+    {
+      return (Name + "_" + LootKind.ToString() + "_" + EquipmentKind.ToString()).GetHashCode();
+    }
+
+    static public bool operator ==(LootHistory a, LootHistory b)
+    {
+      if (Object.ReferenceEquals(a, b))
+      {
+        return true;
+      }
+      // If one is null, but not both, return false.
+      if (((object)a == null) || ((object)b == null))
+      {
+        return false;
+      }
+      return a.Equals(b);
+    }
+
+    static public bool operator !=(LootHistory a, LootHistory b)
+    {
+      return !(a == b);
+    }
   }
 
   public class History
   {
-    
     public List<LootHistory> GeneratedLoot { get; set; }  = new List<LootHistory>();
 
     public int Count(LootKind lk)
@@ -41,6 +72,12 @@ namespace Roguelike
     public int Count(EquipmentKind ek)
     {
       return GeneratedLoot.Where(i => i.EquipmentKind == ek).Count();
+    }
+
+    public void AddLootHistory(LootHistory lh)
+    {
+      if (!GeneratedLoot.Contains(lh))
+        GeneratedLoot.Add(lh);
     }
   }
 

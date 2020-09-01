@@ -63,6 +63,41 @@ namespace RoguelikeUnitTests
       }
     }
 
+
+    [Test]
+    public void LootHistoryTest()
+    {
+      string heroName;
+      string eqName;
+      {
+        var game = CreateGame(false);
+
+        var gameNode = game.GenerateLevel(0);
+        var hero = game.Hero;
+        heroName = hero.Name;
+        Assert.NotNull(hero);
+
+        var eq1 = game.GameManager.LootGenerator.GetLootByName("rusty_sword");
+        eqName = eq1.Name;
+        game.GameManager.GameState.History.AddLootHistory(new LootHistory(eq1));
+        Assert.AreEqual(game.GameManager.GameState.History.GeneratedLoot.Count, 1);
+
+        var eq2 = game.GameManager.LootGenerator.GetLootByName("rusty_sword");
+        game.GameManager.GameState.History.AddLootHistory(new LootHistory(eq2));
+        Assert.AreEqual(game.GameManager.GameState.History.GeneratedLoot.Count, 1);//duplicate not added
+
+        game.GameManager.Save();
+      }
+      {
+        var game = CreateGame(false);
+        var hero = game.Hero;
+        game.GameManager.Load(heroName);
+
+        Assert.AreEqual(game.GameManager.GameState.History.GeneratedLoot.Count, 1);
+        Assert.AreEqual(game.GameManager.GameState.History.GeneratedLoot[0].Name, eqName);
+      }
+    }
+
     [Test]
     public void ManyGamesTest()
     {
