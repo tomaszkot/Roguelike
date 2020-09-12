@@ -47,7 +47,8 @@ namespace Roguelike.Managers
 
     public EnemiesManager EnemiesManager { get => enemiesManager; set => enemiesManager = value; }
     public Hero Hero { get => Context.Hero; }
-    protected GameState gameState = new GameState();
+    protected GameState gameState;
+
     public bool HeroTurn { get => Context.HeroTurn; }
 
     //public EventsManager ActionsManager { get => EventsManager; set => EventsManager = value; }
@@ -77,6 +78,7 @@ namespace Roguelike.Managers
     {
       Container = container;
 
+      gameState = container.GetInstance<GameState>();
       LootGenerator = container.GetInstance<LootGenerator>();
       Logger = container.GetInstance<ILogger>();
       levelGenerator = container.GetInstance<LevelGenerator>();
@@ -190,12 +192,20 @@ namespace Roguelike.Managers
           Hero.IncreaseExp(10);
           //var loot = LootGenerator.GetRandomLoot();
           context.CurrentNode.SetTile(new Tile(), lea.InvolvedEntity.Point);
-          var loot = LootGenerator.TryGetRandomLootByDiceRoll(LootSourceKind.Enemy);
+          Loot loot = null;
+          var enemy = lea.InvolvedEntity as Enemy;
+          if (enemy.PowerKind == EnemyPowerKind.Champion ||
+              enemy.PowerKind == EnemyPowerKind.Boss)
+          {
+            loot = LootGenerator.GetBestLoot(enemy.PowerKind);
+          }
+          else 
+            loot = LootGenerator.TryGetRandomLootByDiceRoll(LootSourceKind.Enemy);
           if (loot != null)
           {
             AddLootReward(loot, lea.InvolvedEntity, false);
           }
-          var extraLootItems = GetExtraLoot();
+          var extraLootItems = GetExtraLoot(enemy, loot);
           foreach (var extraLoot in extraLootItems)
           {
             AddLootReward(extraLoot, lea.InvolvedEntity, true);
@@ -235,7 +245,7 @@ namespace Roguelike.Managers
     }
 
     List<Loot> extraLoot = new List<Loot>();
-    List<Loot> GetExtraLoot()
+    List<Loot> GetExtraLoot(Enemy en, Loot primaryLoot)
     {
       extraLoot.Clear();
       if (GenerationInfo.DebugInfo.EachEnemyGivesPotion)
@@ -249,12 +259,18 @@ namespace Roguelike.Managers
         var loot = LootGenerator.GetRandomRing();
         extraLoot.Add(loot);
       }
+      if (primaryLoot is Gold)
+      {
+        var loot = LootGenerator.TryGetRandomLootByDiceRoll(LootSourceKind.Enemy);
+        if (!(loot is Gold))
+          extraLoot.Add(loot);
+      }
       return extraLoot;
     }
 
     public void HandleHeroShift(TileNeighborhood neib)
     {
-      int horizontal = 0; 
+      int horizontal = 0;
       int vertical = 0;
       var res = DungeonNode.GetNeighborPoint(new Tile() { Point = new Point(0, 0) }, neib);
       if (res.X != 0)
@@ -287,7 +303,7 @@ namespace Roguelike.Managers
 
     public void HandleHeroShift(int horizontal, int vertical)
     {
-      if(!CanHeroDoAction())
+      if (!CanHeroDoAction())
         return;
 
       var newPos = GetNewPositionFromMove(Hero.Point, horizontal, vertical);
@@ -299,9 +315,9 @@ namespace Roguelike.Managers
       var tile = CurrentNode.GetTile(newPos.Point);
       //logger.LogInfo(" tile at " + newPos.Point + " = "+ tile);
       var res = InteractionResult.None;
-      if(!tile.IsEmpty)
+      if (!tile.IsEmpty)
         res = InteractHeroWith(tile);
-      
+
       if (res == InteractionResult.ContextSwitched || res == InteractionResult.Blocked)
         return;
 
@@ -314,7 +330,8 @@ namespace Roguelike.Managers
       else
       {
         //logger.LogInfo(" Hero ac ="+ ac);
-        context.ApplyMovePolicy(Hero, newPos.Point, (e) => {
+        context.ApplyMovePolicy(Hero, newPos.Point, (e) =>
+        {
           OnHeroPolicyApplied(this, e);
         });
       }
@@ -507,7 +524,7 @@ namespace Roguelike.Managers
       if (victim is Chest)
       {
         var chest = victim as Chest;
-        if(
+        if (
           chest.ChestKind == ChestKind.Gold ||
           chest.ChestKind == ChestKind.GoldDeluxe
           )
@@ -562,8 +579,11 @@ namespace Roguelike.Managers
       {
         if (tile is InteractiveTile)
         {
-          AppendAction<InteractiveTileAction>((InteractiveTileAction ac) => { ac.InvolvedTile = tile as InteractiveTile;
-                        ac.InteractiveKind = InteractiveActionKind.AppendedToLevel; });
+          AppendAction<InteractiveTileAction>((InteractiveTileAction ac) =>
+          {
+            ac.InvolvedTile = tile as InteractiveTile;
+            ac.InteractiveKind = InteractiveActionKind.AppendedToLevel;
+          });
         }
         else
           Assert(false, "AppendTile unknown tile!");
@@ -637,7 +657,7 @@ namespace Roguelike.Managers
     {
       gameState.Settings.CoreInfo.LastSaved = DateTime.Now;
       gameState.HeroPathValue.Pit = "";
-      
+
       if (CurrentNode is TileContainers.GameLevel)//TODO 
       {
         var dl = CurrentNode as TileContainers.GameLevel;
@@ -698,9 +718,9 @@ namespace Roguelike.Managers
       return false;
     }
 
-    public void PrintHeroStats(string context,bool onlyNonZero = true)
+    public void PrintHeroStats(string context, bool onlyNonZero = true)
     {
-      Logger.LogInfo("PrintHeroStats "+ context);
+      Logger.LogInfo("PrintHeroStats " + context);
       //foreach (var stat in Hero.Stats.Stats.Values)
       //{
       //  //if(!onlyNonZero || stat.Value.TotalValue != 0)
@@ -728,14 +748,14 @@ namespace Roguelike.Managers
           //logger.LogInfo("call to liesManager.MoveHeroAllies");
           context.PendingTurnOwnerApply = false;
           AlliesManager.MoveHeroAllies();
-          
+
         }
         else if (context.TurnOwner == TurnOwner.Enemies)
         {
           //logger.LogInfo("call to EnemiesManager.MakeEntitiesMove");
           context.PendingTurnOwnerApply = false;
           EnemiesManager.MakeEntitiesMove();
-          
+
         }
       }
     }
@@ -759,7 +779,7 @@ namespace Roguelike.Managers
 
     public Loot SellItem
     (
-      Loot loot, 
+      Loot loot,
       AdvancedLivingEntity src,
       InventoryBase srcInv,
       AdvancedLivingEntity dest,
@@ -851,7 +871,7 @@ namespace Roguelike.Managers
     protected void PopulateMerchantInv(Merchant merch)
     {
       var lootKinds = Enum.GetValues(typeof(LootKind));
-      
+
       AddEqToMerchant(merch, lootKinds);
 
       //TODO
@@ -875,7 +895,7 @@ namespace Roguelike.Managers
 
       int magicCount = 0;
       int tries = 0;
-      while (magicCount< 2 && tries< 50)//TODO
+      while (magicCount < 2 && tries < 50)//TODO
       {
         var loot = RandHelper.GetRandomElem<Loot>(merch.Inventory.Items) as Equipment;
         if (loot != null && loot.Class == EquipmentClass.Plain)
@@ -902,5 +922,10 @@ namespace Roguelike.Managers
         merch.Inventory.Add(mp);
       }
     }
+
+    //protected GameState CreateGameState()
+    //{
+    //  return new GameState();
+    //}
   }
 }

@@ -441,7 +441,7 @@ namespace Dungeons
 
         if (tile == null)
         {
-          int k = 0;
+          Log("tile == null", false);
         }
 
         if (AppendMazeStartPoint != null)

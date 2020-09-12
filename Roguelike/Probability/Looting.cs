@@ -51,6 +51,12 @@ namespace Roguelike.Probability
         int k = 0;
         k++;
       }
+      if (lk == LootKind.Gem)
+      {
+        int k = 0;
+        k++;
+      }
+
       return lk;
     }
 

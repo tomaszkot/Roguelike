@@ -21,7 +21,7 @@ namespace Roguelike.Tiles.Looting
 
     public override string ToString()
     {
-      var res = Name;
+      var res = base.ToString() + " "+ Name;
       //if (GenerationTestFilter.MockingOn)
       //  res += ",PinCS=" + PlacedInCraftSlot + ", Ind ="+PositionInPage+ ", Page="+PageIndex; 
       return res;
@@ -34,6 +34,7 @@ namespace Roguelike.Tiles.Looting
 
     public Recipe(RecipeKind kind)
     {
+      LootKind = LootKind.Recipe;
       Price = 20;
       MagicDustRequired = 1;
       this.Kind = kind;

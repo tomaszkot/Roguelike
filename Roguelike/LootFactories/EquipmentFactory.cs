@@ -4,6 +4,7 @@ using Roguelike.Generators;
 using Roguelike.Tiles;
 using SimpleInjector;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Roguelike.LootFactories
 {
@@ -58,7 +59,7 @@ namespace Roguelike.LootFactories
       CreateKindFactories();
     }
 
-    public virtual Equipment GetRandom(EquipmentKind kind, EquipmentClass eqClass = EquipmentClass.Plain)
+    public virtual Equipment GetRandom(EquipmentKind kind, int maxEqLevel, EquipmentClass eqClass = EquipmentClass.Plain)
     {
       Equipment eq = null;
       
@@ -94,7 +95,9 @@ namespace Roguelike.LootFactories
       if (eq != null && eqClass != EquipmentClass.Plain)
       {
         if (eqClass == EquipmentClass.Plain)
-          eq.MakeMagic();
+        {
+          MakeMagic(eqClass, eq);
+        }
         else
         {
           //TODO
@@ -103,11 +106,25 @@ namespace Roguelike.LootFactories
           .Add(EntityStatKind.Attack, 15)
           .Add(EntityStatKind.Defence, 15)
           .Add(EntityStatKind.ChanceToCastSpell, 15);
-          eq.SetUnique(ees.Get());
+          eq.SetUnique(ees.Get(), 5);
         }
       }
       
       return eq;
+    }
+
+    protected void MakeMagic(EquipmentClass eqClass, Equipment eq)
+    {
+      if (eq.Class == EquipmentClass.Unique)
+        return;
+      if(eq.IsPlain())
+        eq.MakeMagic();
+      if (!eq.IsSecondMagicLevel && eqClass == EquipmentClass.MagicSecLevel)
+      {
+        var stats = eq.GetPossibleMagicStats();
+        var stat = RandHelper.GetRandomElem(stats);
+        eq.MakeMagicSecLevel(stat.Key, 3);//TODO
+      }
     }
 
     public virtual Equipment GetRandomArmor()

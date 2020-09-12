@@ -128,9 +128,19 @@ namespace Roguelike.Tiles.Looting
         price *= 4;
 
       string enchanterSize = EnchanterSize.ToString();
-      tag1 = gemName.ToLower() + "_" + enchanterSize.ToLower();
+      tag1 = CalcTagFrom();
       Name = enchanterSize + " " + gemName;
       Price = price;
+    }
+
+    public string CalcTagFrom()
+    {
+      return CalcTagFrom(GemKind, EnchanterSize);
+    }
+
+    public static string CalcTagFrom(GemKind kind, EnchanterSize size)
+    {
+      return kind.ToString().ToLower() + "_" + size.ToString().ToLower();
     }
 
     int resistMult = 3;

@@ -16,6 +16,7 @@ namespace Roguelike
     public string Name { get; set; }
     public LootKind LootKind { get; set; }
     public EquipmentKind EquipmentKind { get; set; }
+    public string Tag1 { get; set; }
 
     public LootHistory() { }
 
@@ -23,6 +24,7 @@ namespace Roguelike
     {
       Name = loot.Name;
       LootKind = loot.LootKind;
+      Tag1 = loot.tag1;
       if (loot is Equipment)
         EquipmentKind = (loot as Equipment).EquipmentKind;
     }
@@ -69,6 +71,11 @@ namespace Roguelike
       return GeneratedLoot.Where(i => i.LootKind == lk).Count();
     }
 
+    public int Count(string tag1)
+    {
+      return GeneratedLoot.Where(i => i.Tag1 == tag1).Count();
+    }
+
     public int Count(EquipmentKind ek)
     {
       return GeneratedLoot.Where(i => i.EquipmentKind == ek).Count();
@@ -81,7 +88,7 @@ namespace Roguelike
     }
   }
 
-  public class GameState:  IPersistable
+  public class GameState : IPersistable
   {
     public class HeroPath
     {

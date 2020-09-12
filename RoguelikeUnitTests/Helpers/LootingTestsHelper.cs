@@ -30,21 +30,26 @@ namespace RoguelikeUnitTests.Helpers
       KillAllEnemies();
 
       var lootItems = li.GetDiff();
-      //if (lootItems != null)
+      int expectedKindsCounter = 0;
       {
         foreach (var loot in lootItems)
         {
-          Assert.True(expectedKinds.Contains(loot.LootKind));
+          var exp = expectedKinds.Contains(loot.LootKind);
+          //Assert.True(exp || loot is Equipment);//Bosses and Chemp throws Equipment
+          if (exp)
+            expectedKindsCounter++;
+
           res.Add(loot.LootKind);
         }
       }
+      Assert.Greater(expectedKindsCounter, 0);
 
       return res;
     }
 
     public void KillAllEnemies()
     {
-      var enemies = Enemies;//game.GameManager.EnemiesManager.Enemies;
+      var enemies = Enemies;
       for (int i = 0; i < enemies.Count; i++)
       {
         var en = enemies[i];

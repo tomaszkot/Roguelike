@@ -71,6 +71,12 @@ namespace Roguelike.Tiles
     //[JsonIgnoreAttribute]
     public EntityStats Stats { get => stats; set => stats = value; }
 
+    public int Level 
+    { 
+      get; 
+      set; 
+    } = 1;
+
     Dictionary<EffectType, float> lastingEffSubtractions = new Dictionary<EffectType, float>();
     static EntityStatKind[] resists = new EntityStatKind[] { EntityStatKind.ResistCold, EntityStatKind.ResistFire, EntityStatKind.ResistPoison,EntityStatKind.ResistLighting};
     public event EventHandler<LastingEffect> LastingEffectStarted;
@@ -755,7 +761,7 @@ namespace Roguelike.Tiles
     public override string ToString()
     {
       var str = base.ToString();
-      str += " "+this.State + ", Alive:"+Alive + ", H:"+Stats.Health;
+      str += " "+this.State + ", Alive:"+Alive + ", H:"+Stats.Health + ", Lvl:" + this.Level;
       return str;
     }
 

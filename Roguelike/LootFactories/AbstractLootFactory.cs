@@ -34,6 +34,8 @@ namespace Roguelike.LootFactories
   public abstract class EquipmentTypeFactory : AbstractLootFactory
   {
     protected Dictionary<string, Func<string, Equipment>> factory = new Dictionary<string, Func<string, Equipment>>();
+    public List<string> UniqueItemTags { get; private set; } = new List<string>();
+    public int MaxEqLevel { get; set; }
 
     public EquipmentTypeFactory(Container container) : base(container)
     {
@@ -43,7 +45,10 @@ namespace Roguelike.LootFactories
     {
       var index = RandHelper.GetRandomInt(factory.Count);
       var lootCreator = factory.ElementAt(index);
-      return lootCreator.Value(lootCreator.Key);
+      var loot = lootCreator.Value(lootCreator.Key);
+      if (loot.GetLevelIndex() < 0)
+        loot.SetLevelIndex(MaxEqLevel+1);
+      return loot;
     }
 
     public override Loot GetByName(string name)

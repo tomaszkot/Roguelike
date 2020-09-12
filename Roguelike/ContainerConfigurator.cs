@@ -28,13 +28,14 @@ namespace Roguelike
       container.Register< Dungeons.TileContainers.DungeonLevel, GameLevel>();
       container.Register<ILogger, Logger>();
       container.Register<LootGenerator, LootGenerator>(Lifestyle.Singleton);
-      container.Register <EventsManager, EventsManager>(Lifestyle.Singleton);
+      container.Register<EventsManager, EventsManager>(Lifestyle.Singleton);
       container.Register<Enemy, Enemy>();
       container.Register<RoomContentGenerator, RoomContentGenerator>();
       container.Register<AbstractLootFactory, LootFactory>();
       container.Register<SpellCastPolicy, SpellCastPolicy>();
       container.Register<IProjectilesFactory, ProjectilesFactory>();
       container.Register<LootCrafterBase, LootCrafter>();
+      container.Register<GameState, GameState>();
       //container.Register <MovePolicy, MovePolicy>();//move to exe
       Container = container;
 

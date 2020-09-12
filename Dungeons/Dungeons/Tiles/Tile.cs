@@ -91,7 +91,7 @@ namespace Dungeons.Tiles
         {
           if (DungeonNodeIndex < 0)
           {
-            int k = 0;
+            //int k = 0;
           }
           revealed = value;
         }

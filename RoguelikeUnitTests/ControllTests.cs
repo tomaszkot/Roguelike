@@ -140,7 +140,6 @@ namespace RoguelikeUnitTests
       game.GameManager.HandleHeroShift(neib);
       Assert.AreEqual(heroPos, game.Hero.Point);
 
-
       Assert.Less(en.Stats.Health, enHealth);
       Assert.AreEqual(Game.GameManager.Context.GetActionsCount(), 1);
 

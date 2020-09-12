@@ -110,6 +110,24 @@ namespace RoguelikeUnitTests
     }
 
     [Test]
+    public void KilledEnemyForTinyTrophy()
+    {
+      var env = CreateTestEnv();
+      env.LootGenerator.Probability = new Roguelike.Probability.Looting();
+      env.LootGenerator.Probability.SetLootingChance(LootSourceKind.Enemy, LootKind.TinyTrophy, 1);
+      env.AssertLootKindFromEnemies(new[] { LootKind.TinyTrophy });
+    }
+
+    [Test]
+    public void KilledEnemyForGems()
+    {
+      var env = CreateTestEnv();
+      env.LootGenerator.Probability = new Roguelike.Probability.Looting();
+      env.LootGenerator.Probability.SetLootingChance(LootSourceKind.Enemy, LootKind.Gem, 1);
+      env.AssertLootKindFromEnemies(new[] { LootKind.Gem });
+    }
+
+    [Test]
     public void KilledEnemyForEqipAndGold()
     {
       var env = CreateTestEnv(numEnemies: 25);
@@ -294,10 +312,10 @@ namespace RoguelikeUnitTests
         var li = new LootInfo(game, null);
         env.KillAllEnemies();
         var lootItems = li.GetDiff();
-        Assert.Greater(lootItems.Count, 0);
+        Assert.Greater(lootItems.Count, 15);
         var potions = lootItems.Where(j => j.LootKind == LootKind.Potion).ToList();
         Assert.Greater(potions.Count, 4);
-        Assert.Less(potions.Count, 35);
+        Assert.Less(potions.Count, 20);
       }
     }
 
@@ -315,13 +333,12 @@ namespace RoguelikeUnitTests
         var lootItems = li.GetDiff();
         Assert.Greater(lootItems.Count, 0);
         var food = lootItems.Where(j => j.LootKind == LootKind.Food).ToList();
-        Assert.Greater(food.Count, 5);
+        Assert.Greater(food.Count, 0);
         Assert.Less(food.Count, 36);
 
         var foodCasted = food.Cast<Food>().ToList();
         var foodTypes = foodCasted.GroupBy(f => f.Kind).ToList();
         var allKinds = Enum.GetValues(typeof(FoodKind)).Cast<FoodKind>().Where(i => i != FoodKind.Unset).ToList();
-        //Assert.AreEqual(foodTypes.Count, allKinds.Count);
         foreach (var gr in foodTypes)
         {
           var count = gr.Count();
@@ -329,6 +346,8 @@ namespace RoguelikeUnitTests
         }
       }
     }
-        
+    ///////////////////
+    
+
   }
 }

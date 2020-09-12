@@ -29,13 +29,17 @@ namespace Roguelike.Generators
 
   public class LootGenerator
   {
-    bool generateWeaponEarly = true;
+   // bool generateWeaponEarly = true;
     LootFactory lootFactory;
     Dictionary<string, Loot> uniqueLoot = new Dictionary<string, Loot>();
     Looting probability = new Looting();
 
     public Looting Probability { get => probability; set => probability = value; }
-    public int LevelIndex { get; internal set; } = -1;
+    public int LevelIndex 
+    { 
+      get; 
+      set; 
+    } = -1;
     public Container Container { get; set; }
     public LootFactory LootFactory { get => lootFactory; set => lootFactory = value; }
 
@@ -71,7 +75,7 @@ namespace Roguelike.Generators
         {
           var val = .2f;
           if (lk == LootKind.Potion)
-            val *= 1.5f;
+            val *= 1.15f;
           lkChance.SetChance(lk, val);
         }
         probability.SetLootingChance(lootSource, lkChance);
@@ -162,9 +166,9 @@ namespace Roguelike.Generators
 
     public virtual Equipment GetRandomEquipment()
     {
-      if(LevelIndex <=0)
+      if(LevelIndex <0)
         Container.GetInstance<ILogger>().LogError("GetRandomEquipment LevelIndex <=0!!!");
-      return GetRandomEquipment(LevelIndex);
+      return GetRandomEquipment(LevelIndex+1);
     }
 
     public virtual Equipment GetRandomEquipment(int level)
@@ -175,16 +179,16 @@ namespace Roguelike.Generators
 
     public virtual Equipment GetRandomEquipment(EquipmentKind kind)
     {
-      if (LevelIndex <= 0)
+      if (LevelIndex < 0)
         Container.GetInstance<ILogger>().LogError("GetRandomEquipment (kind) LevelIndex <=0!!!");
 
-      return GetRandomEquipment(kind, LevelIndex);
+      return GetRandomEquipment(kind, LevelIndex+1);
     }
 
     public virtual Equipment GetRandomEquipment(EquipmentKind kind, int level)
     {
       //TODO level!
-      var eq = LootFactory.EquipmentFactory.GetRandom(kind);
+      var eq = LootFactory.EquipmentFactory.GetRandom(kind, level);
       EnasureLevelIndex(eq);
       return eq;
     }
@@ -192,17 +196,12 @@ namespace Roguelike.Generators
     private void EnasureLevelIndex(Equipment eq)
     {
       if (eq != null)
-        eq.SetLevelIndex(LevelIndex);
+        eq.SetLevelIndex(LevelIndex+1);
     }
 
     internal Loot TryGetRandomLootByDiceRoll(LootSourceKind lsk)
     {
       //return null;
-      if (generateWeaponEarly)
-      { 
-        
-      }
-
       LootKind lootKind = LootKind.Unset;
       if (lsk == LootSourceKind.DeluxeGoldChest ||
         lsk == LootSourceKind.GoldChest
@@ -234,7 +233,19 @@ namespace Roguelike.Generators
     protected virtual Equipment GetRandomEquipment(EquipmentClass eqClass)
     {
       var randedEnum = GetPossibleEqKind();
-      return LootFactory.EquipmentFactory.GetRandom(randedEnum, eqClass);
+      return LootFactory.EquipmentFactory.GetRandom(randedEnum, LevelIndex, eqClass);
+    }
+
+    public virtual Loot GetBestLoot(EnemyPowerKind powerKind)
+    {
+      EquipmentClass eqClass = EquipmentClass.Plain;
+      if (powerKind == EnemyPowerKind.Boss)
+        eqClass = EquipmentClass.Unique;
+      else if (powerKind == EnemyPowerKind.Champion)
+        eqClass = EquipmentClass.MagicSecLevel;
+      
+      //var ek = GetPossibleEqKind();
+      return GetRandomEquipment(eqClass);
     }
 
     private static EquipmentKind GetPossibleEqKind()
@@ -244,14 +255,16 @@ namespace Roguelike.Generators
 
     public virtual Loot GetRandomJewellery()
     {
-      return LootFactory.EquipmentFactory.GetRandom(EquipmentKind.Amulet);
+      return LootFactory.EquipmentFactory.GetRandom(EquipmentKind.Amulet, -1);
     }
 
     public virtual Loot GetRandomRing()
     {
-      return LootFactory.EquipmentFactory.GetRandom(EquipmentKind.Ring);
+      return LootFactory.EquipmentFactory.GetRandom(EquipmentKind.Ring, -1);
     }
 
+    static string[] GemTags;
+    
     public virtual Loot GetRandomLoot(LootKind kind)
     {
       Loot res = null;
@@ -265,7 +278,7 @@ namespace Roguelike.Generators
       else if (kind == LootKind.Food)
       {
         var enumVal = RandHelper.GetRandomEnumValue<FoodKind>(true);
-        if(enumVal == FoodKind.Mushroom)
+        if (enumVal == FoodKind.Mushroom)
           res = new Mushroom();
         else
           res = new Food();
@@ -273,20 +286,54 @@ namespace Roguelike.Generators
       else if (kind == LootKind.Plant)
         res = new Plant();
       else if (kind == LootKind.Scroll)
-        res = new Scroll(Spells.SpellKind.FireBall);
+        res = new Scroll(Spells.SpellKind.FireBall);//TODO
+      else if (kind == LootKind.Gem)
+      {
+        var gemTags = new List<string>();
+        if (GemTags == null)
+        {
+          GemTags = CreateGemTags(gemTags);
+        }
+        var lootName = RandHelper.GetRandomElem<string>(GemTags.ToArray());
+        res = GetLootByName(lootName);
+      }
+      else if (kind == LootKind.TinyTrophy)
+      {
+        var tags = TinyTrophy.TinyTrophiesTags;
+        var lootName = RandHelper.GetRandomElem<string>(tags);
+        res = GetLootByName(lootName);
+      }
+      else if (kind == LootKind.Recipe)
+      {
+        var kind_ = RandHelper.GetRandomEnumValue<RecipeKind>();
+        res = new Recipe(kind_);
+      }
       else
-        res = new Mushroom();
+        Debug.Assert(false);
 
       if(res is Equipment)
         EnasureLevelIndex(res as Equipment);
       return res;
     }
 
-    private Loot GetRandomPotion() //where T : enum
+    private static string[] CreateGemTags(List<string> gemTags)
+    {
+      var kinds = RandHelper.GetEnumValues<GemKind>(true);
+      var sizes = RandHelper.GetEnumValues<EnchanterSize>(true);
+      foreach (var kind_ in kinds)
+      {
+        foreach (var size in sizes)
+        {
+          gemTags.Add(Gem.CalcTagFrom(kind_, size));
+        }
+      }
+      return gemTags.ToArray();
+    }
+
+    private Loot GetRandomPotion() 
     {
       var enumVal = RandHelper.GetRandomEnumValue<PotionKind>();// (enumKind);
       var potion = new Potion();
-      //if (enumVal == PotionKind.Health)
       potion.SetKind(enumVal);
       return potion;
     }

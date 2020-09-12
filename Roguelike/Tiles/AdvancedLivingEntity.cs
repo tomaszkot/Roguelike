@@ -30,7 +30,7 @@ namespace Roguelike.Tiles
     public event EventHandler<EntityStatKind> StatLeveledUp;
     public event EventHandler<int> GoldChanged;
     //Character info
-    public int Level { get; set; } = 1;
+    
     public int Experience { get; private set; }
     public int NextLevelExperience { get; set; }
 
@@ -387,6 +387,11 @@ namespace Roguelike.Tiles
     public bool CanUseEquipment(Equipment eq, EntityStat eqStat)
     {
       return Stats.GetNominal(eqStat.Kind) >= eq.GetReqStatValue(eqStat);
+    }
+
+    public override string ToString()
+    {
+      return base.ToString();
     }
 
     private void AccumulateEqFactors(bool positive)

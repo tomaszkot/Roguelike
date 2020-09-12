@@ -30,6 +30,7 @@ namespace Roguelike.Generators
       this.gi = gi;
       this.logger = container.GetInstance<ILogger>();
       lootGen = container.GetInstance<LootGenerator>();
+      lootGen.LevelIndex = levelIndex;
 
       if (node.ContentGenerated)
       {

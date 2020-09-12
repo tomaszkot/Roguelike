@@ -180,7 +180,7 @@ namespace Roguelike.Tiles
     {
       return possibleLootKinds;
     }
-
+        
     public EntityStatKind PrimaryStatKind
     {
       get
@@ -217,6 +217,11 @@ namespace Roguelike.Tiles
       this.primaryStat = new EntityStat(primaryStat, 0);
       PrimaryStatValue = value;
       this.Name += " off " + primaryStat.ToString();
+    }
+
+    public List<KeyValuePair<EntityStatKind, EntityStat>> GetPossibleMagicStats()
+    {
+      return ExtendedInfo.Stats.GetStats().Where(i => i.Value.Factor == 0).ToList();
     }
 
     public List<KeyValuePair<EntityStatKind, EntityStat>> GetMagicStats()
@@ -341,7 +346,7 @@ namespace Roguelike.Tiles
       return stat;
     }
 
-    public bool IsSecondMagicLevel { get; set; }
+    public bool IsSecondMagicLevel { get { return Class == EquipmentClass.MagicSecLevel; } }
     public EntityStat PrimaryStat { get => primaryStat; set => primaryStat = value; }
     public EntityStats RequiredStats { get => requiredStats; set => requiredStats = value; }
     public int EnchantSlots { get => enchantSlots; }
@@ -404,11 +409,12 @@ namespace Roguelike.Tiles
           Price *= 2;
         }
         unidentifiedStats.SetFactor(stat, statValue);
-        IsSecondMagicLevel = secLevel;
+        if (Class == EquipmentClass.Magic && secLevel)
+          Class = EquipmentClass.MagicSecLevel;
       }
       else
       {
-        Price = (int )(Price * 1.5f);
+        Price = (int)(Price * 1.5f);
         ExtendedInfo.Stats.SetFactor(stat, statValue);
       }
       IncreasePriceBasedOnExtInfo();
@@ -478,20 +484,27 @@ namespace Roguelike.Tiles
       return price;
     }
 
-    //set based of the Dungeon Level it was dropped on.
+    //set based of the Dungeon Level it was dropped on, or if not applicable the enemy or chest level
     int levelIndex = -1;
 
-    public void SetUnique(EntityStats lootStats)
+    public void SetUnique(EntityStats lootStats, int lootLevel)
     {
-      SetClass(EquipmentClass.Unique, -1, lootStats);
+      SetClass(EquipmentClass.Unique, lootLevel, lootStats);
     }
 
     public int GetLevelIndex() { return levelIndex; }
-    public void SetLevelIndex(int li) { levelIndex = li; }
+    public void SetLevelIndex(int li) 
+    {
+      if (li <= 0)
+        throw new Exception("Eq SetLevelIndex = 0!");
+      levelIndex = li;
+      if (RequiredLevel == 0)
+        RequiredLevel = li;
+    }
 
     public virtual void SetClass(EquipmentClass _class, int levelIndex, EntityStats lootStats = null, bool magicOfSecondLevel = false)
     {
-      this.levelIndex = levelIndex;
+      SetLevelIndex(levelIndex);
       SetClass(_class);
       if (lootStats == null)
       {
@@ -506,7 +519,7 @@ namespace Roguelike.Tiles
       {
         //ExtendedInfo.Stats = lootStats;
         unidentifiedStats = lootStats;
-        IsSecondMagicLevel = magicOfSecondLevel;
+        //IsSecondMagicLevel = magicOfSecondLevel;
       }
       IncreasePriceBasedOnExtInfo();
     }

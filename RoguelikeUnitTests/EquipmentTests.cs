@@ -174,6 +174,7 @@ namespace RoguelikeUnitTests
     public void EquipmentBasicProps()
     {
       var lg = new LootGenerator(Container);
+      lg.LevelIndex = 1;
       {
         var kinds = new[] { EquipmentKind.Weapon, EquipmentKind.Armor, EquipmentKind.Shield, EquipmentKind.Helmet, EquipmentKind.Ring, EquipmentKind.Amulet };
         foreach(var kind in kinds)
@@ -203,8 +204,8 @@ namespace RoguelikeUnitTests
     {
       var game = CreateGame();
       var hero = game.Hero;
-      
-      var lg = new LootGenerator(Container);
+
+      var lg = game.GameManager.LootGenerator;
       var eq1 = lg.GetRandomEquipment(EquipmentKind.Weapon);
       
       var heroStatBefore = hero.GetTotalValue(eq1.PrimaryStatKind);
@@ -246,7 +247,7 @@ namespace RoguelikeUnitTests
       var attack1 = hero.GetCurrentValue(EntityStatKind.Attack);
       Assert.AreEqual(attack1, heroAttack);
 
-      var lg = new LootGenerator(Container);
+      var lg = game.GameManager.LootGenerator;
       var kinds = new[] { EquipmentKind.Weapon, EquipmentKind.Armor, EquipmentKind.Shield, EquipmentKind.Helmet, EquipmentKind.Ring, EquipmentKind.Amulet };
       foreach (var kind in kinds)
       {

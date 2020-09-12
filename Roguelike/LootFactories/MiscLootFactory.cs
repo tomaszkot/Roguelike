@@ -74,7 +74,7 @@ namespace Roguelike.LootFactories
         return new Gold();
       };
 
-      var tinyTrophies = new[] { "big_claw", "big_fang", "medium_claw", "medium_fang", "small_claw", "small_fang" };
+      var tinyTrophies = TinyTrophy.TinyTrophiesTags;
       foreach (var tt in tinyTrophies)
       {
         var kind = TinyTrophyKind.Unset;

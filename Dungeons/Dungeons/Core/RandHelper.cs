@@ -69,6 +69,7 @@ namespace Dungeons.Core
     public static T GetRandomEnumValue<T>(T[] skip)// where T : IConvertible
     {
       var values = Enum.GetValues(typeof(T)).Cast<T>().Where(i=> !skip.Contains(i)).ToList();
+      
       int index = random.Next(values.Count());
 
       return values[index];
@@ -76,16 +77,17 @@ namespace Dungeons.Core
 
     public static List<T> GetEnumValues<T>(bool skipUnset) where T : IConvertible
     {
-      return Enum.GetValues(typeof(T)).Cast<T>().ToList();
+      var values = Enum.GetValues(typeof(T)).Cast<T>().ToList();
+      if (skipUnset)
+      {
+        values.RemoveAll(i => i.ToString() == "Unset");
+      }
+      return values;
     }
 
     public static T GetRandomEnumValue<T>(bool skipUnset) where T : IConvertible
     {
       var values = GetEnumValues<T>(skipUnset);
-      if (skipUnset)
-      {
-        values.RemoveAll(i => i.ToString() == "Unset");
-      }
       int index = random.Next(values.Count());
 
       return values[index];
