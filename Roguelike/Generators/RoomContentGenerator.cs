@@ -90,6 +90,9 @@ namespace Roguelike.Generators
         var barrel = node.SetTileAtRandomPosition<Barrel>();
         barrel.BarrelKind = RandHelper.GetRandomDouble() < 0.75 ? BarrelKind.Barrel : BarrelKind.PileOfSkulls;
       }
+
+      node.GetTiles<Barrel>().ForEach(i => i.SetLevel(levelIndex + 1));
+      node.GetTiles<Chest>().ForEach(i => i.SetLevel(levelIndex + 1));
     }
 
     private void AddPlainChest()
@@ -108,7 +111,7 @@ namespace Roguelike.Generators
         lootNumber++;//at least one
       for (int i = 0; i < lootNumber; i++)
       {
-        var loot = lootGen.GetRandomLoot();
+        var loot = lootGen.GetRandomLoot(levelIndex+1);
         node.SetTileAtRandomPosition(loot);
       }
     }

@@ -3,11 +3,22 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
+namespace Roguelike.Tiles
+{
+  public interface ILootSource
+  {
+    int Level { get; }
+    void SetLevel(int level);
+  }
+}
+
 namespace Roguelike.Tiles.Interactive
 {
   public enum ChestKind { Unset, Plain, Gold, GoldDeluxe }
 
-  public class Chest : InteractiveTile
+  
+
+  public class Chest : InteractiveTile, ILootSource
   {
     public const char ChestSymbol = '~';
     private ChestKind chestKind = ChestKind.Plain;
@@ -24,7 +35,10 @@ namespace Roguelike.Tiles.Interactive
           Color = ConsoleColor.Yellow;
       }
     }
+    
     public bool Closed { get; set; } = true;
+
+    public void SetLevel(int level) { Level = level; }
 
     public Chest() : base(ChestSymbol)
     {

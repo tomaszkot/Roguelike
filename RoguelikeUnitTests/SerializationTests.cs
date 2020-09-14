@@ -37,7 +37,7 @@ namespace RoguelikeUnitTests
         Assert.AreNotEqual(hero.Point, pt);
         gameNode.SetTile(hero, pt.Value);
 
-        eq = game.GameManager.LootGenerator.GetRandomEquipment();
+        eq = game.GameManager.LootGenerator.GetRandomEquipment(1);
         game.GameManager.GameState.History.GeneratedLoot.Add(new LootHistory(eq));
         gameLevel = game.Level;
         heroPoint = hero.Point;
@@ -120,13 +120,13 @@ namespace RoguelikeUnitTests
       {
         var game = CreateGame(false);
         var gameNode = game.GenerateLevel(0);
-        var wpn = game.GameManager.LootGenerator.GetRandomEquipment(EquipmentKind.Weapon);
+        var wpn = game.GameManager.LootGenerator.GetRandomEquipment(EquipmentKind.Weapon, 1);
         createGame(game, "Koto", wpn);
       }
       {
         var game = CreateGame(false);
         var gameNode = game.GenerateLevel(0);
-        var arm = game.GameManager.LootGenerator.GetRandomEquipment(EquipmentKind.Armor);
+        var arm = game.GameManager.LootGenerator.GetRandomEquipment(EquipmentKind.Armor, 1);
         createGame(game, "Edd", arm);
       }
     }

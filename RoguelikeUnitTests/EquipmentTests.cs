@@ -14,7 +14,7 @@ namespace RoguelikeUnitTests
     {
       var game = CreateGame();
       {
-        var wpn = game.GameManager.LootGenerator.GetRandomEquipment(EquipmentKind.Weapon);
+        var wpn = game.GameManager.LootGenerator.GetRandomEquipment(EquipmentKind.Weapon, 1);
         Assert.IsFalse(wpn.GetMagicStats().Any());
         wpn.MakeMagic();
         Assert.False(wpn.GetMagicStats().Any());
@@ -22,7 +22,7 @@ namespace RoguelikeUnitTests
         Assert.True(wpn.GetMagicStats().Any());
       }
       {
-        var wpn1 = game.GameManager.LootGenerator.GetRandomEquipment(EquipmentKind.Weapon);
+        var wpn1 = game.GameManager.LootGenerator.GetRandomEquipment(EquipmentKind.Weapon, 1);
         var ms = wpn1.GetMagicStats();
         Assert.False(ms.Any());
         wpn1.MakeMagic(true);
@@ -179,7 +179,7 @@ namespace RoguelikeUnitTests
         var kinds = new[] { EquipmentKind.Weapon, EquipmentKind.Armor, EquipmentKind.Shield, EquipmentKind.Helmet, EquipmentKind.Ring, EquipmentKind.Amulet };
         foreach(var kind in kinds)
         {
-          var eq = lg.GetRandomEquipment(kind);
+          var eq = lg.GetRandomEquipment(kind, 1);
           Assert.Greater(eq.PrimaryStatValue, 0);
 
           var stats = eq.GetStats();
@@ -206,7 +206,7 @@ namespace RoguelikeUnitTests
       var hero = game.Hero;
 
       var lg = game.GameManager.LootGenerator;
-      var eq1 = lg.GetRandomEquipment(EquipmentKind.Weapon);
+      var eq1 = lg.GetRandomEquipment(EquipmentKind.Weapon, 1);
       
       var heroStatBefore = hero.GetTotalValue(eq1.PrimaryStatKind);
       PutEqOnLevelAndCollectIt(eq1);
@@ -217,7 +217,7 @@ namespace RoguelikeUnitTests
       heroStatBefore = hero.GetTotalValue(eq1.PrimaryStatKind);
       Assert.False(hero.Inventory.Contains(eq1));
 
-      var eq2 = lg.GetRandomEquipment(EquipmentKind.Weapon);
+      var eq2 = lg.GetRandomEquipment(EquipmentKind.Weapon, 1);
       var wpnStatBefore = eq2.GetStats().GetTotalValue(eq2.PrimaryStatKind);
       eq2.MakeMagic(EntityStatKind.Attack, 5);
       eq2.Identify();
@@ -251,7 +251,7 @@ namespace RoguelikeUnitTests
       var kinds = new[] { EquipmentKind.Weapon, EquipmentKind.Armor, EquipmentKind.Shield, EquipmentKind.Helmet, EquipmentKind.Ring, EquipmentKind.Amulet };
       foreach (var kind in kinds)
       {
-        var eq = lg.GetRandomEquipment(kind);
+        var eq = lg.GetRandomEquipment(kind, 1);
         Assert.Greater(eq.PrimaryStatValue, 0);
 
         var statBefore = heroStats.GetTotalValue(eq.PrimaryStatKind);

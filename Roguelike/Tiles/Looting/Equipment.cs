@@ -17,7 +17,6 @@ namespace Roguelike.Tiles
 
   public class Equipment : Loot
   {
-    public int MinDropDungeonLevel = 100;
     EquipmentKind kind;
     EntityStat primaryStat;
     EquipmentClass _class;
@@ -492,13 +491,15 @@ namespace Roguelike.Tiles
       SetClass(EquipmentClass.Unique, lootLevel, lootStats);
     }
 
+    public int MinDropDungeonLevel { get { return levelIndex; } }
+
     public int GetLevelIndex() { return levelIndex; }
     public void SetLevelIndex(int li) 
     {
       if (li <= 0)
         throw new Exception("Eq SetLevelIndex = 0!");
       levelIndex = li;
-      if (RequiredLevel == 0)
+      if (RequiredLevel < li)
         RequiredLevel = li;
     }
 
@@ -542,7 +543,7 @@ namespace Roguelike.Tiles
     {
       var res = base.ToString();
       if (includeTypeInToString)
-        res += this.EquipmentKind + " ";
+        res += " Kind:"+this.EquipmentKind + " Lvl:" + levelIndex;
 
       return res;
     }
@@ -635,7 +636,7 @@ namespace Roguelike.Tiles
     {
       var juwell = new Jewellery();
       juwell.EquipmentKind = EquipmentKind.Amulet;
-      juwell.MinDropDungeonLevel = 1;//TODO
+      juwell.SetLevelIndex(1);//TODO
       juwell.Price = 10;
       juwell.IsPendant = true;
       return juwell;

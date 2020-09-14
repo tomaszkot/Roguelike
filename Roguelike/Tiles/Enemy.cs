@@ -10,7 +10,7 @@ namespace Roguelike.Tiles
   public enum EnemyPowerKind { Unset, Plain, Champion, Boss };
   public enum PrefferedFightStyle { Physical, Magic, Distance }
 
-  public class Enemy : LivingEntity
+  public class Enemy : LivingEntity, ILootSource
   {
     //public int Level { get; set; } = 1;
     public PrefferedFightStyle PrefferedFightStyle { get; set; }//= PrefferedFightStyle.Magic;
@@ -175,7 +175,7 @@ namespace Roguelike.Tiles
 
     public override string ToString()
     {
-      return base.ToString() + " " + PowerKind;
+      return base.ToString() + " " + PowerKind + "";
     }
 
   }

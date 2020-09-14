@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using Dungeons;
 using Dungeons.Core;
@@ -113,6 +114,9 @@ namespace Roguelike.Generators
       }
 
       GenerateRoomContent(nodeIndex, gi, node);
+      bool zero1 = node.GetTiles<Barrel>().Any(i => i.Level <= 0);
+      bool zero2 = node.GetTiles<Chest>().Any(i => i.Level <= 0);
+      Debug.Assert(!zero1 && !zero2);
       return node;
     }
 

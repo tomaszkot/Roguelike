@@ -68,11 +68,11 @@ namespace Roguelike.LootFactories
       return null;
     }
 
-    public override Loot GetRandom()
+    public override Loot GetRandom(int level)
     {
       var index = RandHelper.GetRandomInt(factories.Count);
       var lootCreator = factories[index];
-      return lootCreator.GetRandom();
+      return lootCreator.GetRandom(level);
     }
 
   }

@@ -16,11 +16,11 @@ namespace Roguelike.LootFactories
     {
     }
 
-    public override Loot GetRandom()
+    public override Loot GetRandom(int level)
     {
       var index = RandHelper.GetRandomEnumValue<EquipmentKind>(new[] { EquipmentKind.God, EquipmentKind .Trophy, EquipmentKind.Unset});
       var lootCreator = lootCreators[index];
-      return lootCreator.GetRandom();
+      return lootCreator.GetRandom(level);
     }
 
     public override Loot GetByTag(string tagPart)
@@ -109,7 +109,7 @@ namespace Roguelike.LootFactories
           eq.SetUnique(ees.Get(), 5);
         }
       }
-      
+      eq.SetLevelIndex(maxEqLevel);//TODO 
       return eq;
     }
 
@@ -186,7 +186,7 @@ namespace Roguelike.LootFactories
     {
       var juwell = new Jewellery();
       juwell.EquipmentKind = kind;
-      juwell.MinDropDungeonLevel = minDropDungeonLevel;
+      juwell.SetLevelIndex(minDropDungeonLevel);
       juwell.Price = 10;
       return juwell;
     }
@@ -222,7 +222,7 @@ namespace Roguelike.LootFactories
       {
         jew.Name += " resistance";
       }
-      jew.MinDropDungeonLevel = minDropDungeonLevel;
+      jew.SetLevelIndex(minDropDungeonLevel);
 
       return jew;
     }

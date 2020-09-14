@@ -4,9 +4,10 @@ using System.Drawing;
 
 namespace Roguelike.Tiles
 {
+  
   public enum BarrelKind { Barrel, PileOfSkulls }
 
-  public class Barrel : InteractiveTile
+  public class Barrel : InteractiveTile, ILootSource
   {
     public const char BarrelSymbol = '~';
     public BarrelKind BarrelKind { get; set; }
@@ -22,6 +23,8 @@ namespace Roguelike.Tiles
     {
 
     }
+
+    public void SetLevel(int level) { Level = level; }
 
     //public override bool OnHitBy(IMovingDamager spell)
     //{

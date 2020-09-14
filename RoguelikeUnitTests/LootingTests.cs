@@ -23,7 +23,7 @@ namespace RoguelikeUnitTests
         var lootInfo = new LootInfo(game, null);
         for (int i = 0; i < 10; i++)
         {
-          var pot = env.LootGenerator.GetRandomLoot(LootKind.Potion);
+          var pot = env.LootGenerator.GetRandomLoot(LootKind.Potion, 1);
           var added = game.GameManager.AddLootReward(pot, env.Game.Hero, false);
           Assert.True(added);
           var dist = pot.DistanceFrom(env.Game.Hero);
@@ -46,7 +46,7 @@ namespace RoguelikeUnitTests
       var lootInfo = new LootInfo(game, null);
       for (int i = 0; i < 10; i++)
       {
-        var pot = env.LootGenerator.GetRandomLoot(LootKind.Equipment);
+        var pot = env.LootGenerator.GetRandomLoot(LootKind.Equipment, 1);
         var closeEmp = env.Game.Level.GetClosestEmpty(env.Game.Hero, true);
         var set = env.Game.Level.SetTile(pot, closeEmp.Point);
         Assert.True(set);

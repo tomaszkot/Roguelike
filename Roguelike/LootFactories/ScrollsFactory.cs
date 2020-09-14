@@ -30,7 +30,7 @@ namespace Roguelike.LootFactories
         factory[name] = createScroll;
     }
 
-    public override Loot GetRandom()
+    public override Loot GetRandom(int level)
     {
       return GetRandom<Scroll>(factory);
     }

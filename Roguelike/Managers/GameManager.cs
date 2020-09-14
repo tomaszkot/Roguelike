@@ -197,10 +197,10 @@ namespace Roguelike.Managers
           if (enemy.PowerKind == EnemyPowerKind.Champion ||
               enemy.PowerKind == EnemyPowerKind.Boss)
           {
-            loot = LootGenerator.GetBestLoot(enemy.PowerKind);
+            loot = LootGenerator.GetBestLoot(enemy.PowerKind, enemy.Level);
           }
           else 
-            loot = LootGenerator.TryGetRandomLootByDiceRoll(LootSourceKind.Enemy);
+            loot = LootGenerator.TryGetRandomLootByDiceRoll(LootSourceKind.Enemy, enemy.Level);
           if (loot != null)
           {
             AddLootReward(loot, lea.InvolvedEntity, false);
@@ -250,7 +250,7 @@ namespace Roguelike.Managers
       extraLoot.Clear();
       if (GenerationInfo.DebugInfo.EachEnemyGivesPotion)
       {
-        var potion = LootGenerator.GetRandomLoot(LootKind.Potion);
+        var potion = LootGenerator.GetRandomLoot(LootKind.Potion, en.Level);
         extraLoot.Add(potion);
       }
       if (GenerationInfo.DebugInfo.EachEnemyGivesJewellery)
@@ -261,7 +261,7 @@ namespace Roguelike.Managers
       }
       if (primaryLoot is Gold)
       {
-        var loot = LootGenerator.TryGetRandomLootByDiceRoll(LootSourceKind.Enemy);
+        var loot = LootGenerator.TryGetRandomLootByDiceRoll(LootSourceKind.Enemy, en.Level);
         if (!(loot is Gold))
           extraLoot.Add(loot);
       }
@@ -448,6 +448,7 @@ namespace Roguelike.Managers
       var attackPolicy = policy as AttackPolicy;
       if (attackPolicy.Victim is Barrel || attackPolicy.Victim is Chest)
       {
+        var inter = attackPolicy.Victim as InteractiveTile;
         var lsk = LootSourceKind.Barrel;
         Chest chest = null;
         if (attackPolicy.Victim is Chest)
@@ -466,7 +467,7 @@ namespace Roguelike.Managers
           return;
         }
 
-        var loot = TryGetRandomLootByDiceRoll(lsk);
+        var loot = TryGetRandomLootByDiceRoll(lsk, inter.Level);
         if (attackPolicy.Victim is Barrel)
         {
           bool repl = ReplaceTile<Loot>(loot, attackPolicy.Victim.Point, false, attackPolicy.Victim);
@@ -480,12 +481,12 @@ namespace Roguelike.Managers
           if (chest.ChestKind == ChestKind.GoldDeluxe ||
             chest.ChestKind == ChestKind.Gold)
           {
-            var lootEx1 = GetExtraLoot(attackPolicy.Victim, false);
+            var lootEx1 = GetExtraLoot(attackPolicy.Victim as ILootSource, false);
             AddLootReward(lootEx1, attackPolicy.Victim, true);
 
             if (chest.ChestKind == ChestKind.GoldDeluxe)
             {
-              var lootEx2 = GetExtraLoot(attackPolicy.Victim, true);
+              var lootEx2 = GetExtraLoot(attackPolicy.Victim as ILootSource, true);
               AddLootReward(lootEx2, attackPolicy.Victim, true);
             }
           }
@@ -493,9 +494,9 @@ namespace Roguelike.Managers
       }
     }
 
-    protected virtual Loot TryGetRandomLootByDiceRoll(LootSourceKind lsk)
+    protected virtual Loot TryGetRandomLootByDiceRoll(LootSourceKind lsk, int level)
     {
-      return LootGenerator.TryGetRandomLootByDiceRoll(lsk);
+      return LootGenerator.TryGetRandomLootByDiceRoll(lsk, level);
     }
 
     public virtual void OnHeroPolicyApplied(Policies.Policy policy)
@@ -519,7 +520,7 @@ namespace Roguelike.Managers
       OnHeroPolicyApplied(policy);
     }
 
-    private Loot GetExtraLoot(Tile victim, bool nonEquipment)
+    private Loot GetExtraLoot(ILootSource victim, bool nonEquipment)
     {
       if (victim is Chest)
       {
@@ -531,7 +532,7 @@ namespace Roguelike.Managers
         {
           if (nonEquipment)
           {
-            return lootGenerator.GetRandomLoot();//TODO Equipment might happen
+            return lootGenerator.GetRandomLoot(chest.Level);//TODO Equipment might happen
           }
           else
           {
@@ -544,7 +545,7 @@ namespace Roguelike.Managers
         }
       }
 
-      return lootGenerator.GetRandomLoot();
+      return lootGenerator.GetRandomLoot(victim.Level);
     }
 
     protected void AppendAction<T>(Action<T> init) where T : GameAction, new()

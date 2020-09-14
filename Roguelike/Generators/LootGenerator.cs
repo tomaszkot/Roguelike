@@ -164,42 +164,44 @@ namespace Roguelike.Generators
       return GetLootByName(tileName) as T;
     }
 
-    public virtual Equipment GetRandomEquipment()
+    public virtual Equipment GetRandomEquipment(int maxEqLevel)
     {
-      if(LevelIndex <0)
-        Container.GetInstance<ILogger>().LogError("GetRandomEquipment LevelIndex <=0!!!");
-      return GetRandomEquipment(LevelIndex+1);
-    }
-
-    public virtual Equipment GetRandomEquipment(int level)
-    {
+      var levelToUse = maxEqLevel > 0 ? maxEqLevel : (LevelIndex+1);
+      
+      if (levelToUse <= 0)
+        Container.GetInstance<ILogger>().LogError("GetRandomEquipment levelToUse <=0!!!");
       var kind = GetPossibleEqKind();
-      return GetRandomEquipment(kind, level);
+      return GetRandomEquipment(kind, levelToUse);
     }
 
-    public virtual Equipment GetRandomEquipment(EquipmentKind kind)
-    {
-      if (LevelIndex < 0)
-        Container.GetInstance<ILogger>().LogError("GetRandomEquipment (kind) LevelIndex <=0!!!");
+    //public virtual Equipment GetRandomEquipment(int level)
+    //{
+    //  var kind = GetPossibleEqKind();
+    //  return GetRandomEquipment(kind, level);
+    //}
 
-      return GetRandomEquipment(kind, LevelIndex+1);
-    }
+    //public virtual Equipment GetRandomEquipment(EquipmentKind kind)
+    //{
+    //  if (LevelIndex < 0)
+    //    Container.GetInstance<ILogger>().LogError("GetRandomEquipment (kind) LevelIndex <=0!!!");
+
+    //  return GetRandomEquipment(kind, LevelIndex+1);
+    //}
 
     public virtual Equipment GetRandomEquipment(EquipmentKind kind, int level)
     {
-      //TODO level!
       var eq = LootFactory.EquipmentFactory.GetRandom(kind, level);
-      EnasureLevelIndex(eq);
+      //EnasureLevelIndex(eq);//level must be given by factory!
       return eq;
     }
 
-    private void EnasureLevelIndex(Equipment eq)
-    {
-      if (eq != null)
-        eq.SetLevelIndex(LevelIndex+1);
-    }
+    //private void EnasureLevelIndex(Equipment eq)
+    //{
+    //  if (eq != null)
+    //    eq.SetLevelIndex(LevelIndex+1);
+    //}
 
-    internal Loot TryGetRandomLootByDiceRoll(LootSourceKind lsk)
+    internal Loot TryGetRandomLootByDiceRoll(LootSourceKind lsk, int maxEqLevel)
     {
       //return null;
       LootKind lootKind = LootKind.Unset;
@@ -210,7 +212,7 @@ namespace Roguelike.Generators
         lootKind = LootKind.Equipment;
       }
       else if(lsk == LootSourceKind.PlainChest)
-        return GetRandomLoot();//some cheap loot
+        return GetRandomLoot(maxEqLevel);//some cheap loot
       else
         lootKind = Probability.RollDiceForKind(lsk);
 
@@ -219,7 +221,7 @@ namespace Roguelike.Generators
         var eqClass = Probability.RollDice(lsk);
         if (eqClass != EquipmentClass.Unset)
         {
-          var item = GetRandomEquipment(eqClass);
+          var item = GetRandomEquipment(eqClass, maxEqLevel);
           return item;
         }
       }
@@ -227,16 +229,21 @@ namespace Roguelike.Generators
       if (lootKind == LootKind.Unset)
         return null;
 
-      return GetRandomLoot(lootKind);
+      return GetRandomLoot(lootKind, maxEqLevel);
     }
 
-    protected virtual Equipment GetRandomEquipment(EquipmentClass eqClass)
+    protected virtual Equipment GetRandomEquipment(EquipmentClass eqClass, int level)
     {
       var randedEnum = GetPossibleEqKind();
-      return LootFactory.EquipmentFactory.GetRandom(randedEnum, LevelIndex, eqClass);
+      if (level == 3 )//&& randedEnum == EquipmentKind.Ring)
+      {
+        int k = 0;
+        k++;
+      }
+      return LootFactory.EquipmentFactory.GetRandom(randedEnum, level, eqClass);
     }
 
-    public virtual Loot GetBestLoot(EnemyPowerKind powerKind)
+    public virtual Loot GetBestLoot(EnemyPowerKind powerKind, int level)
     {
       EquipmentClass eqClass = EquipmentClass.Plain;
       if (powerKind == EnemyPowerKind.Boss)
@@ -245,7 +252,7 @@ namespace Roguelike.Generators
         eqClass = EquipmentClass.MagicSecLevel;
       
       //var ek = GetPossibleEqKind();
-      return GetRandomEquipment(eqClass);
+      return GetRandomEquipment(eqClass, level);
     }
 
     private static EquipmentKind GetPossibleEqKind()
@@ -265,14 +272,14 @@ namespace Roguelike.Generators
 
     static string[] GemTags;
     
-    public virtual Loot GetRandomLoot(LootKind kind)
+    public virtual Loot GetRandomLoot(LootKind kind, int level)
     {
       Loot res = null;
 
       if (kind == LootKind.Gold)
         res = new Gold();
       else if (kind == LootKind.Equipment)
-        res = GetRandomEquipment(EquipmentClass.Plain);
+        res = GetRandomEquipment(EquipmentClass.Plain, level);
       else if (kind == LootKind.Potion)
         res = GetRandomPotion();
       else if (kind == LootKind.Food)
@@ -311,8 +318,8 @@ namespace Roguelike.Generators
       else
         Debug.Assert(false);
 
-      if(res is Equipment)
-        EnasureLevelIndex(res as Equipment);
+      //if(res is Equipment)
+//        EnasureLevelIndex(res as Equipment);
       return res;
     }
 
@@ -339,11 +346,11 @@ namespace Roguelike.Generators
     }
 
     //a cheap loot generated randomly on the level
-    public virtual Loot GetRandomLoot()
+    public virtual Loot GetRandomLoot(int level)
     {
       var enumVal = RandHelper.GetRandomEnumValue<LootKind>(new[] 
       { LootKind.Other, LootKind.Gem, LootKind.Recipe, LootKind.Seal, LootKind.SealPart, LootKind.Unset, LootKind.TinyTrophy});
-      var loot = GetRandomLoot(enumVal);
+      var loot = GetRandomLoot(enumVal, level);
       return loot;
     }
 

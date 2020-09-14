@@ -141,7 +141,7 @@ namespace RoguelikeUnitTests
       Assert.True(hero.Inventory.Add(scroll));
       Assert.True(hero.Inventory.Contains(scroll));
 
-      var wpn = game.GameManager.LootGenerator.GetRandomEquipment(EquipmentKind.Weapon);
+      var wpn = game.GameManager.LootGenerator.GetRandomEquipment(EquipmentKind.Weapon, 1);
       Assert.IsFalse(wpn.GetMagicStats().Any());
       wpn.MakeMagic();
       Assert.False(wpn.GetMagicStats().Any());
@@ -159,7 +159,7 @@ namespace RoguelikeUnitTests
       var game = CreateGame();
       var hero = game.Hero;
 
-      var loot = game.GameManager.LootGenerator.GetRandomLoot(LootKind.Scroll);
+      var loot = game.GameManager.LootGenerator.GetRandomLoot(LootKind.Scroll, 1);
       Assert.NotNull(loot.tag1);
       Assert.True(hero.Inventory.Add(loot));
     }
@@ -169,7 +169,7 @@ namespace RoguelikeUnitTests
     {
       var game = CreateGame();
       var hero = game.Hero;
-      var loot = game.GameManager.LootGenerator.GetRandomLoot(LootKind.Scroll);
+      var loot = game.GameManager.LootGenerator.GetRandomLoot(LootKind.Scroll, 1);
       Assert.True(hero.Inventory.Add(loot));
       var priceInHeroInv = hero.GetPrice(loot);
       Assert.AreEqual(priceInHeroInv, loot.Price);

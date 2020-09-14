@@ -89,6 +89,15 @@ namespace Roguelike.TileContainers
     public override bool SetTile(Tile tile, Point point, bool resetOldTile = true, bool revealReseted = true,
       bool autoSetTileDungeonIndex = true)
     {
+      if (tile is ILootSource)
+      {
+        var ls = tile as ILootSource;
+        if (ls.Level <= 0)
+        {
+          ls.SetLevel(Index+1);//some UT needed it
+        }
+      }
+
       if (tile is Hero)
       {
         var tileAtPoint = GetTile(point);

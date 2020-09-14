@@ -3,6 +3,7 @@ using Roguelike.Tiles;
 using SimpleInjector;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 
 namespace Roguelike.LootFactories
@@ -17,7 +18,7 @@ namespace Roguelike.LootFactories
     }
 
     protected abstract void Create();
-    public abstract Loot GetRandom();// where T : Loot;
+    public abstract Loot GetRandom(int level);// where T : Loot;
     public abstract Loot GetByName(string name);
     public abstract Loot GetByTag(string tagPart);
     protected Container container;
@@ -34,21 +35,46 @@ namespace Roguelike.LootFactories
   public abstract class EquipmentTypeFactory : AbstractLootFactory
   {
     protected Dictionary<string, Func<string, Equipment>> factory = new Dictionary<string, Func<string, Equipment>>();
-    public List<string> UniqueItemTags { get; private set; } = new List<string>();
-    public int MaxEqLevel { get; set; }
+    public List<string> UniqueItemTags { get; protected set; } = new List<string>();
+    protected Dictionary<string, Roguelike.Tiles.Equipment> prototypes = new Dictionary<string, Roguelike.Tiles.Equipment>();
 
     public EquipmentTypeFactory(Container container) : base(container)
     {
     }
 
-    public override Loot GetRandom()
+    public override Loot GetRandom(int level)
+    {
+      var lootProto = GetRandromFromPrototype(level);
+      if (lootProto != null)
+        return lootProto;
+
+      Equipment loot = GetRandomFromAll();
+
+      return loot;
+    }
+
+    protected Equipment GetRandomFromAll()
     {
       var index = RandHelper.GetRandomInt(factory.Count);
       var lootCreator = factory.ElementAt(index);
       var loot = lootCreator.Value(lootCreator.Key);
-      if (loot.GetLevelIndex() < 0)
-        loot.SetLevelIndex(MaxEqLevel+1);
       return loot;
+    }
+
+    protected virtual Loot GetRandromFromPrototype(int level)
+    {
+      if (prototypes.Any())
+      {
+        var eqsAtLevel = prototypes.Values.Where(i => i.GetLevelIndex() == level).ToList();
+        var eq = RandHelper.GetRandomElem<Equipment>(eqsAtLevel);
+        if (eq != null)
+        {
+          var eqCreator = factory[eq.tag1];
+          return eqCreator(eq.tag1);
+        }
+        Debug.Assert(false);
+      }
+      return null;
     }
 
     public override Loot GetByName(string name)

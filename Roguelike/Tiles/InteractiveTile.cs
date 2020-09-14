@@ -16,6 +16,7 @@ namespace Roguelike.Tiles
   public class InteractiveTile : Dungeons.Tiles.Tile, IObstacle
   {
     private InteractiveTileKind _kind = InteractiveTileKind.Unset;
+    public int Level { get; set; } = -1;//should match level of dungeon or a level of world part
 
     public InteractiveTile(char symbol) : base(symbol)
     {
@@ -47,7 +48,7 @@ namespace Roguelike.Tiles
     public override string ToString()
     {
       var res = base.ToString();
-      res += ", " + Kind;
+      res += ", " + Kind + " Lvl:"+ Level;
       return res;
     }
   }
