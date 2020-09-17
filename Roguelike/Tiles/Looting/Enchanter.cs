@@ -6,7 +6,11 @@ namespace Roguelike.Tiles.Looting
   public enum EnchanterSize { Small, Medium, Big }
 
   public abstract class Enchanter : StackedLoot
-  {    
+  {
+    public static string Small = "small";
+    public static string Medium = "medium";
+    public static string Big = "big";
+
     public EnchanterSize EnchanterSize { get; set; } = EnchanterSize.Small;
     public EnchantSrc EnchantSrc { get; set; }
     //public EnchanterKind EnchanterKind { get; set; }

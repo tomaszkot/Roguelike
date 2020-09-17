@@ -17,7 +17,11 @@ namespace Roguelike.Tiles.Looting
     static Dictionary<EquipmentKind, EntityStatKind> enhancmentPropsFang = new Dictionary<EquipmentKind, EntityStatKind>();
     static Dictionary<EquipmentKind, EntityStatKind> enhancmentPropsTusk = new Dictionary<EquipmentKind, EntityStatKind>();
     static Dictionary<EquipmentKind, EntityStatKind> enhancmentPropsClaw = new Dictionary<EquipmentKind, EntityStatKind>();
-    public static string[] TinyTrophiesTags = new[] { "big_claw", "big_fang", "medium_claw", "medium_fang", "small_claw", "small_fang" };
+
+    
+
+    public static string[] TinyTrophiesTags = new[] { Enchanter.Big+ "_claw", Enchanter.Big + "_fang", Enchanter.Medium + "_claw",
+      Enchanter.Medium+"_fang", Enchanter.Small+"_claw", Enchanter.Small+"_fang" };
 
 
     public override string PrimaryStatDescription => primaryStatDescription;

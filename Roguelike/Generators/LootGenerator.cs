@@ -296,19 +296,13 @@ namespace Roguelike.Generators
         res = new Scroll(Spells.SpellKind.FireBall);//TODO
       else if (kind == LootKind.Gem)
       {
-        var gemTags = new List<string>();
-        if (GemTags == null)
-        {
-          GemTags = CreateGemTags(gemTags);
-        }
-        var lootName = RandHelper.GetRandomElem<string>(GemTags.ToArray());
-        res = GetLootByName(lootName);
+        res = GetRandomEnchanter(level, false);
+        //var lootName = RandHelper.GetRandomElem<string>(GemTags.ToArray());
+        //res = GetLootByName(lootName);
       }
       else if (kind == LootKind.TinyTrophy)
       {
-        var tags = TinyTrophy.TinyTrophiesTags;
-        var lootName = RandHelper.GetRandomElem<string>(tags);
-        res = GetLootByName(lootName);
+        res = GetRandomEnchanter(level, true);
       }
       else if (kind == LootKind.Recipe)
       {
@@ -320,6 +314,43 @@ namespace Roguelike.Generators
 
       //if(res is Equipment)
 //        EnasureLevelIndex(res as Equipment);
+      return res;
+    }
+
+    string getEnchanterPreffix(int level)
+    {
+      if (level <= 5)
+      {
+        return Enchanter.Small;
+      }
+      if (level <= 10)
+      {
+        return Enchanter.Medium;
+      }
+      return Enchanter.Big;
+    }
+
+    private Loot GetRandomEnchanter(int level, bool tinyTrophy)
+    {
+      Loot res = null;
+      var preff = getEnchanterPreffix(level);
+      List<string> tags = null;
+      if (tinyTrophy)
+        tags = TinyTrophy.TinyTrophiesTags.Where(i => i.StartsWith(preff)).ToList();
+      else
+      {
+        var gemTags = new List<string>();
+        if (GemTags == null)
+        {
+          GemTags = CreateGemTags(gemTags);
+        }
+        tags = GemTags.Where(i => i.EndsWith(preff)).ToList();
+      }
+      //else
+      //  Debug.Assert(false);
+
+      var lootName = RandHelper.GetRandomElem<string>(tags);
+      res = GetLootByName(lootName);
       return res;
     }
 

@@ -6,6 +6,7 @@ using Roguelike.Tiles.Interactive;
 using Roguelike.Tiles.Looting;
 using RoguelikeUnitTests.Helpers;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace RoguelikeUnitTests
@@ -346,8 +347,53 @@ namespace RoguelikeUnitTests
         }
       }
     }
-    ///////////////////
-    
+    /////////////////////////////////////////////////////////
+    [Test]
+    public void KilledEnemyLevelAffectsTinyTrophy()
+    {
+      KilledEnemyLevelAffectsEnchanter(LootKind.TinyTrophy);
+    }
+    /////////////////////////////////////////////////////////
+    [Test]
+    public void KilledEnemyLevelAffectsGem()
+    {
+      KilledEnemyLevelAffectsEnchanter(LootKind.Gem);
+    }
+    /////////////////////////////////////////////////////////
+    public void KilledEnemyLevelAffectsEnchanter(LootKind kind)
+    {
+      var env = CreateTestEnv();
+      env.LootGenerator.Probability = new Roguelike.Probability.Looting();
+      env.LootGenerator.Probability.SetLootingChance(LootSourceKind.Enemy, kind, 1);
+
+      var enemies = this.Game.GameManager.EnemiesManager.GetEnemies();
+      Assert.GreaterOrEqual(enemies.Count, 5);
+      enemies.ForEach(i => i.SetLevel(6));
+      var li = new LootInfo(game, null);
+      env.KillAllEnemies();
+
+      var res = new List<LootKind>();
+      var lootItems = li.GetDiff();
+      int expectedKindsCounter = 0;
+      {
+        foreach (var loot in lootItems)
+        {
+          var exp = kind == loot.LootKind;
+
+          if (exp)
+          {
+            var ench = loot as Enchanter;
+            Assert.True(ench.EnchanterSize == EnchanterSize.Medium || ench.EnchanterSize == EnchanterSize.Big);//en at 6 level shall trow good trophy
+            expectedKindsCounter++;
+          }
+
+          res.Add(loot.LootKind);
+        }
+      }
+      Assert.Greater(expectedKindsCounter, 0);
+    }
+
+
 
   }
 }
