@@ -13,6 +13,15 @@ namespace Roguelike.Tiles
     Trap, Lever
   }
 
+  public interface IApproachableByHero
+  {
+    bool ApproachedByHero { get; set; }
+    double DistanceFrom(Dungeons.Tiles.Tile other);
+    bool Activate();
+
+    event EventHandler Activated;
+  }
+
   public class InteractiveTile : Dungeons.Tiles.Tile, IObstacle
   {
     private InteractiveTileKind _kind = InteractiveTileKind.Unset;
@@ -51,5 +60,10 @@ namespace Roguelike.Tiles
       res += ", " + Kind + " Lvl:"+ Level;
       return res;
     }
+
+    /// <summary>
+    /// Was here ever close to the tile?
+    /// </summary>
+    public bool ApproachedByHero { get; set; }
   }
 }

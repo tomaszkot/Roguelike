@@ -78,7 +78,7 @@ namespace Roguelike.Managers
     {
       Container = container;
 
-      gameState = container.GetInstance<GameState>();
+      gameState = container.GetInstance<Roguelike.GameState>();
       LootGenerator = container.GetInstance<LootGenerator>();
       Logger = container.GetInstance<ILogger>();
       levelGenerator = container.GetInstance<LevelGenerator>();

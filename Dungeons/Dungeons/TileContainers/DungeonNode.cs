@@ -420,7 +420,6 @@ namespace Dungeons
         return null;
       }
 
-
       public virtual Tile GetTile(Point point)
       {
         if (point.X < 0 || point.Y < 0)
@@ -429,6 +428,8 @@ namespace Dungeons
           return null;
         return tiles[point.Y, point.X];
       }
+
+      public bool NullTilesAllowed { get; set; }
 
       public virtual bool SetTile(Tile tile, Point point,
         bool resetOldTile = true, bool revealReseted = true, bool autoSetTileDungeonIndex = true)
@@ -439,7 +440,7 @@ namespace Dungeons
           return false;
         }
 
-        if (tile == null)
+        if (!NullTilesAllowed && tile == null)
         {
           Log("tile == null", false);
         }

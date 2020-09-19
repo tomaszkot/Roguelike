@@ -10,9 +10,10 @@ using System.Threading.Tasks;
 namespace Roguelike.Tiles.Interactive
 {
   public enum StairsKind { Unset, PitDown, PitUp, LevelUp, LevelDown };
-
-  public class Stairs : InteractiveTile
+  
+  public class Stairs : InteractiveTile, IApproachableByHero
   {
+    public event EventHandler Activated;
     StairsKind kind;
     public string pitName = "";
     public string PitName
@@ -55,6 +56,20 @@ namespace Roguelike.Tiles.Interactive
       color = ConsoleColor.Blue;
 #endif
       StairsKind = kind;
+    }
+
+    public bool Activate()
+    {
+      if (!ApproachedByHero)
+      {
+        ApproachedByHero = true;
+        if (Activated != null)
+          Activated(this, EventArgs.Empty);
+
+        return true;
+      }
+
+      return false;
     }
   }
 }
