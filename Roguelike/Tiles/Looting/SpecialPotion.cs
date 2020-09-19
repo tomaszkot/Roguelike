@@ -1,4 +1,5 @@
-﻿using Roguelike.Attributes;
+﻿using Dungeons.Core;
+using Roguelike.Attributes;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -6,42 +7,45 @@ using System.Text;
 
 namespace Roguelike.Tiles.Looting
 {
-  public enum SpecialPotionKind { Unknown, Strength, Magic,
-    Attack //deprecated, to enable old saves being loadable
-  }
+  public enum SpecialPotionKind { Unset, Strength, Magic}
+  public enum SpecialPotionSize { Small, Medium, Big }
 
   [Serializable]
-  public class SpecialPotion : Loot
+  public class SpecialPotion : Potion
   {
-    SpecialPotionKind kind;
-    public bool BigPotion = true;
+    SpecialPotionKind specialPotionKind;
+    SpecialPotionSize size = SpecialPotionSize.Small;
+    bool used = false;
 
-    public SpecialPotion() : this(SpecialPotionKind.Unknown, true)
+    public SpecialPotion() : this(SpecialPotionKind.Unset, SpecialPotionSize.Small)
     {
     }
 
-    public SpecialPotion(SpecialPotionKind kind, bool big)
+    public SpecialPotion(SpecialPotionKind kind, SpecialPotionSize size) : base(PotionKind.Special)
     {
-      BigPotion = big;
-      Kind = kind;
-      Price = big ? 100 : 25;
+      SpecialPotionKind = kind;
+      Price = 50;
+      this.size = size;
+      if (size == SpecialPotionSize.Medium)
+        Price = 100;
+      else if (size == SpecialPotionSize.Big)
+        Price = 200;
       Symbol = '`';
-
     }
 
-    public SpecialPotionKind Kind
+    public SpecialPotionKind SpecialPotionKind
     {
       get
       {
-        return kind;
+        return specialPotionKind;
       }
 
       set
       {
-        kind = value;
+        specialPotionKind = value;
         if (value == SpecialPotionKind.Strength)
         {
-          tag1 = "attack_potion";//HACK
+          tag1 = "strength_potion";//HACK
           Name = "Strength Potion";
         }
         else if (value == SpecialPotionKind.Magic)
@@ -50,37 +54,40 @@ namespace Roguelike.Tiles.Looting
           Name = "Magic Potion";
         }
 
-        if (!BigPotion)
-        {
-          tag1 += "_small";
-          Name = "Small " + Name;
-        }
+        //tag1 += "_"+size.ToString();maybe UI can scale ?
+        Name = size.ToString().ToUpperFirstLetter() + " "+ Name;
       }
     }
-    bool used = false;
-    public void Apply(LivingEntity ent)
+    
+    public bool Apply(AdvancedLivingEntity ent)
     {
       if (used)
-        return;
+        return false;
 
-      //TODO
-      //EntityStatKind esk = GetDestStat();
-      //var enh = GetEnhValue();
-      //ent.Stats[esk].NominalValue += enh;
-      //for (int i = 0; i < enh; i++)
-      //  ent.Stats.EmitStatsLeveledUp(GetDestStat());
+      EntityStatKind esk = GetDestStat();
+      var enh = GetEnhValue();
+      ent.Stats[esk].Nominal += enh;
+      for (int i = 0; i < enh; i++)
+         ent.EmitStatsLeveledUp(GetDestStat());
       //GameManager.Instance.AppendAction(new LootAction() { Info = ent.Name + " drunk " + Name, Loot = this, KindValue = LootAction.Kind.SpecialDrunk });
-      //used = true;
+      used = true;
+      return true;
     }
 
-    private int GetEnhValue()
+    public int GetEnhValue()
     {
-      return BigPotion ? 5 : 1;
+      var value = 1;
+      if (size == SpecialPotionSize.Medium)
+        value = 3;
+      else if (size == SpecialPotionSize.Big)
+        value = 5;
+
+      return value;
     }
 
     public EntityStatKind GetDestStat()
     {
-      return Kind == SpecialPotionKind.Strength ? EntityStatKind.Strength : EntityStatKind.Magic;
+      return SpecialPotionKind == SpecialPotionKind.Strength ? EntityStatKind.Strength : EntityStatKind.Magic;
     }
 
     public override string PrimaryStatDescription
@@ -91,6 +98,8 @@ namespace Roguelike.Tiles.Looting
         return desc;
       }
     }
+
+    public SpecialPotionSize Size { get => size; set => size = value; }
 
     public override string[] GetExtraStatDescription()
     {

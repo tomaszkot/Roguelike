@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Roguelike.Tiles.Looting
 {
-  public enum PotionKind { Health, Mana, Poison }
+  public enum PotionKind { Unset, Health, Mana, Poison, Special }
 
   public class Potion : StackedLoot, IConsumable
   {

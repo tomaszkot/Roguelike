@@ -23,7 +23,14 @@ namespace RoguelikeUnitTests.Helpers
 
     public List<LootKind> AssertLootKindFromEnemies(LootKind[] expectedKinds)
     {
-      var res = new List<LootKind>();
+      var res = AssertLootFromEnemies(expectedKinds);
+
+      return res.Select(i=> i.LootKind).ToList();
+    }
+
+    public List<Loot> AssertLootFromEnemies(LootKind[] expectedKinds)
+    {
+      var res = new List<Loot>();
       var enemies = Enemies;
       Assert.GreaterOrEqual(enemies.Count, 5);
       var li = new LootInfo(game, null);
@@ -39,7 +46,7 @@ namespace RoguelikeUnitTests.Helpers
           if (exp)
             expectedKindsCounter++;
 
-          res.Add(loot.LootKind);
+          res.Add(loot);
         }
       }
       Assert.Greater(expectedKindsCounter, 0);

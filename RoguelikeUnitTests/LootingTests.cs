@@ -96,9 +96,14 @@ namespace RoguelikeUnitTests
     public void KilledEnemyForPotion()
     {
       var env = CreateTestEnv(numEnemies: 25);
+      env.Enemies.ForEach(i => i.PowerKind = EnemyPowerKind.Plain);
       env.LootGenerator.Probability = new Roguelike.Probability.Looting();
       env.LootGenerator.Probability.SetLootingChance(LootSourceKind.Enemy, LootKind.Potion, 1);
-      env.AssertLootKindFromEnemies(new[] { LootKind.Potion });
+      var lootItems = env.AssertLootFromEnemies(new[] { LootKind.Potion }).Cast<Potion>().ToList();
+      Assert.True(lootItems.Any(i => i.Kind == PotionKind.Health));
+      Assert.True(lootItems.Any(i => i.Kind == PotionKind.Mana));
+      Assert.True(lootItems.Any(i => i.Kind == PotionKind.Poison));
+      Assert.False(lootItems.Any(i => i.Kind == PotionKind.Special));//these are rare
     }
 
     [Test]

@@ -166,15 +166,15 @@ namespace Roguelike.Tiles
 
       //return ac;
     }
-        
-    //public void IncreaseStatByLevelUpPoint(EntityStatKind stat)
-    //{
-    //  if (LevelUpPoints == 0)
-    //    return;
-    //  this[stat].Nominal += 1;
-    //  LevelUpPoints--;
-    //  EmitStatsLeveledUp(stat);
-    //}
+
+    public void IncreaseStatByLevelUpPoint(EntityStatKind stat)
+    {
+      if (LevelUpPoints == 0)
+        return;
+      this.Stats[stat].Nominal += 1;
+      LevelUpPoints--;
+      EmitStatsLeveledUp(stat);
+    }
 
     public void EmitStatsLeveledUp(EntityStatKind stat)
     {

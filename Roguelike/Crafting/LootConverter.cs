@@ -292,11 +292,11 @@ namespace Roguelike.Crafting
       float ms = 0;
       foreach (var sp in sps)
       {
-        var esk = sp.Kind == Tiles.Looting.SpecialPotionKind.Strength ? EntityStatKind.LifeStealing : EntityStatKind.ManaStealing;
+        var esk = sp.SpecialPotionKind == Tiles.Looting.SpecialPotionKind.Strength ? EntityStatKind.LifeStealing : EntityStatKind.ManaStealing;
         if (esk == EntityStatKind.LifeStealing)
-          ls += sp.BigPotion ? 5 : 2;
+          ls += sp.GetEnhValue();
         else
-          ms += sp.BigPotion ? 5 : 2;
+          ms += sp.GetEnhValue();
 
       }
       if (ls > 0)

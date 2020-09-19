@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using Roguelike.Tiles;
 using Roguelike.Tiles.Looting;
@@ -21,17 +22,42 @@ namespace Roguelike.LootFactories
     {
       Func<string, Loot> createPotion = (string tag) =>
       {
-        var loot = new Potion();
-        loot.tag1 = tag;
-        if (tag == "poison_potion")
-          loot.SetKind(PotionKind.Poison);
-        else if (tag == "health_potion")
-          loot.SetKind(PotionKind.Health);
+        //var loot = new Potion();
+        //loot.tag1 = tag;
+        var kind = PotionKind.Unset;
+        var specialKind = SpecialPotionKind.Unset;
+
+        if (tag == "health_potion")
+          kind = PotionKind.Health;
+
         else if (tag == "mana_potion")
-          loot.SetKind(PotionKind.Mana);
+          kind = PotionKind.Mana;
+
+        else if (tag == "poison_potion")
+          kind = PotionKind.Poison;
+
+        else if (tag == "magic_potion")
+        {
+          kind = PotionKind.Special;
+          specialKind = SpecialPotionKind.Magic;
+        }
+
+        else if (tag == "strength_potion")
+        {
+          kind = PotionKind.Special;
+          specialKind = SpecialPotionKind.Strength;
+        }
+        else
+          Debug.Assert(false);
+
+        Potion loot = null;
+        if (specialKind != SpecialPotionKind.Unset)
+          loot = new SpecialPotion(specialKind, SpecialPotionSize.Small);
+        else
+          loot = new Potion(kind);
         return loot;
       };
-      var names = new[] { "poison_potion", "health_potion", "mana_potion" };
+      var names = new[] { "poison_potion", "health_potion", "mana_potion", "magic_potion", "strength_potion" };
       foreach (var name in names)
       {
         factory[name] = createPotion;

@@ -4,10 +4,6 @@ using Roguelike.Tiles.Looting;
 namespace Roguelike.Tiles
 {
   public enum MushroomKind { BlueToadstool, RedToadstool, Boletus };
-  public enum SpecialPotionKind
-  {
-    Unknown, Strength, Magic
-  }
 
   public class Mushroom : Food
   {
