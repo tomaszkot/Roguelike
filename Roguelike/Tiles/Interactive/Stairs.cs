@@ -76,5 +76,7 @@ namespace Roguelike.Tiles.Interactive
     {
       return "";// DungeonPit.GetPitDisplayName(st);
     }
+
+    public string ActivationSound { get; set; } = "";
   }
 }

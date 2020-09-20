@@ -1,5 +1,6 @@
 ﻿using Dungeons.Core;
 using Dungeons.TileContainers;
+using Newtonsoft.Json;
 using System;
 using System.Drawing;
 using System.Linq;
@@ -44,6 +45,9 @@ namespace Dungeons.Tiles
     /// If false the tile is not visible. The revealed flag shall be typically set to true when a door leading to room are opened.
     /// </summary>
     bool revealed = true;
+
+    [JsonIgnore]
+    public string DestroySound { get; set; }
 
 
     public Tile() : this(Constants.SymbolBackground)

@@ -12,7 +12,7 @@ namespace Roguelike
   {
     public static bool IsDynamic(this Tile tile)
     {
-      return tile is LivingEntity || tile is InteractiveTile || tile is Loot;
+      return tile is LivingEntity || tile is Tiles.InteractiveTile || tile is Loot;
     }
 
     public static T As<T>(this Tile tile) where T : Tile

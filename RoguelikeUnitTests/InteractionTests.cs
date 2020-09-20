@@ -25,7 +25,7 @@ namespace RoguelikeUnitTests
       TestInteraction<Chest>(game, false);
     }
 
-    private void TestInteraction<T>(Roguelike.RoguelikeGame game, bool interShallBeDestroyed) where T : InteractiveTile, new()
+    private void TestInteraction<T>(Roguelike.RoguelikeGame game, bool interShallBeDestroyed) where T : Roguelike.Tiles.InteractiveTile, new()
     {
       var inters = game.Level.GetTiles<T>();
       var intersCount = inters.Count;

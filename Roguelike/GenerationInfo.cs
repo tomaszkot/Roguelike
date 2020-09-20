@@ -18,7 +18,7 @@
     {
       //TMP!!!
       //NumberOfRooms = 1;
-      //GenerateEnemies = false;
+      GenerateEnemies = true;
       //ForcedNumberOfEnemiesInRoom = 1;
     }
     public const int MaxLevelIndex = 1;//0 - only one level, 1 - two levels,./... -1 endless

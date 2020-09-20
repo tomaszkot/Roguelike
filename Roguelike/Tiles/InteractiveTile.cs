@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 using Roguelike.Abstract;
 
 namespace Roguelike.Tiles
@@ -19,14 +20,17 @@ namespace Roguelike.Tiles
     double DistanceFrom(Dungeons.Tiles.Tile other);
     bool Activate();
     string GetPlaceName();
+    string ActivationSound { get; set; }
 
     event EventHandler Activated;
   }
 
-  public class InteractiveTile : Dungeons.Tiles.Tile, IObstacle
+  public class InteractiveTile : Dungeons.Tiles.InteractiveTile, IObstacle
   {
     private InteractiveTileKind _kind = InteractiveTileKind.Unset;
     public int Level { get; set; } = -1;//should match level of dungeon or a level of world part
+    [JsonIgnore]
+    public string InteractSound { get; set; }
 
     public InteractiveTile(char symbol) : base(symbol)
     {

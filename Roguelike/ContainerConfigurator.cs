@@ -24,7 +24,7 @@ namespace Roguelike
       container.Register<IPersister, JSONPersister>();
       container.Register<GameManager, GameManager>();
       container.Register<Dungeons.TileContainers.DungeonNode, Roguelike.Generators.TileContainers.DungeonNode>();
-      container.Register<Dungeons.Tiles.Door, Roguelike.Tiles.Door>();
+      container.Register<Dungeons.Tiles.IDoor, Roguelike.Tiles.Door>();
       container.Register< Dungeons.TileContainers.DungeonLevel, GameLevel>();
       container.Register<ILogger, Logger>();
       container.Register<LootGenerator, LootGenerator>(Lifestyle.Singleton);

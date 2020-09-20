@@ -39,7 +39,10 @@ namespace Roguelike.Managers
     public void PlaySound(string snd)
     {
       if (Player != null)
-        Player.PlaySound(snd);
+      {
+        if(!string.IsNullOrEmpty(snd))
+          Player.PlaySound(snd);
+      }
       else
         sndToPlay = snd;
     }
@@ -49,73 +52,93 @@ namespace Roguelike.Managers
       PlaySound("beep");
     }
 
-  private void EventsManager_ActionAppended(object sender, Events.GameAction e)
+  private void EventsManager_ActionAppended(object sender, Events.GameAction ac)
   {
       if (Player == null)
         return;
-      if (e is EnemyAction)
+      var sndName = "";
+      if (ac is EnemyAction)
       {
-        var ea = e as EnemyAction;
+        var ea = ac as EnemyAction;
         if (ea.Kind == EnemyActionKind.Moved)
-          return;
-        if (ea.Kind == EnemyActionKind.Died)
         {
-          var sndName = "death";
-          if (ea.Enemy.PowerKind == EnemyPowerKind.Champion)
-            sndName = "chemp_death";
-          else if (ea.Enemy.PowerKind == EnemyPowerKind.Boss)
-            sndName = "boss_death";
-          Player.PlaySound(sndName);
+          //sndName = "foot_steps";
         }
       }
-      else if (e is LootAction)
+      else if (ac is LootAction)
       {
-        var la = e as LootAction;
+        var la = ac as LootAction;
         if (la.LootActionKind == LootActionKind.Consumed)
         {
           if(la.Loot is Potion /*|| la.Loot is Bibmer*/)
-            Player.PlaySound("drink");
+            sndName = "drink";
           else
-            Player.PlaySound("eat_chip");
+            sndName = "eat_chip";
+        }
+        else if (la.LootActionKind == LootActionKind.Collected)
+        {
+          if (la.Loot is Gold)
+            sndName = "coin_collected";
+          else
+            sndName = "loot_collected";
         }
       }
-      else if (e is InteractiveTileAction)
+      else if (ac is InteractiveTileAction)
       {
-        //var door = (e.EventData as DoorStateChangedAction).Door;
-        //if (door.Kind == Tiles.DoorKind.LeverOpened)
-        //{
-        //  //played in RPG Door Open()/Close()
-        //}
-        //else
-        //{
-        //  if (door.Secret)
-        //    Player.PlaySound("annulet-of-absorption");
-        //  if (door.SealLock)
-        //    Player.PlaySound("door_unlock");//TODO use on panel
-        //  else
-        //    Player.PlaySound("door_open");
-        //}
+        var ia = ac as InteractiveTileAction;
+        if (ia.InteractiveKind == InteractiveActionKind.Destroyed)
+          sndName = ia.InvolvedTile.DestroySound;
+        else if (ia.InteractiveKind == InteractiveActionKind.DoorOpened)
+          sndName = "door_open";
+        else if (ia.InteractiveKind == InteractiveActionKind.DoorClosed)
+          sndName = "door_close";
+        else //if (ia.InteractiveKind == InteractiveActionKind.ChestOpened)
+          sndName = ia.InvolvedTile.InteractSound;
       }
-      else if (e is HeroAction)
+      else if (ac is HeroAction)
       {
-        var ha = e as HeroAction;
-        if (ha.Kind == HeroActionKind.Moved)
-          Player.PlaySound("foot_steps");
+        //var ha = e as HeroAction;
+        //if (ha.Kind == HeroActionKind.Moved)
+        //  Player.PlaySound("foot_steps");
       }
-      else if (e is SoundRequestAction)
+      else if (ac is SoundRequestAction)
       {
-        var snd = e as SoundRequestAction;
-        if (!string.IsNullOrEmpty(snd.SoundName))
-          Player.PlaySound(snd.SoundName);
+        var snd = ac as SoundRequestAction;
+        sndName = snd.SoundName;
+          
       }
-      else if (e is LivingEntityAction)
+      else if (ac is LivingEntityAction)
       {
-        //var lea = e as LivingEntityAction;
+        var lea = ac as LivingEntityAction;
+        if (lea.Kind == LivingEntityActionKind.Moved)
+        {
+          if (lea.InvolvedEntity is Hero)
+            sndName = "foot_steps";
+        }
+        else if (lea.Kind == LivingEntityActionKind.Missed)
+        {
+          sndName = "melee_missed";
+        }
+        else if (lea.Kind == LivingEntityActionKind.Died)
+        {
+          sndName = "death";
+          var enemy = lea.InvolvedEntity as Enemy;
+          if (enemy != null)
+          {
+            if (enemy.PowerKind == EnemyPowerKind.Champion)
+              sndName = "chemp_death";
+            else if (enemy.PowerKind == EnemyPowerKind.Boss)
+              sndName = "boss_death";
+          }
+        }
         //if (lea.Kind == LivingEntityActionKind.GainedDamage)
         //{
         //  Player.PlaySound("punch");
         //}
       }
+
+      if(!string.IsNullOrEmpty(sndName))
+        Player.PlaySound(sndName);
     }
   }
 }

@@ -17,6 +17,7 @@ namespace Roguelike.Tiles.Looting
       Price = 5;
       Symbol = '&';
       LootKind = LootKind.Other;
+      tag1 = "cord";
     }
   }
 }

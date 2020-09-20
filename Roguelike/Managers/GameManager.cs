@@ -395,10 +395,15 @@ namespace Roguelike.Managers
         if (door.Opened)
           return InteractionResult.None;
 
-        return CurrentNode.RevealRoom(door, Hero) ? InteractionResult.Handled : InteractionResult.None;
+        var opened = CurrentNode.RevealRoom(door, Hero);
+        if (opened)
+        {
+          AppendAction<InteractiveTileAction>((InteractiveTileAction ac) => { ac.InteractiveKind = InteractiveActionKind.DoorOpened; ac.InvolvedTile = door; });
+        }
+        return opened ? InteractionResult.Handled : InteractionResult.None;
       }
 
-      else if (tile is InteractiveTile)
+      else if (tile is Roguelike.Tiles.InteractiveTile)
       {
         if (tile is Stairs)
         {
@@ -448,7 +453,7 @@ namespace Roguelike.Managers
       var attackPolicy = policy as AttackPolicy;
       if (attackPolicy.Victim is Barrel || attackPolicy.Victim is Chest)
       {
-        var inter = attackPolicy.Victim as InteractiveTile;
+        var inter = attackPolicy.Victim as Roguelike.Tiles.InteractiveTile;
         var lsk = LootSourceKind.Barrel;
         Chest chest = null;
         if (attackPolicy.Victim is Chest)
@@ -476,6 +481,8 @@ namespace Roguelike.Managers
         }
         else
         {
+          if (!chest.Open())
+            return;
           AppendAction<InteractiveTileAction>((InteractiveTileAction ac) => { ac.InvolvedTile = chest; ac.InteractiveKind = InteractiveActionKind.ChestOpened; });
           AddLootReward(loot, attackPolicy.Victim, true);//add loot at closest empty
           if (chest.ChestKind == ChestKind.GoldDeluxe ||
@@ -578,11 +585,11 @@ namespace Roguelike.Managers
       var prevTile = CurrentNode.ReplaceTile(tile, point);
       if (prevTile != null)//this normally shall always be not null
       {
-        if (tile is InteractiveTile)
+        if (tile is Roguelike.Tiles.InteractiveTile)
         {
           AppendAction<InteractiveTileAction>((InteractiveTileAction ac) =>
           {
-            ac.InvolvedTile = tile as InteractiveTile;
+            ac.InvolvedTile = tile as Roguelike.Tiles.InteractiveTile;
             ac.InteractiveKind = InteractiveActionKind.AppendedToLevel;
           });
         }
@@ -601,12 +608,15 @@ namespace Roguelike.Managers
       var prevTile = node.ReplaceTile(replacer, point);
       if (prevTile != null)//this normally shall always be not null
       {
-        var it = prevTile as InteractiveTile;
+        var it = prevTile as Roguelike.Tiles.InteractiveTile;
         if (it != null)//barrel could be destroyed
         {
           //bool lootGenerated = false;
           if (it == positionSource)
+          {
             AppendAction<InteractiveTileAction>((InteractiveTileAction ac) => { ac.InvolvedTile = it; ac.InteractiveKind = InteractiveActionKind.Destroyed; });
+
+          }
         }
         var loot = replacer as Loot;
         if (loot != null)

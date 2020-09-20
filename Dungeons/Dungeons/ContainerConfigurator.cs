@@ -23,7 +23,7 @@ namespace Dungeons
 
       container.Register<DungeonNode, DungeonNode>();
       container.Register<DungeonLevel, DungeonLevel>();
-      container.Register<Dungeons.Tiles.Door, Dungeons.Tiles.Door>();
+      container.Register<IDoor, Dungeons.Tiles.Door>();
 
       Container = container;
 

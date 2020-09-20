@@ -79,5 +79,11 @@
       <Name>Roguelike</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Assets\Sounds\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>xcopy  "$(ProjectDir)Assets\Sounds\*.*" "$(ProjectDir)$(OutDir)Sounds\" /Y /D</PostBuildEvent>
+  </PropertyGroup>
 </Project>

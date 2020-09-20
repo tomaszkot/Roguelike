@@ -61,15 +61,17 @@ namespace DungeonsConsoleRunner
       return Dungeon;
     }
 
-    protected virtual bool HandleKey(ConsoleKeyInfo key)
+    protected virtual bool HandleKey(ConsoleKeyInfo info)
     {
       bool exit = false;
-      var input = key.Key;
+      var input = info.Key;
       if (input == ConsoleKey.Escape)
         exit = true;
       if (input == ConsoleKey.R)
         Reload();
-      if (input == ConsoleKey.D)
+
+      bool allowD = (info.Modifiers & ConsoleModifiers.Control) != 0;//TMP
+      if (allowD && input == ConsoleKey.D)
       {
         screen.PrintInfo.PrintNodeIndexes = !screen.PrintInfo.PrintNodeIndexes;
         Redraw();

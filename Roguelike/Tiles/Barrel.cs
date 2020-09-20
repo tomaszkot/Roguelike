@@ -16,6 +16,7 @@ namespace Roguelike.Tiles
     {
       Kind = InteractiveTileKind.Barrel;
       Name = Kind.ToString();
+      DestroySound = "barrel_broken";
       //BarrelKind = RandHelper.GetRandomDouble() < 0.5 ? BarrelKind.Barrel : BarrelKind.PileOfSkulls;
     }
 

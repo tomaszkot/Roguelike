@@ -4,9 +4,13 @@ using System.Drawing;
 
 namespace Roguelike.Tiles
 {
-  public class Door : Dungeons.Tiles.Door
+  public class Door : InteractiveTile, Dungeons.Tiles.IDoor  //Dungeons.Tiles.Door
   {
-    public bool Opened { get; set; }
+    public bool Opened 
+    { 
+      get; 
+      set; 
+    }
 
     string bossBehind = "";
     public string BossBehind
@@ -19,9 +23,10 @@ namespace Roguelike.Tiles
       }
     }
 
-    public Door(Point point) : base(point)
+    public Door(Point point) : base(Dungeons.Tiles.Constants.SymbolDoor)
     {
- 
+      Point = point;
+      Color = ConsoleColor.Yellow;
     }
 
     public Door() : this(GenerationConstraints.InvalidPoint)

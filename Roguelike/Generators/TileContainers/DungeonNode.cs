@@ -23,7 +23,7 @@ namespace Roguelike.Generators.TileContainers
       var atPos = tiles[point.Y, point.X];
       if (tile != null && !tile.IsEmpty && atPos != null && !atPos.IsEmpty)
       {
-        var allowed = (tile is Door && atPos is Wall) || (tile is Wall && atPos is Door)
+        var allowed = (tile is IDoor && atPos is Wall) || (tile is Wall && atPos is IDoor)
            //|| (tile is Door && atPos is Door)
            ;
         if (!allowed)
@@ -50,7 +50,7 @@ namespace Roguelike.Generators.TileContainers
           //{
           //  int k = 0;
           //}
-          reveal = (tiles[row, col] is Wall) && (tiles[row, col] as Wall).IsSide || (tiles[row, col] is Dungeons.Tiles.Door);
+          reveal = (tiles[row, col] is Wall) && (tiles[row, col] as Wall).IsSide || (tiles[row, col] is Roguelike.Tiles.Door);
         }
       }
 

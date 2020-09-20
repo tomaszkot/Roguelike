@@ -96,7 +96,7 @@ namespace Roguelike
       public MerchantActionKind MerchantActionKind { get; set; }
     }
 
-    public enum InteractiveActionKind { Unset, DoorsUnlocked, DoorsLocked, Destroyed, ChestOpened, AppendedToLevel,
+    public enum InteractiveActionKind { Unset, DoorOpened, DoorClosed, DoorUnlocked, DoorLocked, Destroyed, ChestOpened, AppendedToLevel,
       HitPortal, HitGroundPortal, GroundPortalApproached }
     public class InteractiveTileAction : GameAction
     {
@@ -157,7 +157,7 @@ namespace Roguelike
       public bool Value { get; set; }//revealed or hidden?
     }
 
-    public enum EnemyActionKind { Moved, Died, AttackingHero, ChasingPlayer, AppendedToLevel, RaiseCall, SpecialAction };
+    public enum EnemyActionKind { Moved, /*Died,*/ AttackingHero, ChasingPlayer, AppendedToLevel, RaiseCall, SpecialAction };
 
     public class EnemyAction : GameAction
     {

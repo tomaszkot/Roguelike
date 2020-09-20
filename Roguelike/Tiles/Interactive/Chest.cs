@@ -22,6 +22,7 @@ namespace Roguelike.Tiles.Interactive
   {
     public const char ChestSymbol = '~';
     private ChestKind chestKind = ChestKind.Plain;
+    public event EventHandler Opened;
 
     public ChestKind ChestKind
     {
@@ -35,8 +36,12 @@ namespace Roguelike.Tiles.Interactive
           Color = ConsoleColor.Yellow;
       }
     }
-    
-    public bool Closed { get; set; } = true;
+
+    public bool Closed
+    {
+      get;
+      set;
+    } = true;
 
     public void SetLevel(int level) { Level = level; }
 
@@ -46,6 +51,20 @@ namespace Roguelike.Tiles.Interactive
       Name = "Chest";
       
       Kind = InteractiveTileKind.TreasureChest;
+      InteractSound = "chest_open";
+    }
+
+    public bool Open()
+    {
+      if (Closed)
+      {
+        Closed = false;
+        if (Opened != null)
+          Opened(this, EventArgs.Empty);
+        return true;
+      }
+
+      return false;
     }
 
     public LootSourceKind LootSourceKind

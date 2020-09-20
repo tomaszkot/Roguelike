@@ -70,11 +70,11 @@ namespace RoguelikeUnitTests.Helpers
         en.OnPhysicalHit(game.Hero);
     }
 
-    public LootInfo TestInteractive<T>(Action<InteractiveTile> init,
+    public LootInfo TestInteractive<T>(Action<Roguelike.Tiles.InteractiveTile> init,
       int tilesToCreateCount = 50,
       int maxExpectedLootCount = 15,
       int maxExpectedUniqCount = 2) 
-      where T : InteractiveTile, new()
+      where T : Roguelike.Tiles.InteractiveTile, new()
     {
       var lootInfo = new LootInfo(game, null);
 
@@ -95,9 +95,9 @@ namespace RoguelikeUnitTests.Helpers
     public void AddThenDestroyInteractive<T>
     (
       int numberOfTilesToTest = 50,
-      Action<InteractiveTile> init = null
+      Action<Roguelike.Tiles.InteractiveTile> init = null
     ) 
-    where T : InteractiveTile, new()
+    where T : Roguelike.Tiles.InteractiveTile, new()
     {
       var createdTiles = new List<Tile>();
       for (int i = 0; i < numberOfTilesToTest; i++)
@@ -117,7 +117,7 @@ namespace RoguelikeUnitTests.Helpers
         var ni = game.GameManager.EnemiesManager.GetEnemies().Where(e => e.State != EntityState.Idle).ToList();
 
         Assert.AreEqual(game.GameManager.Context.TurnOwner, TurnOwner.Hero);
-        test.InteractHeroWith(tile as InteractiveTile);
+        test.InteractHeroWith(tile as Roguelike.Tiles.InteractiveTile);
       }
     }
   }

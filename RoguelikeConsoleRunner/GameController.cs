@@ -12,9 +12,7 @@ using Roguelike.Tiles.Interactive;
 using SimpleInjector;
 
 namespace RoguelikeConsoleRunner
-{
-
-
+{ 
   public class GameController : DungeonsConsoleRunner.GameController, IGameManagerProvider
   {
     IGame game;
@@ -119,11 +117,11 @@ namespace RoguelikeConsoleRunner
 
         }
       }
-      else if (key == ConsoleKey.S)
-      {
-        GameManager.Save();
-        HeroName = GameManager.Hero.Name;
-      }
+      //else if (key == ConsoleKey.S)
+      //{
+      //  GameManager.Save();
+      //  HeroName = GameManager.Hero.Name;
+      //}
       else if (key == ConsoleKey.L)
       {
         if(HeroName.Any())
@@ -134,11 +132,11 @@ namespace RoguelikeConsoleRunner
         //GameManager.DoAlliesTurn(true);
         GameManager.SkipHeroTurn();
       }
-      else if (key == ConsoleKey.LeftArrow)
+      else if (key == ConsoleKey.LeftArrow || key == ConsoleKey.A)
       {
         horizontal = -1;
       }
-      else if (key == ConsoleKey.RightArrow)
+      else if (key == ConsoleKey.RightArrow || key == ConsoleKey.D)
       {
         horizontal = 1;
       }

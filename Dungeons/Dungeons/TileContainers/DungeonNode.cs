@@ -66,7 +66,7 @@ namespace Dungeons
       /// </summary>
       private List<DungeonNode> parts = new List<DungeonNode>();
 
-      List<Door> doors = new List<Door>();
+      List<IDoor> doors = new List<IDoor>();
 
       [XmlIgnore]
       //[JsonIgnore]
@@ -523,17 +523,21 @@ namespace Dungeons
             Debug.Assert(generationInfo.EntrancesCount == 0);
         }
         var door = CreateDoorInstance();
+        Debug.Assert(door!=null);
         bool doorSet = SetTile(door, original.Point);
         Debug.Assert(doorSet);
         door.DungeonNodeIndex = original.DungeonNodeIndex;
-        Doors.Add(door);
+
+        var doorInterface = door as IDoor;
+        Debug.Assert(doorInterface !=null);
+        Doors.Add(doorInterface);
+
         return door;
       }
 
-      protected Door CreateDoorInstance()
+      protected InteractiveTile CreateDoorInstance()
       {
-        return Container.GetInstance<Door>();
-        //return new Door();
+        return Container.GetInstance<IDoor>() as InteractiveTile;
       }
 
       public DungeonNode CreateChildIslandInstance(int w, int h, GenerationInfo gi, DungeonNode parent)
@@ -746,7 +750,7 @@ namespace Dungeons
         return tile;
       }
 
-      public List<Door> Doors
+      public List<IDoor> Doors
       {
         get
         {

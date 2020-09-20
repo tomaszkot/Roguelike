@@ -191,6 +191,8 @@
   <PropertyGroup>
     <PostBuildEvent>if  "$(SolutionName)" == "OuaDIISln" xcopy  "$(TargetPath)" "$(SolutionDir)\Assets\Dlls" /Y
 if  "$(SolutionName)" == "OuaDIISln"  xcopy  "$(TargetDir)Roguelike.pdb" "$(SolutionDir)\Assets\Dlls" /Y
-"$(SolutionDir)\Assets\"pdb2mdb.exe  "$(SolutionDir)\Assets\Dlls\$(TargetFileName)"</PostBuildEvent>
+"$(SolutionDir)\Assets\"pdb2mdb.exe  "$(SolutionDir)\Assets\Dlls\$(TargetFileName)"
+
+</PostBuildEvent>
   </PropertyGroup>
 </Project>

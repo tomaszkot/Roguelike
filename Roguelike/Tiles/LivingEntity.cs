@@ -198,6 +198,7 @@ namespace Roguelike.Tiles
         {
           if (ShouldEvade(target, EntityStatKind.ChanceToEvadeMeleeAttack, null))
           {
+            eventsManager.AppendAction(new LivingEntityAction(LivingEntityActionKind.Missed) { InvolvedEntity = this , Info = Name+" missed "+ target.Name});
             return false;
           }
         }
