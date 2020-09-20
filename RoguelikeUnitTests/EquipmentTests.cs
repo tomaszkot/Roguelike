@@ -140,8 +140,7 @@ namespace RoguelikeUnitTests
       var game = CreateGame();
       var hero = game.Hero;
 
-      var ek = EquipmentKind.Weapon;
-      Equipment wpn = game.GameManager.GenerateRandomEquipment(ek);
+      var wpn = game.GameManager.GenerateRandomEquipment(EquipmentKind.Weapon);
       Assert.Greater(wpn.PrimaryStatValue, 0);
       hero.Inventory.Add(wpn);
       var attackBase = hero.GetCurrentValue(EntityStatKind.Attack);

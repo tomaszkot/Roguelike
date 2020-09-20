@@ -45,9 +45,9 @@ namespace Roguelike.Tiles
       } 
     }
 
-    public int AvailableExpPoints { get; set; } = 3;
+    //public int AvailableExpPoints { get; set; } = 3;
     protected bool canAdvanceInExp = false;
-    int levelUpPoints;
+    int levelUpPoints = 3;
 
     Dictionary<SpellKind, int> coolingDownSpells = new Dictionary<SpellKind, int>();
     
@@ -173,6 +173,7 @@ namespace Roguelike.Tiles
         return;
       this.Stats[stat].Nominal += 1;
       LevelUpPoints--;
+      RecalculateStatFactors(false);//Attack depends on Str
       EmitStatsLeveledUp(stat);
     }
 
@@ -184,8 +185,9 @@ namespace Roguelike.Tiles
 
     public virtual string GetFormattedStatValue(EntityStatKind kind)
     {
+      var cv = GetCurrentValue(kind);
       var stat = Stats.GetStat(kind);
-      var value = stat.GetFormattedCurrentValue();
+      var value = stat.GetFormattedCurrentValue(cv);
       
       //var value = stat.Value.CurrentValue.ToString(""); ;
       //if (stat.IsPercentage)
@@ -365,6 +367,8 @@ namespace Roguelike.Tiles
       //accumulate positive factors
       AccumulateEqFactors(true);
 
+      var si = GetStrengthIncrease();
+      Stats.AccumulateFactor(EntityStatKind.Attack, si);
       //var abs = Abilities.GetItems();
       //foreach (var ab in abs)
       //{
@@ -382,6 +386,11 @@ namespace Roguelike.Tiles
 
       if (StatsRecalculated != null)
         StatsRecalculated(this, EventArgs.Empty);
+    }
+
+    protected virtual float GetStrengthIncrease()
+    {
+      return 0;
     }
 
     public bool CanUseEquipment(Equipment eq, EntityStat eqStat)

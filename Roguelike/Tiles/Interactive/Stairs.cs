@@ -71,5 +71,10 @@ namespace Roguelike.Tiles.Interactive
 
       return false;
     }
+
+    public string GetPlaceName()
+    {
+      return "";// DungeonPit.GetPitDisplayName(st);
+    }
   }
 }

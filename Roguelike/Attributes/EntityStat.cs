@@ -144,6 +144,14 @@ namespace Roguelike.Attributes
       return val;
     }
 
+    public string GetFormattedCurrentValue(float cv)
+    {
+      var val = cv.ToString();
+      if (IsPercentage)
+        val += " " + "%";
+      return val;
+    }
+
     public object Clone()
     {
       var clone = MemberwiseClone() as EntityStat;

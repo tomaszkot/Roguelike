@@ -17,6 +17,7 @@ namespace Roguelike.Tiles
   public class Hero : AdvancedLivingEntity
   {
     public static int FirstNextLevelExperienceThreshold = 15;
+    public const int StartStrength = 15;
     protected Container container;
     public Roguelike.LootContainers.Crafting Crafting { get; set; }
 
@@ -25,9 +26,8 @@ namespace Roguelike.Tiles
       canAdvanceInExp = true;
       Stats.SetNominal(EntityStatKind.Health, 150);//level up +2
       // Character.Mana = 40;
-      var str = 15;
-      Stats.SetNominal(EntityStatKind.Strength, str);//15
-      Stats.SetNominal(EntityStatKind.Attack, str);
+      Stats.SetNominal(EntityStatKind.Strength, StartStrength);
+      Stats.SetNominal(EntityStatKind.Attack, StartStrength);
       Stats.SetNominal(EntityStatKind.Magic, 10);
       Stats.SetNominal(EntityStatKind.Mana, 40);
       Stats.SetNominal(EntityStatKind.Defence, 10);
@@ -80,6 +80,17 @@ namespace Roguelike.Tiles
       Crafting.Container = container;
       Crafting.InvItems.Owner = "Crafting.InvItems";
       Crafting.Recipes.Owner = "Crafting.Recipes";
+    }
+
+    //protected override float GetCurrentAttack()
+    //{
+    //  var att = base.GetCurrentAttack();
+    //  return att + this.GetCurrentValue(EntityStatKind.Strength - Hero.StartStrength);
+    //}
+
+    protected override float GetStrengthIncrease()
+    {
+      return Stats.GetCurrentValue(EntityStatKind.Strength) - StartStrength;
     }
   }
 }

@@ -232,7 +232,8 @@ namespace Roguelike.Tiles
         return 0;
       }
 
-      var inflicted = attacker.GetCurrentValue(EntityStatKind.Attack) / defense;
+      var ca = attacker.GetCurrentValue(EntityStatKind.Attack);
+      var inflicted = ca/defense;
       ReduceHealth(inflicted);
 
       var ga = new LivingEntityAction(LivingEntityActionKind.GainedDamage) { InvolvedValue = inflicted, InvolvedEntity = this };
@@ -803,6 +804,11 @@ namespace Roguelike.Tiles
       return GetCurrentValue(EntityStatKind.Defence);
     }
 
+    //protected virtual float GetCurrentAttack()
+    //{
+    //  return GetCurrentValue(EntityStatKind.Attack);
+    //}
+
     internal void ApplyPhysicalDamage(LivingEntity victim)
     {
       victim.OnPhysicalHit(this);
@@ -810,12 +816,19 @@ namespace Roguelike.Tiles
 
     public float GetCurrentValue(EntityStatKind kind)
     {
-      var stat = Stats.GetStat(kind);
-      var cv = stat.Value.CurrentValue;
-      if (stat.IsPercentage && cv > 100)
+      float cv = 0;
+      //if (kind == EntityStatKind.Attack)
+      //  GetCurrentAttack();
+      //else
       {
-        cv = 100;
+        var stat = Stats.GetStat(kind);
+        cv = stat.Value.CurrentValue;
+        if (stat.IsPercentage && cv > 100)
+        {
+          cv = 100;
+        }
       }
+      
       return cv;
     }
 

@@ -18,6 +18,7 @@ namespace Roguelike.Tiles
     bool ApproachedByHero { get; set; }
     double DistanceFrom(Dungeons.Tiles.Tile other);
     bool Activate();
+    string GetPlaceName();
 
     event EventHandler Activated;
   }
