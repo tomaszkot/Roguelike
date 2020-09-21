@@ -2,6 +2,7 @@
 using Dungeons.Tiles;
 using Roguelike.Tiles;
 using Roguelike.Tiles.Interactive;
+using Roguelike.Tiles.Looting;
 using SimpleInjector;
 using System;
 using System.Collections.Generic;
@@ -109,10 +110,16 @@ namespace Roguelike.Generators
       int lootNumber = RandHelper.GetRandomInt(2);//TODO
       if(lootNumber == 0)
         lootNumber++;//at least one
+            
       for (int i = 0; i < lootNumber; i++)
       {
         var loot = lootGen.GetRandomLoot(levelIndex+1);
         node.SetTileAtRandomPosition(loot);
+      }
+      float magicDustThreshold = .1f;
+      if (RandHelper.GetRandomDouble() > magicDustThreshold)
+      {
+        node.SetTileAtRandomPosition(new MagicDust());
       }
     }
 

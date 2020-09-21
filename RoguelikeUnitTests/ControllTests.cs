@@ -122,11 +122,13 @@ namespace RoguelikeUnitTests
     {
       var game = CreateGame(false);
       Assert.Null(game.Hero);
+      
       var gi = new Roguelike.GenerationInfo();
       gi.MakeEmpty();
 
       var level = game.GenerateLevel(0, gi);
       game.GameManager.Context.AutoTurnManagement = false;
+      game.Hero.Stats.SetNominal(Roguelike.Attributes.EntityStatKind.ChanceToHit, 100);
 
       Assert.AreEqual(game.GameManager.Context.TurnOwner, TurnOwner.Hero);
       var heroPos = game.Hero.Point;
@@ -137,14 +139,14 @@ namespace RoguelikeUnitTests
       var emptyHeroNeib = SetClose(en);
       var neib = emptyHeroNeib.Item2;
 
-      game.GameManager.HandleHeroShift(neib);
+      var res = game.GameManager.HandleHeroShift(neib);
       Assert.AreEqual(heroPos, game.Hero.Point);
 
       Assert.Less(en.Stats.Health, enHealth);
       Assert.AreEqual(Game.GameManager.Context.GetActionsCount(), 1);
 
       enHealth = en.Stats.Health;
-      game.GameManager.HandleHeroShift(neib);
+      res = game.GameManager.HandleHeroShift(neib);
       Assert.AreEqual(heroPos, game.Hero.Point);
 
       //hit not done as hero already hit in this turn
@@ -152,7 +154,7 @@ namespace RoguelikeUnitTests
       Assert.AreEqual(Game.GameManager.Context.GetActionsCount(), 1);
 
       MoveToHeroTurn(game);
-      game.GameManager.HandleHeroShift(neib);
+      res = game.GameManager.HandleHeroShift(neib);
       Assert.AreEqual(heroPos, game.Hero.Point);
 
       //hit done 
@@ -177,6 +179,7 @@ namespace RoguelikeUnitTests
         gi.MakeEmpty();
 
         var level = game.GenerateLevel(0, gi);
+        game.Hero.Stats.SetNominal(Roguelike.Attributes.EntityStatKind.ChanceToHit, 100);
         var heroPos = game.Hero.Point;
         Assert.AreEqual(game.GameManager.Context.TurnOwner, TurnOwner.Hero);
 
@@ -186,7 +189,7 @@ namespace RoguelikeUnitTests
         var emptyHeroNeib = SetClose(en);
 
         //move hero toward enemy - hit it
-        game.GameManager.HandleHeroShift(emptyHeroNeib.Item2);
+        var res = game.GameManager.HandleHeroShift(emptyHeroNeib.Item2);
         Assert.AreEqual(heroPos, game.Hero.Point);
         Assert.Less(en.Stats.Health, enHealth);
 

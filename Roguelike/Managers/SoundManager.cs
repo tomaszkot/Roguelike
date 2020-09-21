@@ -97,9 +97,9 @@ namespace Roguelike.Managers
       }
       else if (ac is HeroAction)
       {
-        //var ha = e as HeroAction;
-        //if (ha.Kind == HeroActionKind.Moved)
-        //  Player.PlaySound("foot_steps");
+        var ha = ac as HeroAction;
+        if (ha.Kind == HeroActionKind.HitWall)
+          sndName = "punch";
       }
       else if (ac is SoundRequestAction)
       {

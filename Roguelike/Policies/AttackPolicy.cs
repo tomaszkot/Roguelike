@@ -37,6 +37,11 @@ namespace Roguelike.Policies
       {
         if (attacker.CalculateIfHitWillHappen(le))
           attacker.ApplyPhysicalDamage(le);
+        else
+        {
+          int k = 0;
+          k++;
+        }
       }
       
       base.ReportApplied(attacker);

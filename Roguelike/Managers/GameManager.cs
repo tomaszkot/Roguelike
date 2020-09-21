@@ -268,7 +268,7 @@ namespace Roguelike.Managers
       return extraLoot;
     }
 
-    public void HandleHeroShift(TileNeighborhood neib)
+    public InteractionResult HandleHeroShift(TileNeighborhood neib)
     {
       int horizontal = 0;
       int vertical = 0;
@@ -278,7 +278,7 @@ namespace Roguelike.Managers
       else
         vertical = res.Y;
 
-      HandleHeroShift(horizontal, vertical);
+      return HandleHeroShift(horizontal, vertical);
     }
 
     public bool CanHeroDoAction()
@@ -301,25 +301,25 @@ namespace Roguelike.Managers
       return true;
     }
 
-    public void HandleHeroShift(int horizontal, int vertical)
+    public InteractionResult HandleHeroShift(int horizontal, int vertical)
     {
+      InteractionResult res = InteractionResult.None;
       if (!CanHeroDoAction())
-        return;
+        return res;
 
       var newPos = GetNewPositionFromMove(Hero.Point, horizontal, vertical);
       if (!newPos.Possible)
       {
-        return;
+        return res;
       }
       var hc = CurrentNode.GetHashCode();
       var tile = CurrentNode.GetTile(newPos.Point);
       //logger.LogInfo(" tile at " + newPos.Point + " = "+ tile);
-      var res = InteractionResult.None;
       if (!tile.IsEmpty)
         res = InteractHeroWith(tile);
 
       if (res == InteractionResult.ContextSwitched || res == InteractionResult.Blocked)
-        return;
+        return res;
 
       if (res == InteractionResult.Handled || res == InteractionResult.Attacked)
       {
@@ -338,6 +338,7 @@ namespace Roguelike.Managers
 
       //TODO shall be here ?
       RemoveDeadEnemies();
+      return res;
     }
 
     public void SkipHeroTurn()
@@ -451,7 +452,11 @@ namespace Roguelike.Managers
     void HandlePolicyApplied(Policies.Policy policy)
     {
       var attackPolicy = policy as AttackPolicy;
-      if (attackPolicy.Victim is Barrel || attackPolicy.Victim is Chest)
+      if (attackPolicy.Victim is Wall)
+      {
+        AppendAction<HeroAction>((HeroAction ac) => { ac.Kind = HeroActionKind.HitWall; ac.Info = "Hero hit a wall"; });
+      }
+      else if (attackPolicy.Victim is Barrel || attackPolicy.Victim is Chest)
       {
         var inter = attackPolicy.Victim as Roguelike.Tiles.InteractiveTile;
         var lsk = LootSourceKind.Barrel;

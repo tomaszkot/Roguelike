@@ -132,7 +132,7 @@ namespace Roguelike
       public LootAction() { }
     }
 
-    public enum HeroActionKind { LeveledUp, ChangedLevel, Moved };
+    public enum HeroActionKind { LeveledUp, ChangedLevel, Moved, HitWall };
     public class HeroAction : GameAction
     {
       

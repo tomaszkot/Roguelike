@@ -833,15 +833,6 @@ namespace Roguelike.Tiles
       return cv;
     }
 
-    //public virtual float GetHitAttackValue()//bool withVariation)
-    //{
-    //  var str = Stats.GetCurrentValue(EntityStatKind.Strength);
-    //  //var as1 = Stats.Stats[EntityStatKind.Attack];
-    //  var att = Stats.GetCurrentValue(EntityStatKind.Attack);
-
-    //  return str + att;
-    //}
-
     public float GetTotalValue(EntityStatKind esk)
     {
       return Stats.GetTotalValue(esk);

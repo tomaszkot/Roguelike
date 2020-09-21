@@ -119,7 +119,7 @@ namespace Roguelike.LootFactories
 
         factory[tt] = (string tag) =>
         {
-          return new TinyTrophy(kind) { EnchanterSize = enchanterSize };
+          return new TinyTrophy(kind) { EnchanterSize = enchanterSize, tag1 = tag };
         };
       }
 
