@@ -114,7 +114,9 @@ namespace Roguelike.Generators
       }
 
       GenerateRoomContent(nodeIndex, gi, node);
-      bool zero1 = node.GetTiles<Barrel>().Any(i => i.Level <= 0);
+
+      var barrels = node.GetTiles<Barrel>();
+      bool zero1 = barrels.Any(i => i.Level <= 0);
       bool zero2 = node.GetTiles<Chest>().Any(i => i.Level <= 0);
       Debug.Assert(!zero1 && !zero2);
       return node;

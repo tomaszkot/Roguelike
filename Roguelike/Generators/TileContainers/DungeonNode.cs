@@ -11,7 +11,6 @@ namespace Roguelike.Generators.TileContainers
   {
     public DungeonNode()
     {
-
     }
 
     public DungeonNode(Container c) : base(c)
@@ -55,6 +54,15 @@ namespace Roguelike.Generators.TileContainers
       }
 
       return reveal;
+    }
+
+    public T SetTileAtRandomPosition<T>(int levelIndex, bool matchNodeIndex = true) where T : Tile, new()
+    {
+      var tile = new T();
+      var inter = tile as Roguelike.Tiles.InteractiveTile;
+      if (inter != null)
+        inter.Level = levelIndex;
+      return SetTileAtRandomPosition(tile, matchNodeIndex) as T;
     }
   }
 }

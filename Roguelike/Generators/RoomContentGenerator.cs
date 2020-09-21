@@ -16,7 +16,7 @@ namespace Roguelike.Generators
   {
     protected int levelIndex;
     protected ILogger logger;
-    protected Dungeons.TileContainers.DungeonNode node;
+    protected TileContainers.DungeonNode node;
     protected GenerationInfo gi;
     Container container;
     protected LootGenerator lootGen;
@@ -24,7 +24,7 @@ namespace Roguelike.Generators
 
     public virtual void Run(Dungeons.TileContainers.DungeonNode node, int levelIndex, int nodeIndex, GenerationInfo gi, Container container)
     {
-      this.node = node;
+      this.node = node as TileContainers.DungeonNode;
       this.container = container;
       this.levelIndex = levelIndex;
       this.gi = gi;
@@ -73,7 +73,7 @@ namespace Roguelike.Generators
       {
         barrelsNumber = 2;
         AddPlainChest();
-        node.SetTileAtRandomPosition<Barrel>();
+        node.SetTileAtRandomPosition<Barrel>(levelIndex);
       }
       barrelsNumber++;//at least one
       if (RandHelper.GetRandomDouble() < 0.5)
@@ -87,7 +87,7 @@ namespace Roguelike.Generators
       }
       for (int i = 0; i < barrelsNumber; i++)
       {
-        var barrel = node.SetTileAtRandomPosition<Barrel>();
+        var barrel = node.SetTileAtRandomPosition<Barrel>(levelIndex);
         barrel.BarrelKind = RandHelper.GetRandomDouble() < 0.75 ? BarrelKind.Barrel : BarrelKind.PileOfSkulls;
       }
 
@@ -237,7 +237,7 @@ namespace Roguelike.Generators
           bossSymbol = EnemySymbols.QuestBoss;
         packEnemies.Add(CreateBoss(enemyName, bossSymbol));
 
-        var chest = node.SetTileAtRandomPosition<Chest>();
+        var chest = node.SetTileAtRandomPosition<Chest>(levelIndex);
         chest.ChestKind = ChestKind.GoldDeluxe;
       }
 

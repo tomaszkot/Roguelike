@@ -19,13 +19,16 @@ namespace RoguelikeUnitTests
       Assert.Null(game.Hero);
       Assert.AreEqual(game.Level, null);
 
-      game.LevelGenerator.CustomNodeCreator = (int nodeIndex, Dungeons.GenerationInfo gi) => {
-        var dungeon = game.LevelGenerator.CreateDungeonNodeInstance();
+      game.LevelGenerator.CustomNodeCreator = (int nodeIndex, Dungeons.GenerationInfo gi) => 
+      {
+        //TODO typed CreateDungeonNodeInstance 
+        var dungeon = game.LevelGenerator.CreateDungeonNodeInstance() as Roguelike.Generators.TileContainers.DungeonNode;
         dungeon.Create(10, 10, gi);
 
-        dungeon.SetTileAtRandomPosition<Enemy>();
-        dungeon.SetTileAtRandomPosition<Barrel>();
-        dungeon.SetTileAtRandomPosition<Barrel>();
+        var li = game.LevelGenerator.LevelIndex+1;
+        dungeon.SetTileAtRandomPosition<Enemy>(li);
+        dungeon.SetTileAtRandomPosition<Barrel>(li);
+        dungeon.SetTileAtRandomPosition<Barrel>(li);
         return dungeon;
       };
 

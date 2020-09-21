@@ -12,18 +12,24 @@ namespace Roguelike
 {
   public class BasicSoundPlayer : ISoundPlayer
   {
+    SoundPlayer sp = new SoundPlayer();
+
     public void PlaySound(string soundFileName)
     {
       string filePath = "";
       try
       {
         //return;
-        var sp = new SoundPlayer();
         var pathDir = Path.Combine(Environment.CurrentDirectory, "Sounds\\" + soundFileName);
         filePath = pathDir + ".wav"; 
         var ex = File.Exists(filePath);
         if(!ex)
           filePath = pathDir + ".mp3";
+
+        ex = File.Exists(filePath);
+        if (!ex)
+          return;
+
         sp.SoundLocation = filePath;
         sp.Play();
       }

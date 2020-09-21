@@ -940,7 +940,7 @@ namespace Dungeons
         return set ? tile : null;
       }
 
-      public T SetTileAtRandomPosition<T>(bool matchNodeIndex = true) where T : Tile, new()
+      internal T SetTileAtRandomPosition<T>(bool matchNodeIndex = true) where T : Tile, new()
       {
         var tile = new T();
         return SetTileAtRandomPosition(tile, matchNodeIndex) as T;

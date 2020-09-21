@@ -14,8 +14,6 @@ using System.Linq;
 
 namespace Roguelike.TileContainers
 {
-
-
   //mid-size node like 100x100, part of the DungeonPit
   public class GameLevel : AbstractGameLevel, IPersistable
   {
@@ -35,6 +33,15 @@ namespace Roguelike.TileContainers
     public GameLevel(Container container) : base(container != null ? container : new ContainerConfigurator().Container)
     {
       Dirty = true;//TODO
+    }
+
+    internal T SetTileAtRandomPosition<T>(int levelIndex, bool matchNodeIndex = true) where T : Tile, new()
+    {
+      var tile = new T();
+      var inter = tile as Roguelike.Tiles.InteractiveTile;
+      if(inter!=null)
+        inter.Level = levelIndex;
+      return SetTileAtRandomPosition(tile, matchNodeIndex) as T;
     }
 
     public override string ToString()
