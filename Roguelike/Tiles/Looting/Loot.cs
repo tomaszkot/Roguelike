@@ -194,7 +194,7 @@ namespace Roguelike.Tiles
     public static T DiscoverKindFromName<T>(string name)
     {
       var kinds = Enum.GetValues(typeof(T)).Cast<T>().ToList();
-      return kinds.FirstOrDefault(i => name.Contains(i.ToString()));
+      return kinds.FirstOrDefault(i => name.Contains(i.ToString().ToLower()));
     }
     //public virtual Loot Clone()
   //{

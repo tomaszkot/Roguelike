@@ -131,6 +131,7 @@ namespace Roguelike.LootFactories
     {
       var item = new Equipment(EquipmentKind.Armor);
       item.Name = "Armor";
+      item.tag1 = "Armor";
       item.PrimaryStatKind = EntityStatKind.Defence;
       item.PrimaryStatValue = 3;
       return item;
@@ -140,6 +141,7 @@ namespace Roguelike.LootFactories
     {
       var item = new Weapon();
       item.Name = "Sword";
+      item.tag1 = "Sword";
       item.Kind = Weapon.WeaponKind.Sword;
 
       item.PrimaryStatKind = EntityStatKind.Attack;
@@ -151,6 +153,7 @@ namespace Roguelike.LootFactories
     {
       var item = new Equipment(EquipmentKind.Helmet);
       item.Name = "Helmet";
+      item.tag1 = "Helmet";
       //item.Kind = Weapon.WeaponKind.Sword;
       item.PrimaryStatKind = EntityStatKind.Defence;
       item.PrimaryStatValue = 2;
@@ -161,6 +164,7 @@ namespace Roguelike.LootFactories
     {
       var item = new Equipment(EquipmentKind.Shield);
       item.Name = "Buckler";
+      item.tag1 = "??";
       item.PrimaryStatKind = EntityStatKind.Defence;
       item.PrimaryStatValue = 1;
       return item;
@@ -170,6 +174,7 @@ namespace Roguelike.LootFactories
     {
       var item = new Equipment(EquipmentKind.Glove);
       item.Name = "Gloves";
+      item.tag1 = "??";
       item.PrimaryStatKind = EntityStatKind.Defence;
       item.PrimaryStatValue = 1;
       return item;
@@ -200,6 +205,7 @@ namespace Roguelike.LootFactories
 
       var name = "amulet of ";// "amulet of ";
       jew.Name = name + sk.ToString();
+      jew.tag1 = "amulet_of_" + sk;
       if (sk == EntityStatKind.ResistCold || sk == EntityStatKind.ResistFire || sk == EntityStatKind.ResistPoison)
       {
         jew.Name += " resistance";
@@ -217,6 +223,7 @@ namespace Roguelike.LootFactories
       jew.SetPrimaryStat(sk, statValue);
       var name = "ring of ";
       jew.Name = name + sk;
+      jew.tag1 = "ring_"+ sk;
 
       if (sk == EntityStatKind.ResistCold || sk == EntityStatKind.ResistFire || sk == EntityStatKind.ResistPoison)
       {

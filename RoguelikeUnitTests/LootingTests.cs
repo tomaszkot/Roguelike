@@ -134,6 +134,16 @@ namespace RoguelikeUnitTests
     }
 
     [Test]
+    public void KilledEnemyForScrolls()
+    {
+      var env = CreateTestEnv();
+      env.LootGenerator.Probability = new Roguelike.Probability.Looting();
+      env.LootGenerator.Probability.SetLootingChance(LootSourceKind.Enemy, LootKind.Scroll, 1);
+      var loot = env.AssertLootFromEnemies(new[] { LootKind.Scroll });
+      
+    }
+
+    [Test]
     public void KilledEnemyForEqipAndGold()
     {
       var env = CreateTestEnv(numEnemies: 25);

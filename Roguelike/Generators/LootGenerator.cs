@@ -293,7 +293,7 @@ namespace Roguelike.Generators
       else if (kind == LootKind.Plant)
         res = new Plant();
       else if (kind == LootKind.Scroll)
-        res = new Scroll(Spells.SpellKind.FireBall);//TODO
+        res = LootFactory.ScrollsFactory.GetRandom(level);
       else if (kind == LootKind.Gem)
       {
         res = GetRandomEnchanter(level, false);

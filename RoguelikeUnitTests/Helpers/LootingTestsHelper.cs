@@ -47,6 +47,7 @@ namespace RoguelikeUnitTests.Helpers
             expectedKindsCounter++;
 
           res.Add(loot);
+          Assert.True(!string.IsNullOrEmpty(loot.tag1));
         }
       }
       Assert.Greater(expectedKindsCounter, 0);
