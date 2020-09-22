@@ -144,11 +144,26 @@ namespace Roguelike.Attributes
       return val;
     }
 
+    public static float Round(float value)
+    {
+      //if (value % 0.5f >= 0)
+      //  return (float)Math.Ceiling(value);
+      //else
+      //  return (float)Math.Floor(value);
+      return (float)Math.Round(value);
+    }
+
     public string GetFormattedCurrentValue(float cv)
     {
       var val = cv.ToString();
       if (IsPercentage)
         val += " " + "%";
+      else
+      {
+        cv = Round(cv);
+        int intVal = (int)(Math.Ceiling(cv));
+        val = intVal.ToString();
+      }
       return val;
     }
 
