@@ -38,7 +38,7 @@ namespace RoguelikeUnitTests
         gameNode.SetTile(hero, pt.Value);
 
         eq = game.GameManager.LootGenerator.GetRandomEquipment(1);
-        game.GameManager.GameState.History.GeneratedLoot.Add(new LootHistory(eq));
+        game.GameManager.GameState.History.Looting.GeneratedLoot.Add(new LootHistoryItem(eq));
         gameLevel = game.Level;
         heroPoint = hero.Point;
 
@@ -58,8 +58,8 @@ namespace RoguelikeUnitTests
         //hero position shall match
         Assert.AreEqual(heroLoaded.Point, heroPoint);
         Assert.AreEqual(heroLoaded, game.Hero);
-        Assert.AreEqual(game.GameManager.GameState.History.GeneratedLoot.Count, 1);
-        Assert.AreEqual(game.GameManager.GameState.History.GeneratedLoot[0].Name, eq.Name);
+        Assert.AreEqual(game.GameManager.GameState.History.Looting.GeneratedLoot.Count, 1);
+        Assert.AreEqual(game.GameManager.GameState.History.Looting.GeneratedLoot[0].Name, eq.Name);
       }
     }
 
@@ -79,12 +79,12 @@ namespace RoguelikeUnitTests
 
         var eq1 = game.GameManager.LootGenerator.GetLootByAsset("rusty_sword");
         eqName = eq1.Name;
-        game.GameManager.GameState.History.AddLootHistory(new LootHistory(eq1));
-        Assert.AreEqual(game.GameManager.GameState.History.GeneratedLoot.Count, 1);
+        game.GameManager.GameState.History.Looting.AddLootHistory(new LootHistoryItem(eq1));
+        Assert.AreEqual(game.GameManager.GameState.History.Looting.GeneratedLoot.Count, 1);
 
         var eq2 = game.GameManager.LootGenerator.GetLootByAsset("rusty_sword");
-        game.GameManager.GameState.History.AddLootHistory(new LootHistory(eq2));
-        Assert.AreEqual(game.GameManager.GameState.History.GeneratedLoot.Count, 1);//duplicate not added
+        game.GameManager.GameState.History.Looting.AddLootHistory(new LootHistoryItem(eq2));
+        Assert.AreEqual(game.GameManager.GameState.History.Looting.GeneratedLoot.Count, 1);//duplicate not added
 
         game.GameManager.Save();
       }
@@ -93,8 +93,8 @@ namespace RoguelikeUnitTests
         var hero = game.Hero;
         game.GameManager.Load(heroName);
 
-        Assert.AreEqual(game.GameManager.GameState.History.GeneratedLoot.Count, 1);
-        Assert.AreEqual(game.GameManager.GameState.History.GeneratedLoot[0].Name, eqName);
+        Assert.AreEqual(game.GameManager.GameState.History.Looting.GeneratedLoot.Count, 1);
+        Assert.AreEqual(game.GameManager.GameState.History.Looting.GeneratedLoot[0].Name, eqName);
       }
     }
 

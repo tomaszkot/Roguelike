@@ -627,7 +627,7 @@ namespace Roguelike.Managers
         if (loot != null)
         {
           AppendAction<LootAction>((LootAction ac) => { ac.Loot = loot; ac.LootActionKind = LootActionKind.Generated; ac.GenerationAnimated = animated; ac.Source = positionSource; });
-          this.GameState.History.GeneratedLoot.Add(new LootHistory(loot));
+          this.GameState.History.Looting.GeneratedLoot.Add(new LootHistoryItem(loot));
         }
         else
         {

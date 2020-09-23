@@ -89,6 +89,8 @@
     <Compile Include="Generators\LootGenerator.cs" />
     <Compile Include="Generators\ProjectilesFactory.cs" />
     <Compile Include="Generators\RoomContentGenerator.cs" />
+    <Compile Include="HintHistory.cs" />
+    <Compile Include="History.cs" />
     <Compile Include="LootContainers\Crafting.cs" />
     <Compile Include="LootContainers\Inventory.cs" />
     <Compile Include="LootContainers\InventoryBase.cs" />
@@ -98,6 +100,7 @@
     <Compile Include="LootFactories\LootFactory.cs" />
     <Compile Include="LootFactories\MiscLootFactory.cs" />
     <Compile Include="LootFactories\ScrollsFactory.cs" />
+    <Compile Include="LootHistory.cs" />
     <Compile Include="Managers\SoundManager.cs" />
     <Compile Include="Policies\AttackPolicy.cs" />
     <Compile Include="Policies\MovePolicy.cs" />
