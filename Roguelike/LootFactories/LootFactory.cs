@@ -75,5 +75,19 @@ namespace Roguelike.LootFactories
       return lootCreator.GetRandom(level);
     }
 
+    public override IEnumerable<Loot> GetAll()
+    {
+      List<Loot> res = new List<Loot>();
+      foreach (var fac in factories)
+      {
+        res.AddRange(fac.GetAll());
+      }
+      return res;
+    }
+    //public override List<Loot> GetAll()
+    //{
+
+    //}
+
   }
 }

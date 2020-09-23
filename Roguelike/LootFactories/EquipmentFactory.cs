@@ -16,6 +16,15 @@ namespace Roguelike.LootFactories
     {
     }
 
+    public override IEnumerable<Loot> GetAll()
+    {
+      List<Loot> loot = new List<Loot>();
+      foreach (var lc in lootCreators)
+        loot.AddRange(lc.Value.GetAll());
+
+      return loot;
+    }
+
     public override Loot GetRandom(int level)
     {
       var index = RandHelper.GetRandomEnumValue<EquipmentKind>(new[] { EquipmentKind.God, EquipmentKind .Trophy, EquipmentKind.Unset});

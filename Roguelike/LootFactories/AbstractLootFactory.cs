@@ -29,7 +29,10 @@ namespace Roguelike.LootFactories
       Create();
     }
 
-    
+    public virtual IEnumerable<Loot> GetAll()
+    {
+      return new List<Loot>();
+    }
   }
   
   public abstract class EquipmentTypeFactory : AbstractLootFactory
@@ -91,6 +94,14 @@ namespace Roguelike.LootFactories
       return null;
     }
 
-    
+    public override IEnumerable<Loot> GetAll()
+    {
+      List<Loot> loot = new List<Loot>();
+      foreach (var lc in factory)
+        loot.Add(lc.Value(lc.Key));
+
+      return loot;
+    }
+
   };
 }
