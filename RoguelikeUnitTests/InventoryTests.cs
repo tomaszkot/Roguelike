@@ -69,12 +69,12 @@ namespace RoguelikeUnitTests
     {
       var game = CreateGame();
       var hero = game.Hero;
-      var wpn = game.GameManager.LootGenerator.GetLootByName("rusty_sword");
+      var wpn = game.GameManager.LootGenerator.GetLootByAsset("rusty_sword");
       Assert.NotNull(wpn);
       hero.Inventory.Add(wpn);
       Assert.AreEqual(hero.Inventory.Items.Count, 1);
 
-      var wpn1 = game.GameManager.LootGenerator.GetLootByName("rusty_sword");
+      var wpn1 = game.GameManager.LootGenerator.GetLootByAsset("rusty_sword");
       hero.Inventory.Add(wpn1);
       Assert.AreEqual(hero.Inventory.Items.Count, 2);
       Assert.AreEqual(hero.Inventory.Items[0].tag1, "rusty_sword");
@@ -192,17 +192,17 @@ namespace RoguelikeUnitTests
 
       Assert.AreEqual(hero.Inventory.ItemsCount, 0);
 
-      var loot1 = game.GameManager.LootGenerator.GetLootByName("craft_one_eq");
+      var loot1 = game.GameManager.LootGenerator.GetLootByAsset("craft_one_eq");
       PutEqOnLevelAndCollectIt(loot1);
       Assert.AreEqual(hero.Crafting.Recipes.ItemsCount, 1);
 
-      var loot2 = game.GameManager.LootGenerator.GetLootByName("craft_one_eq");
+      var loot2 = game.GameManager.LootGenerator.GetLootByAsset("craft_one_eq");
       PutEqOnLevelAndCollectIt(loot2);
       Assert.AreEqual(hero.Crafting.Recipes.ItemsCount, 1);
 
       Assert.AreEqual(hero.Crafting.Recipes.GetStackedCount(loot2 as StackedLoot), 2);
 
-      var loot3 = game.GameManager.LootGenerator.GetLootByName("craft_three_gems");
+      var loot3 = game.GameManager.LootGenerator.GetLootByAsset("craft_three_gems");
       PutEqOnLevelAndCollectIt(loot3);
       Assert.AreEqual(hero.Crafting.Recipes.ItemsCount, 2);
       Assert.AreEqual(hero.Crafting.Recipes.GetStackedCount(loot2 as StackedLoot), 2);
@@ -217,17 +217,17 @@ namespace RoguelikeUnitTests
 
       Assert.AreEqual(hero.Inventory.ItemsCount, 0);
        
-      var loot1 = game.GameManager.LootGenerator.GetLootByName("big_claw") as StackedLoot;
+      var loot1 = game.GameManager.LootGenerator.GetLootByAsset("big_claw") as StackedLoot;
       Assert.NotNull(loot1);
       PutEqOnLevelAndCollectIt(loot1);
       Assert.AreEqual(hero.Inventory.ItemsCount, 1);
 
-      var loot2 = game.GameManager.LootGenerator.GetLootByName("big_claw");
+      var loot2 = game.GameManager.LootGenerator.GetLootByAsset("big_claw");
       PutEqOnLevelAndCollectIt(loot2);
       Assert.AreEqual(hero.Inventory.ItemsCount, 1);
       Assert.AreEqual(hero.Inventory.GetStackedCount(loot2 as StackedLoot), 2);
 
-      var loot3 = game.GameManager.LootGenerator.GetLootByName("big_fang");
+      var loot3 = game.GameManager.LootGenerator.GetLootByAsset("big_fang");
       PutEqOnLevelAndCollectIt(loot3);
       Assert.AreEqual(hero.Inventory.ItemsCount, 2);
       Assert.AreEqual(hero.Inventory.GetStackedCount(loot2 as StackedLoot), 2);
@@ -242,19 +242,19 @@ namespace RoguelikeUnitTests
 
       Assert.AreEqual(hero.Inventory.ItemsCount, 0);
 
-      var lootBase = game.GameManager.LootGenerator.GetLootByName("diamond_big");
+      var lootBase = game.GameManager.LootGenerator.GetLootByAsset("diamond_big");
       Assert.NotNull(lootBase);
       var loot1 = lootBase as StackedLoot;
       Assert.NotNull(loot1);
       PutEqOnLevelAndCollectIt(loot1);
       Assert.AreEqual(hero.Inventory.ItemsCount, 1);
 
-      var loot2 = game.GameManager.LootGenerator.GetLootByName("diamond_big");
+      var loot2 = game.GameManager.LootGenerator.GetLootByAsset("diamond_big");
       PutEqOnLevelAndCollectIt(loot2);
       Assert.AreEqual(hero.Inventory.ItemsCount, 1);
       Assert.AreEqual(hero.Inventory.GetStackedCount(loot2 as StackedLoot), 2);
 
-      var loot3 = game.GameManager.LootGenerator.GetLootByName("emerald_medium");
+      var loot3 = game.GameManager.LootGenerator.GetLootByAsset("emerald_medium");
       PutEqOnLevelAndCollectIt(loot3);
       Assert.AreEqual(hero.Inventory.ItemsCount, 2);
       Assert.AreEqual(hero.Inventory.GetStackedCount(loot2 as StackedLoot), 2);
@@ -267,7 +267,7 @@ namespace RoguelikeUnitTests
       var game = CreateGame();
       var hero = game.Hero;
 
-      var wpn1 = game.GameManager.LootGenerator.GetLootByName("rusty_sword") as Weapon;
+      var wpn1 = game.GameManager.LootGenerator.GetLootByAsset("rusty_sword") as Weapon;
       PutEqOnLevelAndCollectIt(wpn1);
 
       var heroEq = hero.GetActiveEquipment();
@@ -275,7 +275,7 @@ namespace RoguelikeUnitTests
 
       Assert.False(hero.Inventory.Contains(wpn1));
 
-      var wpn2 = game.GameManager.LootGenerator.GetLootByName("gladius") as Weapon;
+      var wpn2 = game.GameManager.LootGenerator.GetLootByAsset("gladius") as Weapon;
       PutEqOnLevelAndCollectIt(wpn2);
 
       heroEq = hero.GetActiveEquipment();

@@ -23,11 +23,11 @@ namespace Roguelike.LootFactories
       return lootCreator.GetRandom(level);
     }
 
-    public override Loot GetByTag(string tagPart)
+    public override Loot GetByAsset(string tagPart)
     {
       foreach (var kv in lootCreators)
       {
-        var tile = kv.Value.GetByTag(tagPart);
+        var tile = kv.Value.GetByAsset(tagPart);
         if (tile != null)
           return tile;
       }

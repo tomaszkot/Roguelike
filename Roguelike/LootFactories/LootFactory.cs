@@ -28,11 +28,11 @@ namespace Roguelike.LootFactories
       factories.Add(MiscLootFactory);
     }
 
-    public override Loot GetByTag(string tagPart)
+    public override Loot GetByAsset(string tagPart)
     {
       foreach (var fac in factories)
       {
-        var loot = fac.GetByTag(tagPart);
+        var loot = fac.GetByAsset(tagPart);
         if(loot != null)
           return ReturnLoot(loot);
       }

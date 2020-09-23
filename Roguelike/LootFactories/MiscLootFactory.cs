@@ -188,10 +188,10 @@ namespace Roguelike.LootFactories
 
     public override Loot GetByName(string name)
     {
-      return GetByTag(name);
+      return GetByAsset(name);
     }
 
-    public override Loot GetByTag(string tagPart)
+    public override Loot GetByAsset(string tagPart)
     {
       var tile = factory.FirstOrDefault(i => i.Key == tagPart);
       if (tile.Key != null)

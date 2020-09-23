@@ -77,12 +77,12 @@ namespace RoguelikeUnitTests
         heroName = hero.Name;
         Assert.NotNull(hero);
 
-        var eq1 = game.GameManager.LootGenerator.GetLootByName("rusty_sword");
+        var eq1 = game.GameManager.LootGenerator.GetLootByAsset("rusty_sword");
         eqName = eq1.Name;
         game.GameManager.GameState.History.AddLootHistory(new LootHistory(eq1));
         Assert.AreEqual(game.GameManager.GameState.History.GeneratedLoot.Count, 1);
 
-        var eq2 = game.GameManager.LootGenerator.GetLootByName("rusty_sword");
+        var eq2 = game.GameManager.LootGenerator.GetLootByAsset("rusty_sword");
         game.GameManager.GameState.History.AddLootHistory(new LootHistory(eq2));
         Assert.AreEqual(game.GameManager.GameState.History.GeneratedLoot.Count, 1);//duplicate not added
 

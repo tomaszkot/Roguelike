@@ -20,7 +20,7 @@ namespace Roguelike.LootFactories
     protected abstract void Create();
     public abstract Loot GetRandom(int level);// where T : Loot;
     public abstract Loot GetByName(string name);
-    public abstract Loot GetByTag(string tagPart);
+    public abstract Loot GetByAsset(string tagPart);
     protected Container container;
 
     public AbstractLootFactory(Container container)
@@ -79,10 +79,10 @@ namespace Roguelike.LootFactories
 
     public override Loot GetByName(string name)
     {
-      return GetByTag(name);
+      return GetByAsset(name);
     }
 
-    public override Loot GetByTag(string tagPart)
+    public override Loot GetByAsset(string tagPart)
     {
       var tile = factory.FirstOrDefault(i => i.Key == tagPart);
       if (tile.Key != null)

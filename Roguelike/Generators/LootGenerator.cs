@@ -116,13 +116,13 @@ namespace Roguelike.Generators
       }
     }
 
-    public virtual Loot GetLootByTag(string tagPart)
-    {
-      var loot = LootFactory.GetByTag(tagPart) as Roguelike.Tiles.Loot;
-      if (loot != null)
-        PrepareLoot(loot);
-      return loot;
-    }
+    //public virtual Loot GetLootByTag(string tagPart)
+    //{
+    //  var loot = LootFactory.GetByAsset(tagPart) as Roguelike.Tiles.Loot;
+    //  if (loot != null)
+    //    PrepareLoot(loot);
+    //  return loot;
+    //}
 
     protected virtual void PrepareLoot(Loot loot)
     {
@@ -130,7 +130,7 @@ namespace Roguelike.Generators
 
     }
 
-    public virtual Loot GetLootByName(string tileName)
+    public virtual Loot GetLootByAsset(string tileName)
     {
       Loot loot;
       if (uniqueLoot.ContainsKey(tileName))
@@ -161,7 +161,7 @@ namespace Roguelike.Generators
 
     public virtual T GetLootByTileName<T>(string tileName) where T : Loot
     {
-      return GetLootByName(tileName) as T;
+      return GetLootByAsset(tileName) as T;
     }
 
     public virtual Equipment GetRandomEquipment(int maxEqLevel)
@@ -350,7 +350,7 @@ namespace Roguelike.Generators
       //  Debug.Assert(false);
 
       var lootName = RandHelper.GetRandomElem<string>(tags);
-      res = GetLootByName(lootName);
+      res = GetLootByAsset(lootName);
       return res;
     }
 
