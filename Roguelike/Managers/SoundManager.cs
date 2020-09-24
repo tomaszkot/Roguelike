@@ -140,5 +140,14 @@ namespace Roguelike.Managers
       if(!string.IsNullOrEmpty(sndName))
         Player.PlaySound(sndName);
     }
+
+  public void PlaySpellCastedSound(Roguelike.Spells.SpellKind spellKind)
+  {
+      string sndToPlay = "scroll_";
+      sndToPlay += spellKind.ToString().ToLower();
+
+      PlaySound(sndToPlay);
+  }
+
   }
 }

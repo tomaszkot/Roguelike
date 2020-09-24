@@ -41,9 +41,10 @@ namespace Roguelike.Managers
     EventsManager eventsManager;
     EnemiesManager enemiesManager;
     AlliesManager alliesManager;
+    LevelGenerator levelGenerator;
 
-    private IPersister persister;
-    private ILogger logger;
+    IPersister persister;
+    ILogger logger;
 
     public EnemiesManager EnemiesManager { get => enemiesManager; set => enemiesManager = value; }
     public Hero Hero { get => Context.Hero; }
@@ -66,13 +67,12 @@ namespace Roguelike.Managers
     public ILogger Logger { get => logger; set => logger = value; }
     public Func<Tile, InteractionResult> Interact;
     public Func<int, Stairs, InteractionResult> DungeonLevelStairsHandler;
-    public LevelGenerator levelGenerator;
     public Container Container { get; set; }
     public Func<Hero, GameState, AbstractGameLevel> WorldLoader { get => worldLoader; set => worldLoader = value; }
     public Action WorldSaver { get; set; }
     public GameState GameState { get => gameState; }
-
-    public SoundManager soundManager;
+    public SoundManager SoundManager { get; set; }
+    public LevelGenerator LevelGenerator { get => levelGenerator; set => levelGenerator = value; }
 
     public GameManager(Container container)
     {
@@ -93,7 +93,7 @@ namespace Roguelike.Managers
 
       Persister = container.GetInstance<IPersister>();
 
-      soundManager = new SoundManager(this, container);
+      SoundManager = new SoundManager(this, container);
     }
 
     public void Assert(bool assert, string info = "assert failed")
@@ -814,14 +814,14 @@ namespace Roguelike.Managers
         if (dest.Gold < price)
         {
           logger.LogInfo("dest.Gold < loot.Price");
-          soundManager.PlayBeepSound();
+          SoundManager.PlayBeepSound();
           return null;
         }
       }
       if (!destInv.CanAddLoot(loot))
       {
         logger.LogInfo("!dest.Inventory.CanAddLoot(loot)");
-        soundManager.PlayBeepSound();
+        SoundManager.PlayBeepSound();
         return null;
       }
 
@@ -851,7 +851,7 @@ namespace Roguelike.Managers
       {
         dest.Gold -= price;
         src.Gold += price;
-        soundManager.PlaySound("COINS_Rattle_04_mono");//coind_drop
+        SoundManager.PlaySound("COINS_Rattle_04_mono");//coind_drop
       }
       return sold;
     }
