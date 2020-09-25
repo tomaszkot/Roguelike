@@ -115,13 +115,40 @@ namespace Roguelike.Tiles.Looting
     //  }
     //}
 
+    public override LootStatInfo[] GetLootStatInfo()
+    {
+      if (m_lootStatInfo == null)
+      {
+        var lootStatInfos = new List<LootStatInfo>();
+        var props = enhancmentProps[this.TinyTrophyKind];
+
+        var lootStatInfo = new LootStatInfo();
+        lootStatInfo.Desc = "Weapons: "+ props[EquipmentKind.Weapon].ToDescription() + " " + wpnAndArmorValues[this.EnchanterSize];
+        lootStatInfo.Kind = LootStatKind.Weapon;
+        lootStatInfos.Add(lootStatInfo);
+
+        lootStatInfo = new LootStatInfo();
+        lootStatInfo.Desc = "Armor: " + props[EquipmentKind.Armor].ToDescription() + " " + wpnAndArmorValues[this.EnchanterSize];
+        lootStatInfo.Kind = LootStatKind.Armor;
+        lootStatInfos.Add(lootStatInfo);
+
+        lootStatInfo = new LootStatInfo();
+        lootStatInfo.Desc = "Jewellery: " + props[EquipmentKind.Amulet].ToDescription() + " " + otherValues[this.EnchanterSize];
+        lootStatInfo.Kind = LootStatKind.Armor;
+        lootStatInfos.Add(lootStatInfo);
+
+        m_lootStatInfo = lootStatInfos.ToArray();
+      }
+      return base.GetLootStatInfo();
+    }
+
     public override bool ApplyTo(Equipment eq, out string error)
     {
       error = "";
       var props = enhancmentProps[this.TinyTrophyKind];
       if (props.ContainsKey(eq.EquipmentKind))
       {
-        var propsGem = props[eq.EquipmentKind];
+        var esk = props[eq.EquipmentKind];
         int val = 0;
         if (eq.EquipmentKind == EquipmentKind.Amulet || eq.EquipmentKind == EquipmentKind.Ring || eq.EquipmentKind == EquipmentKind.Trophy)
         {
@@ -131,7 +158,7 @@ namespace Roguelike.Tiles.Looting
         {
           val = wpnAndArmorValues[this.EnchanterSize];
         }
-        return eq.Enchant(propsGem, val, this, out error);
+        return eq.Enchant(esk, val, this, out error);
       }
 
       return false;

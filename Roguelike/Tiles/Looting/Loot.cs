@@ -10,7 +10,14 @@ namespace Roguelike.Tiles
     public const string PartOfCraftingRecipe = "Part of the crafting recipe.";
   }
 
-  public enum LootStatKind { Unset, Weapon, Armor, Jewellery }
+  [Flags]
+  public enum LootStatKind 
+  { 
+    Unset = 0, 
+    Weapon = 1, 
+    Armor = 2, 
+    Jewellery = 4 
+  }
 
   public class LootStatInfo
   {
