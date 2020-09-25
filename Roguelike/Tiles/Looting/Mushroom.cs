@@ -37,9 +37,9 @@ namespace Roguelike.Tiles
     public void SetMushroomKind(MushroomKind kind)
     {
       MushroomKind = kind;
-      Name = kind.ToString();
-            
-      Name += " of " + MushroomKind;
+      //Name = kind.ToString();
+      Name = MushroomKind.ToDescription();
+      //Name += " of " + MushroomKind;
       if (MushroomKind == MushroomKind.BlueToadstool)
       {
         SrcPotion = PotionKind.Mana;

@@ -10,6 +10,14 @@ namespace Roguelike.Tiles
     public const string PartOfCraftingRecipe = "Part of the crafting recipe.";
   }
 
+  public enum LootStatKind { Unset, Weapon, Armor, Jewellery }
+
+  public class LootStatInfo
+  {
+    public string Desc { get; set; }
+    public LootStatKind Kind { get; set; }
+  }
+
   public enum EquipmentKind { Unset, Weapon, Armor, Helmet, Shield, Ring, Amulet,
                               Trophy, Glove, God }
 
@@ -181,9 +189,16 @@ namespace Roguelike.Tiles
     }
 
     protected string[] extraStatDescription;
+    
     public virtual string[] GetExtraStatDescription()
     {
       return extraStatDescription;
+    }
+
+    protected LootStatInfo[] m_lootStatInfo;
+    public virtual LootStatInfo[] GetLootStatInfo()
+    {
+      return m_lootStatInfo;
     }
 
     public virtual void HandleGenerationDone()

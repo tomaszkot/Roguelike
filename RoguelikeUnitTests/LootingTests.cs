@@ -17,6 +17,7 @@ namespace RoguelikeUnitTests
     [Test]
     public void LotsOfPotionsTest()
     {
+      var des = EquipmentKind.Weapon.ToDescription();
       var env = CreateTestEnv();
       //GenerationInfo.DebugInfo.EachEnemyGivesPotion = true;
       try
@@ -131,6 +132,7 @@ namespace RoguelikeUnitTests
       env.LootGenerator.Probability = new Roguelike.Probability.Looting();
       env.LootGenerator.Probability.SetLootingChance(LootSourceKind.Enemy, LootKind.Gem, 1);
       env.AssertLootKindFromEnemies(new[] { LootKind.Gem });
+
     }
 
     [Test]
@@ -332,6 +334,29 @@ namespace RoguelikeUnitTests
         var potions = lootItems.Where(j => j.LootKind == LootKind.Potion).ToList();
         Assert.Greater(potions.Count, 4);
         Assert.Less(potions.Count, 20);
+      }
+    }
+
+    [Test]
+    public void KilledEnemyGivesFoodOfAllKinds()
+    {
+      var env = CreateTestEnv(numEnemies: 100);
+      env.LootGenerator.Probability = new Roguelike.Probability.Looting();
+      env.LootGenerator.Probability.SetLootingChance(LootSourceKind.Enemy, LootKind.Food, 1);
+
+      var enemies = env.Enemies;
+      Assert.AreEqual(enemies.Count, 100);
+
+      var li = new LootInfo(game, null);
+      env.KillAllEnemies();
+      var lootItems = li.GetDiff();
+      Assert.Greater(lootItems.Count, 0);
+      var foods = lootItems.Where(j => j.LootKind == LootKind.Food).Cast<Food>().ToList();
+      Assert.Greater(foods.Count, 80);
+      var kinds = Enum.GetValues(typeof(FoodKind)).Cast<FoodKind>().Where(i=> i != FoodKind.Unset).ToList();
+      foreach (var kind in kinds)
+      {
+        Assert.IsTrue(foods.Any(i=> i.Kind == kind));
       }
     }
 

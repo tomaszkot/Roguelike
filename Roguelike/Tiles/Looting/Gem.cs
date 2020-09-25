@@ -7,6 +7,7 @@ using System.Linq;
 namespace Roguelike.Tiles.Looting
 {
   public enum GemKind { Unset, Ruby, Emerald, Diamond, Amber }
+  
 
   public class Gem : Enchanter
   {
@@ -228,21 +229,46 @@ namespace Roguelike.Tiles.Looting
       return res;
     }
 
+    public override LootStatInfo[] GetLootStatInfo()
+    {
+      if (m_lootStatInfo == null)
+      {
+        m_lootStatInfo = new LootStatInfo[3];
+
+        var gemKindInfo = enhancmentProps[this.GemKind];
+
+        var lootStatInfo = new LootStatInfo();
+        lootStatInfo.Desc = "Weapons: " + gemKindInfo[EquipmentKind.Weapon].ToDescription() + " " + wpnAndArmorValues[this.EnchanterSize];
+        lootStatInfo.Kind = LootStatKind.Weapon;
+        m_lootStatInfo[0] = lootStatInfo;
+
+        lootStatInfo = new LootStatInfo();
+        lootStatInfo.Desc = "Armor: " + gemKindInfo[EquipmentKind.Armor].ToDescription() + " " + GetResistValue() + "%";
+        lootStatInfo.Kind = LootStatKind.Armor;
+        m_lootStatInfo[1] = lootStatInfo;
+
+        lootStatInfo = new LootStatInfo();
+        lootStatInfo.Desc = "Jewellery: " + gemKindInfo[EquipmentKind.Ring].ToDescription() + " " + otherValues[this.EnchanterSize];
+        if (gemKindInfo[EquipmentKind.Ring] == EntityStatKind.ChanceToHit)
+          lootStatInfo.Desc += "%";
+        lootStatInfo.Kind = LootStatKind.Jewellery;
+        m_lootStatInfo[2] = lootStatInfo;
+
+
+      }
+      return m_lootStatInfo;
+    }
+
     public override string[] GetExtraStatDescription()
     {
       if (extraStatDescription == null)
       {
-        extraStatDescription = new string[3];
-        string desc = "Weapons: " + enhancmentProps[this.GemKind][EquipmentKind.Weapon] + " " + wpnAndArmorValues[this.EnchanterSize];
-        extraStatDescription[0] = desc;
-        desc = "Armor: " + enhancmentProps[this.GemKind][EquipmentKind.Armor] + " " + GetResistValue() + "%";
-        extraStatDescription[1] = desc;
-        desc = "Jewellery: " + enhancmentProps[this.GemKind][EquipmentKind.Ring] + " " + otherValues[this.EnchanterSize];
-        
-        if (enhancmentProps[this.GemKind][EquipmentKind.Ring] == EntityStatKind.ChanceToHit)
-          desc += "%";
-        extraStatDescription[2] = desc;
+        var destItems = new List<string>();
+        var items = GetLootStatInfo();
+        foreach (var item in items)
+          destItems.Add(item.Desc);
 
+        extraStatDescription = destItems.ToArray();
       }
       return extraStatDescription;
     }
