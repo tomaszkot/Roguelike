@@ -32,13 +32,12 @@ namespace Roguelike.Tiles.Looting
       Name = "Gem";
       GemKind = kind;
       EnchanterSize = EnchanterSize.Small;
+      EnchantSrcFromGemKind();
 
-      if(gameLevel>=0)
+      if (gameLevel>=0)
         SetRandomKindAndLevelSize(gameLevel, kind == GemKind.Unset);
       else
         SetProps();
-
-      EnchantSrcFromGemKind();
     }
 
     public void EnchantSrcFromGemKind()
@@ -119,19 +118,11 @@ namespace Roguelike.Tiles.Looting
       SetProps();
     }
 
-    public void SetProps()
+    public override void SetProps()
     {
-      string gemName = GemKind.ToString();
-      int price = 15;
-      if(EnchanterSize == EnchanterSize.Medium)
-        price *= 2;
-      else if (EnchanterSize == EnchanterSize.Big)
-        price *= 4;
-
-      string enchanterSize = EnchanterSize.ToString();
+      SetPrice();
       tag1 = CalcTagFrom();
-      Name = enchanterSize + " " + gemName;
-      Price = price;
+      SetName(GemKind.ToDescription());
     }
 
     public string CalcTagFrom()
@@ -167,17 +158,8 @@ namespace Roguelike.Tiles.Looting
         var values = new  List<int>();
         foreach (var prop in propsToSet)
         {
-          int val = 0;
-          if (eq.EquipmentKind == EquipmentKind.Amulet || eq.EquipmentKind == EquipmentKind.Ring || eq.EquipmentKind == EquipmentKind.Trophy)
-          {
-            val = otherValues[this.EnchanterSize];
-          }
-          else
-          {
-            val = wpnAndArmorValues[this.EnchanterSize];
-            if (prop == EntityStatKind.ResistCold || prop == EntityStatKind.ResistFire || prop == EntityStatKind.ResistPoison)
-              val = GetResistValue();
-          }
+          int val = GetStatIncrease(eq.EquipmentKind, prop);
+                   
           if (values.Any(i => i != val))
             throw new Exception("Error on crafting");
           values.Add(val);
@@ -228,32 +210,81 @@ namespace Roguelike.Tiles.Looting
         res += 4;
       return res;
     }
+    
+    LootStatInfo AddLootStatInfo(List<LootStatInfo>  list, LootStatKind lsk)
+    {
+      var lootStatInfo = new LootStatInfo();
+      lootStatInfo.Kind = lsk;
+      list.Add(lootStatInfo);
+      return lootStatInfo;
+    }
+
+    public override int GetStatIncrease(EquipmentKind ek, EntityStatKind esk)
+    {
+      var val = base.GetStatIncrease(ek);
+      if (esk == EntityStatKind.ResistCold || esk == EntityStatKind.ResistFire || esk == EntityStatKind.ResistPoison)
+        val = GetResistValue();
+      return val;
+    }
 
     public override LootStatInfo[] GetLootStatInfo(LivingEntity caller)
     {
       if (m_lootStatInfo == null)
       {
-        m_lootStatInfo = new LootStatInfo[3];
+        var lootStatsInfo = new List<LootStatInfo>();
 
-        var gemKindInfo = enhancmentProps[this.GemKind];
+        var gemKind = this.GemKind;
+        if (this.GemKind == GemKind.Amber)
+        {
+          gemKind = GemKind.Diamond;
+        }
+        var gemKindInfo = enhancmentProps[gemKind];
 
-        var lootStatInfo = new LootStatInfo();
-        lootStatInfo.Desc = "Weapons: " + gemKindInfo[EquipmentKind.Weapon].ToDescription() + " " + wpnAndArmorValues[this.EnchanterSize];
-        lootStatInfo.Kind = LootStatKind.Weapon;
-        m_lootStatInfo[0] = lootStatInfo;
+        var lootStatInfo = AddLootStatInfo(lootStatsInfo, LootStatKind.Weapon);
+        lootStatInfo.Desc = "Weapons: ";
+        if (this.GemKind == GemKind.Amber)
+          lootStatInfo.Desc += "all elemental attacks";
+        else
+          lootStatInfo.Desc += gemKindInfo[EquipmentKind.Weapon].ToDescription();
+                
+        lootStatInfo.Desc += " +" + wpnAndArmorValues[this.EnchanterSize];
 
-        lootStatInfo = new LootStatInfo();
-        lootStatInfo.Desc = "Armor: " + gemKindInfo[EquipmentKind.Armor].ToDescription() + " " + GetResistValue() + "%";
-        lootStatInfo.Kind = LootStatKind.Armor;
-        m_lootStatInfo[1] = lootStatInfo;
+        //
+        lootStatInfo = AddLootStatInfo(lootStatsInfo, LootStatKind.Armor);
+        lootStatInfo.Desc = "Armor: ";
+        if (this.GemKind == GemKind.Amber)
+          lootStatInfo.Desc += "all elemental resists";
+        else
+          lootStatInfo.Desc += gemKindInfo[EquipmentKind.Armor].ToDescription();
 
-        lootStatInfo = new LootStatInfo();
-        lootStatInfo.Desc = "Jewellery: " + gemKindInfo[EquipmentKind.Ring].ToDescription() + " " + otherValues[this.EnchanterSize];
-        if (gemKindInfo[EquipmentKind.Ring] == EntityStatKind.ChanceToHit)
-          lootStatInfo.Desc += "%";
-        lootStatInfo.Kind = LootStatKind.Jewellery;
-        m_lootStatInfo[2] = lootStatInfo;
+        lootStatInfo.Desc += " +" + GetResistValue() + "%";
 
+        //
+        lootStatInfo = AddLootStatInfo(lootStatsInfo, LootStatKind.Jewellery);
+        lootStatInfo.Desc = "Jewellery: ";
+        lootStatInfo.Desc += gemKindInfo[EquipmentKind.Ring].ToDescription();
+        if (this.GemKind == GemKind.Amber)
+        {
+          var otherKinds = GetOtherKinds(gemKind);
+          foreach (var otherKind in otherKinds)
+          {
+            var gemKindInfo_ = enhancmentProps[otherKind];
+            lootStatInfo.Desc += ", " + gemKindInfo_[EquipmentKind.Ring].ToDescription();
+          }
+        }
+        else
+        { 
+        }
+
+        lootStatInfo.Desc += " +" + otherValues[this.EnchanterSize];
+
+        //if (this.GemKind != GemKind.Amber)
+        //{
+        //  if (gemKindInfo[EquipmentKind.Ring] == EntityStatKind.ChanceToHit)
+        //    lootStatInfo.Desc += "%";
+        //}
+
+        m_lootStatInfo = lootStatsInfo.ToArray();
 
       }
       return m_lootStatInfo;

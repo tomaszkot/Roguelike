@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using Roguelike.Attributes;
+using System.Collections.Generic;
 
 namespace Roguelike.Tiles.Looting
 {
@@ -11,7 +12,17 @@ namespace Roguelike.Tiles.Looting
     public static string Medium = "medium";
     public static string Big = "big";
 
-    public EnchanterSize EnchanterSize { get; set; } = EnchanterSize.Small;
+    EnchanterSize enchanterSize = EnchanterSize.Small;
+    public EnchanterSize EnchanterSize 
+    {
+      get { return enchanterSize; }
+      set 
+      { 
+        enchanterSize = value;
+        SetProps();
+      }
+    }
+
     public EnchantSrc EnchantSrc { get; set; }
     //public EnchanterKind EnchanterKind { get; set; }
 
@@ -30,6 +41,39 @@ namespace Roguelike.Tiles.Looting
       otherValues[EnchanterSize.Small] = 5;
     }
 
+    public virtual int GetStatIncrease(EquipmentKind ek, EntityStatKind esk = EntityStatKind.Unset)
+    {
+      int val = 0;
+      if (ek == EquipmentKind.Amulet || ek == EquipmentKind.Ring || ek == EquipmentKind.Trophy)
+      {
+        val = otherValues[this.EnchanterSize];
+      }
+      else if (ek != EquipmentKind.Unset)
+      {
+        val = wpnAndArmorValues[this.EnchanterSize];
+      }
+      return val;
+    }
+
+    public abstract void SetProps();
+
     public abstract bool ApplyTo(Equipment eq, out string error);
+
+    const int baseEnchPrice = 15;
+    protected void SetPrice()
+    {
+      var price = baseEnchPrice;
+      if (EnchanterSize == EnchanterSize.Medium)
+        price *= 2;
+      else if (EnchanterSize == EnchanterSize.Big)
+        price *= 4;
+
+      Price = price;
+    }
+
+    protected void SetName(string typeName)
+    {
+      Name = EnchanterSize + " " + typeName;
+    }
   }
 }

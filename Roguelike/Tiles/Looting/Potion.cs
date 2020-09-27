@@ -25,7 +25,7 @@ namespace Roguelike.Tiles.Looting
 
     public override float GetStatIncrease(LivingEntity caller)
     {
-      var inc = 50;// ConsumableHelper.GetStatIncrease(caller, this, 2);
+      var inc = Kind == PotionKind.Poison ? 0 : 50;
       return inc;
     }
 
@@ -51,6 +51,7 @@ namespace Roguelike.Tiles.Looting
         Name = "Poison Potion";
         tag1 = "poison_potion";
         primaryStatDesc = "Remove poison effect";
+        EnhancedStat = EntityStatKind.Unset;
       }
     }
 

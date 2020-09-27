@@ -72,48 +72,32 @@ namespace Roguelike.Tiles.Looting
     private void SetKind(HunterTrophyKind kind)
     {
       TinyTrophyKind = kind;
-      
+      SetName(kind.ToDescription());
+      SetPrice();
+
       switch (kind)
       {
         case HunterTrophyKind.Unset:
           EnchantSrc = EnchantSrc.Unset;
           break;
         case HunterTrophyKind.Fang:
-          Name = "Fang";
+          
           EnchantSrc = EnchantSrc.Fang;
           primaryStatDescription = "Sharp, hard, ready to bite. " + Strings.PartOfCraftingRecipe;
           break;
         case HunterTrophyKind.Tusk:
           EnchantSrc = EnchantSrc.Tusk;
-          Name = "Tusk";
           primaryStatDescription = "Big, sharp, ready to tear somebody apart. " + Strings.PartOfCraftingRecipe;
           break;
         case HunterTrophyKind.Claw:
           EnchantSrc = EnchantSrc.Claw;
-          Name = "Claw";
           primaryStatDescription = "Sharp, hard, ready to claw. " + Strings.PartOfCraftingRecipe;
           break;
         default:
           break;
       }
     }
-
-    //internal static EnchantSrc EnchantSrcFromTinyTrophyKind(TinyTrophyKind tinyTrophyKind)
-    //{
-    //  switch (tinyTrophyKind)
-    //  {
-    //    case TinyTrophyKind.Unset:
-    //      return EnchantSrc.Unset;
-    //    case TinyTrophyKind.Fang:
-    //      return EnchantSrc.Fang;
-    //    case TinyTrophyKind.Tusk:
-    //      return EnchantSrc.Tusk;
-    //    case TinyTrophyKind.Claw:
-    //      return EnchantSrc.Claw;
-    //    default:
-    //      return EnchantSrc.Unset;
-    //  }
-    //}
+       
 
     public override LootStatInfo[] GetLootStatInfo(LivingEntity caller)
     {
@@ -123,17 +107,17 @@ namespace Roguelike.Tiles.Looting
         var props = enhancmentProps[this.TinyTrophyKind];
 
         var lootStatInfo = new LootStatInfo();
-        lootStatInfo.Desc = "Weapons: "+ props[EquipmentKind.Weapon].ToDescription() + " " + wpnAndArmorValues[this.EnchanterSize];
+        lootStatInfo.Desc = "Weapons: "+ props[EquipmentKind.Weapon].ToDescription() + " " + GetStatIncrease(EquipmentKind.Weapon);
         lootStatInfo.Kind = LootStatKind.Weapon;
         lootStatInfos.Add(lootStatInfo);
 
         lootStatInfo = new LootStatInfo();
-        lootStatInfo.Desc = "Armor: " + props[EquipmentKind.Armor].ToDescription() + " " + wpnAndArmorValues[this.EnchanterSize];
+        lootStatInfo.Desc = "Armor: " + props[EquipmentKind.Armor].ToDescription() + " " + GetStatIncrease(EquipmentKind.Weapon);
         lootStatInfo.Kind = LootStatKind.Armor;
         lootStatInfos.Add(lootStatInfo);
 
         lootStatInfo = new LootStatInfo();
-        lootStatInfo.Desc = "Jewellery: " + props[EquipmentKind.Amulet].ToDescription() + " " + otherValues[this.EnchanterSize];
+        lootStatInfo.Desc = "Jewellery: " + props[EquipmentKind.Amulet].ToDescription() + " " + GetStatIncrease(EquipmentKind.Ring);
         lootStatInfo.Kind = LootStatKind.Jewellery;
         lootStatInfos.Add(lootStatInfo);
 
@@ -149,20 +133,16 @@ namespace Roguelike.Tiles.Looting
       if (props.ContainsKey(eq.EquipmentKind))
       {
         var esk = props[eq.EquipmentKind];
-        int val = 0;
-        if (eq.EquipmentKind == EquipmentKind.Amulet || eq.EquipmentKind == EquipmentKind.Ring || eq.EquipmentKind == EquipmentKind.Trophy)
-        {
-          val = otherValues[this.EnchanterSize];
-        }
-        else
-        {
-          val = wpnAndArmorValues[this.EnchanterSize];
-        }
+        int val = GetStatIncrease(eq.EquipmentKind);
         return eq.Enchant(esk, val, this, out error);
       }
 
       return false;
     }
 
+    public override void SetProps()
+    {
+      SetKind(this.TinyTrophyKind);//refresh
+    }
   }
 }

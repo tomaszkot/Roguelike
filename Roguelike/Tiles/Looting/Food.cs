@@ -62,21 +62,21 @@ namespace Roguelike.Tiles
     public void MakeRoasted()
     {
       this.Roasted = true;
-      SetName();
-      SetPrimaryStatDesc();
       Price *= 2;
-      SetDefaultTagFromKind(Kind);
+      SetKindRelatedMembers(Kind);
     }
 
     public override float GetStatIncrease(LivingEntity caller)
     {
-      var divider = 4;
+      var divider = 8;
       if (Kind == FoodKind.Mushroom)
         divider = 10;
       if (Kind == FoodKind.Plum)
         divider = 8;
 
-      var inc = 100/divider;// ConsumableHelper.GetStatIncrease(caller, this, divider);
+      if (Roasted)
+        divider /= 2;
+      var inc = 100/divider;
       return inc;
     }
         
@@ -88,11 +88,14 @@ namespace Roguelike.Tiles
     public void SetKind(FoodKind kind)
     {
       Kind = kind;
-      SetName();
+      SetKindRelatedMembers(kind);
+    }
 
+    private void SetKindRelatedMembers(FoodKind kind)
+    {
+      SetName();
       DisplayedName = GetNameOrDisplayedName(false);
       SetPrimaryStatDesc();
-      
       SetDefaultTagFromKind(kind);
     }
 
@@ -165,9 +168,9 @@ namespace Roguelike.Tiles
 
     public override string PrimaryStatDescription => primaryStatDesc;
 
-    public override string GetId()
+    public override  string GetId()
     {
-      return base.GetId() + "_" + Kind;
+      return base.GetId() + "_" + Kind + "_"+ Roasted;
     }
-  }
+}
 }

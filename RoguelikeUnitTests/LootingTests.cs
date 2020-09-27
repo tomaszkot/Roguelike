@@ -15,6 +15,46 @@ namespace RoguelikeUnitTests
   class LootingTests : TestBaseTyped<LootingTestsHelper>
   {
     [Test]
+    public void HunterTrophyProps()
+    {
+      var env = CreateTestEnv();
+      var trophyBig = env.GameManager.LootGenerator.GetLootByAsset("big_claw") as HunterTrophy;
+      var siBig = trophyBig.GetStatIncrease(EquipmentKind.Weapon);
+      Assert.AreEqual(trophyBig.Name, "Big Claw");
+
+      var trophySmall = env.GameManager.LootGenerator.GetLootByAsset("small_claw") as HunterTrophy;
+      var siSmall = trophySmall.GetStatIncrease(EquipmentKind.Weapon);
+      Assert.AreEqual(trophySmall.Name, "Small Claw");
+
+      Assert.Greater(siBig, siSmall);
+      Assert.Greater(trophyBig.Price, trophySmall.Price);
+    }
+    
+    
+    [Test]
+    public void GemsStats()
+    {
+      //var env = CreateTestEnv();
+      var gem = new Gem(GemKind.Ruby);
+      var statInfo = gem.GetLootStatInfo(null);
+      Assert.AreEqual(statInfo.Count(), 3);
+      foreach (var stat in statInfo)
+      {
+        Assert.AreNotEqual(stat.Kind, LootStatKind.Unset);
+      }
+
+      gem = new Gem(GemKind.Amber);
+      gem.EnchanterSize = EnchanterSize.Big;
+      Assert.AreEqual(gem.Name, "Big Amber");
+      statInfo = gem.GetLootStatInfo(null);
+      Assert.AreEqual(statInfo.Count(), 3);
+      foreach (var stat in statInfo)
+      {
+        Assert.AreNotEqual(stat.Kind, LootStatKind.Unset);
+      }
+    }
+
+    [Test]
     public void LotsOfPotionsTest()
     {
       var des = EquipmentKind.Weapon.ToDescription();

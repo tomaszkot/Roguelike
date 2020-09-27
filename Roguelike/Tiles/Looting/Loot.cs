@@ -27,6 +27,11 @@ namespace Roguelike.Tiles
     public string Desc { get; set; }
     public LootStatKind Kind { get; set; }
     public EntityStatKind EntityStatKind { get; set; }
+
+    public override string ToString()
+    {
+      return Kind + " " + EntityStatKind + " " + Desc;
+    }
   }
 
   public enum EquipmentKind { Unset, Weapon, Armor, Helmet, Shield, Ring, Amulet,
