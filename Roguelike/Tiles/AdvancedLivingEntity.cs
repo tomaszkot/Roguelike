@@ -47,7 +47,7 @@ namespace Roguelike.Tiles
 
     //public int AvailableExpPoints { get; set; } = 3;
     protected bool canAdvanceInExp = false;
-    int levelUpPoints = 3;
+    int levelUpPoints = 0;
 
     Dictionary<SpellKind, int> coolingDownSpells = new Dictionary<SpellKind, int>();
     

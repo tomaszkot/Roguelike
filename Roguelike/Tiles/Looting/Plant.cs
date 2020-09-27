@@ -52,7 +52,7 @@ namespace Roguelike.Tiles
       else if (Kind == PlantKind.Sorrel)
       {
         desc = "Eatable, sour plant";
-        tag1 = "szczaw";
+        tag1 = "Sorrel";
       }
       primaryStatDesc = desc;
     }
