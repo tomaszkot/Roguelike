@@ -42,6 +42,7 @@ namespace Roguelike.Managers
     EnemiesManager enemiesManager;
     AlliesManager alliesManager;
     LevelGenerator levelGenerator;
+    LootManager lootManager;
 
     IPersister persister;
     ILogger logger;
@@ -83,6 +84,9 @@ namespace Roguelike.Managers
       Logger = container.GetInstance<ILogger>();
       levelGenerator = container.GetInstance<LevelGenerator>();
       EventsManager = container.GetInstance<EventsManager>();
+      lootManager = container.GetInstance<LootManager>();
+      lootManager.GameManager = this;
+
       EventsManager.ActionAppended += EventsManager_ActionAppended;
 
       Context = container.GetInstance<GameContext>();
@@ -192,24 +196,9 @@ namespace Roguelike.Managers
           Hero.IncreaseExp(10);
           //var loot = LootGenerator.GetRandomLoot();
           context.CurrentNode.SetTile(new Tile(), lea.InvolvedEntity.Point);
-          Loot loot = null;
           var enemy = lea.InvolvedEntity as Enemy;
-          if (enemy.PowerKind == EnemyPowerKind.Champion ||
-              enemy.PowerKind == EnemyPowerKind.Boss)
-          {
-            loot = LootGenerator.GetBestLoot(enemy.PowerKind, enemy.Level);
-          }
-          else 
-            loot = LootGenerator.TryGetRandomLootByDiceRoll(LootSourceKind.Enemy, enemy.Level);
-          if (loot != null)
-          {
-            AddLootReward(loot, lea.InvolvedEntity, false);
-          }
-          var extraLootItems = GetExtraLoot(enemy, loot);
-          foreach (var extraLoot in extraLootItems)
-          {
-            AddLootReward(extraLoot, lea.InvolvedEntity, true);
-          }
+          var loot = lootManager.TryAddForLootSource(enemy);
+          Logger.LogInfo("Added loot"+ loot);
         }
       }
     }
@@ -221,9 +210,9 @@ namespace Roguelike.Managers
     /// <param name="lootSource">Barrel, Chest, Enemy...</param>
     /// <param name="animated"></param>
     /// <returns></returns>
-    public bool AddLootReward(Loot item, Tile lootSource, bool animated)
+    public bool AddLootReward(Loot item, ILootSource lootSource, bool animated)
     {
-      return AddLootToNode(item, lootSource, animated);
+      return AddLootToNode(item, lootSource as Tile, animated);
     }
 
     public bool AddLootToNode(Loot item, Tile lootSource, bool animated)
@@ -243,31 +232,7 @@ namespace Roguelike.Managers
       Logger.LogError("AddLootReward no room! for a loot");
       return false;
     }
-
-    List<Loot> extraLoot = new List<Loot>();
-    List<Loot> GetExtraLoot(Enemy en, Loot primaryLoot)
-    {
-      extraLoot.Clear();
-      if (GenerationInfo.DebugInfo.EachEnemyGivesPotion)
-      {
-        var potion = LootGenerator.GetRandomLoot(LootKind.Potion, en.Level);
-        extraLoot.Add(potion);
-      }
-      if (GenerationInfo.DebugInfo.EachEnemyGivesJewellery)
-      {
-        //var loot = LootGenerator.GetRandomJewellery();
-        var loot = LootGenerator.GetRandomRing();
-        extraLoot.Add(loot);
-      }
-      if (primaryLoot is Gold)
-      {
-        var loot = LootGenerator.TryGetRandomLootByDiceRoll(LootSourceKind.Enemy, en.Level);
-        if (!(loot is Gold))
-          extraLoot.Add(loot);
-      }
-      return extraLoot;
-    }
-
+        
     public InteractionResult HandleHeroShift(TileNeighborhood neib)
     {
       int horizontal = 0;
@@ -458,55 +423,11 @@ namespace Roguelike.Managers
       }
       else if (attackPolicy.Victim is Barrel || attackPolicy.Victim is Chest)
       {
-        var inter = attackPolicy.Victim as Roguelike.Tiles.InteractiveTile;
-        var lsk = LootSourceKind.Barrel;
-        Chest chest = null;
-        if (attackPolicy.Victim is Chest)
-        {
-          chest = (attackPolicy.Victim as Chest);
-          if (!chest.Closed)
-            return;
-          lsk = chest.LootSourceKind;
-        }
-
-        if (attackPolicy.Victim is Barrel && RandHelper.GetRandomDouble() < GenerationInfo.ChanceToGenerateEnemyFromBarrel)
-        {
-          var enemy = CurrentNode.SpawnEnemy(attackPolicy.Victim, EventsManager);
-          EnemiesManager.Enemies.Add(enemy);
-          ReplaceTile<Enemy>(enemy, attackPolicy.Victim.Point, false, attackPolicy.Victim);
-          return;
-        }
-
-        var loot = TryGetRandomLootByDiceRoll(lsk, inter.Level);
-        if (attackPolicy.Victim is Barrel)
-        {
-          bool repl = ReplaceTile<Loot>(loot, attackPolicy.Victim.Point, false, attackPolicy.Victim);
-          Assert(repl, "ReplaceTileByLoot " + loot);
-          Debug.WriteLine("ReplaceTileByLoot " + loot + " " + repl);
-        }
-        else
-        {
-          if (!chest.Open())
-            return;
-          AppendAction<InteractiveTileAction>((InteractiveTileAction ac) => { ac.InvolvedTile = chest; ac.InteractiveKind = InteractiveActionKind.ChestOpened; });
-          AddLootReward(loot, attackPolicy.Victim, true);//add loot at closest empty
-          if (chest.ChestKind == ChestKind.GoldDeluxe ||
-            chest.ChestKind == ChestKind.Gold)
-          {
-            var lootEx1 = GetExtraLoot(attackPolicy.Victim as ILootSource, false);
-            AddLootReward(lootEx1, attackPolicy.Victim, true);
-
-            if (chest.ChestKind == ChestKind.GoldDeluxe)
-            {
-              var lootEx2 = GetExtraLoot(attackPolicy.Victim as ILootSource, true);
-              AddLootReward(lootEx2, attackPolicy.Victim, true);
-            }
-          }
-        }
+        
       }
     }
 
-    protected virtual Loot TryGetRandomLootByDiceRoll(LootSourceKind lsk, int level)
+    public virtual Loot TryGetRandomLootByDiceRoll(LootSourceKind lsk, int level)
     {
       return LootGenerator.TryGetRandomLootByDiceRoll(lsk, level);
     }
@@ -531,36 +452,8 @@ namespace Roguelike.Managers
     {
       OnHeroPolicyApplied(policy);
     }
-
-    private Loot GetExtraLoot(ILootSource victim, bool nonEquipment)
-    {
-      if (victim is Chest)
-      {
-        var chest = victim as Chest;
-        if (
-          chest.ChestKind == ChestKind.Gold ||
-          chest.ChestKind == ChestKind.GoldDeluxe
-          )
-        {
-          if (nonEquipment)
-          {
-            return lootGenerator.GetRandomLoot(chest.Level);//TODO Equipment might happen
-          }
-          else
-          {
-            var eq = lootGenerator.GetRandomEquipment(Hero.Level);
-            if (eq.IsPlain())
-              eq.MakeMagic(true);
-
-            return eq;
-          }
-        }
-      }
-
-      return lootGenerator.GetRandomLoot(victim.Level);
-    }
-
-    protected void AppendAction<T>(Action<T> init) where T : GameAction, new()
+        
+    public void AppendAction<T>(Action<T> init) where T : GameAction, new()
     {
       var action = new T();
       if (init != null)

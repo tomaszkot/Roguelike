@@ -23,12 +23,13 @@ namespace RoguelikeUnitTests
       try
       {
         var lootInfo = new LootInfo(game, null);
+        ILootSource lootSrc = game.GameManager.EnemiesManager.GetEnemies().First();//env.Game.Hero
         for (int i = 0; i < 10; i++)
         {
           var pot = env.LootGenerator.GetRandomLoot(LootKind.Potion, 1);
-          var added = game.GameManager.AddLootReward(pot, env.Game.Hero, false);
+          var added = game.GameManager.AddLootReward(pot, lootSrc, false);
           Assert.True(added);
-          var dist = pot.DistanceFrom(env.Game.Hero);
+          var dist = pot.DistanceFrom(lootSrc.GetPoint());
           Assert.Less(dist, 5);
           Assert.True(dist < 4 || i > 5);
         }
@@ -121,8 +122,8 @@ namespace RoguelikeUnitTests
     {
       var env = CreateTestEnv();
       env.LootGenerator.Probability = new Roguelike.Probability.Looting();
-      env.LootGenerator.Probability.SetLootingChance(LootSourceKind.Enemy, LootKind.TinyTrophy, 1);
-      env.AssertLootKindFromEnemies(new[] { LootKind.TinyTrophy });
+      env.LootGenerator.Probability.SetLootingChance(LootSourceKind.Enemy, LootKind.HunterTrophy, 1);
+      env.AssertLootKindFromEnemies(new[] { LootKind.HunterTrophy });
     }
 
     [Test]
@@ -391,7 +392,7 @@ namespace RoguelikeUnitTests
     [Test]
     public void KilledEnemyLevelAffectsTinyTrophy()
     {
-      KilledEnemyLevelAffectsEnchanter(LootKind.TinyTrophy);
+      KilledEnemyLevelAffectsEnchanter(LootKind.HunterTrophy);
     }
     /////////////////////////////////////////////////////////
     [Test]

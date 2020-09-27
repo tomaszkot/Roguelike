@@ -94,22 +94,29 @@ namespace Roguelike.Tiles
       Kind = kind;
       SetName();
 
-      DisplayedName = Name;
+      DisplayedName = GetNameOrDisplayedName(false);
       SetPrimaryStatDesc();
       enhancedStat = EntityStatKind.Health;
       SetDefaultTagFromKind(kind);
     }
 
-    private void SetName()
+    private string GetNameOrDisplayedName(bool settingName)
     {
-      Name = Kind.ToString();
+      var name = settingName ? Kind.ToString() : Kind.ToDescription();
       if (IsRoastable(Kind))
       {
         if (Roasted)
-          Name = "Roasted " + Name;
+          name = "Roasted " + name;
         else
-          Name = "Raw " + Name;
+          name = "Raw " + name;
       }
+
+      return name;
+    }
+
+    private void SetName()
+    {
+      Name = GetNameOrDisplayedName(true);
     }
 
     protected virtual void SetDefaultTagFromKind(FoodKind kind)

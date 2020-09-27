@@ -25,6 +25,8 @@ namespace Roguelike.Tiles
 
     }
 
+    public Point GetPoint() { return Point; }
+
     public void SetLevel(int level) { Level = level; }
 
     //public override bool OnHitBy(IMovingDamager spell)

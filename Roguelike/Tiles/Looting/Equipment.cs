@@ -215,7 +215,7 @@ namespace Roguelike.Tiles
     {
       this.primaryStat = new EntityStat(primaryStat, 0);
       PrimaryStatValue = value;
-      this.Name += " off " + primaryStat.ToString();
+      this.Name += " of " + primaryStat.ToString();
     }
 
     public List<KeyValuePair<EntityStatKind, EntityStat>> GetPossibleMagicStats()

@@ -80,7 +80,7 @@ namespace Roguelike.Tiles.Looting
             desc = "Turns a piece of cord into a pendant";
             break;
           case RecipeKind.EnchantEquipment:
-            desc = "Enchants equipment with a gem of hunter's trophy";
+            desc = "Enchants equipment with a gem or a hunter's trophy";
             break;
           default:
             break;
@@ -122,7 +122,7 @@ namespace Roguelike.Tiles.Looting
       {
         kind = value;
         Name = kind+ " Recipe";
-        DisplayedName = Name;
+        DisplayedName = kind.ToDescription() + " Recipe";
         tag1 = "craft_";
         switch (kind)
         {

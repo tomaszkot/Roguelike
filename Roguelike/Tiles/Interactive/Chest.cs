@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 
@@ -9,6 +10,7 @@ namespace Roguelike.Tiles
   {
     int Level { get; }
     void SetLevel(int level);
+    Point GetPoint(); 
   }
 }
 
@@ -36,6 +38,8 @@ namespace Roguelike.Tiles.Interactive
           Color = ConsoleColor.Yellow;
       }
     }
+
+    public Point GetPoint() { return Point; }
 
     public bool Closed
     {

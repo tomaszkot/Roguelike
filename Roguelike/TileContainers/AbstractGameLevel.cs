@@ -364,7 +364,7 @@ namespace Roguelike.TileContainers
       return Index;
     }
 
-    internal Enemy SpawnEnemy(Tile position, EventsManager em)
+    internal Enemy SpawnEnemy(EventsManager em)
     {
       var enemy = new Enemy(EnemySymbols.SkeletonSymbol);
       enemy.SetLevel(GetSpawnEnemyLevel());

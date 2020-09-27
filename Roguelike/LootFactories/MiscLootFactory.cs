@@ -100,16 +100,16 @@ namespace Roguelike.LootFactories
         return new Gold();
       };
 
-      var tinyTrophies = TinyTrophy.TinyTrophiesTags;
+      var tinyTrophies = HunterTrophy.TinyTrophiesTags;
       foreach (var tt in tinyTrophies)
       {
-        var kind = TinyTrophyKind.Unset;
+        var kind = HunterTrophyKind.Unset;
         if (tt.EndsWith("claw"))
-          kind = TinyTrophyKind.Claw;
+          kind = HunterTrophyKind.Claw;
         else if (tt.EndsWith("fang"))
-          kind = TinyTrophyKind.Fang;
+          kind = HunterTrophyKind.Fang;
         else if (tt.EndsWith("tusk"))
-          kind = TinyTrophyKind.Tusk;
+          kind = HunterTrophyKind.Tusk;
 
         EnchanterSize enchanterSize = EnchanterSize.Small;
         if (tt.StartsWith("big"))
@@ -119,7 +119,7 @@ namespace Roguelike.LootFactories
 
         factory[tt] = (string tag) =>
         {
-          return new TinyTrophy(kind) { EnchanterSize = enchanterSize, tag1 = tag };
+          return new HunterTrophy(kind) { EnchanterSize = enchanterSize, tag1 = tag };
         };
       }
 

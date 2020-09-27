@@ -76,6 +76,8 @@ namespace Roguelike.Tiles
       Name = "Enemy";
     }
 
+    public Point GetPoint() { return Point; }
+
     public void SetChampion()
     {
       SetNonPlain(false);

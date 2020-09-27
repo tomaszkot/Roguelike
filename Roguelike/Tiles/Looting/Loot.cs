@@ -37,7 +37,7 @@ namespace Roguelike.Tiles
   public enum CurrentEquipmentPosition { Unset, Left, Right}
 
   public enum LootKind { Unset, Other, Gold, Potion, Scroll, Equipment, Gem,
-                         Recipe, Seal, SealPart, Food, Plant, TinyTrophy}
+                         Recipe, Seal, SealPart, Food, Plant, HunterTrophy}
 
   public enum LootSourceKind { Enemy, PlainChest, GoldChest, DeluxeGoldChest, Barrel }
   public enum EquipmentClass { Unset, Plain, Magic, MagicSecLevel, Unique }

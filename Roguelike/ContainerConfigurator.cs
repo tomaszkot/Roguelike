@@ -36,6 +36,7 @@ namespace Roguelike
       container.Register<IProjectilesFactory, ProjectilesFactory>();
       container.Register<LootCrafterBase, LootCrafter>();
       container.Register<GameState, GameState>();
+      container.Register<LootManager, LootManager>();
       //container.Register <MovePolicy, MovePolicy>();//move to exe
       Container = container;
 

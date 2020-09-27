@@ -300,7 +300,7 @@ namespace Roguelike.Generators
         //var lootName = RandHelper.GetRandomElem<string>(GemTags.ToArray());
         //res = GetLootByName(lootName);
       }
-      else if (kind == LootKind.TinyTrophy)
+      else if (kind == LootKind.HunterTrophy)
       {
         res = GetRandomEnchanter(level, true);
       }
@@ -336,7 +336,7 @@ namespace Roguelike.Generators
       var preff = getEnchanterPreffix(level);
       List<string> tags = null;
       if (tinyTrophy)
-        tags = TinyTrophy.TinyTrophiesTags.Where(i => i.StartsWith(preff)).ToList();
+        tags = HunterTrophy.TinyTrophiesTags.Where(i => i.StartsWith(preff)).ToList();
       else
       {
         var gemTags = new List<string>();
@@ -380,7 +380,7 @@ namespace Roguelike.Generators
     public virtual Loot GetRandomLoot(int level)
     {
       var enumVal = RandHelper.GetRandomEnumValue<LootKind>(new[] 
-      { LootKind.Other, LootKind.Gem, LootKind.Recipe, LootKind.Seal, LootKind.SealPart, LootKind.Unset, LootKind.TinyTrophy});
+      { LootKind.Other, LootKind.Gem, LootKind.Recipe, LootKind.Seal, LootKind.SealPart, LootKind.Unset, LootKind.HunterTrophy});
       var loot = GetRandomLoot(enumVal, level);
       return loot;
     }
