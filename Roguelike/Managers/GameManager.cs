@@ -423,7 +423,7 @@ namespace Roguelike.Managers
       }
       else if (attackPolicy.Victim is Barrel || attackPolicy.Victim is Chest)
       {
-        
+        this.lootManager.TryAddForLootSource(attackPolicy.Victim as ILootSource);
       }
     }
 

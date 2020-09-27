@@ -314,11 +314,15 @@ namespace Roguelike.Tiles
     public void MakeMagic(bool magicOfSecondLevel = false)
     {
       Debug.Assert(levelIndex >= 0);
-      var stat = AddMagicStat(new[] { EntityStatKind.Unset, this.primaryStat.Kind }, false);
+      var toSkip = GetMagicStats().Select(i => i.Key).ToList();
+      toSkip.AddRange(new[] { EntityStatKind.Unset, this.primaryStat.Kind });
+
+      var stat = AddMagicStat(toSkip.ToArray(), false);
       if (magicOfSecondLevel)
       {
         priceAlrIncreased = false;
-        AddMagicStat(new[] { EntityStatKind.Unset, this.primaryStat.Kind, stat }, true);
+        toSkip.Add(stat);
+        AddMagicStat(toSkip.ToArray(), true);
       }
 
       IncreasePriceBasedOnExtInfo();
