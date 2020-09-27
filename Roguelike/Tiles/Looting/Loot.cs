@@ -1,5 +1,6 @@
 ﻿#define ASCII_BUILD  
 using Dungeons.Tiles;
+using Roguelike.Attributes;
 using System;
 using System.Linq;
 
@@ -11,18 +12,21 @@ namespace Roguelike.Tiles
   }
 
   [Flags]
-  public enum LootStatKind 
+  public enum LootStatKind
   { 
     Unset = 0, 
     Weapon = 1, 
     Armor = 2, 
-    Jewellery = 4 
+    Jewellery = 4,
+    //Health = 8,
+    //Mana = 16
   }
 
   public class LootStatInfo
   {
     public string Desc { get; set; }
     public LootStatKind Kind { get; set; }
+    public EntityStatKind EntityStatKind { get; set; }
   }
 
   public enum EquipmentKind { Unset, Weapon, Armor, Helmet, Shield, Ring, Amulet,
@@ -203,7 +207,7 @@ namespace Roguelike.Tiles
     }
 
     protected LootStatInfo[] m_lootStatInfo;
-    public virtual LootStatInfo[] GetLootStatInfo()
+    public virtual LootStatInfo[] GetLootStatInfo(LivingEntity caller)
     {
       return m_lootStatInfo;
     }

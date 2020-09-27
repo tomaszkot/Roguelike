@@ -1,6 +1,7 @@
 ﻿using Dungeons.Core;
 using Roguelike.Attributes;
 using Roguelike.Tiles.Abstract;
+using Roguelike.Tiles.Looting;
 using System;
 using System.Linq;
 
@@ -8,10 +9,9 @@ namespace Roguelike.Tiles
 {
   public enum FoodKind { Unset, Mushroom, Plum, /*Herb,*/ Meat, Fish}
 
-  public class Food : Looting.StackedLoot, IConsumable
+  public class Food : Consumable
   {
     public FoodKind Kind;
-    EntityStatKind enhancedStat = EntityStatKind.Unset;
     public static readonly FoodKind[] FoodKinds;
     public bool Roasted { get; set; }
 
@@ -24,8 +24,8 @@ namespace Roguelike.Tiles
     {
 
     }
-        
-    public Food(FoodKind kind) 
+
+    public Food(FoodKind kind)
     {
       Symbol = '-';
       LootKind = LootKind.Food;
@@ -40,7 +40,7 @@ namespace Roguelike.Tiles
 
     public void DiscoverKind(string kind)
     {
-      if(!kind.Trim().Any())
+      if (!kind.Trim().Any())
         throw new Exception("DiscoverKind empty kind");
 
       var parts = kind.Split("_".ToCharArray());
@@ -68,22 +68,18 @@ namespace Roguelike.Tiles
       SetDefaultTagFromKind(Kind);
     }
 
-    public EffectType EffectType { get; set; }
-
-    public float GetStatIncrease(LivingEntity caller)
+    public override float GetStatIncrease(LivingEntity caller)
     {
       var divider = 4;
       if (Kind == FoodKind.Mushroom)
         divider = 10;
       if (Kind == FoodKind.Plum)
         divider = 8;
-      var inc = caller.Stats[EnhancedStat].TotalValue / divider;
+
+      var inc = 100/divider;// ConsumableHelper.GetStatIncrease(caller, this, divider);
       return inc;
     }
-
-    public EntityStatKind EnhancedStat { get => enhancedStat; set => enhancedStat = value; }
-    public Loot Loot { get => this; }
-
+        
     bool IsRoastable(FoodKind kind)
     {
       return kind == FoodKind.Fish || kind == FoodKind.Meat;
@@ -96,7 +92,7 @@ namespace Roguelike.Tiles
 
       DisplayedName = GetNameOrDisplayedName(false);
       SetPrimaryStatDesc();
-      enhancedStat = EntityStatKind.Health;
+      
       SetDefaultTagFromKind(kind);
     }
 
@@ -136,7 +132,7 @@ namespace Roguelike.Tiles
 
         case FoodKind.Meat:
           tag1 = "meat_raw";
-          if(Roasted)
+          if (Roasted)
             tag1 = "meat_roasted";
           break;
         case FoodKind.Fish:
@@ -152,17 +148,17 @@ namespace Roguelike.Tiles
     void SetPrimaryStatDesc()
     {
       string desc = "";
-      
+
       if (Kind == FoodKind.Plum)
       {
         desc = "Sweat, delicious friut";
       }
       else if (Kind == FoodKind.Meat || Kind == FoodKind.Fish)
       {
-        if(Roasted)
-          desc = "Roasted, delicious piece of "+Kind.ToString().ToLower();
+        if (Roasted)
+          desc = "Roasted, delicious piece of " + Kind.ToString().ToLower();
         else
-          desc = "Raw yet nutritious piece of "+ Kind.ToString().ToLower();
+          desc = "Raw yet nutritious piece of " + Kind.ToString().ToLower();
       }
       primaryStatDesc = desc;
     }

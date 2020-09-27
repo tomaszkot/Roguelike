@@ -115,7 +115,7 @@ namespace Roguelike.Tiles.Looting
     //  }
     //}
 
-    public override LootStatInfo[] GetLootStatInfo()
+    public override LootStatInfo[] GetLootStatInfo(LivingEntity caller)
     {
       if (m_lootStatInfo == null)
       {
@@ -139,7 +139,7 @@ namespace Roguelike.Tiles.Looting
 
         m_lootStatInfo = lootStatInfos.ToArray();
       }
-      return base.GetLootStatInfo();
+      return base.GetLootStatInfo(caller);
     }
 
     public override bool ApplyTo(Equipment eq, out string error)

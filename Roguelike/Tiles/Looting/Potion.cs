@@ -1,16 +1,13 @@
 ﻿using Roguelike.Attributes;
-using Roguelike.Tiles.Abstract;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Roguelike.Tiles.Looting
 {
   public enum PotionKind { Unset, Health, Mana, Poison, Special }
 
-  public class Potion : StackedLoot, IConsumable
+  public class Potion : Consumable
   {
     public PotionKind Kind { get; private set; }
 
@@ -26,14 +23,9 @@ namespace Roguelike.Tiles.Looting
       SetKind(kind);
     }
 
-    public EffectType EffectType { get; set; }
-
-    public Loot Loot { get => this; }
-
-    public float GetStatIncrease(LivingEntity caller)
+    public override float GetStatIncrease(LivingEntity caller)
     {
-      var divider = 2;
-      var inc = caller.Stats[EnhancedStat].TotalValue / divider;
+      var inc = 50;// ConsumableHelper.GetStatIncrease(caller, this, 2);
       return inc;
     }
 
@@ -44,13 +36,15 @@ namespace Roguelike.Tiles.Looting
       {
         Name = "Health Potion";
         tag1 = "health_potion";
-        primaryStatDesc = "Restores health";
+        EnhancedStat = EntityStatKind.Health;
+        primaryStatDesc = "Restores " + EnhancedStat;
       }
       else if (kind == PotionKind.Mana)
       {
         Name = "Mana Potion";
         tag1 = "mana_potion";
-        primaryStatDesc = "Restores mana";
+        EnhancedStat = EntityStatKind.Mana;
+        primaryStatDesc = "Restores " + EnhancedStat;
       }
       else if (kind == PotionKind.Poison)
       {
@@ -61,14 +55,7 @@ namespace Roguelike.Tiles.Looting
     }
 
     public override string PrimaryStatDescription => primaryStatDesc;
-
-    public EntityStatKind EnhancedStat
-    {
-      get {
-        return this.StatKind;
-      }
-    }
-
+        
     public override string GetId()
     {
       return base.GetId() + "_" + Kind.ToString();
@@ -79,23 +66,23 @@ namespace Roguelike.Tiles.Looting
       return base.ToString() + " PotionKind: "+ Kind;
     }
 
-    public EntityStatKind StatKind
-    {
-      get
-      {
-        switch (Kind)
-        {
-          case PotionKind.Health:
-            return EntityStatKind.Health;
-          case PotionKind.Mana:
-            return EntityStatKind.Mana;
-          default:
-            //Poison ?    
-            break;
-        }
+    //public EntityStatKind StatKind
+    //{
+    //  get
+    //  {
+    //    switch (Kind)
+    //    {
+    //      case PotionKind.Health:
+    //        return EntityStatKind.Health;
+    //      case PotionKind.Mana:
+    //        return EntityStatKind.Mana;
+    //      default:
+    //        //Poison ?    
+    //        break;
+    //    }
 
-        return EntityStatKind.Unset;
-      }
-    }
+    //    return EntityStatKind.Unset;
+    //  }
+    //}
   }
 }

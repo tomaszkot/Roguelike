@@ -149,15 +149,21 @@ namespace Roguelike.Tiles
           Debug.Assert(pot != null && pot.Kind == PotionKind.Poison);
         }
 
-        //float inc = consumable.GetStatIncrease(this);
-        //DoConsume(consumable.EnhancedStat, inc);
-
         var stacked = consumable.Loot as StackedLoot;
         inventory.Remove(stacked);
         AppendAction(new LootAction(consumable.Loot) { LootActionKind = LootActionKind.Consumed });
-        var turns = consumable is Potion ? 1 : 5;
-        var incPercentage = consumable is Potion ? 50 : 10;
-        AddLastingEffect(EffectType.ConsumedFood, turns, consumable.EnhancedStat, incPercentage);
+
+        if (consumable is SpecialPotion)
+        {
+          var sp = consumable as SpecialPotion;
+          this.Stats[sp.EnhancedStat].Nominal += consumable.GetStatIncrease(null);
+        }
+        else
+        {
+          var turns = consumable is Potion ? 1 : 5;
+          var incPercentage = consumable.GetStatIncrease(null);
+          AddLastingEffect(EffectType.ConsumedFood, turns, consumable.EnhancedStat, incPercentage);
+        }
       }
       else
         Assert(false);

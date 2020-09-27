@@ -229,7 +229,7 @@ namespace Roguelike.Tiles.Looting
       return res;
     }
 
-    public override LootStatInfo[] GetLootStatInfo()
+    public override LootStatInfo[] GetLootStatInfo(LivingEntity caller)
     {
       if (m_lootStatInfo == null)
       {
@@ -264,7 +264,7 @@ namespace Roguelike.Tiles.Looting
       if (extraStatDescription == null)
       {
         var destItems = new List<string>();
-        var items = GetLootStatInfo();
+        var items = GetLootStatInfo(null);
         foreach (var item in items)
           destItems.Add(item.Desc);
 

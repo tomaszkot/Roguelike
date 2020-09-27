@@ -15,13 +15,6 @@ namespace Roguelike.Tiles
     {
     }
 
-    //public float GetStatIncrease(LivingEntity caller)
-    //{
-    //  var divider = 6;
-    //  var inc = caller.Stats[EnhancedStat].TotalValue / divider;
-    //  return inc;
-    //}
-
     public Mushroom(MushroomKind kind) : base(FoodKind.Mushroom)
     {
       Symbol = '-';

@@ -1,10 +1,10 @@
 ﻿using Dungeons.Core;
+using Roguelike.Attributes;
+using Roguelike.Tiles;
 using Roguelike.Tiles.Looting;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Roguelike.Tiles
 {
@@ -15,7 +15,7 @@ namespace Roguelike.Tiles
     Sorrel  //szczaw
   }
 
-  public class Plant : StackedLoot
+  public class Plant : Consumable
   {
     public PlantKind Kind { get; set; }
 
@@ -35,7 +35,6 @@ namespace Roguelike.Tiles
     {
       Kind = kind;
       Name = kind.ToString();
-      //Name += " of " + Kind;
 
       DisplayedName = Name;
       SetPrimaryStatDesc();
@@ -48,6 +47,7 @@ namespace Roguelike.Tiles
       {
         desc = "Unpleasant to touch, part of recipe";
         tag1 = "Thistle1";
+        EnhancedStat = EntityStatKind.Unset;
       }
       else if (Kind == PlantKind.Sorrel)
       {
@@ -62,6 +62,31 @@ namespace Roguelike.Tiles
       return base.GetId() + "_" + Kind;
     }
 
+    public override float GetStatIncrease(LivingEntity caller)
+    {
+      return 10;// ConsumableHelper.GetStatIncrease(caller, this, 10);
+    }
+
     public override string PrimaryStatDescription => primaryStatDesc;
+
+    //public EntityStatKind StatKind
+    //{
+    //  get
+    //  {
+    //    switch (Kind)
+    //    {
+    //      case PlantKind.Unset:
+    //        break;
+    //      case PlantKind.Thistle:
+    //        break;
+    //      case PlantKind.Sorrel:
+    //        return EntityStatKind.Health;
+    //      default:
+    //        break;
+    //    }
+
+    //    return EntityStatKind.Unset;
+    //  }
+    //}
   }
 }

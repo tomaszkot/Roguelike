@@ -7,7 +7,7 @@ namespace Roguelike.Tiles.Abstract
     Loot Loot { get; }
     EntityStatKind EnhancedStat { get; }
     float GetStatIncrease(LivingEntity caller);
-
     EffectType EffectType { get; }//mushroom->poisoned
+    bool PercentableStatIncrease { get; set; }
   }
 }

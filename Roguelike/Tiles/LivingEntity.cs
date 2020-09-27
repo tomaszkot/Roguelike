@@ -18,7 +18,7 @@ namespace Roguelike.Tiles
   public enum EntityState { Idle, Moving, Attacking, CastingSpell }
   public enum EffectType
   {
-    None, Bleeding, Poisoned, Frozen, Firing, Transform, TornApart, Frighten, Stunned,
+    Unset, Bleeding, Poisoned, Frozen, Firing, Transform, TornApart, Frighten, Stunned,
     ManaShield, BushTrap, Rage, Weaken, IronSkin, ResistAll, Inaccuracy, Hooch, ConsumedFood
   }
     
@@ -250,7 +250,7 @@ namespace Roguelike.Tiles
       //{
       //  PlayPunchSound();
       //}
-      var dead = DieIfShould(EffectType.None);
+      var dead = DieIfShould(EffectType.Unset);
       if (!dead && IsWounded && !lastingEffects.Any(i => i.Type == EffectType.Bleeding))
       {
         var effectInfo = CalcLastingEffDamage(inflicted, attacker, null, null);
@@ -317,7 +317,7 @@ namespace Roguelike.Tiles
       }
 
       var effectInfo = CalcLastingEffDamage(amount, attacker, spell, null);
-      if (effectInfo.Type != EffectType.None && !IsImmuned(effectInfo.Type))
+      if (effectInfo.Type != EffectType.Unset && !IsImmuned(effectInfo.Type))
       {
         var rand = RandHelper.Random.NextDouble();
         var chance = GetChanceToExperienceEffect(effectInfo.Type);
@@ -345,7 +345,7 @@ namespace Roguelike.Tiles
       }
     }
 
-    static Tuple<EffectType, int> heBase = new Tuple<EffectType, int>(EffectType.None, 0);
+    static Tuple<EffectType, int> heBase = new Tuple<EffectType, int>(EffectType.Unset, 0);
     protected virtual Tuple<EffectType, int> GetPhysicalHitEffect(LivingEntity victim, FightItem fi = null)
     {
       return heBase;
@@ -366,7 +366,7 @@ namespace Roguelike.Tiles
     LastingEffectCalcInfo CalcLastingEffDamage(float amount, LivingEntity attacker = null, Spell spell = null, FightItem fi = null)
     {
       LastingEffectCalcInfo effectInfo = new LastingEffectCalcInfo();
-      var et = new Tuple<EffectType, int>(EffectType.None, 3);
+      var et = new Tuple<EffectType, int>(EffectType.Unset, 3);
       float effectDamage = 0;
       if (attacker != null && spell == null && amount > 0)
       {
@@ -485,7 +485,7 @@ namespace Roguelike.Tiles
       }
 
       EntityStatKind esk = EntityStatKind.Unset;
-      EffectType effT = EffectType.None;
+      EffectType effT = EffectType.Unset;
       if (et == EffectType.Rage)
       {
         effT = EffectType.Rage;
@@ -644,7 +644,7 @@ namespace Roguelike.Tiles
 
     public virtual void ApplyLastingEffects()
     {
-      EffectType eff = EffectType.None;
+      EffectType eff = EffectType.Unset;
 
       foreach (var i in LastingEffects)
       {

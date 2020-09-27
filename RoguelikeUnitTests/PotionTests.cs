@@ -1,4 +1,5 @@
 ﻿using NUnit.Framework;
+using Roguelike.Attributes;
 using Roguelike.Spells;
 using Roguelike.Tiles;
 using Roguelike.Tiles.Looting;
@@ -33,7 +34,10 @@ namespace RoguelikeUnitTests
 
       Assert.Greater(game.GameManager.EnemiesManager.Enemies.Count, 0);
       var heroHealth = hero.Stats.Health;
-      hero.OnPhysicalHit(game.GameManager.EnemiesManager.Enemies.First());
+      var halfHealth = heroHealth / 2;
+
+      while (hero.Stats.Health > halfHealth)
+        hero.OnPhysicalHit(game.GameManager.EnemiesManager.Enemies.First());
       Assert.Greater(heroHealth, hero.Stats.Health);
       heroHealth = hero.Stats.Health;
 
@@ -56,7 +60,7 @@ namespace RoguelikeUnitTests
       hero.Stats.SetNominal(Roguelike.Attributes.EntityStatKind.Magic, 15);//TODO
       var spell = new Spell(hero);
       Assert.Greater(heroMana, hero.Stats.Mana);
-            
+
       heroMana = hero.Stats.Mana;
 
       var pot = Helper.AddTile<Potion>();
@@ -65,7 +69,34 @@ namespace RoguelikeUnitTests
       hero.Consume(pot);
       Assert.Greater(hero.Stats.Mana, heroMana);
     }
+
+    [Test]
+    public void TestStrengthPotionConsume()
+    {
+      var game = CreateGame();
+      var hero = game.Hero;
+
+      TestSpecialPotion(hero, EntityStatKind.Strength, SpecialPotionKind.Strength);
+    }
+
+    [Test]
+    public void TestMagicPotionConsume()
+    {
+      var game = CreateGame();
+      var hero = game.Hero;
+
+      TestSpecialPotion(hero, EntityStatKind.Magic, SpecialPotionKind.Magic);
+    }
+
+    private void TestSpecialPotion(Hero hero, EntityStatKind esk, SpecialPotionKind spk)
+    {
+      var statValue = hero.Stats[esk].Nominal;
+      var pot = Helper.AddTile<SpecialPotion>();
+      pot.SpecialPotionKind = spk;
+      AddItemToInv(pot);
+      hero.Consume(pot);
+      Assert.AreEqual(hero.Stats[esk].Nominal, statValue + 1);
+    }
   }
 }
 
-      

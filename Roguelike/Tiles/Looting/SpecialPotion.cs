@@ -19,10 +19,12 @@ namespace Roguelike.Tiles.Looting
 
     public SpecialPotion() : this(SpecialPotionKind.Unset, SpecialPotionSize.Small)
     {
+      
     }
 
     public SpecialPotion(SpecialPotionKind kind, SpecialPotionSize size) : base(PotionKind.Special)
     {
+      PercentableStatIncrease = false;
       SpecialPotionKind = kind;
       Price = 50;
       this.size = size;
@@ -47,11 +49,13 @@ namespace Roguelike.Tiles.Looting
         {
           tag1 = "strength_potion";//HACK
           Name = "Strength Potion";
+          EnhancedStat = EntityStatKind.Strength;
         }
         else if (value == SpecialPotionKind.Magic)
         {
           tag1 = "magic_potion";
           Name = "Magic Potion";
+          EnhancedStat = EntityStatKind.Magic;
         }
 
         //tag1 += "_"+size.ToString();maybe UI can scale ?
@@ -85,6 +89,11 @@ namespace Roguelike.Tiles.Looting
       return value;
     }
 
+    public override float GetStatIncrease(LivingEntity caller)
+    {
+      return GetEnhValue();
+    }
+
     public EntityStatKind GetDestStat()
     {
       return SpecialPotionKind == SpecialPotionKind.Strength ? EntityStatKind.Strength : EntityStatKind.Magic;
@@ -94,7 +103,7 @@ namespace Roguelike.Tiles.Looting
     {
       get
       {
-        var desc = "Permamently adds " + GetEnhValue() + " to " + GetDestStat();
+        var desc = "Permamently increases "+ GetDestStat();
         return desc;
       }
     }

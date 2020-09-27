@@ -76,6 +76,7 @@
     <Compile Include="Attributes\EntityStats.cs" />
     <Compile Include="Attributes\StatValue.cs" />
     <Compile Include="BasicSoundPlayer.cs" />
+    <Compile Include="ConsumableHelper.cs" />
     <Compile Include="ContainerConfigurator.cs" />
     <Compile Include="Crafting\LootConverter.cs" />
     <Compile Include="Effects\LastingEffect.cs" />
@@ -135,6 +136,7 @@
     <Compile Include="Tiles\Barrel.cs" />
     <Compile Include="Tiles\CrackedStone.cs" />
     <Compile Include="Tiles\Interactive\Portal.cs" />
+    <Compile Include="Tiles\Looting\Consumable.cs" />
     <Compile Include="Tiles\Looting\Cord.cs" />
     <Compile Include="Tiles\Looting\Enchanter.cs" />
     <Compile Include="Tiles\Looting\ExplosiveCocktail.cs" />
