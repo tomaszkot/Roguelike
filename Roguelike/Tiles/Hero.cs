@@ -17,7 +17,7 @@ namespace Roguelike.Tiles
   public class Hero : AdvancedLivingEntity
   {
     public static int FirstNextLevelExperienceThreshold = 15;
-    public const int StartStrength = 15;
+    public const int StartStrength = 50;//15;
     protected Container container;
     public Roguelike.LootContainers.Crafting Crafting { get; set; }
 
