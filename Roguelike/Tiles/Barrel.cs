@@ -10,13 +10,25 @@ namespace Roguelike.Tiles
   public class Barrel : InteractiveTile, ILootSource
   {
     public const char BarrelSymbol = '~';
-    public BarrelKind BarrelKind { get; set; }
+    private BarrelKind barrelKind;
+
+    public BarrelKind BarrelKind 
+    { 
+      get => barrelKind; 
+      set  
+      {
+        barrelKind = value;
+        
+        DestroySound = (barrelKind == BarrelKind.Barrel) ? "barrel_broken" : "bones_fall";
+      }
+    }
 
     public Barrel(Point point) : base(BarrelSymbol)
     {
       Kind = InteractiveTileKind.Barrel;
+      BarrelKind = BarrelKind.Barrel;
       Name = Kind.ToString();
-      DestroySound = "barrel_broken";
+      
       //BarrelKind = RandHelper.GetRandomDouble() < 0.5 ? BarrelKind.Barrel : BarrelKind.PileOfSkulls;
     }
 

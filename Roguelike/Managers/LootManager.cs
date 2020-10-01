@@ -34,15 +34,23 @@ namespace Roguelike.Managers
     public List<Loot> TryAddForLootSource(ILootSource lootSource)//Barrel, Chest from attackPolicy.Victim
     {
       var lootItems = new List<Loot>();
-      if (lootSource is Enemy)
+
+      Loot debugLoot = null;// LootGenerator.GetLootByAsset("fire_ball_scroll"); 
+      if(debugLoot != null)
+        lootItems.Add(debugLoot);
+
+      if (!lootItems.Any())
       {
-        var loot = TryAddLootForDeadEnemy(lootSource as Enemy);
-        if (loot!=null)
-          lootItems.Add(loot);
-      }
-      else
-      {
-        lootItems = TryAddForNonEnemy(lootSource);
+        if (lootSource is Enemy)
+        {
+          var loot = TryAddLootForDeadEnemy(lootSource as Enemy);
+          if (loot != null)
+            lootItems.Add(loot);
+        }
+        else
+        {
+          lootItems = TryAddForNonEnemy(lootSource);
+        }
       }
       foreach (var loot in lootItems)
       {
@@ -97,17 +105,17 @@ namespace Roguelike.Managers
           return lootItems;
         GameManager.AppendAction<InteractiveTileAction>((InteractiveTileAction ac) => { ac.InvolvedTile = chest; ac.InteractiveKind = InteractiveActionKind.ChestOpened; });
         GameManager.AddLootReward(loot, lootSource, true);//add loot at closest empty
-        if (chest.ChestKind == ChestKind.GoldDeluxe ||
-          chest.ChestKind == ChestKind.Gold)
+        //if (chest.ChestKind == ChestKind.GoldDeluxe ||
+        //  chest.ChestKind == ChestKind.Gold)
         {
-          var lootEx1 = GetExtraLoot(lootSource, false);
+          var lootEx1 = GetExtraLoot(lootSource, false, loot.LootKind);
           if(lootEx1!=null)
             lootItems.Add(lootEx1);
           GameManager.AddLootReward(lootEx1, lootSource, true);
 
           if (chest.ChestKind == ChestKind.GoldDeluxe)
           {
-            var lootEx2 = GetExtraLoot(lootSource, true);
+            var lootEx2 = GetExtraLoot(lootSource, true, loot.LootKind);
             if (lootEx2 != null)
               lootItems.Add(lootEx2);
             GameManager.AddLootReward(lootEx2, lootSource, true);
@@ -141,7 +149,7 @@ namespace Roguelike.Managers
       return loot;
     }
 
-    private Loot GetExtraLoot(ILootSource victim, bool nonEquipment)
+    private Loot GetExtraLoot(ILootSource victim, bool nonEquipment, LootKind skip)
     {
       if (victim is Chest)
       {
@@ -153,7 +161,7 @@ namespace Roguelike.Managers
         {
           if (nonEquipment)
           {
-            return LootGenerator.GetRandomLoot(chest.Level);//TODO Equipment might happen
+            return LootGenerator.GetRandomLoot(chest.Level, skip);//TODO Equipment might happen
           }
           else
           {
@@ -169,7 +177,7 @@ namespace Roguelike.Managers
         }
       }
 
-      return LootGenerator.GetRandomLoot(victim.Level);
+      return LootGenerator.GetRandomLoot(victim.Level, skip);
     }
 
     List<Loot> GetExtraLoot(ILootSource lootSource, Loot primaryLoot)

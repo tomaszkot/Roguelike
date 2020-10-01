@@ -153,15 +153,17 @@ namespace Roguelike.Tiles.Looting
       LootKind = LootKind.Scroll;
     }
 
-    public static SpellKind DiscoverKindFromName(string name)
+    public static SpellKind DiscoverKindFromName(string name)//->name fire_ball -> FireBall
     {
+      name = name.Replace("_scroll", "");
+      name = name.Replace("_", "");
       return DiscoverKindFromName<SpellKind>(name);
     }
 
     public override string ToString()
     {
       var res = Name;
-      return res;
+      return res + " " + base.ToString();
     }
 
     public float ManaCost

@@ -377,10 +377,10 @@ namespace Roguelike.Generators
     }
 
     //a cheap loot generated randomly on the level
-    public virtual Loot GetRandomLoot(int level)
+    public virtual Loot GetRandomLoot(int level, LootKind skip = LootKind.Unset)
     {
       var enumVal = RandHelper.GetRandomEnumValue<LootKind>(new[] 
-      { LootKind.Other, LootKind.Gem, LootKind.Recipe, LootKind.Seal, LootKind.SealPart, LootKind.Unset, LootKind.HunterTrophy});
+      { LootKind.Other, LootKind.Gem, LootKind.Recipe, LootKind.Seal, LootKind.SealPart, LootKind.Unset, LootKind.HunterTrophy, skip});
       var loot = GetRandomLoot(enumVal, level);
       return loot;
     }

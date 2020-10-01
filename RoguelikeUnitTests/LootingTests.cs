@@ -1,6 +1,7 @@
 ﻿using NUnit.Framework;
 using Roguelike;
 using Roguelike.Attributes;
+using Roguelike.Spells;
 using Roguelike.Tiles;
 using Roguelike.Tiles.Interactive;
 using Roguelike.Tiles.Looting;
@@ -14,6 +15,25 @@ namespace RoguelikeUnitTests
   [TestFixture]
   class LootingTests : TestBaseTyped<LootingTestsHelper>
   {
+    [Test]
+    public void Sounds()
+    {
+      var barrel = new Barrel();
+      Assert.AreEqual(barrel.DestroySound, "barrel_broken");
+
+      barrel.BarrelKind = BarrelKind.PileOfSkulls;
+      Assert.AreEqual(barrel.DestroySound, "bones_fall");
+
+    }
+
+
+    [Test]
+    public void ScrollFromTagName()
+    {
+      var kind = Scroll.DiscoverKindFromName("fire_ball_scroll");
+      Assert.AreEqual(kind, SpellKind.FireBall);
+    }
+    
     [Test]
     public void HunterTrophyProps()
     {

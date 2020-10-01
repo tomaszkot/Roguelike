@@ -20,6 +20,7 @@ namespace Roguelike.Tiles
   {
     public event EventHandler ExpChanged;
     public event EventHandler StatsRecalculated;
+    public event EventHandler LeveledUp;
     protected CurrentEquipment currentEquipment = new CurrentEquipment();
     protected Inventory inventory = null;
 
@@ -93,8 +94,8 @@ namespace Roguelike.Tiles
     {
       bool leveledUp = false;
       Experience += factor;
-      bool lu = Experience >= NextLevelExperience;
-      if (lu && canAdvanceInExp)
+      bool thresholdReached = Experience >= NextLevelExperience;
+      if (thresholdReached && canAdvanceInExp)
       {
         PrevLevelExperience = NextLevelExperience;
         Level++;
@@ -105,6 +106,9 @@ namespace Roguelike.Tiles
         //  nextExperience += Hero.BaseExperience;//TODO
 
         leveledUp = true;
+
+        if(LeveledUp!=null)
+          LeveledUp(this, EventArgs.Empty);
       }
       if (ExpChanged != null)
         ExpChanged(this, EventArgs.Empty);
