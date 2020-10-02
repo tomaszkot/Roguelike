@@ -70,7 +70,7 @@ namespace Roguelike.Managers
         var la = ac as LootAction;
         if (la.LootActionKind == LootActionKind.Consumed)
         {
-          if(la.Loot is Potion /*|| la.Loot is Bibmer*/)
+          if (la.Loot is Potion /*|| la.Loot is Bibmer*/)
             sndName = "drink";
           else
             sndName = "eat_chip";
@@ -100,13 +100,16 @@ namespace Roguelike.Managers
         var ha = ac as HeroAction;
         if (ha.Kind == HeroActionKind.HitWall)
           sndName = "punch";
+        else if (ha.Kind == HeroActionKind.LeveledUp)
+          sndName = "bell";
       }
       else if (ac is SoundRequestAction)
       {
         var snd = ac as SoundRequestAction;
         sndName = snd.SoundName;
-          
+
       }
+      
       else if (ac is LivingEntityAction)
       {
         var lea = ac as LivingEntityAction;

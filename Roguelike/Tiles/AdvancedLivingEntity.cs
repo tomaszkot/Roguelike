@@ -109,6 +109,8 @@ namespace Roguelike.Tiles
 
         if(LeveledUp!=null)
           LeveledUp(this, EventArgs.Empty);
+
+        AppendAction(new HeroAction() { Kind = HeroActionKind.LeveledUp, Info = "Hero has gained a new level!" });
       }
       if (ExpChanged != null)
         ExpChanged(this, EventArgs.Empty);
