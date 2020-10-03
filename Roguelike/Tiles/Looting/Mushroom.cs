@@ -93,7 +93,8 @@ namespace Roguelike.Tiles
       else
         desc += " a Strength ";
 
-      desc += "Potion";
+      desc += "Potion.";
+      desc += GetConsumeDesc(" Consumable");
       primaryStatDesc = desc;
     }
 

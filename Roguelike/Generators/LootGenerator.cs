@@ -174,32 +174,12 @@ namespace Roguelike.Generators
       return GetRandomEquipment(kind, levelToUse);
     }
 
-    //public virtual Equipment GetRandomEquipment(int level)
-    //{
-    //  var kind = GetPossibleEqKind();
-    //  return GetRandomEquipment(kind, level);
-    //}
-
-    //public virtual Equipment GetRandomEquipment(EquipmentKind kind)
-    //{
-    //  if (LevelIndex < 0)
-    //    Container.GetInstance<ILogger>().LogError("GetRandomEquipment (kind) LevelIndex <=0!!!");
-
-    //  return GetRandomEquipment(kind, LevelIndex+1);
-    //}
-
     public virtual Equipment GetRandomEquipment(EquipmentKind kind, int level)
     {
       var eq = LootFactory.EquipmentFactory.GetRandom(kind, level);
       //EnasureLevelIndex(eq);//level must be given by factory!
       return eq;
     }
-
-    //private void EnasureLevelIndex(Equipment eq)
-    //{
-    //  if (eq != null)
-    //    eq.SetLevelIndex(LevelIndex+1);
-    //}
 
     internal Loot TryGetRandomLootByDiceRoll(LootSourceKind lsk, int maxEqLevel)
     {
@@ -211,7 +191,7 @@ namespace Roguelike.Generators
       {
         lootKind = LootKind.Equipment;
       }
-      else if(lsk == LootSourceKind.PlainChest)
+      else if (lsk == LootSourceKind.PlainChest)
         return GetRandomLoot(maxEqLevel);//some cheap loot
       else
         lootKind = Probability.RollDiceForKind(lsk);

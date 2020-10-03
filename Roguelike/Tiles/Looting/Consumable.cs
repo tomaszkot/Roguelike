@@ -25,6 +25,11 @@ namespace Roguelike.Tiles.Looting
 
     public abstract float GetStatIncrease(LivingEntity caller);
 
+    protected string GetConsumeDesc(string desc)
+    {
+      return desc + ", " + Strings.ConsumeDescPart;
+    }
+
     public override LootStatInfo[] GetLootStatInfo(LivingEntity caller)
     {
       if (m_lootStatInfo == null)

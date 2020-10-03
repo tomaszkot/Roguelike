@@ -163,6 +163,7 @@ namespace Roguelike.Tiles
         else
           desc = "Raw yet nutritious piece of " + Kind.ToString().ToLower();
       }
+      desc = GetConsumeDesc(desc);
       primaryStatDesc = desc;
     }
 

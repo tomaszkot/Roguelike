@@ -1,6 +1,7 @@
 ﻿#define ASCII_BUILD  
 using Dungeons.Tiles;
 using Roguelike.Attributes;
+using Roguelike.Tiles.Abstract;
 using System;
 using System.Linq;
 
@@ -9,6 +10,7 @@ namespace Roguelike.Tiles
   class Strings
   {
     public const string PartOfCraftingRecipe = "Part of the crafting recipe.";
+    public const string ConsumeDescPart = "Press Right Mouse Button to consume.";
   }
 
   [Flags]
@@ -148,8 +150,9 @@ namespace Roguelike.Tiles
 
     public virtual bool IsConsumable()
     {
-      return LootKind == LootKind.Food //|| this is Mushroom //TODO
-        || LootKind == LootKind.Potion;
+      //return LootKind == LootKind.Food //|| this is Mushroom //TODO
+      //  || LootKind == LootKind.Potion;
+      return this is IConsumable;
     }
 
     public override int GetHashCode()

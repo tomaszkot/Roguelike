@@ -45,13 +45,13 @@ namespace Roguelike.Tiles
       string desc = "";
       if (Kind == PlantKind.Thistle)
       {
-        desc = "Unpleasant to touch, part of recipe";
+        desc = "Unpleasant to touch, "+ Strings.PartOfCraftingRecipe;
         tag1 = "Thistle1";
         EnhancedStat = EntityStatKind.Unset;
       }
       else if (Kind == PlantKind.Sorrel)
       {
-        desc = "Eatable, sour plant";
+        desc = GetConsumeDesc("Eatable, sour plant");
         tag1 = "Sorrel";
       }
       primaryStatDesc = desc;

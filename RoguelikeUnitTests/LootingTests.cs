@@ -12,9 +12,31 @@ using System.Linq;
 
 namespace RoguelikeUnitTests
 {
+
   [TestFixture]
   class LootingTests : TestBaseTyped<LootingTestsHelper>
   {
+
+    [Test]
+    public void GemsLevel()
+    {
+      var env = CreateTestEnv();
+      try
+      {
+        var lootInfo = new LootInfo(game, null);
+        ILootSource lootSrc = game.GameManager.EnemiesManager.GetEnemies().First();
+        for (int i = 0; i < 10; i++)
+        {
+          var loot = env.LootGenerator.GetRandomLoot(LootKind.Gem, 1) as Gem;
+          Assert.AreEqual(loot.EnchanterSize, EnchanterSize.Small);
+        }
+      }
+      catch (System.Exception)
+      {
+        //GenerationInfo.DebugInfo.EachEnemyGivesPotion = false;
+      }
+    }
+
     [Test]
     public void Sounds()
     {
@@ -452,16 +474,17 @@ namespace RoguelikeUnitTests
     [Test]
     public void KilledEnemyLevelAffectsTinyTrophy()
     {
-      KilledEnemyLevelAffectsEnchanter(LootKind.HunterTrophy);
+      KilledEnemyLevelAffectsEnchanter(LootKind.HunterTrophy, 6, new[] { EnchanterSize.Medium, EnchanterSize.Big });
     }
     /////////////////////////////////////////////////////////
     [Test]
     public void KilledEnemyLevelAffectsGem()
     {
-      KilledEnemyLevelAffectsEnchanter(LootKind.Gem);
+      KilledEnemyLevelAffectsEnchanter(LootKind.Gem, 1, new[] { EnchanterSize.Small});
+      KilledEnemyLevelAffectsEnchanter(LootKind.Gem, 6, new[] { EnchanterSize.Medium, EnchanterSize.Big });
     }
     /////////////////////////////////////////////////////////
-    public void KilledEnemyLevelAffectsEnchanter(LootKind kind)
+    public void KilledEnemyLevelAffectsEnchanter(LootKind kind, int enemyLevel, EnchanterSize [] expectedSizes)
     {
       var env = CreateTestEnv();
       env.LootGenerator.Probability = new Roguelike.Probability.Looting();
@@ -469,7 +492,7 @@ namespace RoguelikeUnitTests
 
       var enemies = this.Game.GameManager.EnemiesManager.GetEnemies();
       Assert.GreaterOrEqual(enemies.Count, 5);
-      enemies.ForEach(i => i.SetLevel(6));
+      enemies.ForEach(i => i.SetLevel(enemyLevel));
       var li = new LootInfo(game, null);
       env.KillAllEnemies();
 
@@ -479,12 +502,12 @@ namespace RoguelikeUnitTests
       {
         foreach (var loot in lootItems)
         {
-          var exp = kind == loot.LootKind;
+          var expected = kind == loot.LootKind;
 
-          if (exp)
+          if (expected)
           {
             var ench = loot as Enchanter;
-            Assert.True(ench.EnchanterSize == EnchanterSize.Medium || ench.EnchanterSize == EnchanterSize.Big);//en at 6 level shall trow good trophy
+            Assert.True(expectedSizes.Contains(ench.EnchanterSize));
             expectedKindsCounter++;
           }
 

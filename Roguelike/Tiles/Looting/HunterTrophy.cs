@@ -20,8 +20,12 @@ namespace Roguelike.Tiles.Looting
 
     
 
-    public static string[] TinyTrophiesTags = new[] { Enchanter.Big+ "_claw", Enchanter.Big + "_fang", Enchanter.Medium + "_claw",
-      Enchanter.Medium+"_fang", Enchanter.Small+"_claw", Enchanter.Small+"_fang" };
+    public static string[] TinyTrophiesTags = new[] 
+    {
+      Enchanter.Big+ "_claw", Enchanter.Big + "_fang", 
+      Enchanter.Medium + "_claw",Enchanter.Medium+"_fang", 
+      Enchanter.Small+"_claw", Enchanter.Small+"_fang" 
+    };
 
 
     public override string PrimaryStatDescription => primaryStatDescription;

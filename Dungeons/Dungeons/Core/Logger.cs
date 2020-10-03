@@ -20,5 +20,22 @@ namespace Dungeons.Core
     {
       Debug.WriteLine(info);
     }
+
+    public void LogError(Exception ex)
+    {
+      string err = CreateError(ex);
+      Debug.WriteLine("ERROR: " + err);
+    }
+
+    public static string CreateError(Exception ex)
+    {
+      var err = ex.Message;
+      if (ex.InnerException != null)
+      {
+        err += "ex.InnerException: " + ex.InnerException.Message;
+      }
+      //err += Environment.NewLine + new StackTrace().ToString();
+      return err;
+    }
   }
 }

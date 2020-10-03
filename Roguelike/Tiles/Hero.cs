@@ -16,15 +16,15 @@ namespace Roguelike.Tiles
 {
   public class Hero : AdvancedLivingEntity
   {
-    public static int FirstNextLevelExperienceThreshold = 15;
-    public const int StartStrength = 50;//15;
+    public static int FirstNextLevelExperienceThreshold = 50;
+    public const int StartStrength = 15;//15;
     protected Container container;
     public Roguelike.LootContainers.Crafting Crafting { get; set; }
 
     public Hero(): base(new Point().Invalid(), '@')
     {
       canAdvanceInExp = true;
-      Stats.SetNominal(EntityStatKind.Health, 150);//level up +2 // 40 -> 150
+      Stats.SetNominal(EntityStatKind.Health, 40);//level up +2 // 40 -> 150
       // Character.Mana = 40;
       Stats.SetNominal(EntityStatKind.Strength, StartStrength);
       Stats.SetNominal(EntityStatKind.Attack, StartStrength);
@@ -32,6 +32,13 @@ namespace Roguelike.Tiles
       Stats.SetNominal(EntityStatKind.Mana, 40);
       Stats.SetNominal(EntityStatKind.Defence, 10);
       Stats.SetNominal(EntityStatKind.Dexterity, 10);
+
+      bool debugMode = false;
+      if (debugMode)
+      {
+        Stats.SetNominal(EntityStatKind.Health, 140);
+        Stats.SetNominal(EntityStatKind.Strength, 50);
+      }
 
       NextLevelExperience = FirstNextLevelExperienceThreshold;
 
