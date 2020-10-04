@@ -585,222 +585,198 @@ namespace Roguelike.Spells
   //  //		}
   //  //	}
 
-  //#if UNITY_WSA_10_0
-  //#elif UNITY_WSA
-  //#else
-  //  [Serializable]
-  //#endif
-  //  public class RageSpell : DefensiveSpell
-  //  {
-  //    public const int BaseFactor = 30;
-  //    public int Factor { get; set; }
-  //    public int TourLasting { get; set; }
+  public class RageSpell : DefensiveSpell
+  {
+    public const int BaseFactor = 30;
+    public int Factor { get; set; }
+    public int TourLasting { get; set; }
 
-  //    public RageSpell() : this(new LivingEntity())
-  //    {
-  //    }
+    public RageSpell() : this(new LivingEntity())
+    {
+    }
 
-  //    public RageSpell(LivingEntity caller) : base(caller)
-  //    {
-  //      Kind = SpellKind.Rage;
-  //      damage = 0;
-  //      manaCost = (float)(BaseManaCost * 2);
-  //      Factor = CalcFactor(GetCurrentLevel());
-  //      TourLasting = CalcTourLasting();
-  //    }
+    public RageSpell(LivingEntity caller) : base(caller)
+    {
+      Kind = SpellKind.Rage;
+      damage = 0;
+      manaCost = (float)(BaseManaCost * 2);
+      Factor = CalcFactor(GetCurrentLevel());
+      TourLasting = CalcTourLasting();
+    }
 
-  //    int CalcFactor(int magicLevel)
-  //    {
-  //      return BaseFactor + magicLevel;
-  //    }
+    int CalcFactor(int magicLevel)
+    {
+      return BaseFactor + magicLevel;
+    }
 
-  //    protected override void AppendPrivateFeatures(List<string> fe)
-  //    {
-  //      fe.Add("Damage Increase: " + Factor + " %");
-  //      fe.Add("Tour Lasting: " + TourLasting);
-  //    }
+    protected override void AppendPrivateFeatures(List<string> fe)
+    {
+      fe.Add("Damage Increase: " + Factor + " %");
+      fe.Add("Tour Lasting: " + TourLasting);
+    }
 
-  //    protected override void AppendNextLevel(List<string> fe)
-  //    {
-  //      base.AppendNextLevel(fe);
-  //      fe.Add("Next Level: Damage Increase: " + CalcFactor(GetCurrentLevel() + 1) + " %");
-  //      fe.Add("Next Level: Tour Lasting: " + CalcTourLasting(GetCurrentLevel() + 1));
-  //    }
-  //  }
+    protected override void AppendNextLevel(List<string> fe)
+    {
+      base.AppendNextLevel(fe);
+      fe.Add("Next Level: Damage Increase: " + CalcFactor(GetCurrentLevel() + 1) + " %");
+      fe.Add("Next Level: Tour Lasting: " + CalcTourLasting(GetCurrentLevel() + 1));
+    }
+  }
 
-  //#if UNITY_WSA_10_0
-  //#elif UNITY_WSA
-  //#else
-  //  [Serializable]
-  //#endif
-  //  public class ResistAllSpell : DefensiveSpell
-  //  {
-  //    public const int BaseFactor = 25;
-  //    public int Factor { get; set; }
-  //    public int TourLasting { get; set; }
+  public class ResistAllSpell : DefensiveSpell
+  {
+    public const int BaseFactor = 25;
+    public int Factor { get; set; }
+    public int TourLasting { get; set; }
 
-  //    public ResistAllSpell() : this(new LivingEntity())
-  //    {
-  //    }
+    public ResistAllSpell() : this(new LivingEntity())
+    {
+    }
 
-  //    public ResistAllSpell(LivingEntity caller) : base(caller)
-  //    {
-  //      Kind = SpellKind.ResistAll;
-  //      damage = 0;
-  //      manaCost = (float)(BaseManaCost * 2);
-  //      Factor = CalcFactor(GetCurrentLevel());
-  //      TourLasting = CalcTourLasting() / 2 + 1;
-  //    }
+    public ResistAllSpell(LivingEntity caller) : base(caller)
+    {
+      Kind = SpellKind.ResistAll;
+      damage = 0;
+      manaCost = (float)(BaseManaCost * 2);
+      Factor = CalcFactor(GetCurrentLevel());
+      TourLasting = CalcTourLasting() / 2 + 1;
+    }
 
-  //    int CalcFactor(int magicLevel)
-  //    {
-  //      return BaseFactor + magicLevel;
-  //    }
+    int CalcFactor(int magicLevel)
+    {
+      return BaseFactor + magicLevel;
+    }
 
-  //    protected override void AppendPrivateFeatures(List<string> fe)
-  //    {
-  //      fe.Add("Resist All Increase: " + Factor + " %");
-  //      fe.Add("Tour Lasting: " + TourLasting);
-  //    }
+    protected override void AppendPrivateFeatures(List<string> fe)
+    {
+      fe.Add("Resist All Increase: " + Factor + " %");
+      fe.Add("Tour Lasting: " + TourLasting);
+    }
 
-  //    protected override void AppendNextLevel(List<string> fe)
-  //    {
-  //      base.AppendNextLevel(fe);
-  //      fe.Add("Next Level: Resist All Increase: " + CalcFactor(GetCurrentLevel() + 1) + " %");
-  //      fe.Add("Next Level: Tour Lasting: " + CalcTourLasting(GetCurrentLevel() + 1));
-  //    }
-  //  }
-
-  //#if UNITY_WSA_10_0
-  //#elif UNITY_WSA
-  //#else
-  //  [Serializable]
-  //#endif
-  //  public class WeakenSpell : DefensiveSpell
-  //  {
-  //    public const int BaseFactor = 30;
-  //    public int Factor { get; set; }
-  //    public int TourLasting { get; set; }
-
-  //    public WeakenSpell() : this(new LivingEntity())
-  //    {
-  //    }
-
-  //    public WeakenSpell(LivingEntity caller) : base(caller)
-  //    {
-  //      Kind = SpellKind.Weaken;
-  //      damage = 0;
-  //      manaCost = (float)(BaseManaCost * 2);
-  //      Factor = CalcFactor(GetCurrentLevel());
-  //      TourLasting = CalcTourLasting();
-  //      EntityRequired = true;
-  //    }
-
-  //    int CalcFactor(int magicLevel)
-  //    {
-  //      return BaseFactor + magicLevel;
-  //    }
-
-  //    protected override void AppendPrivateFeatures(List<string> fe)
-  //    {
-  //      fe.Add("Defence: -" + Factor + " %");
-  //      fe.Add("Tour Lasting: " + TourLasting);
-  //    }
-
-  //    protected override void AppendNextLevel(List<string> fe)
-  //    {
-  //      base.AppendNextLevel(fe);
-  //      fe.Add("Next Level: Defence: -" + CalcFactor(GetCurrentLevel() + 1) + " %");
-  //      fe.Add("Next Level: Tour Lasting: " + CalcTourLasting(GetCurrentLevel() + 1));
-  //    }
-  //  }
-
-  //#if UNITY_WSA_10_0
-  //#elif UNITY_WSA
-  //#else
-  //  [Serializable]
-  //#endif
-  //  public class InaccuracySpell : DefensiveSpell
-  //  {
-  //    public const int BaseFactor = 15;
-  //    public int Factor { get; set; }
-  //    public int TourLasting { get; set; }
-
-  //    public InaccuracySpell() : this(new LivingEntity())
-  //    {
-  //    }
-
-  //    public InaccuracySpell(LivingEntity caller) : base(caller)
-  //    {
-  //      Kind = SpellKind.Weaken;
-  //      damage = 0;
-  //      manaCost = (float)(BaseManaCost * 2);
-  //      Factor = CalcFactor(GetCurrentLevel());
-  //      TourLasting = (CalcTourLasting() * 2) / 3;
-  //      EntityRequired = true;
-  //    }
-
-  //    int CalcFactor(int magicLevel)
-  //    {
-  //      return BaseFactor + magicLevel;
-  //    }
-
-  //    protected override void AppendPrivateFeatures(List<string> fe)
-  //    {
-  //      fe.Add("Chance to hit: -" + Factor + " %");
-  //      fe.Add("Tour Lasting: " + TourLasting);
-  //    }
-
-  //    protected override void AppendNextLevel(List<string> fe)
-  //    {
-  //      base.AppendNextLevel(fe);
-  //      fe.Add("Next Level: Chance to hit: -" + CalcFactor(GetCurrentLevel() + 1) + " %");
-  //      fe.Add("Next Level: Tour Lasting: " + CalcTourLasting(GetCurrentLevel() + 1));
-  //    }
-  //  }
+    protected override void AppendNextLevel(List<string> fe)
+    {
+      base.AppendNextLevel(fe);
+      fe.Add("Next Level: Resist All Increase: " + CalcFactor(GetCurrentLevel() + 1) + " %");
+      fe.Add("Next Level: Tour Lasting: " + CalcTourLasting(GetCurrentLevel() + 1));
+    }
+  }
 
 
-  //#if UNITY_WSA_10_0
-  //#elif UNITY_WSA
-  //#else
-  //  [Serializable]
-  //#endif
-  //  public class IronSkinSpell : DefensiveSpell
-  //  {
-  //    public const int BaseFactor = 30;
-  //    public int Factor { get; set; }
-  //    public int TourLasting { get; set; }
+  public class WeakenSpell : DefensiveSpell
+  {
+    public const int BaseFactor = 30;
+    public int Factor { get; set; }
+    public int TourLasting { get; set; }
 
-  //    public IronSkinSpell() : this(new LivingEntity())
-  //    {
-  //    }
+    public WeakenSpell() : this(new LivingEntity())
+    {
+    }
 
-  //    public IronSkinSpell(LivingEntity caller) : base(caller)
-  //    {
-  //      Kind = SpellKind.IronSkin;
-  //      damage = 0;
-  //      manaCost = (float)(BaseManaCost * 2);
-  //      Factor = CalcFactor(GetCurrentLevel());
-  //      TourLasting = CalcTourLasting();
-  //      EntityRequired = false;
-  //    }
+    public WeakenSpell(LivingEntity caller) : base(caller)
+    {
+      Kind = SpellKind.Weaken;
+      damage = 0;
+      manaCost = (float)(BaseManaCost * 2);
+      Factor = CalcFactor(GetCurrentLevel());
+      TourLasting = CalcTourLasting();
+      EntityRequired = true;
+    }
 
-  //    int CalcFactor(int magicLevel)
-  //    {
-  //      return BaseFactor + magicLevel;
-  //    }
+    int CalcFactor(int magicLevel)
+    {
+      return BaseFactor + magicLevel;
+    }
 
-  //    protected override void AppendPrivateFeatures(List<string> fe)
-  //    {
-  //      fe.Add("Defence Increase: " + Factor + " %");
-  //      fe.Add("Tour Lasting: " + TourLasting);
-  //    }
+    protected override void AppendPrivateFeatures(List<string> fe)
+    {
+      fe.Add("Defence: -" + Factor + " %");
+      fe.Add("Tour Lasting: " + TourLasting);
+    }
 
-  //    protected override void AppendNextLevel(List<string> fe)
-  //    {
-  //      base.AppendNextLevel(fe);
-  //      fe.Add("Next Level: Defence Increase: " + CalcFactor(GetCurrentLevel() + 1) + " %");
-  //      fe.Add("Next Level: Tour Lasting: " + CalcTourLasting(GetCurrentLevel() + 1));
-  //    }
-  //  }
+    protected override void AppendNextLevel(List<string> fe)
+    {
+      base.AppendNextLevel(fe);
+      fe.Add("Next Level: Defence: -" + CalcFactor(GetCurrentLevel() + 1) + " %");
+      fe.Add("Next Level: Tour Lasting: " + CalcTourLasting(GetCurrentLevel() + 1));
+    }
+  }
+
+  public class InaccuracySpell : DefensiveSpell
+  {
+    public const int BaseFactor = 15;
+    public int Factor { get; set; }
+    public int TourLasting { get; set; }
+
+    public InaccuracySpell() : this(new LivingEntity())
+    {
+    }
+
+    public InaccuracySpell(LivingEntity caller) : base(caller)
+    {
+      Kind = SpellKind.Weaken;
+      damage = 0;
+      manaCost = (float)(BaseManaCost * 2);
+      Factor = CalcFactor(GetCurrentLevel());
+      TourLasting = (CalcTourLasting() * 2) / 3;
+      EntityRequired = true;
+    }
+
+    int CalcFactor(int magicLevel)
+    {
+      return BaseFactor + magicLevel;
+    }
+
+    protected override void AppendPrivateFeatures(List<string> fe)
+    {
+      fe.Add("Chance to hit: -" + Factor + " %");
+      fe.Add("Tour Lasting: " + TourLasting);
+    }
+
+    protected override void AppendNextLevel(List<string> fe)
+    {
+      base.AppendNextLevel(fe);
+      fe.Add("Next Level: Chance to hit: -" + CalcFactor(GetCurrentLevel() + 1) + " %");
+      fe.Add("Next Level: Tour Lasting: " + CalcTourLasting(GetCurrentLevel() + 1));
+    }
+  }
+
+
+  public class IronSkinSpell : DefensiveSpell
+  {
+    public const int BaseFactor = 30;
+    public int Factor { get; set; }
+    public int TourLasting { get; set; }
+
+    public IronSkinSpell() : this(new LivingEntity())
+    {
+    }
+
+    public IronSkinSpell(LivingEntity caller) : base(caller)
+    {
+      Kind = SpellKind.IronSkin;
+      damage = 0;
+      manaCost = (float)(BaseManaCost * 2);
+      Factor = CalcFactor(GetCurrentLevel());
+      TourLasting = CalcTourLasting();
+      EntityRequired = false;
+    }
+
+    int CalcFactor(int magicLevel)
+    {
+      return BaseFactor + magicLevel;
+    }
+
+    protected override void AppendPrivateFeatures(List<string> fe)
+    {
+      fe.Add("Defence Increase: " + Factor + " %");
+      fe.Add("Tour Lasting: " + TourLasting);
+    }
+
+    protected override void AppendNextLevel(List<string> fe)
+    {
+      base.AppendNextLevel(fe);
+      fe.Add("Next Level: Defence Increase: " + CalcFactor(GetCurrentLevel() + 1) + " %");
+      fe.Add("Next Level: Tour Lasting: " + CalcTourLasting(GetCurrentLevel() + 1));
+    }
+  }
 }

@@ -1,6 +1,7 @@
 ﻿#define ASCII_BUILD  
 using System;
 using System.Drawing;
+using System.Linq;
 using Dungeons.Core;
 using Roguelike.Attributes;
 
@@ -103,10 +104,27 @@ namespace Roguelike.Tiles
 
       if (Symbol >= 'a' && Symbol <= 'z')
       {
-        Symbol = (char)((int)Symbol-32);
+        Symbol = (char)((int)Symbol - 32);
       }
       float inc = boss ? 1.4f : 1.2f;
       IncreaseStats(inc, true);
+
+      InitEffectsToUse(boss);
+    }
+
+    private void InitEffectsToUse(bool boss)
+    {
+      int effectsToUseCount = boss ? 2 : 1;
+      var keys = effectsToUse.Keys.ToList();
+      foreach (var ef in keys)
+      {
+        effectsToUse[ef] = effectsToUseCount;
+      }
+      //too many effects, let's delete random one
+      if (RandHelper.Random.NextDouble() > .5)
+        effectsToUse.Remove(EffectType.Weaken);
+      else
+        effectsToUse.Remove(EffectType.IronSkin);
     }
 
     protected void Assert(bool cond)
@@ -179,6 +197,8 @@ namespace Roguelike.Tiles
     {
       return base.ToString() + " " + PowerKind + "";
     }
+
+
 
   }
 }

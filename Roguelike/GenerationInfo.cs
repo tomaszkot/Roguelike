@@ -25,7 +25,9 @@
     public int ForcedNumberOfEnemiesInRoom { get; set; } = 5;//-1 means field is not used
     public static DebugGenerationInfo DebugInfo = new DebugGenerationInfo();
 
-    public const float ChanceToGenerateEnemyFromBarrel = .15f;
+    public static float ChanceToGenerateEnemyFromBarrel = .15f;
+    public static float ChanceToTurnOnSpecialSkillByEnemy = 0.5f;
+
     public const int LevelUpPoints = 5;
     public const float NextExperienceIncrease = 1.002f;
 
@@ -34,7 +36,12 @@
     public bool GenerateLoot { get; set; } = true && !ForceEmpty;
 
     public bool GenerateInteractiveTiles { get; set; } = true && !ForceEmpty;
-        
+
+    public static int DefaultEnemyRageUsageCount = 0;
+    public static int DefaultEnemyWeakenUsageCount = 0;
+    public static int DefaultEnemyIronSkinUsageCount = 0;
+    public static int DefaultEnemyResistAllUsageCount = 0;
+    public static int DefaultEnemyInaccuracyUsageCount = 0;
 
     public override void MakeEmpty()
     {

@@ -151,8 +151,10 @@ namespace RoguelikeUnitTests
       GotoNextHeroTurn(game);
     }
 
-    protected void GotoNextHeroTurn(Roguelike.RoguelikeGame game)
+    protected void GotoNextHeroTurn(Roguelike.RoguelikeGame game = null)
     {
+      if (game == null)
+        game = this.game;
       Assert.AreEqual(game.GameManager.Context.TurnOwner, Roguelike.TurnOwner.Allies);
       game.GameManager.Logger.LogInfo("make allies move");
       game.MakeGameTick();//make allies move

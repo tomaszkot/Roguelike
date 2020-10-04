@@ -48,6 +48,7 @@ namespace Roguelike.Tiles
     EntityStats stats = new EntityStats();
     Dictionary<EffectType, float> chanceToExperienceEffect = new Dictionary<EffectType, float>();
 
+    public bool CanAttack { get; set; } = true;
     public EffectType DiedOfEffect;
     public EntityState state;
     public EntityState State
@@ -83,7 +84,11 @@ namespace Roguelike.Tiles
     public event EventHandler<LastingEffect> LastingEffectApplied;
     public event EventHandler<LastingEffect> LastingEffectDone;
     public bool IsWounded { get; private set; }
-
+    protected Dictionary<EffectType, int> effectsToUse = new Dictionary<EffectType, int>();
+    public static readonly EffectType[] PossibleEffectsToUse = new EffectType[] {
+    EffectType.Weaken, EffectType.Rage, EffectType.IronSkin, EffectType.ResistAll, EffectType.Inaccuracy
+    };
+    
     static LivingEntity()
     {
       //spellCastPolicyProvider = () => { return new SpellCastPolicy(); };
@@ -117,8 +122,14 @@ namespace Roguelike.Tiles
       lastingEffSubtractions[EffectType.IronSkin] = 0;
       lastingEffSubtractions[EffectType.ResistAll] = 0;
       lastingEffSubtractions[EffectType.ConsumedRawFood] = 0;
-    }
 
+      effectsToUse[EffectType.Weaken] = GenerationInfo.DefaultEnemyWeakenUsageCount;
+      effectsToUse[EffectType.Rage] = GenerationInfo.DefaultEnemyRageUsageCount;
+      effectsToUse[EffectType.IronSkin] = GenerationInfo.DefaultEnemyIronSkinUsageCount;
+      effectsToUse[EffectType.ResistAll] = GenerationInfo.DefaultEnemyResistAllUsageCount;
+      effectsToUse[EffectType.Inaccuracy] = GenerationInfo.DefaultEnemyResistAllUsageCount;
+    }
+        
     public virtual void SetChanceToExperienceEffect(EffectType et, int chance)
     {
       chanceToExperienceEffect[et] = chance;
@@ -233,6 +244,7 @@ namespace Roguelike.Tiles
         return 0;
       }
 
+      lastHitBySpell = false;
       var ca = attacker.GetCurrentValue(EntityStatKind.Attack);
       var inflicted = ca/defense;
       ReduceHealth(inflicted);
@@ -296,6 +308,8 @@ namespace Roguelike.Tiles
           amount -= GetReducePercentage(amount, magicAttackDamageReductionPerc);
         }
         sound = spell.GetHitSound();
+
+        lastHitBySpell = true;
       }
       ReduceHealth(amount);
       var ga = new LivingEntityAction(LivingEntityActionKind.GainedDamage) { InvolvedValue = amount, InvolvedEntity = this };
@@ -972,6 +986,54 @@ namespace Roguelike.Tiles
     public virtual float GetEffectChance(EntityStatKind esk)
     {
       return GetCurrentValue(esk);
+    }
+
+    public int GetEffectUseCount(EffectType type)
+    {
+      return effectsToUse[type];
+    }
+
+    public bool HasAnyEffectToUse()
+    {
+      return effectsToUse.Any(i => i.Value > 0);
+    }
+
+    public bool HasEffectToUse(EffectType type)
+    {
+      return effectsToUse.ContainsKey(type);
+    }
+
+    public void ReduceEffectToUse(EffectType type)
+    {
+      if (HasEffectToUse(type))
+        effectsToUse[type]--;
+      else
+      {
+        Assert(false, "ReduceEffectToUse failed for " + type);
+      }
+    }
+
+    bool lastHitBySpell;
+    public EffectType GetRandomEffectToUse(bool canCastWeaken, bool canCastInaccuracy)
+    {
+      var effectsToUseFiltered = effectsToUse.ToList();
+      if (!this.lastHitBySpell)
+        effectsToUseFiltered.RemoveAll(i => i.Key == EffectType.ResistAll);
+      if (!canCastWeaken)
+        effectsToUseFiltered.RemoveAll(i => i.Key == EffectType.Weaken);
+      if (!canCastInaccuracy)
+        effectsToUseFiltered.RemoveAll(i => i.Key == EffectType.Inaccuracy);
+      var effects = effectsToUseFiltered.Where(i => i.Value > 0).ToList();
+      if (effects.Any())
+      {
+        var eff = RandHelper.GetRandomElem<KeyValuePair<EffectType, int>>(effects);
+        //if (eff.Key == EffectType.Weaken)
+        //{
+        //  int k = 0;
+        //}
+        return eff.Key;
+      }
+      return EffectType.Unset;
     }
   }
 }

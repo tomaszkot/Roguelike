@@ -1,5 +1,6 @@
 ﻿using Dungeons.Tiles;
 using Roguelike.Policies;
+using Roguelike.Strategy;
 using Roguelike.Tiles;
 using Roguelike.Tiles.Looting;
 using SimpleInjector;
@@ -16,12 +17,15 @@ namespace Roguelike.Managers
     //GameContext context;
     List<LivingEntity> enemies;
     public List<LivingEntity> Enemies { get => enemies; set => enemies = value; }
-    
+    AttackStrategy attackStrategy;
 
     public EnemiesManager(GameContext context, EventsManager eventsManager, Container container) :
       base(context, eventsManager, container)
     {
       this.context = context;
+      attackStrategy = new AttackStrategy(context);
+      attackStrategy.OnPolicyApplied = (Policy pol)=>{ OnPolicyApplied(pol); };
+
       context.TurnOwnerChanged += OnTurnOwnerChanged;
       context.ContextSwitched += Context_ContextSwitched;
     }
@@ -150,28 +154,7 @@ namespace Roguelike.Managers
 
     public bool AttackIfPossible(LivingEntity enemy, Hero hero)
     {
-      var enemyCasted = enemy as Enemy;
-      if (enemyCasted.PrefferedFightStyle == PrefferedFightStyle.Magic)
-      {
-        if(enemyCasted.DistanceFrom(hero) < 8)//TODO
-        {
-          var scroll = new Scroll(Spells.SpellKind.FireBall);
-          Context.ApplySpellAttackPolicy(enemy, hero, scroll, null,
-            (p) => { OnPolicyApplied(p); }
-          );
-
-          return true;
-        }
-      }
-
-      var victim = GetPhysicalAttackVictim(enemy, hero);
-      if (victim != null)
-      {
-        Context.ApplyPhysicalAttackPolicy(enemy, hero, (pol)=> OnPolicyApplied(pol));
-        return true;
-      }
-
-      return false;
+      return attackStrategy.AttackIfPossible(enemy, hero);
     }
 
     protected override bool MoveEntity(LivingEntity entity, Point newPos)
@@ -195,22 +178,6 @@ namespace Roguelike.Managers
       }
     }
 
-    private LivingEntity GetPhysicalAttackVictim(LivingEntity enemy, LivingEntity target)
-    {
-      var targetNeibs = Node.GetNeighborTiles(target);
-      LivingEntity victim = null;
-      if (CanAttackTarget(targetNeibs, enemy))
-      {
-        victim = target;
-      }
-
-      return victim;
-     // return null;
-    }
-
-    private bool CanAttackTarget(List<Tile> neibs, LivingEntity enemy)
-    {
-      return neibs.Any(i => i == enemy);
-    }
+    
   }
 }
