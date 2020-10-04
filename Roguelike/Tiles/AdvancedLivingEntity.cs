@@ -147,6 +147,9 @@ namespace Roguelike.Tiles
       //hero turn?
       //var ac = LootManager.CreateLootGameAction(loot, "Drunk " + loot.Name);
       //PlaySound("drink");
+      //if (!Context.HeroTurn)
+      //  Context.MoveToNextTurnOwner();
+
       if (inventory.Contains(consumable.Loot))
       {
         if (consumable.EnhancedStat == EntityStatKind.Unset)
@@ -166,10 +169,11 @@ namespace Roguelike.Tiles
         }
         else
         {
-          var turns = consumable is Potion ? 1 : 5;
+          var turns = consumable.ConsumptionSteps;
           var incPercentage = consumable.GetStatIncrease(null);
-          AddLastingEffect(EffectType.ConsumedFood, turns, consumable.EnhancedStat, incPercentage);
+          AddLastingEffect(EffectType.ConsumedRawFood, turns, consumable.EnhancedStat, incPercentage);
         }
+        //EndTu
       }
       else
         Assert(false);

@@ -8,10 +8,10 @@ namespace Dungeons
 {
   class CorridorNodeLayouter : INodeLayouter
   {
-    int nodesPadding = 0;
-    bool generateLayoutDoors = true;
-    EntranceSide? forcedNextSide = null;//EntranceSide.Bottom;
-    EntranceSide? forcedEntranceSideToSkip = null;// EntranceSide.Right;
+    //int nodesPadding = 0;
+    //bool generateLayoutDoors = true;
+    //EntranceSide? forcedNextSide = null;//EntranceSide.Bottom;
+    //EntranceSide? forcedEntranceSideToSkip = null;// EntranceSide.Right;
     LayouterOptions options;
     Container container;
 

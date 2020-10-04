@@ -497,7 +497,11 @@ namespace Roguelike.Tiles
 
     public int MinDropDungeonLevel { get { return levelIndex; } }
 
-    public int GetLevelIndex() { return levelIndex; }
+    public int LevelIndex
+    {
+      get { return levelIndex; }
+    }
+
     public void SetLevelIndex(int li) 
     {
       if (li <= 0)

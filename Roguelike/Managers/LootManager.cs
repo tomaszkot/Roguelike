@@ -129,8 +129,8 @@ namespace Roguelike.Managers
     Loot TryAddLootForDeadEnemy(Enemy enemy)
     {
       Loot loot = null;
-      if (enemy.PowerKind == EnemyPowerKind.Champion ||
-                enemy.PowerKind == EnemyPowerKind.Boss)
+      if(enemy.PowerKind == EnemyPowerKind.Champion ||
+          enemy.PowerKind == EnemyPowerKind.Boss)
       {
         loot = GameManager.LootGenerator.GetBestLoot(enemy.PowerKind, enemy.Level);
       }

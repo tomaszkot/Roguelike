@@ -53,7 +53,6 @@ namespace Roguelike.Managers
 
     public bool HeroTurn { get => Context.HeroTurn; }
 
-    //public EventsManager ActionsManager { get => EventsManager; set => EventsManager = value; }
     [JsonIgnore]
     public EventsManager EventsManager { get => eventsManager; set => eventsManager = value; }
     public GameContext Context { get => context; set => context = value; }
@@ -171,6 +170,17 @@ namespace Roguelike.Managers
       //  return;
       //}
 
+      var la = e as LootAction;
+      if (la != null)
+      {
+        if (la.LootActionKind == LootActionKind.Consumed)
+        {
+          Context.MoveToNextTurnOwner();
+        }
+        return;
+      }
+
+
       var isLivingEntityAction = e is LivingEntityAction;
       if (!isLivingEntityAction)
       {
@@ -179,26 +189,28 @@ namespace Roguelike.Managers
           Logger.LogInfo(gsa.Info);
         return;
       }
-
-      var lea = e as LivingEntityAction;
-      if (lea.Kind == LivingEntityActionKind.Died)
+      else
       {
-        if (context.CurrentNode.HasTile(lea.InvolvedEntity))
+        var lea = e as LivingEntityAction;
+        if (lea.Kind == LivingEntityActionKind.Died)
         {
-          context.CurrentNode.SetTile(context.CurrentNode.GenerateEmptyTile(), lea.InvolvedEntity.Point);
-        }
-        else
-        {
-          Logger.LogError("context.CurrentNode HasTile failed for " + lea.InvolvedEntity);
-        }
-        if (lea.InvolvedEntity is Enemy)
-        {
-          Hero.IncreaseExp(10);
-          //var loot = LootGenerator.GetRandomLoot();
-          context.CurrentNode.SetTile(new Tile(), lea.InvolvedEntity.Point);
-          var enemy = lea.InvolvedEntity as Enemy;
-          var loot = lootManager.TryAddForLootSource(enemy);
-          Logger.LogInfo("Added loot"+ loot);
+          if (context.CurrentNode.HasTile(lea.InvolvedEntity))
+          {
+            context.CurrentNode.SetTile(context.CurrentNode.GenerateEmptyTile(), lea.InvolvedEntity.Point);
+          }
+          else
+          {
+            Logger.LogError("context.CurrentNode HasTile failed for " + lea.InvolvedEntity);
+          }
+          if (lea.InvolvedEntity is Enemy)
+          {
+            Hero.IncreaseExp(10);
+            //var loot = LootGenerator.GetRandomLoot();
+            context.CurrentNode.SetTile(new Tile(), lea.InvolvedEntity.Point);
+            var enemy = lea.InvolvedEntity as Enemy;
+            var loot = lootManager.TryAddForLootSource(enemy);
+            Logger.LogInfo("Added loot" + loot);
+          }
         }
       }
     }

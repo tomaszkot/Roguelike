@@ -62,10 +62,10 @@ namespace Roguelike.Tiles
       return base.GetId() + "_" + Kind;
     }
 
-    public override float GetStatIncrease(LivingEntity caller)
-    {
-      return 10;// ConsumableHelper.GetStatIncrease(caller, this, 10);
-    }
+    //public override float GetStatIncrease(LivingEntity caller)
+    //{
+    //  return 10;// ConsumableHelper.GetStatIncrease(caller, this, 10);
+    //}
 
     public override string PrimaryStatDescription => primaryStatDesc;
 

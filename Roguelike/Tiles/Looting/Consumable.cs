@@ -6,7 +6,7 @@ using System.Linq;
 
 namespace Roguelike.Tiles.Looting
 {
-  public abstract class Consumable : Looting.StackedLoot, IConsumable
+  public abstract class Consumable : StackedLoot, IConsumable
   {
     EntityStatKind enhancedStat = EntityStatKind.Unset;
 
@@ -16,6 +16,10 @@ namespace Roguelike.Tiles.Looting
       PercentableStatIncrease = true;
     }
 
+    public int ConsumptionSteps { get; set; } = 1;
+
+    public bool Roasted { get; set; }
+
     public EntityStatKind EnhancedStat { get => enhancedStat; set => enhancedStat = value; }
 
     public Loot Loot {get=> this;}
@@ -23,7 +27,21 @@ namespace Roguelike.Tiles.Looting
     public EffectType EffectType { get; set; }
     public bool PercentableStatIncrease { get ; set ; }
 
-    public abstract float GetStatIncrease(LivingEntity caller);
+    //public abstract float GetStatIncrease(LivingEntity caller);
+    public virtual float GetStatIncrease(LivingEntity caller)
+    {
+      var divider = 20;
+      //TODO show different aboveHead icon in case of different divider
+      //if (Kind == FoodKind.Mushroom)
+      //  divider = 10;
+      //if (Kind == FoodKind.Plum)
+      //  divider = 8;
+
+      if (Roasted)
+        divider /= 2;
+      var inc = 100 / divider;
+      return inc;
+    }
 
     protected string GetConsumeDesc(string desc)
     {

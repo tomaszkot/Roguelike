@@ -9,5 +9,7 @@ namespace Roguelike.Tiles.Abstract
     float GetStatIncrease(LivingEntity caller);
     EffectType EffectType { get; }//mushroom->poisoned
     bool PercentableStatIncrease { get; set; }
+    bool Roasted { get; set; }
+    int ConsumptionSteps { get; set; }
   }
 }

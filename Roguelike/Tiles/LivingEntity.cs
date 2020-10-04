@@ -19,7 +19,7 @@ namespace Roguelike.Tiles
   public enum EffectType
   {
     Unset, Bleeding, Poisoned, Frozen, Firing, Transform, TornApart, Frighten, Stunned,
-    ManaShield, BushTrap, Rage, Weaken, IronSkin, ResistAll, Inaccuracy, Hooch, ConsumedFood
+    ManaShield, BushTrap, Rage, Weaken, IronSkin, ResistAll, Inaccuracy, Hooch, ConsumedRawFood, ConsumedRoastedFood
   }
     
   public interface ILastingEffectOwner
@@ -116,7 +116,7 @@ namespace Roguelike.Tiles
       lastingEffSubtractions[EffectType.Inaccuracy] = 0;
       lastingEffSubtractions[EffectType.IronSkin] = 0;
       lastingEffSubtractions[EffectType.ResistAll] = 0;
-      lastingEffSubtractions[EffectType.ConsumedFood] = 0;
+      lastingEffSubtractions[EffectType.ConsumedRawFood] = 0;
     }
 
     public virtual void SetChanceToExperienceEffect(EffectType et, int chance)
@@ -411,7 +411,7 @@ namespace Roguelike.Tiles
       var statValue = this.Stats.GetStat(kind).Value.TotalValue;
       var calcEffectValue = CalcEffectValue(nominalValuePercInc, statValue);
 
-      if(eff == EffectType.ConsumedFood)
+      if(eff == EffectType.ConsumedRawFood)
         lastingEffSubtractions[eff] = calcEffectValue;//AddLastingEffect uses lastingEffSubtractions so it must be set
 
       var le = AddLastingEffect(eff, pendingTurns, 0, kind);
@@ -446,7 +446,7 @@ namespace Roguelike.Tiles
         lastingEffSubtractions[eff] = effValue;
         handle = true;
       }
-      else if (eff == EffectType.ConsumedFood)
+      else if (eff == EffectType.ConsumedRawFood)
       {
 
       }
@@ -591,7 +591,7 @@ namespace Roguelike.Tiles
         }
       }
 
-      if (le.Type == EffectType.Bleeding || le.Type == EffectType.ConsumedFood)//trap must add damage at start
+      if (le.Type == EffectType.Bleeding || le.Type == EffectType.ConsumedRawFood)//trap must add damage at start
       {
         ApplyLastingEffect(le, true);
         RemoveFinishedLastingEffects();//food might be consumed at once
@@ -607,7 +607,7 @@ namespace Roguelike.Tiles
       lea.EffectType = eff;
       var targetName = Name.ToString();
 
-      if (eff == EffectType.ConsumedFood)
+      if (eff == EffectType.ConsumedRawFood)
       {
         lea.Info += targetName + " consured: ?";
       }
@@ -685,9 +685,9 @@ namespace Roguelike.Tiles
         ReduceHealth(damage);
       }
 
-      if (eff.Type == EffectType.ConsumedFood)
+      if (eff.Type == EffectType.ConsumedRawFood)
       {
-        var inc = lastingEffSubtractions[EffectType.ConsumedFood];
+        var inc = lastingEffSubtractions[EffectType.ConsumedRawFood];
         DoConsume(eff.StatKind, inc);
       }
 

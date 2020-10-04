@@ -8,22 +8,54 @@ namespace RoguelikeUnitTests
   class FoodConsumtionTests : TestBase
   {
     [Test]
-    public void TestConsume()
+    public void TestConsumeRoasted()
+    {
+      TestConsume(true);
+    }
+
+    [Test]
+    public void TestConsumeRaw()
+    {
+      TestConsume(false);
+    }
+
+    public void TestConsume(bool roasted)
     {
       var game = CreateGame();
       var hero = game.Hero;
+      var expectedHealthRestore = roasted ? hero.Stats.Health / 2 : hero.Stats.Health / 4;
 
       Assert.Greater(game.GameManager.EnemiesManager.Enemies.Count, 0);
       var heroHealth = hero.Stats.Health;
-      hero.OnPhysicalHit(game.GameManager.EnemiesManager.Enemies.First());
+      while (hero.Stats.Health > 5)
+        hero.OnPhysicalHit(game.GameManager.EnemiesManager.Enemies.First());
+
       Assert.Greater(heroHealth, hero.Stats.Health);
       heroHealth = hero.Stats.Health;
+      var heroHurtHealth = heroHealth;
 
       var food = Helper.AddTile<Food>();
+      if(roasted)
+        food.MakeRoasted();
       AddItemToInv(food);
 
+      var turnOwner = game.GameManager.Context.TurnOwner;
+      Assert.AreEqual(turnOwner, Roguelike.TurnOwner.Hero);
       hero.Consume(food);
       Assert.Greater(hero.Stats.Health, heroHealth);
+      Assert.True(hero.LastingEffects.Any());
+
+      for (int i = 0; i < food.ConsumptionSteps - 1; i++)
+      {
+        Assert.AreEqual(game.GameManager.Context.TurnOwner, Roguelike.TurnOwner.Allies);
+        heroHealth = hero.Stats.Health;
+        GotoNextHeroTurn(game);//food is working gradually
+        Assert.Greater(hero.Stats.Health, heroHealth);
+        heroHealth = hero.Stats.Health;
+        Game.GameManager.SkipHeroTurn();
+      }
+      var diff = heroHealth - heroHurtHealth;
+      Assert.AreEqual(diff, expectedHealthRestore);
     }
 
     //[Test]

@@ -87,7 +87,7 @@ namespace DungeonsConsoleRunner
       }
       catch (Exception ex)
       {
-        
+        Console.WriteLine(ex.Message);
       }
       ConsoleSetup.SetConsoleFont();
     }

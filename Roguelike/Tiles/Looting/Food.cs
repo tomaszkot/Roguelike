@@ -13,7 +13,6 @@ namespace Roguelike.Tiles
   {
     public FoodKind Kind;
     public static readonly FoodKind[] FoodKinds;
-    public bool Roasted { get; set; }
 
     static Food()
     {
@@ -22,11 +21,12 @@ namespace Roguelike.Tiles
 
     public Food() : this(RandHelper.GetRandomEnumValue<FoodKind>(new[] { FoodKind.Unset, FoodKind.Mushroom }))//Mushroom has it's own c-tor
     {
-
+      
     }
 
     public Food(FoodKind kind)
     {
+      ConsumptionSteps = 5;
       Symbol = '-';
       LootKind = LootKind.Food;
       SetKind(kind);
@@ -66,19 +66,20 @@ namespace Roguelike.Tiles
       SetKindRelatedMembers(Kind);
     }
 
-    public override float GetStatIncrease(LivingEntity caller)
-    {
-      var divider = 8;
-      if (Kind == FoodKind.Mushroom)
-        divider = 10;
-      if (Kind == FoodKind.Plum)
-        divider = 8;
+    //public override float GetStatIncrease(LivingEntity caller)
+    //{
+    //  var divider = 10;
+    //  //TODO show different aboveHead icon in case of different divider
+    //  //if (Kind == FoodKind.Mushroom)
+    //  //  divider = 10;
+    //  //if (Kind == FoodKind.Plum)
+    //  //  divider = 8;
 
-      if (Roasted)
-        divider /= 2;
-      var inc = 100/divider;
-      return inc;
-    }
+    //  if (Roasted)
+    //    divider /= 2;
+    //  var inc = 100/divider;
+    //  return inc;
+    //}
         
     bool IsRoastable(FoodKind kind)
     {
@@ -154,7 +155,7 @@ namespace Roguelike.Tiles
 
       if (Kind == FoodKind.Plum)
       {
-        desc = "Sweat, delicious friut";
+        desc = "Sweat, delicious fruit";
       }
       else if (Kind == FoodKind.Meat || Kind == FoodKind.Fish)
       {

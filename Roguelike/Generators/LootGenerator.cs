@@ -202,6 +202,14 @@ namespace Roguelike.Generators
         if (eqClass != EquipmentClass.Unset)
         {
           var item = GetRandomEquipment(eqClass, maxEqLevel);
+          //if (loot is Equipment)
+          {
+            if (item.LevelIndex < maxEqLevel)
+            {
+              int k = 0;
+              k++;
+            }
+          }
           return item;
         }
       }
