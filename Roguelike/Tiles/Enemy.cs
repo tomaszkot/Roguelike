@@ -18,7 +18,7 @@ namespace Roguelike.Tiles
 
     public static readonly EntityStat BaseAttack = new EntityStat(EntityStatKind.Attack, 13f);
     public static readonly EntityStat BaseHealth = new EntityStat(EntityStatKind.Health, 13);
-    public static readonly EntityStat BaseDefence = new EntityStat(EntityStatKind.Defence, 5);
+    public static readonly EntityStat BaseDefence = new EntityStat(EntityStatKind.Defense, 5);
     public static readonly EntityStat BaseMana = new EntityStat(EntityStatKind.Mana, 4);
     public static readonly EntityStat BaseMagic = new EntityStat(EntityStatKind.Magic, 10);
 
@@ -39,7 +39,7 @@ namespace Roguelike.Tiles
       BaseStats = new EntityStats();
 
       BaseStats.SetStat(EntityStatKind.Attack, BaseAttack);
-      BaseStats.SetStat(EntityStatKind.Defence, BaseDefence);
+      BaseStats.SetStat(EntityStatKind.Defense, BaseDefence);
       BaseStats.SetStat(EntityStatKind.Health, BaseHealth);
       BaseStats.SetStat(EntityStatKind.Mana,  BaseMana);
       var mag = new EntityStat(EntityStatKind.Magic, BaseMagic.Value.Nominal + 2);

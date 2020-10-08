@@ -238,14 +238,14 @@ namespace Roguelike.Tiles.Looting
       //    return new ManaSpell(caller);
       //  case SpellKind.BushTrap:
       //    return new BushTrapSpell(caller);
-      //  case SpellKind.Rage:
-      //    return new RageSpell(caller);
-      //  case SpellKind.Weaken:
-      //    return new WeakenSpell(caller);
-      //  case SpellKind.Inaccuracy:
-      //    return new InaccuracySpell(caller);
-      //  case SpellKind.IronSkin:
-      //    return new IronSkinSpell(caller);
+        case SpellKind.Rage:
+          return new RageSpell(caller);
+        case SpellKind.Weaken:
+          return new WeakenSpell(caller);
+        case SpellKind.Inaccuracy:
+          return new InaccuracySpell(caller);
+        case SpellKind.IronSkin:
+          return new IronSkinSpell(caller);
         case SpellKind.Teleport:
           return new TeleportSpell(caller);
         case SpellKind.Portal:
@@ -256,11 +256,11 @@ namespace Roguelike.Tiles.Looting
           //    return new CallGodSpell(caller);
           //  case SpellKind.LightingBall:
           //    return new LightingBallSpell(caller);
-          //  case SpellKind.ResistAll:
-          //    return new ResistAllSpell(caller);
-          //  default:
-          //    break;
-          //    throw new Exception("CreateSpell ???");
+        case SpellKind.ResistAll:
+          return new ResistAllSpell(caller);
+        default:
+          break;
+          throw new Exception("CreateSpell ???"+ Kind);
       }
       return null;
     }

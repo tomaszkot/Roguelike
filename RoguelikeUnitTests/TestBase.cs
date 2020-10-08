@@ -123,7 +123,7 @@ namespace RoguelikeUnitTests
     public Jewellery GenerateJewellery(RoguelikeGame game, EntityStatKind statKind)
     {
       var juw = game.GameManager.LootGenerator.LootFactory.EquipmentFactory.GetRandomJewellery(statKind);
-      Assert.AreEqual(juw.PrimaryStatKind, EntityStatKind.Defence);
+      Assert.AreEqual(juw.PrimaryStatKind, EntityStatKind.Defense);
       Assert.IsTrue(juw.PrimaryStatValue > 0);
       return juw;
     }

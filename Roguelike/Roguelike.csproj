@@ -117,6 +117,7 @@
     <Compile Include="Spells\AttackingSpell.cs" />
     <Compile Include="Spells\DefensiveSpell.cs" />
     <Compile Include="Spells\Spell.cs" />
+    <Compile Include="Spells\SpellConverter.cs" />
     <Compile Include="Spells\Spells.cs" />
     <Compile Include="LootContainers\CurrentEquipment.cs" />
     <Compile Include="LootExtendedInfo.cs" />

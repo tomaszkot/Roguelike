@@ -46,7 +46,7 @@ namespace Roguelike.Tiles.Looting
           st.Factor = 3;
           SetMagicStat(st.Kind, st);
 
-          st = new EntityStat(EntityStatKind.Defence, 0);
+          st = new EntityStat(EntityStatKind.Defense, 0);
           st.Factor = 3;
           SetMagicStat(st.Kind,  st);
 
@@ -186,7 +186,7 @@ namespace Roguelike.Tiles.Looting
           st.Factor = 10;
           SetMagicStat(st.Kind, st);
 
-          st = new EntityStat(EntityStatKind.Defence, 0);
+          st = new EntityStat(EntityStatKind.Defense, 0);
           st.Factor = 15;
           SetMagicStat(st.Kind, st);
 
@@ -273,7 +273,7 @@ namespace Roguelike.Tiles.Looting
           st.Factor = 10;
           SetMagicStat(st.Kind, st);
 
-          st = new EntityStat(EntityStatKind.Defence, 0);
+          st = new EntityStat(EntityStatKind.Defense, 0);
           st.Factor = 30;
           SetMagicStat(st.Kind, st);
 

@@ -12,6 +12,8 @@ namespace Roguelike.Spells
   public class DefensiveSpell : Spell
   {
     protected Tile tile;
+    public int TourLasting { get; set; }
+    //public int TourLasting { get; set; }
 
     //public DefensiveSpell() : this(new LivingEntity()) { }
     public DefensiveSpell(LivingEntity caller) : base(caller)

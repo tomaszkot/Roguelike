@@ -10,7 +10,7 @@ namespace Roguelike.Attributes
     
     StatValue stat = new StatValue();
     public static readonly EntityStatKind[] BasicStats = { EntityStatKind.Health, EntityStatKind.Magic, EntityStatKind.Mana, EntityStatKind.Attack,
-      EntityStatKind.Defence, EntityStatKind.Dexterity };
+      EntityStatKind.Defense, EntityStatKind.Dexterity };
     public bool Hidden { get; set; }
 
     public EntityStat() : this(EntityStatKind.Unset, 0)
@@ -40,7 +40,7 @@ namespace Roguelike.Attributes
         && sk != EntityStatKind.Magic
         && sk != EntityStatKind.Mana
         && sk != EntityStatKind.Attack
-        && sk != EntityStatKind.Defence
+        && sk != EntityStatKind.Defense
         && sk != EntityStatKind.Dexterity
         && sk != EntityStatKind.FireAttack
         && sk != EntityStatKind.ColdAttack

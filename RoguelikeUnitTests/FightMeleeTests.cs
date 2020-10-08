@@ -11,33 +11,41 @@ namespace RoguelikeUnitTests
     [Test]
     public void NonPlainEnemyUsesEffects()
     {
-      var game = CreateGame(numEnemies:1, numberOfRooms:1);
-      var hero = game.Hero;
-
-      //Assert.AreEqual(game.GameManager.EnemiesManager.Enemies.Count, 1);
-      var enemy = game.GameManager.EnemiesManager.GetEnemies().Where(i => i.PowerKind != EnemyPowerKind.Plain).FirstOrDefault();
-      if (enemy == null)
+      for (int loop = 0; loop < 10; loop++)
       {
-        enemy = game.GameManager.EnemiesManager.GetEnemies()[0];
-        enemy.SetNonPlain(false);
-        enemy = game.GameManager.EnemiesManager.GetEnemies().Where(i => i.PowerKind != EnemyPowerKind.Plain).First();
+        var game = CreateGame(numEnemies: 1, numberOfRooms: 1);
+        var hero = game.Hero;
+
+        var enemies = game.GameManager.CurrentNode.GetTiles<Enemy>().Where(i=> i.DungeonNodeIndex == hero.DungeonNodeIndex).ToList();
+        Assert.AreEqual(enemies.Count, 1);
+        var enemy = enemies.Where(i => i.PowerKind != EnemyPowerKind.Plain).FirstOrDefault();
+        if (enemy == null)
+        {
+          enemy = enemies.First();
+          enemy.SetNonPlain(false);
+          //enemy = enemies.Where(i => i.PowerKind != EnemyPowerKind.Plain).First();
+        }
+
+        Assert.AreEqual(enemy.LastingEffects.Count, 0);
+        GenerationInfo.ChanceToTurnOnSpecialSkillByEnemy = 1f;
+
+        var closeHero = game.Level.GetClosestEmpty(hero);
+        game.Level.SetTile(enemy, closeHero.Point);
+        enemy.OnPhysicalHit(hero);
+
+        game.GameManager.Context.TurnOwner = TurnOwner.Allies;
+        game.GameManager.Context.PendingTurnOwnerApply = true;
+        //game.GameManager.MakeGameTick();
+        GotoNextHeroTurn(game);
+        //Assert.AreEqual(game.GameManager.Context.TurnOwner, TurnOwner.Enemies);
+        var heroHasLastingEffect = hero.HasLastingEffect(EffectType.Inaccuracy) || hero.HasLastingEffect(EffectType.Weaken);
+        if (!heroHasLastingEffect)
+        {
+          Assert.AreEqual(enemy.LastingEffects.Count, 1);
+          var eff = enemy.LastingEffects[0].Type;
+          Assert.True(LivingEntity.PossibleEffectsToUse.Contains(eff));
+        } 
       }
-      
-      Assert.AreEqual(enemy.LastingEffects.Count, 0);
-      GenerationInfo.ChanceToTurnOnSpecialSkillByEnemy = 1f;
-
-      var closeHero = game.Level.GetClosestEmpty(hero);
-      game.Level.SetTile(enemy, closeHero.Point);
-      enemy.OnPhysicalHit(hero);
-
-      game.GameManager.Context.TurnOwner = TurnOwner.Allies;
-      game.GameManager.Context.PendingTurnOwnerApply = true;
-      //game.GameManager.MakeGameTick();
-      GotoNextHeroTurn(game);
-      //Assert.AreEqual(game.GameManager.Context.TurnOwner, TurnOwner.Enemies);
-      Assert.AreEqual(enemy.LastingEffects.Count, 1);
-      var eff = enemy.LastingEffects[0].Type;
-      Assert.True(LivingEntity.PossibleEffectsToUse.Contains(eff));
     }
 
     [Test]

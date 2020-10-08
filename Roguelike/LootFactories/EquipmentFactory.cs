@@ -113,7 +113,7 @@ namespace Roguelike.LootFactories
           var ees = new EqEntityStats();
           ees.Add(EntityStatKind.Health, 15)
           .Add(EntityStatKind.Attack, 15)
-          .Add(EntityStatKind.Defence, 15)
+          .Add(EntityStatKind.Defense, 15)
           .Add(EntityStatKind.ChanceToCastSpell, 15);
           eq.SetUnique(ees.Get(), 5);
         }
@@ -141,7 +141,7 @@ namespace Roguelike.LootFactories
       var item = new Equipment(EquipmentKind.Armor);
       item.Name = "Armor";
       item.tag1 = "Armor";
-      item.PrimaryStatKind = EntityStatKind.Defence;
+      item.PrimaryStatKind = EntityStatKind.Defense;
       item.PrimaryStatValue = 3;
       return item;
     }
@@ -164,7 +164,7 @@ namespace Roguelike.LootFactories
       item.Name = "Helmet";
       item.tag1 = "Helmet";
       //item.Kind = Weapon.WeaponKind.Sword;
-      item.PrimaryStatKind = EntityStatKind.Defence;
+      item.PrimaryStatKind = EntityStatKind.Defense;
       item.PrimaryStatValue = 2;
       return item;
     }
@@ -174,7 +174,7 @@ namespace Roguelike.LootFactories
       var item = new Equipment(EquipmentKind.Shield);
       item.Name = "Buckler";
       item.tag1 = "??";
-      item.PrimaryStatKind = EntityStatKind.Defence;
+      item.PrimaryStatKind = EntityStatKind.Defense;
       item.PrimaryStatValue = 1;
       return item;
     }
@@ -184,7 +184,7 @@ namespace Roguelike.LootFactories
       var item = new Equipment(EquipmentKind.Glove);
       item.Name = "Gloves";
       item.tag1 = "??";
-      item.PrimaryStatKind = EntityStatKind.Defence;
+      item.PrimaryStatKind = EntityStatKind.Defense;
       item.PrimaryStatValue = 1;
       return item;
     }

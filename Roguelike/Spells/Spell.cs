@@ -37,6 +37,16 @@ namespace Roguelike.Spells
     public bool SendByGod { get; set; }
     public FightItem FightItem { get; internal set; }
     protected float damage = 0f;
+    public EntityStatKind StatKind { get; set; }
+    public float StatKindFactor { get; set; }
+    
+    public SpellKind Kind { get; set; }
+    public bool EnemyRequired = false;
+    public bool EntityRequired = false;
+    public const int BaseManaCost = 4;
+    protected Dictionary<int, int> levelToMagic = new Dictionary<int, int>();
+    private LivingEntity caller;
+
 
     //Returns damage based on Spell level.
     //Spell level depends on the magic amount owner has.
@@ -75,13 +85,7 @@ namespace Roguelike.Spells
         return (int)cost;
       }
     }
-    public SpellKind Kind { get; set; }
-    public bool EnemyRequired = false;
-    public bool EntityRequired = false;
-    public const int BaseManaCost = 4;
-    protected Dictionary<int, int> levelToMagic = new Dictionary<int, int>();
-    private LivingEntity caller;
-
+   
     public Spell() : this(LivingEntity.CreateDummy())
     {
     }

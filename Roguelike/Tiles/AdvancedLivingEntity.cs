@@ -51,12 +51,7 @@ namespace Roguelike.Tiles
     int levelUpPoints = 0;
 
     Dictionary<SpellKind, int> coolingDownSpells = new Dictionary<SpellKind, int>();
-    
-    public Scroll ActiveScroll
-    {
-      get; set;
-    }
-
+        
     public AdvancedLivingEntity(Point point, char symbol) : base(point, symbol)
     {
     }
@@ -376,7 +371,7 @@ namespace Roguelike.Tiles
       if (fromLoad)//this shall not be affected by any after load
       {
         Stats.GetStat(EntityStatKind.ChanceToHit).SetSubtraction(0);
-        Stats.GetStat(EntityStatKind.Defence).SetSubtraction(0);
+        Stats.GetStat(EntityStatKind.Defense).SetSubtraction(0);
         Stats.GetStat(EntityStatKind.Attack).SetSubtraction(0);
       }
 

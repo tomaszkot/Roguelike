@@ -30,7 +30,7 @@ namespace Roguelike.Tiles
       Stats.SetNominal(EntityStatKind.Attack, StartStrength);
       Stats.SetNominal(EntityStatKind.Magic, 10);
       Stats.SetNominal(EntityStatKind.Mana, 40);
-      Stats.SetNominal(EntityStatKind.Defence, 10);
+      Stats.SetNominal(EntityStatKind.Defense, 10);
       Stats.SetNominal(EntityStatKind.Dexterity, 10);
 
       bool debugMode = false;

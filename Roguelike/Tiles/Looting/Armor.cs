@@ -15,7 +15,7 @@ namespace Roguelike.Tiles
     public Armor() : base(EquipmentKind.Armor)
     {
       Price = 10;
-      SetPrimaryStat(EntityStatKind.Defence, 1);
+      SetPrimaryStat(EntityStatKind.Defense, 1);
     }
 
     public int Defence

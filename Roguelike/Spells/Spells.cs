@@ -588,8 +588,7 @@ namespace Roguelike.Spells
   public class RageSpell : DefensiveSpell
   {
     public const int BaseFactor = 30;
-    public int Factor { get; set; }
-    public int TourLasting { get; set; }
+    //public int StatKindFactor { get; set; }
 
     public RageSpell() : this(new LivingEntity())
     {
@@ -598,9 +597,10 @@ namespace Roguelike.Spells
     public RageSpell(LivingEntity caller) : base(caller)
     {
       Kind = SpellKind.Rage;
+      StatKind = EntityStatKind.Attack;
       damage = 0;
       manaCost = (float)(BaseManaCost * 2);
-      Factor = CalcFactor(GetCurrentLevel());
+      StatKindFactor = CalcFactor(GetCurrentLevel());
       TourLasting = CalcTourLasting();
     }
 
@@ -611,7 +611,7 @@ namespace Roguelike.Spells
 
     protected override void AppendPrivateFeatures(List<string> fe)
     {
-      fe.Add("Damage Increase: " + Factor + " %");
+      fe.Add("Damage Increase: " + StatKindFactor + " %");
       fe.Add("Tour Lasting: " + TourLasting);
     }
 
@@ -626,9 +626,7 @@ namespace Roguelike.Spells
   public class ResistAllSpell : DefensiveSpell
   {
     public const int BaseFactor = 25;
-    public int Factor { get; set; }
-    public int TourLasting { get; set; }
-
+    
     public ResistAllSpell() : this(new LivingEntity())
     {
     }
@@ -636,9 +634,10 @@ namespace Roguelike.Spells
     public ResistAllSpell(LivingEntity caller) : base(caller)
     {
       Kind = SpellKind.ResistAll;
+      //StatKind = EntityStatKind.ResistCold;
       damage = 0;
       manaCost = (float)(BaseManaCost * 2);
-      Factor = CalcFactor(GetCurrentLevel());
+      StatKindFactor = CalcFactor(GetCurrentLevel());
       TourLasting = CalcTourLasting() / 2 + 1;
     }
 
@@ -649,7 +648,7 @@ namespace Roguelike.Spells
 
     protected override void AppendPrivateFeatures(List<string> fe)
     {
-      fe.Add("Resist All Increase: " + Factor + " %");
+      fe.Add("Resist All Increase: " + StatKindFactor + " %");
       fe.Add("Tour Lasting: " + TourLasting);
     }
 
@@ -665,8 +664,6 @@ namespace Roguelike.Spells
   public class WeakenSpell : DefensiveSpell
   {
     public const int BaseFactor = 30;
-    public int Factor { get; set; }
-    public int TourLasting { get; set; }
 
     public WeakenSpell() : this(new LivingEntity())
     {
@@ -675,9 +672,10 @@ namespace Roguelike.Spells
     public WeakenSpell(LivingEntity caller) : base(caller)
     {
       Kind = SpellKind.Weaken;
+      StatKind = EntityStatKind.Defense;
       damage = 0;
       manaCost = (float)(BaseManaCost * 2);
-      Factor = CalcFactor(GetCurrentLevel());
+      StatKindFactor = CalcFactor(GetCurrentLevel());
       TourLasting = CalcTourLasting();
       EntityRequired = true;
     }
@@ -689,7 +687,7 @@ namespace Roguelike.Spells
 
     protected override void AppendPrivateFeatures(List<string> fe)
     {
-      fe.Add("Defence: -" + Factor + " %");
+      fe.Add("Defence: -" + StatKindFactor + " %");
       fe.Add("Tour Lasting: " + TourLasting);
     }
 
@@ -704,8 +702,6 @@ namespace Roguelike.Spells
   public class InaccuracySpell : DefensiveSpell
   {
     public const int BaseFactor = 15;
-    public int Factor { get; set; }
-    public int TourLasting { get; set; }
 
     public InaccuracySpell() : this(new LivingEntity())
     {
@@ -714,9 +710,11 @@ namespace Roguelike.Spells
     public InaccuracySpell(LivingEntity caller) : base(caller)
     {
       Kind = SpellKind.Weaken;
+      //StatKind = EntityStatKind.ChanceToHit;StatKind = 
+      //EntityStatKind.ChanceToCastSpell
       damage = 0;
       manaCost = (float)(BaseManaCost * 2);
-      Factor = CalcFactor(GetCurrentLevel());
+      StatKindFactor = CalcFactor(GetCurrentLevel());
       TourLasting = (CalcTourLasting() * 2) / 3;
       EntityRequired = true;
     }
@@ -728,7 +726,7 @@ namespace Roguelike.Spells
 
     protected override void AppendPrivateFeatures(List<string> fe)
     {
-      fe.Add("Chance to hit: -" + Factor + " %");
+      fe.Add("Chance to hit: -" + StatKindFactor + " %");
       fe.Add("Tour Lasting: " + TourLasting);
     }
 
@@ -744,8 +742,8 @@ namespace Roguelike.Spells
   public class IronSkinSpell : DefensiveSpell
   {
     public const int BaseFactor = 30;
-    public int Factor { get; set; }
-    public int TourLasting { get; set; }
+    //public int Factor { get; set; }
+    //public int TourLasting { get; set; }
 
     public IronSkinSpell() : this(new LivingEntity())
     {
@@ -754,9 +752,10 @@ namespace Roguelike.Spells
     public IronSkinSpell(LivingEntity caller) : base(caller)
     {
       Kind = SpellKind.IronSkin;
+      StatKind = EntityStatKind.Defense;
       damage = 0;
       manaCost = (float)(BaseManaCost * 2);
-      Factor = CalcFactor(GetCurrentLevel());
+      StatKindFactor = CalcFactor(GetCurrentLevel());
       TourLasting = CalcTourLasting();
       EntityRequired = false;
     }
@@ -768,7 +767,7 @@ namespace Roguelike.Spells
 
     protected override void AppendPrivateFeatures(List<string> fe)
     {
-      fe.Add("Defence Increase: " + Factor + " %");
+      fe.Add("Defence Increase: " + StatKindFactor + " %");
       fe.Add("Tour Lasting: " + TourLasting);
     }
 

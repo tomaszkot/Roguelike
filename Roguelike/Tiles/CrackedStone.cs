@@ -14,7 +14,7 @@ namespace Roguelike.Tiles
     public CrackedStone(Point point) : base(point, '%')
     {
       Stats.SetNominal(EntityStatKind.Health, 20);
-      Stats.SetNominal(EntityStatKind.Defence, 1);
+      Stats.SetNominal(EntityStatKind.Defense, 1);
     }
 
     public CrackedStone() : this(new Point().Invalid())

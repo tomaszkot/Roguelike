@@ -1,6 +1,7 @@
 ﻿using Dungeons.Core;
 using Dungeons.Tiles;
 using Newtonsoft.Json;
+using Roguelike.Abstract;
 using Roguelike.Attributes;
 using Roguelike.Effects;
 using Roguelike.Events;
@@ -47,6 +48,11 @@ namespace Roguelike.Tiles
     public Point InitialPoint = DefaultInitialPoint;
     EntityStats stats = new EntityStats();
     Dictionary<EffectType, float> chanceToExperienceEffect = new Dictionary<EffectType, float>();
+    public int ActiveScrollCoolDownCounter { get; set; }
+    public Scroll ActiveScroll
+    {
+      get; set;
+    }
 
     public bool CanAttack { get; set; } = true;
     public EffectType DiedOfEffect;
@@ -78,7 +84,7 @@ namespace Roguelike.Tiles
       set; 
     } = 1;
 
-    Dictionary<EffectType, float> lastingEffSubtractions = new Dictionary<EffectType, float>();
+    //Dictionary<EffectType, float> lastingEffSubtractions = new Dictionary<EffectType, float>();
     static EntityStatKind[] resists = new EntityStatKind[] { EntityStatKind.ResistCold, EntityStatKind.ResistFire, EntityStatKind.ResistPoison,EntityStatKind.ResistLighting};
     public event EventHandler<LastingEffect> LastingEffectStarted;
     public event EventHandler<LastingEffect> LastingEffectApplied;
@@ -115,13 +121,6 @@ namespace Roguelike.Tiles
           chance = 90;
         SetChanceToExperienceEffect(et, chance);
       }
-
-      lastingEffSubtractions[EffectType.Rage] = 0;
-      lastingEffSubtractions[EffectType.Weaken] = 0;
-      lastingEffSubtractions[EffectType.Inaccuracy] = 0;
-      lastingEffSubtractions[EffectType.IronSkin] = 0;
-      lastingEffSubtractions[EffectType.ResistAll] = 0;
-      lastingEffSubtractions[EffectType.ConsumedRawFood] = 0;
 
       effectsToUse[EffectType.Weaken] = GenerationInfo.DefaultEnemyWeakenUsageCount;
       effectsToUse[EffectType.Rage] = GenerationInfo.DefaultEnemyRageUsageCount;
@@ -301,7 +300,7 @@ namespace Roguelike.Tiles
       if (spell != null)
       {
         if (spell.Kind == SpellKind.StonedBall)
-          amount /= Stats.Defence;
+          amount /= Stats.Defense;
         else
         {
           var magicAttackDamageReductionPerc = Stats.GetCurrentValue(EntityStatKind.MagicAttackDamageReduction);
@@ -372,6 +371,11 @@ namespace Roguelike.Tiles
       return chanceToExperienceEffect[et];
     }
 
+    public bool HasLastingEffect(EffectType le)
+    {
+      return GetLastingEffect(le) != null;
+    }
+
     public LastingEffect GetLastingEffect(EffectType le)
     {
       return lastingEffects.Where(i => i.Type == le).SingleOrDefault();
@@ -425,10 +429,11 @@ namespace Roguelike.Tiles
       var statValue = this.Stats.GetStat(kind).Value.TotalValue;
       var calcEffectValue = CalcEffectValue(nominalValuePercInc, statValue);
 
-      if(eff == EffectType.ConsumedRawFood)
-        lastingEffSubtractions[eff] = calcEffectValue;//AddLastingEffect uses lastingEffSubtractions so it must be set
+      //if(eff == EffectType.ConsumedRawFood)
+      //  lastingEffSubtractions[eff] = calcEffectValue;//AddLastingEffect uses lastingEffSubtractions so it must be set
 
       var le = AddLastingEffect(eff, pendingTurns, 0, kind);
+      //le.Subtraction = calcEffectValue;
       le.StatKind = kind;
       
       bool handle = false;
@@ -437,7 +442,7 @@ namespace Roguelike.Tiles
       {
         if (!onlyProlong)
         {
-          lastingEffSubtractions[eff] = calcEffectValue;
+          le.Subtraction = calcEffectValue;
           handle = true;
         }
       }
@@ -457,7 +462,7 @@ namespace Roguelike.Tiles
             statClone.Subtract(-effValue);
           }
         }
-        lastingEffSubtractions[eff] = effValue;
+        le.Subtraction = effValue;
         handle = true;
       }
       else if (eff == EffectType.ConsumedRawFood)
@@ -469,7 +474,7 @@ namespace Roguelike.Tiles
 
       if (handle)
       {
-        HandleSpecialFightStat(eff, true);
+        HandleSpecialFightStat(le, true);
       }
       return le;
     }
@@ -480,16 +485,15 @@ namespace Roguelike.Tiles
     }
 
     //For the time of lasting effect some state is changed, then restored to the original value (flag add)
-    void HandleSpecialFightStat(EffectType et, bool add)
+    void HandleSpecialFightStat(LastingEffect le, bool add)
     {
       float factor = 0;
-      Func<EffectType, float> getEffValue = (EffectType effType) => { return lastingEffSubtractions[effType]; };
+      var et = le.Type;
+      //Func<EffectType, float> getEffValue = (EffectType effType) => { return lastingEffSubtractions[effType]; };
 
-      
-      
       if (et == EffectType.ResistAll)
       {
-        factor = add ? getEffValue(EffectType.ResistAll) : -getEffValue(EffectType.ResistAll);
+        factor = add ? le.Subtraction : -le.Subtraction;
 
         foreach (var res in resists)
         {
@@ -498,34 +502,34 @@ namespace Roguelike.Tiles
         return;
       }
 
-      EntityStatKind esk = EntityStatKind.Unset;
-      EffectType effT = EffectType.Unset;
-      if (et == EffectType.Rage)
-      {
-        effT = EffectType.Rage;
-        esk = EntityStatKind.Attack;
-      }
-      else if (et == EffectType.Weaken)
-      {
-        effT = EffectType.Weaken;
-        esk = EntityStatKind.Defence;
-        //add = false;
-      }
-      else if (et == EffectType.Inaccuracy)
-      {
-        effT = EffectType.Inaccuracy;
-        esk = EntityStatKind.ChanceToHit;
-        //add = false;
-      }
-      else if (et == EffectType.IronSkin)
-      {
-        effT = EffectType.IronSkin;
-        esk = EntityStatKind.Defence;
-      }
+      EntityStatKind esk = le.StatKind;
+      //EffectType effT = EffectType.Unset;
+      //if (et == EffectType.Rage)
+      //{
+      //  //effT = EffectType.Rage;
+      //  esk = EntityStatKind.Attack;
+      //}
+      //else if (et == EffectType.Weaken)
+      //{
+      //  //effT = EffectType.Weaken;
+      //  esk = EntityStatKind.Defence;
+      //  //add = false;
+      //}
+      //else if (et == EffectType.Inaccuracy)
+      //{
+      //  //effT = EffectType.Inaccuracy;
+      //  esk = EntityStatKind.ChanceToHit;
+      //  //add = false;
+      //}
+      //else if (et == EffectType.IronSkin)
+      //{
+      //  //effT = EffectType.IronSkin;
+      //  esk = EntityStatKind.Defence;
+      //}
 
       if (esk != EntityStatKind.Unset)
       {
-        factor = add ? getEffValue(effT) : -getEffValue(effT);
+        factor = add ? le.Subtraction : -le.Subtraction;
         if (et == EffectType.Weaken || et == EffectType.Inaccuracy)
         {
           factor *= -1;
@@ -687,21 +691,31 @@ namespace Roguelike.Tiles
       this.Stats.IncreaseStatDynamicValue(statFromConsumable, inc);
     }
 
-    private void ApplyLastingEffect(LastingEffect eff, bool newOne)
+    public float CalcDamageAmount(LastingEffect eff)
     {
       var damage = eff.DamageAmount;
       if (eff.DamageAmount > 0)
       {
         if (eff.Type == EffectType.Bleeding)// && eff.FromTrapSpell)
         {
-          damage /= Stats.Defence;
+          damage /= Stats.Defense;
         }
+      }
+
+      return damage;
+    }
+
+    private void ApplyLastingEffect(LastingEffect eff, bool newOne)
+    {
+      var damage = CalcDamageAmount(eff);
+      if (damage > 0)
+      {
         ReduceHealth(damage);
       }
 
       if (eff.Type == EffectType.ConsumedRawFood)
       {
-        var inc = lastingEffSubtractions[EffectType.ConsumedRawFood];
+        var inc = eff.Subtraction;
         DoConsume(eff.StatKind, inc);
       }
 
@@ -756,7 +770,7 @@ namespace Roguelike.Tiles
         livEnt.LastingEffects.RemoveAll(i => i.Type == et);
         le.Dispose();
         
-        HandleSpecialFightStat(et, false);
+        HandleSpecialFightStat(le, false);
         //TODO
         //if (et == EffectType.Hooch)
         //{
@@ -816,7 +830,7 @@ namespace Roguelike.Tiles
 
     private float GetDefense()
     {
-      return GetCurrentValue(EntityStatKind.Defence);
+      return GetCurrentValue(EntityStatKind.Defense);
     }
 
     //protected virtual float GetCurrentAttack()
@@ -971,7 +985,7 @@ namespace Roguelike.Tiles
         return;
 
       IsWounded = true;
-      var def = Stats.GetStat(EntityStatKind.Defence);
+      var def = Stats.GetStat(EntityStatKind.Defense);
       def.Subtract(def.Value.TotalValue/2);
       
       if (Wounded != null)
@@ -1034,6 +1048,21 @@ namespace Roguelike.Tiles
         return eff.Key;
       }
       return EffectType.Unset;
+    }
+
+    public LastingEffect AddLastingEffectFromSpell(EffectType effectType)
+    {
+      SpellKind spellKind = SpellConverter.SpellKindFromEffectType(effectType);
+      return AddLastingEffectFromSpell(spellKind, effectType);
+    }
+
+    public LastingEffect AddLastingEffectFromSpell(SpellKind spellKind, EffectType effectType)
+    {
+      var spell = Scroll.CreateSpell(spellKind, this);
+      var spellLasting = spell as ILastingSpell;
+      var tourLasting = spellLasting!=null ? spellLasting.TourLasting : 0;
+
+      return AddLastingEffect(effectType, tourLasting, spell.StatKind, spell.StatKindFactor);
     }
   }
 }

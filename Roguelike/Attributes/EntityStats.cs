@@ -137,11 +137,11 @@ namespace Roguelike.Attributes
       }
     }
 
-    public float Defence
+    public float Defense
     {
       get
       {
-        return this[EntityStatKind.Defence].TotalValue;
+        return this[EntityStatKind.Defense].TotalValue;
       }
     }
 
@@ -395,7 +395,7 @@ namespace Roguelike.Attributes
   {
     Unset,
 
-    Strength, Health, Magic, Defence, Dexterity,
+    Strength, Health, Magic, Defense, Dexterity,
 
     ResistFire, ResistCold, ResistPoison, ChanceToHit, ChanceToCastSpell, Mana, Attack,
     FireAttack, ColdAttack, PoisonAttack, LightPower, LifeStealing, ManaStealing,

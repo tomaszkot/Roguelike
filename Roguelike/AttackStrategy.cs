@@ -1,5 +1,6 @@
 ﻿using Dungeons.Core;
 using Dungeons.Tiles;
+using Roguelike.Abstract;
 using Roguelike.Attributes;
 using Roguelike.Policies;
 using Roguelike.Spells;
@@ -9,6 +10,7 @@ using Roguelike.Tiles.Looting;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 
 namespace Roguelike
 {
@@ -56,7 +58,10 @@ namespace Roguelike
           if (enCasted != null)
           {
             if (TurnOnSpecialSkill(enCasted, victim))
+            {
+              OnPolicyApplied(new Policy() { Kind = PolicyKind.Generic});
               return true;
+            }
 
           }
 
@@ -73,7 +78,7 @@ namespace Roguelike
           return false;
         if (enemy.Stats.HealthBelow(0.2f))
           return false;
-        var cast = RandHelper.Random.NextDouble() < GenerationInfo.ChanceToTurnOnSpecialSkillByEnemy;
+        var cast = RandHelper.Random.NextDouble() <= GenerationInfo.ChanceToTurnOnSpecialSkillByEnemy;
 
         //if (enemy.PowerKind == EnemyPowerKind.Plain && !enemy.EverCastedHooch)
         //{
@@ -132,40 +137,46 @@ namespace Roguelike
               return false;//
             }
 
-            if (effectToUse == EffectType.Rage)
+            var spellKind = SpellConverter.SpellKindFromEffectType(effectToUse);
+            if (spellKind != SpellKind.Unset)
             {
-              var spell = new RageSpell(enemy);
-              enemy.AddLastingEffect(effectToUse, spell.TourLasting, EntityStatKind.Attack, spell.Factor);
+              enemy.AddLastingEffectFromSpell(spellKind, effectToUse);
+              enemy.ReduceEffectToUse(effectToUse);
+              return true;
             }
-            else if (effectToUse == EffectType.Weaken)
-            {
-              var spell = new WeakenSpell(enemy);
-              victim.AddLastingEffect(effectToUse, spell.TourLasting, EntityStatKind.Defence, spell.Factor);
-            }
-            else if (effectToUse == EffectType.Inaccuracy)
-            {
-              var spell = new InaccuracySpell(enemy);
-              victim.AddLastingEffect(effectToUse, spell.TourLasting, EntityStatKind.ChanceToHit, spell.Factor);
-            }
-            else if (effectToUse == EffectType.IronSkin)
-            {
-              var spell = new IronSkinSpell(enemy);
-              enemy.AddLastingEffect(effectToUse, spell.TourLasting, EntityStatKind.Defence, spell.Factor);
-            }
-            else //if (effectToUse == EffectType.ResistAll)
-            {
-              var spell = new ResistAllSpell(enemy);
-              enemy.AddLastingEffect(effectToUse, spell.TourLasting, EntityStatKind.ResistCold, spell.Factor);//TODO EntityStatKind.ResistCold, whatever we send here is OK, later all are aplied
-            }
+            //if (effectToUse == EffectType.Rage)
+            //{
+            //  enemy.AddLastingEffect(effectToUse, spell.TourLasting, spell.StatKind, spell.StatKindFactor);
+            //}
+            //else if (effectToUse == EffectType.Weaken)
+            //{
+            //  //var spell = new WeakenSpell(enemy);
+            //  victim.AddLastingEffect(effectToUse, spell.TourLasting, EntityStatKind.Defence, spell.Factor);
+            //}
+            //else if (effectToUse == EffectType.Inaccuracy)
+            //{
+            //  //var spell = new InaccuracySpell(enemy);
+            //  victim.AddLastingEffect(effectToUse, spell.TourLasting, EntityStatKind.ChanceToHit, spell.Factor);
+            //}
+            //else if (effectToUse == EffectType.IronSkin)
+            //{
+            //  //var spell = new IronSkinSpell(enemy);
+            //  enemy.AddLastingEffect(effectToUse, spell.TourLasting, EntityStatKind.Defence, spell.Factor);
+            //}
+            //else //if (effectToUse == EffectType.ResistAll)
+            //{
+            //  //var spell = new ResistAllSpell(enemy);
+            //  enemy.AddLastingEffect(effectToUse, spell.TourLasting, EntityStatKind.ResistCold, spell.Factor);//TODO EntityStatKind.ResistCold, whatever we send here is OK, later all are aplied
+            //}
             
-            enemy.ReduceEffectToUse(effectToUse);
-            return true;
+            
+            
           }
         }
 
         return false;
       }
-
+            
       bool HasSpecialEffectOn(Enemy enemy, out int specialEffCounter)
       {
         specialEffCounter = 0;
@@ -184,59 +195,100 @@ namespace Roguelike
         return false;
       }
 
-      bool MakeNonPhysicalMove(LivingEntity enemy, LivingEntity target)
+      bool MakeNonPhysicalMove(LivingEntity enemy, Hero hero)
       {
         //TODO
 
-        //if (enemy.ActiveScrollCoolDownCounter > 0)
-        //{
-        //  var en = enemy as Enemy;
+        if (enemy.ActiveScrollCoolDownCounter > 0)
+        {
+          var en = enemy as Enemy;
 
-        //  bool decreaseCoolDown = CommonRandHelper.Random.NextDouble() > .3f;
-        //  if (en.Kind == Enemy.PowerKind.Boss)
-        //    decreaseCoolDown = CommonRandHelper.Random.NextDouble() > .5f;
-        //  if (decreaseCoolDown)
-        //    enemy.ActiveScrollCoolDownCounter--;
-        //}
-        //if (enemy.ActiveScroll != null && enemy.ActiveScrollCoolDownCounter == 0)
+          bool decreaseCoolDown = RandHelper.Random.NextDouble() > .3f;
+          if (en.PowerKind == EnemyPowerKind.Boss)
+            decreaseCoolDown = RandHelper.Random.NextDouble() > .5f;
+          if (decreaseCoolDown)
+            enemy.ActiveScrollCoolDownCounter--;
+        }
+        if (enemy.ActiveScroll != null && enemy.ActiveScrollCoolDownCounter == 0)
+        {
+          var level = Context.CurrentNode;
+          enemy.PathToTarget = level.FindPath(enemy.Point, hero.Point, false, true);
+          if (enemy.PathToTarget != null)
+          {
+            var path = enemy.PathToTarget.GetRange(0, enemy.PathToTarget.Count - 1);
+            if (path.Any())
+            {
+              var clearPath = path.All(i =>
+                level.GetTile(new System.Drawing.Point(i.Y, i.X)) == enemy ||
+                level.GetTile(new System.Drawing.Point(i.Y, i.X)).IsEmpty
+              );
+
+              if (clearPath)
+              {
+                var first = path.FirstOrDefault();
+                var straithPath = path.All(i => i.X == first.X || i.Y == first.Y);
+                if (straithPath)
+                {
+                  if (enemy.DistanceFrom(hero) < 5 || (enemy.Point.Y == hero.Point.Y && enemy.DistanceFrom(hero) < 7)) //|| VisibleFromCamera TODO
+                  {
+                    //var spell = enemy.ActiveScroll.CreateSpell(enemy);
+                    //if (spell is OffensiveSpell)
+                    //  enemy.DamageApplier.ApplySpellDamage(enemy, hero, spell as AttackingSpell);
+                    //else
+                    //  hero.AddLastingEffect(EffectType.BushTrap, 3, 3);
+                    //enemy.ActiveScrollCoolDownCounter = GetCoolDown(enemy as Enemy);
+                    //return true;
+                    return false;//TODO
+                  }
+                }
+              }
+            }
+          }
+        }
+
+        bool resistOn = TurnOnResistAll(enemy, hero);
+        if (resistOn)
+        {
+          return true;
+        }
+
+        return false;
+      }
+
+      private int GetCoolDown(Enemy enemy)
+      {
+        //if (enemy.Symbol == Enemy.GolemSymbol || enemy.PlainSymbol == Enemy.GolemSymbol)
+        //  return 3;
+        //else if (enemy.Symbol == Enemy.GardenQueenSymbol || enemy.PlainSymbol == Enemy.GardenQueenSymbol)
+        //  return 5;
+        return 2;
+      }
+
+      private bool TurnOnResistAll(LivingEntity enemy, LivingEntity target)
+      {
+        //TODO
+        //Enemy enCasted = enemy as Enemy;
+        //if (enCasted != null && enCasted.lastHitBySpell)
         //{
-        //  enemy.PathToTarget = Level.FindPath(enemy.point, target.point, false, true);
-        //  if (enemy.PathToTarget != null)
+        //  if (enCasted.Kind != Enemy.PowerKind.Plain)
         //  {
-        //    var path = enemy.PathToTarget.GetRange(0, enemy.PathToTarget.Count - 1);
-        //    if (path.Any())
+        //    int specialEffCounter;
+        //    var resist = enemy.LastingEffects.Any(i => i.Type == LivingEntity.EffectType.ResistAll);
+        //    if (resist)
+        //      return false;
+        //    HasSpecialEffectOn(enCasted, out specialEffCounter);
+        //    if (specialEffCounter < 2)
         //    {
-        //      var clearPath = path.All(i =>
-        //        gm.Level.GetTile(new Point(i.Y, i.X)) == enemy ||
-        //        gm.Level.GetTile(new Point(i.Y, i.X)).IsEmpty
-        //      );
-
-        //      if (clearPath)
+        //      if (enCasted.GetEffectUseCount(EffectType.ResistAll) > 0)
         //      {
-        //        var first = path.FirstOrDefault();
-        //        var straithPath = path.All(i => i.X == first.X || i.Y == first.Y);
-        //        if (straithPath)
-        //        {
-        //          if (enemy.DistanceFrom(gm.Hero) < 5 || (enemy.point.y == gm.Hero.point.y && enemy.DistanceFrom(gm.Hero) < 7)) //|| VisibleFromCamera TODO
-        //          {
-        //            var spell = enemy.ActiveScroll.CreateSpell(enemy);
-        //            if (spell is AttackingSpell)
-        //              enemy.DamageApplier.ApplySpellDamage(enemy, target, spell as AttackingSpell);
-        //            else
-        //              target.AddLastingEffect(EffectType.BushTrap, 3, 3);
-        //            enemy.ActiveScrollCoolDownCounter = GetCoolDown(enemy as Enemy);
-        //            return true;
-        //          }
-        //        }
+        //        var spell = new ResistAllSpell(enemy);
+        //        //TODO EntityStatKind.ResistCold, whatever we send here is OK, later all are aplied
+        //        enemy.AddLastingEffect(EffectType.ResistAll, spell.TourLasting, EntityStatKind.ResistCold, spell.Factor);
+        //        enCasted.ReduceEffectToUse(EffectType.ResistAll);
+        //        return true;
         //      }
         //    }
         //  }
-        //}
-
-        //bool resistOn = TurnOnResistAll(enemy, target);
-        //if (resistOn)
-        //{
-        //  return true;
         //}
 
         return false;

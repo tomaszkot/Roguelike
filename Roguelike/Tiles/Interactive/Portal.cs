@@ -1,10 +1,5 @@
 ﻿using Roguelike.Abstract;
-using Roguelike.Tiles;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Roguelike.Attributes;
 
 namespace Roguelike.Tiles.Interactive
 {
@@ -30,5 +25,8 @@ namespace Roguelike.Tiles.Interactive
     public LivingEntity Caller { get; set ; }
     public int CoolingDown { get; set; } = 0;
     public bool Used { get; set; }
+    public EntityStatKind StatKind { get; set; }
+    public float StatKindFactor { get; set; }
+    public int TourLasting { get; set; }
   }
 }
