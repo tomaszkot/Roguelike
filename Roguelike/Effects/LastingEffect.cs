@@ -3,6 +3,7 @@ using Roguelike.Attributes;
 using Roguelike.Spells;
 using Roguelike.Tiles;
 using Roguelike.Tiles.Looting;
+using System.Linq;
 using System.Xml.Serialization;
 
 namespace Roguelike.Effects
@@ -95,26 +96,46 @@ namespace Roguelike.Effects
     public string GetDescription(LivingEntity owner)
     {
       string res = Type.ToDescription();
-
-      var damage = EffectAbsoluteValue.Factor.Value;//owner.CalcDamageAmount(this);// Owner.LivingEntityTile.CalcDamageAmount(le);
+      //var damage = EffectAbsoluteValue.Factor.Value;//owner.CalcDamageAmount(this);// Owner.LivingEntityTile.CalcDamageAmount(le);
 
       var spellKind = SpellConverter.SpellKindFromEffectType(Type);
+      var middle = "";
+      var end = "";
+      var sign = EffectAbsoluteValue.Factor.Value >= 0 ? "+" : "-";
+
       if (Type == EffectType.Bleeding)
       {
-        res += ", -" + damage + " Health (per turn)";
+        end = " Health (per turn)";
+        middle = ", ";
+        //res += ", " + EffectAbsoluteValue.Factor + " Health (per turn)";
       }
       else if (Type == EffectType.ResistAll)
       {
-        res += " +" + EffectAbsoluteValue.Factor;
+        middle = " ";
+        //res += " " + EffectAbsoluteValue.Factor;
       }
       else if (spellKind != SpellKind.Unset)
       {
         //Scroll.CreateSpell(spellKind, )
-        string preffix = "+";
-        if (Type == EffectType.Weaken || Type == EffectType.Inaccuracy)
-          preffix = "-";
-        res += ", " + preffix + EffectAbsoluteValue.Factor + " to " + this.StatKind.ToDescription();
+        //string preffix = "+";
+        //if (Type == EffectType.Weaken || Type == EffectType.Inaccuracy)
+        //  preffix = "-";
+        //res += ", " + preffix + EffectAbsoluteValue.Factor + " to " + this.StatKind.ToDescription();
+        middle = ", ";
+        end = " to " + this.StatKind.ToDescription();
       }
+
+      if (middle.Any())
+        res += middle;
+
+      if(EffectAbsoluteValue.Factor.Value >= 0)
+        res += sign;
+      res += EffectAbsoluteValue.Factor;
+
+      if (end.Any())
+        res += end;
+
+
       return res;
     }
 

@@ -174,7 +174,7 @@ namespace Roguelike.Tiles
             //var pot = consumable as Potion;
           }
           else
-            AddLastingEffect(EffectType.ConsumedRawFood, consumable.ConsumptionSteps , consumable.EnhancedStat, incPercentage);
+            AddPercentageLastingEffect(EffectType.ConsumedRawFood, consumable.ConsumptionSteps , consumable.EnhancedStat, incPercentage);
         }
       }
       else

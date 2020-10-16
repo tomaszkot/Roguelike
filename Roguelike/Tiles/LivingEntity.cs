@@ -425,7 +425,7 @@ namespace Roguelike.Tiles
       //  return effectInfo;
       //}
 
-    public virtual LastingEffect AddLastingEffect(EffectType eff, int pendingTurns, EntityStatKind esk, float nominalValuePercInc)
+    public virtual LastingEffect AddPercentageLastingEffect(EffectType eff, int pendingTurns, EntityStatKind esk, float nominalValuePercInc)
     {
       bool onlyProlong = LastingEffects.Any(i => i.Type == eff);//TODO is onlyProlong done ?
       var calcEffectValue = CalcLastingEffectFactor(eff, esk, nominalValuePercInc, pendingTurns);
@@ -481,7 +481,7 @@ namespace Roguelike.Tiles
 
     protected LastingEffectCalcInfo CreateLastingEffectCalcInfo(EffectType eff, float absoluteFactor, int turns)
     {
-      if (eff == EffectType.Bleeding)
+      if (eff == EffectType.Bleeding || eff == EffectType.Inaccuracy || eff == EffectType.Weaken)
         absoluteFactor *= -1;
       var lef = new LastingEffectCalcInfo(eff, turns, new LastingEffectFactor(absoluteFactor));
 
@@ -608,7 +608,7 @@ namespace Roguelike.Tiles
           {
             info = "Spell " + le.Type + " was casted on " + Name;
           }
-          AppendAction(new LivingEntityAction(LivingEntityActionKind.UsedSpell) { Info = info, EffectType = le.Type });
+          AppendAction(new LivingEntityAction(LivingEntityActionKind.UsedSpell) { Info = info, EffectType = le.Type, InvolvedEntity = this });
           appAction = false;
         }
       }
@@ -1068,7 +1068,7 @@ namespace Roguelike.Tiles
       var spellLasting = spell as ILastingSpell;
       var tourLasting = spellLasting!=null ? spellLasting.TourLasting : 0;
 
-      return AddLastingEffect(effectType, tourLasting, spell.StatKind, spell.StatKindFactor);
+      return AddPercentageLastingEffect(effectType, tourLasting, spell.StatKind, spell.StatKindFactor);
     }
   }
 }

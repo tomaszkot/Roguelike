@@ -710,8 +710,8 @@ namespace Roguelike.Spells
     public InaccuracySpell(LivingEntity caller) : base(caller)
     {
       Kind = SpellKind.Weaken;
-      //StatKind = EntityStatKind.ChanceToHit;StatKind = 
-      //EntityStatKind.ChanceToCastSpell
+      StatKind = EntityStatKind.ChanceToHit;
+      //StatKind = //EntityStatKind.ChanceToCastSpell //TODO
       damage = 0;
       manaCost = (float)(BaseManaCost * 2);
       StatKindFactor = CalcFactor(GetCurrentLevel());
