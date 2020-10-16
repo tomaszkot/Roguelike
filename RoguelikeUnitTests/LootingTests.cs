@@ -312,7 +312,7 @@ namespace RoguelikeUnitTests
 
       var mushes = lootInfo.Get<Mushroom>();
       Assert.Greater(mushes.Count, 1);
-      Assert.Less(potions.Count, 20);
+      Assert.Less(mushes.Count, 20);
     }
 
     [Test]

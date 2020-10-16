@@ -43,10 +43,13 @@ namespace RoguelikeUnitTests
       Assert.AreEqual(turnOwner, Roguelike.TurnOwner.Hero);
       hero.Consume(food);
       Assert.Greater(hero.Stats.Health, heroHealth);
-      Assert.True(hero.LastingEffects.Any());
+      var le = hero.LastingEffects.Single();
+      Assert.NotNull(le);
+      Assert.AreEqual(le.PendingTurns, food.ConsumptionSteps - 1);
 
       for (int i = 0; i < food.ConsumptionSteps - 1; i++)
       {
+        Assert.Greater(le.PendingTurns, 0);
         Assert.AreEqual(game.GameManager.Context.TurnOwner, Roguelike.TurnOwner.Allies);
         heroHealth = hero.Stats.Health;
         GotoNextHeroTurn(game);//food is working gradually

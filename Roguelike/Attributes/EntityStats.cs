@@ -336,11 +336,14 @@ namespace Roguelike.Attributes
       var inc = this[sk].TotalValue * percent / 100;
       //if (inc < 1)
       //  inc = 1;
-      IncreaseStatDynamicValue(sk, inc);
+      ChangeStatDynamicValue(sk, inc);
     }
 
-    internal bool IncreaseStatDynamicValue(EntityStatKind sk, float amount)
+    //Stats.GetStat(EntityStatKind.Health).Subtract(amount);
+    internal bool ChangeStatDynamicValue(EntityStatKind sk, float amount)
     {
+      var he = Health;
+
       var cv = this[sk].CurrentValue;
       if (cv < this[sk].TotalValue && amount > 0 || cv > 0 && amount < 0)
       {

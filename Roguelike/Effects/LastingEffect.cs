@@ -7,17 +7,58 @@ using System.Xml.Serialization;
 
 namespace Roguelike.Effects
 {
-  public class LastingEffect
+  //public class LastingEffectFactor //Subtraction smount
+  //{
+
+  //}
+  //public enum LastingEffectFactorKind { Unset, Damage,  }
+
+  public struct LastingEffectFactor
+  {
+    public LastingEffectFactor(float val) { Value = val; }
+    public float Value;//absolute value deducted/added to a stat
+
+    public override string ToString()
+    {
+      return Value.ToString();
+    }
+  }
+
+  public class LastingEffectCalcInfo
   {
     public EffectType Type;
+    public int Turns;
+    //public float Damage;
+    //public float Subtraction//absolute value deducted/added to a stat
+    //{
+    //  get;
+    //  set;
+    //}
+    public LastingEffectFactor Factor;//absolute value deducted/added to a stat
+
+    public LastingEffectCalcInfo(EffectType type, int turns, LastingEffectFactor factor)
+    {
+      Type = type;
+      Turns = turns;
+      Factor = factor;
+    }
+  }
+
+  public class LastingEffect
+  {
+    public EffectType Type 
+    { 
+      get { return EffectAbsoluteValue.Type; }
+      set 
+      { 
+        EffectAbsoluteValue.Type = value; 
+      }
+    }
+
     public EntityStatKind StatKind;
     public int PendingTurns = 3;
-    public float DamageAmount = 0;
-    public float Subtraction 
-    {
-      get; 
-      set; 
-    }
+    //public float DamageAmount = 0;//TODO move to EffectAbsoluteValue, add EffectAbsoluteValueKind 
+    public LastingEffectCalcInfo EffectAbsoluteValue { get; set; } = new LastingEffectCalcInfo(EffectType.Unset, 0, new LastingEffectFactor(0));
     //public bool FromTrapSpell { get; internal set; }
     ILastingEffectOwner owner;
 
@@ -55,8 +96,7 @@ namespace Roguelike.Effects
     {
       string res = Type.ToDescription();
 
-      var damage = owner.CalcDamageAmount(this);// Owner.LivingEntityTile.CalcDamageAmount(le);
-      var subtraction = Subtraction;
+      var damage = EffectAbsoluteValue.Factor.Value;//owner.CalcDamageAmount(this);// Owner.LivingEntityTile.CalcDamageAmount(le);
 
       var spellKind = SpellConverter.SpellKindFromEffectType(Type);
       if (Type == EffectType.Bleeding)
@@ -65,7 +105,7 @@ namespace Roguelike.Effects
       }
       else if (Type == EffectType.ResistAll)
       {
-        res += " +" + Subtraction;
+        res += " +" + EffectAbsoluteValue.Factor;
       }
       else if (spellKind != SpellKind.Unset)
       {
@@ -73,7 +113,7 @@ namespace Roguelike.Effects
         string preffix = "+";
         if (Type == EffectType.Weaken || Type == EffectType.Inaccuracy)
           preffix = "-";
-        res += ", " + preffix + subtraction + " to " + this.StatKind.ToDescription();
+        res += ", " + preffix + EffectAbsoluteValue.Factor + " to " + this.StatKind.ToDescription();
       }
       return res;
     }
