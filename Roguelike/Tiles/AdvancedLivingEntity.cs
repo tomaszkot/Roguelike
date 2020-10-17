@@ -169,12 +169,12 @@ namespace Roguelike.Tiles
           if (consumable is Potion)
           {
             Debug.Assert(consumable.ConsumptionSteps == 1);
-            var factor = CalcLastingEffectFactor(EffectType.Unset, consumable.EnhancedStat, incPercentage, consumable.ConsumptionSteps);
+            var factor = LastingEffectsSet.CalcLastingEffectFactor(EffectType.Unset, consumable.EnhancedStat, incPercentage, consumable.ConsumptionSteps);
             DoConsume(consumable.EnhancedStat, factor);
             //var pot = consumable as Potion;
           }
           else
-            AddPercentageLastingEffect(EffectType.ConsumedRawFood, consumable.ConsumptionSteps , consumable.EnhancedStat, incPercentage);
+            LastingEffectsSet.AddPercentageLastingEffect(EffectType.ConsumedRawFood, consumable.ConsumptionSteps , consumable.EnhancedStat, incPercentage);
         }
       }
       else

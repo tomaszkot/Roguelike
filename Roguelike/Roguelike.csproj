@@ -130,6 +130,7 @@
     <Compile Include="Serialization\IPersister.cs" />
     <Compile Include="Serialization\JSONPersister.cs" />
     <Compile Include="TileParts\IEquipable.cs" />
+    <Compile Include="TileParts\LastingEffectsSet.cs" />
     <Compile Include="TilesExtensions.cs" />
     <Compile Include="Tiles\Abstract\IConsumable.cs" />
     <Compile Include="Tiles\Abstract\IMovingDamager.cs" />

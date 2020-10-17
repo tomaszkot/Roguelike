@@ -21,7 +21,7 @@ namespace RoguelikeUnitTests
       var statValue = game.Hero.Stats[esk].TotalValue;
 
       //var calculated = new LastingEffectCalcInfo(et, 3, new LastingEffectFactor(10));
-      var le1 = game.Hero.AddPercentageLastingEffect(et, 3, esk, 10);
+      var le1 = game.Hero.LastingEffectsSet.AddPercentageLastingEffect(et, 3, esk, 10);
       Assert.AreEqual(le1.Type, et);
 
       var desc = le1.GetDescription(game.Hero);
@@ -47,7 +47,7 @@ namespace RoguelikeUnitTests
       CheckDesc(EffectType.Inaccuracy, EntityStatKind.ChanceToHit, '-');
       CheckDesc(EffectType.Weaken, EntityStatKind.Defense, '-');
 
-      le = game.Hero.AddPercentageLastingEffect(EffectType.ResistAll, 3, EntityStatKind.Unset, 10);
+      le = game.Hero.LastingEffectsSet.AddPercentageLastingEffect(EffectType.ResistAll, 3, EntityStatKind.Unset, 10);
       Assert.NotNull(le);
       expectedDesc = le.Type.ToDescription() + " +" + le.EffectAbsoluteValue.Factor;
       Assert.AreEqual(le.GetDescription(game.Hero), expectedDesc);
