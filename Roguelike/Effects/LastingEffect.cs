@@ -16,12 +16,14 @@ namespace Roguelike.Effects
     
     //absolute value deducted/added to a stat
     public EffectiveFactor EffectiveFactor { get; set; }
-    
-    public LastingEffectCalcInfo(EffectType type, int turns, EffectiveFactor factor)
+    public PercentageFactor PercentageFactor { get; set; } = new PercentageFactor(0);
+
+    public LastingEffectCalcInfo(EffectType type, int turns, EffectiveFactor effective, PercentageFactor perc)
     {
       Type = type;
       Turns = turns;
-      EffectiveFactor = factor;
+      EffectiveFactor = effective;
+      PercentageFactor = perc;
     }
 
     public override string ToString()
@@ -34,17 +36,17 @@ namespace Roguelike.Effects
   {
     public EffectType Type 
     { 
-      get { return EffectiveFactor.Type; }
+      get { return CalcInfo.Type; }
       set 
       { 
-        EffectiveFactor.Type = value; 
+        CalcInfo.Type = value; 
       }
     }
 
     public EntityStatKind StatKind;
     public int PendingTurns = 3;
-    public LastingEffectCalcInfo EffectiveFactor { get; set; } = new LastingEffectCalcInfo(EffectType.Unset, 0, new EffectiveFactor(0));
-    public PercentageFactor PercentageFactor { get; set; } = new PercentageFactor(0);
+    public LastingEffectCalcInfo CalcInfo { get; set; } = new LastingEffectCalcInfo(EffectType.Unset, 0, new EffectiveFactor(0), new PercentageFactor(0));
+    
     //public bool FromTrapSpell { get; internal set; }
     ILastingEffectOwner owner;
 
@@ -128,7 +130,10 @@ namespace Roguelike.Effects
 
       //if(EffectiveFactor.EffectiveFactor.Value >= 0)
       //  res += sign;
-      res += EffectiveFactor.EffectiveFactor;
+      if (CalcInfo.EffectiveFactor.Value != 0)
+        res += CalcInfo.EffectiveFactor;
+      else
+        res += CalcInfo.PercentageFactor;
 
       if (end.Any())
         res += end;

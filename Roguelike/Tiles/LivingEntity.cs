@@ -336,7 +336,7 @@ namespace Roguelike.Tiles
     }
 
     //static Tuple<EffectType, int> heBase = new Tuple<EffectType, int>(EffectType.Unset, 0);
-    static LastingEffectCalcInfo heBase = new LastingEffectCalcInfo(EffectType.Unset, 0, new EffectiveFactor(0));
+    static LastingEffectCalcInfo heBase = new LastingEffectCalcInfo(EffectType.Unset, 0, new EffectiveFactor(0), new PercentageFactor(0));
     protected virtual LastingEffectCalcInfo GetPhysicalHitEffect(LivingEntity victim, FightItem fi = null)
     {
       return heBase;

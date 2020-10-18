@@ -593,11 +593,13 @@ namespace Roguelike.Spells
     public ResistAllSpell(LivingEntity caller) : base(caller, EntityStatKind.Unset, 25)
     {
       Kind = SpellKind.ResistAll;
+      StatKindPercentage = new Factors.PercentageFactor(0);
+      StatKindEffective = new Factors.EffectiveFactor(25);
     }
 
     protected override void AppendPrivateFeatures(List<string> fe)
     {
-      fe.Add(Kind.ToDescription() + ":" + StatKindPercentage);
+      fe.Add(Kind.ToDescription() + ":" + StatKindEffective);
       fe.Add(GetTourLasting(TourLasting));
     }
 

@@ -5,7 +5,7 @@
     public EffectiveFactor(float val) : base(val) { }
 
     //effective value deducted/added to a stat
-    public double Value
+    public float Value
     {
       get { return value; }
     }

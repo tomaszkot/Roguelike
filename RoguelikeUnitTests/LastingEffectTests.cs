@@ -32,9 +32,17 @@ namespace RoguelikeUnitTests
       Assert.Greater(le1.PendingTurns, 0);
 
       var desc = le1.Description;
-      //statValue * nominalValuePercInc / 100f
-      var eff = Math.Round(le1.PercentageFactor.Value* statValueBefore / 100, 2);
-      var expectedDesc = le1.Type.ToDescription() + ", " + sign + eff + " to " + le1.StatKind.ToDescription();
+      
+      var eff = Math.Round(le1.CalcInfo.PercentageFactor.Value* statValueBefore / 100, 2);
+      var sep = ", ";
+      if (et == EffectType.ResistAll)
+      {
+        eff = le1.CalcInfo.EffectiveFactor.Value;
+        sep = " ";
+      }
+      var expectedDesc = le1.Type.ToDescription() + sep + sign + eff;
+      if (et != EffectType.ResistAll)
+        expectedDesc += " to " + le1.StatKind.ToDescription();
       Assert.AreEqual(desc, expectedDesc);
     }
 
