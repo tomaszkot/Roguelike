@@ -4,6 +4,7 @@ using Roguelike.Attributes;
 using Roguelike.Effects;
 using Roguelike.Spells;
 using Roguelike.Tiles;
+using System;
 using System.Linq;
 
 namespace RoguelikeUnitTests
@@ -15,21 +16,25 @@ namespace RoguelikeUnitTests
     {
       Assert.AreNotEqual(et, EffectType.Unset);
 
+      var statValueBefore = game.Hero.Stats.GetStat(esk).Value.TotalValue;
+
       LastingEffect le1 = null;
       var spellKind = SpellConverter.SpellKindFromEffectType(et);
       if (spellKind != SpellKind.Unset)
         le1 = game.Hero.LastingEffectsSet.AddLastingEffectFromSpell(spellKind, et);
       else
       {
-        var statValue = game.Hero.Stats[esk].TotalValue;
-        le1 = game.Hero.LastingEffectsSet.AddPercentageLastingEffect(et, 3, esk, 10);
-        Assert.AreEqual(le1.Type, et);
+        //var statValue = game.Hero.Stats[esk].TotalValue;
+        //le1 = game.Hero.LastingEffectsSet.AddPercentageLastingEffect(et, 3, esk, 10);
+        //Assert.AreEqual(le1.Type, et);
       }
       Assert.NotNull(le1);
       Assert.Greater(le1.PendingTurns, 0);
 
       var desc = le1.Description;
-      var expectedDesc = "";// le1.Type.ToDescription() + ", " + sign + statValue / 10 + " to " + le1.StatKind.ToDescription();
+      //statValue * nominalValuePercInc / 100f
+      var eff = Math.Round(le1.PercentageFactor.Value* statValueBefore / 100, 2);
+      var expectedDesc = le1.Type.ToDescription() + ", " + sign + eff + " to " + le1.StatKind.ToDescription();
       Assert.AreEqual(desc, expectedDesc);
     }
 
@@ -51,11 +56,12 @@ namespace RoguelikeUnitTests
       CheckDesc(EffectType.Rage, EntityStatKind.Attack, '+');
       CheckDesc(EffectType.Inaccuracy, EntityStatKind.ChanceToHit, '-');
       CheckDesc(EffectType.Weaken, EntityStatKind.Defense, '-');
+      CheckDesc(EffectType.ResistAll, EntityStatKind.Unset, '+');
 
-      le = game.Hero.LastingEffectsSet.AddPercentageLastingEffect(EffectType.ResistAll, 3, EntityStatKind.Unset, 10);
-      Assert.NotNull(le);
-      expectedDesc = le.Type.ToDescription() + " +" + le.EffectAbsoluteValue.Factor;
-      Assert.AreEqual(le.Description, expectedDesc);
+      //le = game.Hero.LastingEffectsSet.AddLastingEffectFromSpell(EffectType.ResistAll, 3, EntityStatKind.Unset, 10);
+      //Assert.NotNull(le);
+      //expectedDesc = le.Type.ToDescription() + " +" + le.EffectiveFactor.EffectiveFactor;
+      //Assert.AreEqual(le.Description, expectedDesc);
 
       //var calculated = new LastingEffectCalcInfo(EffectType.Bleeding, 3, new LastingEffectFactor(10));
       //le = game.Hero.AddLastingEffect(calculated);

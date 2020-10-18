@@ -1,6 +1,7 @@
 ﻿using Dungeons.Tiles;
 using Roguelike.Abstract;
 using Roguelike.Attributes;
+using Roguelike.Factors;
 using Roguelike.Tiles;
 using System.Collections.Generic;
 
@@ -12,17 +13,29 @@ namespace Roguelike.Spells
     public int TourLasting { get; set; }
     public readonly int BaseFactor = 30;
 
-    public PassiveSpell(LivingEntity caller, int baseFactor = 30) : base(caller)
+    public EntityStatKind StatKind { get; set; }
+    public PercentageFactor StatKindPercentage { get; set; }
+    public EffectiveFactor StatKindEffective { get; set; }
+
+    public PassiveSpell(LivingEntity caller, EntityStatKind statKind, int baseFactor = 30) : base(caller)
     {
       BaseFactor = baseFactor;
       manaCost = (float)(BaseManaCost * 2);
-      StatKindPercImpact = CalcFactor(GetCurrentLevel());
+      StatKind = statKind;
+
+      StatKindPercentage = CalcFactor(GetCurrentLevel());
+      StatKindEffective = caller.CalcEffectiveFactor(StatKind, StatKindPercentage.Value);
       TourLasting = CalcTourLasting();
     }
 
-    protected virtual int CalcFactor(int magicLevel)
+    protected virtual PercentageFactor CalcFactor()
     {
-      return BaseFactor + magicLevel;
+      return CalcFactor(GetCurrentLevel());
+    }
+
+    protected virtual PercentageFactor CalcFactor(int magicLevel)
+    {
+      return new PercentageFactor(BaseFactor + magicLevel);
     }
 
     protected void SetHealthFromLevel(LivingEntity spellTarget, float factor = 1)
@@ -63,7 +76,7 @@ namespace Roguelike.Spells
         tile = value;
       }
     }
-
+    
     protected int CalcTourLasting(float factor = 1)
     {
       return CalcTourLasting(GetCurrentLevel(), factor);
@@ -78,7 +91,7 @@ namespace Roguelike.Spells
 
     protected override void AppendPrivateFeatures(List<string> fe)
     {
-      fe.Add(StatKind.ToDescription() + ": " + StatKindPercImpact + " %");
+      fe.Add(StatKind.ToDescription() + ": " + StatKindPercentage);
       fe.Add(GetTourLasting(TourLasting));
     }
 
@@ -106,7 +119,7 @@ namespace Roguelike.Spells
     {
       base.AppendNextLevel(fe);
 
-      var suffix = StatKind.ToDescription() + " " + CalcFactor(GetCurrentLevel() + 1) + " %";
+      var suffix = StatKind.ToDescription() + " " + CalcFactor(GetCurrentLevel() + 1);
       fe.Add(GetNextLevel(suffix));
       fe.Add(GetNextLevelTourLasting());
     }

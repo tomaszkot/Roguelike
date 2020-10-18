@@ -5,6 +5,7 @@ using Roguelike.Abstract;
 using Roguelike.Attributes;
 using Roguelike.Effects;
 using Roguelike.Events;
+using Roguelike.Factors;
 using Roguelike.Managers;
 using Roguelike.Spells;
 using Roguelike.TileParts;
@@ -335,7 +336,7 @@ namespace Roguelike.Tiles
     }
 
     //static Tuple<EffectType, int> heBase = new Tuple<EffectType, int>(EffectType.Unset, 0);
-    static LastingEffectCalcInfo heBase = new LastingEffectCalcInfo(EffectType.Unset, 0, new LastingEffectFactor(0));
+    static LastingEffectCalcInfo heBase = new LastingEffectCalcInfo(EffectType.Unset, 0, new EffectiveFactor(0));
     protected virtual LastingEffectCalcInfo GetPhysicalHitEffect(LivingEntity victim, FightItem fi = null)
     {
       return heBase;
@@ -430,7 +431,7 @@ namespace Roguelike.Tiles
         
     protected void DoConsume(EntityStatKind statFromConsumable, LastingEffectCalcInfo inc)
     {
-      this.Stats.ChangeStatDynamicValue(statFromConsumable, inc.Factor.Value);
+      this.Stats.ChangeStatDynamicValue(statFromConsumable, (float)inc.EffectiveFactor.Value);
     }
 
   
@@ -740,6 +741,18 @@ namespace Roguelike.Tiles
     public LastingEffect AddLastingEffectFromSpell(SpellKind spellKind, EffectType effectType)
     {
       return lastingEffectsSet.AddLastingEffectFromSpell(spellKind, effectType);
+    }
+
+    public EffectiveFactor CalcEffectiveFactor(EntityStatKind kind, float nominalValuePercInc)
+    {
+      var statValue = Stats.GetStat(kind).Value.TotalValue;
+      var factor = CalcEffectValue(nominalValuePercInc, statValue);
+      return new EffectiveFactor(factor);
+    }
+
+    private static float CalcEffectValue(float nominalValuePercInc, float statValue)
+    {
+      return statValue * nominalValuePercInc / 100f;
     }
   }
 }

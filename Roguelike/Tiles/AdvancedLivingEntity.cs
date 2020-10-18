@@ -147,7 +147,7 @@ namespace Roguelike.Tiles
 
       if (inventory.Contains(consumable.Loot))
       {
-        if (consumable.EnhancedStat == EntityStatKind.Unset)
+        if (consumable.StatKind == EntityStatKind.Unset)
         {
           var pot = consumable.Loot as Potion;
           Debug.Assert(pot != null && pot.Kind == PotionKind.Poison);
@@ -160,21 +160,22 @@ namespace Roguelike.Tiles
         if (consumable is SpecialPotion)
         {
           var sp = consumable as SpecialPotion;
-          this.Stats[sp.EnhancedStat].Nominal += consumable.GetStatIncrease(null);
+          this.Stats[sp.EnhancedStat].Nominal += (float)consumable.StatKindEffective.Value;
         }
         else
         {
-          var incPercentage = consumable.GetStatIncrease(null);
-                    
+          var incPercentage = consumable.StatKindPercentage.Value;
+
           if (consumable is Potion)
           {
             Debug.Assert(consumable.ConsumptionSteps == 1);
-            var factor = LastingEffectsSet.CalcLastingEffectFactor(EffectType.Unset, consumable.EnhancedStat, incPercentage, consumable.ConsumptionSteps);
-            DoConsume(consumable.EnhancedStat, factor);
+            var factor = LastingEffectsSet.CalcLastingEffectFactor(EffectType.Unset, consumable.StatKind, incPercentage, consumable.ConsumptionSteps);
+            DoConsume(consumable.StatKind, factor);
             //var pot = consumable as Potion;
           }
           else
-            LastingEffectsSet.AddPercentageLastingEffect(EffectType.ConsumedRawFood, consumable.ConsumptionSteps , consumable.EnhancedStat, incPercentage);
+            LastingEffectsSet.AddPercentageLastingEffect(EffectType.ConsumedRawFood, consumable);
+            //LastingEffectsSet.AddPercentageLastingEffect(EffectType.ConsumedRawFood, consumable.ConsumptionSteps , consumable.EnhancedStat, incPercentage);
         }
       }
       else

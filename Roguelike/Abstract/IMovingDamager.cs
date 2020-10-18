@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Roguelike.Attributes;
+﻿using Roguelike.Attributes;
+using Roguelike.Factors;
 using Roguelike.Tiles;
 
 namespace Roguelike.Abstract
@@ -19,10 +15,19 @@ namespace Roguelike.Abstract
     int CoolingDown { get; set; }
   }
 
-  public interface ILastingSpell
+  /// <summary>
+  /// ILastingEffectSrc can be Spell, Hit by melee or projectile
+  /// </summary>
+  public interface ILastingEffectSrc
   {
     int TourLasting { get; set; }
     EntityStatKind StatKind { get; set; }
-    float StatKindPercImpact { get; set; }
+
+    PercentageFactor StatKindPercentage { get;  }
+    EffectiveFactor  StatKindEffective { get; }
+  }
+
+  public interface ILastingSpell : ILastingEffectSrc
+  {
   }
 }

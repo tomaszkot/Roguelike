@@ -28,7 +28,7 @@ namespace Roguelike.Spells
         //,MindControl
         , Mana, BushTrap, Rage, Weaken, NESWFireBall, Teleport, IronSkin, ResistAll, Inaccuracy, /*CallMerchant, CallGod,*/ Identify, Portal
   }
-
+   
   public class Spell : ISpell
   {
     protected float manaCost;
@@ -36,25 +36,13 @@ namespace Roguelike.Spells
     float manaCostMultiplicator = 20;
     public bool SendByGod { get; set; }
     public FightItem FightItem { get; internal set; }
-    protected float damage = 0f;
-    public EntityStatKind StatKind { get; set; }
-    public float StatKindPercImpact { get; set; }
-    
+            
     public SpellKind Kind { get; set; }
     public bool EnemyRequired = false;
     public bool EntityRequired = false;
     public const int BaseManaCost = 4;
     protected Dictionary<int, int> levelToMagic = new Dictionary<int, int>();
     private LivingEntity caller;
-
-
-    protected virtual float CalcDamage(int magicLevel)
-    {
-      //TODO
-      //var dmg = damage + (damage * ((magicLevel - 1) * (damageMultiplicator + magicLevel * magicLevel / 2) / 100.0f));
-      //return (float)Math.Ceiling(dmg);
-      return magicLevel;
-    }
 
     //public int GetExtraChanceForCausingEffect(LivingEntity caster)
     //{
@@ -138,7 +126,26 @@ namespace Roguelike.Spells
     {
       return "Next Level: " + suffix;
     }
-        
+       
+    public int GetCurrentLevel()
+    {
+      var lev = GetNextLevelMagicIndex() - 1;
+      return lev;
+    }
+
+    protected virtual void AppendPrivateFeatures(List<string> fe)
+    {
+    }
+
+    protected virtual void AppendNextLevel(List<string> fe)
+    {
+      fe.Add(GetNextLevel("Magic " + GetNextLevelMagicNeeded()));
+    }
+
+    protected void AppendBasePart(List<string> fe)
+    {
+      fe.Add("Mana Cost: " + ManaCost);
+    }
 
     //public Tuple<LivingEntity.EffectType, int> GetEffectType()
     //{
@@ -173,26 +180,6 @@ namespace Roguelike.Spells
 
     //  return et;
     //}
-
-    public int GetCurrentLevel()
-    {
-      var lev = GetNextLevelMagicIndex() - 1;
-      return lev;
-    }
-
-    protected virtual void AppendPrivateFeatures(List<string> fe)
-    {
-    }
-
-    protected virtual void AppendNextLevel(List<string> fe)
-    {
-      fe.Add(GetNextLevel("Magic " + GetNextLevelMagicNeeded()));
-    }
-
-    protected void AppendBasePart(List<string> fe)
-    {
-      fe.Add("Mana Cost: " + ManaCost);
-    }
   }
 
 

@@ -100,7 +100,8 @@ namespace Roguelike.Spells
   {
     public CrackedStoneSpell() : this(new LivingEntity())
     { }
-    public CrackedStoneSpell(LivingEntity caller) : base(caller)
+
+    public CrackedStoneSpell(LivingEntity caller) : base(caller, EntityStatKind.Unset)
     {
       Kind = SpellKind.CrackedStone;
       Tile = new Tiles.CrackedStone();
@@ -476,7 +477,7 @@ namespace Roguelike.Spells
 
     }
 
-    public TeleportSpell(LivingEntity caller) : base(caller)
+    public TeleportSpell(LivingEntity caller) : base(caller, EntityStatKind.Unset)
     {
       Range += GetCurrentLevel();
       if (Range < baseRange + 1)
@@ -576,10 +577,9 @@ namespace Roguelike.Spells
     {
     }
 
-    public RageSpell(LivingEntity caller) : base(caller)
+    public RageSpell(LivingEntity caller) : base(caller, EntityStatKind.Attack)
     {
       Kind = SpellKind.Rage;
-      StatKind = EntityStatKind.Attack;
     }
   }
   
@@ -590,21 +590,21 @@ namespace Roguelike.Spells
     {
     }
 
-    public ResistAllSpell(LivingEntity caller) : base(caller, 25)
+    public ResistAllSpell(LivingEntity caller) : base(caller, EntityStatKind.Unset, 25)
     {
       Kind = SpellKind.ResistAll;
     }
 
     protected override void AppendPrivateFeatures(List<string> fe)
     {
-      fe.Add("Resist All: " + StatKindPercImpact + " %");
+      fe.Add(Kind.ToDescription() + ":" + StatKindPercentage);
       fe.Add(GetTourLasting(TourLasting));
     }
 
     protected override void AppendNextLevel(List<string> fe)
     {
       base.AppendNextLevel(fe);
-      var suffix = "Resist All: " + CalcFactor(GetCurrentLevel() + 1) + " %";
+      var suffix = Kind.ToDescription() + ":" + CalcFactor(GetCurrentLevel() + 1);
       fe.Add(GetNextLevel(suffix));
       fe.Add(GetNextLevelTourLasting());
     }
@@ -617,10 +617,9 @@ namespace Roguelike.Spells
     {
     }
 
-    public WeakenSpell(LivingEntity caller) : base(caller)
+    public WeakenSpell(LivingEntity caller) : base(caller, EntityStatKind.Defense)
     {
       Kind = SpellKind.Weaken;
-      StatKind = EntityStatKind.Defense;
       EntityRequired = true;
     }
   }
@@ -632,10 +631,9 @@ namespace Roguelike.Spells
     {
     }
 
-    public InaccuracySpell(LivingEntity caller) : base(caller, 15)
+    public InaccuracySpell(LivingEntity caller) : base(caller, EntityStatKind.ChanceToHit, 15)
     {
       Kind = SpellKind.Weaken;
-      StatKind = EntityStatKind.ChanceToHit;
       //TourLasting = (CalcTourLasting() * 2) / 3;
       EntityRequired = true;
     }
@@ -648,10 +646,9 @@ namespace Roguelike.Spells
     {
     }
 
-    public IronSkinSpell(LivingEntity caller) : base(caller)
+    public IronSkinSpell(LivingEntity caller) : base(caller, EntityStatKind.Defense)
     {
       Kind = SpellKind.IronSkin;
-      StatKind = EntityStatKind.Defense;
       EntityRequired = false;
     }
   }

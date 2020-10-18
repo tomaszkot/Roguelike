@@ -1,4 +1,6 @@
-﻿using Roguelike.Attributes;
+﻿using Roguelike.Abstract;
+using Roguelike.Attributes;
+using Roguelike.Factors;
 using Roguelike.Tiles.Abstract;
 using System;
 using System.Collections.Generic;
@@ -13,8 +15,9 @@ namespace Roguelike.Tiles.Looting
     public Consumable()
     {
       EnhancedStat = EntityStatKind.Health;
-      PercentableStatIncrease = true;
+      PercentageStatIncrease = true;
     }
+
 
     public int ConsumptionSteps { get; set; } = 1;
 
@@ -25,10 +28,16 @@ namespace Roguelike.Tiles.Looting
     public Loot Loot {get=> this;}
 
     public EffectType EffectType { get; set; }
-    public bool PercentableStatIncrease { get ; set ; }
+    public bool PercentageStatIncrease { get ; set ; }
+    public int TourLasting { get => ConsumptionSteps; set => ConsumptionSteps = value; }
+    public EntityStatKind StatKind { get => EnhancedStat; set => EnhancedStat = value; }
+    public PercentageFactor StatKindPercentage { get => new PercentageFactor(0);  }
 
-    //public abstract float GetStatIncrease(LivingEntity caller);
-    public virtual float GetStatIncrease(LivingEntity caller)
+    public virtual EffectiveFactor StatKindEffective => new EffectiveFactor(0);
+
+    EffectiveFactor GetEffectiveStatIncrease() { return new EffectiveFactor(0); }
+
+    public virtual PercentageFactor GetPercentageStatIncrease()
     {
       var divider = 20;
       //TODO show different aboveHead icon in case of different divider
@@ -40,7 +49,7 @@ namespace Roguelike.Tiles.Looting
       if (Roasted)
         divider /= 2;
       var inc = 100 / divider;
-      return inc;
+      return new PercentageFactor(inc);
     }
 
     protected string GetConsumeDesc(string desc)
@@ -54,9 +63,9 @@ namespace Roguelike.Tiles.Looting
       {
         m_lootStatInfo = new LootStatInfo[1];
         var lsi = new LootStatInfo();
-        lsi.Desc = enhancedStat.ToDescription() + ": +" + (int)GetStatIncrease(caller);
-        if(PercentableStatIncrease)
-          lsi.Desc += " %";
+        lsi.Desc = enhancedStat.ToDescription() + ": ";
+        if (PercentageStatIncrease)
+          lsi.Desc += GetPercentageStatIncrease();
 
         lsi.EntityStatKind = EnhancedStat;
 

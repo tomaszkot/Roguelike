@@ -4,16 +4,14 @@ using Roguelike.Abstract;
 using Roguelike.Attributes;
 using Roguelike.Effects;
 using Roguelike.Events;
+using Roguelike.Factors;
 using Roguelike.Managers;
 using Roguelike.Spells;
 using Roguelike.Tiles;
 using Roguelike.Tiles.Looting;
-using Roguelike.Utils;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Roguelike.TileParts
 {
@@ -123,9 +121,9 @@ namespace Roguelike.TileParts
             
       if (newOne || le.ActivatedEachTurn)
       {
-        var value = le.EffectAbsoluteValue.Factor.Value;
+        var value = le.EffectiveFactor.EffectiveFactor.Value;
         Assert(le.StatKind != EntityStatKind.Unset);
-        this.livingEntity.Stats.ChangeStatDynamicValue(le.StatKind, value);
+        this.livingEntity.Stats.ChangeStatDynamicValue(le.StatKind, (float)value);
         AppendEffectAction(le);
       }
 
@@ -151,10 +149,10 @@ namespace Roguelike.TileParts
         le = new LastingEffect(eff, null);
         le.PendingTurns = calcEffectValue.Turns;
         le.StatKind = esk;
-        le.EffectAbsoluteValue = calcEffectValue;
+        le.EffectiveFactor = calcEffectValue;
 
         if (eff == EffectType.TornApart)//this is basically a death
-          le.EffectAbsoluteValue.Factor = new LastingEffectFactor() { Value = this.livingEntity.Stats.Health };
+          le.EffectiveFactor.EffectiveFactor = new EffectiveFactor(this.livingEntity.Stats.Health);
         else if (eff == EffectType.Hooch)
         {
           //TODO merge from old
@@ -252,14 +250,14 @@ namespace Roguelike.TileParts
       var et = le.Type;
       if (et == EffectType.ConsumedRawFood || et == EffectType.ConsumedRoastedFood)
         return;
-      var subtr = le.EffectAbsoluteValue.Factor;
+      var subtr = le.EffectiveFactor.EffectiveFactor;
       if (et == EffectType.ResistAll)
       {
         var factor = add ? subtr.Value : -subtr.Value;
 
         foreach (var res in resists)
         {
-          this.livingEntity.Stats.GetStat(res).Subtract(-factor);
+          this.livingEntity.Stats.GetStat(res).Subtract(-(float)factor);
         }
         return;
       }
@@ -274,30 +272,29 @@ namespace Roguelike.TileParts
           factor *= -1;
         }
         var st = this.livingEntity.Stats.GetStat(esk);
-        st.Subtract(-factor);
+        st.Subtract(-(float)factor);
         //st = this.Stats.Stats[esk];
         // //Debug.WriteLine(" st = "+ st);
       }
     }
 
-
     public LastingEffect AddLastingEffectFromSpell(SpellKind spellKind, EffectType effectType)
     {
       var spell = Scroll.CreateSpell(spellKind, this.livingEntity);
-      var spellLasting = spell as ILastingSpell;
+      var spellLasting = spell as ILastingEffectSrc;
       if (spellLasting != null)
       {
-        return AddPercentageLastingEffect(effectType, spellLasting.TourLasting, spellLasting.StatKind, spellLasting.StatKindPercImpact);
+        return AddPercentageLastingEffect(effectType, spellLasting);//spellLasting.TourLasting, spellLasting.StatKind, spellLasting.StatKindPercentage.Value);
       }
 
       return null;
     }
 
-    protected LastingEffectCalcInfo CreateLastingEffectCalcInfo(EffectType eff, float absoluteFactor, int turns)
+    protected LastingEffectCalcInfo CreateLastingEffectCalcInfo(EffectType eff, float effectiveFactor, int turns)
     {
       if (eff == EffectType.Bleeding || eff == EffectType.Inaccuracy || eff == EffectType.Weaken)
-        absoluteFactor *= -1;
-      var lef = new LastingEffectCalcInfo(eff, turns, new LastingEffectFactor(absoluteFactor));
+        effectiveFactor *= -1;
+      var lef = new LastingEffectCalcInfo(eff, turns, new EffectiveFactor(effectiveFactor));
 
       return lef;
     }
@@ -343,41 +340,29 @@ namespace Roguelike.TileParts
 
     public LastingEffectCalcInfo CalcLastingEffectFactor(EffectType eff, EntityStatKind kind, float nominalValuePercInc, int turns)
     {
-      var statValue = this.livingEntity.Stats.GetStat(kind).Value.TotalValue;
-      var factor = CalcEffectValue(nominalValuePercInc, statValue);
-      return CreateLastingEffectCalcInfo(eff, factor, turns);
+      var factor = this.livingEntity.CalcEffectiveFactor(kind, nominalValuePercInc);
+      return CreateLastingEffectCalcInfo(eff, (float)factor.Value, turns);
     }
-
-    private static float CalcEffectValue(float nominalValuePercInc, float statValue)
-    {
-      return statValue * nominalValuePercInc / 100f;
-    }
-
-    public virtual LastingEffect AddPercentageLastingEffect(EffectType eff, int pendingTurns, EntityStatKind esk, float nominalValuePercInc)
+        
+    public virtual LastingEffect AddPercentageLastingEffect(EffectType eff, ILastingEffectSrc spell)///int pendingTurns, EntityStatKind esk, float nominalValuePercInc)
     {
       bool onlyProlong = LastingEffects.Any(i => i.Type == eff);//TODO is onlyProlong done ?
-      var calcEffectValue = CalcLastingEffectFactor(eff, esk, nominalValuePercInc, pendingTurns);
-
-      //if(eff == EffectType.ConsumedRawFood)
-      //  lastingEffSubtractions[eff] = calcEffectValue;//AddLastingEffect uses lastingEffSubtractions so it must be set
-
-      var le = AddLastingEffect(calcEffectValue, esk, false);
-      //le.Subtraction = calcEffectValue;
-      le.StatKind = esk;
+      var calcEffectValue = CalcLastingEffectFactor(eff, spell.StatKind, spell.StatKindPercentage.Value, spell.TourLasting);
+      var le = AddLastingEffect(calcEffectValue, spell.StatKind, false);
+      le.PercentageFactor = spell.StatKindPercentage;
 
       bool handle = false;
-      if (eff == EffectType.Rage || eff == EffectType.Weaken || eff == EffectType.IronSkin || eff == EffectType.Inaccuracy
-          )
+      if (eff == EffectType.Rage || eff == EffectType.Weaken || eff == EffectType.IronSkin || eff == EffectType.Inaccuracy)
       {
         if (!onlyProlong)
         {
-          le.EffectAbsoluteValue = calcEffectValue;
+          le.EffectiveFactor = calcEffectValue;
           handle = true;
         }
       }
       else if (eff == EffectType.ResistAll)
       {
-        var effValue = nominalValuePercInc;
+        var effValue = spell.StatKindPercentage.Value;
         foreach (var res in resists)
         {
           var statClone = this.livingEntity.Stats.GetStat(res).Clone() as EntityStat;
@@ -391,7 +376,7 @@ namespace Roguelike.TileParts
             statClone.Subtract(-effValue);
           }
         }
-        le.EffectAbsoluteValue.Factor.Value = effValue;
+        le.EffectiveFactor.EffectiveFactor = new EffectiveFactor(effValue);
         handle = true;
       }
       else if (eff == EffectType.ConsumedRoastedFood || eff == EffectType.ConsumedRawFood)

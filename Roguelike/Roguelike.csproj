@@ -84,6 +84,8 @@
     <Compile Include="EnemySymbols.cs" />
     <Compile Include="Events\GameAction.cs" />
     <Compile Include="FactorCalculator.cs" />
+    <Compile Include="Factors\EffectiveFactor.cs" />
+    <Compile Include="Factors\PercentageFactor.cs" />
     <Compile Include="Game.cs" />
     <Compile Include="GameContext.cs" />
     <Compile Include="GameState.cs" />

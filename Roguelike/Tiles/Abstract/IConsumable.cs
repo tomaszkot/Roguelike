@@ -1,14 +1,18 @@
-﻿using Roguelike.Attributes;
+﻿using Roguelike.Abstract;
+using Roguelike.Attributes;
+using Roguelike.Factors;
 
 namespace Roguelike.Tiles.Abstract
 {
-  public interface IConsumable
+  public interface IConsumable : ILastingEffectSrc
   {
     Loot Loot { get; }
-    EntityStatKind EnhancedStat { get; }
-    float GetStatIncrease(LivingEntity caller);
+    //EntityStatKind EnhancedStat { get; }
+    //PercentageFactor GetPercentageStatIncrease();
+    //EffectiveFactor  GetEffectiveStatIncrease();
+
     EffectType EffectType { get; }//mushroom->poisoned
-    bool PercentableStatIncrease { get; set; }
+    bool PercentageStatIncrease { get; set; }//special potions are not percentage
     bool Roasted { get; set; }
     int ConsumptionSteps { get; set; }
   }

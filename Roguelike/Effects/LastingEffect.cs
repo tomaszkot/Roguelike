@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using Roguelike.Attributes;
+using Roguelike.Factors;
 using Roguelike.Spells;
 using Roguelike.Tiles;
 using Roguelike.Tiles.Looting;
@@ -8,40 +9,24 @@ using System.Xml.Serialization;
 
 namespace Roguelike.Effects
 {
-  //public class LastingEffectFactor //Subtraction smount
-  //{
-
-  //}
-  //public enum LastingEffectFactorKind { Unset, Damage,  }
-
-  public struct LastingEffectFactor
-  {
-    public LastingEffectFactor(float val) { Value = val; }
-    public float Value;//absolute value deducted/added to a stat
-
-    public override string ToString()
-    {
-      return Value.ToString();
-    }
-  }
-
   public class LastingEffectCalcInfo
   {
-    public EffectType Type;
-    public int Turns;
-    //public float Damage;
-    //public float Subtraction//absolute value deducted/added to a stat
-    //{
-    //  get;
-    //  set;
-    //}
-    public LastingEffectFactor Factor;//absolute value deducted/added to a stat
-
-    public LastingEffectCalcInfo(EffectType type, int turns, LastingEffectFactor factor)
+    public EffectType Type { get; set; }
+    public int Turns { get; }
+    
+    //absolute value deducted/added to a stat
+    public EffectiveFactor EffectiveFactor { get; set; }
+    
+    public LastingEffectCalcInfo(EffectType type, int turns, EffectiveFactor factor)
     {
       Type = type;
       Turns = turns;
-      Factor = factor;
+      EffectiveFactor = factor;
+    }
+
+    public override string ToString()
+    {
+      return Type + ", Turns:" + Turns + ", EffectiveFactor:" + EffectiveFactor;
     }
   }
 
@@ -49,17 +34,17 @@ namespace Roguelike.Effects
   {
     public EffectType Type 
     { 
-      get { return EffectAbsoluteValue.Type; }
+      get { return EffectiveFactor.Type; }
       set 
       { 
-        EffectAbsoluteValue.Type = value; 
+        EffectiveFactor.Type = value; 
       }
     }
 
     public EntityStatKind StatKind;
     public int PendingTurns = 3;
-    //public float DamageAmount = 0;//TODO move to EffectAbsoluteValue, add EffectAbsoluteValueKind 
-    public LastingEffectCalcInfo EffectAbsoluteValue { get; set; } = new LastingEffectCalcInfo(EffectType.Unset, 0, new LastingEffectFactor(0));
+    public LastingEffectCalcInfo EffectiveFactor { get; set; } = new LastingEffectCalcInfo(EffectType.Unset, 0, new EffectiveFactor(0));
+    public PercentageFactor PercentageFactor { get; set; } = new PercentageFactor(0);
     //public bool FromTrapSpell { get; internal set; }
     ILastingEffectOwner owner;
 
@@ -115,12 +100,11 @@ namespace Roguelike.Effects
     string GetDescription()
     {
       string res = Type.ToDescription();
-      //var damage = EffectAbsoluteValue.Factor.Value;//owner.CalcDamageAmount(this);// Owner.LivingEntityTile.CalcDamageAmount(le);
 
       var spellKind = SpellConverter.SpellKindFromEffectType(Type);
       var middle = "";
       var end = "";
-      var sign = EffectAbsoluteValue.Factor.Value >= 0 ? "+" : "-";
+      //var sign = EffectiveFactor.EffectiveFactor.Value >= 0 ? "+" : "-";
 
       if (Type == EffectType.Bleeding)
       {
@@ -135,11 +119,6 @@ namespace Roguelike.Effects
       }
       else if (spellKind != SpellKind.Unset)
       {
-        //Scroll.CreateSpell(spellKind, )
-        //string preffix = "+";
-        //if (Type == EffectType.Weaken || Type == EffectType.Inaccuracy)
-        //  preffix = "-";
-        //res += ", " + preffix + EffectAbsoluteValue.Factor + " to " + this.StatKind.ToDescription();
         middle = ", ";
         end = " to " + this.StatKind.ToDescription();
       }
@@ -147,9 +126,9 @@ namespace Roguelike.Effects
       if (middle.Any())
         res += middle;
 
-      if(EffectAbsoluteValue.Factor.Value >= 0)
-        res += sign;
-      res += EffectAbsoluteValue.Factor;
+      //if(EffectiveFactor.EffectiveFactor.Value >= 0)
+      //  res += sign;
+      res += EffectiveFactor.EffectiveFactor;
 
       if (end.Any())
         res += end;

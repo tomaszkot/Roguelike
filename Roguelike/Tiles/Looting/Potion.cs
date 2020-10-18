@@ -1,4 +1,5 @@
 ﻿using Roguelike.Attributes;
+using Roguelike.Factors;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,10 +24,10 @@ namespace Roguelike.Tiles.Looting
       SetKind(kind);
     }
 
-    public override float GetStatIncrease(LivingEntity caller)
+    public override PercentageFactor GetPercentageStatIncrease()
     {
       var inc = Kind == PotionKind.Poison ? 0 : 50;
-      return inc;
+      return new PercentageFactor(inc);
     }
 
     public void SetKind(PotionKind kind)

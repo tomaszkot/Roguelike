@@ -6,12 +6,21 @@ namespace Roguelike.Spells
 {
   public class OffensiveSpell : Spell, IDamagingSpell
   {
+    protected float damage = 0;
+
     public OffensiveSpell() { }
 
     public OffensiveSpell(LivingEntity caller) : base(caller)
     {
     }
 
+    protected virtual float CalcDamage(int magicLevel)
+    {
+      //TODO
+      //var dmg = damage + (damage * ((magicLevel - 1) * (damageMultiplicator + magicLevel * magicLevel / 2) / 100.0f));
+      //return (float)Math.Ceiling(dmg);
+      return magicLevel;
+    }
 
     //Returns damage based on Spell level.
     //Spell level depends on the magic amount owner has.
