@@ -41,6 +41,11 @@ namespace RoguelikeConsoleRunner.ASCIIDisplay
       {
         var desc = "";
         desc += " "+GameManager.Context.CurrentNode.ToString();
+
+        var hero = GameManager.Context.Hero;
+        desc += " Name:" + hero.Name;
+        desc += " Health:" + hero.Stats.Health;
+
         DungeonDesc.Text = desc;// GameManager.GetCurrentDungeonDesc();
       }
     }

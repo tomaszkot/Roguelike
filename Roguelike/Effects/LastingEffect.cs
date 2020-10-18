@@ -87,13 +87,32 @@ namespace Roguelike.Effects
       this.Owner = owner;
     }
 
+    public bool ActivatedEachTurn 
+    {
+      get {
+        return Type == EffectType.Bleeding || Type == EffectType.ConsumedRawFood || Type == EffectType.ConsumedRoastedFood;
+      }
+    }
+
     internal void Dispose()
     {
       if (Owner != null)
         Owner.OnEffectFinished(Type);
     }
 
-    public string GetDescription(LivingEntity owner)
+    string description;
+    public string Description 
+    { 
+      get 
+      {
+        if (description == null)
+          description = GetDescription();
+
+        return description;
+      } 
+    }
+    
+    string GetDescription()
     {
       string res = Type.ToDescription();
       //var damage = EffectAbsoluteValue.Factor.Value;//owner.CalcDamageAmount(this);// Owner.LivingEntityTile.CalcDamageAmount(le);
@@ -137,6 +156,11 @@ namespace Roguelike.Effects
 
 
       return res;
+    }
+
+    public override string ToString()
+    {
+      return Type + ", " + Description;
     }
 
   }

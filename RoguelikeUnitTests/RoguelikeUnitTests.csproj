@@ -69,6 +69,7 @@
     <Compile Include="LootingTests.cs" />
     <Compile Include="PotionTests.cs" />
     <Compile Include="SerializationTests.cs" />
+    <Compile Include="SpellsTests.cs" />
     <Compile Include="TestBase.cs" />
     <Compile Include="TestBaseTyped.cs" />
   </ItemGroup>

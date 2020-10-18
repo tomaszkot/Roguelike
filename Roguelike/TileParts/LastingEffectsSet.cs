@@ -67,7 +67,7 @@ namespace Roguelike.TileParts
         }
       }
 
-      if (le.Type == EffectType.Bleeding || 
+      if (le.Type == EffectType.Bleeding ||
           le.Type == EffectType.ConsumedRawFood ||
           le.Type == EffectType.ConsumedRoastedFood)
       {
@@ -75,7 +75,9 @@ namespace Roguelike.TileParts
         RemoveFinishedLastingEffects();//food might be consumed at once
       }
       else if (appAction)
-        AppendEffectAction(le.Type, true);
+      {
+        AppendEffectAction(le);
+      }
     }
 
     private void RemoveFinishedLastingEffects()
@@ -115,31 +117,21 @@ namespace Roguelike.TileParts
       return livingEntity.IsHealthZero();
     }
 
-    private void ApplyLastingEffect(LastingEffect eff, bool newOne)
+    private void ApplyLastingEffect(LastingEffect le, bool newOne)
     {
-      //var damage = CalcDamageAmount(eff);
-      //if (damage > 0)
-      //{
-      //  ReduceHealth(damage);
-      //}
-      var value = eff.EffectAbsoluteValue.Factor.Value;
-      if (eff.StatKind != EntityStatKind.Unset)
-        this.livingEntity.Stats.ChangeStatDynamicValue(eff.StatKind, value);
-      //if (eff.Type == EffectType.ConsumedRawFood)
-      //{
-      //  //eff.Subtraction = CalcLastingEffectFactor(EntityStatKind.Health, 0);
-      //  Debug.Assert(eff.EffectAbsoluteValue.Factor.Value != 0);
-      //  DoConsume(eff.StatKind, eff.EffectAbsoluteValue);
-      //}
+      le.PendingTurns--;
+            
+      if (newOne || le.ActivatedEachTurn)
+      {
+        var value = le.EffectAbsoluteValue.Factor.Value;
+        Assert(le.StatKind != EntityStatKind.Unset);
+        this.livingEntity.Stats.ChangeStatDynamicValue(le.StatKind, value);
+        AppendEffectAction(le);
+      }
 
-      eff.PendingTurns--;
-      if (eff.StatKind != EntityStatKind.Unset)
-        AppendEffectAction(eff.Type, newOne, value);
+      LastingEffectApplied?.Invoke(this, le);
 
-      if (LastingEffectApplied != null)
-        LastingEffectApplied(this, eff);
-
-      livingEntity.DieIfShould(eff.Type);
+      livingEntity.DieIfShould(le.Type);
     }
 
     public virtual LastingEffect AddLastingEffect
@@ -197,75 +189,42 @@ namespace Roguelike.TileParts
       return le;
     }
 
-    private void AppendEffectAction(EffectType eff, bool newOne, float amount = 0, bool fromHit = true)
+    private void AppendEffectAction(LastingEffect le)//EffectType eff, bool newOne, float amount = 0, bool fromHit = true)
     {
       var lea = new LivingEntityAction(LivingEntityActionKind.ExperiencedEffect);
       lea.InvolvedEntity = this.livingEntity;
-      lea.EffectType = eff;
+      lea.EffectType = le.Type;
       var targetName = livingEntity.Name.ToString();
 
-      if (eff == EffectType.ConsumedRawFood)
-      {
-        lea.Info += targetName + " consured: ?";
-      }
-      else
-      {
-        if (newOne)
-        {
-          if (fromHit && eff != EffectType.Hooch)
-            lea.Info = "Hitting " + targetName + " caused effect : " + eff;
-          else
-            lea.Info = targetName + " experienced " + eff + " effect";
-          if (amount > 0)
-          {
-            lea.Info += ", received damage: " + amount.Formatted();
-          }
-        }
-        else
-        {
-          if (amount == 0)
-            return;
-          lea.Info = "Effect " + eff + " applied, " + targetName + " received damage: " + amount.Formatted();
-        }
-      }
+      //if (eff == EffectType.ConsumedRawFood)
+      //{
+      //  lea.Info += targetName + " consured: ?";
+      //}
+      //else
+      //{
+      //  if (newOne)
+      //  {
+      //    if (fromHit && eff != EffectType.Hooch)
+      //      lea.Info = "Hitting " + targetName + " caused effect : " + eff;
+      //    else
+      //      lea.Info = targetName + " experienced " + eff + " effect";
+      //    if (amount > 0)
+      //    {
+      //      lea.Info += ", received damage: " + amount.Formatted();
+      //    }
+      //  }
+      //  else
+      //  {
+      //    if (amount == 0)
+      //      return;
+      //    lea.Info = "Effect " + eff + " applied, " + targetName + " received damage: " + amount.Formatted();
+      //  }
+      //}
+      lea.Info = le.Description;
       lea.Level = ActionLevel.Important;
       AppendAction(lea);
     }
-
-    //private void AddLastingEffect(LastingEffect le)
-    //{
-    //  LastingEffects.Add(le);
-    //  bool appAction = true;
-    //  if (LastingEffectStarted != null)
-    //  {
-    //    //GameManager.Instance.AppendRedLog("call LastingEffectStarted " + le.Type);
-    //    LastingEffectStarted(this, le);
-    //    if (le.Type == EffectType.Rage || le.Type == EffectType.Weaken || le.Type == EffectType.IronSkin || le.Type == EffectType.ResistAll)
-    //    {
-    //      var info = "";
-    //      if (le.Type == EffectType.Rage || le.Type == EffectType.ResistAll)
-    //      {
-    //        info = livingEntity.Name + " used " + le.Type + " spell";
-    //      }
-    //      else
-    //      {
-    //        info = "Spell " + le.Type + " was casted on " + livingEntity.Name;
-    //      }
-    //      AppendAction(new LivingEntityAction(LivingEntityActionKind.UsedSpell) { Info = info, EffectType = le.Type, InvolvedEntity = this.livingEntity });
-    //      appAction = false;
-    //    }
-    //  }
-
-    //  if (le.Type == EffectType.Bleeding || le.Type == EffectType.ConsumedRawFood ||
-    //      le.Type == EffectType.ConsumedRoastedFood)//trap must add damage at start
-    //  {
-    //    ApplyLastingEffect(le, true);
-    //    RemoveFinishedLastingEffects();//food might be consumed at once
-    //  }
-    //  else if (appAction)
-    //    AppendEffectAction(le.Type, true);
-    //}
-
+        
     public virtual void RemoveLastingEffect(LivingEntity livEnt, EffectType et)
     {
       var le = livEnt.LastingEffects.FirstOrDefault(i => i.Type == et);
@@ -326,9 +285,12 @@ namespace Roguelike.TileParts
     {
       var spell = Scroll.CreateSpell(spellKind, this.livingEntity);
       var spellLasting = spell as ILastingSpell;
-      var tourLasting = spellLasting != null ? spellLasting.TourLasting : 0;
+      if (spellLasting != null)
+      {
+        return AddPercentageLastingEffect(effectType, spellLasting.TourLasting, spellLasting.StatKind, spellLasting.StatKindPercImpact);
+      }
 
-      return AddPercentageLastingEffect(effectType, tourLasting, spell.StatKind, spell.StatKindFactor);
+      return null;
     }
 
     protected LastingEffectCalcInfo CreateLastingEffectCalcInfo(EffectType eff, float absoluteFactor, int turns)
@@ -365,13 +327,13 @@ namespace Roguelike.TileParts
       return effectInfo;
     }
 
-    public void AddBleeding(float inflicted, LivingEntity attacker)
+    public LastingEffect AddBleeding(float inflicted, LivingEntity attacker)
     {
       var effectInfo = CalcLastingEffDamage(EffectType.Bleeding, inflicted, attacker, null, null);
       var turns = effectInfo.Turns;
       if (turns <= 0)
         turns = 3;//TODO
-      this.AddLastingEffect(effectInfo, EntityStatKind.Health, true);
+      return this.AddLastingEffect(effectInfo, EntityStatKind.Health, true);
     }
 
     LastingEffectCalcInfo CalcLastingEffDamage(EffectType et, float amount, LivingEntity attacker = null, Spell spell = null, FightItem fi = null)

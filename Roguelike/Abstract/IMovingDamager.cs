@@ -8,18 +8,21 @@ using Roguelike.Tiles;
 
 namespace Roguelike.Abstract
 {
+  public interface IDamagingSpell
+  {
+    float Damage { get; }
+  }
+
   public interface ISpell
   {
     LivingEntity Caller { get; set; }
     int CoolingDown { get; set; }
-    
-    //TODO move them to derived class
-    EntityStatKind StatKind { get; set; }
-    float StatKindFactor { get; set; }
   }
 
   public interface ILastingSpell
   {
     int TourLasting { get; set; }
+    EntityStatKind StatKind { get; set; }
+    float StatKindPercImpact { get; set; }
   }
 }

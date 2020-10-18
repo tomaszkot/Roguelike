@@ -569,7 +569,8 @@ namespace Roguelike.Tiles
         default:
           break;
       }
-      var npd = CalculateNonPhysicalDamage(attackingStat, spell.Damage);
+      var offSpell = spell as OffensiveSpell;
+      var npd = CalculateNonPhysicalDamage(attackingStat, offSpell.Damage);
       return npd;
     }
 

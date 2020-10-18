@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 
 namespace Roguelike.Spells
 {
+  ///////////////////////////////////////////////////////////////////////////
   public class FireBallSpell : ProjectiveSpell
   {
     public FireBallSpell(LivingEntity caller) : base(caller)
@@ -19,6 +20,7 @@ namespace Roguelike.Spells
     public override string GetHitSound() { return "fireball_hit"; }
   }
 
+  ///////////////////////////////////////////////////////////////////////////
   public class LightingBallSpell : ProjectiveSpell
   {
     public LightingBallSpell() : this(new LivingEntity())
@@ -32,6 +34,7 @@ namespace Roguelike.Spells
     public override string GetHitSound() { return "LightingBallHit"; }
   }
 
+  ///////////////////////////////////////////////////////////////////////////
   public class NESWFireBallSpell : ProjectiveSpell
   {
     public NESWFireBallSpell() : this(new LivingEntity())
@@ -47,6 +50,7 @@ namespace Roguelike.Spells
     public override string GetHitSound() { return "fireball_hit"; }
   }
 
+  ///////////////////////////////////////////////////////////////////////////
   public class IceBallSpell : ProjectiveSpell
   {
     public IceBallSpell() : this(new LivingEntity())
@@ -61,6 +65,7 @@ namespace Roguelike.Spells
 
   }
 
+  ///////////////////////////////////////////////////////////////////////////
   public class PoisonBallSpell : ProjectiveSpell
   {
     public PoisonBallSpell() : this(new LivingEntity())
@@ -75,6 +80,7 @@ namespace Roguelike.Spells
     public override string GetHitSound() { return "gas1"; }
   }
 
+  ///////////////////////////////////////////////////////////////////////////
   public class StonedBallSpell : ProjectiveSpell
   {
     public StonedBallSpell() : this(new LivingEntity())
@@ -89,8 +95,8 @@ namespace Roguelike.Spells
     //public override string GetHitSound() { return "stone1.wav"; }
   }
 
-
-  public class CrackedStoneSpell : DefensiveSpell
+  ///////////////////////////////////////////////////////////////////////////
+  public class CrackedStoneSpell : PassiveSpell
   {
     public CrackedStoneSpell() : this(new LivingEntity())
     { }
@@ -109,11 +115,12 @@ namespace Roguelike.Spells
     protected override void AppendNextLevel(List<string> fe)
     {
       base.AppendNextLevel(fe);
-      fe.Add("Next Level: Durability " + GetHealthFromLevel(GetCurrentLevel() + 1));
+      fe.Add(GetNextLevel("Durability " + GetHealthFromLevel(GetCurrentLevel() + 1)));
     }
   }
 
-  public class TrapSpell : DefensiveSpell
+  ///////////////////////////////////////////////////////////////////////////
+  public class TrapSpell : OffensiveSpell
   {
     Trap trap = new Trap();
 
@@ -126,26 +133,16 @@ namespace Roguelike.Spells
 
       trap.Spell = this;
       trap.SetUp = true;
-      tile = trap;
+      
       damage = ProjectiveSpell.BaseDamage * 5f;
       manaCost = (float)(BaseManaCost * 2);
     }
 
     public Trap Trap { get { return trap; } }
-    
-    protected override void AppendPrivateFeatures(List<string> fe)
-    {
-      fe.Add("Damage: " + Damage);
-    }
-
-    protected override void AppendNextLevel(List<string> fe)
-    {
-      base.AppendNextLevel(fe);
-      fe.Add("Next Level: Damage " + CalcDamage(GetCurrentLevel() + 1));
-    }
   }
 
-  public class BushTrapSpell : DefensiveSpell
+  ///////////////////////////////////////////////////////////////////////////
+  public class BushTrapSpell : OffensiveSpell
   {
     public BushTrapSpell() : this(new LivingEntity())
     { }
@@ -157,20 +154,10 @@ namespace Roguelike.Spells
       manaCost = (float)(BaseManaCost * 2);
       EnemyRequired = true;
     }
-
-    protected override void AppendPrivateFeatures(List<string> fe)
-    {
-      fe.Add("Damage: " + Damage);
-    }
-
-    protected override void AppendNextLevel(List<string> fe)
-    {
-      base.AppendNextLevel(fe);
-      fe.Add("Next Level: Damage " + CalcDamage(GetCurrentLevel() + 1));
-    }
   }
 
-  public class SkeletonSpell : DefensiveSpell
+  ///////////////////////////////////////////////////////////////////////////
+  public class SkeletonSpell : OffensiveSpell
   {
     Enemy en;
     
@@ -185,13 +172,13 @@ namespace Roguelike.Spells
       en.Stats[EntityStatKind.Attack].Nominal = Damage;
       var he = CalcHealth(GetCurrentLevel());
       en.Stats[EntityStatKind.Health].Nominal = he;
-      tile = en;
+      //tile = en;
       manaCost = (float)(BaseManaCost * 2) + 2;
     }
 
     float CalcHealth(int magicLevel)
     {
-      var hfl = GetHealthFromLevel(magicLevel);
+      var hfl = PassiveSpell.CalcHealthFromLevel(magicLevel);
       var val = (int)(hfl * (3 + 6 * ((float)(magicLevel * 10) / 100f)));
 
       var inc = val * 80f / 100f;
@@ -215,9 +202,8 @@ namespace Roguelike.Spells
     protected override void AppendNextLevel(List<string> fe)
     {
       base.AppendNextLevel(fe);
-      GetHealthFromLevel(GetCurrentLevel() + 1);
-      fe.Add("Next Level: Health " + CalcHealth(GetCurrentLevel() + 1));
-      fe.Add("Next Level: Attack " + CalcDamage(GetCurrentLevel() + 1));
+      fe.Add(GetNextLevel("Health " + CalcHealth(GetCurrentLevel() + 1)));
+      fe.Add(GetNextLevel("Attack " + CalcDamage(GetCurrentLevel() + 1)));
     }
   }
 
@@ -236,7 +222,7 @@ namespace Roguelike.Spells
 
   //    protected override void AppendPrivateFeatures(List<string> fe)
   //    {
-  //      fe.Add("Tour Lasting: " + TourLasting);
+  //      fe.Add("our Lasting: " + TourLasting);
   //      fe.Add("Cooling Down: " + CoolingDown);
   //    }
 
@@ -266,7 +252,7 @@ namespace Roguelike.Spells
   //    }
   //    protected override void AppendPrivateFeatures(List<string> fe)
   //    {
-  //      fe.Add("Tour Lasting: " + TourLasting);
+  //      fe.Add("our Lasting: " + TourLasting);
   //    }
 
   //    protected override void AppendNextLevel(List<string> fe)
@@ -412,7 +398,7 @@ namespace Roguelike.Spells
   //    }
   //    protected override void AppendPrivateFeatures(List<string> fe)
   //    {
-  //      fe.Add("Tour Lasting: " + TourLasting);
+  //      fe.Add("our Lasting: " + TourLasting);
   //    }
 
   //    protected override void AppendNextLevel(List<string> fe)
@@ -479,7 +465,7 @@ namespace Roguelike.Spells
   //}
 
   [Serializable]
-  public class TeleportSpell : DefensiveSpell
+  public class TeleportSpell : PassiveSpell
   {
 
     const int baseRange = 2;
@@ -497,8 +483,6 @@ namespace Roguelike.Spells
         Range = baseRange + 1;
       EntityRequired = true;
       Kind = SpellKind.Teleport;
-      EnemyRequired = false;
-      EntityRequired = false;
       CoolingDown = 8;
     }
 
@@ -511,7 +495,7 @@ namespace Roguelike.Spells
     protected override void AppendNextLevel(List<string> fe)
     {
       base.AppendNextLevel(fe);
-      fe.Add("Next Level: Range: " + (Range + 1));
+      fe.Add(GetNextLevel("Range: " + (Range + 1)));
     }
   }
 
@@ -585,11 +569,9 @@ namespace Roguelike.Spells
   //  //		}
   //  //	}
 
-  public class RageSpell : DefensiveSpell
+  ///////////////////////////////////////////////////////////////////////////
+  public class RageSpell : PassiveSpell
   {
-    public const int BaseFactor = 30;
-    //public int StatKindFactor { get; set; }
-
     public RageSpell() : this(new LivingEntity())
     {
     }
@@ -598,73 +580,39 @@ namespace Roguelike.Spells
     {
       Kind = SpellKind.Rage;
       StatKind = EntityStatKind.Attack;
-      damage = 0;
-      manaCost = (float)(BaseManaCost * 2);
-      StatKindFactor = CalcFactor(GetCurrentLevel());
-      TourLasting = CalcTourLasting();
-    }
-
-    int CalcFactor(int magicLevel)
-    {
-      return BaseFactor + magicLevel;
-    }
-
-    protected override void AppendPrivateFeatures(List<string> fe)
-    {
-      fe.Add("Damage Increase: " + StatKindFactor + " %");
-      fe.Add("Tour Lasting: " + TourLasting);
-    }
-
-    protected override void AppendNextLevel(List<string> fe)
-    {
-      base.AppendNextLevel(fe);
-      fe.Add("Next Level: Damage Increase: " + CalcFactor(GetCurrentLevel() + 1) + " %");
-      fe.Add("Next Level: Tour Lasting: " + CalcTourLasting(GetCurrentLevel() + 1));
     }
   }
-
-  public class ResistAllSpell : DefensiveSpell
+  
+  /////////////////////////////////////////////////////////////////////
+  public class ResistAllSpell : PassiveSpell
   {
-    public const int BaseFactor = 25;
-    
     public ResistAllSpell() : this(new LivingEntity())
     {
     }
 
-    public ResistAllSpell(LivingEntity caller) : base(caller)
+    public ResistAllSpell(LivingEntity caller) : base(caller, 25)
     {
       Kind = SpellKind.ResistAll;
-      //StatKind = EntityStatKind.ResistCold;
-      damage = 0;
-      manaCost = (float)(BaseManaCost * 2);
-      StatKindFactor = CalcFactor(GetCurrentLevel());
-      TourLasting = CalcTourLasting() / 2 + 1;
-    }
-
-    int CalcFactor(int magicLevel)
-    {
-      return BaseFactor + magicLevel;
     }
 
     protected override void AppendPrivateFeatures(List<string> fe)
     {
-      fe.Add("Resist All Increase: " + StatKindFactor + " %");
-      fe.Add("Tour Lasting: " + TourLasting);
+      fe.Add("Resist All: " + StatKindPercImpact + " %");
+      fe.Add(GetTourLasting(TourLasting));
     }
 
     protected override void AppendNextLevel(List<string> fe)
     {
       base.AppendNextLevel(fe);
-      fe.Add("Next Level: Resist All Increase: " + CalcFactor(GetCurrentLevel() + 1) + " %");
-      fe.Add("Next Level: Tour Lasting: " + CalcTourLasting(GetCurrentLevel() + 1));
+      var suffix = "Resist All: " + CalcFactor(GetCurrentLevel() + 1) + " %";
+      fe.Add(GetNextLevel(suffix));
+      fe.Add(GetNextLevelTourLasting());
     }
   }
 
-
-  public class WeakenSpell : DefensiveSpell
+  ///////////////////////////////////////////////////////////////////////////
+  public class WeakenSpell : PassiveSpell
   {
-    public const int BaseFactor = 30;
-
     public WeakenSpell() : this(new LivingEntity())
     {
     }
@@ -673,78 +621,29 @@ namespace Roguelike.Spells
     {
       Kind = SpellKind.Weaken;
       StatKind = EntityStatKind.Defense;
-      damage = 0;
-      manaCost = (float)(BaseManaCost * 2);
-      StatKindFactor = CalcFactor(GetCurrentLevel());
-      TourLasting = CalcTourLasting();
       EntityRequired = true;
-    }
-
-    int CalcFactor(int magicLevel)
-    {
-      return BaseFactor + magicLevel;
-    }
-
-    protected override void AppendPrivateFeatures(List<string> fe)
-    {
-      fe.Add("Defence: -" + StatKindFactor + " %");
-      fe.Add("Tour Lasting: " + TourLasting);
-    }
-
-    protected override void AppendNextLevel(List<string> fe)
-    {
-      base.AppendNextLevel(fe);
-      fe.Add("Next Level: Defence: -" + CalcFactor(GetCurrentLevel() + 1) + " %");
-      fe.Add("Next Level: Tour Lasting: " + CalcTourLasting(GetCurrentLevel() + 1));
     }
   }
 
-  public class InaccuracySpell : DefensiveSpell
+  ///////////////////////////////////////////////////////////////////////////
+  public class InaccuracySpell : PassiveSpell
   {
-    public const int BaseFactor = 15;
-
     public InaccuracySpell() : this(new LivingEntity())
     {
     }
 
-    public InaccuracySpell(LivingEntity caller) : base(caller)
+    public InaccuracySpell(LivingEntity caller) : base(caller, 15)
     {
       Kind = SpellKind.Weaken;
       StatKind = EntityStatKind.ChanceToHit;
-      //StatKind = //EntityStatKind.ChanceToCastSpell //TODO
-      damage = 0;
-      manaCost = (float)(BaseManaCost * 2);
-      StatKindFactor = CalcFactor(GetCurrentLevel());
-      TourLasting = (CalcTourLasting() * 2) / 3;
+      //TourLasting = (CalcTourLasting() * 2) / 3;
       EntityRequired = true;
-    }
-
-    int CalcFactor(int magicLevel)
-    {
-      return BaseFactor + magicLevel;
-    }
-
-    protected override void AppendPrivateFeatures(List<string> fe)
-    {
-      fe.Add("Chance to hit: -" + StatKindFactor + " %");
-      fe.Add("Tour Lasting: " + TourLasting);
-    }
-
-    protected override void AppendNextLevel(List<string> fe)
-    {
-      base.AppendNextLevel(fe);
-      fe.Add("Next Level: Chance to hit: -" + CalcFactor(GetCurrentLevel() + 1) + " %");
-      fe.Add("Next Level: Tour Lasting: " + CalcTourLasting(GetCurrentLevel() + 1));
     }
   }
 
-
-  public class IronSkinSpell : DefensiveSpell
+  ///////////////////////////////////////////////////////////////////////////
+  public class IronSkinSpell : PassiveSpell
   {
-    public const int BaseFactor = 30;
-    //public int Factor { get; set; }
-    //public int TourLasting { get; set; }
-
     public IronSkinSpell() : this(new LivingEntity())
     {
     }
@@ -753,29 +652,7 @@ namespace Roguelike.Spells
     {
       Kind = SpellKind.IronSkin;
       StatKind = EntityStatKind.Defense;
-      damage = 0;
-      manaCost = (float)(BaseManaCost * 2);
-      StatKindFactor = CalcFactor(GetCurrentLevel());
-      TourLasting = CalcTourLasting();
       EntityRequired = false;
-    }
-
-    int CalcFactor(int magicLevel)
-    {
-      return BaseFactor + magicLevel;
-    }
-
-    protected override void AppendPrivateFeatures(List<string> fe)
-    {
-      fe.Add("Defence Increase: " + StatKindFactor + " %");
-      fe.Add("Tour Lasting: " + TourLasting);
-    }
-
-    protected override void AppendNextLevel(List<string> fe)
-    {
-      base.AppendNextLevel(fe);
-      fe.Add("Next Level: Defence Increase: " + CalcFactor(GetCurrentLevel() + 1) + " %");
-      fe.Add("Next Level: Tour Lasting: " + CalcTourLasting(GetCurrentLevel() + 1));
     }
   }
 }

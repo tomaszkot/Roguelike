@@ -138,39 +138,17 @@ namespace Roguelike
             }
 
             var spellKind = SpellConverter.SpellKindFromEffectType(effectToUse);
+            
             if (spellKind != SpellKind.Unset)
             {
-              enemy.AddLastingEffectFromSpell(spellKind, effectToUse);
+              LivingEntity lastingEffectTarget = enemy;
+              if (spellKind == SpellKind.Weaken || spellKind == SpellKind.Inaccuracy)
+                lastingEffectTarget = victim;
+
+              lastingEffectTarget.AddLastingEffectFromSpell(spellKind, effectToUse);
               enemy.ReduceEffectToUse(effectToUse);
               return true;
             }
-            //if (effectToUse == EffectType.Rage)
-            //{
-            //  enemy.AddLastingEffect(effectToUse, spell.TourLasting, spell.StatKind, spell.StatKindFactor);
-            //}
-            //else if (effectToUse == EffectType.Weaken)
-            //{
-            //  //var spell = new WeakenSpell(enemy);
-            //  victim.AddLastingEffect(effectToUse, spell.TourLasting, EntityStatKind.Defence, spell.Factor);
-            //}
-            //else if (effectToUse == EffectType.Inaccuracy)
-            //{
-            //  //var spell = new InaccuracySpell(enemy);
-            //  victim.AddLastingEffect(effectToUse, spell.TourLasting, EntityStatKind.ChanceToHit, spell.Factor);
-            //}
-            //else if (effectToUse == EffectType.IronSkin)
-            //{
-            //  //var spell = new IronSkinSpell(enemy);
-            //  enemy.AddLastingEffect(effectToUse, spell.TourLasting, EntityStatKind.Defence, spell.Factor);
-            //}
-            //else //if (effectToUse == EffectType.ResistAll)
-            //{
-            //  //var spell = new ResistAllSpell(enemy);
-            //  enemy.AddLastingEffect(effectToUse, spell.TourLasting, EntityStatKind.ResistCold, spell.Factor);//TODO EntityStatKind.ResistCold, whatever we send here is OK, later all are aplied
-            //}
-            
-            
-            
           }
         }
 

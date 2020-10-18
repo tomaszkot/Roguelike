@@ -38,7 +38,7 @@ namespace Roguelike.Spells
     public FightItem FightItem { get; internal set; }
     protected float damage = 0f;
     public EntityStatKind StatKind { get; set; }
-    public float StatKindFactor { get; set; }
+    public float StatKindPercImpact { get; set; }
     
     public SpellKind Kind { get; set; }
     public bool EnemyRequired = false;
@@ -47,19 +47,6 @@ namespace Roguelike.Spells
     protected Dictionary<int, int> levelToMagic = new Dictionary<int, int>();
     private LivingEntity caller;
 
-
-    //Returns damage based on Spell level.
-    //Spell level depends on the magic amount owner has.
-    //For enemies magic amount is increased automatically as other stats.
-    public float Damage
-    {
-      get
-      {
-        var level = GetCurrentLevel();
-        var dmg = CalcDamage(level);
-        return dmg;
-      }
-    }
 
     protected virtual float CalcDamage(int magicLevel)
     {
@@ -100,8 +87,7 @@ namespace Roguelike.Spells
     }
 
     public int CoolingDown { get; set; } = 0;
-
-   
+       
     //[XmlIgnore]
     [JsonIgnore]
     public LivingEntity Caller
@@ -122,6 +108,7 @@ namespace Roguelike.Spells
       var index = GetNextLevelMagicIndex();
       return index < 0 ? index : levelToMagic[index];
     }
+
     public int GetNextLevelMagicIndex()
     {
       var ownerMagicAmount = Caller.Stats.GetCurrentValue(EntityStatKind.Magic);
@@ -147,7 +134,11 @@ namespace Roguelike.Spells
       return fe.ToArray();
     }
 
-
+    protected static string GetNextLevel(string suffix)
+    {
+      return "Next Level: " + suffix;
+    }
+        
 
     //public Tuple<LivingEntity.EffectType, int> GetEffectType()
     //{
@@ -195,7 +186,7 @@ namespace Roguelike.Spells
 
     protected virtual void AppendNextLevel(List<string> fe)
     {
-      fe.Add("Next Level: Magic " + GetNextLevelMagicNeeded());
+      fe.Add(GetNextLevel("Magic " + GetNextLevelMagicNeeded()));
     }
 
     protected void AppendBasePart(List<string> fe)

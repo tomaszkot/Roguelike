@@ -48,8 +48,8 @@ namespace RoguelikeConsoleRunner
     {
       var dungeon = Game.GenerateDungeon();
      
-      var hero1 = dungeon.GetTiles<Hero>().SingleOrDefault();
-      Debug.Assert(Hero == hero1);
+      //var hero1 = dungeon.GetTiles<Hero>().SingleOrDefault();
+      //Debug.Assert(Hero == hero1);
       return dungeon;
     }
 
@@ -102,7 +102,7 @@ namespace RoguelikeConsoleRunner
       }
     }
 
-    string HeroName = "";
+    //string HeroName = "";
 
     protected override bool HandleKey(ConsoleKeyInfo info)
     {
@@ -124,8 +124,8 @@ namespace RoguelikeConsoleRunner
       //}
       else if (key == ConsoleKey.L)
       {
-        if(HeroName.Any())
-         GameManager.Load(HeroName);
+        if (GameManager.Hero.Name.Any())
+          GameManager.Load(GameManager.Hero.Name);
       }
       else if (key == ConsoleKey.Spacebar)
       {
@@ -144,9 +144,14 @@ namespace RoguelikeConsoleRunner
       {
         vertical = -1;
       }
-      else if (key == ConsoleKey.DownArrow || key == ConsoleKey.S)
+      else if (key == ConsoleKey.DownArrow)
       {
         vertical = 1;
+      }
+
+      else if (key == ConsoleKey.S)
+      {
+        GameManager.Save();
       }
 
       if (horizontal != 0 || vertical != 0)
