@@ -20,11 +20,11 @@ namespace RoguelikeUnitTests
 
       var desc = le1.Description;
 
-      var eff = Math.Round(le1.CalcInfo.PercentageFactor.Value * statValueBefore / 100, 2);
+      var eff = Math.Round(le1.PercentageFactor.Value * statValueBefore / 100, 2);
       var sep = ", ";
       if (et == EffectType.ResistAll)
       {
-        eff = le1.CalcInfo.EffectiveFactor.Value;
+        eff = le1.EffectiveFactor.Value;
         sep = " ";
       }
       var expectedDesc = le1.Type.ToDescription() + sep + sign + eff;
@@ -61,7 +61,7 @@ namespace RoguelikeUnitTests
       var expected = "";
       var ownerName = (le1.Owner as LivingEntity).Name;
 
-      var origin = le1.CalcInfo.Origin;
+      var origin = le1.Origin;
 
       if (origin == EffectOrigin.SelfCasted)
       {

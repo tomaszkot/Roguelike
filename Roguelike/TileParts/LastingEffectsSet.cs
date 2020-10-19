@@ -97,7 +97,7 @@ namespace Roguelike.TileParts
             
       if (newOne || le.AppliedEachTurn)
       {
-        var value = le.CalcInfo.EffectiveFactor.Value;
+        var value = le.EffectiveFactor.Value;
         Assert(le.StatKind != EntityStatKind.Unset);
         this.livingEntity.Stats.ChangeStatDynamicValue(le.StatKind, value);
         AppendEffectAction(le);
@@ -122,13 +122,13 @@ namespace Roguelike.TileParts
       var le = LastingEffects.Where(i => i.Type == eff).FirstOrDefault();
       if (le == null)
       {
-        le = new LastingEffect(eff, this.livingEntity);
+        le = new LastingEffect(eff, this.livingEntity, calcEffectValue.Turns, calcEffectValue.EffectiveFactor, calcEffectValue.PercentageFactor);
         le.PendingTurns = calcEffectValue.Turns;
         le.StatKind = esk;
-        le.CalcInfo = calcEffectValue;
+        //le.CalcInfo = calcEffectValue;
 
         if (eff == EffectType.TornApart)//this is basically a death
-          le.CalcInfo.EffectiveFactor = new EffectiveFactor(this.livingEntity.Stats.Health);
+          le.EffectiveFactor = new EffectiveFactor(this.livingEntity.Stats.Health);
         else if (eff == EffectType.Hooch)
         {
           //TODO merge from old
@@ -208,7 +208,7 @@ namespace Roguelike.TileParts
       var et = le.Type;
       if (et == EffectType.ConsumedRawFood || et == EffectType.ConsumedRoastedFood)
         return;
-      var subtr = le.CalcInfo.EffectiveFactor;
+      var subtr = le.EffectiveFactor;
       if (et == EffectType.ResistAll)
       {
         var factor = add ? subtr.Value : -subtr.Value;
@@ -300,6 +300,7 @@ namespace Roguelike.TileParts
 
     public LastingEffectCalcInfo CalcLastingEffectInfo(EffectType eff, ILastingEffectSrc src)
     {
+      Assert(src.StatKindEffective.Value != 0 || src.StatKindPercentage.Value != 0);
       var factor = src.StatKindEffective.Value != 0 ? src.StatKindEffective : this.livingEntity.CalcEffectiveFactor(src.StatKind, src.StatKindPercentage.Value);
       return CreateLastingEffectCalcInfo(eff, factor.Value, src.StatKindPercentage.Value, src.TourLasting);
     }
@@ -315,7 +316,7 @@ namespace Roguelike.TileParts
       {
         if (!onlyProlong)
         {
-          le.CalcInfo = calcEffectValue;
+          //le.CalcInfo = calcEffectValue;
           handle = true;
         }
       }
@@ -338,8 +339,8 @@ namespace Roguelike.TileParts
           }
         }
         //update it
-        if(effValue!= le.CalcInfo.EffectiveFactor.Value)
-          le.CalcInfo.EffectiveFactor = new EffectiveFactor(effValue);
+        if(effValue!= le.EffectiveFactor.Value)
+          le.EffectiveFactor = new EffectiveFactor(effValue);
         handle = true;
       }
       else if (eff == EffectType.ConsumedRoastedFood || eff == EffectType.ConsumedRawFood)

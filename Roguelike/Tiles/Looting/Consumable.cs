@@ -31,7 +31,10 @@ namespace Roguelike.Tiles.Looting
     public bool PercentageStatIncrease { get ; set ; }
     public int TourLasting { get => ConsumptionSteps; set => ConsumptionSteps = value; }
     public EntityStatKind StatKind { get => EnhancedStat; set => EnhancedStat = value; }
-    public PercentageFactor StatKindPercentage { get => new PercentageFactor(0);  }
+    public PercentageFactor StatKindPercentage 
+    { 
+      get => GetPercentageStatIncrease();  
+    }
 
     public virtual EffectiveFactor StatKindEffective => new EffectiveFactor(0);
 

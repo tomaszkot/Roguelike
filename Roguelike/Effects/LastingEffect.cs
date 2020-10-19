@@ -17,7 +17,7 @@ namespace Roguelike.Effects
     public EffectOrigin Origin { get; set; }
     public EffectType Type { get; set; }
     public int Turns { get; }
-    
+
     //absolute value deducted/added to a stat
     public EffectiveFactor EffectiveFactor { get; set; }
 
@@ -46,19 +46,19 @@ namespace Roguelike.Effects
 
   public class LastingEffect
   {
-    public EffectType Type 
-    { 
-      get { return CalcInfo.Type; }
-      set 
-      { 
-        CalcInfo.Type = value; 
-      }
-    }
+    public EffectOrigin Origin { get; set; }
+    public EffectType Type {get;set;}
 
     public EntityStatKind StatKind;
     public int PendingTurns = 3;
-    public LastingEffectCalcInfo CalcInfo { get; set; } = new LastingEffectCalcInfo(EffectType.Unset, 0, new EffectiveFactor(0), new PercentageFactor(0));
-    
+
+    //absolute value deducted/added to a stat
+    public EffectiveFactor EffectiveFactor { get; set; }
+
+    //percentage value deducted/added to a stat
+    public PercentageFactor PercentageFactor { get; set; }
+    //public LastingEffectCalcInfo CalcInfo { get; set; } = new LastingEffectCalcInfo(EffectType.Unset, 0, new EffectiveFactor(0), new PercentageFactor(0));
+
     //public bool FromTrapSpell { get; internal set; }
     ILastingEffectOwner owner;
 
@@ -80,10 +80,13 @@ namespace Roguelike.Effects
     }
 
     public LastingEffect() { }
-    public LastingEffect(EffectType type, ILastingEffectOwner owner)
+    public LastingEffect(EffectType type, ILastingEffectOwner owner, int turns, EffectiveFactor effectiveFactor, PercentageFactor percentageFactor)
     {
       this.Type = type;
       this.Owner = owner;
+      this.PendingTurns = turns;
+      this.EffectiveFactor = effectiveFactor;
+      this.PercentageFactor = percentageFactor;
     }
 
     //internal void Dispose()
@@ -135,10 +138,10 @@ namespace Roguelike.Effects
 
       //if(EffectiveFactor.EffectiveFactor.Value >= 0)
       //  res += sign;
-      if (CalcInfo.EffectiveFactor.Value != 0)
-        res += CalcInfo.EffectiveFactor;
+      if (EffectiveFactor.Value != 0)
+        res += EffectiveFactor;
       else
-        res += CalcInfo.PercentageFactor;
+        res += PercentageFactor;
 
       if (end.Any())
         res += end;
@@ -171,7 +174,7 @@ namespace Roguelike.Effects
       var expected = "";
       var ownerName = target.Name;
 
-      var origin = CalcInfo.Origin;
+      var origin = Origin;
 
       if (origin == EffectOrigin.SelfCasted)
       {
