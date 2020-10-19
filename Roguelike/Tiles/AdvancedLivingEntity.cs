@@ -139,12 +139,7 @@ namespace Roguelike.Tiles
 
     public void Consume(IConsumable consumable)
     {
-      //hero turn?
-      //var ac = LootManager.CreateLootGameAction(loot, "Drunk " + loot.Name);
-      //PlaySound("drink");
-      //if (!Context.HeroTurn)
-      //  Context.MoveToNextTurnOwner();
-
+      //TODO hero turn?
       if (inventory.Contains(consumable.Loot))
       {
         if (consumable.StatKind == EntityStatKind.Unset)
@@ -164,26 +159,18 @@ namespace Roguelike.Tiles
         }
         else
         {
-          //var incPercentage = consumable.StatKindPercentage.Value;
-
           if (consumable is Potion)
           {
             Debug.Assert(consumable.ConsumptionSteps == 1);
             var factor = LastingEffectsSet.CalcLastingEffectInfo(EffectType.Unset, consumable);
             DoConsume(consumable.StatKind, factor);
-            //var pot = consumable as Potion;
           }
           else
             LastingEffectsSet.AddPercentageLastingEffect(EffectType.ConsumedRawFood, consumable);
-            //LastingEffectsSet.AddPercentageLastingEffect(EffectType.ConsumedRawFood, consumable.ConsumptionSteps , consumable.EnhancedStat, incPercentage);
         }
       }
       else
         Assert(false);
-      //else if (loot is Hooch)
-      //  Hero.AddLastingEffect(LivingEntity.EffectType.Hooch, 6);
-
-      //return ac;
     }
 
     public void IncreaseStatByLevelUpPoint(EntityStatKind stat)
