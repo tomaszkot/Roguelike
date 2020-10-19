@@ -91,7 +91,6 @@ namespace Roguelike.Tiles
     
     static LivingEntity()
     {
-      //spellCastPolicyProvider = () => { return new SpellCastPolicy(); };
     }
 
     public LivingEntity():this(new Point(-1, -1), '\0')

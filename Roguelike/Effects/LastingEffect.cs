@@ -57,8 +57,7 @@ namespace Roguelike.Effects
 
     //percentage value deducted/added to a stat
     public PercentageFactor PercentageFactor { get; set; }
-    //public LastingEffectCalcInfo CalcInfo { get; set; } = new LastingEffectCalcInfo(EffectType.Unset, 0, new EffectiveFactor(0), new PercentageFactor(0));
-
+    
     //public bool FromTrapSpell { get; internal set; }
     ILastingEffectOwner owner;
 
