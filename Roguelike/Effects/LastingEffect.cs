@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using Roguelike.Attributes;
+using Roguelike.Events;
 using Roguelike.Factors;
 using Roguelike.Spells;
 using Roguelike.Tiles;
@@ -9,18 +10,29 @@ using System.Xml.Serialization;
 
 namespace Roguelike.Effects
 {
+  public enum EffectOrigin { SelfCasted, OtherCasted, Experieced}
+
   public class LastingEffectCalcInfo
   {
+    public EffectOrigin Origin { get; set; }
     public EffectType Type { get; set; }
     public int Turns { get; }
     
     //absolute value deducted/added to a stat
     public EffectiveFactor EffectiveFactor { get; set; }
+
+    //percentage value deducted/added to a stat
     public PercentageFactor PercentageFactor { get; set; } = new PercentageFactor(0);
 
     public LastingEffectCalcInfo(EffectType type, int turns, EffectiveFactor effective, PercentageFactor perc)
     {
       Type = type;
+      Origin = EffectOrigin.SelfCasted;
+      if (type == EffectType.Bleeding)
+        Origin = EffectOrigin.Experieced;
+      else if (type == EffectType.Weaken || type == EffectType.Inaccuracy)
+        Origin = EffectOrigin.OtherCasted;
+
       Turns = turns;
       EffectiveFactor = effective;
       PercentageFactor = perc;
@@ -62,8 +74,8 @@ namespace Roguelike.Effects
       set
       {
         owner = value;
-        if (owner != null)
-          owner.OnEffectStarted(Type);
+        //if (owner != null)
+        //  owner.OnEffectStarted(Type);
       }
     }
 
@@ -81,11 +93,11 @@ namespace Roguelike.Effects
       }
     }
 
-    internal void Dispose()
-    {
-      if (Owner != null)
-        Owner.OnEffectFinished(Type);
-    }
+    //internal void Dispose()
+    //{
+    //  //if (Owner != null)
+    //  //  Owner.OnEffectFinished(Type);
+    //}
 
     string description;
     public string Description 
@@ -147,5 +159,51 @@ namespace Roguelike.Effects
       return Type + ", " + Description;
     }
 
+    public LivingEntityAction CreateAction(LastingEffect le)
+    {
+      var target = (Owner as LivingEntity);
+      var lea = new LivingEntityAction(LivingEntityActionKind.ExperiencedEffect);
+      lea.InvolvedEntity = target;
+      lea.EffectType = le.Type;
+      var targetName = target.Name.ToString();
+
+      lea.Info = CreateActionInfo(le, target);
+
+      lea.Level = ActionLevel.Important;
+      return lea;
+    }
+
+    private string CreateActionInfo(LastingEffect le, LivingEntity target)
+    {
+      var expected = "";
+      var ownerName = target.Name;
+
+      var origin = CalcInfo.Origin;
+
+      if (origin == EffectOrigin.SelfCasted)
+      {
+        expected = ownerName;
+        expected += " casted:";
+      }
+      else if (origin == EffectOrigin.Experieced)
+      {
+        expected = ownerName;
+        expected += " experienced:";
+      }
+      else if (origin == EffectOrigin.OtherCasted)
+      {
+        //expected += " was casted on "+ownerName;
+      }
+
+      //
+
+      if (origin == EffectOrigin.OtherCasted)
+      {
+        //expected += Type.ToDescription();
+        expected += "Spell was casted on " + ownerName;
+      }
+
+      return expected + " " + le.Description;
+    }
   }
 }

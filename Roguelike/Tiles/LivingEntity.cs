@@ -28,11 +28,12 @@ namespace Roguelike.Tiles
     
   public interface ILastingEffectOwner
   {
-    void OnEffectFinished(EffectType type);
-    void OnEffectStarted(EffectType type);
+    string Name { get; set; }
+    //void OnEffectFinished(EffectType type);
+    //void OnEffectStarted(EffectType type);
   }
 
-  public class LivingEntity : Tile
+  public class LivingEntity : Tile, ILastingEffectOwner
   {
     static Dictionary<EntityStatKind, EntityStatKind> statsHitIncrease = new Dictionary<EntityStatKind, EntityStatKind> {
                 { EntityStatKind.LifeStealing, EntityStatKind.Health },
