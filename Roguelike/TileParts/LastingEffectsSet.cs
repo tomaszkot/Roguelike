@@ -44,38 +44,14 @@ namespace Roguelike.TileParts
     public void AddLastingEffect(LastingEffect le)
     {
       LastingEffects.Add(le);
-      bool appAction = true;
-      if (LastingEffectStarted != null)
-      {
-        //GameManager.Instance.AppendRedLog("call LastingEffectStarted " + le.Type);
-        LastingEffectStarted(this, le);
-        if (le.Type == EffectType.Rage || le.Type == EffectType.Weaken || le.Type == EffectType.IronSkin || le.Type == EffectType.ResistAll)
-        {
-          var info = "";
-          if (le.Type == EffectType.Rage || le.Type == EffectType.ResistAll)
-          {
-            info = livingEntity.Name + " used " + le.Type + " spell";
-          }
-          else
-          {
-            info = "Spell " + le.Type + " was casted on " + livingEntity.Name;
-          }
-          AppendAction(new LivingEntityAction(LivingEntityActionKind.UsedSpell) { Info = info, EffectType = le.Type, InvolvedEntity = this.livingEntity });
-          appAction = false;
-        }
-      }
+      LastingEffectStarted?.Invoke(this, le);
 
-      if (le.Type == EffectType.Bleeding ||
-          le.Type == EffectType.ConsumedRawFood ||
-          le.Type == EffectType.ConsumedRoastedFood)
+      if (le.AppliedEachTurn)
       {
         ApplyLastingEffect(le, true);
         RemoveFinishedLastingEffects();//food might be consumed at once
       }
-      else if (appAction)
-      {
-        AppendEffectAction(le);
-      }
+      AppendEffectAction(le);
     }
 
     private void RemoveFinishedLastingEffects()
@@ -119,7 +95,7 @@ namespace Roguelike.TileParts
     {
       le.PendingTurns--;
             
-      if (newOne || le.ActivatedEachTurn)
+      if (newOne || le.AppliedEachTurn)
       {
         var value = le.CalcInfo.EffectiveFactor.Value;
         Assert(le.StatKind != EntityStatKind.Unset);
@@ -187,7 +163,7 @@ namespace Roguelike.TileParts
       return le;
     }
 
-    private void AppendEffectAction(LastingEffect le)//EffectType eff, bool newOne, float amount = 0, bool fromHit = true)
+    private void AppendEffectAction(LastingEffect le)
     {
       LivingEntityAction lea = CreateAction(le);
       AppendAction(lea);
@@ -328,7 +304,7 @@ namespace Roguelike.TileParts
       return CreateLastingEffectCalcInfo(eff, factor.Value, src.StatKindPercentage.Value, src.TourLasting);
     }
         
-    public virtual LastingEffect AddPercentageLastingEffect(EffectType eff, ILastingEffectSrc src)///int pendingTurns, EntityStatKind esk, float nominalValuePercInc)
+    public virtual LastingEffect AddPercentageLastingEffect(EffectType eff, ILastingEffectSrc src)
     {
       bool onlyProlong = LastingEffects.Any(i => i.Type == eff);//TODO is onlyProlong done ?
       var calcEffectValue = CalcLastingEffectInfo(eff, src);

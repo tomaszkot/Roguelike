@@ -86,13 +86,6 @@ namespace Roguelike.Effects
       this.Owner = owner;
     }
 
-    public bool ActivatedEachTurn 
-    {
-      get {
-        return Type == EffectType.Bleeding || Type == EffectType.ConsumedRawFood || Type == EffectType.ConsumedRoastedFood;
-      }
-    }
-
     //internal void Dispose()
     //{
     //  //if (Owner != null)
@@ -204,6 +197,15 @@ namespace Roguelike.Effects
       }
 
       return expected + " " + le.Description;
+    }
+
+    public bool AppliedEachTurn
+    {
+      get {
+        return Type == EffectType.Bleeding ||
+            Type == EffectType.ConsumedRawFood ||
+            Type == EffectType.ConsumedRoastedFood;
+      }
     }
   }
 }
