@@ -25,10 +25,10 @@ namespace RoguelikeUnitTests
       var hero = game.Hero;
       var expectedHealthRestore = roasted ? hero.Stats.Health / 2 : hero.Stats.Health / 4;
 
-      Assert.Greater(game.GameManager.EnemiesManager.Enemies.Count, 0);
+      Assert.Greater(ActiveEnemies.Count, 0);
       var heroHealth = hero.Stats.Health;
       while (hero.Stats.Health > 5)
-        hero.OnPhysicalHit(game.GameManager.EnemiesManager.Enemies.First());
+        hero.OnPhysicalHit(ActiveEnemies.First());
 
       Assert.Greater(heroHealth, hero.Stats.Health);
       heroHealth = hero.Stats.Health;

@@ -4,6 +4,7 @@ using System.Drawing;
 using System.Linq;
 using Dungeons.Core;
 using Roguelike.Attributes;
+using Roguelike.Effects;
 
 namespace Roguelike.Tiles
 {

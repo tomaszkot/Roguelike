@@ -39,7 +39,7 @@ namespace Roguelike.Tiles
       }
 
       if (MushroomKind == MushroomKind.BlueToadstool || MushroomKind == MushroomKind.RedToadstool)
-        this.EffectType = EffectType.Poisoned;
+        this.EffectType = Effects.EffectType.Poisoned;
 
       DisplayedName = Name;
       SetPrimaryStatDesc();

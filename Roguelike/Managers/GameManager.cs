@@ -313,8 +313,6 @@ namespace Roguelike.Managers
         });
       }
 
-      //TODO shall be here ?
-      RemoveDeadEnemies();
       return res;
     }
 
@@ -326,7 +324,7 @@ namespace Roguelike.Managers
 
     private void RemoveDeadEnemies()
     {
-      EnemiesManager.Enemies.RemoveAll(i => !i.Alive);
+      EnemiesManager.RemoveDead();
     }
 
     public T GetCurrentNode<T>() where T : AbstractGameLevel
@@ -649,11 +647,11 @@ namespace Roguelike.Managers
       //}
     }
 
-    public void DoAlliesTurn(bool skipHero = false)
-    {
-      this.AlliesManager.MakeEntitiesMove(skipHero ? Hero : null);
-      //DoEnemiesTurn();
-    }
+    //public void DoAlliesTurn(bool skipHero = false)
+    //{
+    //  this.AlliesManager.MakeEntitiesMove(skipHero ? Hero : null);
+    //  //DoEnemiesTurn();
+    //}
 
     public virtual Equipment GenerateRandomEquipment(EquipmentKind kind)
     {
@@ -664,20 +662,24 @@ namespace Roguelike.Managers
     {
       if (context.PendingTurnOwnerApply)
       {
+        EntitiesManager mgr = null;
         if (context.TurnOwner == TurnOwner.Allies)
         {
-          //logger.LogInfo("call to liesManager.MoveHeroAllies");
-          context.PendingTurnOwnerApply = false;
-          AlliesManager.MoveHeroAllies();
+          mgr = AlliesManager;
+          //logger.LogInfo("MakeGameTick call to AlliesManager.MoveHeroAllies");
+          //context.PendingTurnOwnerApply = false;
+          //AlliesManager.MoveHeroAllies();
 
         }
         else if (context.TurnOwner == TurnOwner.Enemies)
         {
-          //logger.LogInfo("call to EnemiesManager.MakeEntitiesMove");
-          context.PendingTurnOwnerApply = false;
-          EnemiesManager.MakeEntitiesMove();
-
+          mgr = EnemiesManager;
+          //logger.LogInfo("MakeGameTick call to EnemiesManager.MakeEntitiesMove");
+          //context.PendingTurnOwnerApply = false;
+          //EnemiesManager.MakeEntitiesMove();
         }
+        if(mgr!=null)
+          mgr.MakeTurn();
       }
     }
 

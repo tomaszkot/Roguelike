@@ -85,7 +85,7 @@ namespace Roguelike.Managers
       if (lootSource is Barrel && RandHelper.GetRandomDouble() < GenerationInfo.ChanceToGenerateEnemyFromBarrel)
       {
         var enemy = GameManager.CurrentNode.SpawnEnemy(GameManager.EventsManager);
-        GameManager.EnemiesManager.Enemies.Add(enemy);
+        GameManager.EnemiesManager.AddEntity(enemy);
         GameManager.ReplaceTile<Enemy>(enemy, lootSource.GetPoint(), false, lootSource as Tile);
         return lootItems;
       }

@@ -9,18 +9,16 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 
-
 namespace Roguelike.Managers
 {
   public class EnemiesManager : EntitiesManager
   {
-    //GameContext context;
-    List<LivingEntity> enemies;
-    public List<LivingEntity> Enemies { get => enemies; set => enemies = value; }
+    //List<LivingEntity> enemies;
+    //public List<LivingEntity> Enemies { get => entities; set => entities = value; }
     AttackStrategy attackStrategy;
 
     public EnemiesManager(GameContext context, EventsManager eventsManager, Container container) :
-      base(context, eventsManager, container)
+      base(TurnOwner.Enemies, context, eventsManager, container)
     {
       this.context = context;
       attackStrategy = new AttackStrategy(context);
@@ -29,17 +27,11 @@ namespace Roguelike.Managers
       context.TurnOwnerChanged += OnTurnOwnerChanged;
       context.ContextSwitched += Context_ContextSwitched;
     }
-
-    public List<Enemy> GetEnemies()
-    {
-      return Enemies.Cast<Enemy>().ToList();
-    }
-
+        
     private void Context_ContextSwitched(object sender, ContextSwitch e)
     {
-      //Enemies = Context.CurrentNode.GetTiles<Enemy>();
-      enemies = Context.CurrentNode.GetTiles<LivingEntity>().Where(i=> i is Enemy).ToList();
-      base.SetEntities(enemies);
+      var entities = Context.CurrentNode.GetTiles<LivingEntity>().Where(i=> i is Enemy).ToList();
+      base.SetEntities(entities);
     }
 
     private void OnTurnOwnerChanged(object sender, TurnOwner turnOwner)
@@ -53,56 +45,30 @@ namespace Roguelike.Managers
     public void MakeMove(LivingEntity enemy)
     {
     }
-
-    public override void MakeEntitiesMove(LivingEntity skip = null)
+        
+    public override void MakeTurn(LivingEntity entity)
     {
-      var enemies = GetEnemiesToMove();
-      //context.Logger.LogInfo("MakeEntitiesMove "+ enemies.Count);
-      if (!enemies.Any())
-      {
-        OnPolicyAppliedAllIdle();
+      var target = Hero;
+      if (AttackIfPossible(entity, target))
         return;
-      }
-      foreach (var enemy in enemies)
+
+      bool makeRandMove = false;
+      if (ShallChaseTarget(entity, target))
       {
-        Debug.Assert(context.CurrentNode.GetTiles<Enemy>().Any(i => i == enemy));
-        if (enemy == enemies.Last())
-        {
-          int kk = 0;
-          kk++;
-        }
-        enemy.ApplyLastingEffects();
-        if (!enemy.Alive)
-          continue;
-
-        var target = Hero;
-        if (AttackIfPossible(enemy, target))
-        {
-          continue;
-        }
-        //context.Logger.LogInfo("!AttackIfPossible ...");
-        bool makeRandMove = false;
-        if (ShallChaseTarget(enemy, target))
-        {
-          makeRandMove = !MakeMoveOnPath(enemy, target.Point);
-        }
-        else
-          makeRandMove = true;
-        if (makeRandMove)
-        {
-          MakeRandomMove(enemy);
-        }
+        makeRandMove = !MakeMoveOnPath(entity, target.Point);
       }
-
-      //var notIdle = entities.Where(i => i.State != EntityState.Idle).ToList();
-      //if (notIdle.Any())
-      //  OnPolicyAppliedAllIdle();//Barrels() ut failed without it
+      else
+        makeRandMove = true;
+      if (makeRandMove)
+      {
+        MakeRandomMove(entity);
+      }
     }
 
-    private List<LivingEntity> GetEnemiesToMove()
-    {
-      return this.Enemies.Where(i => i.Revealed && i.Alive).ToList();
-    }
+    //private List<LivingEntity> GetEnemiesToMove()
+    //{
+    //  return this.Enemies.Where(i => i.Revealed && i.Alive).ToList();
+    //}
 
     public override void MakeRandomMove(LivingEntity entity)
     {
@@ -137,7 +103,6 @@ namespace Roguelike.Managers
       }
 
       return moved;
-     // return false;
     }
 
     private bool ShallChaseTarget(LivingEntity enemy, Hero target)

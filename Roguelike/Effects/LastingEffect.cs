@@ -4,13 +4,41 @@ using Roguelike.Events;
 using Roguelike.Factors;
 using Roguelike.Spells;
 using Roguelike.Tiles;
-using Roguelike.Tiles.Looting;
 using System.Linq;
 using System.Xml.Serialization;
 
 namespace Roguelike.Effects
 {
-  public enum EffectOrigin { SelfCasted, OtherCasted, Experieced}
+  public enum EffectType
+  {
+    Unset,
+
+    //these are applied each turn:
+    Bleeding, Poisoned, Frozen, Firing, ConsumedRawFood, ConsumedRoastedFood, BushTrap,
+
+    //these are applied at start of effect, then removed at the end:
+    Transform,
+    TornApart,
+    Frighten,
+    Stunned,
+    ManaShield, Rage, Weaken, IronSkin, ResistAll, Inaccuracy, Hooch
+  }
+
+  public interface ILastingEffectOwner
+  {
+    string Name { get; set; }
+    //void OnEffectFinished(EffectType type);
+    //void OnEffectStarted(EffectType type);
+  }
+
+  public enum EffectOrigin 
+  { 
+    Unset, 
+    SelfCasted, 
+    OtherCasted,
+    External
+  }
+  public enum EffectApplication  { Single, EachTurn}
 
   public class LastingEffectCalcInfo
   {
@@ -29,7 +57,7 @@ namespace Roguelike.Effects
       Type = type;
       Origin = EffectOrigin.SelfCasted;
       if (type == EffectType.Bleeding)
-        Origin = EffectOrigin.Experieced;
+        Origin = EffectOrigin.Unset;
       else if (type == EffectType.Weaken || type == EffectType.Inaccuracy)
         Origin = EffectOrigin.OtherCasted;
 
@@ -46,11 +74,14 @@ namespace Roguelike.Effects
 
   public class LastingEffect
   {
+    public const int DefaultPendingTurns = 3;
+
+    public EffectApplication Application { get; set; }
     public EffectOrigin Origin { get; set; }
     public EffectType Type {get;set;}
 
     public EntityStatKind StatKind;
-    public int PendingTurns = 3;
+    public int PendingTurns = DefaultPendingTurns;
 
     //absolute value deducted/added to a stat
     public EffectiveFactor EffectiveFactor { get; set; }
@@ -79,20 +110,28 @@ namespace Roguelike.Effects
     }
 
     public LastingEffect() { }
-    public LastingEffect(EffectType type, ILastingEffectOwner owner, int turns, EffectiveFactor effectiveFactor, PercentageFactor percentageFactor)
+    public LastingEffect(EffectType type, ILastingEffectOwner owner, int turns, EffectOrigin origin, EffectiveFactor effectiveFactor, 
+                         PercentageFactor percentageFactor)
     {
+      this.Origin = origin;
       this.Type = type;
       this.Owner = owner;
       this.PendingTurns = turns;
       this.EffectiveFactor = effectiveFactor;
       this.PercentageFactor = percentageFactor;
-    }
+      Application = EffectApplication.Single;
 
-    //internal void Dispose()
-    //{
-    //  //if (Owner != null)
-    //  //  Owner.OnEffectFinished(Type);
-    //}
+      if (type == EffectType.Bleeding ||
+         type == EffectType.Poisoned ||
+         type == EffectType.Frozen ||
+         type == EffectType.Firing ||
+         type == EffectType.ConsumedRawFood ||
+         type == EffectType.ConsumedRoastedFood ||
+         type == EffectType.BushTrap)
+      {
+        Application = EffectApplication.EachTurn;
+      }
+    }
 
     string description;
     public string Description 
@@ -173,41 +212,27 @@ namespace Roguelike.Effects
       var expected = "";
       var ownerName = target.Name;
 
-      var origin = Origin;
-
-      if (origin == EffectOrigin.SelfCasted)
+      if (Origin == EffectOrigin.SelfCasted)
       {
         expected = ownerName;
         expected += " casted:";
       }
-      else if (origin == EffectOrigin.Experieced)
+      else //if (origin == EffectOrigin.Experieced)
       {
-        expected = ownerName;
-        expected += " experienced:";
+        //expected = ownerName;
+        //expected += " experienced:";
       }
-      else if (origin == EffectOrigin.OtherCasted)
-      {
-        //expected += " was casted on "+ownerName;
-      }
-
-      //
-
-      if (origin == EffectOrigin.OtherCasted)
+      
+      if (Origin == EffectOrigin.OtherCasted)
       {
         //expected += Type.ToDescription();
         expected += "Spell was casted on " + ownerName;
       }
-
-      return expected + " " + le.Description;
-    }
-
-    public bool AppliedEachTurn
-    {
-      get {
-        return Type == EffectType.Bleeding ||
-            Type == EffectType.ConsumedRawFood ||
-            Type == EffectType.ConsumedRoastedFood;
-      }
+      var res = expected;
+      if (res.Any())
+        res += " ";
+      res += le.Description;
+      return res;
     }
   }
 }

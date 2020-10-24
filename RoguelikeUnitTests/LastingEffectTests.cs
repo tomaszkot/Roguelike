@@ -2,6 +2,7 @@
 using Roguelike;
 using Roguelike.Attributes;
 using Roguelike.Effects;
+using Roguelike.Events;
 using Roguelike.Spells;
 using Roguelike.Tiles;
 using System;
@@ -15,8 +16,7 @@ namespace RoguelikeUnitTests
     void CheckDesc(EffectType et, EntityStatKind esk, char sign)
     {
       float statValueBefore;
-      LastingEffect le1;
-      CreateEffect(et, esk, out statValueBefore, out le1);
+      LastingEffect le1 = CreateEffect(et, esk, out statValueBefore);
 
       var desc = le1.Description;
 
@@ -33,11 +33,12 @@ namespace RoguelikeUnitTests
       Assert.AreEqual(desc, expectedDesc);
     }
 
-    private void CreateEffect(EffectType et, EntityStatKind esk, out float statValueBefore, out LastingEffect le1)
+    private LastingEffect CreateEffect(EffectType et, EntityStatKind esk, out float statTotalValueBefore)
     {
+      LastingEffect le1 = null;
       Assert.AreNotEqual(et, EffectType.Unset);
 
-      statValueBefore = game.Hero.Stats.GetStat(esk).Value.TotalValue;
+      statTotalValueBefore = game.Hero.Stats.GetStat(esk).Value.TotalValue;
       le1 = null;
       var spellKind = SpellConverter.SpellKindFromEffectType(et);
       if (spellKind != SpellKind.Unset)
@@ -50,13 +51,14 @@ namespace RoguelikeUnitTests
       }
       Assert.NotNull(le1);
       Assert.Greater(le1.PendingTurns, 0);
+
+      return le1;
     }
 
     void CheckAction(EffectType et, EntityStatKind esk, char sign, LivingEntity target)
     {
       float statValueBefore;
-      LastingEffect le1;
-      CreateEffect(et, esk, out statValueBefore, out le1);
+      LastingEffect le1 = CreateEffect(et, esk, out statValueBefore);
 
       var expected = "";
       var ownerName = (le1.Owner as LivingEntity).Name;
@@ -68,7 +70,7 @@ namespace RoguelikeUnitTests
         expected = ownerName;
         expected += " casted: ";
       }
-      else if (origin == EffectOrigin.Experieced)
+      else if (origin == EffectOrigin.External)
       {
         expected = ownerName;
         expected += " experienced: ";
@@ -92,8 +94,8 @@ namespace RoguelikeUnitTests
       var game = CreateGame();
 
       game.Hero.Name = "Edd";
-      var en = game.GameManager.EnemiesManager.Enemies.First();
-      var le = game.Hero.LastingEffectsSet.AddBleeding(10, en);
+      var en = ActiveEnemies.First();
+      var le = game.Hero.LastingEffectsSet.EnsureEffect( EffectType.Bleeding, 10, en);
       Assert.NotNull(le);
 
       var expectedDesc = le.Type.ToDescription() + ", -10 Health (per turn)";
@@ -112,8 +114,8 @@ namespace RoguelikeUnitTests
     {
       var game = CreateGame();
 
-      var en = game.GameManager.EnemiesManager.Enemies.First();
-      var le = game.Hero.LastingEffectsSet.AddBleeding(10, en);
+      var en = ActiveEnemies.First();
+      var le = game.Hero.LastingEffectsSet.EnsureEffect(EffectType.Bleeding, 10, en);
       Assert.NotNull(le);
 
       var expectedDesc = le.Type.ToDescription() + ", -10 Health (per turn)";///game.Hero.Stats.Defense
@@ -137,5 +139,175 @@ namespace RoguelikeUnitTests
       //expectedDesc = le.Type.ToDescription() + " -" + le.EffectAbsoluteValue.Factor;
       //Assert.AreEqual(le.GetDescription(game.Hero), expectedDesc);
     }
+
+    [Test]
+    public void TestIronSkinProlong()
+    {
+      var game = CreateGame();
+      float statTotalValueBefore;
+
+      int actionCounter = 0;
+
+      game.GameManager.EventsManager.ActionAppended += (object sender, Roguelike.Events.GameAction e) =>
+      {
+        if (e is LivingEntityAction)
+        {
+          var lea = e as LivingEntityAction;
+          if (lea.Kind == LivingEntityActionKind.ExperiencedEffect)
+          {
+            if (lea.Info.Contains(EffectType.IronSkin.ToDescription()))
+              actionCounter++;
+          }
+        }
+      };
+
+      var le1 = CreateEffect(EffectType.IronSkin, EntityStatKind.Defense, out statTotalValueBefore);
+      LastingEffect castedAgain = null;
+
+      var value = game.Hero.Stats.GetStat(EntityStatKind.Defense).Value;
+      Assert.Greater(value.CurrentValue, statTotalValueBefore);
+      var turns = le1.PendingTurns;
+      int appliedCounter = 0;
+      for (int i = 0; i < turns*2; i++)//there will be prolong
+      {
+        game.GameManager.SkipHeroTurn();
+        GotoNextHeroTurn();
+        if (i == 2)
+        {
+          castedAgain = CreateEffect(EffectType.IronSkin, EntityStatKind.Defense, out statTotalValueBefore);
+          Assert.AreEqual(castedAgain, le1);
+        }
+        if (value.CurrentValue > statTotalValueBefore)
+          appliedCounter++;
+      }
+      Assert.AreEqual(value.CurrentValue, statTotalValueBefore);
+      Assert.AreEqual(actionCounter, 1);
+      Assert.AreEqual(appliedCounter, 7);
+    }
+  
+
+    [Test]
+    public void TestIronSkin()
+    {
+      var game = CreateGame();
+      float statTotalValueBefore;
+      
+      int actionCounter = 0;
+
+      game.GameManager.EventsManager.ActionAppended += (object sender, Roguelike.Events.GameAction e)=>
+      {
+        if (e is LivingEntityAction)
+        {
+          var lea = e as LivingEntityAction;
+          if (lea.Kind == LivingEntityActionKind.ExperiencedEffect)
+          {
+            if(lea.Info.Contains(EffectType.IronSkin.ToDescription()))
+              actionCounter++;
+          }
+        }
+      };
+
+      var le1 = CreateEffect(EffectType.IronSkin, EntityStatKind.Defense, out statTotalValueBefore);
+
+      var value = game.Hero.Stats.GetStat(EntityStatKind.Defense).Value;
+      Assert.Greater(value.CurrentValue, statTotalValueBefore);
+      var turns = le1.PendingTurns;
+      for (int i = 0; i < turns; i++)
+      {
+        game.GameManager.SkipHeroTurn();
+        GotoNextHeroTurn();        
+      }
+      Assert.AreEqual(le1.PendingTurns, 0);
+      Assert.AreEqual(value.CurrentValue, statTotalValueBefore);
+      Assert.AreEqual(actionCounter, 1); 
+    }
+
+    [Test]
+    public void TestBleeding()
+    {
+      var game = CreateGame();
+      int actionCounter = 0;
+
+      game.GameManager.EventsManager.ActionAppended += (object sender, Roguelike.Events.GameAction e) =>
+      {
+        if (e is LivingEntityAction)
+        {
+          var lea = e as LivingEntityAction;
+          if (lea.Kind == LivingEntityActionKind.ExperiencedEffect)
+          {
+            if (lea.Info.Contains(EffectType.Bleeding.ToDescription()))
+              actionCounter++;
+          }
+        }
+      };
+
+      var enemy = ActiveEnemies.First();
+      var healthStat = enemy.Stats.GetStat(EntityStatKind.Health);
+      healthStat.Value.Nominal = 150;
+      enemy.SetIsWounded();//make sure will bleed
+
+      enemy.OnPhysicalHit(game.Hero);
+      var le1 = enemy.LastingEffects.Where(i => i.Type == EffectType.Bleeding).FirstOrDefault();
+      Assert.NotNull(le1);
+            
+      var value = game.Hero.Stats.GetStat(EntityStatKind.Defense).Value;
+      var turns = le1.PendingTurns;
+      for (int i = 0; i < turns * 2; i++)//there will be prolong
+      {
+        game.GameManager.SkipHeroTurn();
+        GotoNextHeroTurn();
+      }
+      Assert.AreEqual(actionCounter, 3);
+    }
+
+    [Test]
+    public void TestBleedingProlong()
+    {
+      var game = CreateGame();
+      int actionCounter = 0;
+
+      game.GameManager.EventsManager.ActionAppended += (object sender, Roguelike.Events.GameAction e) =>
+      {
+        if (e is LivingEntityAction)
+        {
+          var lea = e as LivingEntityAction;
+          if (lea.Kind == LivingEntityActionKind.ExperiencedEffect)
+          {
+            if (lea.Info.Contains(EffectType.Bleeding.ToDescription()))
+              actionCounter++;
+          }
+        }
+      };
+
+      var enemy = ActiveEnemies.First();
+      var healthStat = enemy.Stats.GetStat(EntityStatKind.Health);
+      healthStat.Value.Nominal = 150;
+      enemy.SetIsWounded();//make sure will bleed
+
+      enemy.OnPhysicalHit(game.Hero);
+      var le1 = enemy.LastingEffects.Where(i => i.Type == EffectType.Bleeding).SingleOrDefault();
+      Assert.NotNull(le1);
+
+      LastingEffect castedAgain = null;
+
+      var value = game.Hero.Stats.GetStat(EntityStatKind.Defense).Value;
+      var turns = le1.PendingTurns;
+      for (int i = 0; i < turns * 2; i++)//there will be prolong
+      {
+        castedAgain = enemy.LastingEffects.Where(le => le.Type == EffectType.Bleeding).SingleOrDefault();
+        Assert.AreEqual(castedAgain, le1);
+
+        game.GameManager.SkipHeroTurn();
+        GotoNextHeroTurn();
+        if (i == 0)
+        {
+          enemy.OnPhysicalHit(game.Hero);
+        }
+        
+      }
+      Assert.AreEqual(actionCounter, 5);
+    }
+
+
   }
 }

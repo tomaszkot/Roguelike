@@ -2,6 +2,7 @@
 using Dungeons.Tiles;
 using Roguelike.Abstract;
 using Roguelike.Attributes;
+using Roguelike.Effects;
 using Roguelike.Policies;
 using Roguelike.Spells;
 using Roguelike.TileContainers;

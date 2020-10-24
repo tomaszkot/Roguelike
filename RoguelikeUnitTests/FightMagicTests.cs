@@ -27,7 +27,7 @@ namespace RoguelikeUnitTests
       var game = CreateGame();
       var hero = game.Hero;
 
-      var enemy = game.GameManager.EnemiesManager.Enemies.First();
+      var enemy = ActiveEnemies.First();
       var enemyHealth = enemy.Stats.Health;
       var mana = hero.Stats.Mana;
 
@@ -54,18 +54,19 @@ namespace RoguelikeUnitTests
       var game = CreateGame();
       var hero = game.Hero;
 
-      var initEnemyCount = game.GameManager.EnemiesManager.Enemies.Count;
+      var enemies = game.GameManager.EnemiesManager.AllEntities;
+      var initEnemyCount = enemies.Count;
       Assert.Greater(initEnemyCount, 0);
       Assert.AreEqual(initEnemyCount, game.GameManager.CurrentNode.GetTiles<Enemy>().Count);
 
-      var enemy = game.GameManager.EnemiesManager.Enemies.First();
+      var enemy = enemies.First();
       while (enemy.Alive)
       {
         UseScroll(game, hero, enemy);
         GotoNextHeroTurn(game);
       }
 
-      var finalEnemyCount = game.GameManager.EnemiesManager.Enemies.Count;
+      var finalEnemyCount = enemies.Count;
       Assert.AreEqual(finalEnemyCount, initEnemyCount - 1);
       Assert.AreEqual(finalEnemyCount, game.GameManager.CurrentNode.GetTiles<Enemy>().Count);
     }
@@ -76,7 +77,7 @@ namespace RoguelikeUnitTests
       var game = CreateGame();
       var hero = game.Hero;
 
-      var enemy = game.GameManager.EnemiesManager.Enemies.Cast<Enemy>().First();
+      var enemy = ActiveEnemies.Cast<Enemy>().First();
       enemy.PrefferedFightStyle = PrefferedFightStyle.Magic;//use spells
       var heroHealth = hero.Stats.Health;
       var mana = enemy.Stats.Mana;

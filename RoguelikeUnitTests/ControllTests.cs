@@ -15,8 +15,9 @@ namespace RoguelikeUnitTests
     public void TestEntityManagers()
     {
       var game = CreateGame();
-      Assert.Greater(game.GameManager.EnemiesManager.Enemies.Count, 0);
-      Assert.AreEqual(game.GameManager.EnemiesManager.Enemies.Count, game.Level.GetTiles<Enemy>().Count);
+      var enemies = game.GameManager.EnemiesManager.AllEntities;
+      Assert.Greater(enemies.Count, 0);
+      Assert.AreEqual(enemies.Count, game.Level.GetTiles<Enemy>().Count);
       Assert.False(game.GameManager.AlliesManager.Contains(game.Hero));
     }
 

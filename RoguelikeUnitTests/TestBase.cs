@@ -80,10 +80,20 @@ namespace RoguelikeUnitTests
       CollectLoot(eq);
     }
 
+    protected List<Roguelike.Tiles.Enemy> ActiveEnemies
+    {
+      get { return game.GameManager.EnemiesManager.CalcActiveEntities().Cast<Enemy>().ToList(); }
+    }
+
+    protected List<Roguelike.Tiles.Enemy> AllEnemies
+    {
+      get { return game.GameManager.EnemiesManager.AllEntities.Cast<Enemy>().ToList(); }
+    }
+
     public List<Enemy> GetLimitedEnemies()
     {
-      //return game.GameManager.CurrentNode.GetTiles<Enemy>().Take(numEnemies).ToList();
-      return game.GameManager.EnemiesManager.GetEnemies().Take(numEnemies).ToList();
+      return game.GameManager.CurrentNode.GetTiles<Enemy>().Take(numEnemies).ToList();
+      //return Enemies.Take(numEnemies).ToList();
     }
 
     int numEnemies = 0;
@@ -106,8 +116,8 @@ namespace RoguelikeUnitTests
         }
         info.NumberOfRooms = numberOfRooms;
         var level = game.GenerateLevel(0, info);
-        Assert.GreaterOrEqual(game.GameManager.EnemiesManager.Enemies.Count, numEnemies);//some are auto generated
-        Assert.Less(game.GameManager.EnemiesManager.Enemies.Count, numEnemies*4);
+        Assert.GreaterOrEqual(game.GameManager.EnemiesManager.AllEntities.Count, numEnemies);//some are auto generated
+        Assert.Less(ActiveEnemies.Count, numEnemies*4);
       }
       return game;
     }
@@ -156,13 +166,13 @@ namespace RoguelikeUnitTests
       if (game == null)
         game = this.game;
       Assert.AreEqual(game.GameManager.Context.TurnOwner, Roguelike.TurnOwner.Allies);
-      game.GameManager.Logger.LogInfo("make allies move");
+      //game.GameManager.Logger.LogInfo("make allies move");
       game.MakeGameTick();//make allies move
       Assert.AreEqual(game.GameManager.Context.TurnOwner, Roguelike.TurnOwner.Enemies);
       var pend = game.GameManager.Context.PendingTurnOwnerApply;
       var to = game.GameManager.Context.TurnOwner;
       var tac = game.GameManager.Context.TurnActionsCount;
-      var ni = game.GameManager.EnemiesManager.GetEnemies().Where(e => e.State != EntityState.Idle).ToList();
+      var ni = ActiveEnemies.Where(e => e.State != EntityState.Idle).ToList();
       //game.GameManager.Logger.LogInfo("make enemies move " + game.GameManager.Context.PendingTurnOwnerApply);
       game.MakeGameTick();//make enemies move
       if (!game.GameManager.HeroTurn)

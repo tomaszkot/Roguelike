@@ -80,6 +80,7 @@
     <Compile Include="ConsumableHelper.cs" />
     <Compile Include="ContainerConfigurator.cs" />
     <Compile Include="Crafting\LootConverter.cs" />
+    <Compile Include="Effects\EffectTypeToStatKind.cs" />
     <Compile Include="Effects\LastingEffect.cs" />
     <Compile Include="EnemySymbols.cs" />
     <Compile Include="Events\GameAction.cs" />
@@ -106,6 +107,7 @@
     <Compile Include="LootFactories\MiscLootFactory.cs" />
     <Compile Include="LootFactories\ScrollsFactory.cs" />
     <Compile Include="LootHistory.cs" />
+    <Compile Include="Managers\AlliesManager.cs" />
     <Compile Include="Managers\LootManager.cs" />
     <Compile Include="Managers\SoundManager.cs" />
     <Compile Include="Policies\AttackPolicy.cs" />
@@ -132,7 +134,7 @@
     <Compile Include="Serialization\IPersister.cs" />
     <Compile Include="Serialization\JSONPersister.cs" />
     <Compile Include="TileParts\IEquipable.cs" />
-    <Compile Include="TileParts\LastingEffectsSet.cs" />
+    <Compile Include="Effects\LastingEffectsSet.cs" />
     <Compile Include="TilesExtensions.cs" />
     <Compile Include="Tiles\Abstract\IConsumable.cs" />
     <Compile Include="Tiles\Abstract\IMovingDamager.cs" />

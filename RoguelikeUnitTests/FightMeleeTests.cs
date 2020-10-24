@@ -1,5 +1,6 @@
 ﻿using NUnit.Framework;
 using Roguelike;
+using Roguelike.Effects;
 using Roguelike.Tiles;
 using System.Linq;
 
@@ -54,8 +55,8 @@ namespace RoguelikeUnitTests
       var game = CreateGame();
       var hero = game.Hero;
 
-      Assert.Greater(game.GameManager.EnemiesManager.Enemies.Count, 0);
-      var enemy = game.GameManager.EnemiesManager.Enemies.First();
+      Assert.Greater(ActiveEnemies.Count, 0);
+      var enemy = ActiveEnemies.First();
       var enemyHealth = enemy.Stats.Health;
       enemy.OnPhysicalHit(hero);
       Assert.Greater(enemyHealth, enemy.Stats.Health);
@@ -71,16 +72,17 @@ namespace RoguelikeUnitTests
     public void KillEnemy()
     {
       var game = CreateGame();
-      var hero = game.Hero;
+      //var hero = game.Hero;
 
-      var initEnemyCount = game.GameManager.EnemiesManager.Enemies.Count;
+      var enemies = game.GameManager.EnemiesManager.AllEntities;
+      var initEnemyCount = enemies.Count;
       Assert.Greater(initEnemyCount, 0);
       Assert.AreEqual(initEnemyCount, game.GameManager.CurrentNode.GetTiles<Enemy>().Count);
 
-      var enemy = game.GameManager.EnemiesManager.Enemies.First();
+      var enemy = ActiveEnemies.First();
       while(enemy.Alive)
         InteractHeroWith(enemy as Enemy);
-      var finalEnemyCount = game.GameManager.EnemiesManager.Enemies.Count;
+      var finalEnemyCount = enemies.Count;
       Assert.AreEqual(finalEnemyCount, initEnemyCount - 1);
       Assert.AreEqual(finalEnemyCount, game.GameManager.CurrentNode.GetTiles<Enemy>().Count);
     }

@@ -4,7 +4,7 @@ using Roguelike.Events;
 using Roguelike.LootContainers;
 using Roguelike.Serialization;
 using Roguelike.Spells;
-using Roguelike.TileParts;
+using Roguelike.Effects;
 using Roguelike.Tiles.Abstract;
 using Roguelike.Tiles.Looting;
 using System;

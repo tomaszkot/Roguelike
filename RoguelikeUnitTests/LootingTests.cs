@@ -24,7 +24,7 @@ namespace RoguelikeUnitTests
       try
       {
         var lootInfo = new LootInfo(game, null);
-        ILootSource lootSrc = game.GameManager.EnemiesManager.GetEnemies().First();
+        ILootSource lootSrc = ActiveEnemies.First();
         for (int i = 0; i < 10; i++)
         {
           var loot = env.LootGenerator.GetRandomLoot(LootKind.Gem, 1) as Gem;
@@ -105,7 +105,7 @@ namespace RoguelikeUnitTests
       try
       {
         var lootInfo = new LootInfo(game, null);
-        ILootSource lootSrc = game.GameManager.EnemiesManager.GetEnemies().First();//env.Game.Hero
+        ILootSource lootSrc = ActiveEnemies.First();//env.Game.Hero
         for (int i = 0; i < 10; i++)
         {
           var pot = env.LootGenerator.GetRandomLoot(LootKind.Potion, 1);
@@ -180,7 +180,9 @@ namespace RoguelikeUnitTests
     public void KilledEnemyForPotion()
     {
       var env = CreateTestEnv(numEnemies: 25);
-      env.Enemies.ForEach(i => i.PowerKind = EnemyPowerKind.Plain);
+
+      var enemies = AllEnemies;
+      enemies.ForEach(i => i.PowerKind = EnemyPowerKind.Plain);
       env.LootGenerator.Probability = new Roguelike.Probability.Looting();
       env.LootGenerator.Probability.SetLootingChance(LootSourceKind.Enemy, LootKind.Potion, 1);
       var lootItems = env.AssertLootFromEnemies(new[] { LootKind.Potion }).Cast<Potion>().ToList();
@@ -246,7 +248,7 @@ namespace RoguelikeUnitTests
       env.LootGenerator.Probability = new Roguelike.Probability.Looting();
       env.LootGenerator.Probability.SetLootingChance(LootSourceKind.Enemy, LootKind.Equipment, 1f);
 
-      var enemies = game.GameManager.EnemiesManager.Enemies;
+      var enemies = game.GameManager.EnemiesManager.AllEntities;
       env.KillEnemy(enemies[0]);
       var loot = env.Game.Level.GetTile(enemies[0].Point);
       Assert.NotNull(loot);
@@ -287,7 +289,7 @@ namespace RoguelikeUnitTests
       var enemiesAfter = env.Game.Level.GetTiles<Enemy>();
       Assert.Greater(enemiesAfter.Count, enemiesBefore.Count);
       Assert.Greater(enemiesAfter.Count - enemiesBefore.Count, 5);
-      Assert.AreEqual(enemiesAfter.Count, Game.GameManager.EnemiesManager.Enemies.Count);
+      Assert.AreEqual(enemiesAfter.Count, game.GameManager.EnemiesManager.AllEntities.Count);
     }
 
     [Test]
@@ -490,7 +492,7 @@ namespace RoguelikeUnitTests
       env.LootGenerator.Probability = new Roguelike.Probability.Looting();
       env.LootGenerator.Probability.SetLootingChance(LootSourceKind.Enemy, kind, 1);
 
-      var enemies = this.Game.GameManager.EnemiesManager.GetEnemies();
+      var enemies = AllEnemies;
       Assert.GreaterOrEqual(enemies.Count, 5);
       enemies.ForEach(i => i.SetLevel(enemyLevel));
       var li = new LootInfo(game, null);

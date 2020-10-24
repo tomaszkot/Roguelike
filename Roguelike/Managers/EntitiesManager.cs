@@ -9,6 +9,7 @@ using System;
 using Roguelike.Events;
 using Roguelike.Policies;
 using SimpleInjector;
+using System.Diagnostics;
 
 namespace Roguelike.Managers
 {
@@ -16,21 +17,47 @@ namespace Roguelike.Managers
   {
     public Hero Hero { get => context.Hero; }
 
-    protected List<LivingEntity> entities = new List<LivingEntity>();
-    LivingEntity skipInTurn;
+    private List<LivingEntity> entities = new List<LivingEntity>();
+    //LivingEntity skipInTurn;
     public AbstractGameLevel Node { get => context.CurrentNode; }
     public GameContext Context { get => context; set => context = value; }
+    public List<LivingEntity> AllEntities { get => entities; set => entities = value; }
 
     protected EventsManager eventsManager;
     protected GameContext context;
     protected Container container;
+    TurnOwner turnOwner;
+    bool pendingForAllIdle = false;
 
-    public EntitiesManager(GameContext context, EventsManager eventsManager, Container container)
+    public EntitiesManager(TurnOwner turnOwner, GameContext context, EventsManager eventsManager, Container container)
     {
+      this.turnOwner = turnOwner;
       this.container = container;
       Context = context;
       Context.ContextSwitched += Context_ContextSwitched;
       this.eventsManager = eventsManager;
+    }
+
+    public virtual List<LivingEntity> CalcActiveEntities()
+    {
+      return this.entities.Where(i => i.Revealed && i.Alive).ToList();
+    }
+
+    private bool ReportAllDone(bool justEndedLoop)
+    {
+      if (Context.TurnOwner == turnOwner)
+      {
+        var busyOnes = entities.Where(i => i.State != EntityState.Idle).ToList();
+        if (!busyOnes.Any())
+        {
+          OnPolicyAppliedAllIdle();
+          return true;
+        }
+        else if(justEndedLoop)
+          pendingForAllIdle = true;
+      }
+
+      return false;
     }
 
     private void Context_ContextSwitched(object sender, ContextSwitch e)
@@ -38,11 +65,46 @@ namespace Roguelike.Managers
       //SetEntities(Context.CurrentNode.GetTiles<LivingEntity>().Where(i=> !(i is Hero)).ToList());
     }
 
-    public virtual void MakeEntitiesMove(LivingEntity skipInTurn = null)
+    public virtual void MakeTurn()
     {
-      this.skipInTurn = skipInTurn;
-      if (entities.Any())
-        MakeRandomMove(entities.First());
+      //this.skipInTurn = skipInTurn;
+      RemoveDead();
+
+      var activeEntities = CalcActiveEntities();
+      context.Logger.LogInfo("EntitiesManager  MakeTurn start, count: " + activeEntities.Count);
+
+      pendingForAllIdle = false;
+      
+      if (!activeEntities.Any())
+      {
+        OnPolicyAppliedAllIdle();
+        context.Logger.LogInfo("no one to move...");
+        return;
+      }
+      
+      foreach (var entity in activeEntities)
+      {
+        context.Logger.LogInfo("turn of: " + entity);
+        Debug.Assert(context.CurrentNode.GetTiles<LivingEntity>().Any(i => i == entity));//TODO
+
+        entity.ApplyLastingEffects();
+        if (!entity.Alive)
+          continue;
+
+        MakeTurn(entity);
+      }
+
+      RemoveDead();
+
+      context.Logger.LogInfo("EnemiesManager  MakeTurn ends");
+      Debug.Assert(Context.TurnOwner == turnOwner);
+      
+      ReportAllDone(true);
+    }
+
+    public virtual void MakeTurn(LivingEntity entity)
+    {
+      MakeRandomMove(entity);
     }
 
     public virtual void MakeRandomMove(LivingEntity entity)
@@ -75,21 +137,22 @@ namespace Roguelike.Managers
 
     protected virtual void OnPolicyApplied(Policy policy)
     {
-      //if (context.TurnOwner != TurnOwner.Enemies)
-      //  return;//in ascii/UT mode this can happend
-
       if (!entitiesSet)
         context.Logger.LogError("!entitiesSet");
-      var notIdle = entities.FirstOrDefault(i => i.State != EntityState.Idle);
-      if (notIdle == null)
+
+      if (context.TurnOwner != turnOwner)
       {
-        OnPolicyAppliedAllIdle();
+        context.Logger.LogError("OnPolicyApplied " + policy + " context.TurnOwner != turnOwner, context.TurnOwner: "+ context.TurnOwner);
+        return;
       }
+      //  return;//in ascii/UT mode this can happend
+      if(pendingForAllIdle)
+        ReportAllDone(false);
     }
 
     protected virtual void OnPolicyAppliedAllIdle()
     {
-      //if (Context.TurnOwner == TurnOwner.Enemies)//this check is mainly for ASCII/UT
+      if (Context.TurnOwner == turnOwner)//this check is mainly for ASCII/UT
       {
         //Context.Logger.LogInfo(" OnPolicyAppliedAllIdle");
         Context.MoveToNextTurnOwner();
@@ -115,51 +178,11 @@ namespace Roguelike.Managers
       return true;
     }
 
-    internal void MoveHeroAllies()
+    public void RemoveDead()
     {
-      if (!entities.Any())
-      {
-        OnPolicyAppliedAllIdle();
-        return;
-      }
-      foreach (var ent in entities)
-      {
-        MakeRandomMove(ent);
-      }
+      entities.RemoveAll(i => !i.Alive);
     }
   }
 
-  public class AlliesManager : EntitiesManager
-  {
-    public AlliesManager(GameContext context, EventsManager eventsManager, Container container) :
-      base(context, eventsManager, container)
-    {
-      context.TurnOwnerChanged += OnTurnOwnerChanged;
-      context.ContextSwitched += Context_ContextSwitched;
-    }
-
-    private void Context_ContextSwitched(object sender, ContextSwitch e)
-    {
-      //base.SetEntities(enemies);
-    }
-
-    protected override void OnPolicyAppliedAllIdle()
-    {
-      if (context.TurnOwner == TurnOwner.Allies)//for ASCII/UT
-      {
-        context.IncreaseActions(TurnOwner.Allies);
-        base.OnPolicyAppliedAllIdle();
-      }
-    }
-
-    private void OnTurnOwnerChanged(object sender, TurnOwner turnOwner)
-    {
-      if (turnOwner == TurnOwner.Hero)
-      {
-        Hero.ApplyLastingEffects();
-      }
-      //if (turnOwner == TurnOwner.Allies)
-      //  MoveHeroAllies();
-    }
-  }
+  
 }

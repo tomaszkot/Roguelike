@@ -1,4 +1,5 @@
 ﻿using Dungeons.Tiles;
+using Roguelike.Effects;
 using Roguelike.LootContainers;
 using Roguelike.Managers;
 using Roguelike.Policies;

@@ -80,7 +80,7 @@ namespace RoguelikeUnitTests
 
       for (var levelIndex = 0; levelIndex < Roguelike.GenerationInfo.MaxLevelIndex; levelIndex++)
       {
-        var enemies = game.GameManager.EnemiesManager.Enemies.Cast<Enemy>().ToList();
+        var enemies = AllEnemies;
         Assert.Greater(enemies.Count, 2);
 
         var boss = enemies.Where(i => i.PowerKind == EnemyPowerKind.Plain).First();

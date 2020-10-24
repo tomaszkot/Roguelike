@@ -31,7 +31,7 @@ namespace RoguelikeUnitTests.Helpers
     public List<Loot> AssertLootFromEnemies(LootKind[] expectedKinds)
     {
       var res = new List<Loot>();
-      var enemies = Enemies;
+      var enemies = game.GameManager.EnemiesManager.AllEntities;
       Assert.GreaterOrEqual(enemies.Count, 5);
       var li = new LootInfo(game, null);
       KillAllEnemies();
@@ -42,11 +42,12 @@ namespace RoguelikeUnitTests.Helpers
         foreach (var loot in lootItems)
         {
           var exp = expectedKinds.Contains(loot.LootKind);
-          //Assert.True(exp || loot is Equipment);//Bosses and Chemp throws Equipment
+          //Assert.True(exp || loot is Equipment);//Bosses and Chemp throws Equipment -> fixed by ForEach(i => i.PowerKind = EnemyPowerKind.Plain)
           if (exp)
+          {
             expectedKindsCounter++;
-
-          res.Add(loot);
+            res.Add(loot);
+          }
           Assert.True(!string.IsNullOrEmpty(loot.tag1));
         }
       }
@@ -57,7 +58,7 @@ namespace RoguelikeUnitTests.Helpers
 
     public void KillAllEnemies()
     {
-      var enemies = Enemies;
+      var enemies = game.GameManager.EnemiesManager.AllEntities;
       for (int i = 0; i < enemies.Count; i++)
       {
         var en = enemies[i];
@@ -115,7 +116,7 @@ namespace RoguelikeUnitTests.Helpers
         var tile = createdTiles[i];
         var to = game.GameManager.Context.TurnOwner;
         var tac = game.GameManager.Context.TurnActionsCount;
-        var ni = game.GameManager.EnemiesManager.GetEnemies().Where(e => e.State != EntityState.Idle).ToList();
+        var ni = Enemies.Where(e => e.State != EntityState.Idle).ToList();
 
         Assert.AreEqual(game.GameManager.Context.TurnOwner, TurnOwner.Hero);
         test.InteractHeroWith(tile as Roguelike.Tiles.InteractiveTile);

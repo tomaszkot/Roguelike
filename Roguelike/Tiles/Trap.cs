@@ -1,5 +1,6 @@
 ﻿using Dungeons.Core;
 using Dungeons.Tiles;
+using Roguelike.Effects;
 using Roguelike.Spells;
 using System;
 using System.Collections.Generic;

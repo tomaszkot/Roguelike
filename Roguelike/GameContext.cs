@@ -19,7 +19,7 @@ using System.Linq;
 namespace Roguelike
 {
   public enum GameContextSwitchKind { DungeonSwitched, NewGame, GameLoaded}
-  public enum TurnOwner { Hero, Allies, Enemies }
+  public enum TurnOwner { Unset, Hero, Allies, Enemies }
 
   public class ContextSwitch
   {
@@ -270,7 +270,12 @@ namespace Roguelike
       get => turnOwner;
       set  
       {
-        turnOwner = value;
+        if (turnOwner != value)
+        {
+          turnOwner = value;
+          if (turnOwner == TurnOwner.Hero)
+            Hero.ApplyLastingEffects();
+        }
         //logger.LogInfo("to =>" + turnOwner);
       }
     }
