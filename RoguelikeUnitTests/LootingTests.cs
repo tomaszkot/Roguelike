@@ -480,15 +480,20 @@ namespace RoguelikeUnitTests
     }
     /////////////////////////////////////////////////////////
     [Test]
-    public void KilledEnemyLevelAffectsGem()
+    [Repeat(2)]
+    [TestCase(1)]
+    [TestCase(6)]
+    public void KilledEnemyLevelAffectsGem(int le)
     {
-      KilledEnemyLevelAffectsEnchanter(LootKind.Gem, 1, new[] { EnchanterSize.Small});
-      KilledEnemyLevelAffectsEnchanter(LootKind.Gem, 6, new[] { EnchanterSize.Medium, EnchanterSize.Big });
+      EnchanterSize[] expectedSizes = new[] { EnchanterSize.Small };
+      if (le == 6)
+        expectedSizes = new[] { EnchanterSize.Medium, EnchanterSize.Big };
+      KilledEnemyLevelAffectsEnchanter(LootKind.Gem, le, expectedSizes);
     }
     /////////////////////////////////////////////////////////
-    public void KilledEnemyLevelAffectsEnchanter(LootKind kind, int enemyLevel, EnchanterSize [] expectedSizes)
+    public void KilledEnemyLevelAffectsEnchanter(LootKind kind, int enemyLevel, EnchanterSize[] expectedSizes)
     {
-      var env = CreateTestEnv();
+      var env = CreateTestEnv(true, 10, 2);
       env.LootGenerator.Probability = new Roguelike.Probability.Looting();
       env.LootGenerator.Probability.SetLootingChance(LootSourceKind.Enemy, kind, 1);
 

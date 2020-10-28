@@ -53,7 +53,7 @@ namespace Roguelike.TileContainers
     {
       get
       {
-        var desc = GetType() + " Index: " + Index;
+        var desc = GetType() + " Index: " + Index + " W:" +Width + ", H:"+Height;
         if (PitName.Any())
           desc += " [" + PitName + "] ";
         return desc;

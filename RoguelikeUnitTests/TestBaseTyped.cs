@@ -10,9 +10,8 @@ namespace RoguelikeUnitTests
       base.OnInit();
     }
 
-    public T CreateTestEnv(bool autoLoadLevel = true, int numEnemies = 10)
+    public T CreateTestEnv(bool autoLoadLevel = true, int numEnemies = 10, int numRooms = 10)
     {
-      var numRooms = 10;
       //var numEn = numEnemies / numRooms;
       var game = CreateGame(autoLoadLevel, numEnemies, numRooms);
       helper = new T();

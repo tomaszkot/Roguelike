@@ -139,13 +139,11 @@ namespace Dungeons
         info = infoNext;
       }
     }
-
-    
-
+        
     private AppendNodeInfo CalcNextValues(List<DungeonNode> mazeNodes, AppendNodeInfo prevInfo, float chanceForLevelTurn, int nodeIndex)
     {
       AppendNodeInfo infoNext = prevInfo;
-
+            
       if (prevInfo.nextForcedSide != null)
       {
         infoNext.side = prevInfo.nextForcedSide.Value;
@@ -166,6 +164,9 @@ namespace Dungeons
           chanceForLevelTurn -= 0.15f;
         }
       }
+
+      //infoNext.side = EntranceSide.Right;//TODO
+
       if (infoNext.side == EntranceSide.Bottom)
       {
         infoNext.nextY += mazeNodes[nodeIndex].Height -1 + nodesPadding;
