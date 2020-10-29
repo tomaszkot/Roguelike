@@ -161,16 +161,18 @@ namespace Roguelike.Managers
       //  return;//in ascii/UT mode this can happend
       if (pendingForAllIdle)
       {
+        context.Logger.LogInfo("calling  ReportAllDone... Context.TurnOwner: " + Context.TurnOwner);
         ReportAllDone(false);
-        pendingForAllIdle = false;
       }
     }
 
     protected virtual void OnPolicyAppliedAllIdle()
     {
+      context.Logger.LogInfo(this+ " OnPolicyAppliedAllIdle Context.TurnOwner "+ Context.TurnOwner);
       if (Context.TurnOwner == turnOwner)//this check is mainly for ASCII/UT
       {
         Context.Logger.LogInfo(this+ " OnPolicyAppliedAllIdle calling MoveToNextTurnOwner");
+        pendingForAllIdle = false;
         Context.MoveToNextTurnOwner();
       }
     }
