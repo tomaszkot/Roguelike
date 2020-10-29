@@ -130,7 +130,7 @@ namespace Roguelike.TileContainers
         }
         catch (Exception ex)
         {
-          Debug.WriteLine(ex.Message);
+          Logger.LogError(ex.Message);
           throw;
         }
       }

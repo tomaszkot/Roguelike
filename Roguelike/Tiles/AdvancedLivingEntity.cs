@@ -13,6 +13,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Markup;
+using SimpleInjector;
 
 namespace Roguelike.Tiles
 {
@@ -213,9 +214,9 @@ namespace Roguelike.Tiles
     public int PrevLevelExperience { get; private set; }
     CurrentEquipment IEquipable.CurrentEquipment { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 
-    protected virtual void CreateInventory()
+    protected virtual void CreateInventory(Container cont)
     {
-      this.Inventory = new Inventory();
+      this.Inventory = new Inventory(cont);
     }
 
     public bool MoveEquipmentInv2Current(Equipment eq, CurrentEquipmentKind ek)

@@ -84,7 +84,7 @@ namespace Roguelike.TileContainers
       if (excludeLootPositions)
       {
         int removed = emptyTiles.RemoveAll(i => Loot.Any(j => j.Value.Point == i.Point));
-        Debug.WriteLine("removed" + removed);
+       Logger.LogInfo("removed" + removed);
       }
       return GetClosestEmpty(baseTile, emptyTiles);
     }

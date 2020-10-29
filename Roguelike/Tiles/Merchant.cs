@@ -13,7 +13,7 @@ namespace Roguelike.Tiles
 {
   public class Merchant : AdvancedLivingEntity
   {
-    public Merchant() : base(new Point().Invalid(), '!')
+    public Merchant(Container cont) : base(new Point().Invalid(), '!')
     {
       Stats.SetNominal(EntityStatKind.Health, 15);
       // Character.Mana = 40;
@@ -26,7 +26,7 @@ namespace Roguelike.Tiles
       Stats.SetNominal(EntityStatKind.Dexterity, 10);
 
       Gold = 100000;
-      CreateInventory();
+      CreateInventory(cont);
       Inventory.Capacity = 24;//TODO
 
       Dirty = true;//TODO

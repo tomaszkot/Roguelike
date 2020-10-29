@@ -104,7 +104,8 @@ namespace Roguelike
         var generInfo = gi ?? new GenerationInfo();
         level = LevelGenerator.Generate(levelIndex, generInfo) as TileContainers.GameLevel;
 
-        level.SetTileAtRandomPosition<Merchant>(levelIndex);
+        Merchant merch = new Merchant(this.Container);
+        level.SetTileAtRandomPosition(merch);
 
         this.levels.Add(level);
       }

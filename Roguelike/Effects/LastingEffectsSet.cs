@@ -8,6 +8,7 @@ using Roguelike.Managers;
 using Roguelike.Spells;
 using Roguelike.Tiles;
 using Roguelike.Tiles.Looting;
+using SimpleInjector;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -24,9 +25,11 @@ namespace Roguelike.Effects
     public event EventHandler<LastingEffect> LastingEffectStarted;
     public event EventHandler<LastingEffect> LastingEffectApplied;
     public event EventHandler<LastingEffect> LastingEffectDone;
+    Container container;
 
-    public LastingEffectsSet(LivingEntity le)
+    public LastingEffectsSet(LivingEntity le, Container container)
     {
+      this.container = container;
       this.livingEntity = le;
     }
 
@@ -94,7 +97,8 @@ namespace Roguelike.Effects
 
     public virtual void ApplyLastingEffects()
     {
-      Debug.WriteLine(livingEntity + " ApplyLastingEffects... "+ LastingEffects.Count);
+      if(container !=null)
+        container.GetInstance<ILogger>().LogInfo(livingEntity + " ApplyLastingEffects... "+ LastingEffects.Count);
       if (this.livingEntity is Hero)
       {
         int k = 0;
@@ -122,7 +126,8 @@ namespace Roguelike.Effects
 
     private void ApplyLastingEffect(LastingEffect le, bool newOne)
     {
-      Debug.WriteLine(livingEntity+ " ApplyLastingEffect: "+le);
+      if(container!=null)
+        container.GetInstance<ILogger>().LogInfo(livingEntity + " ApplyLastingEffect: " + le);
       le.PendingTurns--;
 
       if (newOne || le.Application == EffectApplication.EachTurn)

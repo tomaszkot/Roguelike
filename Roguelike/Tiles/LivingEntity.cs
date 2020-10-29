@@ -86,7 +86,7 @@ namespace Roguelike.Tiles
 
     public LivingEntity(Point point, char symbol) : base(point, symbol)
     {
-      lastingEffectsSet = new LastingEffectsSet(this);
+      lastingEffectsSet = new LastingEffectsSet(this, null);
       Alive = true;
       Name = "";
       Stats.SetNominal(EntityStatKind.ChanceToHit, 75);

@@ -811,7 +811,7 @@ namespace Dungeons
           return;
 
         var revDesc = "reveal: " + reveal + ", for: " + NodeIndex;
-        Debug.WriteLine(revDesc + ", start");
+        Log(revDesc + ", start", false);
         IList<Tile> revealedTiles = new List<Tile>();
 
         DoGridAction((int col, int row) =>
@@ -828,10 +828,10 @@ namespace Dungeons
             if (revealTile)
             {
               revealedTiles.Add(tiles[row, col]);
-              //Debug.WriteLine("reveal " + tiles[row, col]);
+              //Log("reveal " + tiles[row, col], false);
               if (tile.DungeonNodeIndex < 0)
               {
-                //Debug.WriteLine("reveal < 0" + tiles[row, col]);
+                //Log("reveal < 0" + tiles[row, col], false);
               }
             }
           }
@@ -843,7 +843,7 @@ namespace Dungeons
           OnRevealed(this, new GenericEventArgs<NodeRevealedParam>(new NodeRevealedParam() { NodeIndex = NodeIndex, Tiles = revealedTiles }));
         }
 
-        Debug.WriteLine(revDesc + ", end");
+        Log(revDesc + ", end", false);
       }
 
       protected virtual bool ShallReveal(int row, int col)

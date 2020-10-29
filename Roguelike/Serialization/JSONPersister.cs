@@ -1,9 +1,11 @@
 ﻿
+using Dungeons.Core;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Serialization;
 using Roguelike.TileContainers;
 using Roguelike.Tiles;
+using SimpleInjector;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -21,6 +23,12 @@ namespace Roguelike.Serialization
   {
     protected const string extension = ".json";
     protected enum FileKind { Hero, GameLevel, GameState }
+    Container container;
+
+    public JSONPersister(Container container)
+    {
+      this.container = container;
+    }
 
     public void Save<T>(T entity, string filePath)
     {
@@ -41,7 +49,7 @@ namespace Roguelike.Serialization
       }
       catch (Exception ex)
       {
-        Debug.WriteLine(ex);
+        this.container.GetInstance<ILogger>().LogError(ex);
         throw;
       }
     }
@@ -53,10 +61,11 @@ namespace Roguelike.Serialization
       try
       {
         var json = File.ReadAllText(filePath);
-        Debug.WriteLine("Engine_JsonDeserializer...");
+        this.container.GetInstance<ILogger>().LogInfo("Engine_JsonDeserializer...");
+        
         if (!IsValidJson(json))
         {
-          Debug.WriteLine("param not a valid json!");
+          this.container.GetInstance<ILogger>().LogError("param json is not a valid json!");
           return null;
         }
         ITraceWriter traceWriter = null;// new MemoryTraceWriter();
@@ -76,7 +85,7 @@ namespace Roguelike.Serialization
       }
       catch (Exception ex)
       {
-        Debug.WriteLine(ex);
+        this.container.GetInstance<ILogger>().LogError(ex);
         throw;
       }
 

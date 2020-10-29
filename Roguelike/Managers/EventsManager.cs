@@ -35,7 +35,6 @@ namespace Roguelike.Managers
     public void AppendAction(GameAction ac)
     {
       LastActions.Add(ac);
-      // //Debug.WriteLine(ac);//slow
       if (ActionAppended != null)//send it to listeners as logic of game depends on it
       {
         ActionAppended(this, ac);

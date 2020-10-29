@@ -21,7 +21,7 @@ namespace Roguelike.Tiles
     protected Container container;
     public Roguelike.LootContainers.Crafting Crafting { get; set; }
 
-    public Hero(): base(new Point().Invalid(), '@')
+    public Hero(Container cont): base(new Point().Invalid(), '@')
     {
       canAdvanceInExp = true;
       Stats.SetNominal(EntityStatKind.Health, 40);//level up +2 // 40 -> 150
@@ -42,11 +42,11 @@ namespace Roguelike.Tiles
 
       NextLevelExperience = FirstNextLevelExperienceThreshold;
 
-      CreateInventory();
+      CreateInventory(cont);
       Inventory.InvOwner = InvOwner.Hero;
       Inventory.InvBasketKind = InvBasketKind.Hero;
 
-      Crafting = new Roguelike.LootContainers.Crafting();
+      Crafting = new Roguelike.LootContainers.Crafting(cont);
       
       Dirty = true;//TODO
 

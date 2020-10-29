@@ -68,10 +68,16 @@ namespace Roguelike.Managers
     public virtual void MakeTurn()
     {
       //this.skipInTurn = skipInTurn;
+      if (pendingForAllIdle)
+      {
+        context.Logger.LogInfo(this + " MakeTurn pendingForAllIdle!, return " );
+        return;
+      }
+
       RemoveDead();
 
       var activeEntities = CalcActiveEntities();
-      context.Logger.LogInfo("EntitiesManager  MakeTurn start, count: " + activeEntities.Count);
+      context.Logger.LogInfo(this+" MakeTurn start, count: " + activeEntities.Count);
 
       pendingForAllIdle = false;
       
@@ -85,13 +91,20 @@ namespace Roguelike.Managers
       foreach (var entity in activeEntities)
       {
         context.Logger.LogInfo("turn of: " + entity);
-        Debug.Assert(context.CurrentNode.GetTiles<LivingEntity>().Any(i => i == entity));//TODO
+        try
+        {
+          Debug.Assert(context.CurrentNode.GetTiles<LivingEntity>().Any(i => i == entity));//TODO
 
-        entity.ApplyLastingEffects();
-        if (!entity.Alive)
-          continue;
+          entity.ApplyLastingEffects();
+          if (!entity.Alive)
+            continue;
 
-        MakeTurn(entity);
+          MakeTurn(entity);
+        }
+        catch (Exception ex)
+        {
+          context.Logger.LogError("ex: "+ ex);
+        }
       }
 
       RemoveDead();
@@ -146,15 +159,18 @@ namespace Roguelike.Managers
         return;
       }
       //  return;//in ascii/UT mode this can happend
-      if(pendingForAllIdle)
+      if (pendingForAllIdle)
+      {
         ReportAllDone(false);
+        pendingForAllIdle = false;
+      }
     }
 
     protected virtual void OnPolicyAppliedAllIdle()
     {
       if (Context.TurnOwner == turnOwner)//this check is mainly for ASCII/UT
       {
-        //Context.Logger.LogInfo(" OnPolicyAppliedAllIdle");
+        Context.Logger.LogInfo(this+ " OnPolicyAppliedAllIdle calling MoveToNextTurnOwner");
         Context.MoveToNextTurnOwner();
       }
     }

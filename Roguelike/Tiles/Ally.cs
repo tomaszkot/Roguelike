@@ -1,5 +1,6 @@
 ﻿using Dungeons.Core;
 using Roguelike.Attributes;
+using SimpleInjector;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -13,7 +14,7 @@ namespace Roguelike.Tiles
 
   public class Ally : AdvancedLivingEntity
   {
-    public Ally() : base(new Point().Invalid(), '!')
+    public Ally(Container cont) : base(new Point().Invalid(), '!')
     {
       Stats.SetNominal(EntityStatKind.Health, 15);
       // Character.Mana = 40;
@@ -25,7 +26,7 @@ namespace Roguelike.Tiles
       Stats.SetNominal(EntityStatKind.Defense, 10);
       Stats.SetNominal(EntityStatKind.Dexterity, 10);
 
-      CreateInventory();
+      CreateInventory(cont);
 
       Dirty = true;//TODO
 #if ASCII_BUILD

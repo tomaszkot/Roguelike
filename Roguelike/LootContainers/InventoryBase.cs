@@ -1,5 +1,6 @@
 ﻿using Dungeons.ASCIIDisplay;
 using Dungeons.ASCIIDisplay.Presenters;
+using Dungeons.Core;
 using Newtonsoft.Json;
 using Roguelike.Events;
 using Roguelike.Managers;
@@ -36,8 +37,11 @@ namespace Roguelike.LootContainers
     [JsonIgnore]
     public EventsManager EventsManager { get; set; }
 
-    public InventoryBase()
+    Container container;
+
+    public InventoryBase(Container container)
     {
+      this.container = container;
       Capacity = 48;
     }
         
@@ -134,7 +138,7 @@ namespace Roguelike.LootContainers
     public virtual bool Add(Loot item, bool notifyObservers = true, bool justSwappingHeroInv = false, 
       InventoryActionDetailedKind detailedKind = InventoryActionDetailedKind.Unset)
     {
-      //Debug.WriteLine("Add(Loot item) " + Thread.CurrentThread.ManagedThreadId);
+      //container.GetInstance<ILogger>().LogInfo("Add(Loot item)");
       var exist = false;
       StackedLoot stackedInInv = GetStackedItem(item);
       var itemStacked = item as StackedLoot;
@@ -178,7 +182,6 @@ namespace Roguelike.LootContainers
         else
         {
           //var sameID = Items.FirstOrDefault(i => i.Id == item.Id);
-          ////Debug.WriteLine("id = "+ item.Id + "sameID = "+ sameID);
           Assert(false, "Add(Loot item) duplicate item " + item);
           //throw new Exception("Add(Loot item) duplicate item " + item);
         }
