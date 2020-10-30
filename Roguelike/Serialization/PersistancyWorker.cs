@@ -38,7 +38,7 @@ namespace Roguelike.Serialization
     public void Load(string heroName, GameManager gm, Func<Hero, GameState, AbstractGameLevel> worldLoader)
     {
       var hero = gm.Persister.LoadHero(heroName);
-
+            
       var gs = gm.Persister.LoadGameState(heroName);
       gm.SetGameState(gs);
 

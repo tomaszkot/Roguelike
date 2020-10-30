@@ -18,10 +18,20 @@ namespace Roguelike.Tiles
   {
     public static int FirstNextLevelExperienceThreshold = 50;
     public const int StartStrength = 15;//15;
-    protected Container container;
+    private Container container;
     public Roguelike.LootContainers.Crafting Crafting { get; set; }
+    protected Container Container 
+    { 
+      get => container; 
+      set 
+      {
+        container = value;
+        Inventory.Container = value;
+        Crafting.Container = value;
+      }
+    }
 
-    public Hero(Container cont): base(new Point().Invalid(), '@')
+    public Hero(): base(new Point().Invalid(), '@')
     {
       canAdvanceInExp = true;
       Stats.SetNominal(EntityStatKind.Health, 40);//level up +2 // 40 -> 150
@@ -42,11 +52,11 @@ namespace Roguelike.Tiles
 
       NextLevelExperience = FirstNextLevelExperienceThreshold;
 
-      CreateInventory(cont);
+      CreateInventory(null);
       Inventory.InvOwner = InvOwner.Hero;
       Inventory.InvBasketKind = InvBasketKind.Hero;
 
-      Crafting = new Roguelike.LootContainers.Crafting(cont);
+      Crafting = new Roguelike.LootContainers.Crafting(null);
       
       Dirty = true;//TODO
 
@@ -80,11 +90,9 @@ namespace Roguelike.Tiles
 
     public virtual void OnContextSwitched(Container container)
     {
-      this.container = container;
+      this.Container = container;
 
       Inventory.Owner = "Hero.Inv";
-      Inventory.Container = container;
-      Crafting.Container = container;
       Crafting.InvItems.Owner = "Crafting.InvItems";
       Crafting.Recipes.Owner = "Crafting.Recipes";
     }

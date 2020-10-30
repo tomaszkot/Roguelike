@@ -25,8 +25,11 @@ namespace Roguelike.Tiles
     protected CurrentEquipment currentEquipment = new CurrentEquipment();
     protected Inventory inventory = null;
 
-    //[JsonIgnoreAttribute]
-    public virtual Inventory Inventory { get => inventory; set => inventory = value; }
+    public virtual Inventory Inventory 
+    { 
+      get => inventory; 
+      set => inventory = value; 
+    }
     //[JsonIgnoreAttribute]
     public CurrentEquipment CurrentEquipment { get => currentEquipment; set => currentEquipment = value; }
     public event EventHandler<EntityStatKind> StatLeveledUp;

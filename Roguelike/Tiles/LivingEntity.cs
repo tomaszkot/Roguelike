@@ -152,9 +152,10 @@ namespace Roguelike.Tiles
           alive = value;
           if (!alive)
           {
-            if (eventsManager == null)
-              throw new Exception("eventsManager == null "+this);
-            AppendAction(new LivingEntityAction(LivingEntityActionKind.Died) { InvolvedEntity = this, Level = ActionLevel.Important, Info = Name +" Died" });
+            //crashes on deserialization
+            //if (eventsManager == null)
+            //  throw new Exception("eventsManager == null "+this);
+            //AppendAction(new LivingEntityAction(LivingEntityActionKind.Died) { InvolvedEntity = this, Level = ActionLevel.Important, Info = Name +" Died" });
           }
         }
       }
@@ -439,6 +440,7 @@ namespace Roguelike.Tiles
       {
         Alive = false;
         DiedOfEffect = effect;
+        AppendAction(new LivingEntityAction(LivingEntityActionKind.Died) { InvolvedEntity = this, Level = ActionLevel.Important, Info = Name +" Died" });
         return true;
       }
       return false;
@@ -452,8 +454,7 @@ namespace Roguelike.Tiles
     public virtual void ReduceHealth(float amount)
     {
       Stats.GetStat(EntityStatKind.Health).Subtract(amount);
-      if (Alive && IsHealthZero())
-        Alive = false;
+      DieIfShould(EffectType.Unset);
     }
 
     private float GetDefense()

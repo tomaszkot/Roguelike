@@ -36,12 +36,11 @@ namespace Roguelike.LootContainers
 
     [JsonIgnore]
     public EventsManager EventsManager { get; set; }
-
-    Container container;
-
+    
     public InventoryBase(Container container)
     {
-      this.container = container;
+      this.Container = container;
+      //Assert(this.Container != null);
       Capacity = 48;
     }
         
@@ -214,7 +213,7 @@ namespace Roguelike.LootContainers
     public bool Remove(Loot item, int stackedCount = 1)
     {
       var res = false;
-      Assert(false, "loot");
+      //Assert(false, "loot");
       Loot itemToRemove = item;
       bool sendSignal = true;
       if (item.StackedInInventory)

@@ -223,11 +223,31 @@ namespace RoguelikeUnitTests
     [Test]
     public void KilledEnemyForScrolls()
     {
-      var env = CreateTestEnv();
+      var env = CreateTestEnv(true, 100);
       env.LootGenerator.Probability = new Roguelike.Probability.Looting();
       env.LootGenerator.Probability.SetLootingChance(LootSourceKind.Enemy, LootKind.Scroll, 1);
-      var loot = env.AssertLootFromEnemies(new[] { LootKind.Scroll });
+      var scrolls = env.AssertLootFromEnemies(new[] { LootKind.Scroll }).Cast<Scroll>().ToList();
+      Assert.Less(scrolls.Count, 150);
+      var typesGrouped = scrolls.GroupBy(f => f.Kind).ToList();
+      Assert.GreaterOrEqual(typesGrouped.Count, 3);//TODO support more scrolls!
+      var identCount = typesGrouped.Where(i => i.Key == SpellKind.Identify).First().Count();
       
+      foreach (var gr in typesGrouped)
+      {
+        var count = gr.Count();
+        Assert.Less(count, 90);
+        int min = gr.Key == SpellKind.Portal ? 7 : 10;
+        Assert.Greater(count, min);
+        if (gr.Key != SpellKind.Identify)
+        {
+          Assert.Greater(identCount, count * 1.15);
+        }
+        if (gr.Key != SpellKind.Portal)
+        {
+          Assert.Less(identCount, count * 1.8);
+        }
+      }
+            
     }
 
     [Test]
@@ -279,17 +299,29 @@ namespace RoguelikeUnitTests
     public void Barrels()
     {
       var env = CreateTestEnv();
-      var numberOfInterTiles = 100;
+      int multiplicator = 2;
+      var numberOfInterTiles = 100 * multiplicator;
       var enemiesBefore = env.Game.Level.GetTiles<Enemy>();
       var newLootItems = env.TestInteractive<Barrel>(
          (InteractiveTile barrel) =>
          {
-         }, numberOfInterTiles, 50, 1
+         }, numberOfInterTiles, 50* multiplicator, 1
         );
       var enemiesAfter = env.Game.Level.GetTiles<Enemy>();
       Assert.Greater(enemiesAfter.Count, enemiesBefore.Count);
-      Assert.Greater(enemiesAfter.Count - enemiesBefore.Count, 5);
+      Assert.Greater(enemiesAfter.Count - enemiesBefore.Count, 5* multiplicator);
       Assert.AreEqual(enemiesAfter.Count, game.GameManager.EnemiesManager.AllEntities.Count);
+
+      //scrolls
+      var scrolls = newLootItems.Get<Scroll>();
+      Assert.Greater(scrolls.Count, 0);
+      Assert.Less(scrolls.Count, 10);
+      var typesGrouped = scrolls.GroupBy(f => f.Kind).ToList();
+      var ident = typesGrouped.Where(i => i.Key == SpellKind.Identify).FirstOrDefault();
+      Assert.NotNull(ident);
+      var identCount = ident.Count();
+      Assert.Less(identCount, 10);
+      Assert.Greater(identCount, 0);
     }
 
     [Test]
@@ -310,11 +342,23 @@ namespace RoguelikeUnitTests
 
       var potions = lootInfo.Get<Potion>();
       Assert.Greater(potions.Count, 8);
-      Assert.Less(potions.Count, 40);
+      Assert.Less(potions.Count, 43);
 
       var mushes = lootInfo.Get<Mushroom>();
       Assert.Greater(mushes.Count, 1);
       Assert.Less(mushes.Count, 20);
+
+      //scrolls
+      var scrolls = lootInfo.Get<Scroll>();
+      Assert.Greater(scrolls.Count, 0);
+      float maxScrolls = 35;
+      Assert.Less(scrolls.Count, maxScrolls);
+      var typesGrouped = scrolls.GroupBy(f => f.Kind).ToList();
+      var ident = typesGrouped.Where(i => i.Key == SpellKind.Identify).FirstOrDefault();
+      Assert.NotNull(ident);
+      var identCount = ident.Count();
+      Assert.Less(identCount, maxScrolls/2);
+      Assert.Greater(identCount, maxScrolls/5);
     }
 
     [Test]
@@ -450,15 +494,8 @@ namespace RoguelikeUnitTests
     {
       for (int ind = 0; ind < loopCount; ind++)
       {
-        var env = CreateTestEnv(numEnemies: 100);
-        var enemies = env.Enemies;
-        Assert.AreEqual(enemies.Count, 100);
-
-        var li = new LootInfo(game, null);
-        env.KillAllEnemies();
-        var lootItems = li.GetDiff();
-        Assert.Greater(lootItems.Count, 0);
-        var food = lootItems.Where(j => j.LootKind == LootKind.Food).ToList();
+        var lootItems = KillEnemies(100);
+        var food = lootItems.Get<Food>();
         Assert.Greater(food.Count, 0);
         Assert.Less(food.Count, 36);
 
@@ -472,6 +509,38 @@ namespace RoguelikeUnitTests
         }
       }
     }
+
+    private LootInfo KillEnemies(int enemiesCount)
+    {
+      var env = CreateTestEnv(numEnemies: enemiesCount);
+      var enemies = env.Enemies;
+      Assert.AreEqual(enemies.Count, enemiesCount);
+
+      var li = new LootInfo(game, null);
+      env.KillAllEnemies();
+      var lootItems = li.GetDiff();
+      Assert.Greater(lootItems.Count, 0);
+      return li;
+    }
+
+    /////
+
+    [Test]
+    public void KilledEnemyGivesIdentifScroll()
+    {
+      for (int ind = 0; ind < loopCount; ind++)
+      {
+        var lootItems = KillEnemies(100);
+        var scrolls = lootItems.Get<Scroll>();
+        Assert.Greater(scrolls.Count, 0);
+        Assert.Less(scrolls.Count, 10);
+        var typesGrouped = scrolls.GroupBy(f => f.Kind).ToList();
+        var identCount = typesGrouped.Where(i => i.Key == SpellKind.Identify).First().Count();
+        Assert.Less(identCount, 10);
+        Assert.Greater(identCount, 0);
+      }
+    }
+
     /////////////////////////////////////////////////////////
     [Test]
     public void KilledEnemyLevelAffectsTinyTrophy()

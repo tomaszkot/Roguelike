@@ -74,8 +74,19 @@ namespace Roguelike.Generators
         foreach (var lk in lootKinds)
         {
           var val = .2f;
-          if (lk == LootKind.Potion)
-            val *= 1.15f;
+          if (lk == LootKind.Potion || lk == LootKind.Scroll)
+          {
+            var mult = 1.15f;
+            if (lootSource == LootSourceKind.PlainChest)
+            {
+              //if (lk == LootKind.Scroll)
+              //  mult = 0.5f;
+              if (lk == LootKind.Gem || lk == LootKind.HunterTrophy)
+                mult = 0.5f;
+            }
+            val *= mult;
+          }
+
           lkChance.SetChance(lk, val);
         }
         probability.SetLootingChance(lootSource, lkChance);
@@ -281,7 +292,19 @@ namespace Roguelike.Generators
       else if (kind == LootKind.Plant)
         res = new Plant();
       else if (kind == LootKind.Scroll)
-        res = LootFactory.ScrollsFactory.GetRandom(level);
+      {
+        var scroll = LootFactory.ScrollsFactory.GetRandom(level) as Scroll;
+
+        if (scroll.Kind == Spells.SpellKind.Portal //no need for so many of them
+          || (scroll.Kind != Spells.SpellKind.Identify && RandHelper.GetRandomDouble() > 0.3)) //these are fine
+        {
+          var newScroll = LootFactory.ScrollsFactory.GetRandom(level) as Scroll;
+          if (newScroll.Kind != Spells.SpellKind.Portal || scroll.Kind == Spells.SpellKind.Portal)
+            scroll = newScroll;
+        }
+
+        res = scroll;
+      }
       else if (kind == LootKind.Gem)
       {
         res = GetRandomEnchanter(level, false);
@@ -368,7 +391,11 @@ namespace Roguelike.Generators
     public virtual Loot GetRandomLoot(int level, LootKind skip = LootKind.Unset)
     {
       var enumVal = RandHelper.GetRandomEnumValue<LootKind>(new[] 
-      { LootKind.Other, LootKind.Gem, LootKind.Recipe, LootKind.Seal, LootKind.SealPart, LootKind.Unset, LootKind.HunterTrophy, skip});
+      { 
+        LootKind.Other, 
+        //LootKind.Gem, LootKind.Recipe, LootKind.HunterTrophy
+        LootKind.Seal, LootKind.SealPart, LootKind.Unset, skip
+      });
       var loot = GetRandomLoot(enumVal, level);
       return loot;
     }

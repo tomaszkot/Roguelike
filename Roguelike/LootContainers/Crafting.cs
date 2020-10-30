@@ -21,14 +21,13 @@ namespace Roguelike.LootContainers
       set 
       {
         container = value;
-       // Recipes.Container = value;
-       // InvItems.Container = value;
+        Recipes.Container = value;
+        InvItems.Container = value;
       } 
     }
 
     public Crafting(Container container)
     {
-      Container = container;
       Recipes = new InventoryBase(container);
       Recipes.Capacity = 14;
       Recipes.InvOwner = InvOwner.Hero;
@@ -39,6 +38,7 @@ namespace Roguelike.LootContainers
       InvItems.InvBasketKind = InvBasketKind.CraftingInvItems;
 
       InvOwner = InvOwner.Hero;
+      Container = container;
     }
   }
 }
