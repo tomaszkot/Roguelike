@@ -180,6 +180,9 @@ namespace Roguelike.Effects
       }
     }
 
+    [JsonIgnore]
+    public Container Container { get; internal set; }
+
     //For the time of lasting effect some state is changed, then restored to the original value (flag add)
     public void HandleSpecialFightStat(LastingEffect le, bool add)
     {

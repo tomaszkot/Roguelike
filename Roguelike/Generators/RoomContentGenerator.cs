@@ -126,7 +126,8 @@ namespace Roguelike.Generators
     protected virtual Enemy CreateEnemyInstance(string enemyName)
     {
       var enemy = container.GetInstance<Enemy>();
-      
+
+      enemy.Container = this.container;
       enemy.tag1 = enemyName;
       enemy.Name = enemyName;
       if (EnemySymbols.EnemiesToSymbols.ContainsKey(enemy.Name))

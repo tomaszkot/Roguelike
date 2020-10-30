@@ -10,6 +10,7 @@ using Roguelike.Managers;
 using Roguelike.Spells;
 using Roguelike.Tiles.Looting;
 using Roguelike.Utils;
+using SimpleInjector;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -161,16 +162,22 @@ namespace Roguelike.Tiles
       }
     }
 
-    EventsManager eventsManager;
+    Container container;
+    [JsonIgnore]
+    public virtual Container Container
+    {
+      get { return container; }
+      set
+      {
+        container = value;
+        this.lastingEffectsSet.Container = value;
+      }
+    }
+
     [JsonIgnore]
     public EventsManager EventsManager
     {
-      get { return eventsManager; }
-      set
-      { 
-        eventsManager = value;
-        this.lastingEffectsSet.EventsManager = value;
-      }
+      get { return Container.GetInstance<EventsManager>(); }
     }
 
     internal bool CalculateIfHitWillHappen(LivingEntity target)
@@ -194,7 +201,7 @@ namespace Roguelike.Tiles
         {
           if (ShouldEvade(target, EntityStatKind.ChanceToEvadeMeleeAttack, null))
           {
-            eventsManager.AppendAction(new LivingEntityAction(LivingEntityActionKind.Missed) { InvolvedEntity = this , Info = Name+" missed "+ target.Name});
+            EventsManager.AppendAction(new LivingEntityAction(LivingEntityActionKind.Missed) { InvolvedEntity = this , Info = Name+" missed "+ target.Name});
             return false;
           }
         }

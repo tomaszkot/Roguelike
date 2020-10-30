@@ -362,16 +362,12 @@ namespace Roguelike.TileContainers
       return GetAllStairs(StairsKind.PitDown).Where(i=> i.PitName == pitName).SingleOrDefault();
     }
 
-    internal int GetSpawnEnemyLevel()
-    {
-      return Index;
-    }
-
-    internal Enemy SpawnEnemy(EventsManager em)
+    internal Enemy SpawnEnemy(ILootSource lootSource)
     {
       var enemy = new Enemy(EnemySymbols.SkeletonSymbol);
-      enemy.SetLevel(GetSpawnEnemyLevel());
-      enemy.EventsManager = em;
+      enemy.Container = Container;
+      enemy.SetLevel(lootSource.Level);
+      enemy.Container = this.Container;
       enemy.tag1 = EnemySymbols.EnemiesToSymbols.Where(i => i.Value == EnemySymbols.SkeletonSymbol).Single().Key;
       return enemy;
     }

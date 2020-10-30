@@ -18,14 +18,14 @@ namespace Roguelike.Tiles
   {
     public static int FirstNextLevelExperienceThreshold = 50;
     public const int StartStrength = 15;//15;
-    private Container container;
+    
     public Roguelike.LootContainers.Crafting Crafting { get; set; }
-    protected Container Container 
+    public override Container Container 
     { 
-      get => container; 
+      get => base.Container; 
       set 
       {
-        container = value;
+        base.Container = value;
         Inventory.Container = value;
         Crafting.Container = value;
       }

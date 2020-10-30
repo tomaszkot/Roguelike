@@ -35,7 +35,10 @@ namespace Roguelike.LootContainers
     public InvBasketKind InvBasketKind { get; set; }
 
     [JsonIgnore]
-    public EventsManager EventsManager { get; set; }
+    public EventsManager EventsManager 
+    {
+      get { return Container.GetInstance<EventsManager>(); }
+    }
     
     public InventoryBase(Container container)
     {
@@ -194,8 +197,6 @@ namespace Roguelike.LootContainers
 
     private void AppendAction(GameAction ac)
     {
-      if (EventsManager == null && Container!=null)
-        EventsManager = Container.GetInstance<EventsManager>();
       if (EventsManager != null)
         EventsManager.AppendAction(ac);
       else

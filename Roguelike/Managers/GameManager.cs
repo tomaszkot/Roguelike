@@ -140,7 +140,7 @@ namespace Roguelike.Managers
 
     protected virtual void InitNode(AbstractGameLevel node, bool fromLoad = false)
     {
-      node.GetTiles<LivingEntity>().ForEach(i => i.EventsManager = eventsManager);
+      node.GetTiles<LivingEntity>().ForEach(i => i.Container = this.Container);
       node.Logger = this.Logger;
       if (fromLoad)
         InitNodeOnLoad(node);
