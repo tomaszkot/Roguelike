@@ -132,7 +132,7 @@ namespace Roguelike.LootContainers
       return Items.Where(i => i.GetType() == typeof(T)).Cast<T>().ToList();
     }
 
-    private StackedLoot GetStackedItem(Loot loot)
+    protected StackedLoot GetStackedItem(Loot loot)
     {
       return Items.FirstOrDefault(i => i == loot) as StackedLoot;
     }

@@ -54,6 +54,7 @@ namespace Roguelike
       public bool TurnOffSpellAfterUseOnTouchMode { get; set; }
       public bool AutoPutOnBetterEquipment { get; set; } = true;
       public bool AllowInPlaceInventoryCrafting { get; set; } = true;
+      public bool PlaceLootToShortcutBar { get; set; } = true;
     }
 
     public class Input
