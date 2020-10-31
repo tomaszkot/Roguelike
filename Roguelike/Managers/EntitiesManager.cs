@@ -70,7 +70,7 @@ namespace Roguelike.Managers
       //this.skipInTurn = skipInTurn;
       if (pendingForAllIdle)
       {
-        context.Logger.LogInfo(this + " MakeTurn pendingForAllIdle!, return " );
+        //context.Logger.LogInfo(this + " MakeTurn pendingForAllIdle!, return " );
         return;
       }
 
