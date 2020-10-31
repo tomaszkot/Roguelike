@@ -106,7 +106,10 @@ namespace Roguelike.Tiles
 
         leveledUp = true;
 
-        if(LeveledUp!=null)
+        this.Stats.GetStat(EntityStatKind.Health).SetSubtraction(0);
+        this.Stats.GetStat(EntityStatKind.Mana).SetSubtraction(0);
+
+        if (LeveledUp!=null)
           LeveledUp(this, EventArgs.Empty);
 
         AppendAction(new HeroAction() { Kind = HeroActionKind.LeveledUp, Info = "Hero has gained a new level!" });

@@ -16,6 +16,34 @@ namespace RoguelikeUnitTests
     }
 
     [Test]
+    public void TestLevelUp()
+    {
+      var game = CreateGame();
+      var health = game.Hero.Stats.Health;
+      bool leveledUpDone = false;
+      game.Hero.LeveledUp += (object sender, EventArgs e)=>
+      {
+        Assert.AreEqual(health, game.Hero.Stats.Health);//Health restored
+        leveledUpDone = true;
+      };
+           
+      var enemy = game.GameManager.EnemiesManager.AllEntities.First();
+
+      game.Hero.OnPhysicalHit(enemy);
+      Assert.Greater(health, game.Hero.Stats.Health);
+      for (int i = 0; i < 100; i++)
+      {
+        game.Hero.IncreaseExp(i);
+        if (leveledUpDone)
+          break;
+      }
+
+      Assert.True(leveledUpDone);
+    }
+
+    
+
+    [Test]
     public void TestStatsFormatting()
     {
       //var v1 = Math.Round(1.2);
