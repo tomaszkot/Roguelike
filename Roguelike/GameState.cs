@@ -1,13 +1,9 @@
-﻿using Newtonsoft.Json;
+﻿//using Algorithms;
+using Newtonsoft.Json;
 using Roguelike.Serialization;
 using Roguelike.Settings;
-using Roguelike.TileContainers;
-using Roguelike.Tiles;
-using System;
-using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Roguelike
 {
@@ -27,6 +23,7 @@ namespace Roguelike
         
     public RpgGameSettings Settings { get; set; } = new RpgGameSettings();
     public HeroPath HeroPathValue { get; set; } = new HeroPath();
+    public Point HeroInitGamePosition { get; set; }
     public History History { get; set; } = new History();
 
     [JsonIgnore]
