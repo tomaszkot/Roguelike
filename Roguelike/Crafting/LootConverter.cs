@@ -119,7 +119,7 @@ namespace Roguelike.Crafting
           }
           var eq = equips.ElementAt(0) as Equipment;
           if(!eq.Enchantable)
-            return ReturnCraftingError("Equipment is not enchantable");
+            return ReturnCraftingError("Equipment is not "+ Roguelike.Strings.Enchantable.ToLower());
           var freeSlots = eq.EnchantSlots - eq.Enchants.Count;
           if(freeSlots < enchanters.Count())
             return ReturnCraftingError("Too many enchantables added");

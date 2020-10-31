@@ -21,7 +21,8 @@ namespace Roguelike.Effects
     TornApart,
     Frighten,
     Stunned,
-    ManaShield, Rage, Weaken, IronSkin, ResistAll, Inaccuracy, Hooch
+    ManaShield, Rage, Weaken, IronSkin, ResistAll, Inaccuracy, Hooch,
+    Ally
   }
 
   public interface ILastingEffectOwner
