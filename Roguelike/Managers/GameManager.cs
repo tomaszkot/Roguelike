@@ -281,6 +281,7 @@ namespace Roguelike.Managers
     public InteractionResult HandleHeroShift(int horizontal, int vertical)
     {
       InteractionResult res = InteractionResult.None;
+      
       if (!CanHeroDoAction())
         return res;
 

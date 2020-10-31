@@ -142,7 +142,14 @@ namespace Roguelike.Tiles
         pathToTarget = value;
       }
     }
-    
+
+    ILogger Logger
+    {
+      get { 
+      return Container.GetInstance<ILogger>(); 
+      }
+    }
+
     public virtual bool Alive
     {
       get { return alive; }
@@ -150,14 +157,8 @@ namespace Roguelike.Tiles
       {
         if (alive != value)
         {
-          alive = value;
-          if (!alive)
-          {
-            //crashes on deserialization
-            //if (eventsManager == null)
-            //  throw new Exception("eventsManager == null "+this);
-            //AppendAction(new LivingEntityAction(LivingEntityActionKind.Died) { InvolvedEntity = this, Level = ActionLevel.Important, Info = Name +" Died" });
-          }
+            alive = value;
+          
         }
       }
     }
@@ -182,13 +183,14 @@ namespace Roguelike.Tiles
 
     internal bool CalculateIfHitWillHappen(LivingEntity target)
     {
-      var randVal = RandHelper.Random.NextDouble();
+      //var randVal = RandHelper.Random.NextDouble();
       var hitWillHappen = CalculateIfStatChanceApplied(EntityStatKind.ChanceToHit, target);
       return hitWillHappen;
     }
 
     internal bool CalculateIfStatChanceApplied(EntityStatKind esk, LivingEntity target = null, FightItem fi = null)
     {
+      Container.GetInstance<ILogger>().LogInfo(this + " CalculateIfStatChanceApplied...");
       var randVal = (float)RandHelper.Random.NextDouble();
       var chance = GetEffectChance(esk);
       //if (fi != null && fi is ThrowingKnife)
@@ -204,6 +206,9 @@ namespace Roguelike.Tiles
             EventsManager.AppendAction(new LivingEntityAction(LivingEntityActionKind.Missed) { InvolvedEntity = this , Info = Name+" missed "+ target.Name});
             return false;
           }
+
+          Container.GetInstance<ILogger>().LogInfo(this + " CalculateIfStatChanceApplied true");
+          return true;
         }
       }
       return randVal > 0 && (randVal * 100 <= chance);
@@ -255,7 +260,7 @@ namespace Roguelike.Tiles
       //  PlayPunchSound();
       //}
       var dead = DieIfShould(EffectType.Unset);
-      if (!dead && IsWounded)
+      if(!dead && IsWounded)
       {
         lastingEffectsSet.EnsureEffect(EffectType.Bleeding, inflicted, attacker);
       }
@@ -447,10 +452,20 @@ namespace Roguelike.Tiles
       {
         Alive = false;
         DiedOfEffect = effect;
-        AppendAction(new LivingEntityAction(LivingEntityActionKind.Died) { InvolvedEntity = this, Level = ActionLevel.Important, Info = Name +" Died" });
+        //AppendDeadAction();
         return true;
       }
       return false;
+    }
+
+    void AppendDeadAction()
+    {
+      AppendAction(GetDeadAction());
+    }
+
+    public LivingEntityAction GetDeadAction()
+    {
+      return new LivingEntityAction(LivingEntityActionKind.Died) { InvolvedEntity = this, Level = ActionLevel.Important, Info = Name + " Died" };
     }
 
     public bool IsHealthZero()

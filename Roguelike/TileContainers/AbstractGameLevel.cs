@@ -367,7 +367,6 @@ namespace Roguelike.TileContainers
       var enemy = new Enemy(EnemySymbols.SkeletonSymbol);
       enemy.Container = Container;
       enemy.SetLevel(lootSource.Level);
-      enemy.Container = this.Container;
       enemy.tag1 = EnemySymbols.EnemiesToSymbols.Where(i => i.Value == EnemySymbols.SkeletonSymbol).Single().Key;
       return enemy;
     }

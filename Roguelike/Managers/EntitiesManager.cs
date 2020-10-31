@@ -161,17 +161,17 @@ namespace Roguelike.Managers
       //  return;//in ascii/UT mode this can happend
       if (pendingForAllIdle)
       {
-        context.Logger.LogInfo("calling  ReportAllDone... Context.TurnOwner: " + Context.TurnOwner);
+        //context.Logger.LogInfo("calling  ReportAllDone... Context.TurnOwner: " + Context.TurnOwner);
         ReportAllDone(false);
       }
     }
 
     protected virtual void OnPolicyAppliedAllIdle()
     {
-      context.Logger.LogInfo(this+ " OnPolicyAppliedAllIdle Context.TurnOwner "+ Context.TurnOwner);
+      //context.Logger.LogInfo(this+ " OnPolicyAppliedAllIdle Context.TurnOwner "+ Context.TurnOwner);
       if (Context.TurnOwner == turnOwner)//this check is mainly for ASCII/UT
       {
-        Context.Logger.LogInfo(this+ " OnPolicyAppliedAllIdle calling MoveToNextTurnOwner");
+        //Context.Logger.LogInfo(this+ " OnPolicyAppliedAllIdle calling MoveToNextTurnOwner");
         pendingForAllIdle = false;
         Context.MoveToNextTurnOwner();
       }
@@ -198,7 +198,14 @@ namespace Roguelike.Managers
 
     public void RemoveDead()
     {
-      entities.RemoveAll(i => !i.Alive);
+      var deadOnes = entities.Where(i => !i.Alive).ToList();
+      foreach (var dead in deadOnes)
+      {
+        Context.EventsManager.AppendAction(dead.GetDeadAction());
+        entities.Remove(dead);
+      }
+      //entities.RemoveAll(i => !i.Alive);
+
     }
   }
 
