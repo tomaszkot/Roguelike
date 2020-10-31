@@ -575,6 +575,19 @@ namespace Roguelike.Managers
       persistancyWorker.Save(this, WorldSaver);
     }
 
+    public virtual string GetPitDisplayName(string pitID)
+    {
+      return pitID;
+    }
+
+    public virtual string GetCurrentNodeName()
+    {
+      string name = "";
+      var gs = PrepareGameStateForSave();
+      name = GetPitDisplayName(gameState.HeroPathValue.Pit) + "/" + gameState.HeroPathValue.LevelIndex;
+      return name;
+    }
+
     public virtual GameState PrepareGameStateForSave()
     {
       gameState.Settings.CoreInfo.LastSaved = DateTime.Now;
@@ -582,9 +595,9 @@ namespace Roguelike.Managers
 
       if (CurrentNode is TileContainers.GameLevel)//TODO 
       {
-        var dl = CurrentNode as TileContainers.GameLevel;
-        gameState.HeroPathValue.Pit = dl.PitName;
-        gameState.HeroPathValue.LevelIndex = dl.Index;
+        var gameLevel = CurrentNode as TileContainers.GameLevel;
+        gameState.HeroPathValue.Pit = gameLevel.PitName;
+        gameState.HeroPathValue.LevelIndex = gameLevel.Index;
       }
 
       return gameState;
