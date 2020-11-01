@@ -230,12 +230,17 @@ namespace Roguelike.Tiles
       var kinds = Enum.GetValues(typeof(T)).Cast<T>().ToList();
       return kinds.FirstOrDefault(i => name.Contains(i.ToString().ToLower()));
     }
+
+    protected string PartOfCraftingRecipe
+    {
+      get { return "Part of a crafting recipe."; }
+    }
     //public virtual Loot Clone()
-  //{
-  //  var clone =  this.MemberwiseClone() as Loot;
-  //  clone.ExtendedInfo = this.ExtendedInfo.Clone() as LootExtendedInfo;
-  //  return clone;
-  //}
+    //{
+    //  var clone =  this.MemberwiseClone() as Loot;
+    //  clone.ExtendedInfo = this.ExtendedInfo.Clone() as LootExtendedInfo;
+    //  return clone;
+    //}
 
   }
 }

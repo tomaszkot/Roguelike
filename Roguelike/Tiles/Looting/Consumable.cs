@@ -11,11 +11,11 @@ namespace Roguelike.Tiles.Looting
 {
   public abstract class Consumable : StackedLoot, IConsumable
   {
-    EntityStatKind enhancedStat = EntityStatKind.Unset;
+    EntityStatKind statKind = EntityStatKind.Unset;
 
     public Consumable()
     {
-      EnhancedStat = EntityStatKind.Health;
+      StatKind = EntityStatKind.Health;
       PercentageStatIncrease = true;
     }
 
@@ -24,14 +24,14 @@ namespace Roguelike.Tiles.Looting
 
     public bool Roasted { get; set; }
 
-    public EntityStatKind EnhancedStat { get => enhancedStat; set => enhancedStat = value; }
+    public EntityStatKind StatKind { get => statKind; set => statKind = value; }
 
     public Loot Loot {get=> this;}
 
     public EffectType EffectType { get; set; }
     public bool PercentageStatIncrease { get ; set ; }
     public int TourLasting { get => ConsumptionSteps; set => ConsumptionSteps = value; }
-    public EntityStatKind StatKind { get => EnhancedStat; set => EnhancedStat = value; }
+    //public EntityStatKind StatKind { get => EnhancedStat; set => EnhancedStat = value; }
     public PercentageFactor StatKindPercentage 
     { 
       get => GetPercentageStatIncrease();  
@@ -40,19 +40,17 @@ namespace Roguelike.Tiles.Looting
     public virtual EffectiveFactor StatKindEffective => new EffectiveFactor(0);
 
     EffectiveFactor GetEffectiveStatIncrease() { return new EffectiveFactor(0); }
+    public bool NegativeFactor { get; set; }
 
     public virtual PercentageFactor GetPercentageStatIncrease()
     {
       var divider = 20;
-      //TODO show different aboveHead icon in case of different divider
-      //if (Kind == FoodKind.Mushroom)
-      //  divider = 10;
-      //if (Kind == FoodKind.Plum)
-      //  divider = 8;
-
+      
       if (Roasted)
         divider /= 2;
       var inc = 100 / divider;
+      if (NegativeFactor)
+        inc *= -1;
       return new PercentageFactor(inc);
     }
 
@@ -67,11 +65,15 @@ namespace Roguelike.Tiles.Looting
       {
         m_lootStatInfo = new LootStatInfo[1];
         var lsi = new LootStatInfo();
-        lsi.Desc = enhancedStat.ToDescription() + ": ";
+        lsi.Desc = statKind.ToDescription() + ": ";
         if (PercentageStatIncrease)
+        {
           lsi.Desc += GetPercentageStatIncrease();
+          if(TourLasting > 1)
+            lsi.Desc += " (x" + TourLasting + " turns)";
+        }
 
-        lsi.EntityStatKind = EnhancedStat;
+        lsi.EntityStatKind = StatKind;
 
         m_lootStatInfo[0] = lsi;
       }

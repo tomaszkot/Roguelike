@@ -25,20 +25,20 @@ namespace Roguelike.Effects
     public event EventHandler<LastingEffect> LastingEffectStarted;
     public event EventHandler<LastingEffect> LastingEffectApplied;
     public event EventHandler<LastingEffect> LastingEffectDone;
-    Container container;
 
     public LastingEffectsSet(LivingEntity le, Container container)
     {
-      this.container = container;
+      this.Container = container;
       this.livingEntity = le;
     }
 
-    EventsManager eventsManager;
     [JsonIgnore]
     public EventsManager EventsManager
     {
-      get { return eventsManager; }
-      set { eventsManager = value; }
+      get 
+      {
+        return livingEntity.EventsManager; 
+      }
     }
 
     public void AddLastingEffect(LastingEffect le)
@@ -97,8 +97,8 @@ namespace Roguelike.Effects
 
     public virtual void ApplyLastingEffects()
     {
-      if(container !=null)
-        container.GetInstance<ILogger>().LogInfo(livingEntity + " ApplyLastingEffects... "+ LastingEffects.Count);
+      if(Container !=null)
+        Container.GetInstance<ILogger>().LogInfo(livingEntity + " ApplyLastingEffects... "+ LastingEffects.Count);
       if (this.livingEntity is Hero)
       {
         int k = 0;
@@ -126,8 +126,8 @@ namespace Roguelike.Effects
 
     private void ApplyLastingEffect(LastingEffect le, bool newOne)
     {
-      if(container!=null)
-        container.GetInstance<ILogger>().LogInfo(livingEntity + " ApplyLastingEffect: " + le);
+      if(Container != null)
+        Container.GetInstance<ILogger>().LogInfo(livingEntity + " ApplyLastingEffect: " + le);
       le.PendingTurns--;
 
       if (newOne || le.Application == EffectApplication.EachTurn)

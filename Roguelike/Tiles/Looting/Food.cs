@@ -66,21 +66,6 @@ namespace Roguelike.Tiles
       SetKindRelatedMembers(Kind);
     }
 
-    //public override float GetStatIncrease(LivingEntity caller)
-    //{
-    //  var divider = 10;
-    //  //TODO show different aboveHead icon in case of different divider
-    //  //if (Kind == FoodKind.Mushroom)
-    //  //  divider = 10;
-    //  //if (Kind == FoodKind.Plum)
-    //  //  divider = 8;
-
-    //  if (Roasted)
-    //    divider /= 2;
-    //  var inc = 100/divider;
-    //  return inc;
-    //}
-        
     bool IsRoastable(FoodKind kind)
     {
       return kind == FoodKind.Fish || kind == FoodKind.Meat;

@@ -24,7 +24,7 @@ namespace Roguelike.Tiles.Looting
 
     public override string PrimaryStatDescription
     {
-      get { return "Part of a crafting recipe"; }
+      get { return PartOfCraftingRecipe; }
     }
   }
 }

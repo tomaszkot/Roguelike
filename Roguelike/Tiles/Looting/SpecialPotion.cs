@@ -50,13 +50,13 @@ namespace Roguelike.Tiles.Looting
         {
           tag1 = "strength_potion";//HACK
           Name = "Strength Potion";
-          EnhancedStat = EntityStatKind.Strength;
+          StatKind = EntityStatKind.Strength;
         }
         else if (value == SpecialPotionKind.Magic)
         {
           tag1 = "magic_potion";
           Name = "Magic Potion";
-          EnhancedStat = EntityStatKind.Magic;
+          StatKind = EntityStatKind.Magic;
         }
 
         //tag1 += "_"+size.ToString();maybe UI can scale ?

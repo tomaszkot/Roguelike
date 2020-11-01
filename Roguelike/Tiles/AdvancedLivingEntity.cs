@@ -162,7 +162,7 @@ namespace Roguelike.Tiles
         if (consumable is SpecialPotion)
         {
           var sp = consumable as SpecialPotion;
-          this.Stats[sp.EnhancedStat].Nominal += (float)consumable.StatKindEffective.Value;
+          this.Stats[sp.StatKind].Nominal += (float)consumable.StatKindEffective.Value;
         }
         else
         {
@@ -173,7 +173,14 @@ namespace Roguelike.Tiles
             DoConsume(consumable.StatKind, factor);
           }
           else
-            LastingEffectsSet.AddPercentageLastingEffect(EffectType.ConsumedRawFood, consumable);
+          {
+            EffectType et = EffectType.ConsumedRawFood;
+            if (consumable.Roasted)
+            {
+              et = EffectType.ConsumedRoastedFood;
+            }
+            LastingEffectsSet.AddPercentageLastingEffect(et, consumable);
+          }
         }
       }
       else

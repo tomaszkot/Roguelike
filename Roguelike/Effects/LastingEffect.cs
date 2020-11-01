@@ -171,12 +171,18 @@ namespace Roguelike.Effects
         middle = ", ";
         end = " to " + this.StatKind.ToDescription();
       }
+      else
+      {
+        if (StatKind != EntityStatKind.Unset)
+          end = " to " + this.StatKind.ToDescription();
+      }
 
       if (middle.Any())
         res += middle;
 
       //if(EffectiveFactor.EffectiveFactor.Value >= 0)
       //  res += sign;
+      
       if (EffectiveFactor.Value != 0)
         res += EffectiveFactor;
       else

@@ -33,10 +33,16 @@ namespace Roguelike.Tiles
       Name = MushroomKind.ToDescription();
       if (MushroomKind == MushroomKind.BlueToadstool)
       {
-        SrcPotion = PotionKind.Mana;
-        DestPotion = SpecialPotionKind.Magic;
-        EnhancedStat = Attributes.EntityStatKind.Magic;
+        //TODO
+        //SrcPotion = PotionKind.Mana;
+        //DestPotion = SpecialPotionKind.Magic;
+        
+        StatKind = Attributes.EntityStatKind.Mana;
       }
+      else
+        StatKind = Attributes.EntityStatKind.Health;
+
+      NegativeFactor = MushroomKind == MushroomKind.RedToadstool;
 
       if (MushroomKind == MushroomKind.BlueToadstool || MushroomKind == MushroomKind.RedToadstool)
         this.EffectType = Effects.EffectType.Poisoned;
@@ -87,14 +93,15 @@ namespace Roguelike.Tiles
     //}
     void SetPrimaryStatDesc()
     {
-      string desc = "Turns " + Extensions.FirstCharToUpper(SrcPotion.ToString()) + " Potion into";
-      if (DestPotion == SpecialPotionKind.Magic)
-        desc += " a Magic ";
-      else
-        desc += " a Strength ";
+      //string desc = "Turns " + Extensions.FirstCharToUpper(SrcPotion.ToString()) + " Potion into";
+      //if (DestPotion == SpecialPotionKind.Magic)
+      //  desc += " a Magic ";
+      //else
+      //  desc += " a Strength ";
 
-      desc += "Potion.";
-      desc += GetConsumeDesc(" Consumable");
+      //desc += "Potion.";
+      string desc = PartOfCraftingRecipe;
+      desc+= GetConsumeDesc(" Consumable");
       primaryStatDesc = desc;
     }
 

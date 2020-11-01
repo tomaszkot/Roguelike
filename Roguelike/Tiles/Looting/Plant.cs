@@ -34,7 +34,10 @@ namespace Roguelike.Tiles
     public void SetKind(PlantKind kind)
     {
       Kind = kind;
+      if (Kind == PlantKind.Sorrel)
+        TourLasting = 5;
       Name = kind.ToString();
+
 
       DisplayedName = Name;
       SetPrimaryStatDesc();
@@ -47,7 +50,7 @@ namespace Roguelike.Tiles
       {
         desc = "Unpleasant to touch, "+ Strings.PartOfCraftingRecipe;
         tag1 = "Thistle1";
-        EnhancedStat = EntityStatKind.Unset;
+        StatKind = EntityStatKind.Unset;
       }
       else if (Kind == PlantKind.Sorrel)
       {

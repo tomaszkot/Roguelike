@@ -37,22 +37,22 @@ namespace Roguelike.Tiles.Looting
       {
         Name = "Health Potion";
         tag1 = "health_potion";
-        EnhancedStat = EntityStatKind.Health;
-        primaryStatDesc = "Restores " + EnhancedStat;
+        StatKind = EntityStatKind.Health;
+        primaryStatDesc = "Restores " + StatKind;
       }
       else if (kind == PotionKind.Mana)
       {
         Name = "Mana Potion";
         tag1 = "mana_potion";
-        EnhancedStat = EntityStatKind.Mana;
-        primaryStatDesc = "Restores " + EnhancedStat;
+        StatKind = EntityStatKind.Mana;
+        primaryStatDesc = "Restores " + StatKind;
       }
       else if (kind == PotionKind.Poison)
       {
         Name = "Poison Potion";
         tag1 = "poison_potion";
         primaryStatDesc = "Remove poison effect";
-        EnhancedStat = EntityStatKind.Unset;
+        StatKind = EntityStatKind.Unset;
       }
     }
 

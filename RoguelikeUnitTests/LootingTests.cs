@@ -406,12 +406,26 @@ namespace RoguelikeUnitTests
         food.SetMushroomKind(MushroomKind.BlueToadstool);
         Assert.AreEqual(food.tag1, "mash_BlueToadstool1");
         Assert.AreEqual(food.Kind, FoodKind.Mushroom);
+        Assert.AreEqual(food.StatKind, EntityStatKind.Mana);
+      }
+      {
+        var food = new Roguelike.Tiles.Mushroom();
+        food.SetMushroomKind(MushroomKind.RedToadstool);
+        Assert.AreEqual(food.Kind, FoodKind.Mushroom);
+        Assert.AreEqual(food.StatKind, EntityStatKind.Health);
+      }
+      {
+        var food = new Roguelike.Tiles.Mushroom();
+        food.SetMushroomKind(MushroomKind.Boletus);
+        Assert.AreEqual(food.Kind, FoodKind.Mushroom);
+        Assert.AreEqual(food.StatKind, EntityStatKind.Health);
       }
       {
         var food = new Roguelike.Tiles.Food();
         food.SetKind(FoodKind.Plum);
         Assert.AreEqual(food.tag1, "plum_mirabelka");
         Assert.AreEqual(food.Kind, FoodKind.Plum);
+        Assert.AreEqual(food.StatKind, EntityStatKind.Health);
       }
       {
         var food = new Roguelike.Tiles.Food();
@@ -420,6 +434,7 @@ namespace RoguelikeUnitTests
         Assert.AreEqual(food.Name, "Roasted Meat");
         Assert.AreEqual(food.tag1, "meat_roasted");
         Assert.AreEqual(food.Kind, FoodKind.Meat);
+        Assert.AreEqual(food.StatKind, EntityStatKind.Health);
       }
 
       {
