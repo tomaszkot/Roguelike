@@ -92,6 +92,13 @@ namespace Roguelike.TileContainers
     public override bool SetTile(Tile tile, Point point, bool resetOldTile = true, bool revealReseted = true,
       bool autoSetTileDungeonIndex = true)
     {
+      if (tile is IApproachableByHero)
+      {
+        var abh = tile as IApproachableByHero;
+        if (!ApproachableByHero.Contains(abh))
+          ApproachableByHero.Add(abh);
+      }
+
       if (tile is ILootSource)
       {
         var ls = tile as ILootSource;
@@ -370,5 +377,7 @@ namespace Roguelike.TileContainers
       enemy.tag1 = EnemySymbols.EnemiesToSymbols.Where(i => i.Value == EnemySymbols.SkeletonSymbol).Single().Key;
       return enemy;
     }
+
+    public List<IApproachableByHero> ApproachableByHero { get; set; } = new List<IApproachableByHero>();
   }
 }
