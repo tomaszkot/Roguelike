@@ -302,6 +302,7 @@ namespace RoguelikeUnitTests
       int multiplicator = 2;
       var numberOfInterTiles = 100 * multiplicator;
       var enemiesBefore = env.Game.Level.GetTiles<Enemy>();
+      //var magicDusts = env.Game.Level.GetTiles<MagicDust>();
       var newLootItems = env.TestInteractive<Barrel>(
          (InteractiveTile barrel) =>
          {
@@ -322,6 +323,10 @@ namespace RoguelikeUnitTests
       var identCount = ident.Count();
       Assert.Less(identCount, 10);
       Assert.Greater(identCount, 0);
+
+      var magicDusts = newLootItems.Get<MagicDust>();
+      Assert.Greater(magicDusts.Count, 0);
+      Assert.Less(magicDusts.Count, 10);
     }
 
     [Test]

@@ -320,6 +320,10 @@ namespace Roguelike.Generators
         var kind_ = RandHelper.GetRandomEnumValue<RecipeKind>();
         res = new Recipe(kind_);
       }
+      else if (kind == LootKind.Other)
+      {
+        res = new MagicDust();
+      }
       else
         Debug.Assert(false);
 
