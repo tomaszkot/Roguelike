@@ -90,7 +90,7 @@ namespace Roguelike.Managers
       
       foreach (var entity in activeEntities)
       {
-        context.Logger.LogInfo("turn of: " + entity);
+        //context.Logger.LogInfo("turn of: " + entity);
         try
         {
           Debug.Assert(context.CurrentNode.GetTiles<LivingEntity>().Any(i => i == entity));//TODO

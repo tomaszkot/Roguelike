@@ -97,8 +97,8 @@ namespace Roguelike.Effects
 
     public virtual void ApplyLastingEffects()
     {
-      if(Container !=null)
-        Container.GetInstance<ILogger>().LogInfo(livingEntity + " ApplyLastingEffects... "+ LastingEffects.Count);
+      //if(Container !=null)
+      //  Container.GetInstance<ILogger>().LogInfo(livingEntity + " ApplyLastingEffects... "+ LastingEffects.Count);
       if (this.livingEntity is Hero)
       {
         int k = 0;
