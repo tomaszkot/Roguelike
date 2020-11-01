@@ -1,4 +1,5 @@
-﻿using Roguelike.Tiles;
+﻿using Roguelike.Abstract;
+using Roguelike.Tiles;
 using SimpleInjector;
 using System;
 using System.Collections.Generic;
@@ -19,7 +20,13 @@ namespace Roguelike.Managers
 
     private void Context_ContextSwitched(object sender, ContextSwitch e)
     {
-      var entities = Context.CurrentNode.GetTiles<LivingEntity>().Where(i => i is Ally).ToList();
+      UpdateEntities();
+    }
+
+    private void UpdateEntities()
+    {
+      var allies = Context.CurrentNode.GetTiles<LivingEntity>().Where(i => i is Abstract.IAlly).Cast<IAlly>();
+      var entities = allies.Where(i=> i.Active).Cast<LivingEntity>().ToList();
       base.SetEntities(entities);
     }
 

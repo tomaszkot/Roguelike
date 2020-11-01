@@ -59,6 +59,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Abilities\Ability.cs" />
+    <Compile Include="Abstract\IAlly.cs" />
     <Compile Include="Abstract\IDescriptable.cs" />
     <Compile Include="Abstract\IGameManagerProvider.cs" />
     <Compile Include="Abstract\IMovingDamager.cs" />
@@ -143,6 +144,7 @@
     <Compile Include="Tiles\Ally.cs" />
     <Compile Include="Tiles\Barrel.cs" />
     <Compile Include="Tiles\CrackedStone.cs" />
+    <Compile Include="Tiles\Hound.cs" />
     <Compile Include="Tiles\Interactive\Portal.cs" />
     <Compile Include="Tiles\Looting\Consumable.cs" />
     <Compile Include="Tiles\Looting\Cord.cs" />

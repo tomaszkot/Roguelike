@@ -90,11 +90,21 @@ namespace Roguelike
     /// <summary>
     /// /////////////////////////////////////////////
     /// </summary>
-    public enum MerchantActionKind { Unset, Engaged }
-    public class MerchantAction : GameAction
+    //public enum MerchantActionKind { Unset, Engaged }
+    //public class MerchantAction : GameAction
+    //{
+    //  public Tiles.Merchant InvolvedTile { get; set; }
+    //  public MerchantActionKind MerchantActionKind { get; set; }
+    //}
+
+    /// <summary>
+    /// /////////////////////////////////////////////
+    /// </summary>
+    public enum AllyActionKind { Unset, Engaged }
+    public class AllyAction : GameAction
     {
-      public Tiles.Merchant InvolvedTile { get; set; }
-      public MerchantActionKind MerchantActionKind { get; set; }
+      public Abstract.IAlly InvolvedTile { get; set; }
+      public AllyActionKind AllyActionKind { get; set; }
     }
 
     public enum InteractiveActionKind { Unset, DoorOpened, DoorClosed, DoorUnlocked, DoorLocked, Destroyed, ChestOpened, AppendedToLevel,

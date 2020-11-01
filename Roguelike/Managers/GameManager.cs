@@ -18,6 +18,7 @@ using Dungeons;
 using Dungeons.TileContainers;
 using Roguelike.LootContainers;
 using Roguelike.Tiles.Looting;
+using Roguelike.Abstract;
 
 namespace Roguelike.Managers
 {
@@ -244,7 +245,8 @@ namespace Roguelike.Managers
       Logger.LogError("AddLootReward no room! for a loot");
       return false;
     }
-        
+
+
     public InteractionResult HandleHeroShift(TileNeighborhood neib)
     {
       int horizontal = 0;
@@ -278,6 +280,8 @@ namespace Roguelike.Managers
       return true;
     }
 
+    public Func<bool> HeroMoveAllowed;
+
     public InteractionResult HandleHeroShift(int horizontal, int vertical)
     {
       InteractionResult res = InteractionResult.None;
@@ -285,6 +289,8 @@ namespace Roguelike.Managers
       if (!CanHeroDoAction())
         return res;
 
+      if(HeroMoveAllowed!=null && !HeroMoveAllowed())
+        return res;
       var newPos = GetNewPositionFromMove(Hero.Point, horizontal, vertical);
       if (!newPos.Possible)
       {
@@ -361,9 +367,19 @@ namespace Roguelike.Managers
 
         return InteractionResult.Attacked;
       }
-      else if (tile is Merchant)
+      //else if (tile is Merchant)
+      //{
+      //  AppendAction<MerchantAction>((MerchantAction ac) => { ac.MerchantActionKind = MerchantActionKind.Engaged; ac.InvolvedTile = tile as Merchant; });
+      //  return InteractionResult.Blocked;
+      //}
+      else if (tile is IAlly)
       {
-        AppendAction<MerchantAction>((MerchantAction ac) => { ac.MerchantActionKind = MerchantActionKind.Engaged; ac.InvolvedTile = tile as Merchant; });
+        var ally = tile as IAlly;
+        AppendAction <AllyAction>((AllyAction ac) => { ac.AllyActionKind = AllyActionKind.Engaged; ac.InvolvedTile = ally; });
+        if (ally is TrainedHound)
+        {
+          SoundManager.PlaySound("ANIMAL_Dog_Bark_02_Mono");
+        }
         return InteractionResult.Blocked;
       }
       else if (tileIsDoor || tileIsDoorBySumbol)

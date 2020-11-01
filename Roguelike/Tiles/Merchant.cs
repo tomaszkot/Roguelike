@@ -1,4 +1,5 @@
 ﻿using Dungeons.Core;
+using Roguelike.Abstract;
 using Roguelike.Attributes;
 using Roguelike.LootContainers;
 using SimpleInjector;
@@ -11,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace Roguelike.Tiles
 {
-  public class Merchant : AdvancedLivingEntity
+  public class Merchant : AdvancedLivingEntity, IAlly
   {
     public Merchant(Container cont) : base(new Point().Invalid(), '!')
     {
@@ -45,6 +46,9 @@ namespace Roguelike.Tiles
         Inventory.InvBasketKind = InvBasketKind.Merchant;
       }
     }
+
+    public bool Active { get ; set ; }
+    public AllyKind Kind { get => AllyKind.Merchant;  }
 
     internal void OnContextSwitched(Container container)
     {

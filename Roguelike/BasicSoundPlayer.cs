@@ -26,9 +26,9 @@ namespace Roguelike
         if(!ex)
           filePath = pathDir + ".mp3";
 
-        ex = File.Exists(filePath);
-        if (!ex)
-          return;
+        //ex = File.Exists(filePath);
+        //if (!ex)
+        //  return;
 
         sp.SoundLocation = filePath;
         sp.Play();
