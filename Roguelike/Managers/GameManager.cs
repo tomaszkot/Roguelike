@@ -266,6 +266,11 @@ namespace Roguelike.Managers
         return false;
       if (!Hero.Alive)
       {
+        if (!context.HeroDeadReported)
+        {
+          context.EventsManager.AppendAction(context.Hero.GetDeadAction());
+          context.HeroDeadReported = true;
+        }
         //AppendAction(new HeroAction() { Level = ActionLevel.Critical, KindValue = HeroAction.Kind.Died, Info = Hero.Name + " is dead!" });
         return false;
       }

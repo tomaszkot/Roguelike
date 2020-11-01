@@ -283,5 +283,6 @@ namespace Roguelike
     public bool AutoTurnManagement { get => autoTurnManagement; set => autoTurnManagement = value; }
     public Dictionary<TurnOwner, int> TurnActionsCount { get => turnActionsCount; set => turnActionsCount = value; }
     public Dictionary<TurnOwner, int> TurnCounts { get => turnCounts; set => turnCounts = value; }
+    public bool HeroDeadReported { get; internal set; }
   }
 }

@@ -93,13 +93,20 @@ namespace Roguelike.Managers
         //context.Logger.LogInfo("turn of: " + entity);
         try
         {
-          Debug.Assert(context.CurrentNode.GetTiles<LivingEntity>().Any(i => i == entity));//TODO
+          //Debug.Assert(context.CurrentNode.GetTiles<LivingEntity>().Any(i => i == entity));//TODO
 
           entity.ApplyLastingEffects();
           if (!entity.Alive)
             continue;
 
           MakeTurn(entity);
+
+          if (!context.Hero.Alive)
+          {
+            context.EventsManager.AppendAction(context.Hero.GetDeadAction());
+            context.HeroDeadReported = true;
+            break;
+          }
         }
         catch (Exception ex)
         {

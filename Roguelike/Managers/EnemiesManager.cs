@@ -65,11 +65,6 @@ namespace Roguelike.Managers
       }
     }
 
-    //private List<LivingEntity> GetEnemiesToMove()
-    //{
-    //  return this.Enemies.Where(i => i.Revealed && i.Alive).ToList();
-    //}
-
     public override void MakeRandomMove(LivingEntity entity)
     {
       if (entity.InitialPoint != LivingEntity.DefaultInitialPoint)
