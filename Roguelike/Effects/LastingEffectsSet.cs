@@ -75,7 +75,7 @@ namespace Roguelike.Effects
         AddLastingEffect(le);
       }
       else
-        ProlongEffect(le, calcEffectValue.Turns);
+        ProlongEffect(calcEffectValue.EffectiveFactor.Value, le, calcEffectValue.Turns);
 
       return le;
     }
@@ -242,7 +242,7 @@ namespace Roguelike.Effects
     public LastingEffect TryAddLastingEffectOnHit(float amount, LivingEntity attacker, Spell spell)
     {
       LastingEffect le = null;
-      var effectInfo = CalcLastingEffDamage(EffectType.Unset, amount, attacker, spell, null);
+      var effectInfo = CalcLastingEffDamage(EffectType.Unset, amount, spell, null);
       if (effectInfo !=null && effectInfo.Type != EffectType.Unset && !livingEntity.IsImmuned(effectInfo.Type))
       {
         var rand = RandHelper.Random.NextDouble();
@@ -265,26 +265,29 @@ namespace Roguelike.Effects
 
     public LastingEffect EnsureEffect(EffectType et, float inflictedDamage, LivingEntity attacker)
     {
-      var bleeding = LastingEffects.FirstOrDefault(i => i.Type == et);
-      if (bleeding == null)
+      var currentEffect = LastingEffects.FirstOrDefault(i => i.Type == et);
+      if (currentEffect == null)
       {
-        var effectInfo = CalcLastingEffDamage(et, inflictedDamage, attacker, null, null);
+        var effectInfo = CalcLastingEffDamage(et, inflictedDamage, null, null);
         var turns = effectInfo.Turns;
         if (turns <= 0)
           turns = GetPendingTurns(et);
-        bleeding = this.AddLastingEffect(effectInfo, EffectOrigin.External, EffectTypeToStatKind.Convert(et),  true);
+        currentEffect = this.AddLastingEffect(effectInfo, EffectOrigin.External, EffectTypeToStatKind.Convert(et),  true);
       }
       else
-        ProlongEffect(bleeding);
-      return bleeding;
+        ProlongEffect(inflictedDamage, currentEffect);
+      return currentEffect;
     }
 
-    private static void ProlongEffect(LastingEffect le, int turns = 0)
+    private void ProlongEffect(float inflictedDamage, LastingEffect le, int turns = 0)
     {
+      var effectInfo = CalcLastingEffDamage(le.Type, inflictedDamage, null, null);
       le.PendingTurns = turns > 0 ? turns : LastingEffectsSet.GetPendingTurns(le.Type);
+      le.PercentageFactor = effectInfo.PercentageFactor;
+      le.EffectiveFactor = effectInfo.EffectiveFactor;
     }
         
-    LastingEffectCalcInfo CalcLastingEffDamage(EffectType et, float amount, LivingEntity attacker = null, Spell spell = null, FightItem fi = null)
+    LastingEffectCalcInfo CalcLastingEffDamage(EffectType et, float amount, Spell spell = null, FightItem fi = null)
     {
       return CreateLastingEffectCalcInfo(et, amount, 0, GetPendingTurns(et));
     }

@@ -190,12 +190,12 @@ namespace RoguelikeUnitTests
       var level = generator.Generate(0, info);
       Assert.Greater(level.GetTiles().Where(i => i.IsEmpty).Count(), 0);
 
-      var en = new Enemy();
+      var en = SpawnEnemy();
       var pt = new Point(2,2);// level.GetFirstEmptyPoint();
       var set = level.SetTile(en, pt);
       Assert.True(set);
 
-      en = new Enemy();
+      en = SpawnEnemy();
       pt = new Point(2, 3);
       set = level.SetTile(en, pt);
       Assert.True(set);

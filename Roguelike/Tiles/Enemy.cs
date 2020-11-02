@@ -171,7 +171,7 @@ namespace Roguelike.Tiles
           ||
           (!fromPowerKind && StatsIncreasedByLevel))
       {
-        AssertFalse("inc == " + inc + " PowerKind =" + PowerKind + " StatsIncreasedByPowerKind=" + StatsIncreasedByPowerKind);
+        AssertFalse("inc == " + inc + " PowerKind =" + PowerKind + " StatsIncreasedByPowerKind=" + StatsIncreasedByPowerKind + ", increasing for second time?");
         return;
       }
       if (inc == 0)

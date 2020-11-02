@@ -251,7 +251,7 @@ namespace RoguelikeUnitTests
     }
 
     [Test]
-    public void KilledEnemyForEqipAndGold()
+     public void KilledEnemyForEqipAndGold()
     {
       var env = CreateTestEnv(numEnemies: 25);
       env.LootGenerator.Probability = new Roguelike.Probability.Looting();
@@ -269,10 +269,11 @@ namespace RoguelikeUnitTests
       env.LootGenerator.Probability.SetLootingChance(LootSourceKind.Enemy, LootKind.Equipment, 1f);
 
       var enemies = game.GameManager.EnemiesManager.AllEntities;
-      env.KillEnemy(enemies[0]);
-      var loot = env.Game.Level.GetTile(enemies[0].Point);
-      Assert.NotNull(loot);
-      Assert.True(env.Game.Level.SetTile(enemies[1], enemies[0].Point));
+      var en = enemies[0];
+      env.KillEnemy(en);
+      var loot = env.Game.Level.GetTile(en.Point) ;
+      Assert.NotNull(loot as Loot);
+      Assert.True(env.Game.Level.SetTile(enemies[1], en.Point));
 
       var li = new LootInfo(game, null);
       env.KillEnemy(enemies[1]);
@@ -479,8 +480,8 @@ namespace RoguelikeUnitTests
         var li = new LootInfo(game, null);
         env.KillAllEnemies();
         var lootItems = li.GetDiff();
-        Assert.Greater(lootItems.Count, 15);
-        var potions = lootItems.Where(j => j.LootKind == LootKind.Potion).ToList();
+        Assert.Greater(lootItems.Count, 10);
+        var potions = li.Get<Potion>();
         Assert.Greater(potions.Count, 4);
         Assert.Less(potions.Count, 20);
       }
@@ -500,8 +501,8 @@ namespace RoguelikeUnitTests
       env.KillAllEnemies();
       var lootItems = li.GetDiff();
       Assert.Greater(lootItems.Count, 0);
-      var foods = lootItems.Where(j => j.LootKind == LootKind.Food).Cast<Food>().ToList();
-      Assert.Greater(foods.Count, 80);
+      var foods = li.Get<Food>().ToList();
+      Assert.Greater(foods.Count, 60);
       var kinds = Enum.GetValues(typeof(FoodKind)).Cast<FoodKind>().Where(i=> i != FoodKind.Unset).ToList();
       foreach (var kind in kinds)
       {
@@ -588,7 +589,11 @@ namespace RoguelikeUnitTests
 
       var enemies = AllEnemies;
       Assert.GreaterOrEqual(enemies.Count, 5);
-      enemies.ForEach(i => i.SetLevel(enemyLevel));
+      enemies.ForEach(i =>
+      {
+        SetEnemyLevel(i, enemyLevel);
+      });
+
       var li = new LootInfo(game, null);
       env.KillAllEnemies();
 

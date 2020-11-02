@@ -119,6 +119,7 @@
     <Compile Include="Probability\Looting.cs" />
     <Compile Include="RpgGameSettings.cs" />
     <Compile Include="Serialization\PersistancyWorker.cs" />
+    <Compile Include="Serialization\SimpleInjectorContractResolver.cs" />
     <Compile Include="Spells\AttackingSpell.cs" />
     <Compile Include="Spells\PassiveSpell.cs" />
     <Compile Include="Spells\Spell.cs" />

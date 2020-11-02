@@ -53,8 +53,8 @@ namespace Roguelike.Serialization
         throw;
       }
     }
-
-    public T Load<T>(string filePath) where T: class, IPersistable
+        
+    public T Load<T>(string filePath, Container container) where T: class, IPersistable
     {
       T entity = null;
 
@@ -74,6 +74,7 @@ namespace Roguelike.Serialization
         //container.Options.DefaultScopedLifestyle = new ExecutionContextScopeLifestyle();
         //settings.TypeNameAssemblyFormatHandling = TypeNameAssemblyFormatHandling.Full;
         settings.Converters.Add(new Newtonsoft.Json.Converters.StringEnumConverter());
+        settings.ContractResolver = new SimpleInjectorContractResolver(container);
         entity = JsonConvert.DeserializeObject<T>(json, settings);
 
         //string outdata = traceWriter.ToString();
@@ -149,6 +150,8 @@ namespace Roguelike.Serialization
 
     protected static string GameName { get { return "Roguelike"; } }
 
+    public Container Container { get => container; private set => container = value; }
+
     //protected virtual string GameFolder { get { return GameName; } }
 
     public void SaveHero(Hero hero)
@@ -160,7 +163,7 @@ namespace Roguelike.Serialization
     public Hero LoadHero(string heroName)
     {
       var fileName = GetFullFilePath(FileKind.Hero, heroName);
-      return Load<Hero>(fileName);
+      return Load<Hero>(fileName, container);
     }
     
     public void SaveLevel(string heroName, GameLevel level)
@@ -177,7 +180,7 @@ namespace Roguelike.Serialization
     public GameLevel LoadLevel(string heroName, int index)
     {
       var filePath = GetFullFilePath( FileKind.GameLevel, heroName, index.ToString());
-      return Load<GameLevel>(filePath);
+      return Load<GameLevel>(filePath, container);
     }
 
     public void SaveGameState(string heroName, GameState gameState)
@@ -189,7 +192,7 @@ namespace Roguelike.Serialization
     public GameState LoadGameState(string heroName)
     {
       var filePath = GetFullFilePath(FileKind.GameState, heroName);
-      return Load<GameState>(filePath);
+      return Load<GameState>(filePath, container);
     }
   }
 }

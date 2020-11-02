@@ -17,13 +17,13 @@ namespace RoguelikeUnitTests
       Assert.AreEqual(game.Hero.Level, 1);
 
       //TODO add to node during generation
-      var enemy = new Enemy();
+      var enemy = SpawnEnemy();
       Assert.AreEqual(enemy.Level, 1);
-      var chemp = new Enemy();
+      var chemp = SpawnEnemy();
       chemp.SetNonPlain(false);
       Assert.AreEqual(chemp.Level, 1);
 
-      var boss = new Enemy();
+      var boss = SpawnEnemy();
       boss.SetNonPlain(true);
       Assert.AreEqual(boss.Level, 1);
     }
@@ -38,18 +38,19 @@ namespace RoguelikeUnitTests
     {
       var game = CreateGame();
 
-      var enemy = new Enemy();
-      var chemp = new Enemy();
+      var enemy = SpawnEnemy();
+      var chemp = SpawnEnemy();
       chemp.SetNonPlain(false);
-      var boss = new Enemy();
+      var boss = SpawnEnemy();
       boss.SetNonPlain(true);
 
-      var enemyHit = GetHitAttackValue(enemy);
-      Assert.Greater(GetHitAttackValue(chemp), enemyHit);
+      var enemyHitValue = GetHitAttackValue(enemy);
+      Assert.Greater(GetHitAttackValue(chemp), enemyHitValue);
       Assert.Greater(GetHitAttackValue(boss), GetHitAttackValue(chemp));
 
-      enemy.SetLevel(enemy.Level + 1);
-      Assert.Greater(GetHitAttackValue(enemy), enemyHit);
+      SetEnemyLevel(enemy, enemy.Level + 1);
+      var newLevelEnemyHitValue = GetHitAttackValue(enemy);
+      Assert.Greater(newLevelEnemyHitValue, enemyHitValue);
     }
 
     void GoDown()

@@ -258,7 +258,7 @@ namespace Roguelike.Generators
     {
       foreach (var en in packEnemies)
       {
-        en.SetLevel(levelIndex);
+        en.SetLevel(levelIndex+1);
       }
     }
 

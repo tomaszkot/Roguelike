@@ -2,6 +2,7 @@
 using NUnit.Framework;
 using Roguelike;
 using Roguelike.Attributes;
+using Roguelike.Events;
 using Roguelike.Managers;
 using Roguelike.Tiles;
 using RoguelikeUnitTests.Helpers;
@@ -27,6 +28,11 @@ namespace RoguelikeUnitTests
     public void Init()
     {
       OnInit();
+    }
+
+    protected Enemy SpawnEnemy()
+    {
+      return game.GameManager.CurrentNode.SpawnEnemy(1);
     }
 
     protected virtual void OnInit()
@@ -100,6 +106,17 @@ namespace RoguelikeUnitTests
     public virtual RoguelikeGame CreateGame(bool autoLoadLevel = true, int numEnemies = 10, int numberOfRooms = 5)
     {
       game = new RoguelikeGame(Container);
+
+      game.GameManager.EventsManager.ActionAppended += (object sender, Roguelike.Events.GameAction e)=>
+      {
+        if (e is GameStateAction)
+        {
+          var gsa = e as GameStateAction;
+          if(gsa.Type == GameStateAction.ActionType.Assert)
+            throw new System.Exception(gsa.Info);
+        }
+      };
+
       helper = new BaseHelper(this, game);
       if (autoLoadLevel)
       {
@@ -183,6 +200,12 @@ namespace RoguelikeUnitTests
       }
 
       Assert.True(game.GameManager.HeroTurn);
+    }
+
+    protected void SetEnemyLevel(Enemy en, int level)
+    {
+      en.StatsIncreasedByLevel = false;
+      en.SetLevel(level);
     }
   }
 }

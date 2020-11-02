@@ -25,7 +25,9 @@ namespace Roguelike
       container.Register<GameManager, GameManager>();
       container.Register<Dungeons.TileContainers.DungeonNode, Roguelike.Generators.TileContainers.DungeonNode>();
       container.Register<Dungeons.Tiles.IDoor, Roguelike.Tiles.Door>();
-      container.Register< Dungeons.TileContainers.DungeonLevel, GameLevel>();
+
+      //container.Register< Dungeons.TileContainers.DungeonLevel, GameLevel>();
+      container.Register<Dungeons.TileContainers.DungeonLevel>(() => new GameLevel(container));
       container.Register<ILogger, Logger>();
       container.Register<LootGenerator, LootGenerator>(Lifestyle.Singleton);
       container.Register<EventsManager, EventsManager>(Lifestyle.Singleton);

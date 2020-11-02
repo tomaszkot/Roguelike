@@ -25,12 +25,7 @@ namespace Roguelike.TileContainers
     Stairs stairsDown = null;
     public event EventHandler<GenericEventArgs<NodeRevealedParam>> NodeRevealed;
 
-    public GameLevel() : base(new ContainerConfigurator().Container)
-    {
-
-    }
-
-    public GameLevel(Container container) : base(container != null ? container : new ContainerConfigurator().Container)
+    public GameLevel(Container container) : base(container)
     {
       Dirty = true;//TODO
     }

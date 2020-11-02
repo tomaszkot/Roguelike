@@ -68,7 +68,11 @@ namespace Roguelike.Managers
     public ILogger Logger { get => logger; set => logger = value; }
     public Func<Tile, InteractionResult> Interact;
     public Func<int, Stairs, InteractionResult> DungeonLevelStairsHandler;
-    public Container Container { get; set; }
+    public Container Container 
+    { 
+      get; 
+      set; 
+    }
     public Func<Hero, GameState, AbstractGameLevel> WorldLoader { get => worldLoader; set => worldLoader = value; }
     public Action WorldSaver { get; set; }
     public GameState GameState { get => gameState; }
@@ -116,6 +120,7 @@ namespace Roguelike.Managers
 
     public virtual void SetContext(AbstractGameLevel node, Hero hero, GameContextSwitchKind kind, Stairs stairs = null)
     {
+      hero.Container = this.Container;
       LootGenerator.LevelIndex = node.Index;//TODO
       if (kind == GameContextSwitchKind.NewGame)
       {

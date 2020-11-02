@@ -31,6 +31,11 @@ namespace Roguelike.Tiles
       Price = 15;
     }
 
+    public override bool IsConsumable()
+    {
+      return TourLasting > 0;
+    }
+
     public void SetKind(PlantKind kind)
     {
       Kind = kind;

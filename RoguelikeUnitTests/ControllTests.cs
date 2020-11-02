@@ -134,7 +134,7 @@ namespace RoguelikeUnitTests
       Assert.AreEqual(game.GameManager.Context.TurnOwner, TurnOwner.Hero);
       var heroPos = game.Hero.Point;
 
-      var en = new Enemy();
+      var en = SpawnEnemy();
       var enHealth = en.Stats.Health;
 
       var emptyHeroNeib = SetClose(en);
@@ -184,7 +184,7 @@ namespace RoguelikeUnitTests
         var heroPos = game.Hero.Point;
         Assert.AreEqual(game.GameManager.Context.TurnOwner, TurnOwner.Hero);
 
-        var en = new Enemy();
+        var en = SpawnEnemy();
         var enHealth = en.Stats.Health;
 
         var emptyHeroNeib = SetClose(en);
@@ -197,6 +197,7 @@ namespace RoguelikeUnitTests
         Assert.AreEqual(game.GameManager.Context.TurnOwner, TurnOwner.Allies);
       }
     }
+       
     
     private Tuple<Point, Dungeons.TileNeighborhood> SetClose(Enemy en)
     {

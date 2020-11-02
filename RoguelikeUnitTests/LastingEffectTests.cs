@@ -165,7 +165,10 @@ namespace RoguelikeUnitTests
       LastingEffect castedAgain = null;
 
       var value = game.Hero.Stats.GetStat(EntityStatKind.Defense).Value;
-      Assert.Greater(value.CurrentValue, statTotalValueBefore);
+
+      var increasedValue = value.CurrentValue;
+      Assert.Greater(increasedValue, statTotalValueBefore);
+
       var turns = le1.PendingTurns;
       int appliedCounter = 0;
       for (int i = 0; i < turns*2; i++)//there will be prolong
@@ -176,10 +179,12 @@ namespace RoguelikeUnitTests
         {
           castedAgain = CreateEffect(EffectType.IronSkin, EntityStatKind.Defense, out statTotalValueBefore);
           Assert.AreEqual(castedAgain, le1);
+          Assert.AreEqual(increasedValue, value.CurrentValue);
         }
         if (value.CurrentValue > statTotalValueBefore)
           appliedCounter++;
       }
+      Assert.True(!game.Hero.LastingEffectsSet.LastingEffects.Any());
       Assert.AreEqual(value.CurrentValue, statTotalValueBefore);
       Assert.AreEqual(actionCounter, 1);
       Assert.AreEqual(appliedCounter, 7);

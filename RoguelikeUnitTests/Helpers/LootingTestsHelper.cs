@@ -70,6 +70,8 @@ namespace RoguelikeUnitTests.Helpers
     {
       while (en.Alive)
         en.OnPhysicalHit(game.Hero);
+
+      game.GameManager.EnemiesManager.RemoveDead();
     }
 
     public LootInfo TestInteractive<T>(Action<Roguelike.Tiles.InteractiveTile> init,
