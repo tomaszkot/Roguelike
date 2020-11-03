@@ -76,7 +76,7 @@ namespace Roguelike.Generators
           var val = .2f;
           if (lk == LootKind.Potion || lk == LootKind.Scroll)
           {
-            var mult = 1.15f;
+            var mult = 1.6f;
             if (lootSource == LootSourceKind.PlainChest)
             {
               //if (lk == LootKind.Scroll)
