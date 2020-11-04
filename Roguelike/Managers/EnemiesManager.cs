@@ -69,11 +69,24 @@ namespace Roguelike.Managers
     {
       if (entity.InitialPoint != LivingEntity.DefaultInitialPoint)
       {
-        var distFromInitPoint = entity.DistanceFrom(entity.InitialPoint);
-        if (distFromInitPoint > 5)
+        if (entity.MoveKind != EntityMoveKind.ReturningHome)
+        {
+          var distFromInitPoint = entity.DistanceFrom(entity.InitialPoint);
+          if (distFromInitPoint > 5)
+          {
+            entity.MoveKind = EntityMoveKind.ReturningHome;
+          }
+        }
+
+        if (entity.MoveKind == EntityMoveKind.ReturningHome)
         {
           if (MakeMoveOnPath(entity, entity.InitialPoint))
+          {
+            if(entity.Point == entity.InitialPoint)
+              entity.MoveKind = EntityMoveKind.Freestyle;
+
             return;
+          }
         }
       }
       base.MakeRandomMove(entity);
@@ -102,8 +115,11 @@ namespace Roguelike.Managers
 
     private bool ShallChaseTarget(LivingEntity enemy, Hero target)
     {
-      if (enemy.EverHitBy.Contains(target))
+      if (enemy.WasEverHitBy(target))
+      {
+        enemy.MoveKind = EntityMoveKind.FollowingHero;
         return true;
+      }
 
       var dist = enemy.DistanceFrom(target);
       if(dist < 5)

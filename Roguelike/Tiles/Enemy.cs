@@ -11,12 +11,12 @@ namespace Roguelike.Tiles
   public enum RoomKind { Unset, PuzzleRoom, Island }
   public enum EnemyPowerKind { Unset, Plain, Champion, Boss };
   public enum PrefferedFightStyle { Physical, Magic, Distance }
-
+  
   public class Enemy : LivingEntity, ILootSource
   {
     //public int Level { get; set; } = 1;
     public PrefferedFightStyle PrefferedFightStyle { get; set; }//= PrefferedFightStyle.Magic;
-
+    
     public static readonly EntityStat BaseAttack = new EntityStat(EntityStatKind.Attack, 13f);
     public static readonly EntityStat BaseHealth = new EntityStat(EntityStatKind.Health, 13);
     public static readonly EntityStat BaseDefence = new EntityStat(EntityStatKind.Defense, 5);

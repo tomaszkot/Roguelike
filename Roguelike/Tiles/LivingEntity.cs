@@ -20,7 +20,8 @@ using System.Linq;
 namespace Roguelike.Tiles
 {
   public enum EntityState { Idle, Moving, Attacking, CastingSpell }
-  
+  public enum EntityMoveKind { Freestyle, FollowingHero, ReturningHome }
+
   public class LivingEntity : Tile, ILastingEffectOwner
   {
     static Dictionary<EntityStatKind, EntityStatKind> statsHitIncrease = new Dictionary<EntityStatKind, EntityStatKind> {
@@ -28,6 +29,7 @@ namespace Roguelike.Tiles
                 { EntityStatKind.ManaStealing, EntityStatKind.Mana }
     };
 
+    public EntityMoveKind MoveKind { get; set; }
     public static Point DefaultInitialPoint = new Point(0, 0);
     public Point PrevPoint;
     public Point InitialPoint = DefaultInitialPoint;
@@ -109,6 +111,11 @@ namespace Roguelike.Tiles
       effectsToUse[EffectType.IronSkin] = GenerationInfo.DefaultEnemyIronSkinUsageCount;
       effectsToUse[EffectType.ResistAll] = GenerationInfo.DefaultEnemyResistAllUsageCount;
       effectsToUse[EffectType.Inaccuracy] = GenerationInfo.DefaultEnemyResistAllUsageCount;
+    }
+
+    public bool WasEverHitBy(LivingEntity le) 
+    {
+      return EverHitBy.Contains(le);
     }
         
     public virtual void SetChanceToExperienceEffect(EffectType et, int chance)
