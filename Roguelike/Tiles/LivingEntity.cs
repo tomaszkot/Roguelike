@@ -320,11 +320,16 @@ namespace Roguelike.Tiles
       AppendAction(ga);
       PlaySound(sound);
 
-      RemoveLastingEffect(this, EffectType.Frighten);
+      var frighten = this.GetFirstLastingEffect(EffectType.Frighten);
+      if(frighten !=null)
+        RemoveLastingEffect(this, frighten);
+
       if (attacker != null || (spell.Caller != null && spell.Caller.LastingEffects.Any(i => i.Type == EffectType.Transform)))
       {
         var removeTr = attacker ?? spell.Caller;
-        RemoveLastingEffect(removeTr, EffectType.Transform);
+        var transf = this.GetFirstLastingEffect(EffectType.Transform);
+        if (transf != null)
+          RemoveLastingEffect(removeTr, transf);
       }
       if (attacker != null && spell == null && amount > 0)
         StealStatIfApplicable(amount, attacker);
@@ -346,19 +351,19 @@ namespace Roguelike.Tiles
 
     public virtual float GetChanceToExperienceEffect(EffectType et)
     {
-      if (et == EffectType.Stunned && GetLastingEffect(EffectType.Stunned) != null)
+      if (et == EffectType.Stunned && GetFirstLastingEffect(EffectType.Stunned) != null)
         return 0;//it was too easy
       return chanceToExperienceEffect[et];
     }
 
     public bool HasLastingEffect(EffectType le)
     {
-      return GetLastingEffect(le) != null;
+      return GetFirstLastingEffect(le) != null;
     }
 
-    public LastingEffect GetLastingEffect(EffectType le)
+    public LastingEffect GetFirstLastingEffect(EffectType le)
     {
-      return LastingEffects.Where(i => i.Type == le).SingleOrDefault();
+      return LastingEffects.Where(i => i.Type == le).FirstOrDefault();
     }
             
     public virtual LastingEffect AddLastingEffect
@@ -424,11 +429,11 @@ namespace Roguelike.Tiles
 
     public LastingEffectsSet LastingEffectsSet { get => lastingEffectsSet;  }
 
-    public virtual void RemoveLastingEffect(LivingEntity livEnt, EffectType et)
+    public virtual void RemoveLastingEffect(LivingEntity livEnt, LastingEffect le)
     {
-      lastingEffectsSet.RemoveLastingEffect(livEnt, et);
+      lastingEffectsSet.RemoveLastingEffect(livEnt, le);
     }
-
+        
     public static float GetReducePercentage(float orgAmount, float discPerc)
     {
       return orgAmount * discPerc / 100f;

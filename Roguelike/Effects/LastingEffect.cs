@@ -4,6 +4,7 @@ using Roguelike.Events;
 using Roguelike.Factors;
 using Roguelike.Spells;
 using Roguelike.Tiles;
+using System;
 using System.Linq;
 using System.Xml.Serialization;
 
@@ -93,6 +94,8 @@ namespace Roguelike.Effects
     //public bool FromTrapSpell { get; internal set; }
     ILastingEffectOwner owner;
 
+    public Guid Id { get; set; }
+
     [XmlIgnore]
     [JsonIgnore]
     public ILastingEffectOwner Owner
@@ -111,9 +114,11 @@ namespace Roguelike.Effects
     }
 
     public LastingEffect() { }
+
     public LastingEffect(EffectType type, ILastingEffectOwner owner, int turns, EffectOrigin origin, EffectiveFactor effectiveFactor, 
                          PercentageFactor percentageFactor)
     {
+      this.Id = Guid.NewGuid();
       this.Origin = origin;
       this.Type = type;
       this.Owner = owner;

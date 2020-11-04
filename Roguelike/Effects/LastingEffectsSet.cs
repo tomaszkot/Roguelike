@@ -52,6 +52,11 @@ namespace Roguelike.Effects
       //AppendEffectAction(le);
     }
 
+    bool CanBeProlonged(LastingEffect le)
+    {
+      return le.Type != EffectType.ConsumedRawFood && le.Type != EffectType.ConsumedRoastedFood;
+    }
+
     public virtual LastingEffect AddLastingEffect
     (
       LastingEffectCalcInfo calcEffectValue,
@@ -64,7 +69,7 @@ namespace Roguelike.Effects
       if (this.livingEntity.IsImmuned(eff))
         return null;
       var le = LastingEffects.Where(i => i.Type == eff).FirstOrDefault();
-      if (le == null)
+      if (le == null || !CanBeProlonged(le))
       {
         le = new LastingEffect(eff, livingEntity, calcEffectValue.Turns, origin, calcEffectValue.EffectiveFactor, calcEffectValue.PercentageFactor);
         le.PendingTurns = calcEffectValue.Turns;
@@ -85,7 +90,7 @@ namespace Roguelike.Effects
       var done = LastingEffects.Where(i => i.PendingTurns <= 0).ToList();
       foreach (var doneItem in done)
       {
-        RemoveLastingEffect(this.livingEntity, doneItem.Type);
+        RemoveLastingEffect(this.livingEntity, doneItem);
       }
     }
 
@@ -166,16 +171,16 @@ namespace Roguelike.Effects
       return lea;
     }
 
-    public virtual void RemoveLastingEffect(LivingEntity livEnt, EffectType et)
+    public virtual void RemoveLastingEffect(LivingEntity entity, LastingEffect le)
     {
-      var le = livEnt.LastingEffects.FirstOrDefault(i => i.Type == et);
       if (le != null)
       {
-        livEnt.LastingEffects.RemoveAll(i => i.Type == et);
+        bool removed = entity.LastingEffects.Remove(le);
+        Assert(removed);
 
         HandleSpecialFightStat(le, false);
 
-        if (livEnt == livingEntity && LastingEffectDone != null)
+        if (entity == livingEntity && LastingEffectDone != null)
           LastingEffectDone(this, le);
       }
     }
@@ -265,17 +270,17 @@ namespace Roguelike.Effects
 
     public LastingEffect EnsureEffect(EffectType et, float inflictedDamage, LivingEntity attacker)
     {
-      var currentEffect = LastingEffects.FirstOrDefault(i => i.Type == et);
-      if (currentEffect == null)
-      {
+      //var currentEffect = LastingEffects.FirstOrDefault(i => i.Type == et);
+      //if (currentEffect == null)
+      //{
         var effectInfo = CalcLastingEffDamage(et, inflictedDamage, null, null);
         var turns = effectInfo.Turns;
         if (turns <= 0)
           turns = GetPendingTurns(et);
-        currentEffect = this.AddLastingEffect(effectInfo, EffectOrigin.External, EffectTypeToStatKind.Convert(et),  true);
-      }
-      else
-        ProlongEffect(inflictedDamage, currentEffect);
+        var currentEffect = this.AddLastingEffect(effectInfo, EffectOrigin.External, EffectTypeToStatKind.Convert(et),  true);
+      //}
+      //else
+        //ProlongEffect(inflictedDamage, currentEffect);
       return currentEffect;
     }
 
