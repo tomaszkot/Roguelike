@@ -8,6 +8,7 @@ namespace Dungeons
   /// </summary>
   public class GenerationInfo : ICloneable
   {
+    public static bool DefaultRevealedValue = true;
     //Number of rooms inside a level, not counting ChildIslands (smallers rooms inside a room)
     public int NumberOfRooms = 5;
 

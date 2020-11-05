@@ -23,6 +23,7 @@ namespace Roguelike
       public bool PermanentDeath { get; set; }
       public DateTime LastSaved { get; set; }
       public bool RestoreHeroToSafePointAfterLoad { get; set; } = true;
+      public bool RegenerateLevelsOnLoad { get; set; } = true;
       //public GameSession Session = new GameSession();
 
       public override string ToString()

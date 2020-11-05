@@ -8,6 +8,11 @@
 
   public class GenerationInfo : Dungeons.GenerationInfo
   {
+    static GenerationInfo()
+    {
+      DefaultRevealedValue = false;
+    }
+
     public class Generated
     {
       public int ChempionsCount = 0;

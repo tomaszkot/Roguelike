@@ -807,6 +807,10 @@ namespace Dungeons
 
       public virtual void Reveal(bool reveal, bool force = false)
       {
+        if (reveal)
+        {
+          Log("reveal start - TRUE!", false);
+        }
         if (reveal && Revealed && !force)//Optimize
           return;
 

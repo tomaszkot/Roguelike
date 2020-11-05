@@ -59,7 +59,7 @@ namespace Roguelike.Tiles
       Crafting = new Roguelike.LootContainers.Crafting(null);
       
       Dirty = true;//TODO
-
+      Revealed = true;
       
 #if ASCII_BUILD
       color = ConsoleColor.Yellow;

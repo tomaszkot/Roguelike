@@ -44,7 +44,7 @@ namespace Dungeons.Tiles
     /// <summary>
     /// If false the tile is not visible. The revealed flag shall be typically set to true when a door leading to room are opened.
     /// </summary>
-    bool revealed = true;
+    bool revealed = GenerationInfo.DefaultRevealedValue;
 
     [JsonIgnore]
     public string DestroySound { get; set; }
@@ -96,11 +96,12 @@ namespace Dungeons.Tiles
       get { return revealed; }
       set
       {
-        if (value != revealed)
+        if (revealed != value)
         {
-          if (DungeonNodeIndex < 0)
+          if (value)//DungeonNodeIndex < 0)
           {
-            //int k = 0;
+            int k = 0;
+            k++;
           }
           revealed = value;
         }

@@ -68,18 +68,26 @@ namespace Roguelike
       };
 
       GameManager.WorldLoader = (Hero hero, GameState gs) =>
+      {
+        levels.Clear();
+        TileContainers.GameLevel lvl = null;
+        var maxLevel = gs.HeroPathValue.LevelIndex;//TODO gs shall have maxLevel, hero might have go upper. Maybe just count level files in dir ?
+        for (var i = 0; i <= maxLevel; i++)
         {
-          levels.Clear();
-          TileContainers.GameLevel lvl = null;
-          var maxLevel = gs.HeroPathValue.LevelIndex;//TODO gs shall have maxLevel, hero might have go upper. Maybe just count level files in dir ?
-          for (var i = 0; i <= maxLevel; i++)
+          TileContainers.GameLevel nextLvl = null;
+          if (gs.Settings.CoreInfo.RegenerateLevelsOnLoad)
           {
-            var level = GameManager.LoadLevel(hero.Name, i);
-            levels.Add(level);
+            nextLvl = GenerateLevel(i, null);
           }
-          lvl = levels[gs.HeroPathValue.LevelIndex];
-          return lvl;
-        };
+          else
+          {
+            nextLvl = GameManager.LoadLevel(hero.Name, i);
+            levels.Add(nextLvl);
+          }
+        }
+        lvl = levels[gs.HeroPathValue.LevelIndex];
+        return lvl;
+      };
 
       GameManager.WorldSaver = () =>
       {

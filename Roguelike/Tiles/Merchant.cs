@@ -29,6 +29,7 @@ namespace Roguelike.Tiles
       Gold = 100000;
       CreateInventory(cont);
       Inventory.Capacity = 24;//TODO
+           
 
       Dirty = true;//TODO
 #if ASCII_BUILD

@@ -44,7 +44,7 @@ namespace Roguelike.Generators
     protected virtual void OnLevelGenerated(Roguelike.TileContainers.GameLevel level)
     {
       level.OnGenerationDone();
-      level.GeneratorNodes[0].Reveal(true, true);
+      //level.GeneratorNodes[0].Reveal(true, true);
     }
 
     public override List<DungeonNode> CreateDungeonNodes(Dungeons.GenerationInfo info = null)
