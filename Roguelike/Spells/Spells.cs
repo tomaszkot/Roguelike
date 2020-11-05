@@ -208,60 +208,89 @@ namespace Roguelike.Spells
     }
   }
 
-  //  public class TransformSpell : DefensiveSpell
+  public class TransformSpell : PassiveSpell
+  {
+    //const float factor = 1.25f;
+
+    public TransformSpell() : this(new LivingEntity())
+    { }
+
+    public TransformSpell(LivingEntity caller) : base(caller, EntityStatKind.Unset)
+    {
+      Kind = SpellKind.Transform;
+      CoolingDown = 10;
+    }
+
+    protected override void AppendPrivateFeatures(List<string> fe)
+    {
+      fe.Add(GetCoolingDown());
+      fe.Add(GetTourLasting(TourLasting));
+    }
+
+    protected override void AppendNextLevel(List<string> fe)
+    {
+      base.AppendNextLevel(fe);
+      fe.Add(GetNextLevelTourLasting());
+    }
+  }
+
+  public class TeleportSpell : PassiveSpell
+  {
+    const int baseRange = 2;
+    public int Range = baseRange;
+
+    public TeleportSpell() : this(new LivingEntity())
+    {
+
+    }
+
+    public TeleportSpell(LivingEntity caller) : base(caller, EntityStatKind.Unset)
+    {
+      Range += GetCurrentLevel();
+      if (Range < baseRange + 1)
+        Range = baseRange + 1;
+      EntityRequired = true;
+      Kind = SpellKind.Teleport;
+      CoolingDown = 8;
+    }
+
+    protected override void AppendPrivateFeatures(List<string> fe)
+    {
+      fe.Add("Range: " + (Range));
+      fe.Add(GetCoolingDown());
+      fe.Add(GetTourLasting(TourLasting));
+    }
+
+    protected override void AppendNextLevel(List<string> fe)
+    {
+      base.AppendNextLevel(fe);
+      fe.Add(GetNextLevel("Range: " + (Range + 1)));
+    }
+  }
+
+  //public class FrightenSpell : DefensiveSpell
+  //{
+  //  public int TourLasting { get; set; }
+  //  public int Range { get; set; }
+  //  public FrightenSpell() : this(new LivingEntity())
+  //  { }
+  //  public FrightenSpell(LivingEntity caller) : base(caller)
   //  {
-  //    public int TourLasting { get; set; }
-  //    const float factor = 1.25f;
-  //    public TransformSpell() : this(new LivingEntity())
-  //    { }
-  //    public TransformSpell(LivingEntity caller) : base(caller)
-  //    {
-  //      Kind = SpellKind.Transform;
-  //      TourLasting = CalcTourLasting(factor);
-  //      CoolingDown = 10;
-  //    }
-
-  //    protected override void AppendPrivateFeatures(List<string> fe)
-  //    {
-  //      fe.Add("our Lasting: " + TourLasting);
-  //      fe.Add("Cooling Down: " + CoolingDown);
-  //    }
-
-  //    protected override void AppendNextLevel(List<string> fe)
-  //    {
-  //      base.AppendNextLevel(fe);
-  //      fe.Add("Next Level: Tour Lasting: " + CalcTourLasting(GetCurrentLevel() + 1, factor));
-  //    }
+  //    Kind = SpellKind.Frighten;
+  //    TourLasting = CalcTourLasting();
+  //    Range = 2;//TODO
+  //  }
+  //  protected override void AppendPrivateFeatures(List<string> fe)
+  //  {
+  //    fe.Add("our Lasting: " + TourLasting);
   //  }
 
-  //#if UNITY_WSA_10_0
-  //#elif UNITY_WSA
-  //#else
-  //  [Serializable]
-  //#endif
-  //  public class FrightenSpell : DefensiveSpell
+  //  protected override void AppendNextLevel(List<string> fe)
   //  {
-  //    public int TourLasting { get; set; }
-  //    public int Range { get; set; }
-  //    public FrightenSpell() : this(new LivingEntity())
-  //    { }
-  //    public FrightenSpell(LivingEntity caller) : base(caller)
-  //    {
-  //      Kind = SpellKind.Frighten;
-  //      TourLasting = CalcTourLasting();
-  //      Range = 2;//TODO
-  //    }
-  //    protected override void AppendPrivateFeatures(List<string> fe)
-  //    {
-  //      fe.Add("our Lasting: " + TourLasting);
-  //    }
-
-  //    protected override void AppendNextLevel(List<string> fe)
-  //    {
-  //      base.AppendNextLevel(fe);
-  //      fe.Add("Next Level: Tour Lasting: " + CalcTourLasting(GetCurrentLevel() + 1));
-  //    }
+  //    base.AppendNextLevel(fe);
+  //    fe.Add("Next Level: Tour Lasting: " + CalcTourLasting(GetCurrentLevel() + 1));
   //  }
+  //}
 
   //#if UNITY_WSA_10_0
   //#elif UNITY_WSA
@@ -431,74 +460,41 @@ namespace Roguelike.Spells
   //  }
 
 
-  //[Serializable]
-  //public class PortalSpell : DefensiveSpell
-  //{
-  //  const int baseRange = 2;
-  //  public int Range = baseRange;
-
-  //  public PortalSpell() : this(new LivingEntity())
+  //  [Serializable]
+  //  public class PortalSpell : DefensiveSpell
   //  {
+  //    const int baseRange = 2;
+  //    public int Range = baseRange;
 
+  //    public PortalSpell() : this(new LivingEntity())
+  //    {
+
+  //    }
+
+  //    public PortalSpell(LivingEntity caller) : base(caller)
+  //    {
+  //      Range += GetCurrentLevel();
+  //      if (Range < baseRange + 1)
+  //        Range = baseRange + 1;
+  //      Kind = SpellKind.Portal;
+  //      EnemyRequired = false;
+  //      CoolingDown = 8;
+  //    }
+
+  //    protected override void AppendPrivateFeatures(List<string> fe)
+  //    {
+  //      fe.Add("Range: " + (Range));
+  //      fe.Add("Cooling Down: " + CoolingDown);
+  //    }
+
+  //    protected override void AppendNextLevel(List<string> fe)
+  //    {
+  //      base.AppendNextLevel(fe);
+  //      fe.Add("Next Level: Range: " + (Range + 1));
+  //    }
   //  }
 
-  //  public PortalSpell(LivingEntity caller) : base(caller)
-  //  {
-  //    Range += GetCurrentLevel();
-  //    if (Range < baseRange + 1)
-  //      Range = baseRange + 1;
-  //    Kind = SpellKind.Portal;
-  //    EnemyRequired = false;
-  //    CoolingDown = 8;
-  //  }
 
-  //  protected override void AppendPrivateFeatures(List<string> fe)
-  //  {
-  //    fe.Add("Range: " + (Range));
-  //    fe.Add("Cooling Down: " + CoolingDown);
-  //  }
-
-  //  protected override void AppendNextLevel(List<string> fe)
-  //  {
-  //    base.AppendNextLevel(fe);
-  //    fe.Add("Next Level: Range: " + (Range + 1));
-  //  }
-  //}
-
-  [Serializable]
-  public class TeleportSpell : PassiveSpell
-  {
-
-    const int baseRange = 2;
-    public int Range = baseRange;
-
-    public TeleportSpell() : this(new LivingEntity())
-    {
-
-    }
-
-    public TeleportSpell(LivingEntity caller) : base(caller, EntityStatKind.Unset)
-    {
-      Range += GetCurrentLevel();
-      if (Range < baseRange + 1)
-        Range = baseRange + 1;
-      EntityRequired = true;
-      Kind = SpellKind.Teleport;
-      CoolingDown = 8;
-    }
-
-    protected override void AppendPrivateFeatures(List<string> fe)
-    {
-      fe.Add("Range: " + (Range));
-      fe.Add("Cooling Down: " + CoolingDown);
-    }
-
-    protected override void AppendNextLevel(List<string> fe)
-    {
-      base.AppendNextLevel(fe);
-      fe.Add(GetNextLevel("Range: " + (Range + 1)));
-    }
-  }
 
   //#if UNITY_WSA_10_0
   //#elif UNITY_WSA

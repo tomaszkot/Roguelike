@@ -41,6 +41,10 @@ namespace Roguelike.Tiles
 
     }
 
+    public virtual void ResetToDefaults()
+    { 
+    }
+
     public InteractiveTileKind Kind
     {
       get => _kind;
@@ -71,7 +75,7 @@ namespace Roguelike.Tiles
     }
 
     /// <summary>
-    /// Was here ever close to the tile?
+    /// Was hero ever close to the tile?
     /// </summary>
     public bool ApproachedByHero { get; set; }
   }

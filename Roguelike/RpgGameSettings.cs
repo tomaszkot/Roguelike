@@ -22,6 +22,7 @@ namespace Roguelike
       public bool IsPlayerPermanentlyDead { get; set; }
       public bool PermanentDeath { get; set; }
       public DateTime LastSaved { get; set; }
+      public bool RestoreHeroToSafePointAfterLoad { get; set; } = true;
       //public GameSession Session = new GameSession();
 
       public override string ToString()
@@ -55,7 +56,6 @@ namespace Roguelike
       public bool AutoPutOnBetterEquipment { get; set; } = true;
       public bool AllowInPlaceInventoryCrafting { get; set; } = true;
       public bool PlaceLootToShortcutBar { get; set; } = true;
-      public bool RestoreHeroToSafePointAfterLoad { get; set; } = true;
     }
 
     public class Input

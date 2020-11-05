@@ -35,10 +35,16 @@ namespace Roguelike.Generators
       var baseLevel = base.Generate(levelIndex, info, options);
       var level = baseLevel as Roguelike.TileContainers.GameLevel;
       level.Index = levelIndex;
-      level.OnGenerationDone();
+      OnLevelGenerated(level);
 
       // PopulateDungeonLevel(level);
       return level;
+    }
+
+    protected virtual void OnLevelGenerated(Roguelike.TileContainers.GameLevel level)
+    {
+      level.OnGenerationDone();
+      level.GeneratorNodes[0].Reveal(true, true);
     }
 
     public override List<DungeonNode> CreateDungeonNodes(Dungeons.GenerationInfo info = null)

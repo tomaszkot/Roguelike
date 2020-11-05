@@ -75,7 +75,7 @@ namespace Roguelike.TileContainers
       if (!GeneratorNodes.Any())
         return;
       HookEvents();
-      GeneratorNodes[0].Reveal(true, true);
+      //GeneratorNodes[0].Reveal(true, true);//bad to have it here, when loaded level hero migth not be at 0 room
     }
 
     public void OnLoadDone()
@@ -145,6 +145,8 @@ namespace Roguelike.TileContainers
         return Nodes.Single().ChildIslands;
       }
     }
+
+    public DateTime GeneratedAt { get; set; }
   }
 
 

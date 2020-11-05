@@ -200,6 +200,7 @@ namespace Roguelike.TileContainers
       else
       {
         var neib = GetNeighborTiles(door).Where(i => 
+        i !=null && 
         i.DungeonNodeIndex != door.DungeonNodeIndex && 
         i != hero && 
         i.DungeonNodeIndex != Dungeons.TileContainers.DungeonNode.DefaultNodeIndex).FirstOrDefault();

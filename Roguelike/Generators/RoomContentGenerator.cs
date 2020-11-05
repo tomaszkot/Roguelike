@@ -35,7 +35,7 @@ namespace Roguelike.Generators
 
       if (node.ContentGenerated)
       {
-        EnsureBoss();
+        EnsureBoss();//TODO what is the point of it ?
         return;
       }
             

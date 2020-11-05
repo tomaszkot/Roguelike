@@ -95,6 +95,11 @@ namespace Roguelike.Spells
       fe.Add(GetTourLasting(TourLasting));
     }
 
+    public string GetCoolingDown()
+    {
+      return "Cooling Down: " + CoolingDown;
+    }
+
     public static string GetTourLasting(int tourLasting)
     {
       return "Tour Lasting: " + tourLasting;

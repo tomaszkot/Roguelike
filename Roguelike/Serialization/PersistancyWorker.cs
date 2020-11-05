@@ -37,15 +37,15 @@ namespace Roguelike.Serialization
 
     public void Load(string heroName, GameManager gm, Func<Hero, GameState, AbstractGameLevel> worldLoader)
     {
+      gm.Context.NodeHeroPlacedAfterLoad = null;
       var hero = gm.Persister.LoadHero(heroName);
-            
       var gs = gm.Persister.LoadGameState(heroName);
       gm.SetGameState(gs);
 
       AbstractGameLevel node = null;
       node = worldLoader(hero, gs);
-      //gm.InitNode(node, true);
-      gm.Context.SwitchTo(node, hero, GameContextSwitchKind.GameLoaded);
+
+      gm.Context.SwitchTo(node, hero, gs, GameContextSwitchKind.GameLoaded);
 
       gm.PrintHeroStats("load");
 

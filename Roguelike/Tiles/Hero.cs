@@ -34,7 +34,7 @@ namespace Roguelike.Tiles
     public Hero(): base(new Point().Invalid(), '@')
     {
       canAdvanceInExp = true;
-      Stats.SetNominal(EntityStatKind.Health, 40);//level up +2 // 40 -> 140
+      Stats.SetNominal(EntityStatKind.Health, 240);//level up +2 // 40 -> 140
       // Character.Mana = 40;
       Stats.SetNominal(EntityStatKind.Strength, StartStrength);
       Stats.SetNominal(EntityStatKind.Attack, StartStrength);
@@ -107,5 +107,14 @@ namespace Roguelike.Tiles
     {
       return Stats.GetCurrentValue(EntityStatKind.Strength) - StartStrength;
     }
+
+    //public void RestoreState(GameState gameState)
+    //{
+    //  if (gameState.Settings.CoreInfo.RestoreHeroToSafePointAfterLoad)
+    //  {
+    //    if (gameState.HeroInitGamePosition != new Point().Invalid())
+    //      Point = gameState.HeroInitGamePosition;
+    //  }
+    //}
   }
 }

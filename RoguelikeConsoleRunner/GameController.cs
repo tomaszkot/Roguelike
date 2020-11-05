@@ -58,8 +58,10 @@ namespace RoguelikeConsoleRunner
 
     }
 
-    private void Context_ContextSwitched(object sender, ContextSwitch e)
+    private void Context_ContextSwitched(object sender, ContextSwitch context)
     {
+      if (context.Kind == GameContextSwitchKind.NewGame)
+        GameManager.Hero.Name = "ConsoleHero";
       Redraw();
     }
 
@@ -125,7 +127,10 @@ namespace RoguelikeConsoleRunner
       else if (key == ConsoleKey.L)
       {
         if (GameManager.Hero.Name.Any())
+        {
           GameManager.Load(GameManager.Hero.Name);
+          Redraw();
+        }
       }
       else if (key == ConsoleKey.Spacebar)
       {
@@ -197,7 +202,14 @@ namespace RoguelikeConsoleRunner
       //Debug.Assert(Dungeon == DungeonPresenter.Node);
       //Debug.Assert(gameManager.Hero == Dungeon.GetTiles<Hero>().SingleOrDefault()); 
       base.Redraw();
-      
+    }
+
+    protected override void RevealAll()
+    {
+      base.RevealAll();
+      var node = GameManager.CurrentNode;
+      node.Reveal(true, true);
+      Redraw();
     }
   }
 }

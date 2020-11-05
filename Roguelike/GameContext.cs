@@ -128,7 +128,7 @@ namespace Roguelike
       }
     }
 
-    public virtual void SwitchTo(AbstractGameLevel node, Hero hero, GameContextSwitchKind context, Stairs stairs = null)
+    public virtual void SwitchTo(AbstractGameLevel node, Hero hero, GameState gs, GameContextSwitchKind context, Stairs stairs = null)
     {
       if (node == CurrentNode)
       {
@@ -146,14 +146,7 @@ namespace Roguelike
       {
         if (context == GameContextSwitchKind.DungeonSwitched)
         {
-          var heros = CurrentNode.GetTiles<Hero>();
-          var heroInNode = heros.SingleOrDefault();
-          Debug.Assert(heroInNode != null);
-          if (heroInNode == null)
-            logger.LogError("SwitchTo heros.Count = " + heros.Count);
-
-          if (heroInNode != null)
-            CurrentNode.SetEmptyTile(heroInNode.Point);//Hero is going to be placed in the node, remove it from the old one (CurrentNode)
+          ClearOldHeroPosition(CurrentNode, context);
         }
         Tile heroStartTile = PlaceHeroAtDungeon(node, stairs);
         if(heroStartTile!=null)
@@ -161,7 +154,13 @@ namespace Roguelike
       }
       else
       {
-        if (!node.SetTile(Hero, Hero.Point))
+        AbstractGameLevel destNode = null;
+        if (context == GameContextSwitchKind.GameLoaded)
+        {
+          destNode = PlaceLoadedHero(node, gs, context, stairs);
+        }
+
+        if (destNode == null && !node.SetTile(Hero, Hero.Point))
         {
           logger.LogError("!node.SetTile " + Hero);
         }
@@ -170,6 +169,44 @@ namespace Roguelike
       CurrentNode = node;
       //EventsManager.AppendAction(new GameStateAction() { InvolvedNode = node, Type = GameStateAction.ActionType.ContextSwitched });
       EmitContextSwitched(context);
+    }
+
+    public virtual AbstractGameLevel PlaceLoadedHero(AbstractGameLevel node, GameState gs, GameContextSwitchKind context, Stairs stairs)
+    {
+      AbstractGameLevel level = null;
+      //if (gameState.Settings.CoreInfo.RestoreHeroToSafePointAfterLoad)
+      {
+        Tile heroStartTile = null;
+        if (node.Index > 0)
+        {
+          var stairsUp = node.GetStairs(StairsKind.LevelUp);
+          if (stairsUp != null)
+            heroStartTile = PlaceHeroAtDungeon(node, stairs);
+        }
+        else
+          heroStartTile = GetHeroStartTile(node);
+
+        if (heroStartTile != null)
+        {
+          ClearOldHeroPosition(node, context);
+          node.SetTile(this.Hero, heroStartTile.Point, false);
+          level = node;
+        }
+      }
+
+      return level;
+    }
+
+    private void ClearOldHeroPosition(AbstractGameLevel node, GameContextSwitchKind context)
+    {
+      var heros = node.GetTiles<Hero>();
+      var heroInNode = heros.SingleOrDefault();
+      Debug.Assert(heroInNode != null);
+      if (heroInNode == null && context == GameContextSwitchKind.DungeonSwitched)
+        logger.LogError("SwitchTo heros.Count = " + heros.Count);
+
+      if (heroInNode != null)
+        node.SetEmptyTile(heroInNode.Point);//Hero is going to be placed in the node, remove it from the old one (CurrentNode)
     }
 
     protected virtual Tile PlaceHeroAtDungeon(AbstractGameLevel node, Stairs stairs)
@@ -185,16 +222,22 @@ namespace Roguelike
 
       if (heroStartTile == null)
       {
-        var emp = node.GetEmptyTiles(levelIndexMustMatch:false)//merged level migth have index  999 and none tile has such
-          .FirstOrDefault();
-        if (emp == null)
-        {
-          int k = 0;
-          k++;
-        }
-        heroStartTile = emp;
+        heroStartTile = GetHeroStartTile(node);
       }
 
+      return heroStartTile;
+    }
+
+    private Tile GetHeroStartTile(AbstractGameLevel node)
+    {
+      Tile heroStartTile;
+      var emp = node.GetEmptyTiles(levelIndexMustMatch: false)//merged level migth have index  999 and none tile has such
+               .FirstOrDefault();
+      if (emp == null)
+      {
+        Logger.LogError("GetHeroStartTile failed!");
+      }
+      heroStartTile = emp;
       return heroStartTile;
     }
 
@@ -284,5 +327,7 @@ namespace Roguelike
     public Dictionary<TurnOwner, int> TurnActionsCount { get => turnActionsCount; set => turnActionsCount = value; }
     public Dictionary<TurnOwner, int> TurnCounts { get => turnCounts; set => turnCounts = value; }
     public bool HeroDeadReported { get; internal set; }
+    public bool HeroPlacedAfterLoad { get; set; }
+    public AbstractGameLevel NodeHeroPlacedAfterLoad { get; set; }
   }
 }

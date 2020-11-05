@@ -18,12 +18,14 @@ namespace Roguelike.Tiles.Interactive
 {
   public enum ChestKind { Unset, Plain, Gold, GoldDeluxe }
 
-  
+
 
   public class Chest : InteractiveTile, ILootSource
   {
     public const char ChestSymbol = '~';
     private ChestKind chestKind = ChestKind.Plain;
+    private bool closed = true;
+
     public event EventHandler Opened;
 
     public ChestKind ChestKind
@@ -32,6 +34,21 @@ namespace Roguelike.Tiles.Interactive
       set
       {
         chestKind = value;
+        SetColor();
+      }
+    }
+
+    public override void ResetToDefaults()
+    {
+      Closed = true;
+    }
+
+    private void SetColor()
+    {
+      if (Closed)
+        Color = ConsoleColor.DarkGreen;
+      else
+      {
         if (chestKind == ChestKind.Plain)
           Color = ConsoleColor.Cyan;
         else
@@ -41,19 +58,23 @@ namespace Roguelike.Tiles.Interactive
 
     public Point GetPoint() { return Point; }
 
+
     public bool Closed
     {
-      get;
-      set;
-    } = true;
-
+      get => closed;
+      set
+      {
+          closed = value;
+          SetColor();
+      }
+    }
     public void SetLevel(int level) { Level = level; }
 
     public Chest() : base(ChestSymbol)
     {
       Symbol = ChestSymbol;
       Name = "Chest";
-      
+
       Kind = InteractiveTileKind.TreasureChest;
       InteractSound = "chest_open";
     }

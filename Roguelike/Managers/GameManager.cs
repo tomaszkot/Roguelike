@@ -121,6 +121,12 @@ namespace Roguelike.Managers
     public virtual void SetContext(AbstractGameLevel node, Hero hero, GameContextSwitchKind kind, Stairs stairs = null)
     {
       hero.Container = this.Container;
+
+      if (kind == GameContextSwitchKind.NewGame)
+      {
+        gameState.HeroInitGamePosition = hero.Point;
+      }
+
       LootGenerator.LevelIndex = node.Index;//TODO
       if (kind == GameContextSwitchKind.NewGame)
       {
@@ -132,9 +138,9 @@ namespace Roguelike.Managers
 
       Context.Hero = hero;
 
-      InitNode(node);
+      InitNode(node, gameState);
 
-      Context.SwitchTo(node, hero, kind, stairs);
+      Context.SwitchTo(node, hero, gameState, kind, stairs);
 
       PrintHeroStats("SetContext " + kind);
     }
@@ -144,7 +150,7 @@ namespace Roguelike.Managers
       (node as TileContainers.GameLevel).OnLoadDone();
     }
 
-    protected virtual void InitNode(AbstractGameLevel node, bool fromLoad = false)
+    protected virtual void InitNode(AbstractGameLevel node, GameState gs, bool fromLoad = false)
     {
       node.GetTiles<LivingEntity>().ForEach(i => i.Container = this.Container);
       node.Logger = this.Logger;
@@ -155,7 +161,13 @@ namespace Roguelike.Managers
     public TileContainers.GameLevel LoadLevel(string heroName, int index)
     {
       var level = Persister.LoadLevel(heroName, index);
-      InitNode(level, true);
+      InitNode(level, gameState, true);
+
+      var heros = level.GetTiles<Hero>();
+      if (heros.Any())
+      {
+        Logger.LogError("Hero saved in level! "+ heros.First());//normally hero is saved in separate file
+      }
       return level;
     }
 
@@ -592,6 +604,17 @@ namespace Roguelike.Managers
     public virtual void Load(string heroName)
     {
       persistancyWorker.Load(heroName, this, WorldLoader);
+      if (gameState.Settings.CoreInfo.RestoreHeroToSafePointAfterLoad)
+      { 
+        
+      }
+      //Hero.RestoreState(gameState);
+
+      //var inters =  this.CurrentNode.GetTiles<Roguelike.Tiles.InteractiveTile>();
+      //foreach (var inter in inters)
+      //{
+      //  inter.ResetToDefaults();      
+      //}
     }
 
     PersistancyWorker persistancyWorker = new PersistancyWorker();
