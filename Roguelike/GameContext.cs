@@ -234,11 +234,20 @@ namespace Roguelike
       {
         baseTile = node.GetStairs(StairsKind.LevelUp);
       }
-      else if (stairs != null && stairs.StairsKind == StairsKind.LevelUp && context == GameContextSwitchKind.DungeonSwitched)
+      else if (stairs != null && context == GameContextSwitchKind.DungeonSwitched)
       {
-        var stairsDown = node.GetTiles<Stairs>().Where(i => i.StairsKind == StairsKind.LevelDown).FirstOrDefault();
-        if (stairsDown != null)
-          baseTile = stairsDown;
+        if (stairs.StairsKind == StairsKind.LevelUp)
+        {
+          var stairsDown = node.GetTiles<Stairs>().Where(i => i.StairsKind == StairsKind.LevelDown).FirstOrDefault();
+          if (stairsDown != null)
+            baseTile = stairsDown;
+        }
+        else if (stairs.StairsKind == StairsKind.LevelDown)
+        {
+          var stairsUp = node.GetTiles<Stairs>().Where(i => i.StairsKind == StairsKind.LevelUp).FirstOrDefault();
+          if (stairsUp != null)
+            baseTile = stairsUp;
+        }
       }
       if (baseTile != null)
       {
