@@ -26,8 +26,10 @@
       GenerateEnemies = true;
       //ForcedNumberOfEnemiesInRoom = 1;
     }
+
+    public static bool RevealUpperLevelsOnLoad { get; set; } = true;
     public const int MaxLevelIndex = 1;//0 - only one level, 1 - two levels,./... -1 endless
-    public int ForcedNumberOfEnemiesInRoom { get; set; } = 1;//-1 means field is not used
+    public int ForcedNumberOfEnemiesInRoom { get; set; } = 0;//-1 means field is not used
     public static DebugGenerationInfo DebugInfo = new DebugGenerationInfo();
 
     public static float ChanceToGenerateEnemyFromBarrel = .15f;

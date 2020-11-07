@@ -84,8 +84,6 @@ namespace Dungeons
 
       //it's assummed, level has there are less rooms that 999. 
       public const int DefaultNodeIndex = 999;
-      //public const int ChildIslandNodeIndex1 = 998;
-      //public const int ChildIslandNodeIndex2 = 997;
 
       public const int ChildIslandNodeIndex = -1;
       public static int NextChildIslandId = ChildIslandNodeIndex;
@@ -462,16 +460,16 @@ namespace Dungeons
         if (tiles[point.Y, point.X] != null)
         {
           //caused ChildIsland to be revealed at once.
-          //var prev = tiles[point.Y, point.X];
-          //if (tile != null && tile.DungeonNodeIndex < 0)
-          //  tile.DungeonNodeIndex = prev.DungeonNodeIndex;
+          var prev = tiles[point.Y, point.X];
+          if (tile != null && !tile.IsFromChildIsland())
+            tile.DungeonNodeIndex = prev.DungeonNodeIndex;
         }
 
         tiles[point.Y, point.X] = tile;
 
         if (tile != null)
         {
-          if (tile.DungeonNodeIndex > DungeonNode.ChildIslandNodeIndex && autoSetTileDungeonIndex)//do not touch islands
+          if (!tile.IsFromChildIsland() && autoSetTileDungeonIndex)//do not touch islands
             SetDungeonNodeIndex(tile);
           if (resetOldTile)
           {
@@ -803,7 +801,7 @@ namespace Dungeons
         return new Wall();
       }
 
-      public event EventHandler<GenericEventArgs<NodeRevealedParam>> OnRevealed;
+      public event EventHandler<NodeRevealedParam> OnRevealed;
 
       public virtual void Reveal(bool reveal, bool force = false)
       {
@@ -833,7 +831,7 @@ namespace Dungeons
             {
               revealedTiles.Add(tiles[row, col]);
               //Log("reveal " + tiles[row, col], false);
-              if (tile.DungeonNodeIndex < 0)
+              if (tile.IsFromChildIsland())
               {
                 //Log("reveal < 0" + tiles[row, col], false);
               }
@@ -844,7 +842,7 @@ namespace Dungeons
         if (Revealed && OnRevealed != null)
         {
           //var ev = new GenericEventArgs<IList<Tile>>(revealedTiles);
-          OnRevealed(this, new GenericEventArgs<NodeRevealedParam>(new NodeRevealedParam() { NodeIndex = NodeIndex, Tiles = revealedTiles }));
+          OnRevealed(this, new NodeRevealedParam() { NodeIndex = NodeIndex, Tiles = revealedTiles });
         }
 
         Log(revDesc + ", end", false);

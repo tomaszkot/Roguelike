@@ -77,7 +77,7 @@ namespace Roguelike.Managers
       RemoveDead();
 
       var activeEntities = CalcActiveEntities();
-      context.Logger.LogInfo(this+" MakeTurn start, count: " + activeEntities.Count);
+      //context.Logger.LogInfo(this+" MakeTurn start, count: " + activeEntities.Count);
 
       pendingForAllIdle = false;
       

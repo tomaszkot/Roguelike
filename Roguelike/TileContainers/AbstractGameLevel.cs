@@ -45,6 +45,12 @@ namespace Roguelike.TileContainers
       Logger = Container.GetInstance<ILogger>();
     }
 
+    protected override void SetDungeonNodeIndex(Tile tile)
+    {
+      //after load hero on level 1, he was getting wrong dungeonNodeIndex when moved
+      //tile.DungeonNodeIndex = this.NodeIndex;
+    }
+
     public override void AppendMaze(Dungeons.TileContainers.DungeonNode childMaze, Point? destStartPoint = null, Point? childMazeMaxSize = null,
       bool childIsland = false, EntranceSide? entranceSideToSkip = null, Dungeons.TileContainers.DungeonNode prevNode = null)
     {
@@ -169,6 +175,11 @@ namespace Roguelike.TileContainers
         return Parts[0].Parts.Cast<Dungeons.TileContainers.DungeonNode>().ToList();
         //return Parts[0].Parts.Cast<Dungeons.TileContainers.DungeonNode>().ToList();
       }
+    }
+
+    public virtual void OnHeroPlaced(Hero hero)
+    {
+      
     }
 
     public Dungeons.TileContainers.DungeonNode GetNodeFromTile(Tile tile)
@@ -381,6 +392,7 @@ namespace Roguelike.TileContainers
       enemy.Container = Container;
       enemy.SetLevel(level);
       enemy.tag1 = EnemySymbols.EnemiesToSymbols.Where(i => i.Value == EnemySymbols.SkeletonSymbol).Single().Key;
+      enemy.Revealed = true;
       return enemy;
     }
 

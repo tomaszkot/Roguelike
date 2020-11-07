@@ -307,39 +307,46 @@ namespace Roguelike.Managers
     public InteractionResult HandleHeroShift(int horizontal, int vertical)
     {
       InteractionResult res = InteractionResult.None;
-      
-      if (!CanHeroDoAction())
-        return res;
 
-      if(HeroMoveAllowed!=null && !HeroMoveAllowed())
-        return res;
-      var newPos = GetNewPositionFromMove(Hero.Point, horizontal, vertical);
-      if (!newPos.Possible)
+      try
       {
-        return res;
-      }
-      var hc = CurrentNode.GetHashCode();
-      var tile = CurrentNode.GetTile(newPos.Point);
-      //logger.LogInfo(" tile at " + newPos.Point + " = "+ tile);
-      if (!tile.IsEmpty)
-        res = InteractHeroWith(tile);
+        if (!CanHeroDoAction())
+          return res;
 
-      if (res == InteractionResult.ContextSwitched || res == InteractionResult.Blocked)
-        return res;
-
-      if (res == InteractionResult.Handled || res == InteractionResult.Attacked)
-      {
-        //ASCII printer needs that event
-        //logger.LogInfo(" InteractionResult " + res + ", ac="  + ac);
-        EventsManager.AppendAction(new LivingEntityAction(LivingEntityActionKind.Interacted) { InvolvedEntity = Hero });
-      }
-      else
-      {
-        //logger.LogInfo(" Hero ac ="+ ac);
-        context.ApplyMovePolicy(Hero, newPos.Point, (e) =>
+        if (HeroMoveAllowed != null && !HeroMoveAllowed())
+          return res;
+        var newPos = GetNewPositionFromMove(Hero.Point, horizontal, vertical);
+        if (!newPos.Possible)
         {
-          OnHeroPolicyApplied(this, e);
-        });
+          return res;
+        }
+        var hc = CurrentNode.GetHashCode();
+        var tile = CurrentNode.GetTile(newPos.Point);
+        //logger.LogInfo(" tile at " + newPos.Point + " = "+ tile);
+        if (!tile.IsEmpty)
+          res = InteractHeroWith(tile);
+
+        if (res == InteractionResult.ContextSwitched || res == InteractionResult.Blocked)
+          return res;
+
+        if (res == InteractionResult.Handled || res == InteractionResult.Attacked)
+        {
+          //ASCII printer needs that event
+          //logger.LogInfo(" InteractionResult " + res + ", ac="  + ac);
+          EventsManager.AppendAction(new LivingEntityAction(LivingEntityActionKind.Interacted) { InvolvedEntity = Hero });
+        }
+        else
+        {
+          //logger.LogInfo(" Hero ac ="+ ac);
+          context.ApplyMovePolicy(Hero, newPos.Point, (e) =>
+          {
+            OnHeroPolicyApplied(this, e);
+          });
+        }
+      }
+      catch (Exception ex)
+      {
+        Logger.LogError(ex);
       }
 
       return res;

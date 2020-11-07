@@ -63,10 +63,6 @@ namespace Roguelike
       turnCounts[TurnOwner.Enemies] = 0;
     }
 
-    public void ApplySpellPolicy()
-    {
-    }
-
     public void ApplyPhysicalAttackPolicy(LivingEntity attacker, Tile target, Action<Policy> AfterApply)
     {
       var attackPolicy = Container.GetInstance<AttackPolicy>();
@@ -136,80 +132,73 @@ namespace Roguelike
         return;
       }
       if (CurrentNode != null)
-      {
-        var heros = CurrentNode.GetTiles<Hero>();
-        var heroOnPrev = heros.SingleOrDefault();
-        var set = CurrentNode.SetEmptyTile(heroOnPrev.Point);
-        if (!set)
-          Logger.LogError("failed to reset hero pos!");
-      }
+        ClearOldHeroPosition(CurrentNode, context);
 
-
-      this.Hero = hero;
+      Hero = hero;
       hero.OnContextSwitched(Container);
       var merchs = node.GetTiles<Merchant>();
       foreach(var merch in merchs)
         merch.OnContextSwitched(Container);
 
-      if (!Hero.Point.IsValid() || context == GameContextSwitchKind.DungeonSwitched)
+      //if (!Hero.Point.IsValid() || context == GameContextSwitchKind.DungeonSwitched)
       {
-        if (context == GameContextSwitchKind.DungeonSwitched)
-        {
-          ClearOldHeroPosition(CurrentNode, context);
-        }
-        var heroStartTile = PlaceHeroAtDungeon(node, context, stairs);
-        PlaceHeroAtTile(node, Hero, heroStartTile);
+        //if (context == GameContextSwitchKind.DungeonSwitched)
+        //{
+        //  ClearOldHeroPosition(CurrentNode, context);
+        //}
+        var heroStartTile = PlaceHeroAtDungeon(node, gs, context, stairs);
+        PlaceHeroAtTile(node, context, Hero, heroStartTile);
       }
-      else
-      {
-        AbstractGameLevel destNode = null;
-        if (context == GameContextSwitchKind.GameLoaded)
-        {
-          destNode = PlaceLoadedHero(node, gs, context, stairs);
-        }
+      //else
+      //{
+      //  AbstractGameLevel destNode = null;
+      //  if (context == GameContextSwitchKind.GameLoaded)
+      //  {
+      //    destNode = PlaceLoadedHero(node, gs, context, stairs);
+      //  }
 
-        if (destNode == null && !node.SetTile(Hero, Hero.Point))
-        {
-          logger.LogError("!node.SetTile " + Hero);
-        }
-      }
+      //  if (destNode == null && !node.SetTile(Hero, Hero.Point))
+      //  {
+      //    logger.LogError("!node.SetTile " + Hero);
+      //  }
+      //}
 
       CurrentNode = node;
 
-      if(Hero.DungeonNodeIndex < CurrentNode.Nodes.Count)
-        CurrentNode.Nodes[Hero.DungeonNodeIndex].Reveal(true);
+      CurrentNode.OnHeroPlaced(Hero);
+      
       //EventsManager.AppendAction(new GameStateAction() { InvolvedNode = node, Type = GameStateAction.ActionType.ContextSwitched });
       EmitContextSwitched(context);
     }
 
-    public virtual AbstractGameLevel PlaceLoadedHero(AbstractGameLevel node, GameState gs, GameContextSwitchKind context, Stairs stairs)
+    //public virtual AbstractGameLevel PlaceLoadedHero(AbstractGameLevel node, GameState gs, GameContextSwitchKind context, Stairs stairs)
+    //{
+    //  AbstractGameLevel level = null;
+    //  //if (gameState.Settings.CoreInfo.RestoreHeroToSafePointAfterLoad)
+    //  {
+    //    Tile heroStartTile = null;
+    //    if (node.Index > 0)
+    //    {
+    //      var stairsUp = node.GetStairs(StairsKind.LevelUp);
+    //      if (stairsUp != null)
+    //        heroStartTile = PlaceHeroAtDungeon(node, gs, context, stairs);
+    //    }
+    //    else
+    //      heroStartTile = GetHeroStartTile(node);
+
+    //    if (heroStartTile != null)
+    //    {
+    //      PlaceHeroAtTile(node, context, Hero, heroStartTile);
+    //      level = node;
+    //    }
+    //  }
+
+    //  return level;
+    //}
+
+    protected void PlaceHeroAtTile(AbstractGameLevel node, GameContextSwitchKind context, Hero hero, Tile tile)
     {
-      AbstractGameLevel level = null;
-      //if (gameState.Settings.CoreInfo.RestoreHeroToSafePointAfterLoad)
-      {
-        Tile heroStartTile = null;
-        if (node.Index > 0)
-        {
-          var stairsUp = node.GetStairs(StairsKind.LevelUp);
-          if (stairsUp != null)
-            heroStartTile = PlaceHeroAtDungeon(node, context, stairs);
-        }
-        else
-          heroStartTile = GetHeroStartTile(node);
-
-        if (heroStartTile != null)
-        {
-          ClearOldHeroPosition(node, context);
-          PlaceHeroAtTile(node, Hero, heroStartTile);
-          level = node;
-        }
-      }
-
-      return level;
-    }
-
-    protected void PlaceHeroAtTile(AbstractGameLevel node, Hero hero, Tile tile)
-    {
+      ClearOldHeroPosition(node, context);
       if (node.SetTile(hero, tile.Point, false))
         hero.DungeonNodeIndex = tile.DungeonNodeIndex;
     }
@@ -226,13 +215,17 @@ namespace Roguelike
         node.SetEmptyTile(heroInNode.Point);//Hero is going to be placed in the node, remove it from the old one (CurrentNode)
     }
 
-    protected virtual Tile PlaceHeroAtDungeon(AbstractGameLevel node, GameContextSwitchKind context, Stairs stairs)
+    protected virtual Tile PlaceHeroAtDungeon(AbstractGameLevel node, GameState gs, GameContextSwitchKind context, Stairs stairs)
     {
       Tile heroStartTile = null;
       Tile baseTile = null;
       if (stairs == null && node.Index > 0 && context == GameContextSwitchKind.GameLoaded)
       {
-        baseTile = node.GetStairs(StairsKind.LevelUp);
+        var stairsUp = node.GetStairs(StairsKind.LevelUp);
+        if (stairsUp != null)
+          heroStartTile = PlaceHeroAtDungeon(node, gs, GameContextSwitchKind.DungeonSwitched, stairsUp);
+        //PlaceLoadedHero(node, gs, context, stairs);
+        //baseTile = node.GetStairs(StairsKind.LevelUp);
       }
       else if (stairs != null && context == GameContextSwitchKind.DungeonSwitched)
       {

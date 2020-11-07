@@ -23,7 +23,7 @@ namespace Roguelike.TileContainers
 
     Stairs stairsUp = null;
     Stairs stairsDown = null;
-    public event EventHandler<GenericEventArgs<NodeRevealedParam>> NodeRevealed;
+    public event EventHandler<NodeRevealedParam> NodeRevealed;
 
     public GameLevel(Container container) : base(container)
     {
@@ -38,6 +38,30 @@ namespace Roguelike.TileContainers
         inter.Level = levelIndex;
       return SetTileAtRandomPosition(tile, matchNodeIndex) as T;
     }
+
+    public override void OnHeroPlaced(Hero hero)
+    {
+      try
+      {
+        if (hero.DungeonNodeIndex < Nodes.Count)
+        {
+          if (hero.IsFromChildIsland())
+          {
+            var child = Nodes.SelectMany(i => i.ChildIslands).Where(c => c.NodeIndex == hero.DungeonNodeIndex).FirstOrDefault();
+            child.Reveal(true);
+            //var childs = Nodes.Where(i => i.ChildIslands.Any(k => k.NodeIndex == hero.DungeonNodeIndex)).Select(i=>i.;
+          }
+          else
+            Nodes[hero.DungeonNodeIndex].Reveal(true);
+        }
+
+        }
+      catch (Exception ex)
+      {
+        Logger.LogError(ex);
+      }
+    }
+
 
     public override string ToString()
     {
@@ -98,9 +122,9 @@ namespace Roguelike.TileContainers
       eventsHooked = true;
     }
 
-    private void Node_OnRevealed(object sender, GenericEventArgs<NodeRevealedParam> e)
+    private void Node_OnRevealed(object sender, NodeRevealedParam eventData)
     {
-      var nodeTiles = e.EventData.Tiles;
+      var nodeTiles = eventData.Tiles;
 
       //when data is loaded tiles must be revelaed by maching points;
       foreach (var tile in nodeTiles)
@@ -129,9 +153,15 @@ namespace Roguelike.TileContainers
           throw;
         }
       }
+
+      var notRev = this.GetTiles().Where(i => i.DungeonNodeIndex == eventData.NodeIndex && !i.Revealed).ToList();
+      if (notRev.Any())
+      {
+        notRev.ForEach(i => i.Revealed = true);//TODO, that sucks
+      }
       
       if (NodeRevealed != null)
-        NodeRevealed(sender, e);
+        NodeRevealed(sender, eventData);
       
     }
 

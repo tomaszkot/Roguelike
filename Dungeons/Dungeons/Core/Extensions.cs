@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Dungeons.TileContainers;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
@@ -52,6 +53,11 @@ namespace Dungeons.Core
         list[k] = list[n];
         list[n] = value;
       }
+    }
+
+    public static bool IsFromChildIsland(this Dungeons.Tiles.Tile tile)
+    {
+      return tile.DungeonNodeIndex <= DungeonNode.ChildIslandNodeIndex;
     }
   }
 }

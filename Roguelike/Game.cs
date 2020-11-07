@@ -61,7 +61,8 @@ namespace Roguelike
 
         if (levels.Count <= destLevelIndex)
         {
-          GenerateLevel(destLevelIndex);
+          GenerateLevel(destLevelIndex, null, true);
+          GameManager.Assert(levels[destLevelIndex].Index == destLevelIndex);
         }
         GameManager.SetContext(levels[destLevelIndex], Hero, GameContextSwitchKind.DungeonSwitched, stairs);
         return InteractionResult.ContextSwitched;
@@ -70,20 +71,24 @@ namespace Roguelike
       GameManager.WorldLoader = (Hero hero, GameState gs) =>
       {
         levels.Clear();
-        TileContainers.GameLevel lvl = null;
+        GameLevel lvl = null;
         var maxLevel = gs.HeroPathValue.LevelIndex;//TODO gs shall have maxLevel, hero might have go upper. Maybe just count level files in dir ?
         for (var i = 0; i <= maxLevel; i++)
         {
-          TileContainers.GameLevel nextLvl = null;
+          GameLevel nextLvl = null;
           if (gs.Settings.CoreInfo.RegenerateLevelsOnLoad)
           {
-            nextLvl = GenerateLevel(i, null);
+            nextLvl = GenerateLevel(i, null, false);
           }
           else
           {
             nextLvl = GameManager.LoadLevel(hero.Name, i);
             levels.Add(nextLvl);
           }
+        }
+        for (var i = 0; i < gs.HeroPathValue.LevelIndex; i++)
+        {
+          levels[i].Reveal(true);//TODO, due to bugs with reveal of rooms it's better to do it for whole level
         }
         lvl = levels[gs.HeroPathValue.LevelIndex];
         return lvl;
@@ -100,7 +105,7 @@ namespace Roguelike
       DungeonGenerator = container.GetInstance<IDungeonGenerator>();
     }
 
-    public TileContainers.GameLevel GenerateLevel(int levelIndex, Dungeons.GenerationInfo gi = null) 
+    public TileContainers.GameLevel GenerateLevel(int levelIndex, Dungeons.GenerationInfo gi = null, bool canSetActive = true) 
     {
       TileContainers.GameLevel level = null;
       if (LevelGenerator != null)
@@ -118,9 +123,9 @@ namespace Roguelike
         this.levels.Add(level);
       }
 
-      if (levelIndex == 0)
+      if (canSetActive && levelIndex == 0)
         GameManager.SetContext(level, AddHero(level), GameContextSwitchKind.NewGame);
-      
+
       return level;
     }
 
@@ -150,7 +155,8 @@ namespace Roguelike
 
     public override Dungeons.TileContainers.DungeonNode GenerateDungeon()
     {
-      var level = GenerateLevel(0);
+      levels.Clear();
+      var level = GenerateLevel(0, null, true);
       return level;
     }
 

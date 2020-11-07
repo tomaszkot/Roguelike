@@ -81,7 +81,13 @@ namespace Roguelike.Generators
 
         var tile = maze.GetRandomEmptyTile();
         if (tile != null)
+        {
           maze.SetTile(stairs, tile.Point);
+          if (stairs.IsFromChildIsland())
+          {
+            Logger.LogInfo("stairs.IsFromChildIsland! ");
+          }
+        }
         else
           Logger.LogError("no room for stairs, maze: " + maze);
         //node.SetTile(stairs, new System.Drawing.Point(3, 1));
