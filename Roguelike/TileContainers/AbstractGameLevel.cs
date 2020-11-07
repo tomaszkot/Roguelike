@@ -445,13 +445,13 @@ namespace Roguelike.TileContainers
       Tile heroStartTile = null;
       if (baseTile != null)
       {
-        heroStartTile = GetNeighborTiles<Tile>(baseTile).FirstOrDefault();
-        heroStartTile.DungeonNodeIndex = baseTile.DungeonNodeIndex;
+        heroStartTile = GetClosestEmpty(baseTile, true);
       }
 
       if (heroStartTile == null)
         heroStartTile = GetHeroStartTile();
 
+      heroStartTile.DungeonNodeIndex = heroStartTile.DungeonNodeIndex;
       res.Tile = heroStartTile;
       PlaceHeroAtTile(context, hero, heroStartTile);
     }
