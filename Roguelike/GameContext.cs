@@ -21,6 +21,12 @@ namespace Roguelike
   public enum GameContextSwitchKind { DungeonSwitched, NewGame, GameLoaded}
   public enum TurnOwner { Unset, Hero, Allies, Enemies }
 
+  public class HeroPlacementResult
+  {
+    public AbstractGameLevel Node { get; set; }
+    public Tile Tile { get; set; }
+  }
+
   public class ContextSwitch
   {
     public GameContextSwitchKind Kind { get; set; }
@@ -132,7 +138,7 @@ namespace Roguelike
         return;
       }
       if (CurrentNode != null)
-        ClearOldHeroPosition(CurrentNode, context);
+        CurrentNode.ClearOldHeroPosition(context);
 
       Hero = hero;
       hero.OnContextSwitched(Container);
@@ -147,7 +153,7 @@ namespace Roguelike
         //  ClearOldHeroPosition(CurrentNode, context);
         //}
         var heroStartTile = PlaceHeroAtDungeon(node, gs, context, stairs);
-        PlaceHeroAtTile(node, context, Hero, heroStartTile);
+        //PlaceHeroAtTile(node, context, Hero, heroStartTile.Tile);
       }
       //else
       //{
@@ -195,36 +201,16 @@ namespace Roguelike
 
     //  return level;
     //}
-
-    protected void PlaceHeroAtTile(AbstractGameLevel node, GameContextSwitchKind context, Hero hero, Tile tile)
+                
+    public virtual HeroPlacementResult PlaceHeroAtDungeon(AbstractGameLevel node, GameState gs, GameContextSwitchKind context, Stairs stairs)
     {
-      ClearOldHeroPosition(node, context);
-      if (node.SetTile(hero, tile.Point, false))
-        hero.DungeonNodeIndex = tile.DungeonNodeIndex;
-    }
-
-    private void ClearOldHeroPosition(AbstractGameLevel node, GameContextSwitchKind context)
-    {
-      var heros = node.GetTiles<Hero>();
-      var heroInNode = heros.SingleOrDefault();
-      //Debug.Assert(heroInNode != null);
-      if (heroInNode == null && context == GameContextSwitchKind.DungeonSwitched)
-        logger.LogError("SwitchTo heros.Count = " + heros.Count);
-
-      if (heroInNode != null)
-        node.SetEmptyTile(heroInNode.Point);//Hero is going to be placed in the node, remove it from the old one (CurrentNode)
-    }
-
-    protected virtual Tile PlaceHeroAtDungeon(AbstractGameLevel node, GameState gs, GameContextSwitchKind context, Stairs stairs)
-    {
-      Tile heroStartTile = null;
+      var res = new HeroPlacementResult();
+      res.Node = node;
+//      Tile heroStartTile = null;
       Tile baseTile = null;
-      if (stairs == null && node.Index > 0 && context == GameContextSwitchKind.GameLoaded)
+      if (context == GameContextSwitchKind.GameLoaded)
       {
-        var stairsUp = node.GetStairs(StairsKind.LevelUp);
-        if (stairsUp != null)
-          heroStartTile = PlaceHeroAtDungeon(node, gs, GameContextSwitchKind.DungeonSwitched, stairsUp);
-        //PlaceLoadedHero(node, gs, context, stairs);
+        return PlaceLoadedHero(node, gs);
         //baseTile = node.GetStairs(StairsKind.LevelUp);
       }
       else if (stairs != null && context == GameContextSwitchKind.DungeonSwitched)
@@ -242,33 +228,26 @@ namespace Roguelike
             baseTile = stairsUp;
         }
       }
-      if (baseTile != null)
-      {
-        heroStartTile = node.GetNeighborTiles<Tile>(baseTile).FirstOrDefault();
-        heroStartTile.DungeonNodeIndex = baseTile.DungeonNodeIndex;
-      }
 
-      if (heroStartTile == null)
-      {
-        heroStartTile = GetHeroStartTile(node);
-      }
-
-      return heroStartTile;
+      node.PlaceHeroNextToTile(context, Hero, res, baseTile);
+      return res;
     }
-
-    private Tile GetHeroStartTile(AbstractGameLevel node)
+        
+    public virtual HeroPlacementResult PlaceLoadedHero(AbstractGameLevel node, GameState gs)
     {
-      Tile heroStartTile;
-      var emp = node.GetEmptyTiles(levelIndexMustMatch: false)//merged level migth have index  999 and none tile has such
-               .FirstOrDefault();
-      if (emp == null)
+      HeroPlacementResult res = null;
+      var stairsUp = node.GetStairs(StairsKind.LevelUp);
+      if (stairsUp != null)
+        res = PlaceHeroAtDungeon(node, gs, GameContextSwitchKind.DungeonSwitched, stairsUp);
+      else
       {
-        Logger.LogError("GetHeroStartTile failed!");
+        var heroStartTile = node.GetHeroStartTile();
+        node.PlaceHeroAtTile(GameContextSwitchKind.GameLoaded, Hero, heroStartTile);
       }
-      heroStartTile = emp;
-      return heroStartTile;
-    }
 
+      return res;
+    }
+        
     public void EmitContextSwitched(GameContextSwitchKind context)
     {
       if (ContextSwitched != null)

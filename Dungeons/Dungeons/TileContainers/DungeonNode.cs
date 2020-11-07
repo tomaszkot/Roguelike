@@ -125,7 +125,7 @@ namespace Dungeons
         Sides.Add(EntranceSide.Right, new List<Wall>());
       }
 
-      public void Create(int width = 10, int height = 10, GenerationInfo info = null,
+      public virtual void Create(int width = 10, int height = 10, GenerationInfo info = null,
                          int nodeIndex = DefaultNodeIndex, DungeonNode parent = null, bool generateContent = true)
       {
         Create(null, info, nodeIndex, parent);

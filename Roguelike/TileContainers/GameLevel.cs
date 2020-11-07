@@ -154,17 +154,13 @@ namespace Roguelike.TileContainers
         }
       }
 
-      var notRev = this.GetTiles().Where(i => i.DungeonNodeIndex == eventData.NodeIndex && !i.Revealed).ToList();
-      if (notRev.Any())
-      {
-        notRev.ForEach(i => i.Revealed = true);//TODO, that sucks
-      }
-      
+      EnsureRevealed(eventData.NodeIndex);
+
       if (NodeRevealed != null)
         NodeRevealed(sender, eventData);
-      
-    }
 
+    }
+        
     [JsonIgnore]
     public override List<DungeonNode> ChildIslands
     {

@@ -121,26 +121,26 @@ namespace Roguelike.Managers
     public virtual void SetContext(AbstractGameLevel node, Hero hero, GameContextSwitchKind kind, Stairs stairs = null)
     {
       hero.Container = this.Container;
-
-      if (kind == GameContextSwitchKind.NewGame)
-      {
-        gameState.HeroInitGamePosition = hero.Point;
-      }
-
+            
       LootGenerator.LevelIndex = node.Index;//TODO
-      if (kind == GameContextSwitchKind.NewGame)
-      {
-        if (node.GeneratorNodes != null && node.GeneratorNodes.Any())
-          hero.DungeonNodeIndex = node.GeneratorNodes.First().NodeIndex;//TODOs
-        else
-          hero.DungeonNodeIndex = 0;//TODO
-      }
+      //if (kind == GameContextSwitchKind.NewGame)
+      //{
+      //  if (node.GeneratorNodes != null && node.GeneratorNodes.Any())
+      //    hero.DungeonNodeIndex = node.GeneratorNodes.First().NodeIndex;//TODOs
+      //  else
+      //    hero.DungeonNodeIndex = 0;//TODO
+      //}
 
       Context.Hero = hero;
 
       InitNode(node, gameState);
 
       Context.SwitchTo(node, hero, gameState, kind, stairs);
+
+      if (kind == GameContextSwitchKind.NewGame)
+      {
+        gameState.HeroInitGamePosition = hero.Point;
+      }
 
       PrintHeroStats("SetContext " + kind);
     }

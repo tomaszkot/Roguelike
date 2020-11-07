@@ -331,6 +331,7 @@ namespace Roguelike.TileContainers
       if (replacer == null)
         toUse = new Tile();
       var prev = GetTile(point);
+      toUse.Revealed = true;
       if (SetTile(toUse, point))
       {
         if(replacer is Loot)
@@ -397,5 +398,62 @@ namespace Roguelike.TileContainers
     }
 
     public List<IApproachableByHero> ApproachableByHero { get; set; } = new List<IApproachableByHero>();
+
+    public void EnsureRevealed(int nodeIndex)
+    {
+      var notRev = this.GetTiles().Where(i => i.DungeonNodeIndex == nodeIndex && !i.Revealed).ToList();
+      if (notRev.Any())
+      {
+        notRev.ForEach(i => i.Revealed = true);//TODO, that sucks
+      }
+    }
+
+    public Tile GetHeroStartTile()
+    {
+      Tile heroStartTile;
+      var emp = GetEmptyTiles(levelIndexMustMatch: false)//merged level migth have index  999 and none tile has such
+               .FirstOrDefault();
+      if (emp == null)
+      {
+        Logger.LogError("GetHeroStartTile failed!");
+      }
+      heroStartTile = emp;
+      return heroStartTile;
+    }
+
+    public void ClearOldHeroPosition(GameContextSwitchKind context)
+    {
+      var heros = GetTiles<Hero>();
+      var heroInNode = heros.SingleOrDefault();
+      //Debug.Assert(heroInNode != null);
+      if (heroInNode == null && context == GameContextSwitchKind.DungeonSwitched)
+        Logger.LogError("SwitchTo heros.Count = " + heros.Count);
+
+      if (heroInNode != null)
+        SetEmptyTile(heroInNode.Point);//Hero is going to be placed in the node, remove it from the old one (CurrentNode)
+    }
+
+    public void PlaceHeroAtTile(GameContextSwitchKind context, Hero hero, Tile tile)
+    {
+      ClearOldHeroPosition(context);
+      if (SetTile(hero, tile.Point, false))
+        hero.DungeonNodeIndex = tile.DungeonNodeIndex;
+    }
+
+    public void PlaceHeroNextToTile(GameContextSwitchKind context, Hero hero, HeroPlacementResult res, Tile baseTile)
+    {
+      Tile heroStartTile = null;
+      if (baseTile != null)
+      {
+        heroStartTile = GetNeighborTiles<Tile>(baseTile).FirstOrDefault();
+        heroStartTile.DungeonNodeIndex = baseTile.DungeonNodeIndex;
+      }
+
+      if (heroStartTile == null)
+        heroStartTile = GetHeroStartTile();
+
+      res.Tile = heroStartTile;
+      PlaceHeroAtTile(context, hero, heroStartTile);
+    }
   }
 }
