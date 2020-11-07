@@ -2,15 +2,12 @@
 using Dungeons.Core;
 using System.Drawing;
 using System;
-using Roguelike.Events;
 using Roguelike.Attributes;
-using Roguelike.Managers;
-using Dungeons;
-using Roguelike.Tiles.Abstract;
 using Roguelike.Tiles.Looting;
 using SimpleInjector;
 using System.Linq;
 using Roguelike.LootContainers;
+using System.Collections.Generic;
 
 namespace Roguelike.Tiles
 {
@@ -19,7 +16,7 @@ namespace Roguelike.Tiles
     public static int FirstNextLevelExperienceThreshold = 50;
     public const int StartStrength = 15;//15;50
     
-    public Roguelike.LootContainers.Crafting Crafting { get; set; }
+    public LootContainers.Crafting Crafting { get; set; }
     public override Container Container 
     { 
       get => base.Container; 
@@ -30,6 +27,14 @@ namespace Roguelike.Tiles
         Crafting.Container = value;
       }
     }
+
+    static Dictionary<Weapon.WeaponKind, EntityStatKind> weapons2Esk = new Dictionary<Weapon.WeaponKind, EntityStatKind>()
+    {
+      {Weapon.WeaponKind.Axe,  EntityStatKind.AxeExtraDamage},
+      { Weapon.WeaponKind.Sword, EntityStatKind.SwordExtraDamage},
+      { Weapon.WeaponKind.Bashing, EntityStatKind.BashingExtraDamage},
+      { Weapon.WeaponKind.Dagger, EntityStatKind.DaggerExtraDamage}
+    };
 
     public Hero(): base(new Point().Invalid(), '@')
     {
@@ -85,7 +90,7 @@ namespace Roguelike.Tiles
 
     public override string ToString()
     {
-      return base.ToString();// + Data.AssetName;
+      return base.ToString();
     }
 
     public virtual void OnContextSwitched(Container container)
@@ -97,24 +102,72 @@ namespace Roguelike.Tiles
       Crafting.Recipes.Owner = "Crafting.Recipes";
     }
 
-    //protected override float GetCurrentAttack()
-    //{
-    //  var att = base.GetCurrentAttack();
-    //  return att + this.GetCurrentValue(EntityStatKind.Strength - Hero.StartStrength);
-    //}
-
     protected override float GetStrengthIncrease()
     {
       return Stats.GetCurrentValue(EntityStatKind.Strength) - StartStrength;
     }
 
-    //public void RestoreState(GameState gameState)
-    //{
-    //  if (gameState.Settings.CoreInfo.RestoreHeroToSafePointAfterLoad)
-    //  {
-    //    if (gameState.HeroInitGamePosition != new Point().Invalid())
-    //      Point = gameState.HeroInitGamePosition;
-    //  }
-    //}
+    public override string GetFormattedStatValue(EntityStatKind kind)
+    {
+      var value = base.GetFormattedStatValue(kind);
+      if (kind == EntityStatKind.Attack)
+      {
+        var variation = GetAttackVariation();
+        if (variation != 0)
+        {
+          var cv = GetCurrentValue(kind);
+          value = (cv - variation) + "-" + (cv + variation);
+        }
+      }
+      return value;
+    }
+
+    public override float GetHitAttackValue(bool withVariation)
+    {
+      //return base.GetHitAttackValue(withVariation);
+      var att = base.GetHitAttackValue(withVariation);
+      var wpn = GetActiveEquipment()[CurrentEquipmentKind.Weapon] as Weapon;
+      if (wpn != null)
+      {
+        if (weapons2Esk.ContainsKey(wpn.Kind))
+        {
+          var esk = weapons2Esk[wpn.Kind];
+          //var ab = Abilities.GetByEntityStatKind(esk, false);
+          //if (ab != null)
+          //{
+          //  att += (att * ab.AuxStat.Factor / 100f);
+          //}
+        }
+        //Abilities.GetFightItem
+        //if (ab.AuxStat.Kind == EntityStatKind.AxeExtraDamage && wpn.Kind == Weapon.WeaponKind.Axe
+        //    || ab.AuxStat.Kind == EntityStatKind.SwordExtraDamage && wpn.Kind == Weapon.WeaponKind.Sword
+        //    || ab.AuxStat.Kind == EntityStatKind.BashingExtraDamage && wpn.Kind == Weapon.WeaponKind.Bashing
+        //    || ab.AuxStat.Kind == EntityStatKind.DaggerExtraDamage && wpn.Kind == Weapon.WeaponKind.Dagger)
+        //{
+        //Stats.AccumulateFactor(EntityStatKind.Attack, ab.AuxStat.Factor);
+        //}
+      }
+
+      if (withVariation)//GUI is not meant to have it changed on character panel
+      {
+        var variation = GetAttackVariation();
+        var sign = RandHelper.Random.NextDouble() > .5f ? -1 : 1;
+
+        att += sign * variation * (float)RandHelper.Random.NextDouble();
+      }
+      return att;
+    }
+
+    public float GetAttackVariation()
+    {
+      var currentEquipment = GetActiveEquipment();
+      if (currentEquipment[CurrentEquipmentKind.Weapon] != null)
+      {
+        var wpn = currentEquipment[CurrentEquipmentKind.Weapon] as Weapon;
+        return wpn.GetPrimaryDamageVariation();
+      }
+
+      return 0;
+    }
   }
 }

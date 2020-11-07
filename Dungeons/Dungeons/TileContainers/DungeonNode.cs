@@ -813,7 +813,7 @@ namespace Dungeons
           return;
 
         var revDesc = "reveal: " + reveal + ", for: " + NodeIndex;
-        Log(revDesc + ", start", false);
+        //Log(revDesc + ", start", false);
         IList<Tile> revealedTiles = new List<Tile>();
 
         DoGridAction((int col, int row) =>

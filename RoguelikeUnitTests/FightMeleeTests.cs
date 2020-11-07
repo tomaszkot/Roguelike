@@ -2,6 +2,7 @@
 using Roguelike;
 using Roguelike.Effects;
 using Roguelike.Tiles;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace RoguelikeUnitTests
@@ -85,6 +86,36 @@ namespace RoguelikeUnitTests
       var finalEnemyCount = enemies.Count;
       Assert.AreEqual(finalEnemyCount, initEnemyCount - 1);
       Assert.AreEqual(finalEnemyCount, game.GameManager.CurrentNode.GetTiles<Enemy>().Count);
+    }
+
+    [Test]
+    public void WeaponDamageRandomisation()
+    {
+      var game = CreateGame();
+      var en = game.GameManager.EnemiesManager.GetEnemies().Where(i=>i.PowerKind == EnemyPowerKind.Champion).First();
+
+      var attack = game.Hero.GetCurrentValue(Roguelike.Attributes.EntityStatKind.Attack);
+
+      var wpn = game.GameManager.LootGenerator.GetLootByTileName<Weapon>("rusty_sword");
+      Assert.AreEqual(wpn.PrimaryStatValue, 2);
+      Assert.AreEqual(wpn.PrimaryStatDescription, "Attack: 1-3");
+      
+      game.Hero.SetEquipment(CurrentEquipmentKind.Weapon, wpn);
+      var attackWithWpn = game.Hero.GetCurrentValue(Roguelike.Attributes.EntityStatKind.Attack);
+      Assert.Greater(attackWithWpn, attack);
+
+      var attackFormatted = game.Hero.GetFormattedStatValue(Roguelike.Attributes.EntityStatKind.Attack);
+      Assert.AreEqual(attackFormatted, "16-18");
+
+      var damages = new List<float>();
+      for (int i = 0; i < 10; i++)
+      {
+        var damage = en.OnPhysicalHit(game.Hero);
+        if(damage > 0)
+          damages.Add(damage);
+      }
+      var grouped = damages.GroupBy(i => i);
+      Assert.Greater(grouped.Count(), 1);
     }
   }
 }

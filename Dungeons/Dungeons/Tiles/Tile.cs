@@ -81,6 +81,11 @@ namespace Dungeons.Tiles
           int k = 0;
           k++;
         }
+        if (value == DungeonNode.ChildIslandNodeIndex)
+        {
+          int k = 0;
+          k++;
+        }
         if (dungeonNodeIndex == DungeonNode.ChildIslandNodeIndex && value != DungeonNode.ChildIslandNodeIndex)
         {
           int k = 0;

@@ -88,7 +88,7 @@ namespace RoguelikeUnitTests
 
     protected List<Roguelike.Tiles.Enemy> ActiveEnemies
     {
-      get { return game.GameManager.EnemiesManager.CalcActiveEntities().Cast<Enemy>().ToList(); }
+      get { return game.GameManager.EnemiesManager.GetActiveEnemies().ToList(); }
     }
 
     protected List<Roguelike.Tiles.Enemy> AllEnemies
@@ -103,7 +103,7 @@ namespace RoguelikeUnitTests
     }
 
     int numEnemies = 0;
-    public virtual RoguelikeGame CreateGame(bool autoLoadLevel = true, int numEnemies = 10, int numberOfRooms = 5)
+    public virtual RoguelikeGame CreateGame(bool autoLoadLevel = true, int numEnemies = 10, int numberOfRooms = 5, GenerationInfo gi = null)
     {
       game = new RoguelikeGame(Container);
 
@@ -120,19 +120,24 @@ namespace RoguelikeUnitTests
       helper = new BaseHelper(this, game);
       if (autoLoadLevel)
       {
-        var info = new GenerationInfo();
-        info.MinNodeSize = new System.Drawing.Size(30, 30);
-        info.MaxNodeSize = info.MinNodeSize;
-        this.numEnemies = numEnemies;
-        float numEn = ((float)numEnemies) / numberOfRooms;
-        info.ForcedNumberOfEnemiesInRoom = (int)(numEn  + 0.5);
-        if (info.ForcedNumberOfEnemiesInRoom == 0)
+        if (gi == null)
         {
-          info.ForcedNumberOfEnemiesInRoom = numEnemies % numberOfRooms;
-          numEnemies = numEnemies * numberOfRooms;
+          var info = new GenerationInfo();
+          info.MinNodeSize = new System.Drawing.Size(30, 30);
+          info.MaxNodeSize = info.MinNodeSize;
+          this.numEnemies = numEnemies;
+          float numEn = ((float)numEnemies) / numberOfRooms;
+          info.ForcedNumberOfEnemiesInRoom = (int)(numEn + 0.5);
+          if (info.ForcedNumberOfEnemiesInRoom == 0)
+          {
+            info.ForcedNumberOfEnemiesInRoom = numEnemies % numberOfRooms;
+            numEnemies = numEnemies * numberOfRooms;
+          }
+          info.NumberOfRooms = numberOfRooms;
+          gi = info;
         }
-        info.NumberOfRooms = numberOfRooms;
-        var level = game.GenerateLevel(0, info);
+
+        var level = game.GenerateLevel(0, gi);
         Assert.GreaterOrEqual(game.GameManager.EnemiesManager.AllEntities.Count, numEnemies);//some are auto generated
         Assert.Less(ActiveEnemies.Count, numEnemies*4);
       }

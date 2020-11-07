@@ -233,6 +233,15 @@ namespace Roguelike.Tiles
 
     }
 
+    public virtual float GetHitAttackValue(bool withVariation)
+    {
+      //var str = Stats.GetCurrentValue(EntityStatKind.Strength);
+      //var att = Stats.GetCurrentValue(EntityStatKind.Attack);
+
+      return GetCurrentValue(EntityStatKind.Attack);
+    }
+
+
 
     public float OnPhysicalHit(LivingEntity attacker)
     {
@@ -249,8 +258,8 @@ namespace Roguelike.Tiles
       }
 
       lastHitBySpell = false;
-      var ca = attacker.GetCurrentValue(EntityStatKind.Attack);
-      var inflicted = ca/defense;
+      var attack = attacker.GetHitAttackValue(true);
+      var inflicted = attack/defense;
       ReduceHealth(inflicted);
 
       var ga = new LivingEntityAction(LivingEntityActionKind.GainedDamage) { InvolvedValue = inflicted, InvolvedEntity = this };

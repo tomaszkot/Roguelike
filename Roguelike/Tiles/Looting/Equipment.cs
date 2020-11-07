@@ -193,9 +193,9 @@ namespace Roguelike.Tiles
       }
     }
 
-    void SetPrimaryStatDesc()
+    protected virtual void SetPrimaryStatDesc()
     {
-      primaryStatDesc = primaryStat.Kind.ToString() + ": " + primaryStat.Value.Nominal;
+      primaryStatDesc = primaryStat.Kind.ToString() + ": " + PrimaryStatValue;
     }
 
     public float PrimaryStatValue
@@ -208,6 +208,7 @@ namespace Roguelike.Tiles
       set
       {
         primaryStat.Value.Factor = value;
+        SetPrimaryStatDesc();
       }
     }
 

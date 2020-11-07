@@ -22,7 +22,7 @@ namespace RoguelikeUnitTests
     }
 
     [Test]
-    public void SimpleBallsTest()
+    public void SimpleScrollTest()
     {
       var game = CreateGame();
       var hero = game.Hero;

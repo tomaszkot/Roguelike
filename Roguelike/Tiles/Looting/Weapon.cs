@@ -41,5 +41,29 @@ namespace Roguelike.Tiles
         PrimaryStatValue = value;
       }
     }
+    
+    const float DamageVariation = .15f;
+    public float GetPrimaryDamageVariation()
+    {
+      if (Damage == 0)
+        return 0;
+      if (Damage < 10)
+        return 1;
+      if (Damage < 20)
+        return 2;
+      return (int)(PrimaryStatValue * DamageVariation);
+    }
+
+    public string GetDamageDescription()
+    {
+      float min = PrimaryStatValue - GetPrimaryDamageVariation();
+      float max = PrimaryStatValue + GetPrimaryDamageVariation();
+      return min + "-" + max;
+    }
+
+    protected override void SetPrimaryStatDesc()
+    {
+      primaryStatDesc = PrimaryStatKind.ToString() + ": " + GetDamageDescription();
+    }
   }
 }

@@ -205,14 +205,14 @@ namespace RoguelikeUnitTests
     [Test]
     public void TestLootRevealFlagBasic()
     {
-      var generator = Container.GetInstance<Dungeons.IDungeonGenerator>();
       var info = new Roguelike.GenerationInfo();
       info.NumberOfRooms = 1;
       info.MinNodeSize = new Size(15,15);
       info.MaxNodeSize = new Size(30, 30);
       info.ForceChildIslandInterior = true;
+      var game = CreateGame(gi: info);
 
-      var level = generator.Generate(0, info);
+      var level = game.Level; 
       Assert.GreaterOrEqual(level.Width, info.MinNodeSize.Width);
       Assert.GreaterOrEqual(level.Height, info.MinNodeSize.Height);
       Assert.AreEqual(level.Nodes.Count, 1);
@@ -232,15 +232,14 @@ namespace RoguelikeUnitTests
     [Test]
     public void TestLootRevealFlagAdv()
     {
-      var generator = Container.GetInstance<Dungeons.IDungeonGenerator>();
       var info = new Roguelike.GenerationInfo();
       info.NumberOfRooms = 2;
-      info.MinNodeSize = new System.Drawing.Size(15, 15);
-      info.MaxNodeSize = new System.Drawing.Size(30, 30);
+      info.MinNodeSize = new Size(15, 15);
+      info.MaxNodeSize = new Size(30, 30);
       info.ForceChildIslandInterior = true;
-      //info.RevealTiles = true;
+      var game = CreateGame(gi:info);
 
-      var level = generator.Generate(0, info);
+      var level = game.Level;
       Assert.GreaterOrEqual(level.Width, info.MinNodeSize.Width);
       Assert.GreaterOrEqual(level.Height, info.MinNodeSize.Height);
       Assert.AreEqual(level.Nodes.Count, 2);
@@ -259,12 +258,10 @@ namespace RoguelikeUnitTests
 
       //Assert.AreEqual(level.Height, info.MaxNodeSize);
       //var en = level.GetTiles().Where(i => i is Enemy).ToList();
-      //var tiles = level.GetTiles().Where(i=> i is Loot).ToList().GroupBy(i=>i.DungeonNodeIndex).ToList();
+      //var lootGrouped = level.GetTiles().Where(i=> i is Loot).ToList().GroupBy(i=>i.DungeonNodeIndex).ToList();
       //var zeroIndexCount = tiles.Where(i => i.DungeonNodeIndex == 0).Count();
 
       //var nonZero = level.GetTiles().Where(i => i.DungeonNodeIndex != 0).ToList();
-      int k = 0;
-      k++;
       //Assert.AreEqual(zeroIndexCount, tiles.Count);
     }
 

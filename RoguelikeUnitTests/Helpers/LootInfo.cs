@@ -10,10 +10,12 @@ namespace RoguelikeUnitTests.Helpers
 {
   public class LootInfo
   {
-    public List<Loot> prev;
+    private List<Loot> prev;
     public List<Loot> newLoot;
     //public List<Loot> 
     RoguelikeGame game;
+
+    public List<Loot> Prev { get => prev; set => prev = value; }
 
     public LootInfo(RoguelikeGame game, InteractiveTile interactWith)
     {

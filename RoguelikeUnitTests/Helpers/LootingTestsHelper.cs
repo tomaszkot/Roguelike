@@ -68,6 +68,7 @@ namespace RoguelikeUnitTests.Helpers
 
     public void KillEnemy(LivingEntity en)
     {
+      Assert.True(en.Alive);
       while (en.Alive)
         en.OnPhysicalHit(game.Hero);
 
