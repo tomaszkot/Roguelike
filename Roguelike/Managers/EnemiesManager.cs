@@ -13,8 +13,6 @@ namespace Roguelike.Managers
 {
   public class EnemiesManager : EntitiesManager
   {
-    //List<LivingEntity> enemies;
-    //public List<LivingEntity> Enemies { get => entities; set => entities = value; }
     AttackStrategy attackStrategy;
 
     public EnemiesManager(GameContext context, EventsManager eventsManager, Container container) :
@@ -27,7 +25,17 @@ namespace Roguelike.Managers
       context.TurnOwnerChanged += OnTurnOwnerChanged;
       context.ContextSwitched += Context_ContextSwitched;
     }
-        
+
+    public virtual List<Enemy> GetActiveEnemies()
+    {
+      return this.AllEntities.Where(i => i.Revealed && i.Alive).Cast<Enemy>().ToList();
+    }
+
+    public virtual List<Enemy> GetEnemies()
+    {
+      return this.AllEntities.Cast<Enemy>().ToList();
+    }
+
     private void Context_ContextSwitched(object sender, ContextSwitch e)
     {
       var entities = Context.CurrentNode.GetTiles<LivingEntity>().Where(i=> i is Enemy).ToList();

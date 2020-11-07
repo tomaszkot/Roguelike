@@ -74,18 +74,22 @@ namespace Roguelike.Generators
         foreach (var lk in lootKinds)
         {
           var val = .2f;
+          var mult = 1f;
           if (lk == LootKind.Potion || lk == LootKind.Scroll)
           {
-            var mult = 1.6f;
-            if (lootSource == LootSourceKind.PlainChest)
+            mult = 1.6f;
+            if (lootSource == LootSourceKind.PlainChest || lootSource == LootSourceKind.Barrel)
             {
-              //if (lk == LootKind.Scroll)
-              //  mult = 0.5f;
               if (lk == LootKind.Gem || lk == LootKind.HunterTrophy)
                 mult = 0.5f;
             }
-            val *= mult;
+            if (lootSource == LootSourceKind.PlainChest || lootSource == LootSourceKind.Barrel)
+            {
+              mult = .8f;
+            }
           }
+          
+          val *= mult;
 
           lkChance.SetChance(lk, val);
         }

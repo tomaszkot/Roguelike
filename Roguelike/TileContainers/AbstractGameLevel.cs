@@ -72,7 +72,14 @@ namespace Roguelike.TileContainers
       var res = base.GetTiles<T>();
       if (typeof(T) == typeof(Loot) || typeof(T).IsSubclassOf(typeof(Loot)))
       {
-        res.AddRange(Loot.Values.Where(i => i is T).Cast<T>());
+        var lootItems = Loot.Values.Where(i => i is T).Cast<T>().ToList();
+        //var res1 = base.GetTiles<Loot>();
+        //if (res1.Count != lootItems.Count)
+        //{
+        //  int k = 0;
+        //  k++;
+        //}
+        res.AddRange(lootItems);
       }
             
       return res;
@@ -133,6 +140,7 @@ namespace Roguelike.TileContainers
           Debug.Assert(false);
           return false;
         }
+        Logger.LogInfo("Adding Loot "+ tile + " at "+ point + " Loot.Count:"+ Loot.Count);
         tile.Point = point;
         Loot[point] = tile as Roguelike.Tiles.Loot;
 
@@ -334,8 +342,13 @@ namespace Roguelike.TileContainers
       toUse.Revealed = true;
       if (SetTile(toUse, point))
       {
-        if(replacer is Loot)
-          Tiles[point.Y, point.X] = new Tile(point);//reset old one, as loot is not hold in Tiles table
+        Logger.LogInfo("SetTile done for "+ toUse);
+        if (replacer is Loot)
+        {
+          var tile = new Tile(point);//reset old one, as loot is not hold in Tiles table
+          tile.Revealed = true;
+          Tiles[point.Y, point.X] = tile;
+        }
         return prev;
       }
       return null;

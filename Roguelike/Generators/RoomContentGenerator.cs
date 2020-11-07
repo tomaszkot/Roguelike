@@ -282,7 +282,7 @@ namespace Roguelike.Generators
         Point? enemyPoint = null;
         if (node.NodeIndex == 0 && levelIndex == 0)
         {
-          emptyCells = emptyCells.Where(i => i.DistanceFrom(emptyCells.First()) > 10).ToList();
+          emptyCells = emptyCells.Where(i => i.DistanceFrom(emptyCells.First()) > (node.Width/2 + node.Height/2)/2 ).ToList();
           enemyPoint = emptyCells.GetRandomElem<Tile>().Point;
         }
         else

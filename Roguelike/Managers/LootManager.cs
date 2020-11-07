@@ -130,6 +130,7 @@ namespace Roguelike.Managers
 
     Loot TryAddLootForDeadEnemy(Enemy enemy)
     {
+      //GameManager.Logger.LogInfo("TryAddLootForDeadEnemy "+ enemy);
       Loot loot = null;
       bool addConsumable = false;
       if(enemy.PowerKind == EnemyPowerKind.Champion ||
@@ -140,10 +141,10 @@ namespace Roguelike.Managers
       }
       else
         loot = GameManager.TryGetRandomLootByDiceRoll(LootSourceKind.Enemy, enemy.Level);
+
       if (loot != null)
-      {
         GameManager.AddLootReward(loot, enemy, false);
-      }
+
       var extraLootItems = GetExtraLoot(enemy, loot);
       if (addConsumable)
       {

@@ -226,8 +226,9 @@ namespace Roguelike.Managers
             //var loot = LootGenerator.GetRandomLoot();
             context.CurrentNode.SetTile(new Tile(), lea.InvolvedEntity.Point);
             var enemy = lea.InvolvedEntity as Enemy;
-            var loot = lootManager.TryAddForLootSource(enemy);
-            Logger.LogInfo("Added loot" + loot);
+            var lootItems = lootManager.TryAddForLootSource(enemy);
+            //Logger.LogInfo("Added loot count: "+ lootItems.Count + ", items: ");
+            //lootItems.ForEach(i=> Logger.LogInfo("Added loot" + i));
           }
         }
       }
@@ -255,6 +256,7 @@ namespace Roguelike.Managers
         dest = context.CurrentNode.GetClosestEmpty(lootSource, true);
       if (dest != null)
       {
+        //Logger.LogInfo("AddLootToNode calling ReplaceTile" + item + ", pt: "+ dest.Point);
         var set = ReplaceTile<Loot>(item, dest.Point, animated, lootSource);
         return set;
       }
@@ -567,18 +569,14 @@ namespace Roguelike.Managers
         var it = prevTile as Roguelike.Tiles.InteractiveTile;
         if (it != null)//barrel could be destroyed
         {
-          //bool lootGenerated = false;
           if (it == positionSource)
-          {
             AppendAction<InteractiveTileAction>((InteractiveTileAction ac) => { ac.InvolvedTile = it; ac.InteractiveKind = InteractiveActionKind.Destroyed; });
-
-          }
         }
         var loot = replacer as Loot;
         if (loot != null)
         {
           AppendAction<LootAction>((LootAction ac) => { ac.Loot = loot; ac.LootActionKind = LootActionKind.Generated; ac.GenerationAnimated = animated; ac.Source = positionSource; });
-          this.GameState.History.Looting.GeneratedLoot.Add(new LootHistoryItem(loot));
+          GameState.History.Looting.GeneratedLoot.Add(new LootHistoryItem(loot));
         }
         else
         {
@@ -591,6 +589,7 @@ namespace Roguelike.Managers
         }
         return true;
       }
+      Logger.LogError("ReplaceTile failed! prevTile == null");
       return false;
     }
 

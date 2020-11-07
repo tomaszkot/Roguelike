@@ -1,12 +1,10 @@
-﻿using Dungeons;
-using Dungeons.Core;
+﻿using Dungeons.Core;
 using System.Collections.Generic;
 using System.Linq;
 using Roguelike.TileContainers;
 using Roguelike.Tiles;
 using System.Drawing;
 using System;
-using Roguelike.Events;
 using Roguelike.Policies;
 using SimpleInjector;
 using System.Diagnostics;
@@ -18,7 +16,7 @@ namespace Roguelike.Managers
     public Hero Hero { get => context.Hero; }
 
     private List<LivingEntity> entities = new List<LivingEntity>();
-    //LivingEntity skipInTurn;
+
     public AbstractGameLevel Node { get => context.CurrentNode; }
     public GameContext Context { get => context; set => context = value; }
     public List<LivingEntity> AllEntities { get => entities; set => entities = value; }
@@ -38,7 +36,7 @@ namespace Roguelike.Managers
       this.eventsManager = eventsManager;
     }
 
-    public virtual List<LivingEntity> CalcActiveEntities()
+    public virtual List<LivingEntity> GetActiveEntities()
     {
       return this.entities.Where(i => i.Revealed && i.Alive).ToList();
     }
@@ -76,7 +74,7 @@ namespace Roguelike.Managers
 
       RemoveDead();
 
-      var activeEntities = CalcActiveEntities();
+      var activeEntities = GetActiveEntities();
       //context.Logger.LogInfo(this+" MakeTurn start, count: " + activeEntities.Count);
 
       pendingForAllIdle = false;
@@ -206,12 +204,12 @@ namespace Roguelike.Managers
     public void RemoveDead()
     {
       var deadOnes = entities.Where(i => !i.Alive).ToList();
+      context.Logger.LogInfo("deadOnes : "+ deadOnes.Count);
       foreach (var dead in deadOnes)
       {
         Context.EventsManager.AppendAction(dead.GetDeadAction());
         entities.Remove(dead);
       }
-      //entities.RemoveAll(i => !i.Alive);
 
     }
   }
