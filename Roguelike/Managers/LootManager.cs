@@ -131,10 +131,12 @@ namespace Roguelike.Managers
     Loot TryAddLootForDeadEnemy(Enemy enemy)
     {
       Loot loot = null;
+      bool addConsumable = false;
       if(enemy.PowerKind == EnemyPowerKind.Champion ||
           enemy.PowerKind == EnemyPowerKind.Boss)
       {
         loot = GameManager.LootGenerator.GetBestLoot(enemy.PowerKind, enemy.Level);
+        addConsumable = true;
       }
       else
         loot = GameManager.TryGetRandomLootByDiceRoll(LootSourceKind.Enemy, enemy.Level);
@@ -143,6 +145,12 @@ namespace Roguelike.Managers
         GameManager.AddLootReward(loot, enemy, false);
       }
       var extraLootItems = GetExtraLoot(enemy, loot);
+      if (addConsumable)
+      {
+        var rand = RandHelper.GetRandomDouble();
+        var potion = rand > 0.5 ? new Potion(PotionKind.Health) : new Potion(PotionKind.Mana);
+        extraLootItems.Add(potion);
+      }
       foreach (var extraLoot in extraLootItems)
       {
         GameManager.AddLootReward(extraLoot, enemy, true);
@@ -185,6 +193,7 @@ namespace Roguelike.Managers
     List<Loot> GetExtraLoot(ILootSource lootSource, Loot primaryLoot)
     {
       extraLoot.Clear();
+
       if (GenerationInfo.DebugInfo.EachEnemyGivesPotion)
       {
         var potion = LootGenerator.GetRandomLoot(LootKind.Potion, lootSource.Level);

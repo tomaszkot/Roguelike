@@ -279,17 +279,26 @@ namespace Roguelike.Generators
       if (placeEnemiesPackClosely)
       {
         var emptyCells = node.GetEmptyTiles();
-        var pt = GetRandomEmptyPoint(node, stairs);
-        if (pt == null)
+        Point? enemyPoint = null;
+        if (node.NodeIndex == 0 && levelIndex == 0)
         {
-          logger.LogError("GetRandomEmptyPoint(node) failed " + node);
-          return;
+          emptyCells = emptyCells.Where(i => i.DistanceFrom(emptyCells.First()) > 10).ToList();
+          enemyPoint = emptyCells.GetRandomElem<Tile>().Point;
+        }
+        else
+        {
+          enemyPoint = GetRandomEmptyPoint(node, stairs);
+          if (enemyPoint == null)
+          {
+            logger.LogError("GetRandomEmptyPoint(node) failed " + node);
+            return;
+          }
         }
         
-        emptyCells.RemoveAll(i=> i.Point == pt);
+        emptyCells.RemoveAll(i=> i.Point == enemyPoint);
         foreach (var en in packEnemies)
         {
-          PlaceEnemy(en, node, pt.Value);
+          PlaceEnemy(en, node, enemyPoint.Value);
           var empty = node.GetClosestEmpty(en, emptyCells);
           if (empty == null)
           {
@@ -298,7 +307,7 @@ namespace Roguelike.Generators
 
           if (empty != null)
           {
-            pt = empty.Point;
+            enemyPoint = empty.Point;
             emptyCells.Remove(empty);
           }
           else

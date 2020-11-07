@@ -59,5 +59,15 @@ namespace Dungeons.Core
     {
       return tile.DungeonNodeIndex <= DungeonNode.ChildIslandNodeIndex;
     }
+
+    public static T GetRandomElem<T>(this  List<T> list, T[] skip)
+    {
+      return RandHelper.GetRandomElem<T>(list, skip);
+    }
+
+    public static T GetRandomElem<T>(this List<T> list)
+    {
+      return RandHelper.GetRandomElem<T>(list, new T[] { });
+    }
   }
 }
