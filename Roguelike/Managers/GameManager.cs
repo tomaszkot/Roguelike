@@ -532,7 +532,7 @@ namespace Roguelike.Managers
         RemoveDeadEnemies();
       context.IncreaseActions(TurnOwner.Hero);
 
-      Logger.LogInfo("OnHeroPolicyApplied MoveToNextTurnOwner");
+      //  Logger.LogInfo("OnHeroPolicyApplied MoveToNextTurnOwner");
       context.MoveToNextTurnOwner();
     }
 

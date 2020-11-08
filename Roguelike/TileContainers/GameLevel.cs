@@ -140,7 +140,7 @@ namespace Roguelike.TileContainers
             {
               if (!(dt.Symbol == Constants.SymbolWall && tile.Symbol == Constants.SymbolDoor))//TODO
               {
-                Logger.LogError("dt.Symbol != tile.Symbol [" + dt.Symbol + "," + tile.Symbol + "] " + tile.Point + " ");
+                Logger.LogError(this+ " dt.Symbol != tile.Symbol [" + dt.Symbol + "," + tile.Symbol + "] " + tile.Point + " ");
               }
             }
             if (!dt.Revealed && tile.Revealed)

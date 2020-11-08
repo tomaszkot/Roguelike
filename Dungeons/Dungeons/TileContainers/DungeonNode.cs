@@ -393,7 +393,7 @@ namespace Dungeons
         {
           emptyTiles = emptyTiles.Where(i => !GetNeighborTiles(i).Any(j => j is Dungeons.Tiles.Door)).ToList();
         }
-        Log("GetEmptyTiles time: "+tt.TotalSeconds, false);
+        //Log("GetEmptyTiles time: "+tt.TotalSeconds, false);
         return emptyTiles;
       }
 

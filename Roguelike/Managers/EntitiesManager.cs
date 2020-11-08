@@ -114,7 +114,7 @@ namespace Roguelike.Managers
 
       RemoveDead();
 
-      context.Logger.LogInfo("EnemiesManager  MakeTurn ends");
+      //context.Logger.LogInfo("EnemiesManager  MakeTurn ends");
       Debug.Assert(Context.TurnOwner == turnOwner);
       
       ReportAllDone(true);

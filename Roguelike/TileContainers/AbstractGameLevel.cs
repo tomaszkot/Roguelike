@@ -459,9 +459,9 @@ namespace Roguelike.TileContainers
     {
       var heros = GetTiles<Hero>();
       var heroInNode = heros.SingleOrDefault();
-      //Debug.Assert(heroInNode != null);
-      if (heroInNode == null && context == GameContextSwitchKind.DungeonSwitched)
-        Logger.LogError("SwitchTo heros.Count = " + heros.Count);
+
+      //if (heroInNode == null && context == GameContextSwitchKind.DungeonSwitched)
+      //  Logger.LogError("SwitchTo heros.Count = " + heros.Count);
 
       if (heroInNode != null)
         SetEmptyTile(heroInNode.Point);//Hero is going to be placed in the node, remove it from the old one (CurrentNode)

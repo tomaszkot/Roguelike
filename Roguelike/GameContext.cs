@@ -89,7 +89,8 @@ namespace Roguelike
         return;
       }
 
-      scroll.Count--;
+      //scroll.Count--;
+      Hero.Inventory.Remove(scroll);
 
       var policy = Container.GetInstance<SpellCastPolicy>();
       policy.Target = target;
