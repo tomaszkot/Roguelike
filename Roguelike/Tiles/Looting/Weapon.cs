@@ -21,6 +21,7 @@ namespace Roguelike.Tiles
       this.EquipmentKind = EquipmentKind.Weapon;
       this.PrimaryStatKind = EntityStatKind.Attack;
       this.Price = 5;
+      
     }
 
     public bool IsMagician()
@@ -29,7 +30,19 @@ namespace Roguelike.Tiles
         Kind == Roguelike.Tiles.Weapon.WeaponKind.Staff;
     }
 
-    public WeaponKind Kind { get; set; }
+    public WeaponKind kind;
+    public WeaponKind Kind
+    {
+      get => kind;
+      set {
+        kind = value;
+        if(kind == WeaponKind.Dagger || kind == WeaponKind.Sword || kind == WeaponKind.Axe ||
+          kind == WeaponKind.Scepter)
+          this.collectedSound = "SWORD_Hit_Sword_RR9_mono";
+        else
+          this.collectedSound = "none_steel_weapon_collected";
+      } 
+    }
    // public int MinDropDungeonLevel { get; set; }
 
     public int Damage

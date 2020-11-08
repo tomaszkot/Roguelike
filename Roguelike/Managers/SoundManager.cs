@@ -70,17 +70,12 @@ namespace Roguelike.Managers
         var la = ac as LootAction;
         if (la.LootActionKind == LootActionKind.Consumed)
         {
-          if (la.Loot is Potion /*|| la.Loot is Bibmer*/)
-            sndName = "drink";
-          else
-            sndName = "eat_chip";
+          sndName = (la.Loot as Consumable).ConsumedSound;
+          
         }
         else if (la.LootActionKind == LootActionKind.Collected)
         {
-          if (la.Loot is Gold)
-            sndName = "coin_collected";
-          else
-            sndName = "loot_collected";
+          sndName = la.Loot.CollectedSound;
         }
       }
       else if (ac is InteractiveTileAction)

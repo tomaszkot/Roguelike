@@ -74,6 +74,8 @@ namespace Roguelike.Tiles
     public LootExtendedInfo ExtendedInfo { get; protected set; }
     int price;
     protected int basePrice = -1;
+    protected string collectedSound = "cloth";
+    string droppedSound = "";
 
     public int Price
     {
@@ -231,6 +233,19 @@ namespace Roguelike.Tiles
     {
       var kinds = Enum.GetValues(typeof(T)).Cast<T>().ToList();
       return kinds.FirstOrDefault(i => name.Contains(i.ToString().ToLower()));
+    }
+
+    internal string CollectedSound
+    {
+      get { return collectedSound; }
+    }
+
+    internal string DroppedSound
+    {
+      get 
+      { 
+        return droppedSound.Any() ? droppedSound : collectedSound; 
+      }
     }
 
     protected string PartOfCraftingRecipe

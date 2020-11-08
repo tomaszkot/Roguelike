@@ -51,7 +51,7 @@ namespace RoguelikeUnitTests
     }
 
     [Test]
-    public void EquipmentImpactTest()
+    public void WeaponImpactTest()
     {
       var game = CreateGame();
       var hero = game.Hero;

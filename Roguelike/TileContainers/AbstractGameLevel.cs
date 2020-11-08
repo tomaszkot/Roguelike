@@ -140,7 +140,7 @@ namespace Roguelike.TileContainers
           Debug.Assert(false);
           return false;
         }
-        Logger.LogInfo("Adding Loot "+ tile + " at "+ point + " Loot.Count:"+ Loot.Count);
+        //Logger.LogInfo("Adding Loot "+ tile + " at "+ point + " Loot.Count:"+ Loot.Count);
         tile.Point = point;
         Loot[point] = tile as Roguelike.Tiles.Loot;
 

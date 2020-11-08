@@ -18,6 +18,7 @@ namespace Roguelike.Tiles.Looting
       tag1 = "coin";
       Count = amount;
       LootKind = LootKind.Gold;
+      collectedSound = "coin_collected";
     }
 
     public Gold() : this(RandHelper.Random.Next(4, 8))

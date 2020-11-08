@@ -475,10 +475,19 @@ namespace Roguelike.Managers
     void HandlePolicyApplied(Policies.Policy policy)
     {
       var attackPolicy = policy as AttackPolicy;
-      if (attackPolicy.Victim is Wall)
+      var hitBlocker = false;
+      var info = "";
+      var chest = attackPolicy.Victim as Chest;
+      if (attackPolicy.Victim is Wall || (chest != null && !chest.Closed))
       {
-        AppendAction<HeroAction>((HeroAction ac) => { ac.Kind = HeroActionKind.HitWall; ac.Info = "Hero hit a wall"; });
+        hitBlocker = true;
+        if(chest != null)
+          info = "Hero hit an opened chest";
+        else
+          info = "Hero hit a wall";
       }
+      if(hitBlocker)
+        AppendAction<HeroAction>((HeroAction ac) => { ac.Kind = HeroActionKind.HitWall; ac.Info = info; });
       else if (attackPolicy.Victim is Barrel || attackPolicy.Victim is Chest)
       {
         this.lootManager.TryAddForLootSource(attackPolicy.Victim as ILootSource);

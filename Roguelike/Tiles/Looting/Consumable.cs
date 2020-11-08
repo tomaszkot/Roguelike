@@ -12,13 +12,14 @@ namespace Roguelike.Tiles.Looting
   public abstract class Consumable : StackedLoot, IConsumable
   {
     EntityStatKind statKind = EntityStatKind.Unset;
+    protected string consumedSound = "eat_chewing1";
 
     public Consumable()
     {
       StatKind = EntityStatKind.Health;
       PercentageStatIncrease = true;
+      collectedSound = "collected_food";
     }
-
 
     public int ConsumptionSteps { get; set; } = 1;
 
@@ -41,6 +42,7 @@ namespace Roguelike.Tiles.Looting
 
     EffectiveFactor GetEffectiveStatIncrease() { return new EffectiveFactor(0); }
     public bool NegativeFactor { get; set; }
+    public string ConsumedSound { get => consumedSound; protected set => consumedSound = value; }
 
     public virtual PercentageFactor GetPercentageStatIncrease()
     {

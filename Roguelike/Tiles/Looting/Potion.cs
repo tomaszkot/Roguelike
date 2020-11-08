@@ -22,6 +22,8 @@ namespace Roguelike.Tiles.Looting
       Symbol = PotionSymbol;
       LootKind = LootKind.Potion;
       SetKind(kind);
+      collectedSound = "bottle1";
+      consumedSound = "drink";
     }
 
     public override PercentageFactor GetPercentageStatIncrease()
