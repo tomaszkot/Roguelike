@@ -82,7 +82,7 @@ namespace Roguelike.Managers
       if (!activeEntities.Any())
       {
         OnPolicyAppliedAllIdle();
-        context.Logger.LogInfo("no one to move...");
+        //context.Logger.LogInfo("no one to move...");
         return;
       }
       
@@ -204,7 +204,7 @@ namespace Roguelike.Managers
     public void RemoveDead()
     {
       var deadOnes = entities.Where(i => !i.Alive).ToList();
-      context.Logger.LogInfo("deadOnes : "+ deadOnes.Count);
+      //context.Logger.LogInfo("deadOnes : "+ deadOnes.Count);
       foreach (var dead in deadOnes)
       {
         Context.EventsManager.AppendAction(dead.GetDeadAction());

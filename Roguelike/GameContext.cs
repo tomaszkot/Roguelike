@@ -145,73 +145,25 @@ namespace Roguelike
       var merchs = node.GetTiles<Merchant>();
       foreach(var merch in merchs)
         merch.OnContextSwitched(Container);
-
-      //if (!Hero.Point.IsValid() || context == GameContextSwitchKind.DungeonSwitched)
-      {
-        //if (context == GameContextSwitchKind.DungeonSwitched)
-        //{
-        //  ClearOldHeroPosition(CurrentNode, context);
-        //}
-        var heroStartTile = PlaceHeroAtDungeon(node, gs, context, stairs);
-        //PlaceHeroAtTile(node, context, Hero, heroStartTile.Tile);
-      }
-      //else
-      //{
-      //  AbstractGameLevel destNode = null;
-      //  if (context == GameContextSwitchKind.GameLoaded)
-      //  {
-      //    destNode = PlaceLoadedHero(node, gs, context, stairs);
-      //  }
-
-      //  if (destNode == null && !node.SetTile(Hero, Hero.Point))
-      //  {
-      //    logger.LogError("!node.SetTile " + Hero);
-      //  }
-      //}
+        
+      var heroStartTile = PlaceHeroAtDungeon(node, gs, context, stairs);
 
       CurrentNode = node;
 
       CurrentNode.OnHeroPlaced(Hero);
-      
-      //EventsManager.AppendAction(new GameStateAction() { InvolvedNode = node, Type = GameStateAction.ActionType.ContextSwitched });
+
       EmitContextSwitched(context);
     }
 
-    //public virtual AbstractGameLevel PlaceLoadedHero(AbstractGameLevel node, GameState gs, GameContextSwitchKind context, Stairs stairs)
-    //{
-    //  AbstractGameLevel level = null;
-    //  //if (gameState.Settings.CoreInfo.RestoreHeroToSafePointAfterLoad)
-    //  {
-    //    Tile heroStartTile = null;
-    //    if (node.Index > 0)
-    //    {
-    //      var stairsUp = node.GetStairs(StairsKind.LevelUp);
-    //      if (stairsUp != null)
-    //        heroStartTile = PlaceHeroAtDungeon(node, gs, context, stairs);
-    //    }
-    //    else
-    //      heroStartTile = GetHeroStartTile(node);
-
-    //    if (heroStartTile != null)
-    //    {
-    //      PlaceHeroAtTile(node, context, Hero, heroStartTile);
-    //      level = node;
-    //    }
-    //  }
-
-    //  return level;
-    //}
-                
     public virtual HeroPlacementResult PlaceHeroAtDungeon(AbstractGameLevel node, GameState gs, GameContextSwitchKind context, Stairs stairs)
     {
       var res = new HeroPlacementResult();
       res.Node = node;
-//      Tile heroStartTile = null;
+
       Tile baseTile = null;
       if (context == GameContextSwitchKind.GameLoaded)
       {
         return PlaceLoadedHero(node, gs);
-        //baseTile = node.GetStairs(StairsKind.LevelUp);
       }
       else if (stairs != null && context == GameContextSwitchKind.DungeonSwitched)
       {

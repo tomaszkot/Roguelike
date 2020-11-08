@@ -254,15 +254,15 @@ namespace Dungeons
     {
       if (!Inited())
         return;
-      Func<Tile, bool> areAllEmpty = (Tile i) => { return dungeonNode.GetNeighborTiles(i, true).All(j => j != null && j.IsEmpty); };
+      Func<Tile, bool> areNeibsEmpty = (Tile i) => { return dungeonNode.GetNeighborTiles(i, true).All(j => j != null && j.IsEmpty); };
 
-      var empty = dungeonNode.GetEmptyTiles().Where(i => areAllEmpty(i)).ToList();
+      var empty = dungeonNode.GetEmptyTiles().Where(i => areNeibsEmpty(i)).ToList();
       if (empty.Any())
       {
         var t = empty[RandHelper.Random.Next(empty.Count())];
         var pts = new List<Point>() { t.Point };
 
-        var others = dungeonNode.GetNeighborTiles(t).Where(i => areAllEmpty(i)).ToList();
+        var others = dungeonNode.GetNeighborTiles(t).Where(i => areNeibsEmpty(i)).ToList();
         if (others.Any())
         {
           int maxDecLen = 6;

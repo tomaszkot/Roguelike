@@ -80,7 +80,7 @@ namespace Dungeons
       [XmlIgnore]
       [JsonIgnore]
       internal Dictionary<EntranceSide, List<Wall>> Sides { get { return sides; } }
-      protected List<TileNeighborhood> allNeighborhoods = new List<TileNeighborhood> { TileNeighborhood.East, TileNeighborhood.West, TileNeighborhood.North, TileNeighborhood.South };
+      protected static List<TileNeighborhood> AllNeighborhoods = new List<TileNeighborhood> { TileNeighborhood.East, TileNeighborhood.West, TileNeighborhood.North, TileNeighborhood.South };
 
       //it's assummed, level has there are less rooms that 999. 
       public const int DefaultNodeIndex = 999;
@@ -111,9 +111,9 @@ namespace Dungeons
 
       //:/ Due to : 'DungeonNode' must be a non-abstract type with a public parameterless constructor in order to use it as parameter 'T' in the generic type or method 'UnityMapToDungeonFactory<T...
 
-      public DungeonNode() : this(null)
-      {
-      }
+      //public DungeonNode() : this(null)
+      //{
+      //}
 
       public DungeonNode(Container container)
       {
@@ -285,7 +285,7 @@ namespace Dungeons
       public List<Tile> GetNeighborTiles(Tile tile, bool incDiagonal = false)
       {
         var neibs = new List<Tile>();
-        foreach (var i in allNeighborhoods)
+        foreach (var i in AllNeighborhoods)
         {
           var neib = GetNeighborTile(tile, i);
           neibs.Add(neib);
@@ -364,9 +364,10 @@ namespace Dungeons
       (
         GenerationConstraints constraints = null, 
         bool canBeNextToDoors = true,
-        bool levelIndexMustMatch = false//allows skipping childIsland tiles
+        bool nodeIndexMustMatch = false//allows skipping childIsland tiles
       )
       {
+        var tt = new TimeTracker();
         var emptyTiles = new List<Tile>();
         if (!created)
           return emptyTiles;
@@ -376,7 +377,7 @@ namespace Dungeons
           )
           {
             var tile = tiles[row, col];
-            if (!levelIndexMustMatch || tile.dungeonNodeIndex == NodeIndex)
+            if (!nodeIndexMustMatch || tile.dungeonNodeIndex == NodeIndex)
             {
               var pt = new Point(col, row);
               if (constraints == null || (constraints.IsInside(pt)))
@@ -392,6 +393,7 @@ namespace Dungeons
         {
           emptyTiles = emptyTiles.Where(i => !GetNeighborTiles(i).Any(j => j is Dungeons.Tiles.Door)).ToList();
         }
+        Log("GetEmptyTiles time: "+tt.TotalSeconds, false);
         return emptyTiles;
       }
 
@@ -860,10 +862,18 @@ namespace Dungeons
         {
           set.Add(prefferedSide.Value);
         }
-        allNeighborhoods.Shuffle();
-        set.AddRange(allNeighborhoods.Where(i => !set.Contains(i)));
+        AllNeighborhoods.Shuffle();
+        set.AddRange(AllNeighborhoods.Where(i => !set.Contains(i)));
         var res = GetEmptyNeighborhoodPoint(target, set);
         return res;
+      }
+
+      public List<Tile> GetEmptyNeighborhoodTiles(Tile target)
+      {
+        var neibs = GetNeighborTiles(target, true);
+        neibs.Shuffle();
+        neibs = neibs.Where(i => IsTileEmpty(i)).ToList();
+        return neibs;
       }
 
       public virtual bool IsTileEmpty(Tile tile)

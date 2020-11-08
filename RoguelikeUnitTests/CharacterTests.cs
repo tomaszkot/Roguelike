@@ -1,4 +1,5 @@
-﻿using NUnit.Framework;
+﻿using Dungeons.Core;
+using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,6 +19,7 @@ namespace RoguelikeUnitTests
     [Test]
     public void TestLevelUp()
     {
+      var tt = new TimeTracker();
       var game = CreateGame();
       var health = game.Hero.Stats.Health;
       bool leveledUpDone = false;
@@ -37,8 +39,9 @@ namespace RoguelikeUnitTests
         if (leveledUpDone)
           break;
       }
-
+      var time = tt.TotalSeconds;
       Assert.True(leveledUpDone);
+      
     }
 
     

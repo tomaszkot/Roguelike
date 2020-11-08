@@ -138,15 +138,19 @@ namespace Roguelike
     {
       var hero = Container.GetInstance<Hero>();
       //TODO PitUp here?
-      Dungeons.Tiles.Tile emptyForHero = node.GetTiles<Stairs>().FirstOrDefault(i => i.StairsKind == StairsKind.LevelUp ||
-                                                       i.StairsKind == StairsKind.PitUp);
+      Dungeons.Tiles.Tile emptyForHero = node
+        .GetTiles<Stairs>()
+        .FirstOrDefault(i => 
+          i.StairsKind == StairsKind.LevelUp ||
+          i.StairsKind == StairsKind.PitUp);
+
       if (emptyForHero == null)
       {
         if (LevelGenerator.LevelIndex != 0)
         {
           Container.GetInstance<ILogger>().LogError("emptyForHero == null " + LevelGenerator.LevelIndex);
         }
-        emptyForHero = node.GetEmptyTiles(levelIndexMustMatch:false).First();
+        emptyForHero = node.GetEmptyTiles(nodeIndexMustMatch:false).First();
       }
       var empty = node.GetClosestEmpty(emptyForHero, node.GetEmptyTiles());
       node.SetTile(hero, empty.Point);

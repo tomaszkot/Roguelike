@@ -91,13 +91,34 @@ namespace Roguelike.TileContainers
       return base.GetClosestEmpty(baseTile, sameNodeId, skip);
     }
 
+    void RemoveLoot(List<Tile> tiles)
+    {
+      int removed = tiles.RemoveAll(i => Loot.Any(j => j.Value.Point == i.Point));
+      Logger.LogInfo("removed " + removed);
+    }
+
+    public List<Tile> GetEmptyNeighborhoodTiles(Tile target, bool excludeLoot)
+    {
+      var neibs = GetEmptyNeighborhoodTiles(target);
+      if(excludeLoot)
+        RemoveLoot(neibs);
+      return neibs;
+    }
+
     public Tile GetClosestEmpty(Tile baseTile, bool excludeLootPositions)
     {
-      var emptyTiles = GetEmptyTiles();
+      var emptyTiles = GetEmptyNeighborhoodTiles(baseTile, true);
+      if (emptyTiles.Any())
+      {
+        return emptyTiles.First();
+      }
+
+      //TODO slow, first check neibs of neibs!!!
+      emptyTiles = GetEmptyTiles();
       if (excludeLootPositions)
       {
         int removed = emptyTiles.RemoveAll(i => Loot.Any(j => j.Value.Point == i.Point));
-       Logger.LogInfo("removed" + removed);
+        Logger.LogInfo("removed " + removed);
       }
       return GetClosestEmpty(baseTile, emptyTiles);
     }
@@ -424,7 +445,7 @@ namespace Roguelike.TileContainers
     public Tile GetHeroStartTile()
     {
       Tile heroStartTile;
-      var emp = GetEmptyTiles(levelIndexMustMatch: false)//merged level migth have index  999 and none tile has such
+      var emp = GetEmptyTiles(nodeIndexMustMatch: false)//merged level migth have index  999 and none tile has such
                .FirstOrDefault();
       if (emp == null)
       {

@@ -455,6 +455,11 @@ namespace Roguelike.Managers
         }
         else
         {
+          //var chest = tile as Chest;
+          //if (chest != null && chest.Closed)
+          //{
+          //  HandeTileHit(chest);
+          //}
           Context.ApplyPhysicalAttackPolicy(Hero, tile, (policy) => OnHeroPolicyApplied(this, policy));
           return InteractionResult.Attacked;
         }
@@ -472,27 +477,41 @@ namespace Roguelike.Managers
       return InteractionResult.Blocked;
     }
 
-    void HandlePolicyApplied(Policies.Policy policy)
+    void HandlePolicyApplied(Policy policy)
     {
       var attackPolicy = policy as AttackPolicy;
-      var hitBlocker = false;
+      //var chest = attackPolicy.Victim as Chest;
+      //if (chest != null)
+      //  return;
+      HandeTileHit(attackPolicy.Victim);
+    }
+
+    private void HandeTileHit(Tile tile)
+    {
       var info = "";
-      var chest = attackPolicy.Victim as Chest;
-      if (attackPolicy.Victim is Wall || (chest != null && !chest.Closed))
+      var hitBlocker = false;
+      var chest = tile as Chest;
+      var barrel = tile as Barrel;
+      if (tile is Wall || (chest != null) || (barrel != null))// && !chest.Closed))
       {
         hitBlocker = true;
-        if(chest != null)
-          info = "Hero hit an opened chest";
+        if (chest != null)
+          info = "Hero hit a chest";
+        if (barrel != null)
+          info = "Hero hit a barrel";
         else
           info = "Hero hit a wall";
       }
-      if(hitBlocker)
+      if (hitBlocker)
         AppendAction<HeroAction>((HeroAction ac) => { ac.Kind = HeroActionKind.HitWall; ac.Info = info; });
-      else if (attackPolicy.Victim is Barrel || attackPolicy.Victim is Chest)
+      if (tile is Barrel || tile is Chest)
       {
-        this.lootManager.TryAddForLootSource(attackPolicy.Victim as ILootSource);
+        var tr = new TimeTracker();
+        this.lootManager.TryAddForLootSource(tile as ILootSource);
+        Logger.LogInfo("TimeTracker TryAddForLootSource: "+ tr.TotalSeconds);
       }
     }
+
 
     public virtual Loot TryGetRandomLootByDiceRoll(LootSourceKind lsk, int level)
     {
