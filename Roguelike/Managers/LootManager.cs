@@ -136,7 +136,7 @@ namespace Roguelike.Managers
       if(enemy.PowerKind == EnemyPowerKind.Champion ||
           enemy.PowerKind == EnemyPowerKind.Boss)
       {
-        loot = GameManager.LootGenerator.GetBestLoot(enemy.PowerKind, enemy.Level);
+        loot = GenerateLootForPowerfulEnemy(enemy);
         addConsumable = true;
       }
       else
@@ -157,6 +157,18 @@ namespace Roguelike.Managers
         GameManager.AddLootReward(extraLoot, enemy, true);
       }
 
+      return loot;
+    }
+
+    private Loot GenerateLootForPowerfulEnemy(Enemy enemy)
+    {
+      Loot loot = null;
+      if (enemy.Name == "Miller")//TODO Miller here in RL dll?
+      {
+        loot = GameManager.LootGenerator.GetLootByAsset("Kafar");
+      }
+      else
+        loot =  GameManager.LootGenerator.GetBestLoot(enemy.PowerKind, enemy.Level);
       return loot;
     }
 
