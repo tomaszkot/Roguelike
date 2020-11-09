@@ -33,7 +33,7 @@ namespace Roguelike.Tiles
     public bool LevelSet { get => levelSet; set => levelSet = value; }
     public bool StatsIncreasedByPowerKind { get => statsIncreased; set => statsIncreased = value; }
     public bool StatsIncreasedByLevel { get; set; }
-    
+    public bool ShoutedAtHero { get; set; }
 
     static Enemy()
     {
