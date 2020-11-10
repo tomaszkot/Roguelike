@@ -235,12 +235,12 @@ namespace Roguelike.Tiles
       return kinds.FirstOrDefault(i => name.Contains(i.ToString().ToLower()));
     }
 
-    internal string CollectedSound
+    public string CollectedSound
     {
       get { return collectedSound; }
     }
 
-    internal string DroppedSound
+    public string DroppedSound
     {
       get 
       { 
