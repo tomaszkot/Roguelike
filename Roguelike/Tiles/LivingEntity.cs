@@ -72,8 +72,8 @@ namespace Roguelike.Tiles
     } = 1;
 
     //Dictionary<EffectType, float> lastingEffSubtractions = new Dictionary<EffectType, float>();
-            
-    public bool IsWounded { get; private set; }
+
+    public bool IsWounded { get; protected set; }
     protected Dictionary<EffectType, int> effectsToUse = new Dictionary<EffectType, int>();
     public static readonly EffectType[] PossibleEffectsToUse = new EffectType[] {
     EffectType.Weaken, EffectType.Rage, EffectType.IronSkin, EffectType.ResistAll, EffectType.Inaccuracy

@@ -148,7 +148,10 @@ namespace Roguelike.Serialization
 
     protected virtual string GameLevelsFolder { get { return ""; } }
 
-    protected static string GameName { get { return "Roguelike"; } }
+    protected static string GameName 
+    { 
+      get { return "Roguelike"; } 
+    }
 
     public Container Container { get => container; private set => container = value; }
 

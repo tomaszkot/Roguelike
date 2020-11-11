@@ -247,14 +247,16 @@ namespace RoguelikeUnitTests
       };
 
       var enemy = ActiveEnemies.First();
-      var healthStat = enemy.Stats.GetStat(EntityStatKind.Health);
-      healthStat.Value.Nominal = 150;
+      var enemyHealthStat = enemy.Stats.GetStat(EntityStatKind.Health);
+      enemyHealthStat.Value.Nominal = 150;
       enemy.SetIsWounded();//make sure will bleed
+      var enemyHealth = enemy.Stats.Health;
 
       enemy.OnPhysicalHit(game.Hero);
       var le1 = enemy.LastingEffects.Where(i => i.Type == EffectType.Bleeding).FirstOrDefault();
       Assert.NotNull(le1);
-            
+      Assert.Greater(enemyHealth, enemy.Stats.Health);
+
       var value = game.Hero.Stats.GetStat(EntityStatKind.Defense).Value;
       var turns = le1.PendingTurns;
       for (int i = 0; i < turns * 2; i++)//there will be prolong
@@ -297,6 +299,7 @@ namespace RoguelikeUnitTests
 
       var value = game.Hero.Stats.GetStat(EntityStatKind.Defense).Value;
       var turns = le1.PendingTurns;
+      var enemyHealth = enemy.Stats.Health;
       for (int i = 0; i < turns * 2; i++)//there will be prolong
       {
         castedAgain = enemy.LastingEffects.Where(le => le.Type == EffectType.Bleeding).SingleOrDefault();
@@ -310,6 +313,7 @@ namespace RoguelikeUnitTests
         }
         
       }
+      Assert.Greater(enemyHealth, enemy.Stats.Health);
       Assert.AreEqual(actionCounter, 5);
     }
 

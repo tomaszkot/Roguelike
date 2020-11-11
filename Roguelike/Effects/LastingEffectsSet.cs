@@ -11,7 +11,6 @@ using Roguelike.Tiles.Looting;
 using SimpleInjector;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 
 namespace Roguelike.Effects
@@ -43,6 +42,7 @@ namespace Roguelike.Effects
 
     public void AddLastingEffect(LastingEffect le)
     {
+      //le.PendingTurns = 50;
       LastingEffects.Add(le);
 
       ApplyLastingEffect(le, true);
@@ -80,7 +80,9 @@ namespace Roguelike.Effects
         AddLastingEffect(le);
       }
       else
-        ProlongEffect(calcEffectValue.EffectiveFactor.Value, le, calcEffectValue.Turns);
+      {
+        ProlongEffect(Math.Abs(calcEffectValue.EffectiveFactor.Value), le, calcEffectValue.Turns);
+      }
 
       return le;
     }

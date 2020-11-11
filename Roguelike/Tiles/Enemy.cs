@@ -59,6 +59,7 @@ namespace Roguelike.Tiles
     public Enemy(Point point, char symbol) : base(point, symbol)
     {
       //MovesCountPerTurn = 2;
+      //IsWounded = true;
       this.Symbol = symbol;
 
 #if ASCII_BUILD

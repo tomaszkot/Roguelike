@@ -8,7 +8,7 @@ namespace Roguelike.InfoScreens
   public class LastActions
   {
     private List<GameAction> actions = new List<GameAction>();
-    const int MaxSize = 5;
+    const int MaxSize = 6;
     bool reverse = false;
     int actionsCount = 0;
 
