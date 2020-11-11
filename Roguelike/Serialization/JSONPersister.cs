@@ -22,7 +22,7 @@ namespace Roguelike.Serialization
   public class JSONPersister : IPersister
   {
     protected const string extension = ".json";
-    protected enum FileKind { Hero, GameLevel, GameState }
+    public enum FileKind { Hero, GameLevel, GameState }
     Container container;
 
     public JSONPersister(Container container)
@@ -126,7 +126,7 @@ namespace Roguelike.Serialization
       get{ return RootPath /*+ GameFolder*/; }
     }
 
-    protected string GetFullFilePath(FileKind fileKind, string heroName, string fileSuffix = "")//, string fileName)
+    public string GetFullFilePath(FileKind fileKind, string heroName, string fileSuffix = "")//, string fileName)
     {
       List<string> parts = new List<string>();
       var path = GetFilesPath(heroName);
