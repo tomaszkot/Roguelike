@@ -41,7 +41,7 @@ namespace Roguelike.Managers
     AlliesManager alliesManager;
     LevelGenerator levelGenerator;
     LootManager lootManager;
-    InputManager inputManager;
+    protected InputManager inputManager;
 
     IPersister persister;
     ILogger logger;
@@ -92,7 +92,7 @@ namespace Roguelike.Managers
       EventsManager = container.GetInstance<EventsManager>();
       lootManager = container.GetInstance<LootManager>();
       lootManager.GameManager = this;
-      inputManager = new InputManager(this);
+      CreateInputManager();
 
       EventsManager.ActionAppended += EventsManager_ActionAppended;
 
@@ -105,6 +105,11 @@ namespace Roguelike.Managers
       Persister = container.GetInstance<IPersister>();
 
       SoundManager = new SoundManager(this, container);
+    }
+
+    protected virtual void CreateInputManager()
+    {
+      inputManager = new InputManager(this);
     }
 
     public bool CanHeroDoAction()

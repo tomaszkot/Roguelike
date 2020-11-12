@@ -133,8 +133,8 @@ namespace Roguelike.Effects
 
     private void ApplyLastingEffect(LastingEffect le, bool newOne)
     {
-      if(Container != null)
-        Container.GetInstance<ILogger>().LogInfo(livingEntity + " ApplyLastingEffect: " + le);
+      //if(Container != null)
+        //Container.GetInstance<ILogger>().LogInfo(livingEntity + " ApplyLastingEffect: " + le);
       le.PendingTurns--;
 
       if (newOne || le.Application == EffectApplication.EachTurn)

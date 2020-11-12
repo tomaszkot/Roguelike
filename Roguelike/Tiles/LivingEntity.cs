@@ -197,7 +197,7 @@ namespace Roguelike.Tiles
 
     internal bool CalculateIfStatChanceApplied(EntityStatKind esk, LivingEntity target = null, FightItem fi = null)
     {
-      Container.GetInstance<ILogger>().LogInfo(this + " CalculateIfStatChanceApplied...");
+      //Container.GetInstance<ILogger>().LogInfo(this + " CalculateIfStatChanceApplied...");
       var randVal = (float)RandHelper.Random.NextDouble();
       var chance = GetEffectChance(esk);
       //if (fi != null && fi is ThrowingKnife)

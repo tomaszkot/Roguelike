@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Security.Permissions;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Roguelike
 {
@@ -27,9 +23,14 @@ namespace Roguelike
       public HintHistory()
       {
         //TODO 'G' - shall be formatted based on KeyCode
-        hints.Add(new HintItem(){ Info = "Press 'G' to collect loot", Kind = HintKind.LootCollectShorcut});
-        hints.Add(new HintItem() { Info = "Press 'J' to collect nearby loot", Kind = HintKind.BulkLootCollectShorcut });
-        hints.Add(new HintItem() { Info = "Press 'R' to open Crafting Panel", Kind = HintKind.ShowCraftingPanel});
+        hints.Add(new HintItem(){ Info = "Press 'G' to collect a single loot.", Kind = HintKind.LootCollectShorcut});
+        hints.Add(new HintItem() { Info = "Press 'J' to collect nearby loot items.", Kind = HintKind.BulkLootCollectShorcut });
+        hints.Add(new HintItem() { Info = "Recipe has been collected. Press 'R' to open Crafting Panel and see it's description.", Kind = HintKind.ShowCraftingPanel});
+      }
+
+      public List<int> GetKeyCodes()
+      {
+        return hints.Select(i => i.KeyCode).ToList();
       }
 
       public void SetKeyCode(HintKind kind, int keyCode)

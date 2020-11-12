@@ -11,9 +11,9 @@ using System.Drawing;
 
 namespace Roguelike.Managers
 {
-  class InputManager
+  public class InputManager
   {
-    GameManager gm;
+    protected GameManager gm;
     
     public InputManager(GameManager gm)
     {
