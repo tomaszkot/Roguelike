@@ -1,7 +1,6 @@
 ﻿using Dungeons.Core;
 using Dungeons.Tiles;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using Roguelike.TileContainers;
 using Roguelike.Tiles;
@@ -15,10 +14,8 @@ using Newtonsoft.Json;
 using Roguelike.Tiles.Interactive;
 using Roguelike.Policies;
 using Dungeons;
-using Dungeons.TileContainers;
 using Roguelike.LootContainers;
 using Roguelike.Tiles.Looting;
-using Roguelike.Abstract;
 
 namespace Roguelike.Managers
 {
@@ -44,6 +41,7 @@ namespace Roguelike.Managers
     AlliesManager alliesManager;
     LevelGenerator levelGenerator;
     LootManager lootManager;
+    InputManager inputManager;
 
     IPersister persister;
     ILogger logger;
@@ -56,10 +54,14 @@ namespace Roguelike.Managers
 
     [JsonIgnore]
     public EventsManager EventsManager { get => eventsManager; set => eventsManager = value; }
+
+    //TODO shall be Jsonignored
     public GameContext Context { get => context; set => context = value; }
     public AbstractGameLevel CurrentNode { get => context.CurrentNode; }
     public AlliesManager AlliesManager { get => alliesManager; set => alliesManager = value; }
     public LootGenerator LootGenerator { get => lootGenerator; set => lootGenerator = value; }
+
+
     public IPersister Persister
     {
       get => persister;
@@ -90,6 +92,7 @@ namespace Roguelike.Managers
       EventsManager = container.GetInstance<EventsManager>();
       lootManager = container.GetInstance<LootManager>();
       lootManager.GameManager = this;
+      inputManager = new InputManager(this);
 
       EventsManager.ActionAppended += EventsManager_ActionAppended;
 
@@ -102,6 +105,11 @@ namespace Roguelike.Managers
       Persister = container.GetInstance<IPersister>();
 
       SoundManager = new SoundManager(this, container);
+    }
+
+    public bool CanHeroDoAction()
+    { 
+      return inputManager.CanHeroDoAction();
     }
 
     public void Assert(bool assert, string info = "assert failed")
@@ -265,95 +273,18 @@ namespace Roguelike.Managers
       return false;
     }
 
-
     public InteractionResult HandleHeroShift(TileNeighborhood neib)
     {
-      int horizontal = 0;
-      int vertical = 0;
-      var res = DungeonNode.GetNeighborPoint(new Tile() { Point = new Point(0, 0) }, neib);
-      if (res.X != 0)
-        horizontal = res.X;
-      else
-        vertical = res.Y;
-
-      return HandleHeroShift(horizontal, vertical);
+      return inputManager.HandleHeroShift(neib);
     }
-
-    public bool CanHeroDoAction()
-    {
-      if (!this.HeroTurn)
-        return false;
-      if (!Hero.Alive)
-      {
-        if (!context.HeroDeadReported)
-        {
-          context.EventsManager.AppendAction(context.Hero.GetDeadAction());
-          context.HeroDeadReported = true;
-        }
-        //AppendAction(new HeroAction() { Level = ActionLevel.Critical, KindValue = HeroAction.Kind.Died, Info = Hero.Name + " is dead!" });
-        return false;
-      }
-
-      if (Hero.State != EntityState.Idle)
-        return false;
-
-      var ac = Context.TurnActionsCount[TurnOwner.Hero];
-      if (ac == 1)
-        return false;
-
-      return true;
-    }
-
-    public Func<bool> HeroMoveAllowed;
 
     public InteractionResult HandleHeroShift(int horizontal, int vertical)
     {
-      InteractionResult res = InteractionResult.None;
-
-      try
-      {
-        if (!CanHeroDoAction())
-          return res;
-
-        if (HeroMoveAllowed != null && !HeroMoveAllowed())
-          return res;
-        var newPos = GetNewPositionFromMove(Hero.Point, horizontal, vertical);
-        if (!newPos.Possible)
-        {
-          return res;
-        }
-        var hc = CurrentNode.GetHashCode();
-        var tile = CurrentNode.GetTile(newPos.Point);
-        //logger.LogInfo(" tile at " + newPos.Point + " = "+ tile);
-        if (!tile.IsEmpty)
-          res = InteractHeroWith(tile);
-
-        if (res == InteractionResult.ContextSwitched || res == InteractionResult.Blocked)
-          return res;
-
-        if (res == InteractionResult.Handled || res == InteractionResult.Attacked)
-        {
-          //ASCII printer needs that event
-          //logger.LogInfo(" InteractionResult " + res + ", ac="  + ac);
-          EventsManager.AppendAction(new LivingEntityAction(LivingEntityActionKind.Interacted) { InvolvedEntity = Hero });
-        }
-        else
-        {
-          //logger.LogInfo(" Hero ac ="+ ac);
-          context.ApplyMovePolicy(Hero, newPos.Point, (e) =>
-          {
-            OnHeroPolicyApplied(this, e);
-          });
-        }
-      }
-      catch (Exception ex)
-      {
-        Logger.LogError(ex);
-      }
-
-      return res;
+      return inputManager.HandleHeroShift(horizontal, vertical);
     }
 
+    public Func<bool> HeroMoveAllowed;
+        
     public void SkipHeroTurn()
     {
       if (Context.HeroTurn)
@@ -372,107 +303,10 @@ namespace Roguelike.Managers
 
     public virtual InteractionResult InteractHeroWith(Tile tile)
     {
-      if (Interact != null)
-      {
-        var res = Interact(tile);
-        if (res != InteractionResult.None)
-          return res;
-      }
-      if (tile == null)
-      {
-        Logger.LogError("tile == null!!!");
-        return InteractionResult.None;
-      }
-      bool tileIsDoor = tile is Tiles.Door;
-      bool tileIsDoorBySumbol = tile.Symbol == Constants.SymbolDoor;
-
-      if (tile is Enemy || tile is Dungeons.Tiles.Wall)
-      {
-        //Logger.LogInfo("Hero attacks " + tile);
-        // var en = tile as Enemy;
-        //if(!en.Alive)
-        //  Logger.LogError("Hero attacks dead!" );
-        //else
-        //  Logger.LogInfo("Hero attacks en health = "+en.Stats.Health);
-        Context.ApplyPhysicalAttackPolicy(Hero, tile, (p) => OnHeroPolicyApplied(this, p));
-
-        return InteractionResult.Attacked;
-      }
-      //else if (tile is Merchant)
-      //{
-      //  AppendAction<MerchantAction>((MerchantAction ac) => { ac.MerchantActionKind = MerchantActionKind.Engaged; ac.InvolvedTile = tile as Merchant; });
-      //  return InteractionResult.Blocked;
-      //}
-      else if (tile is IAlly)
-      {
-        var ally = tile as IAlly;
-        AppendAction <AllyAction>((AllyAction ac) => { ac.AllyActionKind = AllyActionKind.Engaged; ac.InvolvedTile = ally; });
-        if (ally is TrainedHound)
-        {
-          SoundManager.PlaySound("ANIMAL_Dog_Bark_02_Mono");
-        }
-        return InteractionResult.Blocked;
-      }
-      else if (tileIsDoor || tileIsDoorBySumbol)
-      {
-        var door = tile as Tiles.Door;
-        if (door.Opened)
-          return InteractionResult.None;
-
-        var opened = CurrentNode.RevealRoom(door, Hero);
-        if (opened)
-        {
-          AppendAction<InteractiveTileAction>((InteractiveTileAction ac) => { ac.InteractiveKind = InteractiveActionKind.DoorOpened; ac.InvolvedTile = door; });
-        }
-        return opened ? InteractionResult.Handled : InteractionResult.None;
-      }
-
-      else if (tile is Roguelike.Tiles.InteractiveTile)
-      {
-        if (tile is Stairs)
-        {
-          var stairs = tile as Stairs;
-          var destLevelIndex = -1;
-          if (stairs.StairsKind == StairsKind.LevelDown ||
-          stairs.StairsKind == StairsKind.LevelUp)
-          {
-            var level = GetCurrentDungeonLevel();
-            if (stairs.StairsKind == StairsKind.LevelDown)
-            {
-              destLevelIndex = level.Index + 1;
-            }
-            else if (stairs.StairsKind == StairsKind.LevelUp)
-            {
-              destLevelIndex = level.Index - 1;
-            }
-            if (DungeonLevelStairsHandler != null)
-              return DungeonLevelStairsHandler(destLevelIndex, stairs);
-          }
-        }
-        else if (tile is Portal)
-        {
-          return HandlePortalCollision(tile as Portal);
-        }
-        else
-        {
-          //var chest = tile as Chest;
-          //if (chest != null && chest.Closed)
-          //{
-          //  HandeTileHit(chest);
-          //}
-          Context.ApplyPhysicalAttackPolicy(Hero, tile, (policy) => OnHeroPolicyApplied(this, policy));
-          return InteractionResult.Attacked;
-        }
-        return InteractionResult.Blocked;//blok hero by default
-      }
-      //else if (tile is Dungeons.Tiles.IObstacle)
-      //{
-      //  return InteractionResult.Blocked;//blok hero by default
-      //}
-      return InteractionResult.None;
+      return inputManager.InteractHeroWith(tile);
     }
 
-    protected virtual InteractionResult HandlePortalCollision(Portal portal)
+    public virtual InteractionResult HandlePortalCollision(Portal portal)
     {
       return InteractionResult.Blocked;
     }
@@ -621,7 +455,7 @@ namespace Roguelike.Managers
       return false;
     }
 
-    TileContainers.GameLevel GetCurrentDungeonLevel()
+    public TileContainers.GameLevel GetCurrentDungeonLevel()
     {
       var dl = this.CurrentNode as TileContainers.GameLevel;
       return dl;
@@ -685,25 +519,7 @@ namespace Roguelike.Managers
 
       return gameState;
     }
-
-    public MoveResult GetNewPositionFromMove(Point pos, int horizontal, int vertical)
-    {
-      if (horizontal != 0 || vertical != 0)
-      {
-        if (horizontal != 0)
-        {
-          pos.X += horizontal > 0 ? 1 : -1;
-        }
-        else if (vertical != 0)
-        {
-          pos.Y += vertical > 0 ? 1 : -1;
-        }
-        return new MoveResult(true, pos);
-      }
-
-      return new MoveResult(false, pos);
-    }
-
+        
     public bool CollectLoot(Loot lootTile, bool fromDistance)
     {
       InventoryBase inv = Hero.Inventory;
@@ -944,10 +760,5 @@ namespace Roguelike.Managers
         merch.Inventory.Add(mp);
       }
     }
-
-    //protected GameState CreateGameState()
-    //{
-    //  return new GameState();
-    //}
   }
 }

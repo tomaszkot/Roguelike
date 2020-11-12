@@ -1,14 +1,10 @@
 ﻿using Dungeons.Core;
+using Newtonsoft.Json;
 using Roguelike.Abstract;
 using Roguelike.Attributes;
 using Roguelike.LootContainers;
 using SimpleInjector;
-using System;
-using System.Collections.Generic;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Roguelike.Tiles
 {
@@ -37,6 +33,7 @@ namespace Roguelike.Tiles
 #endif
     }
 
+    [JsonIgnore]
     public override Inventory Inventory 
     { 
       get => base.Inventory; 

@@ -109,6 +109,7 @@
     <Compile Include="LootFactories\ScrollsFactory.cs" />
     <Compile Include="LootHistory.cs" />
     <Compile Include="Managers\AlliesManager.cs" />
+    <Compile Include="Managers\InputManager.cs" />
     <Compile Include="Managers\LootManager.cs" />
     <Compile Include="Managers\SoundManager.cs" />
     <Compile Include="Policies\AttackPolicy.cs" />

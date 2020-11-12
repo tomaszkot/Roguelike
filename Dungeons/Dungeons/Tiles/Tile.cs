@@ -72,6 +72,8 @@ namespace Dungeons.Tiles
     }
 
     public int dungeonNodeIndex = DungeonNode.DefaultNodeIndex;
+
+    [JsonIgnore]
     public int DungeonNodeIndex
     {
       get { return dungeonNodeIndex; }
@@ -116,13 +118,16 @@ namespace Dungeons.Tiles
       }
     }
 
+    [JsonIgnore]
     public bool IsAtValidPoint
     {
       get { return Point != GenerationConstraints.InvalidPoint; }
     }
 
+    [JsonIgnore]
     public bool IsEmpty { get { return Symbol == Constants.SymbolBackground; } }
 
+    [JsonIgnore]
     public string Name
     {
       get
@@ -156,7 +161,7 @@ namespace Dungeons.Tiles
       get { return DungeonNodeIndex < Constants.MinNormalNodeIndex; }
     }
 
-    public float RevealPercent { get; set; }
+    //public float RevealPercent { get; set; }
 
     public virtual char Symbol
     {
@@ -171,7 +176,10 @@ namespace Dungeons.Tiles
       }
     }
 
+    [JsonIgnore]
     public ConsoleColor Color { get => color; set => color = value; }
+
+    [JsonIgnore]
     public string DisplayedName
     {
       get
