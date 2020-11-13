@@ -527,6 +527,9 @@ namespace Roguelike.Managers
         
     public bool CollectLoot(Loot lootTile, bool fromDistance)
     {
+      if (!Context.HeroTurn)
+        return false;
+
       InventoryBase inv = Hero.Inventory;
       if (lootTile is Recipe)
         inv = Hero.Crafting.Recipes;
@@ -541,6 +544,7 @@ namespace Roguelike.Managers
           Hero.HandleEquipmentFound(eq);
           PrintHeroStats("loot On");
         }
+        Context.MoveToNextTurnOwner();
         return true;
       }
       return false;

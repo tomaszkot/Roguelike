@@ -36,9 +36,12 @@ namespace Roguelike.Tiles
     EntityStats stats = new EntityStats();
     Dictionary<EffectType, float> chanceToExperienceEffect = new Dictionary<EffectType, float>();
     public int ActiveScrollCoolDownCounter { get; set; }
-    public Scroll ActiveScroll
+    public virtual Scroll ActiveScroll
     {
-      get; set;
+      get 
+      {
+        return null;
+      }
     }
 
     public bool CanAttack { get; set; } = true;
