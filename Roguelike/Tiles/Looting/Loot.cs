@@ -196,8 +196,11 @@ namespace Roguelike.Tiles
     public override string ToString()
     {
       var res = base.ToString();
-      res += ", "+LootKind;
-      res += ", tag ="+tag1;
+      if (includeDebugDetailsInToString)
+      {
+        res += ", " + LootKind;
+        res += ", tag =" + tag1;
+      }
       return res;
     }
 

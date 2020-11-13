@@ -197,9 +197,13 @@ namespace Dungeons.Tiles
       return Point.Equals(other.Point);
     }
 
+    protected bool includeDebugDetailsInToString = false;
     public override string ToString()
     {
-      return GetType() + " " + Symbol + " " + DungeonNodeIndex + " " + Point + " " +  tag1 + " " + GetHashCode();
+      string res = GetType().ToString();
+      if(includeDebugDetailsInToString)
+        res += " " + Symbol + " " + DungeonNodeIndex + " " + Point + " " + tag1 + " " + GetHashCode();
+      return res;
     }
 
     public double DistanceFrom(Tile other)

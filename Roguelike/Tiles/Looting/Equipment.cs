@@ -545,13 +545,11 @@ namespace Roguelike.Tiles
     {
       return Class == EquipmentClass.Plain;
     }
-
-    protected bool includeTypeInToString = true;
-
+        
     public override string ToString()
     {
       var res = base.ToString();
-      if (includeTypeInToString)
+      if (includeDebugDetailsInToString)
         res += " Kind:"+this.EquipmentKind + " Lvl:" + levelIndex;
 
       return res;

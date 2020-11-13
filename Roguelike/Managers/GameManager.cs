@@ -531,11 +531,15 @@ namespace Roguelike.Managers
         return false;
 
       InventoryBase inv = Hero.Inventory;
+      var gold = lootTile as Gold;
+      
       if (lootTile is Recipe)
         inv = Hero.Crafting.Recipes;
-      if (inv.Add(lootTile, detailedKind: InventoryActionDetailedKind.Collected))
+      if (gold !=null || inv.Add(lootTile, detailedKind: InventoryActionDetailedKind.Collected))
       {
         //Hero.Inventory.Print(logger, "loot added");
+        if(gold != null)
+          Hero.Gold += gold.Count;
         CurrentNode.RemoveLoot(lootTile.Point);
         EventsManager.AppendAction(new LootAction(lootTile) { LootActionKind = LootActionKind.Collected, CollectedFromDistance = fromDistance });
         if (lootTile is Equipment)

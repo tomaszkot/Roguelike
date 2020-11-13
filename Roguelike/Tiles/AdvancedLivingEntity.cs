@@ -353,7 +353,7 @@ namespace Roguelike.Tiles
       {
         ac = new LootAction(eq)
         {
-          Info = Name + " put on " + eq,
+          Info = Name + " put on " + eq.Name,
           LootActionKind = LootActionKind.PutOn,
           EquipmentKind = eq.EquipmentKind,
           CurrentEquipmentKind = kind
