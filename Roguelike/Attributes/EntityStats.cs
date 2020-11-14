@@ -338,17 +338,9 @@ namespace Roguelike.Attributes
 
     internal void PrepareForSave()
     {
-      //Stats.Values.Where(i=> GetTotalValue(i.Kind) == 0)
       var toRemove = Stats.Where(i => GetTotalValue(i.Key) == 0).ToList();
       foreach (var rem in toRemove)
         Stats.Remove(rem.Key);
-      //foreach (var stat in Stats)
-      //{
-      //  if (GetTotalValue(stat.Key) == 0)
-      //  {
-      //    Stats[stat.Key] = null;
-      //  }
-      //}
     }
   }
 

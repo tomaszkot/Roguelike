@@ -1,5 +1,6 @@
 ﻿using Dungeons;
 using Dungeons.Core;
+using Newtonsoft.Json;
 using Roguelike.Generators;
 using Roguelike.Managers;
 using Roguelike.TileContainers;
@@ -41,6 +42,8 @@ namespace Roguelike
       get;
       set;
     }
+
+    [JsonIgnore]
     public Container Container { get; set; }
     public Hero Hero { get { return GameManager.Hero; } }
     public abstract Dungeons.TileContainers.DungeonNode GenerateDungeon();

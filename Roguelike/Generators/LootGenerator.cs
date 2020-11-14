@@ -1,4 +1,5 @@
 ﻿using Dungeons.Core;
+using Newtonsoft.Json;
 using Roguelike.Attributes;
 using Roguelike.LootFactories;
 using Roguelike.Probability;
@@ -40,6 +41,8 @@ namespace Roguelike.Generators
       get; 
       set; 
     } = -1;
+
+    [JsonIgnore]
     public Container Container { get; set; }
     public LootFactory LootFactory { get => lootFactory; set => lootFactory = value; }
 

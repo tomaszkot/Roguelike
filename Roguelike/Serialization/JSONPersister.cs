@@ -28,6 +28,7 @@ namespace Roguelike.Serialization
     public JSONPersister(Container container)
     {
       this.container = container;
+      container.GetInstance<ILogger>().LogInfo("JSONPersister ctor [container]: " + this.container.GetHashCode());
     }
 
     public void Save<T>(T entity, string filePath)
@@ -153,6 +154,7 @@ namespace Roguelike.Serialization
       get { return "Roguelike"; } 
     }
 
+    [JsonIgnore]
     public Container Container { get => container; private set => container = value; }
 
     //protected virtual string GameFolder { get { return GameName; } }

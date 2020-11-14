@@ -36,6 +36,7 @@ namespace RoguelikeConsoleRunner
       Game.MakeGameTick();
     }
 
+    //[JsonIgnore]
     public Container Container { get { return Game.Container; } }
     public Hero Hero { get { return Game.Hero; } }
     public GameManager GameManager

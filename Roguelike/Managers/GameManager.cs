@@ -70,6 +70,8 @@ namespace Roguelike.Managers
     public ILogger Logger { get => logger; set => logger = value; }
     public Func<Tile, InteractionResult> Interact;
     public Func<int, Stairs, InteractionResult> DungeonLevelStairsHandler;
+
+    [JsonIgnore]
     public Container Container 
     { 
       get; 

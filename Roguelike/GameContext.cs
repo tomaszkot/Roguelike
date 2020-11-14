@@ -45,6 +45,8 @@ namespace Roguelike
     [JsonIgnore]
     public EventsManager EventsManager { get; set; }
     ILogger logger;
+
+    [JsonIgnore]
     public Container Container { get; set; }
     TurnOwner turnOwner = TurnOwner.Hero;
 
