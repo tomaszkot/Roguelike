@@ -29,10 +29,19 @@ namespace Roguelike.Tiles
     List<Enchant> enchants = new List<Enchant>();
     int enchantSlots = 0;
     int maxEnchants = 0;
+    public LootExtendedInfo ExtendedInfo { get; set; }
 
     public Equipment() : this(EquipmentKind.Unset)
     {
-      
+    }
+
+    public Equipment(EquipmentKind kind = EquipmentKind.Unset)//default arg for serialization
+    {
+      ExtendedInfo = new LootExtendedInfo();
+      primaryStat = new EntityStat();
+      EquipmentKind = kind;
+      Class = EquipmentClass.Plain;
+      LootKind = LootKind.Equipment;
     }
 
     public bool MakeEnchantable()
@@ -97,15 +106,7 @@ namespace Roguelike.Tiles
 
       return 3;
     }
-
-    public Equipment(EquipmentKind kind = EquipmentKind.Unset)//default arg for serialization
-    {
-      primaryStat = new EntityStat();
-      EquipmentKind = kind;
-      Class = EquipmentClass.Plain;
-      LootKind = LootKind.Equipment;
-    }
-
+        
     public bool Identify()
     {
       if (IsIdentified)

@@ -71,7 +71,7 @@ namespace Roguelike.Tiles
 #endif
 
     public LootKind LootKind { get; set; }
-    public LootExtendedInfo ExtendedInfo { get; set; }
+    
     int price;
     protected int basePrice = -1;
     protected string collectedSound = "cloth";
@@ -131,7 +131,7 @@ namespace Roguelike.Tiles
       color = ConsoleColor.Green;
 #endif
 
-      ExtendedInfo = new LootExtendedInfo();
+      
     }
 
     public virtual Loot CreateCrafted(Loot other)
