@@ -651,7 +651,7 @@ namespace Roguelike.Managers
       var price = 0;
       if (goldInvolved)
       {
-        price = (int)(loot.Price * srcInv.PriceFactor * stackedCount);
+        price = src.GetPrice(loot);// (int)(loot.Price * srcInv.PriceFactor * stackedCount);
 
         if (dest.Gold < price)
         {

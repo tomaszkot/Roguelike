@@ -63,10 +63,10 @@ namespace Roguelike.Tiles
     public int GetPrice(Loot loot)
     {
       int count = 1;
-      if (loot.StackedInInventory)
-      {
-        count = this.Inventory.GetStackedCount(loot as StackedLoot);
-      }
+      //if (loot.StackedInInventory) ??
+      //{
+      //  count = this.Inventory.GetStackedCount(loot as StackedLoot);
+      //}
       var price = (int)(loot.Price * Inventory.PriceFactor)* count;
       return price;
     }
