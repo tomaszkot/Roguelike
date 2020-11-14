@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 
 namespace Roguelike.Attributes
 {
@@ -51,6 +52,7 @@ namespace Roguelike.Attributes
       return "NV: " + Nominal + ", F: " + Factor + ", Sub:" + Subtracted;
     }
 
+    [JsonIgnore]
     public float TotalValue
     {
       get { return Nominal + Factor; }
@@ -59,6 +61,7 @@ namespace Roguelike.Attributes
     /// <summary>
     /// When damage was gained or spell used total is reduced by subtraction
     /// </summary>
+    [JsonIgnore]
     public float CurrentValue
     {
       get { return TotalValue - Subtracted; }

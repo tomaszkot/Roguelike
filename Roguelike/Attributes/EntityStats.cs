@@ -8,16 +8,11 @@ using System.Text;
 
 namespace Roguelike.Attributes
 {
-  public class EntityStats //: ICloneable
+  public class EntityStats 
   {
     Dictionary<EntityStatKind, EntityStat> stats = new Dictionary<EntityStatKind, EntityStat>();
     int level = 1;
-    //int experience;
-    //int nextExperience;
-    //int levelUpPoints;
-
     bool canAdvanceInExp = true;
-    
 
     public EntityStats()
     {
@@ -26,6 +21,19 @@ namespace Roguelike.Attributes
       {
         stats[sk] = new EntityStat(sk, 0);
 
+      }
+    }
+
+    //TODO rename, TODO public for serialization
+    public Dictionary<EntityStatKind, EntityStat> Stats
+    {
+      get
+      {
+        return stats;
+      }
+      set
+      {
+        stats = value;
       }
     }
 
@@ -122,8 +130,6 @@ namespace Roguelike.Attributes
       return GetStatsDescription(false);
     }
 
-    
-
     public void SetStat(EntityStatKind kind, float nominalValue)
     {
       this[kind].Nominal = nominalValue;
@@ -183,33 +189,7 @@ namespace Roguelike.Attributes
         return this[EntityStatKind.Mana].CurrentValue;
       }
     }
-
-    //public int Experience
-    //{
-    //  get
-    //  {
-    //    return experience;
-    //  }
-
-    //  set
-    //  {
-    //    experience = value;
-    //  }
-    //}
-
-    //public int NextExperience
-    //{
-    //  get
-    //  {
-    //    return nextExperience;
-    //  }
-
-    //  set
-    //  {
-    //    nextExperience = value;
-    //  }
-    //}
-
+        
     public int AbilityPoints { get; set; }
 
     public EntityStat GetStat(EntityStatKind esk)
@@ -221,20 +201,7 @@ namespace Roguelike.Attributes
     {
       Stats[esk] = es;
     }
-
-    //TODO rename
-    Dictionary<EntityStatKind, EntityStat> Stats
-    {
-      get
-      {
-        return stats;
-      }
-      set
-      {
-        stats = value;
-      }
-    }
-
+       
     public List<StatValue> Values()
     {
       return Stats.Values.Select(i=> i.Value).ToList();
@@ -264,9 +231,7 @@ namespace Roguelike.Attributes
         level = value;
       }
     }
-
-
-
+        
     public void SetNominal(EntityStatKind kind, float value)
     {
       if (kind == EntityStatKind.Health)
@@ -301,36 +266,6 @@ namespace Roguelike.Attributes
       return this[kind].CurrentValue;
     }
 
-    //internal void SetArmor(Armor arm)
-    //{
-    //  stats[EntityStatKind.Defence].Factor = arm.Defence;
-    //}
-
-    //public EntityStats GetCopy()
-    //{
-    //  return (EntityStats)Clone();
-    //}
-
-    //public object Clone()
-    //{
-    //  EntityStats cloned = (EntityStats)MemberwiseClone();
-    //  cloned.Stats = new Dictionary<EntityStatKind, EntityStat>();
-    //  var eq = ReferenceEquals(cloned, this);
-    //  foreach (var myStat in this.Stats)
-    //  {
-    //    cloned.Stats[myStat.Key] = (EntityStat)myStat.Value.Clone();
-    //  }
-
-    //  return cloned;
-    //}
-
-    //internal void IncreaseStatFactor(EntityStatKind sk)
-    //{
-    //  var inc = this[sk].TotalValue / 2;
-    //  IncreaseStatDynamicValue(sk, inc);
-    //  //IncreaseStatFactor(sk, loot.Amount);
-    //}
-
     internal void IncreaseStatFactor(EntityStatKind sk, float percent)
     {
       var inc = this[sk].TotalValue * percent / 100;
@@ -339,7 +274,6 @@ namespace Roguelike.Attributes
       ChangeStatDynamicValue(sk, inc);
     }
 
-    //Stats.GetStat(EntityStatKind.Health).Subtract(amount);
     internal bool ChangeStatDynamicValue(EntityStatKind sk, float amount)
     {
       var he = Health;

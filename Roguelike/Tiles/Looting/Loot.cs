@@ -71,7 +71,7 @@ namespace Roguelike.Tiles
 #endif
 
     public LootKind LootKind { get; set; }
-    public LootExtendedInfo ExtendedInfo { get; protected set; }
+    public LootExtendedInfo ExtendedInfo { get; set; }
     int price;
     protected int basePrice = -1;
     protected string collectedSound = "cloth";
@@ -255,12 +255,5 @@ namespace Roguelike.Tiles
     {
       get { return "Part of a crafting recipe."; }
     }
-    //public virtual Loot Clone()
-    //{
-    //  var clone =  this.MemberwiseClone() as Loot;
-    //  clone.ExtendedInfo = this.ExtendedInfo.Clone() as LootExtendedInfo;
-    //  return clone;
-    //}
-
   }
 }

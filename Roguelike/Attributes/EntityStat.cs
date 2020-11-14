@@ -62,37 +62,6 @@ namespace Roguelike.Attributes
     //  Stat.Divide(other.Stat);
     //}
 
-    //public void MakeNegative()
-    //{
-    //  Stat.MakeNegative();
-    //}
-
-    //public void Accumulate(EntityStat other)
-    //{
-    //  Stat.Accumulate(other.Stat);
-    //}
-
-    //public void Divide(float value)
-    //{
-    //  Stat.Divide(value);
-    //}
-        
-    //public float TotalValue
-    //{
-    //  get { return stat.TotalValue; }
-    //}
-
-    //public float NominalValue
-    //{
-    //  get { return stat.Nominal; }
-    //  set { stat.Nominal = value; }
-    //}
-
-    //public float CurrentValue
-    //{
-    //  get { return stat.CurrentValue; }
-    //}
-
     public void Subtract(float amount)
     {
       stat.Subtracted += amount;
