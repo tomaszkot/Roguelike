@@ -37,6 +37,7 @@ namespace RoguelikeUnitTests
 
     protected virtual void OnInit()
     {
+      Tile.IncludeDebugDetailsInToString = true;
       Container = new Roguelike.ContainerConfigurator().Container;
       Container.Register<ISoundPlayer, BasicSoundPlayer>();
       var gi = new GenerationInfo();
@@ -84,6 +85,7 @@ namespace RoguelikeUnitTests
     {
       PutLootOnLevel(eq);
       CollectLoot(eq);
+      GotoNextHeroTurn();
     }
 
     protected List<Roguelike.Tiles.Enemy> ActiveEnemies

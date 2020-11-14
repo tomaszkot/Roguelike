@@ -269,6 +269,7 @@ namespace RoguelikeUnitTests
 
       var wpn1 = game.GameManager.LootGenerator.GetLootByAsset("rusty_sword") as Weapon;
       PutEqOnLevelAndCollectIt(wpn1);
+      //GotoNextHeroTurn();
 
       var heroEq = hero.GetActiveEquipment();
       Assert.AreEqual(heroEq[CurrentEquipmentKind.Weapon], wpn1);

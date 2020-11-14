@@ -492,6 +492,11 @@ namespace Roguelike.Managers
 
     PersistancyWorker persistancyWorker = new PersistancyWorker();
 
+    public void PrepareForSave()
+    {
+      this.Hero.PrepareForSave();
+    }
+
     public virtual void Save()
     {
       persistancyWorker.Save(this, WorldSaver);

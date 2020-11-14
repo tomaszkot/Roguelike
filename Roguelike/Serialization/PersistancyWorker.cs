@@ -11,7 +11,9 @@ namespace Roguelike.Serialization
   {
     public void Save(GameManager gm, Action worldSaver)
     {
-      if (gm.Hero.Dirty)
+      gm.PrepareForSave();
+
+      //if (gm.Hero.Dirty)??
       {
 #if DEBUG
         var heros = gm.CurrentNode.GetTiles<Hero>();

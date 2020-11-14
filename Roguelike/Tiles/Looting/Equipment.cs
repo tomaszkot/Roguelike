@@ -425,6 +425,12 @@ namespace Roguelike.Tiles
       IncreasePriceBasedOnExtInfo();
     }
 
+    public virtual void PrepareForSave()
+    {
+      ExtendedInfo.Stats.PrepareForSave();
+      
+    }
+
     public override void HandleGenerationDone()
     {
       Debug.Assert(this.MinDropDungeonLevel >= 0);
@@ -550,7 +556,7 @@ namespace Roguelike.Tiles
     public override string ToString()
     {
       var res = base.ToString();
-      if (includeDebugDetailsInToString)
+      if (IncludeDebugDetailsInToString)
         res += " Kind:"+this.EquipmentKind + " Lvl:" + levelIndex;
 
       return res;

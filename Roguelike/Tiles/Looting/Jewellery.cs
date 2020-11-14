@@ -29,12 +29,12 @@ namespace Roguelike.Tiles
           case EquipmentKind.Ring:
             Symbol = RingSymbol;
             name = "Ring";
-            includeDebugDetailsInToString = false;
+            //IncludeDebugDetailsInToString = false;
             break;
           case EquipmentKind.Amulet:
             Symbol = AmulerSymbol;
             name = IsPendant ? "Pendant" : "Amulet";
-            includeDebugDetailsInToString = false;
+            //IncludeDebugDetailsInToString = false;
             break;
           default:
             break;

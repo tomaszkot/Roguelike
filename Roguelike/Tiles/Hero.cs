@@ -169,5 +169,17 @@ namespace Roguelike.Tiles
 
       return 0;
     }
+
+    internal void PrepareForSave()
+    {
+      Inventory.GetItems<Equipment>().ToList().ForEach(i => i.PrepareForSave());
+      CurrentEquipment.PrimaryEquipment.ToList().ForEach
+      (
+        i => {
+          if(i.Value!=null)
+            i.Value.PrepareForSave(); 
+        }
+      ); ;
+  }
   }
 }

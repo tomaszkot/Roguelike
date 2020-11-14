@@ -222,11 +222,13 @@ namespace RoguelikeUnitTests
       eq2.Identify();
       //eq2.PrimaryStat.Value.Factor += 5;
       Assert.AreEqual(eq2.GetStats().GetTotalValue(eq2.PrimaryStatKind), wpnStatBefore + 5);
-            
+      //GotoNextHeroTurn();
+
       PutEqOnLevelAndCollectIt(eq2);
       //Active Equipment is returned dynamically
       heroEq = hero.GetActiveEquipment();
-      Assert.AreEqual(heroEq[CurrentEquipmentKind.Weapon], eq2);
+      var heroWeapoon = heroEq[CurrentEquipmentKind.Weapon];
+      Assert.AreEqual(heroWeapoon, eq2);
       var heroStatAfter = hero.GetTotalValue(eq2.PrimaryStatKind);
       Assert.AreEqual(heroStatAfter, heroStatBefore + 5);
       Assert.False(hero.Inventory.Contains(eq2));
@@ -255,7 +257,11 @@ namespace RoguelikeUnitTests
 
         var statBefore = heroStats.GetTotalValue(eq.PrimaryStatKind);
         PutEqOnLevelAndCollectIt(eq);
-        Assert.Greater(heroStats.GetTotalValue(eq.PrimaryStatKind), statBefore);
+        var active = hero.CurrentEquipment.GetActiveEquipment();
+        var eqOn = active[Equipment.FromEquipmentKind(kind, kind == EquipmentKind.Ring ? AdvancedLivingEntity.DefaultCurrentEquipmentPosition : CurrentEquipmentPosition.Unset)];
+        Assert.AreEqual(eqOn, eq);
+        Assert.AreEqual(heroStats.GetTotalValue(eq.PrimaryStatKind), statBefore+ eq.PrimaryStatValue);
+        //GotoNextHeroTurn();
       }
     }
   }

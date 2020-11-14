@@ -250,6 +250,8 @@ namespace Roguelike.Tiles
       return MoveEquipment(CurrentEquipment, Inventory, eq, cek);
     }
 
+    public static CurrentEquipmentPosition DefaultCurrentEquipmentPosition = CurrentEquipmentPosition.Left;
+
     public bool HandleEquipmentFound(Equipment eq)
     {
       if (!eq.IsIdentified)

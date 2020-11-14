@@ -90,7 +90,8 @@ namespace Roguelike
       }
 
       //scroll.Count--;
-      Hero.Inventory.Remove(scroll);
+      if(caster is AdvancedLivingEntity advEnt)
+        advEnt.Inventory.Remove(scroll);
 
       var policy = Container.GetInstance<SpellCastPolicy>();
       policy.Target = target;

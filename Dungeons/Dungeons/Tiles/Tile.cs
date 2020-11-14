@@ -197,11 +197,11 @@ namespace Dungeons.Tiles
       return Point.Equals(other.Point);
     }
 
-    protected bool includeDebugDetailsInToString = false;
+    public static bool IncludeDebugDetailsInToString = false;
     public override string ToString()
     {
       string res = GetType().ToString();
-      if(includeDebugDetailsInToString)
+      if(IncludeDebugDetailsInToString)
         res += " " + Symbol + " " + DungeonNodeIndex + " " + Point + " " + tag1 + " " + GetHashCode();
       return res;
     }

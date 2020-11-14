@@ -19,9 +19,14 @@ namespace Roguelike.Attributes
       var statKinds = Enum.GetValues(typeof(EntityStatKind));
       foreach (EntityStatKind sk in statKinds)
       {
-        stats[sk] = new EntityStat(sk, 0);
-
+        //Ensure(sk);
       }
+    }
+
+    public void Ensure(EntityStatKind kind)
+    {
+      if(!stats.ContainsKey(kind))
+        stats[kind] = new EntityStat(kind, 0);
     }
 
     //TODO rename, TODO public for serialization
@@ -79,23 +84,12 @@ namespace Roguelike.Attributes
     {
       return this[esk].TotalValue;
     }
-
-    public void Accumulate(EntityStats other)
+        
+    public void Divide(EntityStats otherStats)
     {
-      foreach (var myStat in this.Stats.Values)
+      foreach (var otherStat in otherStats.Stats.Values)
       {
-        if (other.Stats.ContainsKey(myStat.Kind))//when upgrading to new game version thre can be new stats not available in old stuff 
-          myStat.Value.Accumulate(other[myStat.Kind]);
-      }
-
-      //experience += other.experience;
-    }
-
-    public void Divide(EntityStats other)
-    {
-      foreach (var myStat in this.Stats.Values)
-      {
-        myStat.Value.Divide(other.Stats[myStat.Kind].Value);
+        this[otherStat.Kind].Divide(otherStats.Stats[otherStat.Kind].Value);
       }
     }
 
@@ -170,7 +164,6 @@ namespace Roguelike.Attributes
 
     public bool HealthBelow(float factor)
     {
-      //return Health < stats[EntityStatKind.Health].Value.Nominal * factor;
       return Health < this[EntityStatKind.Health].Nominal * factor;
     }
 
@@ -194,11 +187,13 @@ namespace Roguelike.Attributes
 
     public EntityStat GetStat(EntityStatKind esk)
     {
+      Ensure(esk);
       return Stats[esk];
     }
 
     public void SetStat(EntityStatKind esk, EntityStat es)
     {
+      Ensure(esk);
       Stats[esk] = es;
     }
        
@@ -211,12 +206,15 @@ namespace Roguelike.Attributes
     {
       return Stats;
     }
-
+        
     [JsonIgnore]
     public StatValue this[EntityStatKind kind]
     {
-      get { return Stats[kind].Value; }
-     // set { arr[i] = value; }
+      get 
+      {
+        Ensure(kind);
+        return Stats[kind].Value; 
+      }
     }
 
     public int Level
@@ -247,7 +245,7 @@ namespace Roguelike.Attributes
       {
         //int k = 0;
       }
-      stats[kind].Factor = value;
+      this[kind].Factor = value;
     }
 
     //TOOD remove use indexer
@@ -276,6 +274,7 @@ namespace Roguelike.Attributes
 
     internal bool ChangeStatDynamicValue(EntityStatKind sk, float amount)
     {
+      Ensure(sk);
       var he = Health;
 
       var cv = this[sk].CurrentValue;
@@ -302,29 +301,54 @@ namespace Roguelike.Attributes
       }
     }
 
-    internal void AccumulateFactors(EntityStats stats, bool positive)
+    public void Accumulate(EntityStats otherStats)
     {
-      foreach (var myStat in this.Stats)
+      foreach (var otherStat in otherStats.Stats)
       {
-        var otherStat = stats.Stats[myStat.Key];
-        if ((otherStat.Factor > 0 && positive) ||
-          (otherStat.Factor < 0 && !positive))
-          AccumulateFactor(myStat.Key, otherStat.Factor);
+        Ensure(otherStat.Key);
+        AccumulateFactor(otherStat.Key, otherStat.Value.Factor);
+      }
+
+      //experience += other.experience;
+    }
+
+    internal void AccumulateFactors(EntityStats otherStats, bool positive)
+    {
+      foreach (var otherStat in otherStats.Stats)
+      {
+        if ((otherStat.Value.Factor > 0 && positive) || (otherStat.Value.Factor < 0 && !positive))
+        {
+          Ensure(otherStat.Key);
+          AccumulateFactor(otherStat.Key, otherStat.Value.Factor);
+        }
       }
     }
 
-    internal void AccumulateFactor(EntityStatKind primaryStat, float primaryStatValue)
+    internal void AccumulateFactor(EntityStatKind kind, float value)
     {
-      if (this.Stats.ContainsKey(primaryStat))//old game save might not hve a stat
+      Ensure(kind);
+      var stat = this.Stats[kind];
+      stat.Factor += value;
+      if (stat.IsPercentage && stat.Value.TotalValue > 100)
       {
-        var stat = this.Stats[primaryStat];
-        stat.Factor += primaryStatValue;
-        if (stat.IsPercentage && stat.Value.TotalValue > 100)
-        {
-          var diff = stat.Value.TotalValue - 100;
-          stat.Factor -= diff;
-        }
+        var diff = stat.Value.TotalValue - 100;
+        stat.Factor -= diff;
       }
+    }
+
+    internal void PrepareForSave()
+    {
+      //Stats.Values.Where(i=> GetTotalValue(i.Kind) == 0)
+      var toRemove = Stats.Where(i => GetTotalValue(i.Key) == 0).ToList();
+      foreach (var rem in toRemove)
+        Stats.Remove(rem.Key);
+      //foreach (var stat in Stats)
+      //{
+      //  if (GetTotalValue(stat.Key) == 0)
+      //  {
+      //    Stats[stat.Key] = null;
+      //  }
+      //}
     }
   }
 

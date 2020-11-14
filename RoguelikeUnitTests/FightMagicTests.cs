@@ -44,6 +44,7 @@ namespace RoguelikeUnitTests
     private void UseScroll(Roguelike.RoguelikeGame game, Hero hero, LivingEntity enemy)
     {
       var scroll = new Scroll(Roguelike.Spells.SpellKind.FireBall);
+      hero.Inventory.Add(scroll);
       game.GameManager.Context.ApplySpellAttackPolicy(hero, enemy, scroll, null, (p) => game.GameManager.OnHeroPolicyApplied(this, p));
       
     }
@@ -77,7 +78,7 @@ namespace RoguelikeUnitTests
       var game = CreateGame();
       var hero = game.Hero;
 
-      var enemy = ActiveEnemies.Cast<Enemy>().First();
+      var enemy = AllEnemies.Cast<Enemy>().First();
       enemy.PrefferedFightStyle = PrefferedFightStyle.Magic;//use spells
       var heroHealth = hero.Stats.Health;
       var mana = enemy.Stats.Mana;
