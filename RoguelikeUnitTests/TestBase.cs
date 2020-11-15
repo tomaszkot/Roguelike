@@ -214,5 +214,13 @@ namespace RoguelikeUnitTests
       en.StatsIncreasedByLevel = false;
       en.SetLevel(level);
     }
+
+    protected void TryToMoveHero()
+    {
+      Assert.AreEqual(game.GameManager.Context.TurnOwner, TurnOwner.Hero);
+      var emptyHeroNeib = game.Level.GetEmptyNeighborhoodPoint(game.Hero, Dungeons.TileContainers.DungeonNode.EmptyNeighborhoodCallContext.Move);
+      game.GameManager.HandleHeroShift(emptyHeroNeib.Item2);
+      Assert.False(game.GameManager.HeroTurn);
+    }
   }
 }

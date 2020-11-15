@@ -102,18 +102,13 @@ namespace Dungeons
       public EventHandler<DungeonNode> CustomInteriorDecorator;
       public EventHandler<DungeonNode> BeforeInteriorGenerated;
       ILogger logger;
+      public enum EmptyNeighborhoodCallContext { Unset, Move, LootPlacement };
 
       //ctors
       static DungeonNode()
       {
         random = new Random();
       }
-
-      //:/ Due to : 'DungeonNode' must be a non-abstract type with a public parameterless constructor in order to use it as parameter 'T' in the generic type or method 'UnityMapToDungeonFactory<T...
-
-      //public DungeonNode() : this(null)
-      //{
-      //}
 
       public DungeonNode(Container container)
       {
@@ -124,7 +119,7 @@ namespace Dungeons
         Sides.Add(EntranceSide.Left, new List<Wall>());
         Sides.Add(EntranceSide.Right, new List<Wall>());
       }
-
+            
       public virtual void Create(int width = 10, int height = 10, GenerationInfo info = null,
                          int nodeIndex = DefaultNodeIndex, DungeonNode parent = null, bool generateContent = true)
       {
@@ -854,8 +849,8 @@ namespace Dungeons
       {
         return true;
       }
-
-      public Tuple<Point, TileNeighborhood> GetEmptyNeighborhoodPoint(Tile target, TileNeighborhood? prefferedSide = null)
+            
+      public Tuple<Point, TileNeighborhood> GetEmptyNeighborhoodPoint(Tile target, EmptyNeighborhoodCallContext context, TileNeighborhood? prefferedSide = null, List<Type> extraTypesConsideredEmpty = null)
       {
         var set = new List<TileNeighborhood>();
         if (prefferedSide != null)
@@ -864,7 +859,7 @@ namespace Dungeons
         }
         AllNeighborhoods.Shuffle();
         set.AddRange(AllNeighborhoods.Where(i => !set.Contains(i)));
-        var res = GetEmptyNeighborhoodPoint(target, set);
+        var res = GetEmptyNeighborhoodPoint(target, set, extraTypesConsideredEmpty);
         return res;
       }
 
@@ -881,17 +876,24 @@ namespace Dungeons
         return tile != null && tile.IsEmpty;
       }
 
-      protected virtual Tuple<Point, TileNeighborhood> GetEmptyNeighborhoodPoint(Tile target, List<TileNeighborhood> sides)
+      protected bool IsTypeMatching(Type first, Type other)
+      {
+        return other == first || other.IsSubclassOf(first);
+      }
+
+      protected virtual Tuple<Point, TileNeighborhood> GetEmptyNeighborhoodPoint(Tile target, List<TileNeighborhood> sides, List<Type> extraTypesConsideredEmpty)
       {
         var res = new Tuple<Point, TileNeighborhood>(GenerationConstraints.InvalidPoint, TileNeighborhood.East);
 
         foreach (var side in sides)
         {
           Tile tile = GetNeighborTile(target, side);
-          if (IsTileEmpty(tile))
+          if (tile == null)
+            continue;
+          if (IsTileEmpty(tile) || (extraTypesConsideredEmpty != null && 
+                                    extraTypesConsideredEmpty.Any(i=> IsTypeMatching(i, tile.GetType()))))
           {
             res = new Tuple<Point, TileNeighborhood>(tile.Point, side);
-            //pt = tile.Point;
             break;
           }
         }

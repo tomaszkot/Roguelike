@@ -31,18 +31,34 @@ namespace Roguelike.TileContainers
       }
     }
 
-
     public static Tile EmptyTile = new Tile(symbol: Constants.SymbolBackground);
     public Dictionary<Point, Loot> Loot { get; set; } = new Dictionary<Point, Tiles.Loot>();
     [JsonIgnore]
     public ILogger Logger { get; set; }
     public virtual string Name { get; set; } = "";
+    List<Type> extraTypesConsideredEmpty = new List<Type>();
 
 
     public AbstractGameLevel(Container container)
    : base(container)
     {
       Logger = Container.GetInstance<ILogger>();
+      AddExtraTypesConsideredEmpty(typeof(Loot));
+    }
+
+    public Tuple<Point, TileNeighborhood> GetEmptyNeighborhoodPoint(Tile target, EmptyNeighborhoodCallContext context, TileNeighborhood? prefferedSide = null)
+    {
+      return GetEmptyNeighborhoodPoint(target, context, prefferedSide, context == EmptyNeighborhoodCallContext.Move ? extraTypesConsideredEmpty : null);
+    }
+
+    public void AddExtraTypesConsideredEmpty(Type type)
+    {
+      extraTypesConsideredEmpty.Add(type);
+    }
+
+    public List<Type> GetExtraTypesConsideredEmpty()
+    {
+      return extraTypesConsideredEmpty;
     }
 
     protected override void SetDungeonNodeIndex(Tile tile)
@@ -67,10 +83,10 @@ namespace Roguelike.TileContainers
       return res;
     }
 
-    public override List<T> GetTiles<T>() 
+    public override List<T> GetTiles<T>()
     {
       var res = base.GetTiles<T>();
-      if (typeof(T) == typeof(Loot) || typeof(T).IsSubclassOf(typeof(Loot)))
+      if (IsLoot<T>())
       {
         var lootItems = Loot.Values.Where(i => i is T).Cast<T>().ToList();
         //var res1 = base.GetTiles<Loot>();
@@ -81,10 +97,15 @@ namespace Roguelike.TileContainers
         //}
         res.AddRange(lootItems);
       }
-            
+
       return res;
     }
 
+    private bool IsLoot<T>() where T : class
+    {
+      return IsTypeMatching(typeof(Loot), typeof(T));
+    }
+        
     //hmm, maybe that method shall be marked as trowing NotSupportedException? (Loot is not considered here)
     public override Tile GetClosestEmpty(Tile baseTile, bool sameNodeId = false, List<Tile> skip = null)
     {

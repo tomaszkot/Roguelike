@@ -5,6 +5,7 @@ using Roguelike.Tiles;
 using System;
 using System.Drawing;
 using System.Linq;
+using static Dungeons.TileContainers.DungeonNode;
 
 namespace RoguelikeUnitTests
 {
@@ -45,16 +46,19 @@ namespace RoguelikeUnitTests
       var level = game.GenerateLevel(0, gi);
 
       Assert.AreEqual(game.GameManager.Context.TurnOwner, TurnOwner.Hero);
-      //var movement = GetMovementDirections();
-      //Assert.True(movement.Item1 > 0 || movement.Item2 > 0);
-      var emptyHeroNeib = level.GetEmptyNeighborhoodPoint(game.Hero);
+
       var heroPrevPos = game.Hero.Point;
-      game.GameManager.HandleHeroShift(emptyHeroNeib.Item2);
+
+      //var emptyHeroNeib = level.GetEmptyNeighborhoodPoint(game.Hero, Dungeons.TileContainers.DungeonNode.EmptyNeighborhoodCallContext.Move);
+      //game.GameManager.HandleHeroShift(emptyHeroNeib.Item2);
+      TryToMoveHero();
+
       Assert.AreNotEqual(heroPrevPos, game.Hero.Point);
 
       Assert.AreEqual(game.GameManager.Context.TurnOwner, TurnOwner.Allies);
-      emptyHeroNeib = level.GetEmptyNeighborhoodPoint(game.Hero);
       heroPrevPos = game.Hero.Point;
+
+      var emptyHeroNeib = level.GetEmptyNeighborhoodPoint(game.Hero, EmptyNeighborhoodCallContext.Move);
       game.GameManager.HandleHeroShift(emptyHeroNeib.Item2);
       Assert.AreEqual(heroPrevPos, game.Hero.Point);//shall not move as already did in turn
       
@@ -74,16 +78,17 @@ namespace RoguelikeUnitTests
       game.GameManager.Context.AutoTurnManagement = false;
 
       Assert.AreEqual(game.GameManager.Context.TurnOwner, TurnOwner.Hero);
-      //var movement = GetMovementDirections();
-      //Assert.True(movement.Item1 > 0 || movement.Item2 > 0);
-      var emptyHeroNeib = level.GetEmptyNeighborhoodPoint(game.Hero);
+
+      //var emptyHeroNeib = level.GetEmptyNeighborhoodPoint(game.Hero, Dungeons.TileContainers.DungeonNode.EmptyNeighborhoodCallContext.Move);
       var heroPos = game.Hero.Point;
-      game.GameManager.HandleHeroShift(emptyHeroNeib.Item2);
+      //game.GameManager.HandleHeroShift(emptyHeroNeib.Item2);
+      TryToMoveHero();
+
       Assert.AreNotEqual(heroPos, game.Hero.Point);
       Assert.AreEqual(game.GameManager.Context.TurnActionsCount[TurnOwner.Hero], 1);
 
       heroPos = game.Hero.Point;
-      TryToMoveHero(game);
+      TryToMoveHero();
       Assert.AreEqual(heroPos, game.Hero.Point);//hero shall not move as it already move this turn
       Assert.AreEqual(Game.GameManager.Context.GetActionsCount(), 1);
 
@@ -92,7 +97,7 @@ namespace RoguelikeUnitTests
       MoveToHeroTurn(game);
 
       //try move agin
-      TryToMoveHero(game);
+      TryToMoveHero();
       Assert.AreNotEqual(heroPos, game.Hero.Point);//now shall move!
       Assert.AreEqual(Game.GameManager.Context.GetActionsCount(), 1);
     }
@@ -108,16 +113,7 @@ namespace RoguelikeUnitTests
       Assert.AreEqual(game.GameManager.Context.TurnOwner, TurnOwner.Hero);
       Assert.AreEqual(Game.GameManager.Context.GetActionsCount(), 0);
     }
-
-    private void TryToMoveHero(RoguelikeGame game)//, out Tuple<int, int> movement, out Point heroPos)
-    {
-      Assert.AreEqual(game.GameManager.Context.TurnOwner, TurnOwner.Hero);
-      var emptyHeroNeib = game.Level.GetEmptyNeighborhoodPoint(game.Hero);
-      //var movement = GetMovementDirections();
-      //Assert.True(movement.Item1 > 0 || movement.Item2 > 0);
-      game.GameManager.HandleHeroShift(emptyHeroNeib.Item2);
-    }
-
+        
     [Test]
     public void TestFightHitNumberCustomTurnOwner()
     {
@@ -140,14 +136,14 @@ namespace RoguelikeUnitTests
       var emptyHeroNeib = SetClose(en);
       var neib = emptyHeroNeib.Item2;
 
-      var res = game.GameManager.HandleHeroShift(neib);
+      game.GameManager.HandleHeroShift(neib);
       Assert.AreEqual(heroPos, game.Hero.Point);
 
       Assert.Less(en.Stats.Health, enHealth);
       Assert.AreEqual(Game.GameManager.Context.GetActionsCount(), 1);
 
       enHealth = en.Stats.Health;
-      res = game.GameManager.HandleHeroShift(neib);
+      game.GameManager.HandleHeroShift(neib);
       Assert.AreEqual(heroPos, game.Hero.Point);
 
       //hit not done as hero already hit in this turn
@@ -155,7 +151,7 @@ namespace RoguelikeUnitTests
       Assert.AreEqual(Game.GameManager.Context.GetActionsCount(), 1);
 
       MoveToHeroTurn(game);
-      res = game.GameManager.HandleHeroShift(neib);
+      game.GameManager.HandleHeroShift(neib);
       Assert.AreEqual(heroPos, game.Hero.Point);
 
       //hit done 
@@ -163,7 +159,7 @@ namespace RoguelikeUnitTests
       Assert.AreEqual(Game.GameManager.Context.GetActionsCount(), 1);
 
       heroPos = game.Hero.Point;
-      TryToMoveHero(game);
+      TryToMoveHero();
       
       Assert.AreEqual(heroPos, game.Hero.Point);//hero shall not move as it already made action this turn
     }
@@ -202,7 +198,7 @@ namespace RoguelikeUnitTests
     private Tuple<Point, Dungeons.TileNeighborhood> SetClose(Enemy en)
     {
       var level = game.Level;
-      var emptyHeroNeib = level.GetEmptyNeighborhoodPoint(game.Hero);
+      var emptyHeroNeib = level.GetEmptyNeighborhoodPoint(game.Hero, Dungeons.TileContainers.DungeonNode.EmptyNeighborhoodCallContext.Move);
       Assert.AreNotEqual(GenerationConstraints.InvalidPoint, emptyHeroNeib);
       level.Logger.LogInfo("emptyHeroNeib = " + emptyHeroNeib);
       var set = level.SetTile(en, emptyHeroNeib.Item1);

@@ -8,6 +8,7 @@ using System;
 using Roguelike.Policies;
 using SimpleInjector;
 using System.Diagnostics;
+using static Dungeons.TileContainers.DungeonNode;
 
 namespace Roguelike.Managers
 {
@@ -127,7 +128,7 @@ namespace Roguelike.Managers
 
     public virtual void MakeRandomMove(LivingEntity entity)
     {
-      var pt = Node.GetEmptyNeighborhoodPoint(entity);
+      var pt = Node.GetEmptyNeighborhoodPoint(entity, EmptyNeighborhoodCallContext.Move, null, Node.GetExtraTypesConsideredEmpty());
       if (pt.Item1.IsValid())
       {
         MoveEntity(entity, pt.Item1);

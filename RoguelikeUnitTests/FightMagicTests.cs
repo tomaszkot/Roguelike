@@ -4,6 +4,7 @@ using Roguelike.Spells;
 using Roguelike.Tiles;
 using Roguelike.Tiles.Looting;
 using System.Linq;
+using static Dungeons.TileContainers.DungeonNode;
 
 namespace RoguelikeUnitTests
 {
@@ -84,11 +85,11 @@ namespace RoguelikeUnitTests
       var mana = enemy.Stats.Mana;
 
       Assert.True(game.GameManager.HeroTurn);
-      var emptyHeroNeib = game.Level.GetEmptyNeighborhoodPoint(game.Hero);
-      game.GameManager.HandleHeroShift(emptyHeroNeib.Item2);
-      Assert.False(game.GameManager.HeroTurn);
-
-      emptyHeroNeib = game.Level.GetEmptyNeighborhoodPoint(game.Hero);
+      TryToMoveHero();
+      //var emptyHeroNeib = game.Level.GetEmptyNeighborhoodPoint(game.Hero, Dungeons.TileContainers.DungeonNode.EmptyNeighborhoodCallContext.Move);
+      //game.GameManager.HandleHeroShift(emptyHeroNeib.Item2);
+      
+      var emptyHeroNeib = game.Level.GetEmptyNeighborhoodPoint(game.Hero, EmptyNeighborhoodCallContext.Move);
       var set = game.Level.SetTile(enemy, emptyHeroNeib.Item1);
       Assert.True(set);
 
