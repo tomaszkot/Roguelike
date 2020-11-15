@@ -59,8 +59,7 @@ namespace Roguelike.Tiles
   {
     //public static EntityStatKind[] AttackingExtendedStats = new[] { EntityStatKind.Attack, EntityStatKind.FireAttack, 
     //EntityStatKind.PoisonAttack, EntityStatKind.ColdAttack };
-  //public static EntityStatKind[] AttackingNonPhysicalStats = new[] { EntityStatKind.FireAttack, EntityStatKind.PoisonAttack, 
- // EntityStatKind.ColdAttack, EntityStatKind.LightingAttack };
+    public static EntityStatKind[] AttackingNonPhysicalStats = new[] { EntityStatKind.FireAttack, EntityStatKind.PoisonAttack, EntityStatKind.ColdAttack, EntityStatKind.LightingAttack };
     public const char GoldSymbol = '$';
     public const char PotionSymbol = '!';
 #if ASCII_BUILD

@@ -36,6 +36,7 @@ namespace Roguelike.Tiles
     EntityStats stats = new EntityStats();
     Dictionary<EffectType, float> chanceToExperienceEffect = new Dictionary<EffectType, float>();
     public int ActiveScrollCoolDownCounter { get; set; }
+    Dictionary<EntityStatKind, float> nonPhysicalDamageStats = new Dictionary<EntityStatKind, float>();
     public virtual Scroll ActiveScroll
     {
       get 
@@ -238,13 +239,8 @@ namespace Roguelike.Tiles
 
     public virtual float GetHitAttackValue(bool withVariation)
     {
-      //var str = Stats.GetCurrentValue(EntityStatKind.Strength);
-      //var att = Stats.GetCurrentValue(EntityStatKind.Attack);
-
       return GetCurrentValue(EntityStatKind.Attack);
     }
-
-
 
     public float OnPhysicalHit(LivingEntity attacker)
     {
@@ -265,9 +261,19 @@ namespace Roguelike.Tiles
       var inflicted = attack/defense;
       ReduceHealth(inflicted);
 
+      var desc = Name.ToString() + " received damage: " + inflicted.Formatted();
+      
+      foreach (var stat in attacker.GetNonPhysicalDamages())
+      {
+        var npd = CalculateNonPhysicalDamage(stat.Key, stat.Value);
+        if (npd != 0)
+          desc += " " + GetAttackDesc(stat.Key) + ": " + npd.Formatted();
+        inflicted += npd;
+      }
+            
       var ga = new LivingEntityAction(LivingEntityActionKind.GainedDamage) { InvolvedValue = inflicted, InvolvedEntity = this };
-      var desc = "received damage: " + inflicted.Formatted();
-      ga.Info = Name.ToString() + " " + desc;
+      ga.Info = desc;
+
       AppendAction(ga);
 
       PlaySound("punch");
@@ -285,6 +291,35 @@ namespace Roguelike.Tiles
       }
 
       return inflicted;
+    }
+
+    public virtual  float GetAttackVariation()
+    {
+      return 0;
+    }
+        
+    string GetAttackDesc(EntityStatKind esk)
+    {
+      if (esk == EntityStatKind.FireAttack)
+        return "fire";
+      else if (esk == EntityStatKind.PoisonAttack)
+        return "poison";
+      else if (esk == EntityStatKind.ColdAttack)
+        return "cold";
+      else if (esk == EntityStatKind.LightingAttack)
+        return "lighting";
+
+      return esk.ToString();
+    }
+
+    public Dictionary<EntityStatKind, float> GetNonPhysicalDamages()
+    {
+      foreach (var stat in Loot.AttackingNonPhysicalStats)
+      {
+        nonPhysicalDamageStats[stat] = Stats.GetTotalValue(stat);
+      }
+
+      return nonPhysicalDamageStats;
     }
 
     private void PlaySound(string sound)

@@ -205,9 +205,9 @@ namespace Roguelike.Tiles
 
     public virtual string GetFormattedStatValue(EntityStatKind kind)
     {
-      var cv = GetCurrentValue(kind);
+      var currentValue = GetCurrentValue(kind);
       var stat = Stats.GetStat(kind);
-      var value = stat.GetFormattedCurrentValue(cv);
+      var value = stat.GetFormattedCurrentValue(currentValue);
       
       //var value = stat.Value.CurrentValue.ToString(""); ;
       //if (stat.IsPercentage)
@@ -438,8 +438,8 @@ namespace Roguelike.Tiles
           if (eq != null && eq.IsIdentified)
           {
             var stats = eq.GetStats();
-            //var att = stats.Stats[EntityStatKind.Attack];
             Stats.AccumulateFactors(stats, positive);
+            Stats.AccumulateFactors(eq.ExtendedInfo.Stats, positive);
           }
         }
       }

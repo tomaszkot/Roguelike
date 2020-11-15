@@ -107,17 +107,44 @@ namespace Roguelike.Tiles
       return Stats.GetCurrentValue(EntityStatKind.Strength) - StartStrength;
     }
 
+
+    public Tuple<int, int> GetTotalAttackValues()
+    {
+      Tuple<int, int> res;
+      var attack = GetHitAttackValue(false);
+
+      var nonPhysicals = GetNonPhysicalDamages();
+      foreach (var stat in nonPhysicals)
+        attack += stat.Value;
+
+      var intAttack = (int)attack;
+      var variation = (int)GetAttackVariation();
+      if (variation != 0)
+        res = new Tuple<int, int>(intAttack- variation, intAttack+ variation);
+      else
+        res = new Tuple<int, int>(intAttack, intAttack);
+
+      return res;
+    }
+
+    //for UI
+    public string GetTotalAttackValue()
+    {
+      var attack = GetTotalAttackValues();
+      var value = attack.Item1.ToString();
+      if (attack.Item1 != attack.Item2)
+      {
+        value = attack.Item1.ToString() + "-" + attack.Item2.ToString();
+      }
+      return value;
+    }
+
     public override string GetFormattedStatValue(EntityStatKind kind)
     {
       var value = base.GetFormattedStatValue(kind);
       if (kind == EntityStatKind.Attack)
       {
-        var variation = GetAttackVariation();
-        if (variation != 0)
-        {
-          var cv = GetCurrentValue(kind);
-          value = (cv - variation) + "-" + (cv + variation);
-        }
+        value = GetTotalAttackValue();
       }
       return value;
     }
@@ -158,7 +185,7 @@ namespace Roguelike.Tiles
       return att;
     }
 
-    public float GetAttackVariation()
+    public override float GetAttackVariation()
     {
       var currentEquipment = GetActiveEquipment();
       if (currentEquipment[CurrentEquipmentKind.Weapon] != null)
