@@ -19,7 +19,7 @@ namespace Roguelike.Spells
       //TODO
       //var dmg = damage + (damage * ((magicLevel - 1) * (damageMultiplicator + magicLevel * magicLevel / 2) / 100.0f));
       //return (float)Math.Ceiling(dmg);
-      return magicLevel;
+      return magicLevel+3;
     }
 
     //Returns damage based on Spell level.

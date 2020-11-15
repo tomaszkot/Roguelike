@@ -178,7 +178,7 @@ namespace Roguelike.TileContainers
         if (Loot.ContainsKey(point))
         {
           if (Logger != null)
-            Logger.LogError("loot already at point: " + Loot[point] + ", trying to add: " + tile);
+            Logger.LogError("loot already at point: " + Loot[point] + ", trying to add: " + tile + " point:"+ point);
           Debug.Assert(false);
           return false;
         }

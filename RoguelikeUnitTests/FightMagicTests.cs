@@ -1,8 +1,8 @@
 ﻿using NUnit.Framework;
-using Roguelike.Policies;
 using Roguelike.Spells;
 using Roguelike.Tiles;
 using Roguelike.Tiles.Looting;
+using System;
 using System.Linq;
 using static Dungeons.TileContainers.DungeonNode;
 
@@ -38,8 +38,41 @@ namespace RoguelikeUnitTests
 
       Assert.Greater(enemyHealth, enemy.Stats.Health);
       Assert.Greater(mana, hero.Stats.Mana);
-
       Assert.False(game.GameManager.HeroTurn);
+
+      var diff = enemyHealth- enemy.Stats.Health;
+    }
+
+    [Test]
+    public void ScrollPowerVSMeleeTest()
+    {
+      var game = CreateGame();
+      var hero = game.Hero;
+
+      var enemy = AllEnemies.First();
+      enemy.Stats.SetNominal(Roguelike.Attributes.EntityStatKind.Health, 100);
+      var enemyHealth = enemy.Stats.Health;
+
+      for (int i = 0; i < 10; i++)
+      {
+        UseScroll(game, hero, enemy);
+        GotoNextHeroTurn();
+      }
+
+      Assert.Greater(enemyHealth, enemy.Stats.Health);
+      var diffScroll = enemyHealth - enemy.Stats.Health;
+
+      //melee
+      var wpn = game.GameManager.LootGenerator.GetLootByTileName<Weapon>("rusty_sword");
+      game.Hero.SetEquipment(CurrentEquipmentKind.Weapon, wpn);
+      for (int i = 0; i < 10; i++)
+      {
+        enemy.OnPhysicalHit(game.Hero);
+        //GotoNextHeroTurn();
+      }
+      var diffMelee = enemyHealth - enemy.Stats.Health;
+      Assert.Greater(diffMelee, 50);
+      Assert.Less(Math.Abs(diffMelee - diffScroll), 30);//TODO %
     }
 
     private void UseScroll(Roguelike.RoguelikeGame game, Hero hero, LivingEntity enemy)
@@ -86,8 +119,6 @@ namespace RoguelikeUnitTests
 
       Assert.True(game.GameManager.HeroTurn);
       TryToMoveHero();
-      //var emptyHeroNeib = game.Level.GetEmptyNeighborhoodPoint(game.Hero, Dungeons.TileContainers.DungeonNode.EmptyNeighborhoodCallContext.Move);
-      //game.GameManager.HandleHeroShift(emptyHeroNeib.Item2);
       
       var emptyHeroNeib = game.Level.GetEmptyNeighborhoodPoint(game.Hero, EmptyNeighborhoodCallContext.Move);
       var set = game.Level.SetTile(enemy, emptyHeroNeib.Item1);

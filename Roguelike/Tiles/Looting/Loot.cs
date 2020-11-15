@@ -10,7 +10,7 @@ namespace Roguelike.Tiles
   class Strings
   {
     public const string PartOfCraftingRecipe = "Part of the crafting recipe.";
-    public const string ConsumeDescPart = "Press Right Mouse Button to consume.";
+    public const string ConsumeDescPart = "";// Press Right Mouse Button to consume.";
   }
 
   [Flags]
