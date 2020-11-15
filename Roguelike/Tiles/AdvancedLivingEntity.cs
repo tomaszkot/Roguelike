@@ -157,8 +157,7 @@ namespace Roguelike.Tiles
 
         var stacked = consumable.Loot as StackedLoot;
         inventory.Remove(stacked);
-        AppendAction(new LootAction(consumable.Loot) { LootActionKind = LootActionKind.Consumed });
-
+        
         if (consumable is SpecialPotion)
         {
           var sp = consumable as SpecialPotion;
@@ -182,6 +181,8 @@ namespace Roguelike.Tiles
             LastingEffectsSet.AddPercentageLastingEffect(et, consumable);
           }
         }
+
+        AppendAction(new LootAction(consumable.Loot) { LootActionKind = LootActionKind.Consumed, Info = Name + " consumed " + (consumable as Dungeons.Tiles.Tile).Name });
       }
       else
         Assert(false);
