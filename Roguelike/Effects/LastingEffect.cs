@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using Dungeons.Tiles;
+using Newtonsoft.Json;
 using Roguelike.Attributes;
 using Roguelike.Events;
 using Roguelike.Factors;
@@ -96,6 +97,33 @@ namespace Roguelike.Effects
 
     public Guid Id { get; set; }
 
+    public Tile source;
+    /// <summary>
+    /// src of effect e.g. food
+    /// </summary>
+    public Tile Source 
+    {
+      get { return source; }
+      set
+      {
+        source = value;
+        UniqueId = CalcUniqueId(Type, source);
+      }
+    }
+
+    public static string CalcUniqueId(EffectType type, Tile source)
+    {
+      var id = type.ToString();
+      if (source != null)
+      {
+        id += "_" + source.tag1;
+      }
+
+      return id;
+    }
+
+    public string UniqueId { get; private set; }
+
     [XmlIgnore]
     [JsonIgnore]
     public ILastingEffectOwner Owner
@@ -113,7 +141,7 @@ namespace Roguelike.Effects
       }
     }
 
-    public LastingEffect() { }
+    //public LastingEffect() { }
 
     public LastingEffect(EffectType type, ILastingEffectOwner owner, int turns, EffectOrigin origin, EffectiveFactor effectiveFactor, 
                          PercentageFactor percentageFactor)
@@ -138,7 +166,7 @@ namespace Roguelike.Effects
         Application = EffectApplication.EachTurn;
       }
     }
-
+    
     string description;
     public string Description 
     { 

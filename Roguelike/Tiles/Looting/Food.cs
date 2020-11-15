@@ -1,6 +1,4 @@
 ﻿using Dungeons.Core;
-using Roguelike.Attributes;
-using Roguelike.Tiles.Abstract;
 using Roguelike.Tiles.Looting;
 using System;
 using System.Linq;

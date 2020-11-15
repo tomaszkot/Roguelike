@@ -175,10 +175,8 @@ namespace Roguelike.Tiles
           {
             EffectType et = EffectType.ConsumedRawFood;
             if (consumable.Roasted)
-            {
               et = EffectType.ConsumedRoastedFood;
-            }
-            LastingEffectsSet.AddPercentageLastingEffect(et, consumable);
+            LastingEffectsSet.AddPercentageLastingEffect(et, consumable, consumable.Loot);
           }
         }
 

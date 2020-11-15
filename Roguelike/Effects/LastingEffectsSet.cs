@@ -1,4 +1,5 @@
 ﻿using Dungeons.Core;
+using Dungeons.Tiles;
 using Newtonsoft.Json;
 using Roguelike.Abstract;
 using Roguelike.Attributes;
@@ -61,6 +62,7 @@ namespace Roguelike.Effects
     (
       LastingEffectCalcInfo calcEffectValue,
       EffectOrigin origin,
+      Tile source,
       EntityStatKind esk = EntityStatKind.Unset,
       bool fromHit = true
     )
@@ -72,6 +74,7 @@ namespace Roguelike.Effects
       if (le == null || !CanBeProlonged(le))
       {
         le = new LastingEffect(eff, livingEntity, calcEffectValue.Turns, origin, calcEffectValue.EffectiveFactor, calcEffectValue.PercentageFactor);
+        le.Source = source;
         le.PendingTurns = calcEffectValue.Turns;
         le.StatKind = esk;
 
@@ -231,7 +234,7 @@ namespace Roguelike.Effects
       var spellLasting = spell as ILastingEffectSrc;
       if (spellLasting != null)
       {
-        return AddPercentageLastingEffect(effectType, spellLasting);//spellLasting.TourLasting, spellLasting.StatKind, spellLasting.StatKindPercentage.Value);
+        return AddPercentageLastingEffect(effectType, spellLasting, spell.Caller);
       }
 
       return null;
@@ -258,7 +261,7 @@ namespace Roguelike.Effects
         //chance += fightItem.GetFactor(false);
         if (rand * 100 <= chance)
         {
-          le = AddLastingEffect(effectInfo, EffectOrigin.External);
+          le = AddLastingEffect(effectInfo, EffectOrigin.External, null);
         }
       }
 
@@ -272,17 +275,11 @@ namespace Roguelike.Effects
 
     public LastingEffect EnsureEffect(EffectType et, float inflictedDamage, LivingEntity attacker)
     {
-      //var currentEffect = LastingEffects.FirstOrDefault(i => i.Type == et);
-      //if (currentEffect == null)
-      //{
-        var effectInfo = CalcLastingEffDamage(et, inflictedDamage, null, null);
-        var turns = effectInfo.Turns;
-        if (turns <= 0)
-          turns = GetPendingTurns(et);
-        var currentEffect = this.AddLastingEffect(effectInfo, EffectOrigin.External, EffectTypeToStatKind.Convert(et),  true);
-      //}
-      //else
-        //ProlongEffect(inflictedDamage, currentEffect);
+      var effectInfo = CalcLastingEffDamage(et, inflictedDamage, null, null);
+      //var turns = effectInfo.Turns;
+      //if (turns <= 0)
+      //  turns = GetPendingTurns(et);
+      var currentEffect = this.AddLastingEffect(effectInfo, EffectOrigin.External, null, EffectTypeToStatKind.Convert(et),  true);
       return currentEffect;
     }
 
@@ -306,9 +303,9 @@ namespace Roguelike.Effects
       return CreateLastingEffectCalcInfo(eff, factor.Value, src.StatKindPercentage.Value, src.TourLasting);
     }
 
-    public virtual LastingEffect AddPercentageLastingEffect(EffectType eff, ILastingEffectSrc src)
+    public virtual LastingEffect AddPercentageLastingEffect(EffectType eff, ILastingEffectSrc src, Tile effectSrc)
     {
-      bool onlyProlong = LastingEffects.Any(i => i.Type == eff);//TODO is onlyProlong done ?
+      bool onlyProlong = LastingEffects.Any(i => i.UniqueId == LastingEffect.CalcUniqueId(eff, effectSrc));//TODO is onlyProlong done ?
       var calcEffectValue = CalcLastingEffectInfo(eff, src);
 
       var origin = EffectOrigin.Unset;
@@ -320,7 +317,7 @@ namespace Roguelike.Effects
       {
         origin = EffectOrigin.OtherCasted;
       }
-      var le = AddLastingEffect(calcEffectValue, origin, src.StatKind, false);
+      var le = AddLastingEffect(calcEffectValue, origin, effectSrc, src.StatKind, false);
 
       bool handle = false;
       if (eff == EffectType.Rage || eff == EffectType.Weaken || eff == EffectType.IronSkin || eff == EffectType.Inaccuracy)

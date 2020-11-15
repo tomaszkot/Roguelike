@@ -41,6 +41,8 @@ namespace Roguelike.Tiles
       Kind = kind;
       if (Kind == PlantKind.Sorrel)
         TourLasting = 5;
+      else
+        TourLasting = 0;
       Name = kind.ToString();
 
 

@@ -378,22 +378,6 @@ namespace Roguelike.Tiles
       return LastingEffects.Where(i => i.Type == le).FirstOrDefault();
     }
             
-    public virtual LastingEffect AddLastingEffect
-    (
-      LastingEffectCalcInfo calcEffectValue,
-      EntityStatKind esk = EntityStatKind.Unset,
-      bool fromHit = true
-      
-    )
-    {
-      return lastingEffectsSet.AddLastingEffect(calcEffectValue, EffectOrigin.External, esk, fromHit);
-    }
-
-    //private void AddLastingEffect(LastingEffect le)
-    //{
-    //  lastingEffectsSet.AddLastingEffect(le);
-    //}
-        
     public bool IsImmuned(EffectType effect)
     {
       if (this is CrackedStone)
