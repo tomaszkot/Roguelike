@@ -71,7 +71,9 @@ namespace Roguelike.Crafting
       if (recipe == null)
         return ReturnCraftingError("Recipe not set");
       LastCraftStackedCount = 0;
-      if (lootToConvert.Count(i => i is MagicDust) != recipe.MagicDustRequired)
+
+      var magicDust = lootToConvert.Where(i => i is MagicDust).Cast<MagicDust>().FirstOrDefault();
+      if (magicDust.Count != recipe.MagicDustRequired)
       {
         return ReturnCraftingError("Invalid amount of Magic Dust");
       }
@@ -86,7 +88,7 @@ namespace Roguelike.Crafting
         var sulfCount = lootToConvert.Where(i => i is Sulfur).Count();
         var hoochCount = lootToConvert.Where(i => i is Hooch).Count();
 
-        if (recipe.Kind == RecipeKind.Custom)
+        if (lootToConvert.Count == 2 && recipe.Kind == RecipeKind.Custom)
         {
           return HandleCustomRecipe(lootToConvert);
         }
@@ -276,7 +278,7 @@ namespace Roguelike.Crafting
         return ReturnCraftingError("Improper ingredients");
       }
       else
-        return ReturnCraftingError("Invalid amount of Magic Dust");
+        return ReturnCraftingError("Invalid amount of ingradients");
     }
 
 

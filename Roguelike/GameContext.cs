@@ -270,6 +270,12 @@ namespace Roguelike
       get { return turnOwner == TurnOwner.Hero; }
     }
 
+    public void ReportHeroDeath()
+    {
+      EventsManager.AppendAction(Hero.GetDeadAction());
+      HeroDeadReported = true;
+    }
+
     public ILogger Logger { get => logger; set => logger = value; }
     public TurnOwner TurnOwner
     {
@@ -279,6 +285,11 @@ namespace Roguelike
         if (turnOwner != value)
         {
           turnOwner = value;
+          if (!Hero.Alive)
+          {
+            ReportHeroDeath();
+            return;
+          }
           if (turnOwner == TurnOwner.Hero)
             Hero.ApplyLastingEffects();
         }

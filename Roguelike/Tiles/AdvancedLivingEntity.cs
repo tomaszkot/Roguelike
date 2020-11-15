@@ -180,7 +180,8 @@ namespace Roguelike.Tiles
           }
         }
 
-        AppendAction(new LootAction(consumable.Loot) { LootActionKind = LootActionKind.Consumed, Info = Name + " consumed " + (consumable as Dungeons.Tiles.Tile).Name });
+        var info = Name + " consumed " + (consumable as Dungeons.Tiles.Tile).Name + ", Health: "+this.GetCurrentValue(EntityStatKind.Health);
+        AppendAction(new LootAction(consumable.Loot) { LootActionKind = LootActionKind.Consumed, Info = info });
       }
       else
         Assert(false);

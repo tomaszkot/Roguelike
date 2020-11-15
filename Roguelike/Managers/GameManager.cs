@@ -92,6 +92,7 @@ namespace Roguelike.Managers
       Logger = container.GetInstance<ILogger>();
       levelGenerator = container.GetInstance<LevelGenerator>();
       EventsManager = container.GetInstance<EventsManager>();
+      EventsManager.GameManager = this;
       lootManager = container.GetInstance<LootManager>();
       lootManager.GameManager = this;
       CreateInputManager();
@@ -691,8 +692,8 @@ namespace Roguelike.Managers
 
       if (goldInvolved)
       {
-        dest.Gold -= price;
-        src.Gold += price;
+        dest.Gold -= price* stackedCount;
+        src.Gold += price* stackedCount;
         SoundManager.PlaySound("COINS_Rattle_04_mono");//coind_drop
       }
       return sold;

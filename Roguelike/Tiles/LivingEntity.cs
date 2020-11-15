@@ -466,14 +466,13 @@ namespace Roguelike.Tiles
       return false;
     }
 
-    void AppendDeadAction()
-    {
-      AppendAction(GetDeadAction());
-    }
-
     public LivingEntityAction GetDeadAction()
     {
-      return new LivingEntityAction(LivingEntityActionKind.Died) { InvolvedEntity = this, Level = ActionLevel.Important, Info = Name + " Died" };
+      var info = Name + " Died";
+      if (DiedOfEffect != EffectType.Unset)
+        info += ", killing effect: "+ DiedOfEffect.ToDescription();
+
+      return new LivingEntityAction(LivingEntityActionKind.Died) { InvolvedEntity = this, Level = ActionLevel.Important, Info = info };
     }
 
     public bool IsHealthZero()

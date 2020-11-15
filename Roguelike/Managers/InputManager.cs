@@ -40,8 +40,7 @@ namespace Roguelike.Managers
       {
         if (!Context.HeroDeadReported)
         {
-          Context.EventsManager.AppendAction(Context.Hero.GetDeadAction());
-          Context.HeroDeadReported = true;
+          Context.ReportHeroDeath();
         }
         //AppendAction(new HeroAction() { Level = ActionLevel.Critical, KindValue = HeroAction.Kind.Died, Info = Hero.Name + " is dead!" });
         return false;

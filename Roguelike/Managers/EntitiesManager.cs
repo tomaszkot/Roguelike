@@ -102,8 +102,7 @@ namespace Roguelike.Managers
 
           if (!context.Hero.Alive)
           {
-            context.EventsManager.AppendAction(context.Hero.GetDeadAction());
-            context.HeroDeadReported = true;
+            context.ReportHeroDeath();
             break;
           }
         }

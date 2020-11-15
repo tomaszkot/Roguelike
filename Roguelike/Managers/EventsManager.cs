@@ -1,12 +1,7 @@
-﻿using Dungeons.Core;
-using Roguelike.Events;
+﻿using Roguelike.Events;
 using Roguelike.InfoScreens;
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Roguelike.Managers
 {
@@ -15,8 +10,10 @@ namespace Roguelike.Managers
     LastActions lastActions = new LastActions();
 
     public LastActions LastActions { get => lastActions; set => lastActions = value; }
+    public GameManager GameManager { get => gameManager; set => gameManager = value; }
 
     public event EventHandler<GameAction> ActionAppended;
+    GameManager gameManager;
 
     public EventsManager()
     {
@@ -34,6 +31,8 @@ namespace Roguelike.Managers
 
     public void AppendAction(GameAction ac)
     {
+      if (!GameManager.Hero.Alive && GameManager.Context.HeroDeadReported)
+        return;
       LastActions.Add(ac);
       if (ActionAppended != null)//send it to listeners as logic of game depends on it
       {
