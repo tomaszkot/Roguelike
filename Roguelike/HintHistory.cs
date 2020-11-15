@@ -5,8 +5,8 @@ namespace Roguelike
 {
   namespace Hints
   {
-    public enum HintKind { Unset, LootCollectShorcut, BulkLootCollectShorcut, ShowCraftingPanel }
-
+    public enum HintKind { Unset, LootCollectShorcut, BulkLootCollectShorcut, ShowCraftingPanel, HeroLevelTooLow, CanNotPutOnUnidentified }
+    
     public class HintItem
     {
       public string Info { get; set; }
@@ -19,6 +19,13 @@ namespace Roguelike
     public class HintHistory
     {
       List<HintItem> hints = new List<HintItem>();
+      public static Dictionary<HintKind, string> Messages = new Dictionary<HintKind, string>();
+
+      static HintHistory()
+      {
+        Messages.Add(HintKind.HeroLevelTooLow, "Hero level too low to use an item");
+        Messages.Add(HintKind.CanNotPutOnUnidentified, "Can not put on unidentified item");
+      }
 
       public HintHistory()
       {
@@ -26,6 +33,8 @@ namespace Roguelike
         hints.Add(new HintItem(){ Info = "Press 'G' to collect a single loot.", Kind = HintKind.LootCollectShorcut});
         hints.Add(new HintItem() { Info = "Press 'J' to collect nearby loot items.", Kind = HintKind.BulkLootCollectShorcut });
         hints.Add(new HintItem() { Info = "Recipe has been collected. Press 'R' to open Crafting Panel and see it's description.", Kind = HintKind.ShowCraftingPanel});
+        hints.Add(new HintItem() { Info = Messages[HintKind.HeroLevelTooLow], Kind = HintKind.HeroLevelTooLow});
+        hints.Add(new HintItem() { Info = Messages[HintKind.CanNotPutOnUnidentified], Kind = HintKind.CanNotPutOnUnidentified });
       }
 
       public List<int> GetKeyCodes()
