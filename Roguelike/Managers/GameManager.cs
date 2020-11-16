@@ -149,7 +149,7 @@ namespace Roguelike.Managers
 
       Context.Hero = hero;
 
-      InitNode(node, gameState);
+      InitNode(node, gameState, kind);
 
       Context.SwitchTo(node, hero, gameState, kind, stairs);
 
@@ -166,18 +166,18 @@ namespace Roguelike.Managers
       (node as TileContainers.GameLevel).OnLoadDone();
     }
 
-    protected virtual void InitNode(AbstractGameLevel node, GameState gs, bool fromLoad = false)
+    protected virtual void InitNode(AbstractGameLevel node, GameState gs, GameContextSwitchKind context)
     {
       node.GetTiles<LivingEntity>().ForEach(i => i.Container = this.Container);
       node.Logger = this.Logger;
-      if (fromLoad)
+      if (context == GameContextSwitchKind.GameLoaded)
         InitNodeOnLoad(node);
     }
 
     public TileContainers.GameLevel LoadLevel(string heroName, int index)
     {
       var level = Persister.LoadLevel(heroName, index);
-      InitNode(level, gameState, true);
+      InitNode(level, gameState, GameContextSwitchKind.GameLoaded);
 
       var heros = level.GetTiles<Hero>();
       if (heros.Any())
