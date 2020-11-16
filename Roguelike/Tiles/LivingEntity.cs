@@ -47,15 +47,12 @@ namespace Roguelike.Tiles
 
     public bool CanAttack { get; set; } = true;
     public EffectType DiedOfEffect;
+    
     public EntityState state;
     public EntityState State
     {
       get { return state; }
-      set
-      {
-        state = value;
-        //AppendAction(new GameStateAction() { Type = GameStateAction.ActionType.Assert, Info = Name + " state = "+ state });
-      }
+      set{state = value;}
     }
     List<Algorithms.PathFinderNode> pathToTarget;
     private LastingEffectsSet lastingEffectsSet;
@@ -156,9 +153,7 @@ namespace Roguelike.Tiles
 
     ILogger Logger
     {
-      get { 
-      return Container.GetInstance<ILogger>(); 
-      }
+      get { return Container.GetInstance<ILogger>(); }
     }
 
     public virtual bool Alive
@@ -218,7 +213,7 @@ namespace Roguelike.Tiles
             return false;
           }
 
-          Container.GetInstance<ILogger>().LogInfo(this + " CalculateIfStatChanceApplied true");
+          Logger.LogInfo(this + " CalculateIfStatChanceApplied true");
           return true;
         }
       }
@@ -287,10 +282,16 @@ namespace Roguelike.Tiles
       var dead = DieIfShould(EffectType.Unset);
       if(!dead && IsWounded)
       {
-        lastingEffectsSet.EnsureEffect(EffectType.Bleeding, inflicted, attacker);
+        if(attacker.CanCauseBleeding())
+          lastingEffectsSet.EnsureEffect(EffectType.Bleeding, inflicted, attacker);
       }
 
       return inflicted;
+    }
+
+    public virtual bool CanCauseBleeding()
+    {
+      return true;
     }
 
     public virtual  float GetAttackVariation()

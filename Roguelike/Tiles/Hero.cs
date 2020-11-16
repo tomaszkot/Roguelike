@@ -206,7 +206,12 @@ namespace Roguelike.Tiles
           if(i.Value!=null)
             i.Value.PrepareForSave(); 
         }
-      ); ;
-  }
+      );
+    }
+
+    public override bool CanCauseBleeding()
+    {
+      return CurrentEquipment.GetWeapon() != null;
+    }
   }
 }

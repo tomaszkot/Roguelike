@@ -34,6 +34,12 @@ namespace Roguelike.LootContainers
     float priceFactor = 1;
     public float PriceFactor { get => priceFactor; set => priceFactor = value; }
 
+    public Weapon GetWeapon()
+    {
+      CurrentEquipmentKind cek = CurrentEquipmentKind.Weapon;
+      return GetActiveEquipment()[cek] as Weapon;
+    }
+
     public Dictionary<CurrentEquipmentKind, Equipment> GetActiveEquipment()
     {
       var result = new Dictionary<CurrentEquipmentKind, Equipment>();
