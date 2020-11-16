@@ -27,6 +27,7 @@ namespace Roguelike.Tiles.Looting
 
     public Gem(GemKind kind = GemKind.Unset, int gameLevel = 0)
     {
+      collectedSound = "gem_collected";
       LootKind = LootKind.Gem;
       Symbol = '*';
       Name = "Gem";

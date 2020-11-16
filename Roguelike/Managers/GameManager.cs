@@ -514,7 +514,7 @@ namespace Roguelike.Managers
     {
       string name = "";
       var gs = PrepareGameStateForSave();
-      name = GetPitDisplayName(gameState.HeroPathValue.Pit) + "/" + gameState.HeroPathValue.LevelIndex;
+      name = GetPitDisplayName(gameState.HeroPathValue.Pit) + "/" + (gameState.HeroPathValue.LevelIndex+1);
       return name;
     }
 
