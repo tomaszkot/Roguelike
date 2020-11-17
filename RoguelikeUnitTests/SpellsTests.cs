@@ -22,7 +22,15 @@ namespace RoguelikeUnitTests
       Assert.AreEqual(Math.Round(castedSpell.StatKindEffective.Value, 3), 3.1);
       Assert.AreEqual(castedSpell.StatKindPercentage.Value, 31);
       Assert.AreEqual(features[1], "Defense: +" + (BaseFactor+1) + "%");
-
     }
+
+    //[Test]
+    //public void Test()
+    //{
+    //  var game = CreateGame();
+    //  var spell = Scroll.CreateSpell(SpellKind.Transform, game.Hero);
+
+    //  //game.Hero.us
+    //}
   }
 }

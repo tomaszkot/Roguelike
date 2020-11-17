@@ -58,6 +58,16 @@ namespace Roguelike.Effects
       return le.Type != EffectType.ConsumedRawFood && le.Type != EffectType.ConsumedRoastedFood;
     }
 
+    LastingEffect GetByType(EffectType type)
+    {
+      return LastingEffects.Where(i => i.Type == type).FirstOrDefault();
+    }
+
+    public bool HasEffect(EffectType type)
+    {
+      return GetByType(type) != null;
+    }
+
     public virtual LastingEffect AddLastingEffect
     (
       LastingEffectCalcInfo calcEffectValue,
@@ -70,7 +80,7 @@ namespace Roguelike.Effects
       var eff = calcEffectValue.Type;
       if (this.livingEntity.IsImmuned(eff))
         return null;
-      var le = LastingEffects.Where(i => i.Type == eff).FirstOrDefault();
+      var le = GetByType(eff);
       if (le == null || !CanBeProlonged(le))
       {
         le = new LastingEffect(eff, livingEntity, calcEffectValue.Turns, origin, calcEffectValue.EffectiveFactor, calcEffectValue.PercentageFactor);
@@ -144,7 +154,7 @@ namespace Roguelike.Effects
       {
         var value = le.EffectiveFactor.Value;
 
-        var esk = le.StatKind != EntityStatKind.Unset || le.Type == EffectType.ResistAll;
+        var esk = le.StatKind != EntityStatKind.Unset || le.Type == EffectType.ResistAll || le.Type == EffectType.Transform;
         Assert(esk);
         if (le.StatKind != EntityStatKind.Unset)
         {
@@ -352,6 +362,9 @@ namespace Roguelike.Effects
         handle = true;
       }
       else if (eff == EffectType.ConsumedRoastedFood || eff == EffectType.ConsumedRawFood)
+      {
+      }
+      else if (eff == EffectType.Transform)
       {
       }
       else

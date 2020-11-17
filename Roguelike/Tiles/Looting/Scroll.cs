@@ -220,8 +220,8 @@ namespace Roguelike.Tiles.Looting
       //    return new IceBallSpell(caller);
       //  case SpellKind.Skeleton:
       //    return new SkeletonSpell(caller);
-      //  case SpellKind.Transform:
-      //    return new TransformSpell(caller);
+        case SpellKind.Transform:
+          return new TransformSpell(caller);
       //  case SpellKind.Frighten:
       //    return new FrightenSpell(caller);
       //  case SpellKind.Healing:

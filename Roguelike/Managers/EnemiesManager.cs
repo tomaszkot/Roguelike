@@ -121,8 +121,13 @@ namespace Roguelike.Managers
       return moved;
     }
 
-    private bool ShallChaseTarget(LivingEntity enemy, Hero target)
+    public bool ShallChaseTarget(LivingEntity enemy, Hero target)
     {
+      if (target.IsTransformed())
+      {
+        return false;
+      }
+
       if (enemy.WasEverHitBy(target))
       {
         enemy.MoveKind = EntityMoveKind.FollowingHero;

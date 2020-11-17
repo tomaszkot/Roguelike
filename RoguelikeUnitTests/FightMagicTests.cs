@@ -133,6 +133,35 @@ namespace RoguelikeUnitTests
       Assert.Greater(mana, enemy.Stats.Mana);//used mana
     }
 
-    
+    [Test]
+    public void TransformScrollTest()
+    {
+      var game = CreateGame();
+      var hero = game.Hero;
+
+      var enemy = AllEnemies.First();
+      var emp = game.GameManager.CurrentNode.GetClosestEmpty(hero);
+      game.GameManager.CurrentNode.SetTile(enemy, emp.Point);
+      Assert.True(game.GameManager.EnemiesManager.ShallChaseTarget(enemy, game.Hero));
+
+      Assert.True(game.GameManager.HeroTurn);
+
+      var scroll = new Scroll(SpellKind.Transform);
+      hero.Inventory.Add(scroll);
+      var spell = game.GameManager.Context.ApplyPassiveSpell(hero, scroll);
+
+      Assert.True(!game.GameManager.HeroTurn);
+
+      Assert.NotNull(spell);
+      Assert.False(game.GameManager.EnemiesManager.ShallChaseTarget(enemy, game.Hero));
+      for (int i = 0; i < spell.TourLasting; i++)
+      {
+        game.GameManager.SkipHeroTurn();
+        GotoNextHeroTurn();
+      }
+
+      Assert.True(game.GameManager.EnemiesManager.ShallChaseTarget(enemy, game.Hero));
+    }
+
   }
 }

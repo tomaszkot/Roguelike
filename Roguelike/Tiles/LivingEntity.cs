@@ -756,5 +756,15 @@ namespace Roguelike.Tiles
     {
       return statValue * nominalValuePercInc / 100f;
     }
+
+    public void ApplyPassiveSpell(PassiveSpell spell)
+    {
+      AddLastingEffectFromSpell(spell.Kind, SpellConverter.EffectTypeFromSpellKind(spell.Kind));
+    }
+
+    public bool IsTransformed()
+    {
+      return this.LastingEffectsSet.HasEffect(EffectType.Transform);
+    }
   }
 }

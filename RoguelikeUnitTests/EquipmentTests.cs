@@ -222,7 +222,6 @@ namespace RoguelikeUnitTests
       eq2.Identify();
       //eq2.PrimaryStat.Value.Factor += 5;
       Assert.AreEqual(eq2.GetStats().GetTotalValue(eq2.PrimaryStatKind), wpnStatBefore + 5);
-      //GotoNextHeroTurn();
 
       PutEqOnLevelAndCollectIt(eq2);
       //Active Equipment is returned dynamically
@@ -261,7 +260,6 @@ namespace RoguelikeUnitTests
         var eqOn = active[Equipment.FromEquipmentKind(kind, kind == EquipmentKind.Ring ? AdvancedLivingEntity.DefaultCurrentEquipmentPosition : CurrentEquipmentPosition.Unset)];
         Assert.AreEqual(eqOn, eq);
         Assert.AreEqual(heroStats.GetTotalValue(eq.PrimaryStatKind), statBefore+ eq.PrimaryStatValue);
-        //GotoNextHeroTurn();
       }
     }
   }

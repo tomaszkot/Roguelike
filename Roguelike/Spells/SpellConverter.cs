@@ -1,15 +1,70 @@
 ﻿using Roguelike.Effects;
-using Roguelike.Tiles;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Roguelike.Spells
 {
   public class SpellConverter
   {
+    public static EffectType EffectTypeFromSpellKind(SpellKind sk)
+    {
+      switch (sk)
+      {
+        case SpellKind.Unset:
+          break;
+        case SpellKind.FireBall:
+          break;
+        case SpellKind.CrackedStone:
+          break;
+        case SpellKind.Skeleton:
+          break;
+        case SpellKind.Trap:
+          break;
+        case SpellKind.IceBall:
+          break;
+        case SpellKind.PoisonBall:
+          break;
+        case SpellKind.Transform:
+          return EffectType.Transform;
+        case SpellKind.Frighten:
+          break;
+        case SpellKind.Healing:
+          break;
+        case SpellKind.ManaShield:
+          break;
+        case SpellKind.Telekinesis:
+          break;
+        case SpellKind.StonedBall:
+          break;
+        case SpellKind.LightingBall:
+          break;
+        case SpellKind.Mana:
+          break;
+        case SpellKind.BushTrap:
+          break;
+        case SpellKind.Rage:
+          break;
+        case SpellKind.Weaken:
+          break;
+        case SpellKind.NESWFireBall:
+          break;
+        case SpellKind.Teleport:
+          break;
+        case SpellKind.IronSkin:
+          break;
+        case SpellKind.ResistAll:
+          break;
+        case SpellKind.Inaccuracy:
+          break;
+        case SpellKind.Identify:
+          break;
+        case SpellKind.Portal:
+          break;
+        default:
+          break;
+      }
+
+      return EffectType.Unset;
+    }
+
     public static SpellKind SpellKindFromEffectType(EffectType et)
     {
       SpellKind spellKind = SpellKind.Unset;
