@@ -57,8 +57,12 @@ namespace Roguelike.Managers
     public override void MakeTurn(LivingEntity entity)
     {
       var target = Hero;
-      if (AttackIfPossible(entity, target))
-        return;
+
+      if (!target.IsTransformed())
+      {
+        if (AttackIfPossible(entity, target))
+          return;
+      }
 
       bool makeRandMove = false;
       if (ShallChaseTarget(entity, target))
