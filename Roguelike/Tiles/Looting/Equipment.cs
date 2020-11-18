@@ -44,7 +44,7 @@ namespace Roguelike.Tiles
       LootKind = LootKind.Equipment;
     }
 
-    public bool MakeEnchantable()
+    public bool MakeEnchantable(int enchantSlotsToMake = 1)
     {
       if (!IsIdentified)
         return false;
@@ -52,7 +52,7 @@ namespace Roguelike.Tiles
         return false; //already done
 
       maxEnchants = GetMaxEnchants();
-      enchantSlots = 1;
+      enchantSlots = enchantSlotsToMake;
 
       var priceInc = ((float)Price) / 5;
       if (priceInc == 0)

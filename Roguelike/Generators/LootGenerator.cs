@@ -252,13 +252,23 @@ namespace Roguelike.Generators
     public virtual Loot GetBestLoot(EnemyPowerKind powerKind, int level)
     {
       EquipmentClass eqClass = EquipmentClass.Plain;
+      bool enchant = false;
       if (powerKind == EnemyPowerKind.Boss)
         eqClass = EquipmentClass.Unique;
       else if (powerKind == EnemyPowerKind.Champion)
-        eqClass = EquipmentClass.MagicSecLevel;
-      
-      //var ek = GetPossibleEqKind();
-      return GetRandomEquipment(eqClass, level);
+      {
+        if (RandHelper.GetRandomDouble() > 0.5)
+          eqClass = EquipmentClass.MagicSecLevel;
+        else
+        {
+          eqClass = EquipmentClass.Plain;
+          enchant = true;
+        }
+      }
+      var eq = GetRandomEquipment(eqClass, level);
+      if (enchant)
+        eq.MakeEnchantable(2);
+      return eq;
     }
 
     private static EquipmentKind GetPossibleEqKind()
