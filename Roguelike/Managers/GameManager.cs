@@ -436,7 +436,7 @@ namespace Roguelike.Managers
       var prevTile = node.ReplaceTile(replacer, point);
       if (prevTile != null)//this normally shall always be not null
       {
-        var it = prevTile as Roguelike.Tiles.InteractiveTile;
+        var it = prevTile as Tiles.InteractiveTile;
         if (it != null)//barrel could be destroyed
         {
           if (it == positionSource)

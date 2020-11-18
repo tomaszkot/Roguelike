@@ -58,7 +58,7 @@ namespace Roguelike.Effects
       return le.Type != EffectType.ConsumedRawFood && le.Type != EffectType.ConsumedRoastedFood;
     }
 
-    LastingEffect GetByType(EffectType type)
+    public LastingEffect GetByType(EffectType type)
     {
       return LastingEffects.Where(i => i.Type == type).FirstOrDefault();
     }
@@ -361,12 +361,11 @@ namespace Roguelike.Effects
           le.EffectiveFactor = new EffectiveFactor(effValue);
         handle = true;
       }
-      else if (eff == EffectType.ConsumedRoastedFood || eff == EffectType.ConsumedRawFood)
+      else if (eff == EffectType.ConsumedRoastedFood || eff == EffectType.ConsumedRawFood || eff == EffectType.Transform ||
+        eff == EffectType.ManaShield)
       {
       }
-      else if (eff == EffectType.Transform)
-      {
-      }
+      
       else
         Assert(false, "AddLastingEffect - unhandeled eff = " + eff);
 

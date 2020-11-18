@@ -29,7 +29,7 @@ namespace Roguelike.Spells
         case SpellKind.Healing:
           break;
         case SpellKind.ManaShield:
-          break;
+          return EffectType.ManaShield;
         case SpellKind.Telekinesis:
           break;
         case SpellKind.StonedBall:

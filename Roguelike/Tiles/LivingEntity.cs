@@ -254,7 +254,12 @@ namespace Roguelike.Tiles
       lastHitBySpell = false;
       var attack = attacker.GetHitAttackValue(true);
       var inflicted = attack/defense;
-      ReduceHealth(inflicted);
+
+      var manaShieldEffect = LastingEffectsSet.GetByType(EffectType.ManaShield);
+      if (manaShieldEffect != null && this.Stats.Mana > inflicted)
+        ReduceMana(inflicted);
+      else
+        ReduceHealth(inflicted);
 
       var desc = Name.ToString() + " received damage: " + inflicted.Formatted();
       

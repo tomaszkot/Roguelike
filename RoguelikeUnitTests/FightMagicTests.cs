@@ -149,10 +149,11 @@ namespace RoguelikeUnitTests
       var scroll = new Scroll(SpellKind.Transform);
       hero.Inventory.Add(scroll);
       var spell = game.GameManager.Context.ApplyPassiveSpell(hero, scroll);
-
+      
       Assert.True(!game.GameManager.HeroTurn);
-
       Assert.NotNull(spell);
+      var le = game.Hero.LastingEffectsSet.GetByType(Roguelike.Effects.EffectType.Transform);
+      Assert.NotNull(le);
       Assert.False(game.GameManager.EnemiesManager.ShallChaseTarget(enemy, game.Hero));
       for (int i = 0; i < spell.TourLasting; i++)
       {
@@ -161,6 +162,37 @@ namespace RoguelikeUnitTests
       }
 
       Assert.True(game.GameManager.EnemiesManager.ShallChaseTarget(enemy, game.Hero));
+    }
+
+    [Test]
+    public void ManaScrollTest()
+    {
+      var game = CreateGame();
+      var hero = game.Hero;
+
+      var enemy = AllEnemies.First();
+      var emp = game.GameManager.CurrentNode.GetClosestEmpty(hero);
+      game.GameManager.CurrentNode.SetTile(enemy, emp.Point);
+
+      var scroll = new Scroll(SpellKind.ManaShield);
+      hero.Inventory.Add(scroll);
+      var spell = game.GameManager.Context.ApplyPassiveSpell(hero, scroll);
+      Assert.NotNull(spell);
+            
+      var heroHealth = game.Hero.Stats.Health;
+      game.Hero.OnPhysicalHit(enemy);
+      Assert.AreEqual(game.Hero.Stats.Health, heroHealth);//mana shield
+
+      for (int i = 0; i < spell.TourLasting; i++)
+      {
+        game.GameManager.SkipHeroTurn();
+        GotoNextHeroTurn();
+        
+      }
+      heroHealth = game.Hero.Stats.Health;
+      game.Hero.OnPhysicalHit(enemy);
+      Assert.Less(game.Hero.Stats.Health, heroHealth);//mana shield gone
+
     }
 
   }

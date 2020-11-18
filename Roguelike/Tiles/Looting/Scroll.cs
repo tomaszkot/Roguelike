@@ -226,8 +226,8 @@ namespace Roguelike.Tiles.Looting
       //    return new FrightenSpell(caller);
       //  case SpellKind.Healing:
       //    return new HealingSpell(caller);
-      //  case SpellKind.ManaShield:
-      //    return new ManaShieldSpell(caller);
+        case SpellKind.ManaShield:
+          return new ManaShieldSpell(caller);
       //  case SpellKind.Telekinesis:
       //    return new TelekinesisSpell(caller);
       //  case SpellKind.StonedBall:

@@ -410,33 +410,30 @@ namespace Roguelike.Spells
   //    }
   //  }
 
-  //#if UNITY_WSA_10_0
-  //#elif UNITY_WSA
-  //#else
-  //  [Serializable]
-  //#endif
-  //  public class ManaShieldSpell : DefensiveSpell
-  //  {
-  //    public int TourLasting { get; set; }
-  //    public ManaShieldSpell() : this(new LivingEntity())
-  //    { }
-  //    public ManaShieldSpell(LivingEntity caller) : base(caller)
-  //    {
-  //      Kind = SpellKind.ManaShield;
-  //      TourLasting = GetHealthFromLevel(GetCurrentLevel()) / 3;
-  //      manaCost = BaseManaCost * 2;
-  //    }
-  //    protected override void AppendPrivateFeatures(List<string> fe)
-  //    {
-  //      fe.Add("our Lasting: " + TourLasting);
-  //    }
+  public class ManaShieldSpell : PassiveSpell
+  {
+    //public int TourLasting { get; set; }
+    public ManaShieldSpell() : this(new LivingEntity())
+    { }
 
-  //    protected override void AppendNextLevel(List<string> fe)
-  //    {
-  //      base.AppendNextLevel(fe);
-  //      fe.Add("Next Level: Tour Lasting: " + CalcTourLasting(GetCurrentLevel() + 1));
-  //    }
-  //  }
+    public ManaShieldSpell(LivingEntity caller) : base(caller, EntityStatKind.Mana)
+    {
+      Kind = SpellKind.ManaShield;
+      //TourLasting = GetHealthFromLevel(GetCurrentLevel()) / 3;
+      //manaCost = BaseManaCost * 2;
+    }
+
+    //protected override void AppendPrivateFeatures(List<string> fe)
+    //{
+    //  fe.Add("Tour Lasting: " + TourLasting);
+    //}
+
+    //protected override void AppendNextLevel(List<string> fe)
+    //{
+    //  base.AppendNextLevel(fe);
+    //  fe.Add("Next Level: Tour Lasting: " + CalcTourLasting(GetCurrentLevel() + 1));
+    //}
+  }
 
   //#if UNITY_WSA_10_0
   //#elif UNITY_WSA
