@@ -4,6 +4,7 @@ using Roguelike;
 using Roguelike.Attributes;
 using Roguelike.Events;
 using Roguelike.Managers;
+using Roguelike.Spells;
 using Roguelike.Tiles;
 using RoguelikeUnitTests.Helpers;
 using SimpleInjector;
@@ -221,6 +222,15 @@ namespace RoguelikeUnitTests
       var emptyHeroNeib = game.Level.GetEmptyNeighborhoodPoint(game.Hero, Dungeons.TileContainers.DungeonNode.EmptyNeighborhoodCallContext.Move);
       game.GameManager.HandleHeroShift(emptyHeroNeib.Item2);
       Assert.False(game.GameManager.HeroTurn);
+    }
+
+    protected void GotoSpellEffectEnd(PassiveSpell spell)
+    {
+      for (int i = 0; i < spell.TourLasting; i++)
+      {
+        game.GameManager.SkipHeroTurn();
+        GotoNextHeroTurn();
+      }
     }
   }
 }

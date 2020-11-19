@@ -139,29 +139,32 @@ namespace RoguelikeUnitTests
       var game = CreateGame();
       var hero = game.Hero;
 
-      var enemy = AllEnemies.First();
-      var emp = game.GameManager.CurrentNode.GetClosestEmpty(hero);
-      game.GameManager.CurrentNode.SetTile(enemy, emp.Point);
+      Enemy enemy = AllEnemies.First();
+      PassiveSpell spell;
       Assert.True(game.GameManager.EnemiesManager.ShallChaseTarget(enemy, game.Hero));
-
-      Assert.True(game.GameManager.HeroTurn);
-
-      var scroll = new Scroll(SpellKind.Transform);
-      hero.Inventory.Add(scroll);
-      var spell = game.GameManager.Context.ApplyPassiveSpell(hero, scroll);
-      
-      Assert.True(!game.GameManager.HeroTurn);
+      var scroll = PrepareScroll(hero, enemy, SpellKind.Transform);
+      spell = game.GameManager.Context.ApplyPassiveSpell(hero, scroll);
       Assert.NotNull(spell);
+
+      Assert.True(!game.GameManager.HeroTurn);
       var le = game.Hero.LastingEffectsSet.GetByType(Roguelike.Effects.EffectType.Transform);
       Assert.NotNull(le);
       Assert.False(game.GameManager.EnemiesManager.ShallChaseTarget(enemy, game.Hero));
-      for (int i = 0; i < spell.TourLasting; i++)
-      {
-        game.GameManager.SkipHeroTurn();
-        GotoNextHeroTurn();
-      }
+
+      GotoSpellEffectEnd(spell);
 
       Assert.True(game.GameManager.EnemiesManager.ShallChaseTarget(enemy, game.Hero));
+    }
+
+    private Scroll PrepareScroll(Hero hero, Enemy enemy, SpellKind spellKind)
+    {
+      //PassiveSpell spell;
+      var emp = game.GameManager.CurrentNode.GetClosestEmpty(hero);
+      game.GameManager.CurrentNode.SetTile(enemy, emp.Point);
+      var scroll = new Scroll(spellKind);
+      hero.Inventory.Add(scroll);
+      
+      return scroll;
     }
 
     [Test]
@@ -171,11 +174,8 @@ namespace RoguelikeUnitTests
       var hero = game.Hero;
 
       var enemy = AllEnemies.First();
-      var emp = game.GameManager.CurrentNode.GetClosestEmpty(hero);
-      game.GameManager.CurrentNode.SetTile(enemy, emp.Point);
 
-      var scroll = new Scroll(SpellKind.ManaShield);
-      hero.Inventory.Add(scroll);
+      var scroll = PrepareScroll(hero, enemy, SpellKind.ManaShield);
       var spell = game.GameManager.Context.ApplyPassiveSpell(hero, scroll);
       Assert.NotNull(spell);
             
@@ -183,12 +183,8 @@ namespace RoguelikeUnitTests
       game.Hero.OnPhysicalHit(enemy);
       Assert.AreEqual(game.Hero.Stats.Health, heroHealth);//mana shield
 
-      for (int i = 0; i < spell.TourLasting; i++)
-      {
-        game.GameManager.SkipHeroTurn();
-        GotoNextHeroTurn();
-        
-      }
+      GotoSpellEffectEnd(spell);
+
       heroHealth = game.Hero.Stats.Health;
       game.Hero.OnPhysicalHit(enemy);
       Assert.Less(game.Hero.Stats.Health, heroHealth);//mana shield gone

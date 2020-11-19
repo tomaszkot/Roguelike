@@ -1,7 +1,9 @@
 ﻿using NUnit.Framework;
 using Roguelike;
 using Roguelike.Effects;
+using Roguelike.Spells;
 using Roguelike.Tiles;
+using Roguelike.Tiles.Looting;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -116,6 +118,39 @@ namespace RoguelikeUnitTests
       }
       var grouped = damages.GroupBy(i => i);
       Assert.Greater(grouped.Count(), 1);
+    }
+
+    [Test]
+    public void RageScrollTest()
+    {
+      var game = CreateGame();
+      var hero = game.Hero;
+
+      var enemy = AllEnemies.First();
+      var enemyHealth = enemy.Stats.Health;
+      enemy.OnPhysicalHit(game.Hero);
+      var enemyHealthDiff = enemyHealth - enemy.Stats.Health;
+      enemyHealth = enemy.Stats.Health;
+
+      var emp = game.GameManager.CurrentNode.GetClosestEmpty(hero);
+      game.GameManager.CurrentNode.SetTile(enemy, emp.Point);
+
+      var scroll = new Scroll(SpellKind.Rage);
+      hero.Inventory.Add(scroll);
+      var spell = game.GameManager.Context.ApplyPassiveSpell(hero, scroll);
+      Assert.NotNull(spell);
+
+      enemy.OnPhysicalHit(game.Hero);
+      var enemyHealthDiffRage = enemyHealth - enemy.Stats.Health;
+      Assert.Greater(enemyHealthDiffRage, enemyHealthDiff);//rage
+
+      enemyHealth = enemy.Stats.Health;
+
+      GotoSpellEffectEnd(spell);
+      enemy.OnPhysicalHit(game.Hero);
+      var enemyHealthDiffAterRage = enemyHealth - enemy.Stats.Health;
+      Assert.AreEqual(enemyHealthDiff, enemyHealthDiffAterRage);//rage over
+
     }
   }
 }

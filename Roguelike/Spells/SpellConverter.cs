@@ -41,7 +41,7 @@ namespace Roguelike.Spells
         case SpellKind.BushTrap:
           break;
         case SpellKind.Rage:
-          break;
+          return EffectType.Rage;
         case SpellKind.Weaken:
           break;
         case SpellKind.NESWFireBall:
@@ -61,7 +61,7 @@ namespace Roguelike.Spells
         default:
           break;
       }
-
+      
       return EffectType.Unset;
     }
 
