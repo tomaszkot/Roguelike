@@ -199,7 +199,12 @@ namespace Roguelike.Managers
         var hc = gm.CurrentNode.GetHashCode();
         var tile = gm.CurrentNode.GetTile(newPos.Point);
         //logger.LogInfo(" tile at " + newPos.Point + " = "+ tile);
-        if (!tile.IsEmpty)
+        if (tile == null)
+        {
+          gm.Logger.LogInfo(" tile null at " + newPos.Point);
+          res = InteractionResult.Blocked;
+        }
+        else if (!tile.IsEmpty)
           res = InteractHeroWith(tile);
 
         if (res == InteractionResult.ContextSwitched || res == InteractionResult.Blocked)
