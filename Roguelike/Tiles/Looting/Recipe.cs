@@ -168,6 +168,7 @@ namespace Roguelike.Tiles.Looting
             break;
           case RecipeKind.EnchantEquipment:
             tag1 += "enchant";
+            MagicDustRequired = 0;//drop in inv is free
             break;
           default:
             break;

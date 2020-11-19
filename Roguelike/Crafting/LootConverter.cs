@@ -72,10 +72,13 @@ namespace Roguelike.Crafting
         return ReturnCraftingError("Recipe not set");
       LastCraftStackedCount = 0;
 
-      var magicDust = lootToConvert.Where(i => i is MagicDust).Cast<MagicDust>().FirstOrDefault();
-      if (magicDust.Count != recipe.MagicDustRequired)
+      if (recipe.MagicDustRequired > 0)
       {
-        return ReturnCraftingError("Invalid amount of Magic Dust");
+        var magicDust = lootToConvert.Where(i => i is MagicDust).Cast<MagicDust>().FirstOrDefault();
+        if (magicDust.Count != recipe.MagicDustRequired)
+        {
+          return ReturnCraftingError("Invalid amount of Magic Dust");
+        }
       }
       lootToConvert = lootToConvert.Where(i => !(i is MagicDust)).ToList();
       var eqs = lootToConvert.Where(i => i is Equipment).Cast<Equipment>().ToList();
