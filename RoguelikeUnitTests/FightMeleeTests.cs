@@ -15,7 +15,7 @@ namespace RoguelikeUnitTests
     [Test]
     public void NonPlainEnemyUsesEffects()
     {
-      for (int loop = 0; loop < 10; loop++)
+      for (int loop = 0; loop < 1; loop++)
       {
         var game = CreateGame(numEnemies: 1, numberOfRooms: 1);
         var hero = game.Hero;
@@ -27,7 +27,6 @@ namespace RoguelikeUnitTests
         {
           enemy = enemies.First();
           enemy.SetNonPlain(false);
-          //enemy = enemies.Where(i => i.PowerKind != EnemyPowerKind.Plain).First();
         }
 
         Assert.AreEqual(enemy.LastingEffects.Count, 0);
@@ -39,9 +38,7 @@ namespace RoguelikeUnitTests
 
         game.GameManager.Context.TurnOwner = TurnOwner.Allies;
         game.GameManager.Context.PendingTurnOwnerApply = true;
-        //game.GameManager.MakeGameTick();
         GotoNextHeroTurn(game);
-        //Assert.AreEqual(game.GameManager.Context.TurnOwner, TurnOwner.Enemies);
         var heroHasLastingEffect = hero.HasLastingEffect(EffectType.Inaccuracy) || hero.HasLastingEffect(EffectType.Weaken);
         if (!heroHasLastingEffect)
         {
@@ -137,8 +134,10 @@ namespace RoguelikeUnitTests
 
       var scroll = new Scroll(SpellKind.Rage);
       hero.Inventory.Add(scroll);
+      var attackPrev = hero.GetCurrentValue(Roguelike.Attributes.EntityStatKind.Attack);
       var spell = game.GameManager.Context.ApplyPassiveSpell(hero, scroll);
       Assert.NotNull(spell);
+      Assert.Greater(hero.GetCurrentValue(Roguelike.Attributes.EntityStatKind.Attack), attackPrev);
 
       enemy.OnPhysicalHit(game.Hero);
       var enemyHealthDiffRage = enemyHealth - enemy.Stats.Health;

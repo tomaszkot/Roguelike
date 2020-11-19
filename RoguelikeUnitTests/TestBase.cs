@@ -220,8 +220,9 @@ namespace RoguelikeUnitTests
     {
       Assert.AreEqual(game.GameManager.Context.TurnOwner, TurnOwner.Hero);
       var emptyHeroNeib = game.Level.GetEmptyNeighborhoodPoint(game.Hero, Dungeons.TileContainers.DungeonNode.EmptyNeighborhoodCallContext.Move);
-      game.GameManager.HandleHeroShift(emptyHeroNeib.Item2);
-      Assert.False(game.GameManager.HeroTurn);
+      var res = game.GameManager.HandleHeroShift(emptyHeroNeib.Item2);
+      if(res != InteractionResult.None)
+        Assert.False(game.GameManager.HeroTurn);
     }
 
     protected void GotoSpellEffectEnd(PassiveSpell spell)

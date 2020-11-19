@@ -277,20 +277,20 @@ namespace Roguelike.Attributes
       Ensure(sk);
       var he = Health;
 
-      var cv = this[sk].CurrentValue;
-      if (cv < this[sk].TotalValue && amount > 0 || cv > 0 && amount < 0)
+      var currentValue = this[sk].CurrentValue;
+      //if (currentValue < this[sk].TotalValue && amount > 0 || currentValue > 0 && amount < 0)
       {
-        var valMax = this[sk].TotalValue - cv;
-        float val = amount;
-        if (val > valMax)
-          val = valMax;
+        //var valMax = this[sk].TotalValue - currentValue;
+        //float val = amount;
+        //if (val > valMax)
+        //  val = valMax;
 
-        Stats[sk].Subtract(-val);
+        Stats[sk].Subtract(-amount);
 
         return true;
       }
 
-      return false;
+      //return false;
     }
 
     internal void ResetStatFactors()

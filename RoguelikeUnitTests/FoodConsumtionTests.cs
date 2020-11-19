@@ -52,7 +52,10 @@ namespace RoguelikeUnitTests
         Assert.Greater(le.PendingTurns, 0);
         Assert.AreEqual(game.GameManager.Context.TurnOwner, Roguelike.TurnOwner.Allies);
         heroHealth = hero.Stats.Health;
+
+        var leBeforeStep = hero.LastingEffects.SingleOrDefault();
         GotoNextHeroTurn(game);//food is working gradually
+        var leAfterStep = hero.LastingEffects.SingleOrDefault();
         Assert.Greater(hero.Stats.Health, heroHealth);
         heroHealth = hero.Stats.Health;
         Game.GameManager.SkipHeroTurn();

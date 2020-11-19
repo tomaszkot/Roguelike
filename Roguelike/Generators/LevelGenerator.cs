@@ -98,7 +98,7 @@ namespace Roguelike.Generators
     {
       base.OnChildIslandCreated(e);
       var roomGen = Container.GetInstance<RoomContentGenerator>();
-      roomGen.Run(e.ChildIslandNode, LevelIndex, e.ChildIslandNode.NodeIndex, e.GenerationInfoIsl as Roguelike.GenerationInfo, Container);
+      roomGen.Run(e.ChildIslandNode, LevelIndex, e.ChildIslandNode.NodeIndex, 0, e.GenerationInfoIsl as Roguelike.GenerationInfo, Container);
     }
 
     protected virtual Stairs CreateStairsUp(int nodeIndex)
@@ -149,7 +149,7 @@ namespace Roguelike.Generators
     protected virtual void GenerateRoomContent(int nodeIndex, Dungeons.GenerationInfo gi, DungeonNode node)
     {
       var roomGen = Container.GetInstance<RoomContentGenerator>();
-      roomGen.Run(node, LevelIndex, nodeIndex, gi as Roguelike.GenerationInfo, Container);
+      roomGen.Run(node, LevelIndex, nodeIndex, 0, gi as Roguelike.GenerationInfo, Container);
     }
 
     protected override Dungeons.GenerationInfo CreateLevelGenerationInfo()

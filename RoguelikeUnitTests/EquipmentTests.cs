@@ -220,7 +220,6 @@ namespace RoguelikeUnitTests
       var wpnStatBefore = eq2.GetStats().GetTotalValue(eq2.PrimaryStatKind);
       eq2.MakeMagic(EntityStatKind.Attack, 5);
       eq2.Identify();
-      //eq2.PrimaryStat.Value.Factor += 5;
       Assert.AreEqual(eq2.GetStats().GetTotalValue(eq2.PrimaryStatKind), wpnStatBefore + 5);
 
       PutEqOnLevelAndCollectIt(eq2);

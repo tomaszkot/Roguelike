@@ -141,8 +141,8 @@ namespace RoguelikeUnitTests
 
       Enemy enemy = AllEnemies.First();
       PassiveSpell spell;
-      Assert.True(game.GameManager.EnemiesManager.ShallChaseTarget(enemy, game.Hero));
       var scroll = PrepareScroll(hero, enemy, SpellKind.Transform);
+      Assert.True(game.GameManager.EnemiesManager.ShallChaseTarget(enemy, game.Hero));
       spell = game.GameManager.Context.ApplyPassiveSpell(hero, scroll);
       Assert.NotNull(spell);
 
@@ -158,9 +158,8 @@ namespace RoguelikeUnitTests
 
     private Scroll PrepareScroll(Hero hero, Enemy enemy, SpellKind spellKind)
     {
-      //PassiveSpell spell;
       var emp = game.GameManager.CurrentNode.GetClosestEmpty(hero);
-      game.GameManager.CurrentNode.SetTile(enemy, emp.Point);
+      Assert.True(game.GameManager.CurrentNode.SetTile(enemy, emp.Point));
       var scroll = new Scroll(spellKind);
       hero.Inventory.Add(scroll);
       

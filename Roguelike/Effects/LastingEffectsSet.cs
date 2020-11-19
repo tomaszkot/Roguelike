@@ -47,6 +47,8 @@ namespace Roguelike.Effects
       LastingEffects.Add(le);
 
       ApplyLastingEffect(le, true);
+      if (le.Application != EffectApplication.EachTurn)
+        HandleStatSubtraction(le, true);
 
       //let observers know it happened
       LastingEffectStarted?.Invoke(this, le);
@@ -150,17 +152,9 @@ namespace Roguelike.Effects
         //Container.GetInstance<ILogger>().LogInfo(livingEntity + " ApplyLastingEffect: " + le);
       le.PendingTurns--;
 
-      if (newOne || le.Application == EffectApplication.EachTurn)
+      if (le.Application == EffectApplication.EachTurn)
       {
-        var value = le.EffectiveFactor.Value;
-
-        var esk = le.StatKind != EntityStatKind.Unset || le.Type == EffectType.ResistAll || le.Type == EffectType.Transform;
-        Assert(esk);
-        if (le.StatKind != EntityStatKind.Unset)
-        {
-          this.livingEntity.Stats.ChangeStatDynamicValue(le.StatKind, value);
-          AppendEffectAction(le);
-        }
+        HandleStatSubtraction(le, true);
       }
 
       LastingEffectApplied?.Invoke(this, le);
@@ -168,15 +162,28 @@ namespace Roguelike.Effects
       livingEntity.DieIfShould(le.Type);
     }
 
-    private void AppendEffectAction(LastingEffect le)
+    private void HandleStatSubtraction(LastingEffect le, bool add)
     {
-      LivingEntityAction lea = CreateAction(le);
+      var value = le.EffectiveFactor.Value;
+
+      var esk = le.StatKind != EntityStatKind.Unset || le.Type == EffectType.ResistAll || le.Type == EffectType.Transform;
+      Assert(esk);
+      if (le.StatKind != EntityStatKind.Unset)
+      {
+        livingEntity.Stats.ChangeStatDynamicValue(le.StatKind, add ? value : -value);
+        AppendEffectAction(le, !add);
+      }
+    }
+
+    private void AppendEffectAction(LastingEffect le, bool removed)
+    {
+      LivingEntityAction lea = CreateAction(le, removed);
       AppendAction(lea);
     }
 
-    public LivingEntityAction CreateAction(LastingEffect le)
+    public LivingEntityAction CreateAction(LastingEffect le, bool removed)
     {
-      var lea = new LivingEntityAction(LivingEntityActionKind.ExperiencedEffect);
+      var lea = new LivingEntityAction(removed ? LivingEntityActionKind.EffectFinished : LivingEntityActionKind.ExperiencedEffect);
       lea.InvolvedEntity = this.livingEntity;
       lea.EffectType = le.Type;
       var targetName = livingEntity.Name.ToString();
@@ -193,7 +200,9 @@ namespace Roguelike.Effects
         bool removed = entity.LastingEffects.Remove(le);
         Assert(removed);
 
-        HandleSpecialFightStat(le, false);
+        //HandleStatSubtraction(le, true);
+        if (le.Application != EffectApplication.EachTurn)
+          HandleStatSubtraction(le, false);
 
         if (entity == livingEntity && LastingEffectDone != null)
           LastingEffectDone(this, le);
@@ -204,39 +213,39 @@ namespace Roguelike.Effects
     public Container Container { get; internal set; }
 
     //For the time of lasting effect some state is changed, then restored to the original value (flag add)
-    public void HandleSpecialFightStat(LastingEffect le, bool add)
-    {
-      var et = le.Type;
-      if (et == EffectType.ConsumedRawFood || et == EffectType.ConsumedRoastedFood)
-        return;
-      var subtr = le.EffectiveFactor;
-      if (et == EffectType.ResistAll)
-      {
-        var factor = add ? subtr.Value : -subtr.Value;
+    //public void HandleSpecialFightStat(LastingEffect le, bool add)
+    //{
+    //  var et = le.Type;
+    //  if (et == EffectType.ConsumedRawFood || et == EffectType.ConsumedRoastedFood)
+    //    return;
+    //  var subtr = le.EffectiveFactor;
+    //  if (et == EffectType.ResistAll)
+    //  {
+    //    var factor = add ? subtr.Value : -subtr.Value;
 
-        foreach (var res in resists)
-        {
-          var stat = this.livingEntity.Stats.GetStat(res);
-          stat.Subtract(-factor);
-        }
-        return;
-      }
+    //    foreach (var res in resists)
+    //    {
+    //      var stat = this.livingEntity.Stats.GetStat(res);
+    //      stat.Subtract(-factor);
+    //    }
+    //    return;
+    //  }
 
-      EntityStatKind esk = le.StatKind;
+    //  EntityStatKind esk = le.StatKind;
 
-      if (esk != EntityStatKind.Unset)
-      {
-        var factor = add ? subtr.Value : -subtr.Value;
-        if (et == EffectType.Weaken || et == EffectType.Inaccuracy)
-        {
-          factor *= -1;
-        }
-        var st = this.livingEntity.Stats.GetStat(esk);
-        st.Subtract(-factor);
-        //st = this.Stats.Stats[esk];
-        // //Debug.WriteLine(" st = "+ st);
-      }
-    }
+    //  if (esk != EntityStatKind.Unset)
+    //  {
+    //    var factor = add ? subtr.Value : -subtr.Value;
+    //    if (et == EffectType.Weaken || et == EffectType.Inaccuracy)
+    //    {
+    //      factor *= -1;
+    //    }
+    //    var st = this.livingEntity.Stats.GetStat(esk);
+    //    st.Subtract(-factor);
+    //    //st = this.Stats.Stats[esk];
+    //    // //Debug.WriteLine(" st = "+ st);
+    //  }
+    //}
 
     public LastingEffect AddLastingEffectFromSpell(SpellKind spellKind, EffectType effectType)
     {
@@ -329,50 +338,50 @@ namespace Roguelike.Effects
       }
       var le = AddLastingEffect(calcEffectValue, origin, effectSrc, src.StatKind, false);
 
-      bool handle = false;
-      if (eff == EffectType.Rage || eff == EffectType.Weaken || eff == EffectType.IronSkin || eff == EffectType.Inaccuracy)
-      {
-        if (!onlyProlong)
-        {
-          //le.CalcInfo = calcEffectValue;
-          handle = true;
-        }
-      }
-      else if (eff == EffectType.ResistAll)
-      {
-        //effValue must be adjusted not to be over 100
-        var effValue = src.StatKindEffective.Value;
-        foreach (var res in resists)
-        {
-          var original = this.livingEntity.Stats.GetStat(res);
-          var statClone = original.Clone() as EntityStat;
-          statClone.Subtract(-effValue);
-          var cv = statClone.Value.CurrentValue;
-          // GameManager.Instance.AppendUnityLog("resist  st = " + res + " cv = " + cv);
-          while (statClone.Value.CurrentValue > 100)
-          {
-            effValue -= 1;
-            statClone = original.Clone() as EntityStat;
-            statClone.Subtract(-effValue);
-          }
-        }
-        //update it
-        if (effValue != le.EffectiveFactor.Value)
-          le.EffectiveFactor = new EffectiveFactor(effValue);
-        handle = true;
-      }
-      else if (eff == EffectType.ConsumedRoastedFood || eff == EffectType.ConsumedRawFood || eff == EffectType.Transform ||
-        eff == EffectType.ManaShield)
-      {
-      }
+      //bool handle = false;
+      //if (eff == EffectType.Rage || eff == EffectType.Weaken || eff == EffectType.IronSkin || eff == EffectType.Inaccuracy)
+      //{
+      //  //if (!onlyProlong)
+      //  //{
+      //  //  //le.CalcInfo = calcEffectValue;
+      //  //  handle = true;
+      //  //}
+      //}
+      //else if (eff == EffectType.ResistAll)
+      //{
+      //  ////effValue must be adjusted not to be over 100
+      //  //var effValue = src.StatKindEffective.Value;
+      //  //foreach (var res in resists)
+      //  //{
+      //  //  var original = this.livingEntity.Stats.GetStat(res);
+      //  //  var statClone = original.Clone() as EntityStat;
+      //  //  statClone.Subtract(-effValue);
+      //  //  var cv = statClone.Value.CurrentValue;
+      //  //  // GameManager.Instance.AppendUnityLog("resist  st = " + res + " cv = " + cv);
+      //  //  while (statClone.Value.CurrentValue > 100)
+      //  //  {
+      //  //    effValue -= 1;
+      //  //    statClone = original.Clone() as EntityStat;
+      //  //    statClone.Subtract(-effValue);
+      //  //  }
+      //  //}
+      //  ////update it
+      //  //if (effValue != le.EffectiveFactor.Value)
+      //  //  le.EffectiveFactor = new EffectiveFactor(effValue);
+      //  //handle = true;
+      //}
+      //else if (eff == EffectType.ConsumedRoastedFood || eff == EffectType.ConsumedRawFood || eff == EffectType.Transform ||
+      //  eff == EffectType.ManaShield)
+      //{
+      //}
       
-      else
-        Assert(false, "AddLastingEffect - unhandeled eff = " + eff);
+      //else
+      //  Assert(false, "AddLastingEffect - unhandeled eff = " + eff);
 
-      if (handle)
-      {
-        HandleSpecialFightStat(le, true);
-      }
+      //if (handle)
+      //{
+      //  HandleSpecialFightStat(le, true);
+      //}
       return le;
     }
 

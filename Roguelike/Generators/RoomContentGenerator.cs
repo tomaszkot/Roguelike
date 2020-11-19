@@ -15,7 +15,8 @@ namespace Roguelike.Generators
 {
   public class RoomContentGenerator
   {
-    protected int levelIndex;
+    protected int levelIndex = 0;
+    protected int enemiesStartLevel = 0;
     protected ILogger logger;
     protected TileContainers.DungeonNode node;
     protected GenerationInfo gi;
@@ -23,8 +24,12 @@ namespace Roguelike.Generators
     protected LootGenerator lootGen;
     public string LevelBossName { get; set; }
 
-    public virtual void Run(Dungeons.TileContainers.DungeonNode node, int levelIndex, int nodeIndex, GenerationInfo gi, Container container)
+    public virtual void Run
+    (
+      Dungeons.TileContainers.DungeonNode node, int levelIndex, int nodeIndex, int enemiesStartLevel, GenerationInfo gi, Container container
+    )
     {
+      this.enemiesStartLevel = enemiesStartLevel;
       this.node = node as TileContainers.DungeonNode;
       this.container = container;
       this.levelIndex = levelIndex;
@@ -92,8 +97,8 @@ namespace Roguelike.Generators
         barrel.BarrelKind = RandHelper.GetRandomDouble() < 0.75 ? BarrelKind.Barrel : BarrelKind.PileOfSkulls;
       }
 
-      node.GetTiles<Barrel>().ForEach(i => i.SetLevel(levelIndex + 1));
-      node.GetTiles<Chest>().ForEach(i => i.SetLevel(levelIndex + 1));
+      node.GetTiles<Barrel>().ForEach(i => SetILootSourceLevel(i));
+      node.GetTiles<Chest>().ForEach(i => SetILootSourceLevel(i));
     }
 
     private void AddPlainChest()
@@ -258,8 +263,19 @@ namespace Roguelike.Generators
     {
       foreach (var en in packEnemies)
       {
-        en.SetLevel(levelIndex+1);
+        SetILootSourceLevel(en);
       }
+    }
+
+    void SetILootSourceLevel(ILootSource src)
+    {
+      var esl = enemiesStartLevel;
+      if (esl > 0)
+        esl--;
+
+      esl = 0;
+
+      src.SetLevel(esl + levelIndex + 1);
     }
 
     bool placeEnemiesPackClosely = true;

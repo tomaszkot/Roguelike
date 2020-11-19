@@ -127,20 +127,7 @@ namespace Roguelike.Tiles
     {
       EntityStats stats = new EntityStats();
       stats[this.PrimaryStatKind].Accumulate(primaryStat.Value);
-      //if (eq is Weapon)
-      //{
-      //  stats.Stats[EntityStatKind.Attack].Factor += eq.PrimaryStatValue;
-      //}
-      //else if (eq is Armor)
-      //{
-      //  stats.Stats[EntityStatKind.Defence].Factor += eq.PrimaryStatValue;
-      //}
-      //else if (eq is Jewellery)
-      //{
-      //  var juw = eq as Jewellery;
-      //  stats.Stats[juw.PrimaryStat].Factor += juw.PrimaryStatValue;
-      //}
-      if (!IsPlain())
+      //if (!IsPlain())
       {
         stats.Accumulate(ExtendedInfo.Stats);
       }

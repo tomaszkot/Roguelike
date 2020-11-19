@@ -55,7 +55,7 @@ namespace RoguelikeUnitTests
       return le1;
     }
 
-    void CheckAction(EffectType et, EntityStatKind esk, char sign, LivingEntity target)
+    void CheckActionDesc(EffectType et, EntityStatKind esk, char sign, LivingEntity target)
     {
       float statValueBefore;
       LastingEffect le1 = CreateEffect(et, esk, out statValueBefore);
@@ -102,11 +102,11 @@ namespace RoguelikeUnitTests
       var desc = le.Description;
       Assert.AreEqual(desc, expectedDesc);
 
-      CheckAction(EffectType.IronSkin, EntityStatKind.Defense, '+', game.Hero);
-      CheckAction(EffectType.Rage, EntityStatKind.Attack, '+', game.Hero);
-      CheckAction(EffectType.Inaccuracy, EntityStatKind.ChanceToHit, '-', game.Hero);
-      CheckAction(EffectType.Weaken, EntityStatKind.Defense, '-', game.Hero);
-      CheckAction(EffectType.ResistAll, EntityStatKind.Unset, '+', game.Hero);
+      CheckActionDesc(EffectType.IronSkin, EntityStatKind.Defense, '+', game.Hero);
+      CheckActionDesc(EffectType.Rage, EntityStatKind.Attack, '+', game.Hero);
+      CheckActionDesc(EffectType.Inaccuracy, EntityStatKind.ChanceToHit, '-', game.Hero);
+      CheckActionDesc(EffectType.Weaken, EntityStatKind.Defense, '-', game.Hero);
+      CheckActionDesc(EffectType.ResistAll, EntityStatKind.Unset, '+', game.Hero);
     }
 
     [Test]
@@ -228,6 +228,24 @@ namespace RoguelikeUnitTests
     }
 
     [Test]
+    public void TestWeaken()
+    {
+      var game = CreateGame();
+      var defenseStat = game.Hero.Stats.GetStat(EntityStatKind.Defense);
+      var defense = defenseStat.Value.CurrentValue;// game.Hero.Stats.GetCurrentValue(EntityStatKind.Defense);
+      var le1 = game.Hero.AddLastingEffectFromSpell(EffectType.Weaken);
+      Assert.Less(defenseStat.Value.CurrentValue, defense);
+      //var defenseWeaken = game.Hero.Stats.Defense;
+      var turns = le1.PendingTurns;
+      for (int i = 0; i < turns ; i++)
+      {
+        game.GameManager.SkipHeroTurn();
+        GotoNextHeroTurn();
+      }
+      Assert.AreEqual(defenseStat.Value.CurrentValue, defense);
+    }
+
+    [Test]
     public void TestBleeding()
     {
       var game = CreateGame();
@@ -251,6 +269,9 @@ namespace RoguelikeUnitTests
       enemyHealthStat.Value.Nominal = 150;
       enemy.SetIsWounded();//make sure will bleed
       var enemyHealth = enemy.Stats.Health;
+
+      var wpn = game.GameManager.LootGenerator.GetLootByTileName<Weapon>("rusty_sword");
+      game.Hero.SetEquipment(CurrentEquipmentKind.Weapon, wpn);
 
       enemy.OnPhysicalHit(game.Hero);
       var le1 = enemy.LastingEffects.Where(i => i.Type == EffectType.Bleeding).FirstOrDefault();
@@ -290,6 +311,8 @@ namespace RoguelikeUnitTests
       var healthStat = enemy.Stats.GetStat(EntityStatKind.Health);
       healthStat.Value.Nominal = 150;
       enemy.SetIsWounded();//make sure will bleed
+      var wpn = game.GameManager.LootGenerator.GetLootByTileName<Weapon>("rusty_sword");
+      game.Hero.SetEquipment(CurrentEquipmentKind.Weapon, wpn);
 
       enemy.OnPhysicalHit(game.Hero);
       var le1 = enemy.LastingEffects.Where(i => i.Type == EffectType.Bleeding).SingleOrDefault();

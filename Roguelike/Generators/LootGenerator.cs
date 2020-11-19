@@ -81,15 +81,19 @@ namespace Roguelike.Generators
           if (lk == LootKind.Potion || lk == LootKind.Scroll)
           {
             mult = 1.6f;
+            if(lk == LootKind.Scroll)
+              mult = 1.8f;
             if (lootSource == LootSourceKind.PlainChest || lootSource == LootSourceKind.Barrel)
             {
               if (lk == LootKind.Gem || lk == LootKind.HunterTrophy)
                 mult = 0.5f;
+              else
+                mult = .8f;
             }
-            if (lootSource == LootSourceKind.PlainChest || lootSource == LootSourceKind.Barrel)
-            {
-              mult = .8f;
-            }
+            //if (lootSource == LootSourceKind.PlainChest || lootSource == LootSourceKind.Barrel)
+            //{
+            //  mult = .8f;
+            //}
           }
           
           val *= mult;
@@ -257,7 +261,7 @@ namespace Roguelike.Generators
         eqClass = EquipmentClass.Unique;
       else if (powerKind == EnemyPowerKind.Champion)
       {
-        bool alwaysEnchantable = true; 
+        bool alwaysEnchantable = false; 
         if (!alwaysEnchantable && RandHelper.GetRandomDouble() > 0.5)
           eqClass = EquipmentClass.MagicSecLevel;
         else
@@ -312,13 +316,14 @@ namespace Roguelike.Generators
       else if (kind == LootKind.Scroll)
       {
         var scroll = LootFactory.ScrollsFactory.GetRandom(level) as Scroll;
+        var rand = RandHelper.GetRandomDouble();
 
-        if (scroll.Kind == Spells.SpellKind.Portal //no need for so many of them
-          || (scroll.Kind != Spells.SpellKind.Identify && RandHelper.GetRandomDouble() > 0.3)) //these are fine
+        if ( (scroll.Kind == Spells.SpellKind.Portal && rand > 0.4f) //no need for so many of them
+          || (scroll.Kind != Spells.SpellKind.Identify && rand >  0.2f)) //these are fine
         {
           var newScroll = LootFactory.ScrollsFactory.GetRandom(level) as Scroll;
-          if (newScroll.Kind != Spells.SpellKind.Portal || scroll.Kind == Spells.SpellKind.Portal)
-            scroll = newScroll;
+          //if (newScroll.Kind != Spells.SpellKind.Portal || scroll.Kind == Spells.SpellKind.Portal)
+          scroll = newScroll;
         }
 
         res = scroll;

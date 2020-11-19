@@ -439,7 +439,7 @@ namespace Roguelike.Tiles
           {
             var stats = eq.GetStats();
             Stats.AccumulateFactors(stats, positive);
-            Stats.AccumulateFactors(eq.ExtendedInfo.Stats, positive);
+            //Stats.AccumulateFactors(eq.ExtendedInfo.Stats, positive); done in eq.GetStats
           }
         }
       }

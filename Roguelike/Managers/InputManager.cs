@@ -202,7 +202,8 @@ namespace Roguelike.Managers
         if (tile == null)
         {
           gm.Logger.LogInfo(" tile null at " + newPos.Point);
-          res = InteractionResult.Blocked;
+          gm.CurrentNode.SetEmptyTile(newPos.Point);
+          //res = InteractionResult.Blocked;
         }
         else if (!tile.IsEmpty)
           res = InteractHeroWith(tile);
