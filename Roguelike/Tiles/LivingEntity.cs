@@ -100,10 +100,10 @@ namespace Roguelike.Tiles
       foreach (var et in effectTypes)
       {
         var chance = GetDefaultChanceToExperienceEffect();
-        if (et == EffectType.Bleeding || et == EffectType.TornApart)
-          chance = 100;
-        if (et == EffectType.Stunned)
-          chance = 90;
+        //if (et == EffectType.Bleeding || et == EffectType.TornApart)
+        //  chance = 100;
+        //if (et == EffectType.Stunned)
+        //  chance = 90;
         SetChanceToExperienceEffect(et, chance);
       }
 
@@ -124,7 +124,6 @@ namespace Roguelike.Tiles
       chanceToExperienceEffect[et] = chance;
     }
 
-    //public int ActionsDoneInTurn { get; set; }
     protected virtual int GetDefaultChanceToExperienceEffect() { return 10; }
 
     public void ReduceMana(float amount)
@@ -262,13 +261,15 @@ namespace Roguelike.Tiles
         ReduceHealth(inflicted);
 
       var desc = Name.ToString() + " received damage: " + inflicted.Formatted();
-      
-      foreach (var stat in attacker.GetNonPhysicalDamages())
+
+      var npds = attacker.GetNonPhysicalDamages();
+      foreach (var stat in npds)
       {
         var npd = CalculateNonPhysicalDamage(stat.Key, stat.Value);
         if (npd != 0)
           desc += " " + GetAttackDesc(stat.Key) + ": " + npd.Formatted();
         inflicted += npd;
+        LastingEffectsSet.TryAddLastingEffectOnHit(npd, attacker, stat.Key);
       }
             
       var ga = new LivingEntityAction(LivingEntityActionKind.GainedDamage) { InvolvedValue = inflicted, InvolvedEntity = this };
@@ -320,9 +321,13 @@ namespace Roguelike.Tiles
 
     public Dictionary<EntityStatKind, float> GetNonPhysicalDamages()
     {
+      //Dictionary<EntityStatKind, float> effective = new Dictionary<EntityStatKind, float>();
+      nonPhysicalDamageStats.Clear();
       foreach (var stat in Loot.AttackingNonPhysicalStats)
       {
-        nonPhysicalDamageStats[stat] = Stats.GetTotalValue(stat);
+        var cv = Stats.GetCurrentValue(stat);
+        if(cv > 0)
+          nonPhysicalDamageStats[stat] = cv;
       }
 
       return nonPhysicalDamageStats;
@@ -375,19 +380,19 @@ namespace Roguelike.Tiles
 
       var frighten = this.GetFirstLastingEffect(EffectType.Frighten);
       if(frighten !=null)
-        RemoveLastingEffect(this, frighten);
+        RemoveLastingEffect(frighten);
 
       if (attacker != null || (spell.Caller != null && spell.Caller.LastingEffects.Any(i => i.Type == EffectType.Transform)))
       {
         var removeTr = attacker ?? spell.Caller;
         var transf = this.GetFirstLastingEffect(EffectType.Transform);
         if (transf != null)
-          RemoveLastingEffect(removeTr, transf);
+          removeTr.RemoveLastingEffect(transf);
       }
       if (attacker != null && spell == null && amount > 0)
         StealStatIfApplicable(amount, attacker);
 
-      var effectInfo = lastingEffectsSet.TryAddLastingEffectOnHit(amount, attacker, spell);
+      lastingEffectsSet.TryAddLastingEffectOnHit(amount, attacker, spell);
       var attackedInst = attacker ?? spell.Caller;
       if (attackedInst != null)
       {
@@ -466,9 +471,9 @@ namespace Roguelike.Tiles
 
     public LastingEffectsSet LastingEffectsSet { get => lastingEffectsSet;  }
 
-    public virtual void RemoveLastingEffect(LivingEntity livEnt, LastingEffect le)
+    public virtual void RemoveLastingEffect(LastingEffect le)
     {
-      lastingEffectsSet.RemoveLastingEffect(livEnt, le);
+      lastingEffectsSet.RemoveLastingEffect(le);
     }
         
     public static float GetReducePercentage(float orgAmount, float discPerc)
@@ -618,7 +623,7 @@ namespace Roguelike.Tiles
       return EntityStatKind.Unset;
     }
 
-    public bool OnHitBy(Roguelike.Abstract.ISpell md)
+    public bool OnHitBy(ISpell md)
     {
       if (md is Spell)
       {
@@ -739,6 +744,13 @@ namespace Roguelike.Tiles
       return EffectType.Unset;
     }
 
+    //public LastingEffect AddLastingEffect(EffectType effectType)
+    //{
+    //  //lastingEffectsSet.TryAddLastingEffectOnHit(amount, attacker, spell);
+    //  //lastingEffectsSet.AddPercentageLastingEffect(effectType, this, null);
+    //  return null;
+    //}
+
     public LastingEffect AddLastingEffectFromSpell(EffectType effectType)
     {
       SpellKind spellKind = SpellConverter.SpellKindFromEffectType(effectType);
@@ -753,15 +765,10 @@ namespace Roguelike.Tiles
     public EffectiveFactor CalcEffectiveFactor(EntityStatKind kind, float nominalValuePercInc)
     {
       var statValue = Stats.GetStat(kind).Value.TotalValue;
-      var factor = CalcEffectValue(nominalValuePercInc, statValue);
+      var factor = statValue * nominalValuePercInc / 100f;// CalcEffectValue(nominalValuePercInc, statValue);
       return new EffectiveFactor(factor);
     }
-
-    private static float CalcEffectValue(float nominalValuePercInc, float statValue)
-    {
-      return statValue * nominalValuePercInc / 100f;
-    }
-
+        
     public void ApplyPassiveSpell(PassiveSpell spell)
     {
       AddLastingEffectFromSpell(spell.Kind, SpellConverter.EffectTypeFromSpellKind(spell.Kind));

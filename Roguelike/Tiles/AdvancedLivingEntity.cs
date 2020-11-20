@@ -165,11 +165,21 @@ namespace Roguelike.Tiles
         }
         else
         {
-          if (consumable is Potion)
+          if (consumable is Potion potion)
           {
             Debug.Assert(consumable.ConsumptionSteps == 1);
-            var factor = LastingEffectsSet.CalcLastingEffectInfo(EffectType.Unset, consumable);
-            DoConsume(consumable.StatKind, factor);
+            if (potion.Kind == PotionKind.Poison)
+            {
+              var le = GetFirstLastingEffect(EffectType.Poisoned);
+              if (le != null)
+                RemoveLastingEffect(le);
+              //DoConsume(consumable.StatKind, factor);
+            }
+            else
+            {
+              var factor = LastingEffectsSet.CalcLastingEffectInfo(EffectType.Unset, consumable);
+              DoConsume(consumable.StatKind, factor);
+            }
           }
           else
           {

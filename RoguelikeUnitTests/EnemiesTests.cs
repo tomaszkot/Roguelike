@@ -1,4 +1,5 @@
 ﻿using NUnit.Framework;
+using Roguelike;
 using Roguelike.Attributes;
 using Roguelike.Managers;
 using Roguelike.Tiles;
@@ -10,6 +11,25 @@ namespace RoguelikeUnitTests
   [TestFixture]
   class EnemiesTests : TestBase
   {
+
+    [Test]
+    public void TestPhysicalDamage()
+    {
+      var game = CreateGame();
+      var enemy = new Enemy(EnemySymbols.SkeletonSymbol);//SpawnEnemy();
+      //enemy.Symbol = EnemySymbols.BatSymbol;
+      Assert.False(enemy.GetNonPhysicalDamages().Any());
+      enemy.Symbol = EnemySymbols.SpiderSymbol;
+      Assert.True(enemy.GetNonPhysicalDamages().Any());
+
+      var poisonVal = enemy.GetNonPhysicalDamages()[EntityStatKind.PoisonAttack];
+      Assert.Greater(poisonVal, 0 );
+      Assert.AreEqual(enemy.Level, 1);
+      enemy.SetLevel(2);
+      Assert.AreEqual(enemy.Level, 2);
+      Assert.Greater(enemy.GetNonPhysicalDamages()[EntityStatKind.PoisonAttack], poisonVal);
+    }
+    
     [Test]
     public void TestLevel()
     {

@@ -1,5 +1,6 @@
 ﻿using NUnit.Framework;
 using Roguelike.Attributes;
+using Roguelike.Effects;
 using Roguelike.Spells;
 using Roguelike.Tiles;
 using Roguelike.Tiles.Looting;
@@ -96,6 +97,33 @@ namespace RoguelikeUnitTests
       AddItemToInv(pot);
       hero.Consume(pot);
       Assert.AreEqual(hero.Stats[esk].Nominal, statValue + 1);
+    }
+
+    [Test]
+    public void TestPoisonPotionConsume()
+    {
+      var game = CreateGame();
+      var hero = game.Hero;
+      hero.SetChanceToExperienceEffect(EffectType.Poisoned, 100);
+
+      //make enemy poisonus
+      var enemy = AllEnemies.First();
+      var poisonAttack = enemy.Stats.GetStat(EntityStatKind.PoisonAttack);
+      poisonAttack.Value.Nominal = 10;
+
+      game.Hero.OnPhysicalHit(enemy);
+      var le1 = game.Hero.GetFirstLastingEffect(EffectType.Poisoned);
+      Assert.NotNull(le1);
+
+      var pot = Helper.AddTile<Potion>();
+      pot.SetKind(PotionKind.Poison);
+      AddItemToInv(pot);
+      hero.Consume(pot);
+
+      le1 = game.Hero.GetFirstLastingEffect(EffectType.Poisoned);
+      Assert.Null(le1);
+
+
     }
   }
 }

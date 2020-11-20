@@ -200,7 +200,24 @@ namespace Roguelike.Tiles
       return base.ToString() + " " + PowerKind + "";
     }
 
+    public override char Symbol 
+    { 
+      get => base.Symbol;
+      set
+      {
+        base.Symbol = value;
+        SetSpecialAttackStat();
+      }
+    }
 
-
+    private void SetSpecialAttackStat()
+    {
+      if (Symbol == EnemySymbols.SnakeSymbol ||
+                 Symbol == EnemySymbols.SpiderSymbol)
+      {
+        var poisonAttack = Stats.GetStat(EntityStatKind.PoisonAttack);
+        poisonAttack.Value.Nominal = 2;
+      }
+    }
   }
 }

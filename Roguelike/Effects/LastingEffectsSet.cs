@@ -41,7 +41,7 @@ namespace Roguelike.Effects
       }
     }
 
-    public void AddLastingEffect(LastingEffect le)
+    void AddLastingEffect(LastingEffect le)
     {
       //le.PendingTurns = 50;
       LastingEffects.Add(le);
@@ -107,7 +107,7 @@ namespace Roguelike.Effects
       var done = LastingEffects.Where(i => i.PendingTurns <= 0).ToList();
       foreach (var doneItem in done)
       {
-        RemoveLastingEffect(this.livingEntity, doneItem);
+        RemoveLastingEffect(doneItem);
       }
     }
 
@@ -193,18 +193,18 @@ namespace Roguelike.Effects
       return lea;
     }
 
-    public virtual void RemoveLastingEffect(LivingEntity entity, LastingEffect le)
+    public virtual void RemoveLastingEffect(LastingEffect le)
     {
       if (le != null)
       {
-        bool removed = entity.LastingEffects.Remove(le);
+        bool removed = livingEntity.LastingEffects.Remove(le);
         Assert(removed);
 
         //HandleStatSubtraction(le, true);
         if (le.Application != EffectApplication.EachTurn)
           HandleStatSubtraction(le, false);
 
-        if (entity == livingEntity && LastingEffectDone != null)
+        if (LastingEffectDone != null)
           LastingEffectDone(this, le);
       }
     }
@@ -261,18 +261,24 @@ namespace Roguelike.Effects
 
     protected LastingEffectCalcInfo CreateLastingEffectCalcInfo(EffectType eff, float effectiveFactor, float percentageFactor, int turns)
     {
-      if (eff == EffectType.Bleeding || eff == EffectType.Inaccuracy || eff == EffectType.Weaken)
+      if (eff == EffectType.Bleeding || eff == EffectType.Inaccuracy || eff == EffectType.Weaken ||
+          eff == EffectType.Poisoned || eff == EffectType.Firing || eff == EffectType.Frozen)
         effectiveFactor *= -1;
       var lef = new LastingEffectCalcInfo(eff, turns, new EffectiveFactor(effectiveFactor), new PercentageFactor(percentageFactor));
 
       return lef;
     }
 
-    public LastingEffect TryAddLastingEffectOnHit(float amount, LivingEntity attacker, Spell spell)
+    public LastingEffect TryAddLastingEffectOnHit(float hitAmount, LivingEntity attacker, Spell spell)
+    {
+      var effectInfo = CalcLastingEffDamage(EffectType.Unset, hitAmount, spell, null);
+      return TryAddLastingEffect(effectInfo);
+    }
+
+    private LastingEffect TryAddLastingEffect(LastingEffectCalcInfo effectInfo)
     {
       LastingEffect le = null;
-      var effectInfo = CalcLastingEffDamage(EffectType.Unset, amount, spell, null);
-      if (effectInfo !=null && effectInfo.Type != EffectType.Unset && !livingEntity.IsImmuned(effectInfo.Type))
+      if (effectInfo != null && effectInfo.Type != EffectType.Unset && !livingEntity.IsImmuned(effectInfo.Type))
       {
         var rand = RandHelper.Random.NextDouble();
         var chance = livingEntity.GetChanceToExperienceEffect(effectInfo.Type);
@@ -280,11 +286,21 @@ namespace Roguelike.Effects
         //chance += fightItem.GetFactor(false);
         if (rand * 100 <= chance)
         {
-          le = AddLastingEffect(effectInfo, EffectOrigin.External, null);
+          le = AddLastingEffect(effectInfo, EffectOrigin.External, null, EffectTypeConverter.Convert(effectInfo.Type));
         }
       }
 
       return le;
+    }
+
+    public LastingEffect TryAddLastingEffectOnHit(float hitAmount, LivingEntity attacker, EntityStatKind esk)
+    {
+      EffectType et = EffectTypeConverter.Convert(esk);
+      if (et == EffectType.Unset)
+        return null;
+
+      var effectInfo = CalcLastingEffDamage(et, hitAmount, null, null);
+      return TryAddLastingEffect(effectInfo);
     }
 
     public static int GetPendingTurns(EffectType et)
@@ -298,7 +314,7 @@ namespace Roguelike.Effects
       //var turns = effectInfo.Turns;
       //if (turns <= 0)
       //  turns = GetPendingTurns(et);
-      var currentEffect = this.AddLastingEffect(effectInfo, EffectOrigin.External, null, EffectTypeToStatKind.Convert(et),  true);
+      var currentEffect = this.AddLastingEffect(effectInfo, EffectOrigin.External, null, EffectTypeConverter.Convert(et),  true);
       return currentEffect;
     }
 

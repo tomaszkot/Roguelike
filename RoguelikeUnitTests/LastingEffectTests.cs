@@ -340,6 +340,43 @@ namespace RoguelikeUnitTests
       Assert.AreEqual(actionCounter, 5);
     }
 
+    [Test]
+    public void TestPoisoned()
+    {
+      var game = CreateGame();
+      var healthStat = game.Hero.Stats.GetStat(EntityStatKind.Health);
+      var health = healthStat.Value.CurrentValue;
+      Assert.Greater(game.Hero.GetChanceToExperienceEffect(EffectType.Poisoned), 0);
+      game.Hero.SetChanceToExperienceEffect(EffectType.Poisoned, 100);
+
+      //make enemy poisonus
+      var enemy = AllEnemies.First();
+      var poisonAttack = enemy.Stats.GetStat(EntityStatKind.PoisonAttack);
+      poisonAttack.Value.Nominal = 10;
+
+      game.Hero.OnPhysicalHit(enemy);
+      var le1 = game.Hero.GetFirstLastingEffect(EffectType.Poisoned);
+      Assert.NotNull(le1);
+      
+      Assert.Less(healthStat.Value.CurrentValue, health);
+      var turns = le1.PendingTurns;
+      for (int i = 0; i < turns; i++)
+      {
+        game.GameManager.SkipHeroTurn();
+        GotoNextHeroTurn();
+        Assert.Less(healthStat.Value.CurrentValue, health);
+        health = healthStat.Value.CurrentValue;
+      }
+
+      health = healthStat.Value.CurrentValue;
+
+      for (int i = 0; i < 5; i++)
+      {
+        game.GameManager.SkipHeroTurn();
+        GotoNextHeroTurn();
+        Assert.AreEqual(healthStat.Value.CurrentValue, health);
+      }
+    }
 
   }
 }
