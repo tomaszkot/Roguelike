@@ -261,13 +261,18 @@ namespace Roguelike.Generators
         eqClass = EquipmentClass.Unique;
       else if (powerKind == EnemyPowerKind.Champion)
       {
-        bool alwaysEnchantable = false; 
-        if (!alwaysEnchantable && RandHelper.GetRandomDouble() > 0.5)
-          eqClass = EquipmentClass.MagicSecLevel;
+        if (RandHelper.GetRandomDouble() > 0.75)
+          eqClass = EquipmentClass.Unique;
         else
         {
-          eqClass = EquipmentClass.Plain;
-          enchant = true;
+          bool alwaysEnchantable = false;
+          if (!alwaysEnchantable && RandHelper.GetRandomDouble() > 0.5)
+            eqClass = EquipmentClass.MagicSecLevel;
+          else
+          {
+            eqClass = EquipmentClass.Plain;
+            enchant = true;
+          }
         }
       }
       var eq = GetRandomEquipment(eqClass, level);

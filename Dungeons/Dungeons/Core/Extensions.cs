@@ -42,7 +42,7 @@ namespace Dungeons.Core
       }
     }
 
-    public static void Shuffle<T>(this IList<T> list)
+    public static void Shuffle<T>(this List<T> list)
     {
       int n = list.Count;
       while (n > 1)
