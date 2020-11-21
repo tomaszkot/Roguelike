@@ -298,6 +298,17 @@ namespace Roguelike.Tiles
       return inflicted;
     }
 
+    List<EffectType> everCausedHero = new List<EffectType>();
+    internal bool EverCausedHero(EffectType type)
+    {
+      return everCausedHero.Contains(type);
+    }
+    
+    internal void SetEverCausedHero(EffectType type)
+    {
+      everCausedHero.Add(type);
+    }
+
     public virtual bool CanCauseBleeding()
     {
       return true;

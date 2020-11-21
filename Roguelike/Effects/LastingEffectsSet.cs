@@ -287,7 +287,12 @@ namespace Roguelike.Effects
         {
           if (enemy.PowerKind != EnemyPowerKind.Plain)
           {
-            add = rand > 0.65f && GetByType(effectInfo.Type) == null;
+            float threshold = 0.65f;
+            if(attacker.EverCausedHero(effectInfo.Type))
+              threshold = 0.85f;
+            add = rand > threshold && GetByType(effectInfo.Type) == null;
+            if (add)
+              attacker.SetEverCausedHero(effectInfo.Type);
           }
         }
         //if (fightItem != null)

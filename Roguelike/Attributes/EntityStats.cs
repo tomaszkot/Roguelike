@@ -282,7 +282,7 @@ namespace Roguelike.Attributes
       {
         //eating food can not make health bigger than TotalValue
         float val = amount;
-        if (sk == EntityStatKind.Health && sk == EntityStatKind.Mana)
+        if (sk == EntityStatKind.Health || sk == EntityStatKind.Mana)
         {
           var valMax = this[sk].TotalValue - currentValue;
           if (val > valMax)
