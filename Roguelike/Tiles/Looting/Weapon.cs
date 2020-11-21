@@ -1,9 +1,4 @@
 ﻿using Roguelike.Attributes;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Roguelike.Tiles
 {
@@ -26,8 +21,8 @@ namespace Roguelike.Tiles
 
     public bool IsMagician()
     {
-      return Kind == Roguelike.Tiles.Weapon.WeaponKind.Scepter || Kind == Roguelike.Tiles.Weapon.WeaponKind.Wand ||
-        Kind == Roguelike.Tiles.Weapon.WeaponKind.Staff;
+      return Kind == WeaponKind.Scepter || Kind == Weapon.WeaponKind.Wand ||
+        Kind == Weapon.WeaponKind.Staff;
     }
 
     public WeaponKind kind;
@@ -54,17 +49,20 @@ namespace Roguelike.Tiles
         PrimaryStatValue = value;
       }
     }
-    
-    const float DamageVariation = .15f;
+
+    public bool StableDamage { get; set; } = false;
+               
     public float GetPrimaryDamageVariation()
     {
+      if (StableDamage)
+        return 0;
       if (Damage == 0)
         return 0;
       if (Damage < 10)
         return 1;
       if (Damage < 20)
         return 2;
-      return (int)(PrimaryStatValue * DamageVariation);
+      return (int)(PrimaryStatValue * .15f);
     }
 
     public string GetDamageDescription()

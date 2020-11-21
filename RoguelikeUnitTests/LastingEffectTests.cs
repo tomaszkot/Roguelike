@@ -267,7 +267,7 @@ namespace RoguelikeUnitTests
       var enemy = ActiveEnemies.First();
       var enemyHealthStat = enemy.Stats.GetStat(EntityStatKind.Health);
       enemyHealthStat.Value.Nominal = 150;
-      enemy.SetIsWounded();//make sure will bleed
+      enemy.SetIsWounded(true);//make sure will bleed
       var enemyHealth = enemy.Stats.Health;
 
       var wpn = game.GameManager.LootGenerator.GetLootByTileName<Weapon>("rusty_sword");
@@ -310,7 +310,7 @@ namespace RoguelikeUnitTests
       var enemy = ActiveEnemies.First();
       var healthStat = enemy.Stats.GetStat(EntityStatKind.Health);
       healthStat.Value.Nominal = 150;
-      enemy.SetIsWounded();//make sure will bleed
+      enemy.SetIsWounded(true);//make sure will bleed
       var wpn = game.GameManager.LootGenerator.GetLootByTileName<Weapon>("rusty_sword");
       game.Hero.SetEquipment(CurrentEquipmentKind.Weapon, wpn);
 

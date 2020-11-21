@@ -151,7 +151,6 @@ namespace Roguelike.Tiles
 
     public override float GetHitAttackValue(bool withVariation)
     {
-      //return base.GetHitAttackValue(withVariation);
       var att = base.GetHitAttackValue(withVariation);
       var wpn = GetActiveEquipment()[CurrentEquipmentKind.Weapon] as Weapon;
       if (wpn != null)

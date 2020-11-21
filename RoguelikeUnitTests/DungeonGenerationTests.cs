@@ -303,6 +303,21 @@ namespace RoguelikeUnitTests
 
     //}
 
+    [Test]
+    public void EnemiesNames()
+    {
+      var game = CreateGame(false);
+      game.SetMaxLevelIndex(1);//there will be level0, level1
+      game.GenerateLevel(0);
+      var enemies = game.Level.GetTiles<Enemy>();
+      enemies.ForEach(i =>
+      {
+        Assert.True(i.Name.Any());
+        Assert.True(i.Name.ToLower() != "enemy");
+      }
+      );
+
+    }
 
   }
 }

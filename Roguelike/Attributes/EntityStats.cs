@@ -281,10 +281,13 @@ namespace Roguelike.Attributes
       //if (currentValue < this[sk].TotalValue && amount > 0 || currentValue > 0 && amount < 0)
       {
         //eating food can not make health bigger than TotalValue
-        var valMax = this[sk].TotalValue - currentValue;
         float val = amount;
-        if (val > valMax)
-          val = valMax;
+        if (sk == EntityStatKind.Health && sk == EntityStatKind.Mana)
+        {
+          var valMax = this[sk].TotalValue - currentValue;
+          if (val > valMax)
+            val = valMax;
+        }
 
         Stats[sk].Subtract(-val);
 

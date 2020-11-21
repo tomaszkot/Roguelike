@@ -245,18 +245,18 @@ namespace Roguelike.Generators
         chest.ChestKind = ChestKind.GoldDeluxe;
       }
 
-      SetPowerFromLevel(packEnemies);
+      //SetPowerFromLevel(packEnemies);
 
       PlaceEnemiesPack(packEnemies);
     }
 
-    private void SetPowerFromLevel(List<Enemy> packEnemies)
-    {
-      foreach (var en in packEnemies)
-      {
-        SetILootSourceLevel(en);
-      }
-    }
+    //private void SetPowerFromLevel(List<Enemy> packEnemies)
+    //{
+    //  foreach (var en in packEnemies)
+    //  {
+    //    SetILootSourceLevel(en);
+    //  }
+    //}
 
     void SetILootSourceLevel(ILootSource src)
     {

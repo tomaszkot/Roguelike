@@ -604,11 +604,6 @@ namespace Roguelike.Tiles
       return GetCurrentValue(resist);
     }
 
-    //public void UseScroll(SpellCastPolicy policy)
-    //{
-    //  policy.Apply(this);
-    //}
-
     public static EntityStatKind GetResist(EntityStatKind attackingStat)
     {
       if (attackingStat == EntityStatKind.FireAttack)
@@ -673,17 +668,22 @@ namespace Roguelike.Tiles
 
     public event EventHandler Wounded;
 
-    public void SetIsWounded()
+    public void SetIsWounded(bool wounded)
     {
-      if (IsWounded)
+      if (wounded && IsWounded)
         return;
 
-      IsWounded = true;
+      IsWounded = wounded;
       var def = Stats.GetStat(EntityStatKind.Defense);
-      def.Subtract(def.Value.TotalValue/2);
-      
-      if (Wounded != null)
-        Wounded(this, EventArgs.Empty);
+      if (wounded)
+      {
+        def.Subtract(def.Value.TotalValue / 2);
+
+        if (Wounded != null)
+          Wounded(this, EventArgs.Empty);
+      }
+      else
+        def.Subtract(-def.Value.TotalValue / 2);
     }
 
     public virtual float GetChanceToHit()
@@ -743,13 +743,6 @@ namespace Roguelike.Tiles
       }
       return EffectType.Unset;
     }
-
-    //public LastingEffect AddLastingEffect(EffectType effectType)
-    //{
-    //  //lastingEffectsSet.TryAddLastingEffectOnHit(amount, attacker, spell);
-    //  //lastingEffectsSet.AddPercentageLastingEffect(effectType, this, null);
-    //  return null;
-    //}
 
     public LastingEffect AddLastingEffectFromSpell(EffectType effectType)
     {
