@@ -8,6 +8,8 @@ namespace Roguelike
 {
   public class EnemySymbols
   {
+    public const char Unset = '\0';
+
     public const char VampireSymbol = 'a';
     public const char BatSymbol = 'b';
     public const char SnakeSymbol = 'c';//'c';
@@ -59,7 +61,7 @@ namespace Roguelike
     {
       if(EnemiesToSymbols.ContainsKey(name))
         return EnemiesToSymbols[name];
-      return '\0';
+      return Unset;
     }
 
 
