@@ -45,27 +45,7 @@ namespace Roguelike.Tiles.Looting
     {
       return base.GetId() + TinyTrophyKind + " " + EnchanterSize;
     }
-
-    private static void PopulateProps
-    (
-      Dictionary<EquipmentKind, EntityStatKind> enhancmentProps, 
-      EntityStatKind arm,
-      EntityStatKind wpn, 
-      EntityStatKind Juw
-    )
-    {
-      enhancmentProps[EquipmentKind.Armor] = arm;
-      enhancmentProps[EquipmentKind.Helmet] = arm;
-      enhancmentProps[EquipmentKind.Shield] = arm;
-      enhancmentProps[EquipmentKind.Glove] = arm;
-
-      enhancmentProps[EquipmentKind.Amulet] = Juw;
-      enhancmentProps[EquipmentKind.Ring] = Juw;
-      enhancmentProps[EquipmentKind.Trophy] = Juw;
-
-      enhancmentProps[EquipmentKind.Weapon] = wpn;
-    }
-
+        
     public HunterTrophy(HunterTrophyKind kind)
     {
       Price = 5;

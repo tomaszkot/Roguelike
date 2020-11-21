@@ -15,6 +15,7 @@ namespace Roguelike.Tiles.Looting
     static Dictionary<EquipmentKind, EntityStatKind> enhancmentPropsRuby = new Dictionary<EquipmentKind, EntityStatKind>();
     static Dictionary<EquipmentKind, EntityStatKind> enhancmentPropsEmer = new Dictionary<EquipmentKind, EntityStatKind>();
     static Dictionary<EquipmentKind, EntityStatKind> enhancmentPropsDiam = new Dictionary<EquipmentKind, EntityStatKind>();
+    
     static Dictionary<GemKind, Dictionary<EquipmentKind, EntityStatKind>> enhancmentProps = new Dictionary<GemKind, Dictionary<EquipmentKind, EntityStatKind>>();
 
     public Gem() : this(GemKind.Unset)
@@ -82,26 +83,6 @@ namespace Roguelike.Tiles.Looting
       enhancmentProps[GemKind.Diamond] = enhancmentPropsDiam;
     }
 
-    private static void PopulateProps
-    (
-      Dictionary<EquipmentKind, EntityStatKind> enhancmentProps,
-      EntityStatKind arm, 
-      EntityStatKind wpn, 
-      EntityStatKind Juw
-    )
-    {
-      enhancmentProps[EquipmentKind.Armor] = arm;
-      enhancmentProps[EquipmentKind.Helmet] = arm;
-      enhancmentProps[EquipmentKind.Shield] = arm;
-      enhancmentProps[EquipmentKind.Glove] = arm;
-
-      enhancmentProps[EquipmentKind.Amulet] = Juw;
-      enhancmentProps[EquipmentKind.Ring] = Juw;
-      enhancmentProps[EquipmentKind.Trophy] = Juw;
-
-      enhancmentProps[EquipmentKind.Weapon] = wpn;
-    }
-
     public void SetRandomKindAndLevelSize(int gameLevel, bool setKind)
     {
       if(setKind)
@@ -162,8 +143,8 @@ namespace Roguelike.Tiles.Looting
         {
           int val = GetStatIncrease(eq.EquipmentKind, prop);
                    
-          if (values.Any(i => i != val))
-            throw new Exception("Error on crafting");
+          //if (values.Any(i => i != val)) ??
+          //  throw new Exception("Error on crafting");
           values.Add(val);
         }
 

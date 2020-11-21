@@ -41,6 +41,27 @@ namespace Roguelike.Tiles.Looting
       otherValues[EnchanterSize.Small] = 5;
     }
 
+    protected static void PopulateProps
+    (
+      Dictionary<EquipmentKind, EntityStatKind> enhancmentProps,
+      EntityStatKind arm,
+      EntityStatKind wpn,
+      EntityStatKind juw
+    )
+    {
+      enhancmentProps[EquipmentKind.Armor] = arm;
+      enhancmentProps[EquipmentKind.Helmet] = arm;
+      enhancmentProps[EquipmentKind.Shield] = arm;
+      enhancmentProps[EquipmentKind.Glove] = arm;
+
+      enhancmentProps[EquipmentKind.Amulet] = juw;
+      enhancmentProps[EquipmentKind.Ring] = juw;
+      enhancmentProps[EquipmentKind.Trophy] = juw;
+
+      enhancmentProps[EquipmentKind.Weapon] = wpn;
+    }
+
+
     public virtual int GetStatIncrease(EquipmentKind ek, EntityStatKind esk = EntityStatKind.Unset)
     {
       int val = 0;
