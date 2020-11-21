@@ -291,7 +291,7 @@ namespace Roguelike.Tiles
         }
       }
 
-      if (currentEq == null || eq.IsBetter(currentEq))
+      if (CanUseEquipment(eq) && (currentEq == null || eq.IsBetter(currentEq)))
       {
         if (currentEq != null)
         {
@@ -303,6 +303,11 @@ namespace Roguelike.Tiles
       }
       
       return false;
+    }
+
+    public bool CanUseEquipment(Equipment eq)
+    {
+      return Level >= eq.RequiredLevel;
     }
         
     public bool MoveEquipment(Inventory from, CurrentEquipment to, Equipment eq,

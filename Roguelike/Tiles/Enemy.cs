@@ -108,7 +108,7 @@ namespace Roguelike.Tiles
       {
         Symbol = (char)((int)Symbol - 32);
       }
-      float inc = boss ? 1.4f : 1.2f;
+      float inc = boss ? 1.9f : 1.5f;
       IncreaseStats(inc, true);
 
       InitEffectsToUse(boss);

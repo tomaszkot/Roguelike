@@ -289,7 +289,7 @@ namespace Roguelike.Tiles
       if(!dead && IsWounded)
       {
         if(attacker.CanCauseBleeding())
-          lastingEffectsSet.EnsureEffect(EffectType.Bleeding, inflicted, attacker);
+          lastingEffectsSet.EnsureEffect(EffectType.Bleeding, inflicted/3, attacker);
       }
 
       return inflicted;
