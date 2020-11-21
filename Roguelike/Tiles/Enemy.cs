@@ -5,6 +5,8 @@ using System.Linq;
 using Dungeons.Core;
 using Roguelike.Attributes;
 using Roguelike.Effects;
+using Roguelike.Spells;
+using Roguelike.Tiles.Looting;
 
 namespace Roguelike.Tiles
 {
@@ -154,8 +156,70 @@ namespace Roguelike.Tiles
       var hard = false;// GameManager.Instance.GameSettings.DifficultyLevel == Commons.GameSettings.Difficulty.Hard;
       var inc = GetIncrease(hard ? level + 1 : level);
       IncreaseStats(inc, false);
-      //SetResistance();
+      SetResistance();
       LevelSet = true;
+    }
+
+    void SetResistance()
+    {
+      float resistBasePercentage = 5 * GetIncrease(this.Level, 3f);
+      var incPerc = GetResistanceLevelFactor(this.Level);
+      resistBasePercentage += resistBasePercentage * incPerc / 100;
+
+      //if (PlainSymbol == GolemSymbol || PlainSymbol == VampireSymbol || PlainSymbol == WizardSymbol
+      //  || kind != PowerKind.Plain)
+      //{
+      //  resistBasePercentage += 14;
+      //}
+      this.Stats.SetNominal(EntityStatKind.ResistFire, resistBasePercentage);
+      this.Stats.SetNominal(EntityStatKind.ResistPoison, resistBasePercentage);
+      this.Stats.SetNominal(EntityStatKind.ResistCold, resistBasePercentage);
+      var rli = resistBasePercentage * 2.5f / 3f;
+      this.Stats.SetNominal(EntityStatKind.ResistLighting, rli);
+
+      SetResistanceFromScroll(ActiveScroll);
+    }
+
+    private void SetResistanceFromScroll(Scroll activeScroll)
+    {
+      if (activeScroll == null)
+        return;
+      var esk = EntityStatKind.Unset;
+      if (activeScroll.Kind == SpellKind.FireBall)
+        esk = EntityStatKind.ResistFire;
+      else if (activeScroll.Kind == SpellKind.PoisonBall)
+        esk = EntityStatKind.ResistPoison;
+      else if (activeScroll.Kind == SpellKind.IceBall)
+        esk = EntityStatKind.ResistCold;
+
+      if (esk != EntityStatKind.Unset)
+      {
+        var val = this.Stats.GetNominal(esk);
+        val += 30;
+        if (val > 75)
+          val = 75;
+        this.Stats.SetNominal(esk, val);
+      }
+    }
+
+    public static float GetResistanceLevelFactor(int level)
+    {
+      //TODO
+      return (level +1)* 10;
+      //if (!ResistanceFactors.Any())
+      //{
+      //  for (int i = 0; i <= GameManager.MaxLevelIndex; i++)
+      //  {
+      //    double inp = ((double)i) / GameManager.MaxLevelIndex;
+      //    float incPerc = (float)Sigmoid(inp);
+      //    ////Debug.WriteLine(i.ToString() + ") ResistanceLevelFactor = " + fac);
+      //    ResistanceFactors.Add(incPerc);
+      //  }
+      //}
+      //if (level >= ResistanceFactors.Count)
+      //  return 0;
+
+      //return ResistanceFactors[GameManager.MaxLevelIndex - level] * 20;
     }
 
     public float EnemyStatsIncreasePerLevel = .31f;

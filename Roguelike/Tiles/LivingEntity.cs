@@ -13,7 +13,6 @@ using Roguelike.Utils;
 using SimpleInjector;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 
@@ -106,6 +105,10 @@ namespace Roguelike.Tiles
         //  chance = 90;
         SetChanceToExperienceEffect(et, chance);
       }
+
+      //var resists = new[] { EntityStatKind.ResistCold, EntityStatKind.ResistFire, EntityStatKind.ResistLighting, EntityStatKind.ResistPoison};
+      //foreach(var res in resists)
+      //  Stats.SetNominal(res, 10);
 
       effectsToUse[EffectType.Weaken] = GenerationInfo.DefaultEnemyWeakenUsageCount;
       effectsToUse[EffectType.Rage] = GenerationInfo.DefaultEnemyRageUsageCount;
