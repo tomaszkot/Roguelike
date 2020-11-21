@@ -76,7 +76,7 @@ namespace Roguelike.Tiles
 
       //Stats.Experience = 1;
       //kind = PowerKind.Plain;
-      Name = "Enemy";
+      //Name = "Enemy";
     }
 
     public Point GetPoint() { return Point; }
