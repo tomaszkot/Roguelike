@@ -321,14 +321,19 @@ namespace Roguelike.TileContainers
           findPathMatrix[row, col] = value;
 
           var tile = Tiles[row, col];
+
           if (tile is Hero)
           {
             if (forHeroAlly)
               findPathMatrix[row, col] = 0;
             continue;
           }
-
-          if (tile is Dungeons.Tiles.IObstacle)
+          else if (tile is IDoor door)
+          {
+            if (/*&& !EnemyCanPassDoors*/ !door.Opened)
+              value = 0;
+          }
+          else if (tile is Dungeons.Tiles.IObstacle)
           {
             if (forHeroAlly && tile is LivingEntity)
             {
@@ -336,9 +341,7 @@ namespace Roguelike.TileContainers
               k++;
             }
             else
-            {
               value = 0;//0
-            }
           }
           else if (tile is Wall)
             value = 0;//0
@@ -350,18 +353,11 @@ namespace Roguelike.TileContainers
             {
               continue;
             }
-            if (tile.Point.X == end.X && tile.Point.Y == end.Y)
+            else if (tile.Point.X == end.X && tile.Point.Y == end.Y)
             {
               continue;
             }
-            if (
-               tile == null
-              //|| tile is Loot
-              || (tile is Roguelike.Tiles.Door  /*&& !EnemyCanPassDoors*/ && !(tile as Roguelike.Tiles.Door).Opened)
-
-              )
-              value = 0;
-            if (tile is LivingEntity && !forHeroAlly)
+            else if (tile is LivingEntity && !forHeroAlly)
             {
               value = 0;
             }
