@@ -280,12 +280,13 @@ namespace Roguelike.Attributes
       var currentValue = this[sk].CurrentValue;
       //if (currentValue < this[sk].TotalValue && amount > 0 || currentValue > 0 && amount < 0)
       {
-        //var valMax = this[sk].TotalValue - currentValue;
-        //float val = amount;
-        //if (val > valMax)
-        //  val = valMax;
+        //eating food can not make health bigger than TotalValue
+        var valMax = this[sk].TotalValue - currentValue;
+        float val = amount;
+        if (val > valMax)
+          val = valMax;
 
-        Stats[sk].Subtract(-amount);
+        Stats[sk].Subtract(-val);
 
         return true;
       }
