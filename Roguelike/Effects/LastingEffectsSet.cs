@@ -275,16 +275,24 @@ namespace Roguelike.Effects
       return TryAddLastingEffect(effectInfo);
     }
 
-    private LastingEffect TryAddLastingEffect(LastingEffectCalcInfo effectInfo)
+    private LastingEffect TryAddLastingEffect(LastingEffectCalcInfo effectInfo, LivingEntity attacker = null)
     {
       LastingEffect le = null;
       if (effectInfo != null && effectInfo.Type != EffectType.Unset && !livingEntity.IsImmuned(effectInfo.Type))
       {
         var rand = RandHelper.Random.NextDouble();
         var chance = livingEntity.GetChanceToExperienceEffect(effectInfo.Type);
+        var add = rand * 100 <= chance;
+        if (!add && attacker is Enemy enemy)
+        {
+          if (enemy.PowerKind != EnemyPowerKind.Plain)
+          {
+            add = rand > 0.65f && GetByType(effectInfo.Type) == null;
+          }
+        }
         //if (fightItem != null)
         //chance += fightItem.GetFactor(false);
-        if (rand * 100 <= chance)
+        if (add)
         {
           le = AddLastingEffect(effectInfo, EffectOrigin.External, null, EffectTypeConverter.Convert(effectInfo.Type));
         }
@@ -300,7 +308,7 @@ namespace Roguelike.Effects
         return null;
 
       var effectInfo = CalcLastingEffDamage(et, hitAmount, null, null);
-      return TryAddLastingEffect(effectInfo);
+      return TryAddLastingEffect(effectInfo, attacker);
     }
 
     public static int GetPendingTurns(EffectType et)

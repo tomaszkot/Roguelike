@@ -132,7 +132,7 @@ namespace Roguelike.Crafting
           foreach (var ench in enchanters.Cast<Enchanter>())
           {
             if (!ench.ApplyTo(eq, out err))
-              ReturnCraftingError(InvalidIngredients);
+              return ReturnCraftingError(InvalidIngredients);
           }
 
           return ReturnCraftedLoot(eq, false);

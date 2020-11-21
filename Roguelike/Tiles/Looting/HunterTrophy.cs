@@ -57,6 +57,7 @@ namespace Roguelike.Tiles.Looting
       enhancmentProps[EquipmentKind.Armor] = arm;
       enhancmentProps[EquipmentKind.Helmet] = arm;
       enhancmentProps[EquipmentKind.Shield] = arm;
+      enhancmentProps[EquipmentKind.Glove] = arm;
 
       enhancmentProps[EquipmentKind.Amulet] = Juw;
       enhancmentProps[EquipmentKind.Ring] = Juw;

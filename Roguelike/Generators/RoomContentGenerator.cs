@@ -53,18 +53,8 @@ namespace Roguelike.Generators
     protected Enemy CreateBoss(string name, char symbol)
     {
       var enemy = CreateEnemyInstance(name);
-      //var enemy = new Tiles.Enemy();
-      //enemy.tag1 = name;// "Miller";
-      //enemy.Name = name;// "Miller";
       enemy.Symbol = symbol;// EnemySymbols.QuestBoss;
       enemy.SetNonPlain(true);
-      //var empty = node.GetRandomEmptyTile();
-      //if (empty != null)
-      //  node.SetTile(enemy, empty.Point);
-      //else
-      //{
-      //  this.logger.LogError("no room for boss!!!");
-      //}
 
       return enemy;
     }
@@ -135,6 +125,7 @@ namespace Roguelike.Generators
       enemy.Container = this.container;
       enemy.tag1 = enemyName;
       enemy.Name = enemyName;
+      SetILootSourceLevel(enemy);
       if (EnemySymbols.EnemiesToSymbols.ContainsKey(enemy.Name))
         enemy.Symbol = EnemySymbols.EnemiesToSymbols[enemy.Name];
       return enemy;
@@ -273,7 +264,7 @@ namespace Roguelike.Generators
       if (esl > 0)
         esl--;
 
-      esl = 0;
+      //esl = 0;
 
       src.SetLevel(esl + levelIndex + 1);
     }
