@@ -148,6 +148,7 @@ namespace Roguelike
 
               lastingEffectTarget.AddLastingEffectFromSpell(spellKind, effectToUse);
               enemy.ReduceEffectToUse(effectToUse);
+              
               return true;
             }
           }

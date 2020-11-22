@@ -310,7 +310,7 @@ namespace Roguelike.Tiles
       return Level >= eq.RequiredLevel;
     }
         
-    public bool MoveEquipment(Inventory from, CurrentEquipment to, Equipment eq,
+    public bool MoveEquipment(InventoryBase from, CurrentEquipment to, Equipment eq,
                               CurrentEquipmentKind ek, bool primary = true)
     {
       bool removed = from.Remove(eq);
@@ -325,7 +325,7 @@ namespace Roguelike.Tiles
       return removed;
     }
 
-    public bool MoveEquipment(CurrentEquipment from, Inventory to, Equipment eq, CurrentEquipmentKind ek, bool primary = true)
+    public bool MoveEquipment(CurrentEquipment from, InventoryBase to, Equipment eq, CurrentEquipmentKind ek, bool primary = true)
     {
       bool done = SetEquipment(ek, null, primary);
       if (done)
