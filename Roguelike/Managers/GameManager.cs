@@ -702,6 +702,7 @@ namespace Roguelike.Managers
 
     private void AddEqToMerchant(Merchant merch, List<LootKind> lootKinds)
     {
+      var eqKinds = Enum.GetValues(typeof(EquipmentKind)).Cast<EquipmentKind>().ToList();
       for (int numOfLootPerKind = 0; numOfLootPerKind < 2; numOfLootPerKind++)
       {
         foreach (var lootKind in lootKinds)
@@ -715,17 +716,19 @@ namespace Roguelike.Managers
           }
         }
 
-        GenerateMerchantEq(merch, lootKinds, true);
-        GenerateMerchantEq(merch, lootKinds, false);
+        GenerateMerchantEq(merch, eqKinds, true);
+        GenerateMerchantEq(merch, eqKinds, false);
       }
     }
 
-    private void GenerateMerchantEq(Merchant merch, List<LootKind> lootKinds, bool magic)
+    private void GenerateMerchantEq(Merchant merch, List<EquipmentKind> eqKinds, bool magic)
     {
-      lootKinds.Shuffle();
+      eqKinds.Shuffle();
       int count = 0;
-      foreach (EquipmentKind lk in lootKinds)
+      foreach (var lk in eqKinds)
       {
+        //LootKind.Unset && i != LootKind.Other && i != LootKind.Seal && i != LootKind.SealPart
+        //if (lk == LootKind.Unset || lk == LootKind.Seal || LootKind.Other)
         if (lk == EquipmentKind.Trophy || lk == EquipmentKind.Unset || lk == EquipmentKind.God)
           continue;
 
@@ -750,7 +753,7 @@ namespace Roguelike.Managers
     protected void PopulateMerchantInv(Merchant merch, int heroLevel)
     {
       var lootKinds = Enum.GetValues(typeof(LootKind)).Cast<LootKind>()
-        .Where(i => i != LootKind.Unset && i != LootKind.Other && i != LootKind.Seal && i != LootKind.SealPart)
+        .Where(i => i != LootKind.Unset && i != LootKind.Other && i != LootKind.Seal && i != LootKind.SealPart && i != LootKind.Gold)
         .ToList();
 
       AddEqToMerchant(merch, lootKinds);
