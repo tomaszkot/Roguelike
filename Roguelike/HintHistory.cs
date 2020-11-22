@@ -5,7 +5,8 @@ namespace Roguelike
 {
   namespace Hints
   {
-    public enum HintKind { Unset, LootCollectShorcut, BulkLootCollectShorcut, ShowCraftingPanel, HeroLevelTooLow, CanNotPutOnUnidentified }
+    public enum HintKind { Unset, LootCollectShorcut, BulkLootCollectShorcut, ShowCraftingPanel, HeroLevelTooLow, CanNotPutOnUnidentified,
+      LootHightlightShorcut    }
     
     public class HintItem
     {
@@ -30,6 +31,7 @@ namespace Roguelike
       public HintHistory()
       {
         //TODO 'G' - shall be formatted based on KeyCode
+        hints.Add(new HintItem() { Info = "Press 'Left Alt' to see collectable/interactive items.", Kind = HintKind.LootHightlightShorcut });
         hints.Add(new HintItem(){ Info = "Press 'G' to collect a single loot.", Kind = HintKind.LootCollectShorcut});
         hints.Add(new HintItem() { Info = "Press 'J' to collect nearby loot items.", Kind = HintKind.BulkLootCollectShorcut });
         hints.Add(new HintItem() { Info = "Recipe has been collected. Press 'R' to open Crafting Panel and see it's description.", Kind = HintKind.ShowCraftingPanel});

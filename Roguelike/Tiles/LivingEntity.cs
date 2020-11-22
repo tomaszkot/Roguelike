@@ -215,7 +215,7 @@ namespace Roguelike.Tiles
             return false;
           }
 
-          Logger.LogInfo(this + " CalculateIfStatChanceApplied true");
+          //Logger.LogInfo(this + " CalculateIfStatChanceApplied true");
           return true;
         }
       }
