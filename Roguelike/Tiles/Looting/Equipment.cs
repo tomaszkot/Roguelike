@@ -504,6 +504,9 @@ namespace Roguelike.Tiles
       levelIndex = li;
       if (RequiredLevel < li)
         RequiredLevel = li;
+
+      if(Class != EquipmentClass.Unique)
+        SetPriceFromLevel();
     }
 
     public virtual void SetClass(EquipmentClass _class, int levelIndex, EntityStats lootStats = null, bool magicOfSecondLevel = false)
@@ -646,6 +649,11 @@ namespace Roguelike.Tiles
     public override bool IsCraftable()
     {
       return base.IsCraftable() || Enchantable;
+    }
+
+    public void SetPriceFromLevel()
+    {
+      Price = (LevelIndex + 1) * 15;//TODO
     }
   }
 }
