@@ -58,6 +58,9 @@ namespace Roguelike.Managers
     {
       var target = Hero;
 
+      if (entity.DistanceFrom(Hero) > 10)
+        return;
+
       if (!target.IsTransformed())
       {
         if (AttackIfPossible(entity, target))
