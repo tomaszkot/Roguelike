@@ -283,5 +283,14 @@ namespace Roguelike.Tiles
         poisonAttack.Value.Nominal = 2;
       }
     }
+
+    public static Enemy Spawn(char symbol, int level)
+    {
+      var enemy = new Enemy(symbol);
+      enemy.SetLevel(level);
+      enemy.tag1 = EnemySymbols.EnemiesToSymbols.Where(i => i.Value == EnemySymbols.SkeletonSymbol).Single().Key;
+      enemy.Revealed = true;
+      return enemy;
+    }
   }
 }

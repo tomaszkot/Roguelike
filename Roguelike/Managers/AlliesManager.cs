@@ -1,8 +1,11 @@
-﻿using Roguelike.Abstract;
+﻿using Dungeons.Core;
+using Roguelike.Abstract;
+using Roguelike.Strategy;
 using Roguelike.Tiles;
 using SimpleInjector;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -11,16 +14,92 @@ namespace Roguelike.Managers
 {
   public class AlliesManager : EntitiesManager
   {
-    public AlliesManager(GameContext context, EventsManager eventsManager, Container container) :
+    EnemiesManager enemiesManager;
+    AttackStrategy attackStrategy;
+
+    public AlliesManager(GameContext context, EventsManager eventsManager, Container container, EnemiesManager enemiesManager) :
                          base(TurnOwner.Allies, context, eventsManager, container)
     {
       context.TurnOwnerChanged += OnTurnOwnerChanged;
       context.ContextSwitched += Context_ContextSwitched;
+      this.enemiesManager = enemiesManager;
+      attackStrategy = new AttackStrategy(context);
     }
 
     private void Context_ContextSwitched(object sender, ContextSwitch e)
     {
       UpdateEntities();
+    }
+
+    //protected override bool MoveEntity(LivingEntity entity, Point newPos)
+    //{
+    //  //return base.MoveEntity(entity, newPos);
+    //  MakeHeroAllyMove(entity);
+    //  return true;
+    //}
+    public override void MakeTurn(LivingEntity entity)
+    {
+      MakeHeroAllyMove(entity);
+    }
+
+    const int MaxAllyDistToEnemyToChase = 6;
+
+    public void MakeHeroAllyMove(LivingEntity ally)
+    {
+      if (!ally.Alive)
+        return;
+      if (ally.FixedWalkTarget != null)
+      {
+        if (ally.PathToTarget != null && ally.PathToTarget.Count == 1)
+        {
+          ally.FixedWalkTarget = null;
+          //allyToRemove = ally;//TODO
+        }
+        if (!MakeMoveOnPath(ally, ally.FixedWalkTarget.Point, true))
+          MakeRandomMove(ally);
+        return;
+      }
+
+      if (ally.AllyModeTarget == null || ally.AllyModeTarget.DistanceFrom(ally) >= MaxAllyDistToEnemyToChase)
+      {
+        ally.AllyModeTarget = enemiesManager.AllEntities.Where(i => i.DistanceFrom(ally) < MaxAllyDistToEnemyToChase).OrderBy(i => i.DistanceFrom(ally)).ToList().FirstOrDefault();
+        if (ally.AllyModeTarget != null)
+        {
+          //TODO
+          //ally.AllyModeTarget.Died += (object sender, GenericEventArgs<LivingEntity> e) =>
+          //{
+          //  if (ally.AllyModeTarget == sender)
+          //    ally.AllyModeTarget = null;
+          //};
+        }
+      }
+      bool moveCloserToHero = false;
+      if (ally.AllyModeTarget == null)
+        moveCloserToHero = true;
+      else
+      {
+        if (attackStrategy.AttackIfPossible(ally, ally.AllyModeTarget))
+          return;
+        if (ShallChaseTarget(ally, ally.AllyModeTarget))//, MaxAllyDistToEnemyToChase))
+        {
+          moveCloserToHero = !MakeMoveOnPath(ally, ally.AllyModeTarget.Point, true);//, true);
+        }
+      }
+
+      if (moveCloserToHero)
+      {
+        if (ally.DistanceFrom(context.Hero) > 2)//do not block hero moves
+        {
+          //user false here as forHeroAlly as we want to find a hero on path
+          MakeMoveOnPath(ally, context.Hero.Point, false);
+        }
+        else
+        {
+          ally.AllyModeTarget = null;//find a new target
+          if (RandHelper.Random.NextDouble() > .5f)
+            MakeRandomMove(ally);
+        }
+      }
     }
 
     private void UpdateEntities()

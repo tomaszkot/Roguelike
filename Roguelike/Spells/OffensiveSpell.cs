@@ -53,7 +53,6 @@ namespace Roguelike.Spells
     public const int BaseDamage = 2;
     public bool SourceOfDamage = true;
 
-    //public AttackingSpell() : this(new LivingEntity()) { }
     public ProjectiveSpell(LivingEntity caller) : base(caller)
     {
       EntityRequired = true;

@@ -17,6 +17,7 @@ using Dungeons;
 using Roguelike.LootContainers;
 using Roguelike.Tiles.Looting;
 using System.Collections.Generic;
+using Roguelike.Spells;
 
 namespace Roguelike.Managers
 {
@@ -104,7 +105,7 @@ namespace Roguelike.Managers
       Context.EventsManager = EventsManager;
 
       enemiesManager = new EnemiesManager(Context, EventsManager, Container);
-      AlliesManager = new AlliesManager(Context, EventsManager, Container);
+      AlliesManager = new AlliesManager(Context, EventsManager, Container, enemiesManager);
 
       Persister = container.GetInstance<IPersister>();
 
@@ -428,6 +429,11 @@ namespace Roguelike.Managers
       }
 
       return false;
+    }
+
+    public bool ReplaceTile<T>(T replacer, Tile toReplace) where T : Tile//T can be Loot, Enemy
+    {
+      return ReplaceTile<T>(replacer, toReplace.Point, false, toReplace);
     }
 
     public bool ReplaceTile<T>(T replacer, Point point, bool animated, Tile positionSource, AbstractGameLevel level = null) where T : Tile//T can be Loot, Enemy
@@ -780,6 +786,37 @@ namespace Roguelike.Managers
       //  mp.Revealed = true;
       //  merch.Inventory.Add(mp);
       //}
+    }
+
+    //public LivingEntity SpawnEnemyAndAddToLevel()
+    //{
+    //  var en = CurrentNode.SpawnEnemy();
+    //}
+
+    public OffensiveSpell ApplyOffensiveSpell(LivingEntity caster, Scroll scroll)
+    {
+      if (!context.PrepareScroll(caster, scroll))
+        return null;
+
+      if (scroll.CreateSpell(caster) is OffensiveSpell ps)
+      {
+   
+        if (ps is SkeletonSpell skeletonSpell)
+        {
+          skeletonSpell.Enemy.Container = this.Container;
+          var empty = CurrentNode.GetClosestEmpty(Hero);
+          ReplaceTile<Enemy>(skeletonSpell.Enemy, empty);
+          AlliesManager.AddEntity(skeletonSpell.Enemy);
+        }
+        if (caster is Hero)
+          context.MoveToNextTurnOwner();
+
+        return ps;
+      }
+      else
+        logger.LogError("!OffensiveSpell " + scroll);
+
+      return null;
     }
   }
 }

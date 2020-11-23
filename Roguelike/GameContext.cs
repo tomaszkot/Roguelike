@@ -82,7 +82,8 @@ namespace Roguelike
       attackPolicy.Apply(attacker, target);
     }
 
-    bool PrepareScroll(LivingEntity caster, Scroll scroll)
+    //TODO move it somewhere
+    public bool PrepareScroll(LivingEntity caster, Scroll scroll)
     {
       if (scroll.Count <= 0)
       {
@@ -96,7 +97,7 @@ namespace Roguelike
 
       return true;
     }
-
+        
     public PassiveSpell ApplyPassiveSpell(LivingEntity caster, Scroll scroll)
     {
       if (!PrepareScroll(caster, scroll))

@@ -9,6 +9,7 @@ using Roguelike.Policies;
 using SimpleInjector;
 using System.Diagnostics;
 using static Dungeons.TileContainers.DungeonNode;
+using Roguelike.Strategy;
 
 namespace Roguelike.Managers
 {
@@ -210,7 +211,47 @@ namespace Roguelike.Managers
         Context.EventsManager.AppendAction(dead.GetDeadAction());
         entities.Remove(dead);
       }
+    }
 
+    protected bool MakeMoveOnPath(LivingEntity entity, Point target, bool forHeroAlly)
+    {
+      //bool forHeroAlly = false;
+      bool moved = false;
+      entity.PathToTarget = Node.FindPath(entity.Point, target, forHeroAlly, true);
+      if (entity.PathToTarget != null && entity.PathToTarget.Count > 1)
+      {
+        var node = entity.PathToTarget[1];
+        var pt = new Point(node.Y, node.X);
+        if (Node.GetTile(pt) is LivingEntity)
+        {
+          //gm.Assert(false, "Level.GetTile(pt) is LivingEntity "+ enemy + " "+pt);
+          return false;
+        }
+        MoveEntity(entity, pt);
+        moved = true;
+      }
+
+      return moved;
+    }
+
+    public bool ShallChaseTarget(LivingEntity enemy, LivingEntity target)
+    {
+      if (target.IsTransformed())
+      {
+        return false;
+      }
+
+      if (enemy.WasEverHitBy(target))
+      {
+        enemy.MoveKind = EntityMoveKind.FollowingHero;
+        return true;
+      }
+
+      var dist = enemy.DistanceFrom(target);
+      if (dist < 5)
+        return true;
+
+      return false;
     }
   }
 

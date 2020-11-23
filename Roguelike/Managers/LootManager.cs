@@ -87,8 +87,9 @@ namespace Roguelike.Managers
       {
         var en = GameManager.EnemiesManager.AllEntities.FirstOrDefault();
         var enemy = GameManager.CurrentNode.SpawnEnemy(lootSource);
+        GameManager.ReplaceTile<Enemy>(enemy, lootSource as Tile);
         GameManager.EnemiesManager.AddEntity(enemy);
-        GameManager.ReplaceTile<Enemy>(enemy, lootSource.GetPoint(), false, lootSource as Tile);
+        
 
         return lootItems;
       }
@@ -98,7 +99,7 @@ namespace Roguelike.Managers
         lootItems.Add(loot);
       if (lootSource is Barrel)
       {
-        bool repl = GameManager.ReplaceTile<Loot>(loot, lootSource.GetPoint(), false, lootSource as Tile);
+        bool repl = GameManager.ReplaceTile<Loot>(loot, lootSource as Tile);
         GameManager.Assert(repl, "ReplaceTileByLoot " + loot);
         GameManager.Logger.LogInfo("ReplaceTileByLoot " + loot + " " + repl);
       }

@@ -70,7 +70,7 @@ namespace Roguelike.Managers
       bool makeRandMove = false;
       if (ShallChaseTarget(entity, target))
       {
-        makeRandMove = !MakeMoveOnPath(entity, target.Point);
+        makeRandMove = !MakeMoveOnPath(entity, target.Point, false);
       }
       else
         makeRandMove = true;
@@ -78,6 +78,11 @@ namespace Roguelike.Managers
       {
         MakeRandomMove(entity);
       }
+    }
+
+    public bool AttackIfPossible(LivingEntity entity, Hero target)
+    {
+      return attackStrategy.AttackIfPossible(entity, target);
     }
 
     public override void MakeRandomMove(LivingEntity entity)
@@ -95,7 +100,7 @@ namespace Roguelike.Managers
 
         if (entity.MoveKind == EntityMoveKind.ReturningHome)
         {
-          if (MakeMoveOnPath(entity, entity.InitialPoint))
+          if (MakeMoveOnPath(entity, entity.InitialPoint, false))
           {
             if(entity.Point == entity.InitialPoint)
               entity.MoveKind = EntityMoveKind.Freestyle;
@@ -106,53 +111,7 @@ namespace Roguelike.Managers
       }
       base.MakeRandomMove(entity);
     }
-
-    private bool MakeMoveOnPath(LivingEntity enemy, Point target)
-    {
-      bool forHeroAlly = false;
-      bool moved = false;
-      enemy.PathToTarget = Node.FindPath(enemy.Point, target, forHeroAlly, true);
-      if (enemy.PathToTarget != null && enemy.PathToTarget.Count > 1)
-      {
-        var node = enemy.PathToTarget[1];
-        var pt = new Point(node.Y, node.X);
-        if (Node.GetTile(pt) is LivingEntity)
-        {
-          //gm.Assert(false, "Level.GetTile(pt) is LivingEntity "+ enemy + " "+pt);
-          return false;
-        }
-        MoveEntity(enemy, pt);
-        moved = true;
-      }
-
-      return moved;
-    }
-
-    public bool ShallChaseTarget(LivingEntity enemy, Hero target)
-    {
-      if (target.IsTransformed())
-      {
-        return false;
-      }
-
-      if (enemy.WasEverHitBy(target))
-      {
-        enemy.MoveKind = EntityMoveKind.FollowingHero;
-        return true;
-      }
-
-      var dist = enemy.DistanceFrom(target);
-      if(dist < 5)
-        return true;
-      
-      return false;
-    }
-
-    public bool AttackIfPossible(LivingEntity enemy, Hero hero)
-    {
-      return attackStrategy.AttackIfPossible(enemy, hero);
-    }
-
+            
     protected override bool MoveEntity(LivingEntity entity, Point newPos)
     {
       if (entity.InitialPoint == LivingEntity.DefaultInitialPoint)

@@ -30,7 +30,7 @@ namespace Roguelike
 
       public GameContext Context { get => context; set => context = value; }
 
-      public bool AttackIfPossible(LivingEntity enemy, Hero hero)
+      public bool AttackIfPossible(LivingEntity enemy, LivingEntity hero)
       {
         if (!enemy.CanAttack)
           return false;
@@ -175,7 +175,7 @@ namespace Roguelike
         return false;
       }
 
-      bool MakeNonPhysicalMove(LivingEntity enemy, Hero hero)
+      bool MakeNonPhysicalMove(LivingEntity enemy, LivingEntity hero)
       {
         //TODO
 

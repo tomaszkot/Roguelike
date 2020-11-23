@@ -440,11 +440,8 @@ namespace Roguelike.TileContainers
 
     public Enemy SpawnEnemy(int level)
     {
-      var enemy = new Enemy(EnemySymbols.SkeletonSymbol);
+      var enemy = Enemy.Spawn(EnemySymbols.SkeletonSymbol, level);
       enemy.Container = Container;
-      enemy.SetLevel(level);
-      enemy.tag1 = EnemySymbols.EnemiesToSymbols.Where(i => i.Value == EnemySymbols.SkeletonSymbol).Single().Key;
-      enemy.Revealed = true;
       return enemy;
     }
 

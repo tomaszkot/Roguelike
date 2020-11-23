@@ -36,6 +36,8 @@ namespace Roguelike.Tiles
     Dictionary<EffectType, float> chanceToExperienceEffect = new Dictionary<EffectType, float>();
     public int ActiveScrollCoolDownCounter { get; set; }
     Dictionary<EntityStatKind, float> nonPhysicalDamageStats = new Dictionary<EntityStatKind, float>();
+    public Tile FixedWalkTarget = null;
+    public LivingEntity AllyModeTarget;
     public virtual Scroll ActiveScroll
     {
       get 

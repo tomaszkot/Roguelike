@@ -127,7 +127,7 @@ namespace RoguelikeUnitTests
       GotoNextHeroTurn(game);
       if (heroHealth == hero.Stats.Health)
       {
-        game.GameManager.EnemiesManager.AttackIfPossible((enemy as Enemy), hero);//TODO
+        game.GameManager.EnemiesManager.AttackIfPossible(enemy as Enemy, hero);//TODO
       }
       Assert.Greater(heroHealth, hero.Stats.Health);
       Assert.Greater(mana, enemy.Stats.Mana);//used mana
@@ -141,7 +141,7 @@ namespace RoguelikeUnitTests
 
       Enemy enemy = AllEnemies.First();
       PassiveSpell spell;
-      var scroll = PrepareScroll(hero, enemy, SpellKind.Transform);
+      var scroll = PrepareScroll(hero, SpellKind.Transform, enemy);
       Assert.True(game.GameManager.EnemiesManager.ShallChaseTarget(enemy, game.Hero));
       spell = game.GameManager.Context.ApplyPassiveSpell(hero, scroll);
       Assert.NotNull(spell);
@@ -156,10 +156,11 @@ namespace RoguelikeUnitTests
       Assert.True(game.GameManager.EnemiesManager.ShallChaseTarget(enemy, game.Hero));
     }
 
-    private Scroll PrepareScroll(Hero hero, Enemy enemy, SpellKind spellKind)
+    private Scroll PrepareScroll(Hero hero, SpellKind spellKind, Enemy enemy = null)
     {
       var emp = game.GameManager.CurrentNode.GetClosestEmpty(hero);
-      Assert.True(game.GameManager.CurrentNode.SetTile(enemy, emp.Point));
+      if(enemy!=null)
+        Assert.True(game.GameManager.CurrentNode.SetTile(enemy, emp.Point));
       var scroll = new Scroll(spellKind);
       hero.Inventory.Add(scroll);
       
@@ -174,7 +175,7 @@ namespace RoguelikeUnitTests
 
       var enemy = AllEnemies.First();
 
-      var scroll = PrepareScroll(hero, enemy, SpellKind.ManaShield);
+      var scroll = PrepareScroll(hero, SpellKind.ManaShield, enemy);
       var spell = game.GameManager.Context.ApplyPassiveSpell(hero, scroll);
       Assert.NotNull(spell);
             
@@ -187,6 +188,21 @@ namespace RoguelikeUnitTests
       heroHealth = game.Hero.Stats.Health;
       game.Hero.OnPhysicalHit(enemy);
       Assert.Less(game.Hero.Stats.Health, heroHealth);//mana shield gone
+
+    }
+
+    [Test]
+    public void SkeletonScrollTest()
+    {
+      var game = CreateGame();
+      var hero = game.Hero;
+
+      var scroll = PrepareScroll(hero, SpellKind.Skeleton);
+      var enemiesCount = game.GameManager.CurrentNode.GetTiles<Enemy>().Count;
+      var spell = game.GameManager.ApplyOffensiveSpell(hero, scroll) as SkeletonSpell;
+      Assert.NotNull(spell);
+      Assert.NotNull(spell.Enemy);
+      Assert.AreEqual(game.GameManager.CurrentNode.GetTiles<Enemy>().Count, enemiesCount+1);
 
     }
 
