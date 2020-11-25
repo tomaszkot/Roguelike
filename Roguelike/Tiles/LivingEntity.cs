@@ -257,6 +257,8 @@ namespace Roguelike.Tiles
 
       lastHitBySpell = false;
       var attack = attacker.GetHitAttackValue(true);
+      if (defense <= 0)
+        defense = 1;//HACK, TODO
       var inflicted = attack/defense;
 
       var manaShieldEffect = LastingEffectsSet.GetByType(EffectType.ManaShield);

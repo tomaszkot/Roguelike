@@ -66,7 +66,14 @@ namespace Roguelike
 
           }
 
-          Context.ApplyPhysicalAttackPolicy(enemy, hero, (pol) => OnPolicyApplied(pol));
+          if (Context != null)
+          {
+            Context.ApplyPhysicalAttackPolicy(enemy, hero, (pol) =>
+            {
+              OnPolicyApplied(pol);
+            }
+            );
+          }
           return true;
         }
 

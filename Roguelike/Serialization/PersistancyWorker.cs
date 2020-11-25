@@ -52,7 +52,8 @@ namespace Roguelike.Serialization
       AbstractGameLevel node = null;
       node = worldLoader(hero, gs);
 
-      gm.Context.SwitchTo(node, hero, gs, GameContextSwitchKind.GameLoaded);
+      gm.SetContext(node, hero, GameContextSwitchKind.GameLoaded);
+      //gm.Context.SwitchTo(node, hero, gs, GameContextSwitchKind.GameLoaded);
 
       gm.PrintHeroStats("load");
 

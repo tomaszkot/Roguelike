@@ -104,8 +104,9 @@ namespace Roguelike.Managers
       Context = container.GetInstance<GameContext>();
       Context.EventsManager = EventsManager;
 
-      enemiesManager = new EnemiesManager(Context, EventsManager, Container);
+      enemiesManager = new EnemiesManager(Context, EventsManager, Container, null);
       AlliesManager = new AlliesManager(Context, EventsManager, Container, enemiesManager);
+      enemiesManager.AlliesManager = AlliesManager;
 
       Persister = container.GetInstance<IPersister>();
 
@@ -133,7 +134,7 @@ namespace Roguelike.Managers
 
     protected virtual EnemiesManager CreateEnemiesManager(GameContext context, EventsManager eventsManager)
     {
-      return new EnemiesManager(Context, EventsManager, Container);
+      return new EnemiesManager(Context, EventsManager, Container, AlliesManager);
     }
 
     public virtual void SetContext(AbstractGameLevel node, Hero hero, GameContextSwitchKind kind, Stairs stairs = null)
@@ -151,7 +152,8 @@ namespace Roguelike.Managers
 
       Context.Hero = hero;
 
-      InitNode(node, gameState, kind);
+      if(!node.Inited)
+        InitNode(node, gameState, kind);
 
       Context.SwitchTo(node, hero, gameState, kind, stairs);
 

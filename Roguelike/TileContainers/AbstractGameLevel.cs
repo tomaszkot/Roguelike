@@ -447,6 +447,9 @@ namespace Roguelike.TileContainers
 
     public List<IApproachableByHero> ApproachableByHero { get; set; } = new List<IApproachableByHero>();
 
+    [JsonIgnore]
+    public bool Inited { get; set; }
+
     public void EnsureRevealed(int nodeIndex)
     {
       var notRev = this.GetTiles().Where(i => i.DungeonNodeIndex == nodeIndex && !i.Revealed).ToList();

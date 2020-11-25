@@ -1,14 +1,10 @@
 ﻿using Dungeons.Core;
 using Roguelike.Abstract;
+using Roguelike.Policies;
 using Roguelike.Strategy;
 using Roguelike.Tiles;
 using SimpleInjector;
-using System;
-using System.Collections.Generic;
-using System.Drawing;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Roguelike.Managers
 {
@@ -24,6 +20,7 @@ namespace Roguelike.Managers
       context.ContextSwitched += Context_ContextSwitched;
       this.enemiesManager = enemiesManager;
       attackStrategy = new AttackStrategy(context);
+      attackStrategy.OnPolicyApplied = (Policy pol) => { OnPolicyApplied(pol); };
     }
 
     private void Context_ContextSwitched(object sender, ContextSwitch e)
@@ -60,19 +57,18 @@ namespace Roguelike.Managers
         return;
       }
 
+      if (ally.AllyModeTarget != null)
+      {
+        var found = enemiesManager.AllEntities.Where(i => i == ally.AllyModeTarget).FirstOrDefault();
+        if (found == null)//dead?
+          ally.AllyModeTarget = null;
+      }
+
       if (ally.AllyModeTarget == null || ally.AllyModeTarget.DistanceFrom(ally) >= MaxAllyDistToEnemyToChase)
       {
         ally.AllyModeTarget = enemiesManager.AllEntities.Where(i => i.DistanceFrom(ally) < MaxAllyDistToEnemyToChase).OrderBy(i => i.DistanceFrom(ally)).ToList().FirstOrDefault();
-        if (ally.AllyModeTarget != null)
-        {
-          //TODO
-          //ally.AllyModeTarget.Died += (object sender, GenericEventArgs<LivingEntity> e) =>
-          //{
-          //  if (ally.AllyModeTarget == sender)
-          //    ally.AllyModeTarget = null;
-          //};
-        }
       }
+
       bool moveCloserToHero = false;
       if (ally.AllyModeTarget == null)
         moveCloserToHero = true;

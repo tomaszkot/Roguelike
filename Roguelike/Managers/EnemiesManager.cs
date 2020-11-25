@@ -1,4 +1,5 @@
-﻿using Dungeons.Tiles;
+﻿using Dungeons.Core;
+using Dungeons.Tiles;
 using Roguelike.Policies;
 using Roguelike.Strategy;
 using Roguelike.Tiles;
@@ -14,10 +15,14 @@ namespace Roguelike.Managers
   public class EnemiesManager : EntitiesManager
   {
     AttackStrategy attackStrategy;
+    AlliesManager alliesManager;
 
-    public EnemiesManager(GameContext context, EventsManager eventsManager, Container container) :
+    public AlliesManager AlliesManager { get => alliesManager; set => alliesManager = value; }
+
+    public EnemiesManager(GameContext context, EventsManager eventsManager, Container container, AlliesManager alliesManager) :
       base(TurnOwner.Enemies, context, eventsManager, container)
     {
+      this.AlliesManager = alliesManager;
       this.context = context;
       attackStrategy = new AttackStrategy(context);
       attackStrategy.OnPolicyApplied = (Policy pol)=>{ OnPolicyApplied(pol); };
@@ -58,6 +63,9 @@ namespace Roguelike.Managers
     {
       var target = Hero;
 
+      if (AttackAlly(entity))
+        return;
+
       if (entity.DistanceFrom(Hero) > 10)
         return;
 
@@ -80,7 +88,7 @@ namespace Roguelike.Managers
       }
     }
 
-    public bool AttackIfPossible(LivingEntity entity, Hero target)
+    public bool AttackIfPossible(LivingEntity entity, LivingEntity target)
     {
       return attackStrategy.AttackIfPossible(entity, target);
     }
@@ -133,6 +141,16 @@ namespace Roguelike.Managers
       }
     }
 
-    
+    bool AttackAlly(LivingEntity enemy)
+    {
+      var ally = AlliesManager.AllEntities.Where(i=>i.DistanceFrom(enemy) < 2).FirstOrDefault();
+      if (ally != null)
+      {
+        if (RandHelper.Random.NextDouble() < 0.3f)
+          return AttackIfPossible(enemy, ally);
+      }
+      return false;
+    }
+
   }
 }
