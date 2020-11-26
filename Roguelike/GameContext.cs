@@ -82,8 +82,7 @@ namespace Roguelike
       attackPolicy.Apply(attacker, target);
     }
 
-    //TODO move it somewhere
-    public bool PrepareScroll(LivingEntity caster, Scroll scroll)
+    public bool CanUseScroll(LivingEntity caster, Scroll scroll)
     {
       if (scroll.Count <= 0)
       {
@@ -91,37 +90,29 @@ namespace Roguelike
         return false;
       }
 
-      //scroll.Count--;
+      return true;
+    }
+
+    //TODO move it somewhere
+    public bool UtylizeScroll(LivingEntity caster, Scroll scroll)
+    {
+      if (!CanUseScroll(caster, scroll))
+      {
+        return false;
+      }
+            
       if (caster is AdvancedLivingEntity advEnt)
         return advEnt.Inventory.Remove(scroll);
 
       return true;
     }
-        
-    public PassiveSpell ApplyPassiveSpell(LivingEntity caster, Scroll scroll)
-    {
-      if (!PrepareScroll(caster, scroll))
-        return null;
-
-      if (scroll.CreateSpell(caster) is PassiveSpell ps)
-      {
-        caster.ApplyPassiveSpell(ps);
-        if(caster is Hero)
-          MoveToNextTurnOwner();
-
-        return ps;
-      }
-      else
-        logger.LogError("!PassiveSpell " + scroll);
-
-      return null;
-    }
+       
 
     public void ApplySpellAttackPolicy(LivingEntity caster, LivingEntity target, Scroll scroll, 
       Action<Policy> BeforeApply, 
       Action<Policy> AfterApply)
     {
-      if (!PrepareScroll(caster, scroll))
+      if (!UtylizeScroll(caster, scroll))
         return;
 
       var policy = Container.GetInstance<SpellCastPolicy>();

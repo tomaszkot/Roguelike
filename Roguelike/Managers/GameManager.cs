@@ -802,7 +802,7 @@ namespace Roguelike.Managers
 
     public OffensiveSpell ApplyOffensiveSpell(LivingEntity caster, Scroll scroll)
     {
-      if (!context.PrepareScroll(caster, scroll))
+      if (!context.UtylizeScroll(caster, scroll))
         return null;
 
       if (scroll.CreateSpell(caster) is OffensiveSpell ps)
@@ -822,6 +822,68 @@ namespace Roguelike.Managers
       }
       else
         logger.LogError("!OffensiveSpell " + scroll);
+
+      return null;
+    }
+
+    public bool CanUseScroll(LivingEntity caster, Scroll scroll)
+    {
+      if (scroll.Count <= 0)
+      {
+        logger.LogError("scroll.Count <= 0");
+        return false;
+      }
+
+      return true;
+    }
+
+    //TODO move it somewhere
+    public bool UtylizeScroll(LivingEntity caster, Scroll scroll)
+    {
+      if (!CanUseScroll(caster, scroll))
+      {
+        return false;
+      }
+
+      if (caster is AdvancedLivingEntity advEnt)
+        return advEnt.Inventory.Remove(scroll);
+
+      return true;
+    }
+
+
+    public PassiveSpell ApplyPassiveSpell(LivingEntity caster, Scroll scroll, Point? destPoint = null)
+    {
+      if (!context.CanUseScroll(caster, scroll))
+        return null;
+           
+      if (scroll.CreateSpell(caster) is PassiveSpell ps)
+      {
+        if (ps.Kind == SpellKind.Teleport)
+        {
+          if (destPoint != null)
+          {
+            var currentTile = CurrentNode.GetTile(destPoint.Value);
+            var teleportSpell = ps as TeleportSpell;
+            if(teleportSpell.Range < Hero.DistanceFrom(currentTile))
+              return null;
+            
+            if(currentTile.IsEmpty || currentTile is Loot)
+              CurrentNode.SetTile(Hero, destPoint.Value);
+          }
+        }
+        else
+          caster.ApplyPassiveSpell(ps);
+
+        context.UtylizeScroll(caster, scroll);
+
+        if (caster is Hero)
+          context.MoveToNextTurnOwner();
+
+        return ps;
+      }
+      else
+        logger.LogError("!PassiveSpell " + scroll);
 
       return null;
     }

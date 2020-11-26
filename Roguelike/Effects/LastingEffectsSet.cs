@@ -166,7 +166,8 @@ namespace Roguelike.Effects
     {
       var value = le.EffectiveFactor.Value;
 
-      var esk = le.StatKind != EntityStatKind.Unset || le.Type == EffectType.ResistAll || le.Type == EffectType.Transform;
+      var esk = le.StatKind != EntityStatKind.Unset || le.Type == EffectType.ResistAll 
+        || le.Type == EffectType.Transform;
       Assert(esk);
       if (le.StatKind != EntityStatKind.Unset)
       {
@@ -255,7 +256,11 @@ namespace Roguelike.Effects
       {
         return AddPercentageLastingEffect(effectType, spellLasting, spell.Caller);
       }
-
+      //else if (spellKind == SpellKind.Teleport)
+      //{
+      //  var effectInfo = CalcLastingEffDamage(EffectType.Unset, 0, null, null);
+      //  return AddLastingEffect(effectInfo, EffectOrigin.SelfCasted, livingEntity);
+      //}
       return null;
     }
 

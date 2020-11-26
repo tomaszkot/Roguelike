@@ -135,7 +135,7 @@ namespace RoguelikeUnitTests
       var scroll = new Scroll(SpellKind.Rage);
       hero.Inventory.Add(scroll);
       var attackPrev = hero.GetCurrentValue(Roguelike.Attributes.EntityStatKind.Attack);
-      var spell = game.GameManager.Context.ApplyPassiveSpell(hero, scroll);
+      var spell = game.GameManager.ApplyPassiveSpell(hero, scroll);
       Assert.NotNull(spell);
       Assert.Greater(hero.GetCurrentValue(Roguelike.Attributes.EntityStatKind.Attack), attackPrev);
 
