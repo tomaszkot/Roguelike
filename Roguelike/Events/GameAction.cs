@@ -190,7 +190,7 @@ namespace Roguelike
     public enum LivingEntityActionKind
     {
       Moved, Died, GainedDamage, ExperiencedEffect, EffectFinished, Trapped, Interacted, Missed, UsedSpell,
-      FailedToCastSpell, GodsTurn, GodsPowerReleased, StrikedBack, BulkAttack, Teleported
+      FailedToCastSpell, GodsTurn, GodsPowerReleased, StrikedBack, BulkAttack, UsedPortal, Teleported
     }
 
     public class PolicyAppliedAction : GameAction
@@ -200,6 +200,7 @@ namespace Roguelike
 
     public class LivingEntityAction : GameAction
     {
+      public LivingEntityAction() { }
       public LivingEntityAction(LivingEntityActionKind kind)
       {
         this.Kind = kind;

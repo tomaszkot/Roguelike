@@ -876,6 +876,8 @@ namespace Roguelike.Managers
           caster.ApplyPassiveSpell(ps);
 
         context.UtylizeScroll(caster, scroll);
+        AppendAction<LivingEntityAction>((LivingEntityAction ac) => 
+        { ac.Kind = LivingEntityActionKind.Teleported; ac.Info = Hero.Name+" used " + scroll.Kind.ToDescription() + " scroll"; ac.InvolvedEntity = caster; });
 
         if (caster is Hero)
           context.MoveToNextTurnOwner();
