@@ -725,7 +725,8 @@ namespace Roguelike.Managers
           if (loot != null && !merch.Inventory.Items.Any(i => i.tag1 == loot.tag1))
           {
             loot.Revealed = true;
-            merch.Inventory.Add(loot);
+            //TODO use Items to avoid sound
+            merch.Inventory.Items.Add(loot);
           }
         }
 
@@ -740,8 +741,6 @@ namespace Roguelike.Managers
       int count = 0;
       foreach (var lk in eqKinds)
       {
-        //LootKind.Unset && i != LootKind.Other && i != LootKind.Seal && i != LootKind.SealPart
-        //if (lk == LootKind.Unset || lk == LootKind.Seal || LootKind.Other)
         if (lk == EquipmentKind.Trophy || lk == EquipmentKind.Unset || lk == EquipmentKind.God)
           continue;
 
@@ -755,27 +754,34 @@ namespace Roguelike.Managers
           else
             eq.MakeEnchantable();
 
-          merch.Inventory.Add(eq);
+          //TODO Items used to avoid sound
+          merch.Inventory.Items.Add(eq);
           count++;
         }
-        if (count == 2)
+        var breakCount = 2;
+        if (lk == EquipmentKind.Weapon)
+          breakCount = 3;
+        if (count == breakCount)
           break;
       }
     }
 
     protected void PopulateMerchantInv(Merchant merch, int heroLevel)
     {
+      merch.Inventory.Items.Clear();
       var lootKinds = Enum.GetValues(typeof(LootKind)).Cast<LootKind>()
         .Where(i => i != LootKind.Unset && i != LootKind.Other && i != LootKind.Seal && i != LootKind.SealPart && i != LootKind.Gold)
         .ToList();
 
       AddEqToMerchant(merch, lootKinds);
 
-      for (int i = 0; i < 4; i++)
+      //for (int i = 0; i < 4; i++)
       {
         var loot = new MagicDust();
         loot.Revealed = true;
-        merch.Inventory.Add(loot);
+        //TODO
+        loot.Count = 4;
+        merch.Inventory.Items.Add(loot);
       }
 
       //merch.Inventory.Add(new Hooch() { Revealed = true });
@@ -811,9 +817,9 @@ namespace Roguelike.Managers
         if (ps is SkeletonSpell skeletonSpell)
         {
           skeletonSpell.Enemy.Container = this.Container;
+          AlliesManager.AddEntity(skeletonSpell.Enemy);
           var empty = CurrentNode.GetClosestEmpty(Hero);
           ReplaceTile<Enemy>(skeletonSpell.Enemy, empty);
-          AlliesManager.AddEntity(skeletonSpell.Enemy);
         }
         if (caster is Hero)
           context.MoveToNextTurnOwner();
@@ -865,11 +871,20 @@ namespace Roguelike.Managers
           {
             var currentTile = CurrentNode.GetTile(destPoint.Value);
             var teleportSpell = ps as TeleportSpell;
-            if(teleportSpell.Range < Hero.DistanceFrom(currentTile))
+            if (teleportSpell.Range < Hero.DistanceFrom(currentTile))
+            {
+              SoundManager.PlayBeepSound();
+              EventsManager.AppendAction(new Events.GameInstructionAction() { Info = "Range of spell is too small (max:"+ teleportSpell.Range + ")" });
               return null;
-            
-            if(currentTile.IsEmpty || currentTile is Loot)
+            }
+
+            if (currentTile.IsEmpty || currentTile is Loot)
               CurrentNode.SetTile(Hero, destPoint.Value);
+            else
+            {
+              SoundManager.PlayBeepSound();
+              return null;
+            }
           }
         }
         else
@@ -888,6 +903,11 @@ namespace Roguelike.Managers
         logger.LogError("!PassiveSpell " + scroll);
 
       return null;
+    }
+
+    public bool IsAlly(LivingEntity le)
+    {
+      return this.AlliesManager.Contains(le);
     }
   }
 }

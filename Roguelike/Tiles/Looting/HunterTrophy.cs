@@ -68,19 +68,22 @@ namespace Roguelike.Tiles.Looting
         case HunterTrophyKind.Fang:
           
           EnchantSrc = EnchantSrc.Fang;
-          primaryStatDescription = "Sharp, hard, ready to bite. " + Strings.PartOfCraftingRecipe;
+          primaryStatDescription = "Sharp, hard, ready to bite. ";
           break;
         case HunterTrophyKind.Tusk:
           EnchantSrc = EnchantSrc.Tusk;
-          primaryStatDescription = "Big, sharp, ready to tear somebody apart. " + Strings.PartOfCraftingRecipe;
+          primaryStatDescription = "Big, sharp, ready to tear somebody apart. ";
           break;
         case HunterTrophyKind.Claw:
           EnchantSrc = EnchantSrc.Claw;
-          primaryStatDescription = "Sharp, hard, ready to claw. " + Strings.PartOfCraftingRecipe;
+          primaryStatDescription = "Sharp, hard, ready to claw. ";
           break;
         default:
           break;
       }
+
+      if(primaryStatDescription.Any())
+        primaryStatDescription += Strings.DropOnEnchantable;
     }
        
 

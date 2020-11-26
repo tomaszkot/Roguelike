@@ -171,9 +171,9 @@ namespace Roguelike.Tiles.Looting
       get
       {
         string desc = "Enchants equipment. ";
-        var allowInPlaceInventoryCrafting = false;
+        var allowInPlaceInventoryCrafting = true;
         if (allowInPlaceInventoryCrafting)
-          desc += "Drop it on an enchantable item in the Inventory.";
+          desc += Strings.DropOnEnchantable; 
         else
           desc += "Use it with the Enchant Equipment recipe on the Crafting Panel.";
 

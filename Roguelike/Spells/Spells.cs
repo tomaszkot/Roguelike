@@ -239,7 +239,7 @@ namespace Roguelike.Spells
 
   public class TeleportSpell : PassiveSpell
   {
-    const int baseRange = 2;
+    const int baseRange = 3;
     public int Range = baseRange;
 
     public TeleportSpell() : this(new LivingEntity())

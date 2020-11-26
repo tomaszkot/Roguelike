@@ -143,7 +143,7 @@ namespace Roguelike.Managers
       entitiesSet = true;
     }
 
-    public void AddEntity(LivingEntity ent)
+    public virtual void AddEntity(LivingEntity ent)
     {
       entities.Add(ent);
       entitiesSet = true;

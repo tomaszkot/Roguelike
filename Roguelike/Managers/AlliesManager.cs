@@ -4,6 +4,7 @@ using Roguelike.Policies;
 using Roguelike.Strategy;
 using Roguelike.Tiles;
 using SimpleInjector;
+using System;
 using System.Linq;
 
 namespace Roguelike.Managers
@@ -12,6 +13,8 @@ namespace Roguelike.Managers
   {
     EnemiesManager enemiesManager;
     AttackStrategy attackStrategy;
+    public event EventHandler<LivingEntity> AllyAdded;
+    //public event EventHandler<LivingEntity> AllyRemoved;
 
     public AlliesManager(GameContext context, EventsManager eventsManager, Container container, EnemiesManager enemiesManager) :
                          base(TurnOwner.Allies, context, eventsManager, container)
@@ -116,6 +119,13 @@ namespace Roguelike.Managers
 
     private void OnTurnOwnerChanged(object sender, TurnOwner turnOwner)
     {
+    }
+
+    public override void AddEntity(LivingEntity ent)
+    {
+      base.AddEntity(ent);
+      if (AllyAdded != null)
+        AllyAdded(this, ent);
     }
   }
 }
