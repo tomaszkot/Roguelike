@@ -54,6 +54,11 @@ namespace Roguelike.Managers
 
     public bool HeroTurn { get => Context.HeroTurn; }
 
+    public virtual void SetLoadedContext(AbstractGameLevel node, Hero hero)
+    {
+      SetContext(node, hero, GameContextSwitchKind.GameLoaded);
+    }
+
     [JsonIgnore]
     public EventsManager EventsManager { get => eventsManager; set => eventsManager = value; }
 

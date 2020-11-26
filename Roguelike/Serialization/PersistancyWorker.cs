@@ -52,12 +52,10 @@ namespace Roguelike.Serialization
       AbstractGameLevel node = null;
       node = worldLoader(hero, gs);
 
-      gm.SetContext(node, hero, GameContextSwitchKind.GameLoaded);
-      //gm.Context.SwitchTo(node, hero, gs, GameContextSwitchKind.GameLoaded);
-
+      gm.SetLoadedContext(node, hero);
+      //gm.SetContext(node, hero, GameContextSwitchKind.GameLoaded);
+      
       gm.PrintHeroStats("load");
-
-      //EventsManager.AppendAction(new GameStateAction() { Type = GameStateAction.ActionType.GameFinished});
     }
   }
 }
