@@ -1,5 +1,6 @@
 ﻿using NUnit.Framework;
 using Roguelike;
+using Roguelike.History;
 using Roguelike.TileContainers;
 using Roguelike.Tiles;
 using System;
@@ -20,6 +21,7 @@ namespace RoguelikeUnitTests
       GameLevel gameLevel = null;
       System.Drawing.Point heroPoint;
       Equipment eq;
+      var hintsCount = 0;
       {
         var game = CreateGame(false);
         var hero = game.Hero;
@@ -42,12 +44,15 @@ namespace RoguelikeUnitTests
         gameLevel = game.Level;
         heroPoint = hero.Point;
 
+        hintsCount = game.GameManager.GameState.History.Hints.Hints.Count;
         game.GameManager.Save();
       }
       {
         var game = CreateGame(false);
         var hero = game.Hero;
+        
         game.GameManager.Load(heroName);
+        Assert.AreEqual(hintsCount, game.GameManager.GameState.History.Hints.Hints.Count);
 
         Assert.AreNotEqual(game.Hero, hero);
         //after load node shall be different
@@ -56,10 +61,11 @@ namespace RoguelikeUnitTests
         Assert.NotNull(heroLoaded);
 
         //hero position shall match
-        Assert.AreEqual(heroLoaded.Point, heroPoint);
+        Assert.True(heroLoaded.DistanceFrom(heroPoint) <=1);
         Assert.AreEqual(heroLoaded, game.Hero);
         Assert.AreEqual(game.GameManager.GameState.History.Looting.GeneratedLoot.Count, 1);
-        Assert.AreEqual(game.GameManager.GameState.History.Looting.GeneratedLoot[0].Name, eq.Name);
+        Assert.AreEqual(game.GameManager.GameState.History.Looting.GeneratedLoot[0].Name, eq.Name); 
+        Assert.AreEqual(hintsCount, game.GameManager.GameState.History.Hints.Hints.Count);
       }
     }
 

@@ -76,6 +76,7 @@ namespace Roguelike.Serialization
         //settings.TypeNameAssemblyFormatHandling = TypeNameAssemblyFormatHandling.Full;
         settings.Converters.Add(new Newtonsoft.Json.Converters.StringEnumConverter());
         settings.ContractResolver = new SimpleInjectorContractResolver(container);
+        settings.ObjectCreationHandling = ObjectCreationHandling.Replace;
         entity = JsonConvert.DeserializeObject<T>(json, settings);
 
         //string outdata = traceWriter.ToString();

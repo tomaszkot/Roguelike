@@ -18,6 +18,7 @@ using Roguelike.LootContainers;
 using Roguelike.Tiles.Looting;
 using System.Collections.Generic;
 using Roguelike.Spells;
+using Roguelike.History;
 
 namespace Roguelike.Managers
 {

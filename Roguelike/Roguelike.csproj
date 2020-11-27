@@ -96,8 +96,9 @@
     <Compile Include="Generators\LootGenerator.cs" />
     <Compile Include="Generators\ProjectilesFactory.cs" />
     <Compile Include="Generators\RoomContentGenerator.cs" />
-    <Compile Include="HintHistory.cs" />
-    <Compile Include="History.cs" />
+    <Compile Include="Help\HintItem.cs" />
+    <Compile Include="History\HintHistory.cs" />
+    <Compile Include="History\History.cs" />
     <Compile Include="LootContainers\Crafting.cs" />
     <Compile Include="LootContainers\Inventory.cs" />
     <Compile Include="LootContainers\InventoryBase.cs" />
@@ -107,7 +108,7 @@
     <Compile Include="LootFactories\LootFactory.cs" />
     <Compile Include="LootFactories\MiscLootFactory.cs" />
     <Compile Include="LootFactories\ScrollsFactory.cs" />
-    <Compile Include="LootHistory.cs" />
+    <Compile Include="History\LootHistory.cs" />
     <Compile Include="Managers\AlliesManager.cs" />
     <Compile Include="Managers\InputManager.cs" />
     <Compile Include="Managers\LootManager.cs" />
@@ -118,7 +119,7 @@
     <Compile Include="Policies\SpellCastPolicy.cs" />
     <Compile Include="Probability\Chances.cs" />
     <Compile Include="Probability\Looting.cs" />
-    <Compile Include="RpgGameSettings.cs" />
+    <Compile Include="Settings\RpgGameSettings.cs" />
     <Compile Include="Serialization\PersistancyWorker.cs" />
     <Compile Include="Serialization\SimpleInjectorContractResolver.cs" />
     <Compile Include="Spells\OffensiveSpell.cs" />
@@ -127,7 +128,7 @@
     <Compile Include="Spells\SpellConverter.cs" />
     <Compile Include="Spells\Spells.cs" />
     <Compile Include="LootContainers\CurrentEquipment.cs" />
-    <Compile Include="LootExtendedInfo.cs" />
+    <Compile Include="TileParts\LootExtendedInfo.cs" />
     <Compile Include="Managers\EnemiesManager.cs" />
     <Compile Include="Managers\EntitiesManager.cs" />
     <Compile Include="Managers\EventsManager.cs" />
@@ -139,7 +140,7 @@
     <Compile Include="Strings.cs" />
     <Compile Include="TileParts\IEquipable.cs" />
     <Compile Include="Effects\LastingEffectsSet.cs" />
-    <Compile Include="TilesExtensions.cs" />
+    <Compile Include="Tiles\TilesExtensions.cs" />
     <Compile Include="Tiles\Abstract\IConsumable.cs" />
     <Compile Include="Tiles\Abstract\IMovingDamager.cs" />
     <Compile Include="Tiles\AdvancedLivingEntity.cs" />

@@ -1,6 +1,7 @@
 ﻿//using Algorithms;
 using Dungeons.Core;
 using Newtonsoft.Json;
+using Roguelike.History;
 using Roguelike.Serialization;
 using Roguelike.Settings;
 using System.Drawing;
@@ -25,7 +26,7 @@ namespace Roguelike
     public RpgGameSettings Settings { get; set; } = new RpgGameSettings();
     public HeroPath HeroPathValue { get; set; } = new HeroPath();
     public Point HeroInitGamePosition { get; set; } = new Point().Invalid();
-    public History History { get; set; } = new History();
+    public HistoryContent History { get; set; } = new HistoryContent();
 
     [JsonIgnore]
     public bool Dirty { get; set; } = true;//TODO true
