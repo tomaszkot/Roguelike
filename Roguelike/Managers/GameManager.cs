@@ -179,8 +179,10 @@ namespace Roguelike.Managers
     {
       node.GetTiles<LivingEntity>().ForEach(i => i.Container = this.Container);
       node.Logger = this.Logger;
-      if (context == GameContextSwitchKind.GameLoaded)
+      if (context == GameContextSwitchKind.GameLoaded && !gs.Settings.CoreInfo.RegenerateLevelsOnLoad)
         InitNodeOnLoad(node);
+      
+      node.Inited = true;
     }
 
     public TileContainers.GameLevel LoadLevel(string heroName, int index)

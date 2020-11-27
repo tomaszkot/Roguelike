@@ -22,6 +22,8 @@ namespace Roguelike
       List<HintItem> hints = new List<HintItem>();
       public static Dictionary<HintKind, string> Messages = new Dictionary<HintKind, string>();
 
+      public List<HintItem> Hints { get => hints; set => hints = value; }
+
       static HintHistory()
       {
         Messages.Add(HintKind.HeroLevelTooLow, "Hero level too low to use an item");
@@ -31,17 +33,17 @@ namespace Roguelike
       public HintHistory()
       {
         //TODO 'G' - shall be formatted based on KeyCode
-        hints.Add(new HintItem() { Info = "Press 'Left Alt' to see collectable/interactive items.", Kind = HintKind.LootHightlightShorcut });
-        hints.Add(new HintItem(){ Info = "Press 'G' to collect a single loot.", Kind = HintKind.LootCollectShorcut});
-        hints.Add(new HintItem() { Info = "Press 'J' to collect nearby loot items.", Kind = HintKind.BulkLootCollectShorcut });
-        hints.Add(new HintItem() { Info = "Recipe has been collected. Press 'R' to open Crafting Panel and see it's description.", Kind = HintKind.ShowCraftingPanel});
-        hints.Add(new HintItem() { Info = Messages[HintKind.HeroLevelTooLow], Kind = HintKind.HeroLevelTooLow});
-        hints.Add(new HintItem() { Info = Messages[HintKind.CanNotPutOnUnidentified], Kind = HintKind.CanNotPutOnUnidentified });
+        Hints.Add(new HintItem() { Info = "Press 'Left Alt' to see collectable/interactive items.", Kind = HintKind.LootHightlightShorcut });
+        Hints.Add(new HintItem(){ Info = "Press 'G' to collect a single loot.", Kind = HintKind.LootCollectShorcut});
+        Hints.Add(new HintItem() { Info = "Press 'J' to collect nearby loot items.", Kind = HintKind.BulkLootCollectShorcut });
+        Hints.Add(new HintItem() { Info = "Recipe has been collected. Press 'R' to open Crafting Panel and see it's description.", Kind = HintKind.ShowCraftingPanel});
+        Hints.Add(new HintItem() { Info = Messages[HintKind.HeroLevelTooLow], Kind = HintKind.HeroLevelTooLow});
+        Hints.Add(new HintItem() { Info = Messages[HintKind.CanNotPutOnUnidentified], Kind = HintKind.CanNotPutOnUnidentified });
       }
 
       public List<int> GetKeyCodes()
       {
-        return hints.Select(i => i.KeyCode).ToList();
+        return Hints.Select(i => i.KeyCode).ToList();
       }
 
       public void SetKeyCode(HintKind kind, int keyCode)
@@ -54,19 +56,19 @@ namespace Roguelike
 
       public HintItem Get(int keyCode)
       {
-        var hint = hints.Where(i => i.KeyCode == keyCode).FirstOrDefault();
+        var hint = Hints.Where(i => i.KeyCode == keyCode).FirstOrDefault();
         return hint;
       }
 
       public HintItem Get(HintKind kind)
       {
-        var hint = hints.Where(i => i.Kind == kind).FirstOrDefault();
+        var hint = Hints.Where(i => i.Kind == kind).FirstOrDefault();
         return hint;
       }
 
       public void SetShown(string info)
       {
-        var hint = hints.Where(i => i.Info == info).FirstOrDefault();
+        var hint = Hints.Where(i => i.Info == info).FirstOrDefault();
         if (hint == null)
           return;
 
@@ -84,7 +86,7 @@ namespace Roguelike
 
       public bool WasShown(string info)
       {
-        var hint = hints.Where(i => i.Info == info).FirstOrDefault();
+        var hint = Hints.Where(i => i.Info == info).FirstOrDefault();
         if (hint == null)
           return false;
 

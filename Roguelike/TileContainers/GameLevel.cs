@@ -98,20 +98,26 @@ namespace Roguelike.TileContainers
     {
       if (!GeneratorNodes.Any())
         return;
-      HookEvents();
+      HookEvents(HookEventContext.Generaton);
       //GeneratorNodes[0].Reveal(true, true);//bad to have it here, when loaded level hero migth not be at 0 room
     }
 
     public void OnLoadDone()
     {
-      HookEvents();
+      HookEvents(HookEventContext.Load);
     }
 
-    bool eventsHooked = false;
-    private void HookEvents()
+    enum HookEventContext { Unset, Load, Generaton }
+    HookEventContext hookEventContext = HookEventContext.Unset;
+
+    private void HookEvents(HookEventContext hookEventContext)
     {
-      if (eventsHooked)
-        throw new Exception("eventsHooked already hooked!");
+      if (this.hookEventContext != HookEventContext.Unset && this.hookEventContext != hookEventContext)
+        throw new Exception("eventsHooked already hooked! "+ this.hookEventContext + ", tried: "+ hookEventContext);
+
+      if (this.hookEventContext != HookEventContext.Unset)
+        return;
+
       foreach (var node in GeneratorNodes)
       {
         node.OnRevealed += Node_OnRevealed;
@@ -119,7 +125,7 @@ namespace Roguelike.TileContainers
           isl.OnRevealed += Node_OnRevealed;
       }
 
-      eventsHooked = true;
+      this.hookEventContext = hookEventContext;
     }
 
     private void Node_OnRevealed(object sender, NodeRevealedParam eventData)
