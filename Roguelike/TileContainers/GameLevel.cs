@@ -130,26 +130,26 @@ namespace Roguelike.TileContainers
 
     private void Node_OnRevealed(object sender, NodeRevealedParam eventData)
     {
-      var nodeTiles = eventData.Tiles;
+      var revealedTiles = eventData.Tiles;
 
       //when data is loaded tiles must be revelaed by maching points;
-      foreach (var tile in nodeTiles)
+      foreach (var revealedTile in revealedTiles)
       {
-        var dt = this.GetTile(tile.Point);
+        var dt = this.GetTile(revealedTile.Point);
         try
         {
           if (dt == null)
-            Logger.LogError("dt == null!!! tile.Symbol = [" + tile.Symbol + "] " + tile.Point + " ");
+            Logger.LogError("dt == null!!! tile.Symbol = [" + revealedTile.Symbol + "] " + revealedTile.Point + " ");
           else
           {
-            if (dt.Symbol != tile.Symbol)
+            if (dt.Symbol != revealedTile.Symbol)
             {
-              if (!(dt.Symbol == Constants.SymbolWall && tile.Symbol == Constants.SymbolDoor))//TODO
+              if (!(dt.Symbol == Constants.SymbolWall && revealedTile.Symbol == Constants.SymbolDoor))//TODO
               {
-                Logger.LogError(this+ " dt.Symbol != tile.Symbol [" + dt.Symbol + "," + tile.Symbol + "] " + tile.Point + " ");
+                OnNodeRevealedTileSymbolMismatch(revealedTile, dt);
               }
             }
-            if (!dt.Revealed && tile.Revealed)
+            if (!dt.Revealed && revealedTile.Revealed)
               dt.Revealed = true;
           }
         }
@@ -166,7 +166,14 @@ namespace Roguelike.TileContainers
         NodeRevealed(sender, eventData);
 
     }
-        
+
+    public virtual void OnNodeRevealedTileSymbolMismatch(Tile revealed, Tile dt)
+    {
+      if (dt is Hero && revealed.IsEmpty)
+        return;//TODO
+      Logger.LogError(this + " dt.Symbol != revealed.Symbol [" + dt.Symbol + "," + revealed.Symbol + "] " + revealed.Point + " ");
+    }
+
     [JsonIgnore]
     public override List<DungeonNode> ChildIslands
     {
