@@ -248,12 +248,17 @@ namespace Roguelike.Managers
           {
             Logger.LogError("context.CurrentNode HasTile failed for " + lea.InvolvedEntity);
           }
-          if (lea.InvolvedEntity is Enemy)
+          if (lea.InvolvedEntity is Enemy enemy)
           {
-            Hero.IncreaseExp(10);
+            //TODO based on enemy level, corelate iwth nextExp
+            var exp = 10;
+            if (enemy.PowerKind == EnemyPowerKind.Boss)
+              exp = 100;
+            else if (enemy.PowerKind == EnemyPowerKind.Champion)
+              exp = 50;
+            Hero.IncreaseExp(exp);
             //var loot = LootGenerator.GetRandomLoot();
             context.CurrentNode.SetTile(new Tile(), lea.InvolvedEntity.Point);
-            var enemy = lea.InvolvedEntity as Enemy;
             var lootItems = lootManager.TryAddForLootSource(enemy);
             //Logger.LogInfo("Added loot count: "+ lootItems.Count + ", items: ");
             //lootItems.ForEach(i=> Logger.LogInfo("Added loot" + i));
