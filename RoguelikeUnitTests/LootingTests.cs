@@ -515,7 +515,7 @@ namespace RoguelikeUnitTests
       var lootItems = li.GetDiff();
       Assert.Greater(lootItems.Count, 0);
       var foods = li.Get<Food>().ToList();
-      Assert.Greater(foods.Count, 55);
+      Assert.Greater(foods.Count, 40);
       var kinds = Enum.GetValues(typeof(FoodKind)).Cast<FoodKind>().Where(i=> i != FoodKind.Unset).ToList();
       foreach (var kind in kinds)
       {

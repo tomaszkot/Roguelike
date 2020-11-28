@@ -22,7 +22,8 @@ namespace RoguelikeUnitTests
     public RoguelikeGame Game { get => game; protected set => game = value; }
     public Container Container { get; set; }
     public BaseHelper Helper { get => helper; set => helper = value; }
-
+    GameManager GameManager { get => game.GameManager;  }
+  
     protected BaseHelper helper;
 
     [SetUp]
@@ -129,20 +130,47 @@ namespace RoguelikeUnitTests
           info.MinNodeSize = new System.Drawing.Size(30, 30);
           info.MaxNodeSize = info.MinNodeSize;
           this.numEnemies = numEnemies;
-          float numEn = ((float)numEnemies) / numberOfRooms;
-          info.ForcedNumberOfEnemiesInRoom = (int)(numEn + 0.5);
-          if (info.ForcedNumberOfEnemiesInRoom == 0)
+
+          if (numEnemies > 1)
           {
-            info.ForcedNumberOfEnemiesInRoom = numEnemies % numberOfRooms;
-            numEnemies = numEnemies * numberOfRooms;
+            float numEn = ((float)numEnemies) / numberOfRooms;
+            info.ForcedNumberOfEnemiesInRoom = (int)(numEn + 0.5);
+
+            if (info.ForcedNumberOfEnemiesInRoom == 0)
+            {
+              info.ForcedNumberOfEnemiesInRoom = numEnemies % numberOfRooms;
+              numEnemies = numEnemies * numberOfRooms;
+            }
           }
           info.NumberOfRooms = numberOfRooms;
           gi = info;
         }
 
         var level = game.GenerateLevel(0, gi);
-        Assert.GreaterOrEqual(game.GameManager.EnemiesManager.AllEntities.Count, numEnemies);//some are auto generated
+
+        //if (numEnemies < 10)
+        {
+          var enemies = level.GetTiles<Enemy>();
+          if (enemies.Count > numEnemies)
+          {
+            var aboveThreshold = enemies.Skip(numEnemies).ToList();
+            foreach(var en in aboveThreshold)
+            {
+              level.SetEmptyTile(en.Point);
+              GameManager.EnemiesManager.AllEntities.Remove(en);
+            }
+          }
+          enemies = level.GetTiles<Enemy>();
+          Assert.LessOrEqual(enemies.Count, numEnemies);
+        }
+
+        Assert.GreaterOrEqual(AllEnemies.Count, numEnemies);//some are auto generated
         Assert.Less(ActiveEnemies.Count, numEnemies*4);
+        
+        if (AllEnemies.Any() && !AllEnemies.Where(i=> i.Revealed).Any())
+        {
+          AllEnemies[0].Revealed = true;
+        }
       }
       return game;
     }

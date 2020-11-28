@@ -248,7 +248,8 @@ namespace RoguelikeUnitTests
     [Test]
     public void TestBleeding()
     {
-      var game = CreateGame();
+      var game = CreateGame(true, 1);
+      Assert.AreEqual(AllEnemies.Count, 1);
       int actionCounter = 0;
 
       game.GameManager.EventsManager.ActionAppended += (object sender, Roguelike.Events.GameAction e) =>
@@ -264,7 +265,8 @@ namespace RoguelikeUnitTests
         }
       };
 
-      var enemy = ActiveEnemies.First();
+      var enemy = AllEnemies.First();
+      Assert.True(enemy.Revealed);
       var enemyHealthStat = enemy.Stats.GetStat(EntityStatKind.Health);
       enemyHealthStat.Value.Nominal = 150;
       enemy.SetIsWounded(true);//make sure will bleed
@@ -278,9 +280,9 @@ namespace RoguelikeUnitTests
       Assert.NotNull(le1);
       Assert.Greater(enemyHealth, enemy.Stats.Health);
 
-      var value = game.Hero.Stats.GetStat(EntityStatKind.Defense).Value;
+      //var value = game.Hero.Stats.GetStat(EntityStatKind.Defense).Value;
       var turns = le1.PendingTurns;
-      for (int i = 0; i < turns * 2; i++)//there will be prolong
+      for (int i = 0; i < turns; i++)
       {
         game.GameManager.SkipHeroTurn();
         GotoNextHeroTurn();
