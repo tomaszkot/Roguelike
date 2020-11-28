@@ -607,10 +607,13 @@ namespace Dungeons
             //{
 
             //}
-            var set = this.SetTile(tileInChildMaze, new Point(destCol, destRow), autoSetTileDungeonIndex: false);
+            var destPt = new Point(destCol, destRow);
+            var set = this.SetTile(tileInChildMaze, destPt, autoSetTileDungeonIndex: false);
             if (!set)
             {
-              this.Log("SetTile failed "+ tileInChildMaze, true);
+              var err = "SetTile failed " + tileInChildMaze;
+              var tileAtPt = this.GetTile(destPt);
+              this.Log(err + " tileAtPt: " + tileAtPt, true);
             }
           }
         }
