@@ -12,6 +12,11 @@ namespace Roguelike
 {
   public class GameState : IPersistable
   {
+    public GameState()
+    {
+      Settings.CoreInfo.GameVersion = Game.Version;
+    }
+
     public class HeroPath
     {
       public string World { get; set; }
