@@ -1,6 +1,7 @@
 ﻿//using Algorithms;
 using Dungeons.Core;
 using Newtonsoft.Json;
+using OuaDII.TileContainers;
 using Roguelike.History;
 using Roguelike.Serialization;
 using Roguelike.Settings;
@@ -19,7 +20,18 @@ namespace Roguelike
 
       public override string ToString()
       {
-        return Pit.Any() ? this.World + " " + Pit + " " + LevelIndex  : World;
+        return GetDisplayName();
+      }
+
+      public string GetDisplayName()
+      {
+        string name = "";
+        if (Pit.Any())
+          name += DungeonPit.GetPitDisplayName(Pit) + "/" + (LevelIndex + 1);
+        else
+          name += World;
+
+        return name;
       }
     }
         
