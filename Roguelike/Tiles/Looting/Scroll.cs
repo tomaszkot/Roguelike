@@ -1,12 +1,7 @@
 ﻿using Roguelike.Abstract;
-using Roguelike.Attributes;
 using Roguelike.Spells;
 using Roguelike.Tiles.Interactive;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Roguelike.Tiles.Looting
 {
@@ -24,6 +19,8 @@ namespace Roguelike.Tiles.Looting
         //spell = CreateSpell(dummy);
         if (kind == SpellKind.CrackedStone)
           Price = (int)((float)Price / 2.0f);
+        else if (kind == SpellKind.Identify)
+          Price *= 2;
 
         SetDesc();
       }
@@ -147,7 +144,7 @@ namespace Roguelike.Tiles.Looting
     {
       //dummy.Stats.SetNominal(EntityStatKind.Magic, LivingEntity.BaseMagic.TotalValue);
       Symbol = '?';
-      Price = 40;
+      Price = 20;
       Kind = kind;
       PositionInPage = -1;
       LootKind = LootKind.Scroll;
