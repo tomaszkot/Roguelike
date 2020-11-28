@@ -156,7 +156,7 @@ namespace Roguelike.Managers
       }
       foreach (var extraLoot in extraLootItems)
       {
-        GameManager.AddLootReward(extraLoot, enemy, true);
+        GameManager.AddLootReward(extraLoot, enemy, false);
       }
 
       return loot;

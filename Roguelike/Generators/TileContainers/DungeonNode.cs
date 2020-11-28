@@ -17,20 +17,20 @@ namespace Roguelike.Generators.TileContainers
     {
     }
 
-    public override bool SetTile(Tile tile, Point point, bool resetOldTile = true, bool revealReseted = true, bool autoSetTileDungeonIndex = true)
+    public override bool SetTile(Tile tile, Point point, bool resetOldTile = true, 
+      bool revealReseted = true, bool autoSetTileDungeonIndex = true, bool reportError = true)
     {
       var atPos = tiles[point.Y, point.X];
       if (tile != null && !tile.IsEmpty && atPos != null && !atPos.IsEmpty)
       {
-        var allowed = (tile is IDoor && atPos is Wall) || (tile is Wall && atPos is IDoor)
-           //|| (tile is Door && atPos is Door)
-           ;
+        var allowed = (tile is IDoor && atPos is Wall) || (tile is Wall && atPos is IDoor);
         if (!allowed)
         {
           allowed = tile is Wall && atPos is Wall;
           if (!allowed)
           {
-            Container.GetInstance<ILogger>().LogError("atPos != null: " + atPos + ", while setting " + tile);
+            if(reportError)
+              Container.GetInstance<ILogger>().LogError("atPos != null: " + atPos + ", while setting " + tile);
             return false;
           }
         }

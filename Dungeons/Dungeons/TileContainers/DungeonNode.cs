@@ -427,7 +427,7 @@ namespace Dungeons
       public bool NullTilesAllowed { get; set; }
 
       public virtual bool SetTile(Tile tile, Point point,
-        bool resetOldTile = true, bool revealReseted = true, bool autoSetTileDungeonIndex = true)
+        bool resetOldTile = true, bool revealReseted = true, bool autoSetTileDungeonIndex = true, bool reportError = true)
       {
         if (point.X < 0 || point.Y < 0)
         {
@@ -608,12 +608,20 @@ namespace Dungeons
 
             //}
             var destPt = new Point(destCol, destRow);
-            var set = this.SetTile(tileInChildMaze, destPt, autoSetTileDungeonIndex: false);
+            var set = this.SetTile(tileInChildMaze, destPt, autoSetTileDungeonIndex: false, reportError:false);
             if (!set)
             {
-              var err = "SetTile failed " + tileInChildMaze;
-              var tileAtPt = this.GetTile(destPt);
-              this.Log(err + " tileAtPt: " + tileAtPt, true);
+              var emp = this.GetClosestEmpty(tileInChildMaze);
+              if (emp != null)
+              {
+                set = this.SetTile(tileInChildMaze, emp.Point, autoSetTileDungeonIndex: false);
+              }
+              if (!set)
+              {
+                var err = "SetTile failed " + tileInChildMaze + " emp:" + (emp != null);
+                var tileAtPt = this.GetTile(destPt);
+                this.Log(err + " tileAtPt: " + tileAtPt, true);
+              }
             }
           }
         }

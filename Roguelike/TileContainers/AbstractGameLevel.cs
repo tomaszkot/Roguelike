@@ -145,7 +145,7 @@ namespace Roguelike.TileContainers
     }
 
     public override bool SetTile(Tile tile, Point point, bool resetOldTile = true, bool revealReseted = true,
-      bool autoSetTileDungeonIndex = true)
+      bool autoSetTileDungeonIndex = true, bool reportError = true)
     {
       if (tile is IApproachableByHero)
       {
@@ -190,7 +190,7 @@ namespace Roguelike.TileContainers
       }
       
       Point? prevPos = tile?.Point;
-      var res =  base.SetTile(tile, point, resetOldTile, revealReseted, autoSetTileDungeonIndex);
+      var res =  base.SetTile(tile, point, resetOldTile, revealReseted, autoSetTileDungeonIndex, reportError);
       if (res && tile is LivingEntity && prevPos!=null)
       {
         (tile as LivingEntity).PrevPoint = prevPos.Value;
