@@ -1,6 +1,7 @@
 ﻿using Dungeons.Core;
 using Newtonsoft.Json;
 using Roguelike.Attributes;
+using Roguelike.History;
 using Roguelike.LootFactories;
 using Roguelike.Probability;
 using Roguelike.Tiles;
@@ -245,16 +246,28 @@ namespace Roguelike.Generators
     protected virtual Equipment GetRandomEquipment(EquipmentClass eqClass, int level)
     {
       var randedEnum = GetPossibleEqKind();
-      if (level == 3 )//&& randedEnum == EquipmentKind.Ring)
+
+      LootFactory.EquipmentFactory.lootHistory = this.lootHistory;
+      var eq = LootFactory.EquipmentFactory.GetRandom(randedEnum, level, eqClass);
+      if ((eq == null || eq.Class != EquipmentClass.Unique) && eqClass == EquipmentClass.Unique)
       {
-        int k = 0;
-        k++;
+        var skip = new[] { EquipmentKind.Trophy, EquipmentKind.God, EquipmentKind.Unset };
+        var values = Enum.GetValues(typeof(EquipmentKind)).Cast<EquipmentKind>().Where(i => !skip.Contains(i)).ToList();
+        foreach (var kind in values)
+        {
+          eq = LootFactory.EquipmentFactory.GetRandom(kind, level, eqClass);
+          if (eq != null)
+            break;
+        }
       }
-      return LootFactory.EquipmentFactory.GetRandom(randedEnum, level, eqClass);
+
+      return eq;
     }
 
-    public virtual Loot GetBestLoot(EnemyPowerKind powerKind, int level)
+    protected LootHistory lootHistory;
+    public virtual Loot GetBestLoot(EnemyPowerKind powerKind, int level, LootHistory lootHistory)
     {
+      this.lootHistory = lootHistory;
       EquipmentClass eqClass = EquipmentClass.Plain;
       bool enchant = false;
       if (powerKind == EnemyPowerKind.Boss)

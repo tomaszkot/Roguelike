@@ -1,6 +1,7 @@
 ﻿using Dungeons.Core;
 using Roguelike.Attributes;
 using Roguelike.Generators;
+using Roguelike.History;
 using Roguelike.Tiles;
 using SimpleInjector;
 using System.Collections.Generic;
@@ -11,6 +12,7 @@ namespace Roguelike.LootFactories
   public class EquipmentFactory : AbstractLootFactory
   {
     protected Dictionary<EquipmentKind, EquipmentTypeFactory> lootCreators = new Dictionary<EquipmentKind, EquipmentTypeFactory>();
+    internal protected LootHistory lootHistory;
 
     public EquipmentFactory(Container container) : base(container)
     {

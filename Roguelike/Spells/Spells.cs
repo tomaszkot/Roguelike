@@ -174,6 +174,7 @@ namespace Roguelike.Spells
 
       var level = GetCurrentLevel();
       Enemy = Enemy.Spawn(EnemySymbols.SkeletonSymbol, level);
+      Enemy.HeroAlly = true;
       Enemy.Stats[EntityStatKind.Attack].Nominal = Damage;
       var health = CalcHealth(level);
       Enemy.Stats[EntityStatKind.Health].Nominal = health;

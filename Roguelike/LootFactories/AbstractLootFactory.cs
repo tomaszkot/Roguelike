@@ -38,11 +38,16 @@ namespace Roguelike.LootFactories
   public abstract class EquipmentTypeFactory : AbstractLootFactory
   {
     protected Dictionary<string, Func<string, Equipment>> factory = new Dictionary<string, Func<string, Equipment>>();
-    public List<string> UniqueItemTags { get; protected set; } = new List<string>();
+    //public List<string> UniqueItemTags { get; protected set; } = new List<string>();
     protected Dictionary<string, Roguelike.Tiles.Equipment> prototypes = new Dictionary<string, Roguelike.Tiles.Equipment>();
 
     public EquipmentTypeFactory(Container container) : base(container)
     {
+    }
+
+    public List<Roguelike.Tiles.Equipment> GetUniqueItems(int level)
+    {
+      return prototypes.Where(i => i.Value.Class == Roguelike.Tiles.EquipmentClass.Unique && i.Value.LevelIndex <= level).Select(i => i.Value).ToList();
     }
 
     public override Loot GetRandom(int level)

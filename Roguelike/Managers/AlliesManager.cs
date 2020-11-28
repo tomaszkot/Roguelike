@@ -28,7 +28,10 @@ namespace Roguelike.Managers
 
     private void Context_ContextSwitched(object sender, ContextSwitch e)
     {
-      UpdateEntities();
+      //var allies = Context.CurrentNode.GetTiles<LivingEntity>().Where(i => i is Abstract.IAlly).Cast<IAlly>();
+      //var entities = allies.Where(i => i.Active).Cast<LivingEntity>().ToList();
+      var entities = Context.CurrentNode.GetTiles<LivingEntity>().Where(i => i.HeroAlly).ToList();
+      base.SetEntities(entities);
     }
 
     //protected override bool MoveEntity(LivingEntity entity, Point newPos)
@@ -99,13 +102,6 @@ namespace Roguelike.Managers
             MakeRandomMove(ally);
         }
       }
-    }
-
-    private void UpdateEntities()
-    {
-      var allies = Context.CurrentNode.GetTiles<LivingEntity>().Where(i => i is Abstract.IAlly).Cast<IAlly>();
-      var entities = allies.Where(i=> i.Active).Cast<LivingEntity>().ToList();
-      base.SetEntities(entities);
     }
 
     protected override void OnPolicyAppliedAllIdle()

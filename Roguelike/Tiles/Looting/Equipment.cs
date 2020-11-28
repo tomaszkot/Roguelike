@@ -392,6 +392,8 @@ namespace Roguelike.Tiles
       var factorBefore = ExtendedInfo.Stats.GetFactor(stat);
       if (factorBefore > 0 && incrementFactor)
         statValue += statValue;
+
+      //TODO price based on amount of Magic Stat Value
       if (reason != AddMagicStatReason.Enchant)
       {
         SetClass(EquipmentClass.Magic);//we shall not lost that info
@@ -399,7 +401,7 @@ namespace Roguelike.Tiles
         if (unidentifiedStats == null)
         {
           unidentifiedStats = new EntityStats();
-          Price *= 2;
+          Price = (int)(Price * 1.5f);
         }
         unidentifiedStats.SetFactor(stat, statValue);
         if (Class == EquipmentClass.Magic && secLevel)
@@ -422,11 +424,11 @@ namespace Roguelike.Tiles
     public override void HandleGenerationDone()
     {
       Debug.Assert(this.MinDropDungeonLevel >= 0);
-      if (this.MinDropDungeonLevel >= 0)
-      {
-        if(this.MinDropDungeonLevel > 0)
-          Price = Price * this.MinDropDungeonLevel;
-      }
+      //if (this.MinDropDungeonLevel >= 0) //set in SetPriceFromLevel
+      //{
+      //  if(this.MinDropDungeonLevel > 0)
+      //    Price = Price * this.MinDropDungeonLevel;
+      //}
     }
 
     public bool priceAlrIncreased;

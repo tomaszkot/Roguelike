@@ -38,6 +38,8 @@ namespace Roguelike.Tiles
     Dictionary<EntityStatKind, float> nonPhysicalDamageStats = new Dictionary<EntityStatKind, float>();
     public Tile FixedWalkTarget = null;
     public LivingEntity AllyModeTarget;
+    public bool HeroAlly { get; set; }
+
     public virtual Scroll ActiveScroll
     {
       get 

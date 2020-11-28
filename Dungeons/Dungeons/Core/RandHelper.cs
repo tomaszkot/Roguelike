@@ -28,6 +28,9 @@ namespace Dungeons.Core
 
     public static T GetRandomElem<T>(List<T> list) 
     {
+      if (!list.Any())
+        return default(T);
+
       int val = random.Next(list.Count);
       return list[val];
     }

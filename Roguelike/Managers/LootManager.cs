@@ -170,7 +170,7 @@ namespace Roguelike.Managers
         loot = GameManager.LootGenerator.GetLootByAsset("Kafar");
       }
       else
-        loot =  GameManager.LootGenerator.GetBestLoot(enemy.PowerKind, enemy.Level);
+        loot =  GameManager.LootGenerator.GetBestLoot(enemy.PowerKind, enemy.Level, GameManager.GameState.History.Looting);
       return loot;
     }
 
