@@ -809,11 +809,6 @@ namespace Roguelike.Managers
       //}
     }
 
-    //public LivingEntity SpawnEnemyAndAddToLevel()
-    //{
-    //  var en = CurrentNode.SpawnEnemy();
-    //}
-
     public OffensiveSpell ApplyOffensiveSpell(LivingEntity caster, Scroll scroll)
     {
       if (!context.UtylizeScroll(caster, scroll))

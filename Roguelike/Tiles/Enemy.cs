@@ -78,6 +78,8 @@ namespace Roguelike.Tiles
         Stats.SetNominal(basicStats, nv);
       }
 
+      if (string.IsNullOrEmpty(Name))
+        Name = NameFromSymbol(symbol);
       //Stats.Experience = 1;
       //kind = PowerKind.Plain;
       //Name = "Enemy";
@@ -299,12 +301,23 @@ namespace Roguelike.Tiles
       }
     }
 
+    public static string NameFromSymbol(char symbol)
+    {
+      var namePair = EnemySymbols.EnemiesToSymbols.Where(i => i.Value == symbol);
+      if (namePair.Any())
+      {
+        return namePair.First().Key;
+      }
+      return "";
+    }
+
     public static Enemy Spawn(char symbol, int level)
     {
       var enemy = new Enemy(symbol);
       enemy.SetLevel(level);
-      enemy.tag1 = EnemySymbols.EnemiesToSymbols.Where(i => i.Value == EnemySymbols.SkeletonSymbol).Single().Key;
+      enemy.tag1 = EnemySymbols.EnemiesToSymbols.Where(i => i.Value == symbol).Single().Key;
       enemy.Revealed = true;
+      
       return enemy;
     }
   }
