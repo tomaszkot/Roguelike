@@ -246,7 +246,7 @@ namespace Roguelike.Tiles
     {
       if (tag1.ToLower().Contains("bear"))
       {
-        IncreaseStats(2, IncreaseStatsKind.Name);
+        IncreaseStats(1.5f, IncreaseStatsKind.Name);
       }
     }
 
