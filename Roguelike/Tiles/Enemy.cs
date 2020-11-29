@@ -120,7 +120,7 @@ namespace Roguelike.Tiles
       {
         Symbol = (char)((int)Symbol - 32);
       }
-      float inc = boss ? 1.9f : 1.5f;
+      float inc = boss ? 2.3f : 1.5f;
       IncreaseStats(inc, IncreaseStatsKind.PowerKind);
 
       InitEffectsToUse(boss);
