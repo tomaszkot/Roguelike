@@ -630,8 +630,8 @@ namespace RoguelikeUnitTests
       }
       Assert.Greater(expectedKindsCounter, 0);
     }
+    ///
 
-
-
+    
+    }
   }
-}

@@ -1,5 +1,6 @@
 ﻿#define ASCII_BUILD  
 using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using Dungeons.Core;
@@ -13,12 +14,13 @@ namespace Roguelike.Tiles
   public enum RoomKind { Unset, PuzzleRoom, Island }
   public enum EnemyPowerKind { Unset, Plain, Champion, Boss };
   public enum PrefferedFightStyle { Physical, Magic, Distance }
-  
+  public enum IncreaseStatsKind { Level, PowerKind, Name }
+
   public class Enemy : LivingEntity, ILootSource
   {
     //public int Level { get; set; } = 1;
     public PrefferedFightStyle PrefferedFightStyle { get; set; }//= PrefferedFightStyle.Magic;
-    
+
     public static readonly EntityStat BaseAttack = new EntityStat(EntityStatKind.Attack, 10f);
     public static readonly EntityStat BaseHealth = new EntityStat(EntityStatKind.Health, 13);
     public static readonly EntityStat BaseDefence = new EntityStat(EntityStatKind.Defense, 5);
@@ -33,8 +35,8 @@ namespace Roguelike.Tiles
     public int NumberOfEmergencyTeleports = 0;
     public EnemyPowerKind PowerKind { get; set; } = EnemyPowerKind.Plain;
     public bool LevelSet { get => levelSet; set => levelSet = value; }
-    public bool StatsIncreasedByPowerKind { get => statsIncreased; set => statsIncreased = value; }
-    public bool StatsIncreasedByLevel { get; set; }
+    public Dictionary<IncreaseStatsKind, bool> StatsIncreased { get; set; } = new Dictionary<IncreaseStatsKind, bool>();
+    
     public bool ShoutedAtHero { get; set; }
 
     static Enemy()
@@ -81,6 +83,14 @@ namespace Roguelike.Tiles
       //Name = "Enemy";
     }
 
+    protected bool WereStatsIncreased(IncreaseStatsKind kind)
+    { 
+      if(StatsIncreased.ContainsKey(kind))
+        return StatsIncreased[kind];
+
+      return false;
+    }
+
     public Point GetPoint() { return Point; }
 
     public void SetChampion()
@@ -111,7 +121,7 @@ namespace Roguelike.Tiles
         Symbol = (char)((int)Symbol - 32);
       }
       float inc = boss ? 1.9f : 1.5f;
-      IncreaseStats(inc, true);
+      IncreaseStats(inc, IncreaseStatsKind.PowerKind);
 
       InitEffectsToUse(boss);
     }
@@ -153,9 +163,12 @@ namespace Roguelike.Tiles
       Assert(level >= 1);
       this.Level = level;
 
+      if(!WereStatsIncreased(IncreaseStatsKind.Name))
+        UpdateStatsFromName();
+
       var hard = false;// GameManager.Instance.GameSettings.DifficultyLevel == Commons.GameSettings.Difficulty.Hard;
       var inc = GetIncrease(hard ? level + 1 : level);
-      IncreaseStats(inc, false);
+      IncreaseStats(inc, IncreaseStatsKind.Level);
       SetResistance();
       LevelSet = true;
     }
@@ -223,25 +236,31 @@ namespace Roguelike.Tiles
     }
 
     public float EnemyStatsIncreasePerLevel = .31f;
-    private bool statsIncreased;
-
+    
     private float GetIncrease(int level, float factor = 1)
     {
       return 1 + (level * EnemyStatsIncreasePerLevel * factor);
     }
 
-    private void IncreaseStats(float inc, bool fromPowerKind)
+    protected void UpdateStatsFromName()
     {
-      if ((fromPowerKind && StatsIncreasedByPowerKind)
-          ||
-          (!fromPowerKind && StatsIncreasedByLevel))
+      if (tag1.ToLower().Contains("bear"))
       {
-        AssertFalse("inc == " + inc + " PowerKind =" + PowerKind + " StatsIncreasedByPowerKind=" + StatsIncreasedByPowerKind + ", increasing for second time?");
+        IncreaseStats(2, IncreaseStatsKind.Name);
+      }
+    }
+
+    protected void IncreaseStats(float inc, IncreaseStatsKind kind)
+    {
+      var wereInc = WereStatsIncreased(kind);
+      if (wereInc)
+      {
+        AssertFalse("inc == " + inc + " " + kind + ", increasing for second time?");
         return;
       }
       if (inc == 0)
       {
-        AssertFalse("inc == 0 PowerKind =" + PowerKind + " fromPowerKind="+ fromPowerKind);
+        AssertFalse("inc == 0 PowerKind =" + PowerKind + " fromPowerKind="+ kind);
         inc = 1.2f;
       }
 
@@ -252,11 +271,7 @@ namespace Roguelike.Tiles
         Stats.SetNominal(kv.Key, val);
       }
 
-      if (fromPowerKind)
-        StatsIncreasedByPowerKind = true;
-      else
-        StatsIncreasedByLevel = true;
-
+      StatsIncreased[kind] = true;
     }
 
     public override string ToString()

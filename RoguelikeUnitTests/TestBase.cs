@@ -240,7 +240,7 @@ namespace RoguelikeUnitTests
 
     protected void SetEnemyLevel(Enemy en, int level)
     {
-      en.StatsIncreasedByLevel = false;
+      en.StatsIncreased[IncreaseStatsKind.Level] = false;
       en.SetLevel(level);
     }
 

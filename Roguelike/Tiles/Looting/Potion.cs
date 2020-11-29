@@ -18,7 +18,7 @@ namespace Roguelike.Tiles.Looting
 
     public Potion(PotionKind kind)
     {
-      Price = 5;
+      Price = 50;
       Symbol = PotionSymbol;
       LootKind = LootKind.Potion;
       SetKind(kind);
@@ -53,7 +53,7 @@ namespace Roguelike.Tiles.Looting
       {
         Name = "Poison Potion";
         tag1 = "poison_potion";
-        primaryStatDesc = "Remove poison effect";
+        primaryStatDesc = "Removes poison effect";
         StatKind = EntityStatKind.Unset;
       }
     }

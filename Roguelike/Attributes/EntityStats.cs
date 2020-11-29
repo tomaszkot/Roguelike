@@ -316,6 +316,16 @@ namespace Roguelike.Attributes
       //experience += other.experience;
     }
 
+    public void Increase(float fixedFactorValue)
+    {
+      foreach (var stat in Stats)
+      {
+        AccumulateFactor(stat.Key, fixedFactorValue);
+      }
+
+      //experience += other.experience;
+    }
+
     internal void AccumulateFactors(EntityStats otherStats, bool positive)
     {
       foreach (var otherStat in otherStats.Stats)
