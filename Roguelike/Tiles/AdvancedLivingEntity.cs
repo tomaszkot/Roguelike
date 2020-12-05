@@ -14,10 +14,11 @@ using System.Drawing;
 using System.Linq;
 using System.Windows.Markup;
 using SimpleInjector;
+using Roguelike.Abstract;
 
 namespace Roguelike.Tiles
 {
-  public class AdvancedLivingEntity : LivingEntity, IPersistable, IEquipable
+  public class AdvancedLivingEntity : LivingEntity, IPersistable, IEquipable, IAdvancedEntity
   {
     public event EventHandler ExpChanged;
     public event EventHandler StatsRecalculated;

@@ -62,9 +62,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Abilities\Ability.cs" />
+    <Compile Include="Abstract\IAdvancedEntity.cs" />
     <Compile Include="Abstract\IAlly.cs" />
     <Compile Include="Abstract\IDescriptable.cs" />
     <Compile Include="Abstract\IGameManagerProvider.cs" />
+    <Compile Include="Abstract\IInventoryOwner.cs" />
     <Compile Include="Abstract\IMovingDamager.cs" />
     <Compile Include="Abstract\IObstacle.cs" />
     <Compile Include="Abstract\IProjectilesFactory.cs" />

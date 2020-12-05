@@ -661,15 +661,15 @@ namespace Roguelike.Managers
     public Loot SellItem
     (
       Loot loot,
-      AdvancedLivingEntity src,
+      Roguelike.Abstract.IAdvancedEntity src,
       InventoryBase srcInv,
-      AdvancedLivingEntity dest,
+      Roguelike.Abstract.IAdvancedEntity dest,
       InventoryBase destInv,
       bool dragDrop = false,
       int stackedCount = 1//in case of stacked there can be one than more sold at time
     )
     {
-      bool goldInvolved = src != dest;
+      bool goldInvolved = GetGoldInvolvedOnSell(src, dest);
 
       var price = 0;
       if (goldInvolved)
@@ -714,11 +714,16 @@ namespace Roguelike.Managers
 
       if (goldInvolved)
       {
-        dest.Gold -= price* stackedCount;
-        src.Gold += price* stackedCount;
+        dest.Gold -= price * stackedCount;
+        src.Gold += price * stackedCount;
         SoundManager.PlaySound("COINS_Rattle_04_mono");//coind_drop
       }
       return sold;
+    }
+
+    protected virtual bool GetGoldInvolvedOnSell(Abstract.IAdvancedEntity src, Abstract.IAdvancedEntity dest)
+    {
+      return src != dest;
     }
 
     private void AddEqToMerchant(Merchant merch, List<LootKind> lootKinds)
