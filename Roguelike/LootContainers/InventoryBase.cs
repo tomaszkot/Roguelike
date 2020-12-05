@@ -16,7 +16,7 @@ using System.Linq;
 namespace Roguelike.LootContainers
 {
   public enum InvOwner { Unset, Hero, Merchant }
-  public enum InvBasketKind { Unset, Hero, Merchant, CraftingRecipe, CraftingInvItems }
+  public enum InvBasketKind { Unset, Hero, Merchant, CraftingRecipe, CraftingInvItems, HeroChest }
 
   public interface IInventoryBase
   {
@@ -286,7 +286,11 @@ namespace Roguelike.LootContainers
     }
 
     [JsonIgnore]
-    internal Container Container { get; set; }
+    public Container Container 
+    { 
+      get; 
+      set;
+    }
 
     internal bool CanAddLoot(Loot loot)
     {

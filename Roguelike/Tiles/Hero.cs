@@ -13,6 +13,7 @@ namespace Roguelike.Tiles
 {
   public class Hero : AdvancedLivingEntity
   {
+    
     public static int FirstNextLevelExperienceThreshold = 50;
     public const int StartStrength = 15;//15;50
     
@@ -25,6 +26,7 @@ namespace Roguelike.Tiles
         base.Container = value;
         Inventory.Container = value;
         Crafting.Container = value;
+        
       }
     }
 
