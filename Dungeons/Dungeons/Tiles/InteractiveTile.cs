@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 
 namespace Dungeons.Tiles
 {
+  //TODO rename
   public class InteractiveTile : Dungeons.Tiles.Tile, IObstacle
   {
     public InteractiveTile(Point point, char symbol) : base(point, symbol)

@@ -107,6 +107,9 @@ namespace Roguelike
       public AllyActionKind AllyActionKind { get; set; }
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
     public enum InteractiveActionKind { Unset, DoorOpened, DoorClosed, DoorUnlocked, DoorLocked, Destroyed, ChestOpened, AppendedToLevel,
       HitPortal, HitGroundPortal, GroundPortalApproached }
     public class InteractiveTileAction : GameAction
@@ -143,11 +146,9 @@ namespace Roguelike
       public LootAction() { }
     }
 
-    public enum HeroActionKind { LeveledUp, ChangedLevel, Moved, HitWall };
+    public enum HeroActionKind { LeveledUp, ChangedLevel, Moved, HitWall, HitPrivateChest };
     public class HeroAction : GameAction
     {
-      
-
       public HeroActionKind Kind
       {
         get; set;

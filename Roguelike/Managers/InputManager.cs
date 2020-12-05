@@ -115,11 +115,6 @@ namespace Roguelike.Managers
 
         return InteractionResult.Attacked;
       }
-      //else if (tile is Merchant)
-      //{
-      //  AppendAction<MerchantAction>((MerchantAction ac) => { ac.MerchantActionKind = MerchantActionKind.Engaged; ac.InvolvedTile = tile as Merchant; });
-      //  return InteractionResult.Blocked;
-      //}
       else if (tile is IAlly)
       {
         var ally = tile as IAlly;
@@ -144,40 +139,45 @@ namespace Roguelike.Managers
         return opened ? InteractionResult.Handled : InteractionResult.None;
       }
 
-      else if (tile is Roguelike.Tiles.InteractiveTile)
+      else if (tile is Tiles.InteractiveTile it)
       {
-        if (tile is Stairs)
-        {
-          var stairs = tile as Stairs;
-          var destLevelIndex = -1;
-          if (stairs.StairsKind == StairsKind.LevelDown ||
-          stairs.StairsKind == StairsKind.LevelUp)
-          {
-            var level = gm.GetCurrentDungeonLevel();
-            if (stairs.StairsKind == StairsKind.LevelDown)
-            {
-              destLevelIndex = level.Index + 1;
-            }
-            else if (stairs.StairsKind == StairsKind.LevelUp)
-            {
-              destLevelIndex = level.Index - 1;
-            }
-            if (gm.DungeonLevelStairsHandler != null)
-              return gm.DungeonLevelStairsHandler(destLevelIndex, stairs);
-          }
-        }
-        else if (tile is Portal)
-        {
-          return gm.HandlePortalCollision(tile as Portal);
-        }
-        else
-        {
-          Context.ApplyPhysicalAttackPolicy(Hero, tile, (policy) => gm.OnHeroPolicyApplied(this, policy));
-          return InteractionResult.Attacked;
-        }
-        return InteractionResult.Blocked;//blok hero by default
+        return HandleInteractionWithInteractive(it);
       }
       return InteractionResult.None;
+    }
+
+    protected virtual InteractionResult HandleInteractionWithInteractive(Tiles.InteractiveTile tile)
+    {
+      if (tile is Stairs)
+      {
+        var stairs = tile as Stairs;
+        var destLevelIndex = -1;
+        if (stairs.StairsKind == StairsKind.LevelDown ||
+        stairs.StairsKind == StairsKind.LevelUp)
+        {
+          var level = gm.GetCurrentDungeonLevel();
+          if (stairs.StairsKind == StairsKind.LevelDown)
+          {
+            destLevelIndex = level.Index + 1;
+          }
+          else if (stairs.StairsKind == StairsKind.LevelUp)
+          {
+            destLevelIndex = level.Index - 1;
+          }
+          if (gm.DungeonLevelStairsHandler != null)
+            return gm.DungeonLevelStairsHandler(destLevelIndex, stairs);
+        }
+      }
+      else if (tile is Portal)
+      {
+        return gm.HandlePortalCollision(tile as Portal);
+      }
+      else
+      {
+        Context.ApplyPhysicalAttackPolicy(Hero, tile, (policy) => gm.OnHeroPolicyApplied(this, policy));
+        return InteractionResult.Attacked;
+      }
+      return InteractionResult.Blocked;//blok hero by default
     }
 
     public InteractionResult HandleHeroShift(int horizontal, int vertical)
