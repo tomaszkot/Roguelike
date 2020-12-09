@@ -526,9 +526,14 @@ namespace Roguelike.TileContainers
 
     public SurfaceKind GetSurfaceKindUnderHero(Hero hero)
     {
+      return GetSurfaceKindUnderTile(hero);
+    }
+
+    public SurfaceKind GetSurfaceKindUnderTile(Tile tile)
+    {
       SurfaceKind kind = SurfaceKind.Empty;
-      if (Surfaces.Any(i => i.Key == hero.Point))
-        return Surfaces.First(i => i.Key == hero.Point).Value.Kind;
+      if (Surfaces.Any(i => i.Key == tile.Point))
+        return Surfaces.First(i => i.Key == tile.Point).Value.Kind;
 
       return kind;
     }

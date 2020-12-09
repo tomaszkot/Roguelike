@@ -323,10 +323,7 @@ namespace RoguelikeUnitTests
     {
       var game = CreateGame();
       Assert.NotNull(game.Hero);
-      //var emptyOne = game.Level.GetEmptyNeighborhoodTiles(game.Hero).FirstOrDefault();
-      //Assert.NotNull(emptyOne);
       Assert.True(!game.Level.Surfaces.Any());
-      //game.Level.SetTile(, emptyOne.Point);
       var sur = new Surface() { Kind = SurfaceKind.ShallowWater };
       var placement = SetCloseToHero(sur);
       Assert.True(game.Level.Surfaces.Any());
