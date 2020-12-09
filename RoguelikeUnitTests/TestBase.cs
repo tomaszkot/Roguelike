@@ -1,4 +1,5 @@
-﻿using Dungeons.Tiles;
+﻿using Dungeons.Core;
+using Dungeons.Tiles;
 using NUnit.Framework;
 using Roguelike;
 using Roguelike.Attributes;
@@ -8,7 +9,9 @@ using Roguelike.Spells;
 using Roguelike.Tiles;
 using RoguelikeUnitTests.Helpers;
 using SimpleInjector;
+using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 
 namespace RoguelikeUnitTests
@@ -260,6 +263,17 @@ namespace RoguelikeUnitTests
         game.GameManager.SkipHeroTurn();
         GotoNextHeroTurn();
       }
+    }
+
+    protected Tuple<Point, Dungeons.TileNeighborhood> SetCloseToHero(Dungeons.Tiles.Tile tile)
+    {
+      var level = game.Level;
+      var emptyHeroNeib = level.GetEmptyNeighborhoodPoint(game.Hero, Dungeons.TileContainers.DungeonNode.EmptyNeighborhoodCallContext.Move);
+      Assert.AreNotEqual(GenerationConstraints.InvalidPoint, emptyHeroNeib);
+      level.Logger.LogInfo("emptyHeroNeib = " + emptyHeroNeib);
+      var set = level.SetTile(tile, emptyHeroNeib.Item1);
+      Assert.True(set);
+      return emptyHeroNeib;
     }
   }
 }

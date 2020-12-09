@@ -181,6 +181,7 @@
     <Compile Include="Tiles\Looting\Plant.cs" />
     <Compile Include="Tiles\Looting\Recipe.cs" />
     <Compile Include="Tiles\Trap.cs" />
+    <Compile Include="Tiles\Surface.cs" />
     <Compile Include="Utils\SerializableDictionary.cs" />
     <Compile Include="TileContainers\GameLevel.cs" />
     <Compile Include="Generators\TileContainers\DungeonNode.cs" />

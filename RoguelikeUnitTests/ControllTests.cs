@@ -133,7 +133,7 @@ namespace RoguelikeUnitTests
       var en = SpawnEnemy();
       var enHealth = en.Stats.Health;
 
-      var emptyHeroNeib = SetClose(en);
+      var emptyHeroNeib = SetCloseToHero(en);
       var neib = emptyHeroNeib.Item2;
 
       game.GameManager.HandleHeroShift(neib);
@@ -182,7 +182,7 @@ namespace RoguelikeUnitTests
         var en = SpawnEnemy();
         var enHealth = en.Stats.Health;
 
-        var emptyHeroNeib = SetClose(en);
+        var emptyHeroNeib = SetCloseToHero(en);
 
         //move hero toward enemy - hit it
         var res = game.GameManager.HandleHeroShift(emptyHeroNeib.Item2);
@@ -193,16 +193,6 @@ namespace RoguelikeUnitTests
       }
     }
        
-    
-    private Tuple<Point, Dungeons.TileNeighborhood> SetClose(Enemy en)
-    {
-      var level = game.Level;
-      var emptyHeroNeib = level.GetEmptyNeighborhoodPoint(game.Hero, Dungeons.TileContainers.DungeonNode.EmptyNeighborhoodCallContext.Move);
-      Assert.AreNotEqual(GenerationConstraints.InvalidPoint, emptyHeroNeib);
-      level.Logger.LogInfo("emptyHeroNeib = " + emptyHeroNeib);
-      var set = level.SetTile(en, emptyHeroNeib.Item1);
-      Assert.True(set);
-      return emptyHeroNeib;
-    }
+        
   }
 }

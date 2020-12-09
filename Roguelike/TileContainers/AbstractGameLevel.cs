@@ -2,8 +2,6 @@
 using Dungeons.Core;
 using Dungeons.Tiles;
 using Newtonsoft.Json;
-using Roguelike.Abstract;
-using Roguelike.Managers;
 using Roguelike.Tiles;
 using Roguelike.Tiles.Interactive;
 using SimpleInjector;
@@ -33,6 +31,8 @@ namespace Roguelike.TileContainers
 
     public static Tile EmptyTile = new Tile(symbol: Constants.SymbolBackground);
     public Dictionary<Point, Loot> Loot { get; set; } = new Dictionary<Point, Tiles.Loot>();
+    public Dictionary<Point, Surface> Surfaces { get; set; } = new Dictionary<Point, Tiles.Surface>();
+
     [JsonIgnore]
     public ILogger Logger { get; set; }
     public virtual string Name { get; set; } = "";
@@ -44,6 +44,7 @@ namespace Roguelike.TileContainers
     {
       Logger = Container.GetInstance<ILogger>();
       AddExtraTypesConsideredEmpty(typeof(Loot));
+      AddExtraTypesConsideredEmpty(typeof(Surface));
     }
 
     public Tuple<Point, TileNeighborhood> GetEmptyNeighborhoodPoint(Tile target, EmptyNeighborhoodCallContext context, TileNeighborhood? prefferedSide = null)
@@ -173,7 +174,7 @@ namespace Roguelike.TileContainers
           Debug.Assert(false);
         }
       }
-      else if (tile is Roguelike.Tiles.Loot)
+      else if (tile is Loot loot)
       {
         if (Loot.ContainsKey(point))
         {
@@ -184,11 +185,27 @@ namespace Roguelike.TileContainers
         }
         //Logger.LogInfo("Adding Loot "+ tile + " at "+ point + " Loot.Count:"+ Loot.Count);
         tile.Point = point;
-        Loot[point] = tile as Roguelike.Tiles.Loot;
+        Loot[point] = loot;
 
         return true;
       }
-      
+
+      else if (tile is Surface sur)
+      {
+        if (Surfaces.ContainsKey(point))
+        {
+          if (Logger != null)
+            Logger.LogError("Surface already at point: " + Surfaces[point] + ", trying to add: " + tile + " point:" + point);
+          Debug.Assert(false);
+          return false;
+        }
+        //Logger.LogInfo("Adding Loot "+ tile + " at "+ point + " Loot.Count:"+ Loot.Count);
+        tile.Point = point;
+        Surfaces[point] = sur;
+
+        return true;
+      }
+
       Point? prevPos = tile?.Point;
       var res =  base.SetTile(tile, point, resetOldTile, revealReseted, autoSetTileDungeonIndex, reportError);
       if (res && tile is LivingEntity && prevPos!=null)
@@ -505,6 +522,15 @@ namespace Roguelike.TileContainers
       heroStartTile.DungeonNodeIndex = heroStartTile.DungeonNodeIndex;
       res.Tile = heroStartTile;
       PlaceHeroAtTile(context, hero, heroStartTile);
+    }
+
+    public SurfaceKind GetSurfaceKindUnderHero(Hero hero)
+    {
+      SurfaceKind kind = SurfaceKind.Empty;
+      if (Surfaces.Any(i => i.Key == hero.Point))
+        return Surfaces.First(i => i.Key == hero.Point).Value.Kind;
+
+      return kind;
     }
   }
 }

@@ -19,13 +19,13 @@ namespace RoguelikeUnitTests
       Assert.Null(game.Hero);
       Assert.AreEqual(game.Level, null);
 
-      game.LevelGenerator.CustomNodeCreator = (int nodeIndex, Dungeons.GenerationInfo gi) => 
+      game.LevelGenerator.CustomNodeCreator = (int nodeIndex, Dungeons.GenerationInfo gi) =>
       {
         //TODO typed CreateDungeonNodeInstance 
         var dungeon = game.LevelGenerator.CreateDungeonNodeInstance() as Roguelike.Generators.TileContainers.DungeonNode;
         dungeon.Create(10, 10, gi);
 
-        var li = game.LevelGenerator.LevelIndex+1;
+        var li = game.LevelGenerator.LevelIndex + 1;
         dungeon.SetTileAtRandomPosition<Enemy>(li);
         dungeon.SetTileAtRandomPosition<Barrel>(li);
         dungeon.SetTileAtRandomPosition<Barrel>(li);
@@ -91,9 +91,9 @@ namespace RoguelikeUnitTests
       Assert.Null(game.Level);
 
       int maxLevelIndex = 10;
-      game.SetMaxLevelIndex(maxLevelIndex-1);
+      game.SetMaxLevelIndex(maxLevelIndex - 1);
       Hero hero = null;
-      
+
       for (int i = 0; i < maxLevelIndex; i++)
       {
         var level = game.GenerateLevel(i);
@@ -113,7 +113,7 @@ namespace RoguelikeUnitTests
       {
         Assert.AreEqual(game.Level.Index, levelIndex);
         var stairsDown = game.Level.GetTiles<Stairs>().Where(i => i.StairsKind == StairsKind.LevelDown).SingleOrDefault();
-        Assert.True(stairsDown !=null || levelIndex == maxLevelIndex-1);
+        Assert.True(stairsDown != null || levelIndex == maxLevelIndex - 1);
         if (stairsDown != null)
         {
           game.GameManager.InteractHeroWith(stairsDown);
@@ -172,8 +172,8 @@ namespace RoguelikeUnitTests
 
       var level2 = GenRoomWithEnemies();
       Assert.AreEqual(level2.GetTiles<Enemy>().Count(), 2);
-            
-      level2.Merge(level1.GetTiles().Where(i=>i is Enemy).ToList(), new System.Drawing.Point(0, 0),
+
+      level2.Merge(level1.GetTiles().Where(i => i is Enemy).ToList(), new System.Drawing.Point(0, 0),
         (Dungeons.Tiles.Tile tile) => { return tile is Enemy; });
 
       Assert.AreEqual(level2.GetTiles<Enemy>().Count(), 4);
@@ -191,7 +191,7 @@ namespace RoguelikeUnitTests
       Assert.Greater(level.GetTiles().Where(i => i.IsEmpty).Count(), 0);
 
       var en = SpawnEnemy();
-      var pt = new Point(2,2);// level.GetFirstEmptyPoint();
+      var pt = new Point(2, 2);
       var set = level.SetTile(en, pt);
       Assert.True(set);
 
@@ -207,24 +207,24 @@ namespace RoguelikeUnitTests
     {
       var info = new Roguelike.GenerationInfo();
       info.NumberOfRooms = 1;
-      info.MinNodeSize = new Size(15,15);
+      info.MinNodeSize = new Size(15, 15);
       info.MaxNodeSize = new Size(30, 30);
       info.ForceChildIslandInterior = true;
       var game = CreateGame(gi: info);
 
-      var level = game.Level; 
+      var level = game.Level;
       Assert.GreaterOrEqual(level.Width, info.MinNodeSize.Width);
       Assert.GreaterOrEqual(level.Height, info.MinNodeSize.Height);
       Assert.AreEqual(level.Nodes.Count, 1);
       Assert.AreEqual(level.Nodes[0].ChildIslands.Count, 1);
-            
+
       Assert.True(level.Nodes[0].Revealed);
       var island = level.Nodes[0].ChildIslands[0];
       Assert.False(island.Revealed);
       Assert.Greater(level.GetTiles().Where(i => i.DungeonNodeIndex == island.NodeIndex).Count(), 0);
 
       var en = level.GetTiles().Where(i => i is Enemy).ToList();
-      
+
       Assert.Greater(en.Where(i => i.DungeonNodeIndex == level.Nodes[0].NodeIndex).Count(), 0);
       Assert.Greater(en.Where(i => i.DungeonNodeIndex == island.NodeIndex).Count(), 0);
     }
@@ -237,7 +237,7 @@ namespace RoguelikeUnitTests
       info.MinNodeSize = new Size(15, 15);
       info.MaxNodeSize = new Size(30, 30);
       info.ForceChildIslandInterior = true;
-      var game = CreateGame(gi:info);
+      var game = CreateGame(gi: info);
 
       var level = game.Level;
       Assert.GreaterOrEqual(level.Width, info.MinNodeSize.Width);
@@ -316,8 +316,23 @@ namespace RoguelikeUnitTests
         Assert.True(i.Name.ToLower() != "enemy");
       }
       );
-
     }
 
+    [Test]
+    public void SurfaceTest()
+    {
+      var game = CreateGame();
+      Assert.NotNull(game.Hero);
+      //var emptyOne = game.Level.GetEmptyNeighborhoodTiles(game.Hero).FirstOrDefault();
+      //Assert.NotNull(emptyOne);
+      Assert.True(!game.Level.Surfaces.Any());
+      //game.Level.SetTile(, emptyOne.Point);
+      var sur = new Surface() { Kind = SurfaceKind.ShallowWater };
+      var placement = SetCloseToHero(sur);
+      Assert.True(game.Level.Surfaces.Any());
+      game.GameManager.HandleHeroShift(placement.Item2);
+      Assert.AreEqual(game.Hero.Point, sur.Point);
+      Assert.AreEqual(game.Level.GetSurfaceKindUnderHero(game.Hero), sur.Kind);
+    }
   }
 }
