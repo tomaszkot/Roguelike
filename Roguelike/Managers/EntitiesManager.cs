@@ -221,6 +221,11 @@ namespace Roguelike.Managers
       if (entity.PathToTarget != null && entity.PathToTarget.Count > 1)
       {
         var node = entity.PathToTarget[1];
+        if (entity.PathToTarget.Count > 2)
+        {
+          node = entity.PathToTarget[2];
+        }
+
         var pt = new Point(node.Y, node.X);
         if (Node.GetTile(pt) is LivingEntity)
         {

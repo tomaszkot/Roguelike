@@ -195,6 +195,7 @@ namespace Roguelike.Tiles
       SetResistanceFromScroll(ActiveScroll);
     }
 
+        
     private void SetResistanceFromScroll(Scroll activeScroll)
     {
       if (activeScroll == null)

@@ -51,7 +51,6 @@ namespace Roguelike.Managers
     {
       if (turnOwner == TurnOwner.Enemies)
       { 
-      
       }
     }
 

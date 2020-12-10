@@ -159,6 +159,8 @@ namespace RoguelikeUnitTests
       var enemies = game.Level.GetTiles<Enemy>();
       Assert.AreEqual(enemies.Count, 1);
       var enemy = enemies.First();
+      enemy.SetSurfaceSkillLevel(SurfaceKind.ShallowWater, 1);
+
       var closeTile = game.Level.GetEmptyTiles().Where(i => i.DistanceFrom(game.Hero) == 3).FirstOrDefault();
       game.Level.SetTile(enemy, closeTile.Point);
 

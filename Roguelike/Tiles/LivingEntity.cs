@@ -791,5 +791,19 @@ namespace Roguelike.Tiles
     {
       return this.LastingEffectsSet.HasEffect(EffectType.Transform);
     }
+
+    Dictionary<SurfaceKind, int> surfaceSkillLevel = new Dictionary<SurfaceKind, int>();
+    public void SetSurfaceSkillLevel(SurfaceKind kind, int level)
+    {
+      surfaceSkillLevel[kind] = level;
+    }
+
+    public int GetSurfaceSkillLevel(SurfaceKind kind)
+    {
+      if(surfaceSkillLevel.ContainsKey(kind))
+        return surfaceSkillLevel[kind];
+
+      return 0;
+    }
   }
 }
