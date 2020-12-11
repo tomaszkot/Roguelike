@@ -131,7 +131,7 @@ namespace Roguelike.Managers
       var pt = Node.GetEmptyNeighborhoodPoint(entity, EmptyNeighborhoodCallContext.Move, null, Node.GetExtraTypesConsideredEmpty());
       if (pt.Item1.IsValid())
       {
-        MoveEntity(entity, pt.Item1);
+        MoveEntity(entity, pt.Item1, null);
         //logger.WriteLine(entity + " moved to "+ pt);
       }
     }
@@ -183,9 +183,9 @@ namespace Roguelike.Managers
       }
     }
 
-    protected virtual bool MoveEntity(LivingEntity entity, Point newPos)
+    protected virtual bool MoveEntity(LivingEntity entity, Point newPos, List<Point> fullPath)
     {
-      context.ApplyMovePolicy(entity, newPos, (e) => OnPolicyApplied(e));
+      context.ApplyMovePolicy(entity, newPos, fullPath, (e) => OnPolicyApplied(e));
 
       return true;//TODO
     }
@@ -215,24 +215,42 @@ namespace Roguelike.Managers
 
     protected bool MakeMoveOnPath(LivingEntity entity, Point target, bool forHeroAlly)
     {
-      //bool forHeroAlly = false;
       bool moved = false;
       entity.PathToTarget = Node.FindPath(entity.Point, target, forHeroAlly, true);
       if (entity.PathToTarget != null && entity.PathToTarget.Count > 1)
       {
+        var fullPath = new List<Point>();
         var node = entity.PathToTarget[1];
+        var pt = new Point(node.Y, node.X);
+        fullPath.Add(pt);
+
         if (entity.PathToTarget.Count > 2)
         {
-          node = entity.PathToTarget[2];
-        }
+          var canMoveFaster = false;
+          var enemy = entity as Enemy;
+          if (enemy != null)
+          {
+            var sk = context.CurrentNode.GetSurfaceKindUnderTile(enemy);
+            if (enemy.GetSurfaceSkillLevel(sk) > 0)
+              canMoveFaster = true;
 
-        var pt = new Point(node.Y, node.X);
+          }
+          if (canMoveFaster)
+          {
+            node = entity.PathToTarget[2];
+            pt = new Point(node.Y, node.X);
+            if(target != pt)
+              fullPath.Add(pt);
+          }
+        }
+                
         if (Node.GetTile(pt) is LivingEntity)
         {
           //gm.Assert(false, "Level.GetTile(pt) is LivingEntity "+ enemy + " "+pt);
           return false;
         }
-        MoveEntity(entity, pt);
+
+        MoveEntity(entity, pt, fullPath);
         moved = true;
       }
 

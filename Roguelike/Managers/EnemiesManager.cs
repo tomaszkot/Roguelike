@@ -119,14 +119,14 @@ namespace Roguelike.Managers
       base.MakeRandomMove(entity);
     }
             
-    protected override bool MoveEntity(LivingEntity entity, Point newPos)
+    protected override bool MoveEntity(LivingEntity entity, Point newPos, List<Point> fullPath)
     {
       if (entity.InitialPoint == LivingEntity.DefaultInitialPoint)
       {
         entity.InitialPoint = entity.Point;
       }
 
-      var moved = base.MoveEntity(entity, newPos);
+      var moved = base.MoveEntity(entity, newPos, fullPath);
       return moved;
     }
 

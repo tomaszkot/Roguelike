@@ -220,7 +220,7 @@ namespace Roguelike.Managers
         else
         {
           //logger.LogInfo(" Hero ac ="+ ac);
-          Context.ApplyMovePolicy(gm.Hero, newPos.Point, (e) =>
+          Context.ApplyMovePolicy(gm.Hero, newPos.Point, null, (e) =>
           {
             gm.OnHeroPolicyApplied(this, e);
           });

@@ -128,7 +128,7 @@ namespace Dungeons.Tiles
     public bool IsEmpty { get { return Symbol == Constants.SymbolBackground; } }
 
     [JsonIgnore]
-    public string Name
+    public virtual string Name
     {
       get
       {

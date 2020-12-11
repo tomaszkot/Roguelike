@@ -130,7 +130,8 @@ namespace Roguelike
       policy.Apply(caster);
     }
 
-    public void ApplyMovePolicy(LivingEntity entity, Point newPos, Action<Policy> OnApplied)
+    //TODO move
+    public void ApplyMovePolicy(LivingEntity entity, Point newPos, List<Point> fullPath, Action<Policy> OnApplied)
     {
       var movePolicy = Container.GetInstance<MovePolicy>();
       //Logger.LogInfo("moving " + entity + " to " + newPos + " mp = " + movePolicy);
@@ -143,7 +144,7 @@ namespace Roguelike
         }
       };
 
-      if (movePolicy.Apply(CurrentNode, entity, newPos))
+      if (movePolicy.Apply(CurrentNode, entity, newPos, fullPath))
       {
         EventsManager.AppendAction(new LivingEntityAction(kind: LivingEntityActionKind.Moved)
         {

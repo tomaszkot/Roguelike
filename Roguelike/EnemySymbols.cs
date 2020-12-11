@@ -8,8 +8,6 @@ namespace Roguelike
 {
   public class EnemySymbols
   {
-    public const char Unset = '\0';
-
     public const char VampireSymbol = 'a';
     public const char BatSymbol = 'b';
     public const char SnakeSymbol = 'c';//'c';
@@ -40,6 +38,8 @@ namespace Roguelike
     public const char ZombieSymbol = 'z';
 
     public const char QuestBoss = 'q';
+
+    public const char Unset = CommonEnemySymbol;
 
     public static Dictionary<string, char> EnemiesToSymbols = new Dictionary<string, char>()
     {

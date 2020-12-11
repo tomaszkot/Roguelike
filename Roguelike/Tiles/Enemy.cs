@@ -78,7 +78,7 @@ namespace Roguelike.Tiles
         Stats.SetNominal(basicStats, nv);
       }
 
-      if (string.IsNullOrEmpty(Name))
+      if (string.IsNullOrEmpty(Name) && symbol != EnemySymbols.CommonEnemySymbol)
         Name = NameFromSymbol(symbol);
       //Stats.Experience = 1;
       //kind = PowerKind.Plain;
@@ -288,6 +288,8 @@ namespace Roguelike.Tiles
       set
       {
         base.Symbol = value;
+        if(!Name.Any() && value != EnemySymbols.Unset)
+          Name = Enemy.NameFromSymbol(value);
         SetSpecialAttackStat();
       }
     }
@@ -320,6 +322,20 @@ namespace Roguelike.Tiles
       enemy.Revealed = true;
       
       return enemy;
+    }
+
+    public override string Name 
+    { 
+      get => base.Name;
+      set
+      {
+        base.Name = value;
+        if (Name.ToLower() == "skeleton")
+        {
+          SetSurfaceSkillLevel(SurfaceKind.ShallowWater, 1);
+          SetSurfaceSkillLevel(SurfaceKind.DeepWater, 1);
+        }
+      }
     }
   }
 }

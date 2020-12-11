@@ -1,6 +1,7 @@
 ﻿using Dungeons.TileContainers;
 using Dungeons.Tiles;
 using NUnit.Framework;
+using Roguelike;
 using Roguelike.Tiles;
 using Roguelike.Tiles.Interactive;
 using SimpleInjector;
@@ -316,6 +317,13 @@ namespace RoguelikeUnitTests
         Assert.True(i.Name.ToLower() != "enemy");
       }
       );
+
+      var enemy = new Enemy();
+      Assert.False(enemy.Name.Any());
+      enemy.Symbol = EnemySymbols.SkeletonSymbol;
+      Assert.True(enemy.Name.Any());
+      Assert.AreEqual(enemy.Name.ToLower(), "skeleton");
+
     }
 
     [Test]

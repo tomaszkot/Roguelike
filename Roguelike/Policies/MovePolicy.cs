@@ -1,11 +1,7 @@
 ﻿using Roguelike.TileContainers;
 using Roguelike.Tiles;
-using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Roguelike.Policies
 {
@@ -19,13 +15,14 @@ namespace Roguelike.Policies
     public Point NewPos { get => newPos; set => newPos = value; }
     public AbstractGameLevel Level { get => level; set => level = value; }
     public LivingEntity Entity { get => entity; set => entity = value; }
+    public List<Point> FullPath { get; set; }
 
     public MovePolicy()
     {
       Kind = PolicyKind.Move;
     }
 
-    public bool Apply(AbstractGameLevel level, LivingEntity entity, Point newPos)
+    public bool Apply(AbstractGameLevel level, LivingEntity entity, Point newPos, List<Point> fullPath)
     {
       if (newPos.X >= level.Width)
         return false;
@@ -40,6 +37,7 @@ namespace Roguelike.Policies
       this.Entity = entity;
       this.NewPos = newPos;
       this.Level = level;
+      this.FullPath = fullPath;
       entity.State = EntityState.Moving;
 
       if (level.SetTile(entity, newPos))

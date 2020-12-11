@@ -192,12 +192,14 @@ namespace Roguelike.TileContainers
 
       else if (tile is Surface sur)
       {
-        if (Surfaces.ContainsKey(point))
+        if (Surfaces.ContainsKey(point) && Surfaces[point].Kind != sur.Kind)
         {
           if (Logger != null)
+          {
             Logger.LogError("Surface already at point: " + Surfaces[point] + ", trying to add: " + tile + " point:" + point);
-          Debug.Assert(false);
-          return false;
+            Debug.Assert(false);
+            return false;
+          }
         }
         //Logger.LogInfo("Adding Loot "+ tile + " at "+ point + " Loot.Count:"+ Loot.Count);
         tile.Point = point;
@@ -531,9 +533,14 @@ namespace Roguelike.TileContainers
 
     public SurfaceKind GetSurfaceKindUnderTile(Tile tile)
     {
+      return GetSurfaceKindUnderPoint(tile.Point);
+    }
+
+    public SurfaceKind GetSurfaceKindUnderPoint(Point point)
+    {
       SurfaceKind kind = SurfaceKind.Empty;
-      if (Surfaces.Any(i => i.Key == tile.Point))
-        return Surfaces.First(i => i.Key == tile.Point).Value.Kind;
+      if (Surfaces.Any(i => i.Key == point))
+        return Surfaces.First(i => i.Key == point).Value.Kind;
 
       return kind;
     }
