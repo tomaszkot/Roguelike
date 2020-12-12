@@ -345,6 +345,33 @@ namespace Roguelike.Managers
       HandeTileHit(attackPolicy.Victim);
     }
 
+    bool islandEnemiesAdded = false;
+    private void AppendIslandEnemies(Chest chest)
+    {
+      if (chest.OriginMap == "Island_Interactive" && chest.ChestKind == Roguelike.Tiles.Interactive.ChestKind.Gold)
+      {
+        if (CurrentNode.HiddenTiles.Any())
+        {
+          islandEnemiesAdded = true;
+          int counter = 0;
+          foreach (var tile in CurrentNode.HiddenTiles)
+          {
+            var en = tile as Roguelike.Tiles.Enemy;
+            if (counter == 0)
+            {
+              var key = new Key();
+
+              key.Kind = KeyKind.Chest;
+              key.KeyName = chest.KeyName;
+              en.DeathLoot = key;
+            }
+            AppendEnemy(en, tile.Point, chest.Level);
+            counter++;
+          }
+        }
+      }
+    }
+
     private void HandeTileHit(Tile tile)
     {
       var info = "";
@@ -361,6 +388,26 @@ namespace Roguelike.Managers
         else
           info = "Hero hit a wall";
       }
+
+      if (chest != null && chest.Closed)
+      {
+        if (chest.Locked)
+        {
+          var key = Hero.Inventory.GetItems<Key>().Where(i => i.KeyName == chest.KeyName).FirstOrDefault();
+          if (key == null)
+          {
+            AppendAction<HeroAction>((HeroAction ac) => { ac.Kind = HeroActionKind.HitLockedChest; ac.Info = "Chest is locked, a key is needed to open it."; });
+            if (!islandEnemiesAdded)
+              AppendIslandEnemies(chest);
+            return;
+          }
+          else
+          {
+            chest.Locked = false;
+          }
+        }
+      }
+      
       if (hitBlocker)
         AppendAction<HeroAction>((HeroAction ac) => { ac.Kind = HeroActionKind.HitWall; ac.Info = info; });
       if (tile is Barrel || tile is Chest)

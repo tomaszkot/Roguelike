@@ -93,7 +93,7 @@ namespace Roguelike.Managers
       else if (ac is HeroAction)
       {
         var ha = ac as HeroAction;
-        if (ha.Kind == HeroActionKind.HitWall)
+        if (ha.Kind == HeroActionKind.HitWall || ha.Kind == HeroActionKind.HitLockedChest)
           sndName = "punch";
         else if (ha.Kind == HeroActionKind.LeveledUp)
           sndName = "bell";

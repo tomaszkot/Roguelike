@@ -36,7 +36,8 @@ namespace Roguelike.Tiles
     public EnemyPowerKind PowerKind { get; set; } = EnemyPowerKind.Plain;
     public bool LevelSet { get => levelSet; set => levelSet = value; }
     public Dictionary<IncreaseStatsKind, bool> StatsIncreased { get; set; } = new Dictionary<IncreaseStatsKind, bool>();
-    
+    public Loot DeathLoot { get; set; }
+
     public bool ShoutedAtHero { get; set; }
 
     static Enemy()

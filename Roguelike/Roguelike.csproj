@@ -145,6 +145,7 @@
     <Compile Include="Strings.cs" />
     <Compile Include="TileParts\IEquipable.cs" />
     <Compile Include="Effects\LastingEffectsSet.cs" />
+    <Compile Include="Tiles\Looting\Key.cs" />
     <Compile Include="Tiles\TilesExtensions.cs" />
     <Compile Include="Tiles\Abstract\IConsumable.cs" />
     <Compile Include="Tiles\Abstract\IMovingDamager.cs" />

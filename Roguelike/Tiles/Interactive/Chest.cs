@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Drawing;
-using System.Linq;
-using System.Text;
 
 namespace Roguelike.Tiles
 {
@@ -25,6 +22,9 @@ namespace Roguelike.Tiles.Interactive
     private bool closed = true;
     public string OriginMap { get; set; }
     public event EventHandler Opened;
+    public event EventHandler RequiredKey;
+    public bool Locked { get; set; } = false;
+    public string KeyName { get; set; }//key for unlocking
 
     public ChestKind ChestKind
     {
@@ -77,14 +77,20 @@ namespace Roguelike.Tiles.Interactive
       InteractSound = "chest_open";
     }
 
-    public bool Open()
+    public bool Open(string keyName = "")
     {
       if (Closed)
       {
-        Closed = false;
-        if (Opened != null)
-          Opened(this, EventArgs.Empty);
-        return true;
+        if (!Locked || keyName == KeyName)
+        {
+          Closed = false;
+          if (Opened != null)
+            Opened(this, EventArgs.Empty);
+          return true;
+        }
+        else if (RequiredKey != null)
+          RequiredKey(this, EventArgs.Empty);
+
       }
 
       return false;

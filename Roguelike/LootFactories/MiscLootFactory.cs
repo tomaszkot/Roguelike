@@ -70,6 +70,13 @@ namespace Roguelike.LootFactories
         return new MagicDust();
       };
 
+      factory["gold_chest_key"] = (string tag) =>
+      {
+        var key = new Key();
+        key.Kind = KeyKind.Chest;
+        return key;
+      };
+
       factory["cord"] = (string tag) =>
       {
         return new Cord();

@@ -143,6 +143,9 @@ namespace Roguelike.Managers
       if (loot != null)
         GameManager.AddLootReward(loot, enemy, false);
 
+      if(enemy.DeathLoot!=null)
+        GameManager.AddLootReward(enemy.DeathLoot, enemy, false);
+
       var extraLootItems = GetExtraLoot(enemy, loot);
       if (addConsumableOrOtherReward)
       {
