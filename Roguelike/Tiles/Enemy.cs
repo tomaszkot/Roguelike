@@ -331,7 +331,7 @@ namespace Roguelike.Tiles
       set
       {
         base.Name = value;
-        if (Name.ToLower() == "skeleton")
+        if (Name.ToLower() == "drowned man")
         {
           SetSurfaceSkillLevel(SurfaceKind.ShallowWater, 1);
           SetSurfaceSkillLevel(SurfaceKind.DeepWater, 1);
