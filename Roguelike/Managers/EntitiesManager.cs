@@ -238,9 +238,12 @@ namespace Roguelike.Managers
           if (canMoveFaster)
           {
             node = entity.PathToTarget[2];
-            pt = new Point(node.Y, node.X);
-            if(target != pt)
-              fullPath.Add(pt);
+            var nextPoint = new Point(node.Y, node.X);
+            if (target != nextPoint)
+            {
+              fullPath.Add(nextPoint);
+              pt = nextPoint;
+            }
           }
         }
                 
