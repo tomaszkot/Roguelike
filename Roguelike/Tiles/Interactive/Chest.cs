@@ -18,14 +18,12 @@ namespace Roguelike.Tiles.Interactive
 {
   public enum ChestKind { Unset, Plain, Gold, GoldDeluxe }
 
-
-
   public class Chest : InteractiveTile, ILootSource
   {
     public const char ChestSymbol = '~';
     private ChestKind chestKind = ChestKind.Plain;
     private bool closed = true;
-
+    public string OriginMap { get; set; }
     public event EventHandler Opened;
 
     public ChestKind ChestKind

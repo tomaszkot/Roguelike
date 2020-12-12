@@ -85,11 +85,7 @@ namespace Roguelike.Managers
 
       if (lootSource is Barrel && RandHelper.GetRandomDouble() < GenerationInfo.ChanceToGenerateEnemyFromBarrel)
       {
-        var en = GameManager.EnemiesManager.AllEntities.FirstOrDefault();
-        var enemy = GameManager.CurrentNode.SpawnEnemy(lootSource);
-        GameManager.ReplaceTile<Enemy>(enemy, lootSource as Tile);
-        GameManager.EnemiesManager.AddEntity(enemy);
-        
+        GameManager.AppendEnemy(lootSource);
 
         return lootItems;
       }
@@ -99,7 +95,7 @@ namespace Roguelike.Managers
         lootItems.Add(loot);
       if (lootSource is Barrel)
       {
-        bool repl = GameManager.ReplaceTile<Loot>(loot, lootSource as Tile);
+        bool repl = GameManager.ReplaceTile(loot, lootSource as Tile);
         GameManager.Assert(repl, "ReplaceTileByLoot " + loot);
         GameManager.Logger.LogInfo("ReplaceTileByLoot " + loot + " " + repl);
       }
@@ -129,7 +125,7 @@ namespace Roguelike.Managers
 
       return lootItems;
     }
-
+        
     Loot TryAddLootForDeadEnemy(Enemy enemy)
     {
       //GameManager.Logger.LogInfo("TryAddLootForDeadEnemy "+ enemy);

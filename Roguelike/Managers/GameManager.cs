@@ -290,7 +290,7 @@ namespace Roguelike.Managers
       if (dest != null)
       {
         //Logger.LogInfo("AddLootToNode calling ReplaceTile" + item + ", pt: "+ dest.Point);
-        var set = ReplaceTile<Loot>(item, dest.Point, animated, lootSource);
+        var set = ReplaceTileTyped<Loot>(item, dest.Point, animated, lootSource);
         return set;
       }
 
@@ -446,12 +446,7 @@ namespace Roguelike.Managers
       return false;
     }
 
-    public bool ReplaceTile<T>(T replacer, Tile toReplace) where T : Tile//T can be Loot, Enemy
-    {
-      return ReplaceTile<T>(replacer, toReplace.Point, false, toReplace);
-    }
-
-    public bool ReplaceTile<T>(T replacer, Point point, bool animated, Tile positionSource, AbstractGameLevel level = null) where T : Tile//T can be Loot, Enemy
+    public bool ReplaceTile(Tile replacer, Point point, bool animated, Tile positionSource, AbstractGameLevel level = null)
     {
       //Assert(loot is Loot || loot.IsEmpty, "ReplaceTileByLoot failed");
       var node = level ?? CurrentNode;
@@ -483,6 +478,27 @@ namespace Roguelike.Managers
       }
       Logger.LogError("ReplaceTile failed! prevTile == null");
       return false;
+    }
+
+    public bool ReplaceTile(Tile replacer, Point destPoint)
+    {
+      var toReplace = CurrentNode.GetTile(destPoint);
+      return ReplaceTile<Tile>(replacer, toReplace);
+    }
+
+    public bool ReplaceTile(Tile replacer, Tile toReplace)
+    {
+      return ReplaceTile<Tile>(replacer, toReplace);
+    }
+
+    protected bool ReplaceTile<T>(T replacer, Tile toReplace) where T : Tile//T can be Loot, Enemy
+    {
+      return ReplaceTileTyped<T>(replacer, toReplace.Point, false, toReplace);
+    }
+
+    protected bool ReplaceTileTyped<T>(T replacer, Point point, bool animated, Tile positionSource, AbstractGameLevel level = null) where T : Tile//T can be Loot, Enemy
+    {
+      return ReplaceTile(replacer, point, animated, positionSource, level);
     }
 
     public TileContainers.GameLevel GetCurrentDungeonLevel()
@@ -812,6 +828,22 @@ namespace Roguelike.Managers
       //  mp.Revealed = true;
       //  merch.Inventory.Add(mp);
       //}
+    }
+
+    public void AppendEnemy(ILootSource lootSource)
+    {
+      var enemy = CurrentNode.SpawnEnemy(lootSource);
+      enemy.Container = this.Container;
+      ReplaceTile(enemy, lootSource as Tile);
+      EnemiesManager.AddEntity(enemy);
+    }
+
+    public void AppendEnemy(Enemy enemy, Point pt, int level)
+    {
+      enemy.Level = level;
+      enemy.Container = this.Container;
+      ReplaceTile(enemy, pt);
+      EnemiesManager.AddEntity(enemy);
     }
 
     public OffensiveSpell ApplyOffensiveSpell(LivingEntity caster, Scroll scroll)

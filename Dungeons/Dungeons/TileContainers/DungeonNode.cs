@@ -68,6 +68,9 @@ namespace Dungeons
 
       List<IDoor> doors = new List<IDoor>();
 
+      List<Tile> hiddenTiles = new List<Tile>();
+      public List<Tile> HiddenTiles { get => hiddenTiles; set => hiddenTiles = value; }
+
       [XmlIgnore]
       //[JsonIgnore]
       public Tile[,] Tiles
