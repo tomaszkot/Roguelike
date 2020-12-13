@@ -266,7 +266,7 @@ namespace RoguelikeUnitTests
     [Test]
     public void KilledEnemyAtSamePlace()
     {
-      var env = CreateTestEnv(numEnemies: 5);
+      var env = CreateTestEnv();
       env.LootGenerator.Probability = new Roguelike.Probability.Looting();
       env.LootGenerator.Probability.SetLootingChance(LootSourceKind.Enemy, LootKind.Equipment, 1f);
 
