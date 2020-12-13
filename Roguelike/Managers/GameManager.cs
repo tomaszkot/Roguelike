@@ -365,6 +365,7 @@ namespace Roguelike.Managers
               key.KeyName = chest.KeyName;
               en.DeathLoot = key;
               en.SetChampion();
+              
             }
             AppendEnemy(en, tile.Point, chest.Level);
             counter++;

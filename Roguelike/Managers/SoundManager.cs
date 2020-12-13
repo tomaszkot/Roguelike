@@ -30,8 +30,10 @@ namespace Roguelike.Managers
       }
     }
 
+    GameManager gm;
     public SoundManager(GameManager gm, Container container)
     {
+      this.gm = gm;
       gm.EventsManager.ActionAppended += EventsManager_ActionAppended;
       Player = container.GetInstance<ISoundPlayer>();
     }
@@ -111,7 +113,11 @@ namespace Roguelike.Managers
         if (lea.Kind == LivingEntityActionKind.Moved)
         {
           if (lea.InvolvedEntity is Hero)
-            sndName = "foot_steps";
+          {
+            var sur = gm.CurrentNode.GetSurfaceKindUnderTile(lea.InvolvedEntity);
+            if(sur != SurfaceKind.DeepWater && sur != SurfaceKind.ShallowWater)
+              sndName = "foot_steps";
+          }
         }
         else if (lea.Kind == LivingEntityActionKind.Missed)
         {
