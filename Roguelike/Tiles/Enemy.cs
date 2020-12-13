@@ -18,6 +18,7 @@ namespace Roguelike.Tiles
 
   public class Enemy : LivingEntity, ILootSource
   {
+    public const string ChempTagSuffix = "_ch";
     //public int Level { get; set; } = 1;
     public PrefferedFightStyle PrefferedFightStyle { get; set; }//= PrefferedFightStyle.Magic;
 
@@ -127,6 +128,8 @@ namespace Roguelike.Tiles
       IncreaseStats(inc, IncreaseStatsKind.PowerKind);
 
       InitEffectsToUse(boss);
+
+      this.tag1 += ChempTagSuffix;
     }
 
     private void InitEffectsToUse(bool boss)
