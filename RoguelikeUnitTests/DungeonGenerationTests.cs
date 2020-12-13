@@ -324,6 +324,9 @@ namespace RoguelikeUnitTests
       Assert.True(enemy.Name.Any());
       Assert.AreEqual(enemy.Name.ToLower(), "skeleton");
 
+      var drowned = new Enemy();
+      drowned.tag1 = "drowned_man";
+      Assert.False(drowned.Name.Any());
     }
 
     [Test]
