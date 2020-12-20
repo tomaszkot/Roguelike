@@ -50,7 +50,7 @@ namespace Roguelike.Spells
 
   public class ProjectiveSpell : OffensiveSpell
   {
-    public const int BaseDamage = 2;
+    public const int BaseDamage = 4;
     public bool SourceOfDamage = true;
 
     public ProjectiveSpell(LivingEntity caller) : base(caller)

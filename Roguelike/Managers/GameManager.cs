@@ -367,7 +367,7 @@ namespace Roguelike.Managers
               en.SetChampion();
               
             }
-            AppendEnemy(en, tile.Point, chest.Level);
+            AppendEnemy(en, tile.Point, chest.Level+1);
             counter++;
           }
         }

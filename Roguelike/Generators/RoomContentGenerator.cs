@@ -68,7 +68,7 @@ namespace Roguelike.Generators
       if (node.IsChildIsland)
       {
         barrelsNumber = 2;
-        AddPlainChest();
+        AddPlainChestAtRandomLoc();
         node.SetTileAtRandomPosition<Barrel>(levelIndex);
       }
       barrelsNumber++;//at least one
@@ -79,7 +79,7 @@ namespace Roguelike.Generators
       {
         barrelsNumber += 2;
         if(!node.IsChildIsland)
-          AddPlainChest();
+          AddPlainChestAtRandomLoc();
       }
       for (int i = 0; i < barrelsNumber; i++)
       {
@@ -91,7 +91,7 @@ namespace Roguelike.Generators
       node.GetTiles<Chest>().ForEach(i => SetILootSourceLevel(i));
     }
 
-    private void AddPlainChest()
+    protected virtual void AddPlainChestAtRandomLoc()
     {
       var chest = new Chest() { ChestKind = ChestKind.Plain };
       node.SetTileAtRandomPosition(chest);

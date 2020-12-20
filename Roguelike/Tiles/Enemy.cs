@@ -129,7 +129,8 @@ namespace Roguelike.Tiles
 
       InitEffectsToUse(boss);
 
-      this.tag1 += ChempTagSuffix;
+      if(!boss)
+        this.tag1 += ChempTagSuffix;
     }
 
     private void InitEffectsToUse(bool boss)
