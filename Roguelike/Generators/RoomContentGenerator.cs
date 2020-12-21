@@ -84,11 +84,20 @@ namespace Roguelike.Generators
       for (int i = 0; i < barrelsNumber; i++)
       {
         var barrel = node.SetTileAtRandomPosition<Barrel>(levelIndex);
-        barrel.BarrelKind = RandHelper.GetRandomDouble() < 0.75 ? BarrelKind.Barrel : BarrelKind.PileOfSkulls;
+        SetBarrelKind(barrel);
       }
 
       node.GetTiles<Barrel>().ForEach(i => SetILootSourceLevel(i));
       node.GetTiles<Chest>().ForEach(i => SetILootSourceLevel(i));
+    }
+
+    protected bool allowSkullPiles = true; 
+    protected virtual void SetBarrelKind(Barrel barrel)
+    {
+      var kind = BarrelKind.Barrel;
+      if(allowSkullPiles && RandHelper.GetRandomDouble() > 0.75)
+        kind = BarrelKind.PileOfSkulls;
+      barrel.BarrelKind = kind;
     }
 
     protected virtual void AddPlainChestAtRandomLoc()
