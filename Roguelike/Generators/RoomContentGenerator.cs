@@ -20,7 +20,7 @@ namespace Roguelike.Generators
     protected ILogger logger;
     protected TileContainers.DungeonNode node;
     protected GenerationInfo gi;
-    Container container;
+    protected Container container;
     protected LootGenerator lootGen;
     public string LevelBossName { get; set; }
 
