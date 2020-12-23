@@ -18,11 +18,16 @@ using Roguelike.Abstract;
 
 namespace Roguelike.Tiles
 {
+  //public class GodActivationChangedArgs : EventArgs
+  //{ 
+  //}
+
   public class AdvancedLivingEntity : LivingEntity, IPersistable, IEquipable, IAdvancedEntity
   {
     public event EventHandler ExpChanged;
     public event EventHandler StatsRecalculated;
     public event EventHandler LeveledUp;
+    //public event EventHandler<GodActivationChangedArgs> GodActivationChanged;
     protected CurrentEquipment currentEquipment = new CurrentEquipment();
     protected Inventory inventory = null;
 
@@ -350,10 +355,10 @@ namespace Roguelike.Tiles
       return CurrentEquipment.GetActiveEquipment();
     }
 
-    public bool MakeActive(CurrentEquipmentKind kind, Equipment eq, bool primary)
-    {
-      return CurrentEquipment.SpareEquipmentUsed[kind] = !primary;
-    }
+    //public bool MakeActive(CurrentEquipmentKind kind, Equipment eq, bool primary)
+    //{
+    //  return CurrentEquipment.SpareEquipmentUsed[kind] = !primary;
+    //}
 
     public bool SetEquipment(CurrentEquipmentKind kind, Equipment eq, bool primary = true)
     {
@@ -361,7 +366,12 @@ namespace Roguelike.Tiles
       if (!set)
         return false;//TODO LOG
 
-      MakeActive(kind, eq, primary);
+      //if (kind == CurrentEquipmentKind.God)
+      //{
+        
+      //}
+      //??
+      //MakeActive(kind, eq, primary);
 
       RecalculateStatFactors(false);
 

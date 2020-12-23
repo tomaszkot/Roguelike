@@ -209,8 +209,13 @@ namespace Roguelike.Managers
       foreach (var dead in deadOnes)
       {
         Context.EventsManager.AppendAction(dead.GetDeadAction());
-        entities.Remove(dead);
+        RemoveEntity(dead);
       }
+    }
+
+    public bool RemoveEntity(LivingEntity ent)
+    {
+      return entities.Remove(ent);
     }
 
     protected bool MakeMoveOnPath(LivingEntity entity, Point target, bool forHeroAlly)

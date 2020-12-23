@@ -1,4 +1,5 @@
 ﻿using Dungeons.Core;
+using OuaDII.Tiles.Looting;
 using Roguelike.Abstract;
 using Roguelike.Policies;
 using Roguelike.Strategy;
@@ -123,5 +124,6 @@ namespace Roguelike.Managers
       if (AllyAdded != null)
         AllyAdded(this, ent);
     }
+        
   }
 }
