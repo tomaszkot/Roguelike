@@ -66,6 +66,11 @@ namespace Roguelike.Tiles
     {
     }
 
+    public virtual bool IsSellable(Loot loot)
+    {
+      return loot.Price >= 0;
+    }
+
     public int GetPrice(Loot loot)
     {
       int count = 1;
