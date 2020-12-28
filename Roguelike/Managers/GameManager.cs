@@ -374,7 +374,7 @@ namespace Roguelike.Managers
       }
     }
 
-    private void HandeTileHit(Tile tile)
+    protected virtual void HandeTileHit(Tile tile)
     {
       var info = "";
       var hitBlocker = false;

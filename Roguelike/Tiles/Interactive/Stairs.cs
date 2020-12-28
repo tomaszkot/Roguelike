@@ -13,6 +13,8 @@ namespace Roguelike.Tiles.Interactive
   
   public class Stairs : InteractiveTile, IApproachableByHero
   {
+    bool closed = true;
+    public bool Closed { get => closed; set => closed = value; }
     public event EventHandler Activated;
     StairsKind kind;
     public string pitName = "";
