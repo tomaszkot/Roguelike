@@ -34,7 +34,8 @@ namespace Dungeons.Core
       {
         err += "ex.InnerException: " + ex.InnerException.Message;
       }
-      //err += Environment.NewLine + new StackTrace().ToString();
+      //InputManager.HandleHeroShift looged error - no stack trace was visible
+      err += Environment.NewLine + ex.StackTrace;
       return err;
     }
   }
