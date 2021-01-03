@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Roguelike.Discussions
 {
-  public enum KnownSentenceKind { Unset, LetsTrade, Bye, SellHound }
+  public enum KnownSentenceKind { Unset, LetsTrade, Bye, SellHound, Back }
 
   public class DiscussionSentence
   {
@@ -29,45 +29,62 @@ namespace Roguelike.Discussions
   {
     public DiscussionSentence Right { get; set; } = new DiscussionSentence();
     public DiscussionSentence Left { get; set; } = new DiscussionSentence();
-    public List<DiscussionItem> Responses { get; set; } = new List<DiscussionItem>();
+    public List<DiscussionItem> DiscussionSubItems { get; set; } = new List<DiscussionItem>();
+    bool allowBuyHound;
+    DiscussionItem parent;
 
     public DiscussionItem() { }
 
-    public DiscussionItem(string right, string left)
+    public DiscussionItem(string right, string left, bool allowBuyHound = false, bool addMerchantItems = true)
     {
+      this.allowBuyHound = allowBuyHound;
       Right = new DiscussionSentence(right);
       Left = new DiscussionSentence(left);
+      if(addMerchantItems)
+        Discussion.CreateMerchantResponseOptions(this, allowBuyHound);
     }
 
-    public DiscussionItem(string right, KnownSentenceKind knownSentenceKind)
+    public DiscussionItem(string right, KnownSentenceKind knownSentenceKind, bool allowBuyHound = false) 
+      : this(right, knownSentenceKind.ToString(), allowBuyHound, false)
     {
-      Right = new DiscussionSentence(right, knownSentenceKind.ToString());
+    }
+
+    public void InsertSubItem(DiscussionItem subItem)
+    {
+      subItem.parent = this;
+      DiscussionSubItems.Insert(0, subItem);
+    }
+
+    public void InsertSubItem(string right, string left, bool addMerchantItems = true)
+    {
+      var item = new DiscussionItem(right, left, allowBuyHound, addMerchantItems);
+      InsertSubItem(item);
     }
   }
 
   public class Discussion
   {
     public string EntityName { get; set; }
-    List<DiscussionItem> Items = new List<DiscussionItem>();
+    DiscussionItem mainItem = new DiscussionItem();
 
     public static Discussion CreateForMerchant(string merchantName, bool allowBuyHound)
     {
       var dis = new Discussion();
       dis.EntityName = merchantName;
-      var mainItem = new DiscussionItem("", "What can I do for you?");
-
-      CreateMerchantItems(mainItem, allowBuyHound);
+      var mainItem = new DiscussionItem("", "What can I do for you?", allowBuyHound);
+            
       if (merchantName.Contains("Ziemowit"))//TODO
       {
-        //Why don't yu have 
-        var item1 = new DiscussionItem("Could you make an iron sword for me ?", "Nope, due to the king's edict we are allowed to sell an iron equipment only to knights. There is a way to do it though. If you deliver me 10 pieces of the iron ore I can devote part of it for making you a weapon.");
-        CreateMerchantItems(item1, allowBuyHound);
-        var item2 = new DiscussionItem("Where would I find iron ore?", "There is a mine west of here. Be aware monters have nested there, so it won't be easy.");
-        item1.Responses.Insert(0, item2);
-        mainItem.Responses.Insert(0, item1);
+        var item = new DiscussionItem("Could you make an iron sword for me ?", 
+          "Nope, due to the king's edict we are allowed to sell an iron equipment only to knights. There is a way to do it though. If you deliver me 10 pieces of the iron ore I can devote part of it for making you a weapon.",
+          false);
+        //CreateMerchantResponseOptions(item1, allowBuyHound);
+        var subItem = new DiscussionItem("Where would I find iron ore?", "There is a mine west of here. Be aware monters have nested there, so it won't be easy.", false);
+        item.DiscussionSubItems.Insert(0, subItem);
+        mainItem.DiscussionSubItems.Insert(0, item);
       }
 
-      dis.Items.Add(mainItem);
+      dis.mainItem = mainItem;
       return dis;
     }
 
@@ -75,20 +92,19 @@ namespace Roguelike.Discussions
     {
       var dis = CreateForMerchant("Lionel", allowBuyHound);
       var item1 = new DiscussionItem("What's up?", "Dark times have arrived...");
-      dis.Items[0].Responses.Insert(0, item1);
+      dis.MainItem.DiscussionSubItems.Insert(0, item1);
       return dis;
     }
 
-    private static void CreateMerchantItems(DiscussionItem mainItem, bool allowBuyHound)
+    public static void CreateMerchantResponseOptions(DiscussionItem item, bool allowBuyHound)
     {
-      mainItem.Responses.Add(new DiscussionItem("Let's Trade", KnownSentenceKind.LetsTrade));
+      item.InsertSubItem("Let's Trade", KnownSentenceKind.LetsTrade.ToString(), false);
       if(allowBuyHound)
-        mainItem.Responses.Add(new DiscussionItem("Sell me a hound ("+Merchant.HoundPrice+" gold)", KnownSentenceKind.SellHound));
+        item.InsertSubItem("Sell me a hound ("+Merchant.HoundPrice+" gold)", KnownSentenceKind.SellHound.ToString(), false);
 
-      mainItem.Responses.Add(new DiscussionItem("Bye", KnownSentenceKind.Bye));
-
+      item.InsertSubItem("Bye", KnownSentenceKind.Bye.ToString(), false);
     }
 
-    public DiscussionItem DiscussionItem { get { return Items[0]; } }
+    public DiscussionItem MainItem { get => mainItem; set => mainItem = value; }
   }
 }
