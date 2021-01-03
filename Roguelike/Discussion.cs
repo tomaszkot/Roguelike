@@ -102,12 +102,14 @@ namespace Roguelike.Discussions
       if (merchantName.Contains("Ziemowit"))//TODO
       {
         var item = new DiscussionItem("Could you make an iron sword for me ?", 
-          "Nope, due to the king's edict we are allowed to sell an iron equipment only to knights. There is a way to do it though. If you deliver me 10 pieces of the iron ore I can devote part of it for making you a weapon.",
-          false);
-        //CreateMerchantResponseOptions(item1, allowBuyHound);
-        var subItem = new DiscussionItem("Where would I find iron ore?", "There is a mine west of here. Be aware monters have nested there, so it won't be easy.", false);
-        item.DiscussionSubItems.Insert(0, subItem);
-        mainItem.DiscussionSubItems.Insert(0, item);
+          "Nope, due to the king's edict we are allowed to sell an iron equipment only to knights. There is a way to do it though. If you deliver me 10 pieces of the iron ore I can devote part of it for making you a weapon."
+          );
+
+        var subItem = new DiscussionItem("Where would I find iron ore?", "There is a mine west of here. Be aware monters have nested there, so it won't be easy.");
+        
+        
+        item.InsertSubItem(subItem, true);
+        mainItem.InsertSubItem(item, true);
       }
 
       dis.mainItem = mainItem;
