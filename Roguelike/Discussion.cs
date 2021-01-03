@@ -61,6 +61,9 @@ namespace Roguelike.Discussions
       {
         //Why don't yu have 
         var item1 = new DiscussionItem("Could you make an iron sword for me ?", "Nope, due to the king's edict we are allowed to sell an iron equipment only to knights. There is a way to do it though. If you deliver me 10 pieces of the iron ore I can devote part of it for making you a weapon.");
+        CreateMerchantItems(item1, allowBuyHound);
+        var item2 = new DiscussionItem("Where would I find iron ore?", "There is a mine west of here. Be aware monters have nested there, so it won't be easy.");
+        item1.Responses.Insert(0, item2);
         mainItem.Responses.Insert(0, item1);
       }
 
