@@ -30,6 +30,8 @@ namespace Roguelike.Discussions
     public DiscussionSentence Right { get; set; } = new DiscussionSentence();
     public DiscussionSentence Left { get; set; } = new DiscussionSentence();
     public List<DiscussionItem> DiscussionSubItems { get; set; } = new List<DiscussionItem>();
+    public DiscussionItem Parent { get => parent; set => parent = value; }
+
     bool allowBuyHound;
     DiscussionItem parent;
 
@@ -51,8 +53,15 @@ namespace Roguelike.Discussions
 
     public void InsertSubItem(DiscussionItem subItem)
     {
-      subItem.parent = this;
+      var back = new DiscussionItem("Back", KnownSentenceKind.Back.ToString(), false, false);
+      back.parent = this;
+      subItem.DiscussionSubItems.Add(back);
       DiscussionSubItems.Insert(0, subItem);
+    }
+
+    public void InsertSubItem(string right, KnownSentenceKind knownSentenceKind)
+    {
+      InsertSubItem(right, knownSentenceKind.ToString(), false);
     }
 
     public void InsertSubItem(string right, string left, bool addMerchantItems = true)
@@ -91,18 +100,18 @@ namespace Roguelike.Discussions
     public static Discussion CreateForLionel(bool allowBuyHound)
     {
       var dis = CreateForMerchant("Lionel", allowBuyHound);
-      var item1 = new DiscussionItem("What's up?", "Dark times have arrived...");
-      dis.MainItem.DiscussionSubItems.Insert(0, item1);
+      var item1 = new DiscussionItem("What's up?", "Dark times have arrived...", allowBuyHound);
+      dis.MainItem.InsertSubItem(item1);
       return dis;
     }
 
     public static void CreateMerchantResponseOptions(DiscussionItem item, bool allowBuyHound)
     {
-      item.InsertSubItem("Let's Trade", KnownSentenceKind.LetsTrade.ToString(), false);
+      item.InsertSubItem("Let's Trade", KnownSentenceKind.LetsTrade);
       if(allowBuyHound)
-        item.InsertSubItem("Sell me a hound ("+Merchant.HoundPrice+" gold)", KnownSentenceKind.SellHound.ToString(), false);
+        item.InsertSubItem("Sell me a hound ("+Merchant.HoundPrice+" gold)", KnownSentenceKind.SellHound);
 
-      item.InsertSubItem("Bye", KnownSentenceKind.Bye.ToString(), false);
+      item.InsertSubItem("Bye", KnownSentenceKind.Bye);
     }
 
     public DiscussionItem MainItem { get => mainItem; set => mainItem = value; }
