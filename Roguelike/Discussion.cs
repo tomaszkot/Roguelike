@@ -57,10 +57,10 @@ namespace Roguelike.Discussions
       var mainItem = new DiscussionItem("", "What can I do for you?");
 
       CreateMerchantItems(mainItem, allowBuyHound);
-      if (merchantName == "Ziemowit")//TODO
+      if (merchantName.Contains("Ziemowit"))//TODO
       {
         //Why don't yu have 
-        var item1 = new DiscussionItem("Could you make an iron sword for me ?", "Nope, due to the king's edict we are allowed to sell\r\nan iron equipment only to knights.");
+        var item1 = new DiscussionItem("Could you make an iron sword for me ?", "Nope, due to the king's edict we are allowed to sell an iron equipment only to knights. There is a way to do it though. If you deliver me 10 pieces of the iron ore I can devote part of it for making you a weapon.");
         mainItem.Responses.Insert(0, item1);
       }
 
