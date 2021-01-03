@@ -12,6 +12,7 @@ namespace Roguelike.Tiles
   {
     public Merchant(Container cont) : base(new Point().Invalid(), '!')
     {
+      Proffesion = EntityProffesionKind.Merchant;
       Stats.SetNominal(EntityStatKind.Health, 15);
       // Character.Mana = 40;
       var str = 15;
@@ -31,6 +32,14 @@ namespace Roguelike.Tiles
 #if ASCII_BUILD
       color = ConsoleColor.Yellow;
 #endif
+    }
+
+    public override void SetNameFromTag1()
+    {
+      var name = GetNameFromTag1();
+      name.Replace("Merchant", "");
+      name = name.Trim();
+      Name = name;
     }
 
     [JsonIgnore]

@@ -10,6 +10,6 @@ using System.Threading.Tasks;
 
 namespace Roguelike.Tiles
 {
-  public enum AllyKind { Unset, Dog, Enemy, Merchant }
+  public enum AllyKind { Unset, Hound, Enemy, Merchant }
     
 }

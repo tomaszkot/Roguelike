@@ -66,9 +66,14 @@ namespace Dungeons.Tiles
       this.Symbol = symbol;
     }
 
-    public void SetNameFromTag1()
+    public string GetNameFromTag1()
+    { 
+      return tag1.Replace("_", " ").ToUpperFirstLetter();
+    }
+
+    public virtual void SetNameFromTag1()
     {
-      Name = tag1.Replace("_", " ").ToUpperFirstLetter();
+      Name = GetNameFromTag1();
     }
 
     public int dungeonNodeIndex = DungeonNode.DefaultNodeIndex;

@@ -86,6 +86,7 @@
     <Compile Include="ConsumableHelper.cs" />
     <Compile Include="ContainerConfigurator.cs" />
     <Compile Include="Crafting\LootConverter.cs" />
+    <Compile Include="Discussion.cs" />
     <Compile Include="Effects\EffectTypeConverter.cs" />
     <Compile Include="Effects\LastingEffect.cs" />
     <Compile Include="EnemySymbols.cs" />

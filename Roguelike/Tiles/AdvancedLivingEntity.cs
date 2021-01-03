@@ -15,15 +15,20 @@ using System.Linq;
 using System.Windows.Markup;
 using SimpleInjector;
 using Roguelike.Abstract;
+using Roguelike.Discussions;
 
 namespace Roguelike.Tiles
 {
   //public class GodActivationChangedArgs : EventArgs
   //{ 
   //}
+  public enum EntityProffesionKind { Unset, King, Prince, Knight, Priest, Mercenary, Merchant, Peasant, Bandit, Adventurer, Slave }
+  public enum EntityGender { Unset, Male, Female }
 
   public class AdvancedLivingEntity : LivingEntity, IPersistable, IEquipable, IAdvancedEntity
   {
+    public Discussion Discussion { get; set; }
+    public EntityProffesionKind Proffesion { get; set; }
     public event EventHandler ExpChanged;
     public event EventHandler StatsRecalculated;
     public event EventHandler LeveledUp;
