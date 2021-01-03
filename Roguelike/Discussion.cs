@@ -31,13 +31,14 @@ namespace Roguelike.Discussions
     public DiscussionSentence Left { get; set; } = new DiscussionSentence();
     public List<DiscussionItem> DiscussionSubItems { get; set; } = new List<DiscussionItem>();
     public DiscussionItem Parent { get => parent; set => parent = value; }
+    const bool merchantItemsAtAllLevels = false;
 
     bool allowBuyHound;
     DiscussionItem parent;
 
     public DiscussionItem() { }
 
-    public DiscussionItem(string right, string left, bool allowBuyHound = false, bool addMerchantItems = true)
+    public DiscussionItem(string right, string left, bool allowBuyHound = false, bool addMerchantItems = merchantItemsAtAllLevels)
     {
       this.allowBuyHound = allowBuyHound;
       Right = new DiscussionSentence(right);
@@ -51,12 +52,16 @@ namespace Roguelike.Discussions
     {
     }
 
-    public void InsertSubItem(DiscussionItem subItem)
+    public void InsertSubItem(DiscussionItem subItem, bool atBegining)
     {
       var back = new DiscussionItem("Back", KnownSentenceKind.Back.ToString(), false, false);
       back.parent = this;
       subItem.DiscussionSubItems.Add(back);
-      DiscussionSubItems.Insert(0, subItem);
+
+      if(atBegining)
+        DiscussionSubItems.Insert(0, subItem);
+      else
+        DiscussionSubItems.Add(subItem);
     }
 
     public void InsertSubItem(string right, KnownSentenceKind knownSentenceKind)
@@ -64,10 +69,22 @@ namespace Roguelike.Discussions
       InsertSubItem(right, knownSentenceKind.ToString(), false);
     }
 
-    public void InsertSubItem(string right, string left, bool addMerchantItems = true)
+    public void InsertSubItem(string right, string left, bool addMerchantItems = merchantItemsAtAllLevels)
     {
       var item = new DiscussionItem(right, left, allowBuyHound, addMerchantItems);
-      InsertSubItem(item);
+      InsertSubItem(item, true);
+    }
+
+    public void AddSubItem(string right, KnownSentenceKind knownSentenceKind)
+    {
+      //var item = new DiscussionItem(right, knownSentenceKind.ToString(), allowBuyHound, false);
+      AddSubItem(right, knownSentenceKind.ToString(), false);
+    }
+
+    public void AddSubItem(string right, string left, bool addMerchantItems = merchantItemsAtAllLevels)
+    {
+      var item = new DiscussionItem(right, left, allowBuyHound, addMerchantItems);
+      InsertSubItem(item, false);
     }
   }
 
@@ -80,7 +97,7 @@ namespace Roguelike.Discussions
     {
       var dis = new Discussion();
       dis.EntityName = merchantName;
-      var mainItem = new DiscussionItem("", "What can I do for you?", allowBuyHound);
+      var mainItem = new DiscussionItem("", "What can I do for you?", allowBuyHound, true);
             
       if (merchantName.Contains("Ziemowit"))//TODO
       {
@@ -101,17 +118,17 @@ namespace Roguelike.Discussions
     {
       var dis = CreateForMerchant("Lionel", allowBuyHound);
       var item1 = new DiscussionItem("What's up?", "Dark times have arrived...", allowBuyHound);
-      dis.MainItem.InsertSubItem(item1);
+      dis.MainItem.InsertSubItem(item1, true);
       return dis;
     }
 
     public static void CreateMerchantResponseOptions(DiscussionItem item, bool allowBuyHound)
     {
-      item.InsertSubItem("Let's Trade", KnownSentenceKind.LetsTrade);
+      item.AddSubItem("Let's Trade", KnownSentenceKind.LetsTrade);
       if(allowBuyHound)
-        item.InsertSubItem("Sell me a hound ("+Merchant.HoundPrice+" gold)", KnownSentenceKind.SellHound);
+        item.AddSubItem("Sell me a hound ("+Merchant.HoundPrice+" gold)", KnownSentenceKind.SellHound);
 
-      item.InsertSubItem("Bye", KnownSentenceKind.Bye);
+      item.AddSubItem("Bye", KnownSentenceKind.Bye);
     }
 
     public DiscussionItem MainItem { get => mainItem; set => mainItem = value; }
