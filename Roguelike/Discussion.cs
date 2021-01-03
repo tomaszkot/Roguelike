@@ -57,6 +57,12 @@ namespace Roguelike.Discussions
       var mainItem = new DiscussionItem("", "What can I do for you?");
 
       CreateMerchantItems(mainItem, allowBuyHound);
+      if (merchantName == "Ziemowit")//TODO
+      {
+        //Why don't yu have 
+        var item1 = new DiscussionItem("Could you make an iron sword for me ?", "Nope, due to the king's edict we are allowed to sell\r\nan iron equipment only to knights.");
+        mainItem.Responses.Insert(0, item1);
+      }
 
       dis.Items.Add(mainItem);
       return dis;
@@ -77,6 +83,7 @@ namespace Roguelike.Discussions
         mainItem.Responses.Add(new DiscussionItem("Sell me a hound ("+Merchant.HoundPrice+" gold)", KnownSentenceKind.SellHound));
 
       mainItem.Responses.Add(new DiscussionItem("Bye", KnownSentenceKind.Bye));
+
     }
 
     public DiscussionItem DiscussionItem { get { return Items[0]; } }
