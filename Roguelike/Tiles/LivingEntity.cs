@@ -353,7 +353,7 @@ namespace Roguelike.Tiles
       return nonPhysicalDamageStats;
     }
 
-    private void PlaySound(string sound)
+    protected void PlaySound(string sound)
     {
       if(sound.Any())
         AppendAction(new SoundRequestAction() { SoundName = sound });
@@ -805,5 +805,7 @@ namespace Roguelike.Tiles
 
       return 0;
     }
+
+    public virtual void PlayAllySpawnedSound() { }
   }
 }

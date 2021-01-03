@@ -907,8 +907,10 @@ namespace Roguelike.Managers
     {
       le.Container = this.Container;
       AlliesManager.AddEntity(le);
-      var empty = CurrentNode.GetClosestEmpty(Hero);
+
+      var empty = CurrentNode.GetClosestEmpty(Hero, true, false);
       ReplaceTile<LivingEntity>(le, empty);
+      le.PlayAllySpawnedSound();
     }
 
     public OffensiveSpell ApplyOffensiveSpell(LivingEntity caster, Scroll scroll)

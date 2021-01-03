@@ -107,29 +107,42 @@ namespace Roguelike.TileContainers
       return IsTypeMatching(typeof(Loot), typeof(T));
     }
         
-    //hmm, maybe that method shall be marked as trowing NotSupportedException? (Loot is not considered here)
     public override Tile GetClosestEmpty(Tile baseTile, bool sameNodeId = false, List<Tile> skip = null)
     {
+      var empties = GetEmptyNeighborhoodTiles(baseTile);
+      if (empties.Any())
+        return empties.First();
+
+      //hmm, TODO! maybe that method shall be marked as trowing NotSupportedException? 
+      //1(Loot is not considered here)
+      //2 veeeery slow!
       return base.GetClosestEmpty(baseTile, sameNodeId, skip);
+    }
+
+    bool IsLootTile(Tile tile)
+    {
+      return Loot.Any(j => j.Value.Point == tile.Point);
     }
 
     void RemoveLoot(List<Tile> tiles)
     {
-      int removed = tiles.RemoveAll(i => Loot.Any(j => j.Value.Point == i.Point));
+      int removed = tiles.RemoveAll(i => IsLootTile(i));
       Logger.LogInfo("removed " + removed);
     }
 
-    public List<Tile> GetEmptyNeighborhoodTiles(Tile target, bool excludeLoot)
+    public List<Tile> GetEmptyNeighborhoodTiles(Tile target, bool incDiagonals, bool excludeLoot)
     {
-      var neibs = GetEmptyNeighborhoodTiles(target);
-      if(excludeLoot)
-        RemoveLoot(neibs);
+      var neibs = GetNeighborTiles(target, incDiagonals);
+      neibs.Shuffle();
+      neibs.RemoveAll(i => (excludeLoot && IsLootTile(i)));
+      neibs.RemoveAll(i => (!IsLootTile(i) && !IsTileEmpty(i)));
+
       return neibs;
     }
 
-    public Tile GetClosestEmpty(Tile baseTile, bool excludeLootPositions)
+    public Tile GetClosestEmpty(Tile baseTile, bool incDiagonals, bool excludeLootPositions)
     {
-      var emptyTiles = GetEmptyNeighborhoodTiles(baseTile, true);
+      var emptyTiles = GetEmptyNeighborhoodTiles(baseTile, incDiagonals, excludeLootPositions);
       if (emptyTiles.Any())
       {
         return emptyTiles.First();
@@ -515,7 +528,7 @@ namespace Roguelike.TileContainers
       Tile heroStartTile = null;
       if (baseTile != null)
       {
-        heroStartTile = GetClosestEmpty(baseTile, true);
+        heroStartTile = GetClosestEmpty(baseTile, false);
       }
 
       if (heroStartTile == null)

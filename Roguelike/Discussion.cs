@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using Roguelike.Tiles;
+using System.Collections.Generic;
 
 namespace Roguelike.Discussions
 {
@@ -61,9 +62,9 @@ namespace Roguelike.Discussions
       return dis;
     }
 
-    public static Discussion CreateForLionel()
+    public static Discussion CreateForLionel(bool allowBuyHound)
     {
-      var dis = CreateForMerchant("Lionel", true);
+      var dis = CreateForMerchant("Lionel", allowBuyHound);
       var item1 = new DiscussionItem("What's up?", "Dark times have arrived...");
       dis.Items[0].Responses.Insert(0, item1);
       return dis;
@@ -73,7 +74,7 @@ namespace Roguelike.Discussions
     {
       mainItem.Responses.Add(new DiscussionItem("Let's Trade", KnownSentenceKind.LetsTrade));
       if(allowBuyHound)
-        mainItem.Responses.Add(new DiscussionItem("Sell me a hound", KnownSentenceKind.SellHound));
+        mainItem.Responses.Add(new DiscussionItem("Sell me a hound ("+Merchant.HoundPrice+" gold)", KnownSentenceKind.SellHound));
 
       mainItem.Responses.Add(new DiscussionItem("Bye", KnownSentenceKind.Bye));
     }

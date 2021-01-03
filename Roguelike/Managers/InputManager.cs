@@ -122,9 +122,10 @@ namespace Roguelike.Managers
       {
         var ally = tile as IAlly;
         gm.AppendAction<AllyAction>((AllyAction ac) => { ac.AllyActionKind = AllyActionKind.Engaged; ac.InvolvedTile = ally; });
-        if (ally is TrainedHound)
+        if (ally is TrainedHound th)
         {
-          gm.SoundManager.PlaySound("ANIMAL_Dog_Bark_02_Mono");
+          th.bark(false);
+          //gm.SoundManager.PlaySound("ANIMAL_Dog_Bark_02_Mono");
         }
         return InteractionResult.Blocked;
       }

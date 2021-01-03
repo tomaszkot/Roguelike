@@ -1,6 +1,7 @@
 ﻿using Dungeons.Core;
 using Roguelike.Abstract;
 using Roguelike.Attributes;
+using Roguelike.Managers;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -39,5 +40,14 @@ namespace Roguelike.Tiles
 #endif
     }
 
+    public void bark(bool strong)
+    {
+      PlaySound("ANIMAL_Dog_Bark_02_Mono");
+    }
+
+    public override void PlayAllySpawnedSound() 
+    {
+      bark(false);
+    }
   }
 }

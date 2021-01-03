@@ -269,9 +269,9 @@ namespace Dungeons
 
       }
 
-      public List<T> GetNeighborTiles<T>(Tile tile) where T : Tile
+      public List<T> GetNeighborTiles<T>(Tile tile, bool incDiagonal = false) where T : Tile
       {
-        return GetNeighborTiles(tile).Where(i => i != null && i.GetType() == typeof(T)).Cast<T>().ToList();
+        return GetNeighborTiles(tile, incDiagonal).Where(i => i != null && i.GetType() == typeof(T)).Cast<T>().ToList();
       }
 
       public void AddChildIsland(Point? destStartPoint, DungeonNode childIsland)
