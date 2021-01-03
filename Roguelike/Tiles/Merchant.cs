@@ -10,6 +10,8 @@ namespace Roguelike.Tiles
 {
   public class Merchant : AdvancedLivingEntity, IAlly
   {
+    public const int HoundPrice = 100;
+
     public Merchant(Container cont) : base(new Point().Invalid(), '!')
     {
       Proffesion = EntityProffesionKind.Merchant;

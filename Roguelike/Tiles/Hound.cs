@@ -31,6 +31,8 @@ namespace Roguelike.Tiles
 
       Dirty = true;//TODO
 
+      tag1 = "hound";
+
       Kind = AllyKind.Hound;
 #if ASCII_BUILD
         color = ConsoleColor.Yellow;

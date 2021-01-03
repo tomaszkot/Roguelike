@@ -35,7 +35,10 @@ namespace Roguelike.Managers
     public bool CanHeroDoAction()
     {
       if (!gm.HeroTurn)
+      {
+        gm.EventsManager.AppendAction(new GameAction() { Level = ActionLevel.Normal, Info = "!Hero turn" });
         return false;
+      }
       if (!gm.Hero.Alive)
       {
         if (!Context.HeroDeadReported)

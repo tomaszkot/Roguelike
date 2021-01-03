@@ -518,9 +518,10 @@ namespace Roguelike.Managers
         {
           if (replacer != null)
           {
-            var enemy = replacer as Enemy;
-            if (enemy != null)
-              AppendAction<EnemyAction>((EnemyAction ac) => { ac.Enemy = enemy; ac.Kind = EnemyActionKind.AppendedToLevel; ac.Info = enemy.Name + " spawned"; });
+            var le = replacer as LivingEntity;
+            if (le != null)
+              AppendAction<LivingEntityAction>((LivingEntityAction ac) => { ac.InvolvedEntity = le; ac.Kind = LivingEntityActionKind.AppendedToLevel; 
+                ac.Info = le.Name + " spawned"; });
           }
         }
         return true;
@@ -895,6 +896,21 @@ namespace Roguelike.Managers
       EnemiesManager.AddEntity(enemy);
     }
 
+    public void AddAlly<T>() where T : LivingEntity, new()
+    {
+      var ally = new T();
+      ally.Revealed = true;
+      AddAlly(ally);
+    }
+
+    public void AddAlly(LivingEntity le)
+    {
+      le.Container = this.Container;
+      AlliesManager.AddEntity(le);
+      var empty = CurrentNode.GetClosestEmpty(Hero);
+      ReplaceTile<LivingEntity>(le, empty);
+    }
+
     public OffensiveSpell ApplyOffensiveSpell(LivingEntity caster, Scroll scroll)
     {
       if (!context.UtylizeScroll(caster, scroll))
@@ -902,13 +918,9 @@ namespace Roguelike.Managers
 
       if (scroll.CreateSpell(caster) is OffensiveSpell ps)
       {
-   
         if (ps is SkeletonSpell skeletonSpell)
         {
-          skeletonSpell.Enemy.Container = this.Container;
-          AlliesManager.AddEntity(skeletonSpell.Enemy);
-          var empty = CurrentNode.GetClosestEmpty(Hero);
-          ReplaceTile<Enemy>(skeletonSpell.Enemy, empty);
+          AddAlly(skeletonSpell.Enemy);
         }
         if (caster is Hero)
           context.MoveToNextTurnOwner();
