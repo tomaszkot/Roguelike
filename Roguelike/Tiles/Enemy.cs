@@ -252,7 +252,8 @@ namespace Roguelike.Tiles
 
     protected void UpdateStatsFromName()
     {
-      if (tag1.ToLower().Contains("bear"))
+      if (tag1.ToLower().Contains("bear") ||
+          tag1.ToLower().Contains("demon"))
       {
         IncreaseStats(1.5f, IncreaseStatsKind.Name);
       }

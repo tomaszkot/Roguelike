@@ -36,7 +36,7 @@ namespace Roguelike.Managers
     {
       if (!gm.HeroTurn)
       {
-        gm.EventsManager.AppendAction(new GameAction() { Level = ActionLevel.Normal, Info = "!Hero turn" });
+        //gm.EventsManager.AppendAction(new GameAction() { Level = ActionLevel.Normal, Info = "!Hero turn" });
         return false;
       }
       if (!gm.Hero.Alive)
