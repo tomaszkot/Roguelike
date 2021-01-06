@@ -119,40 +119,7 @@ namespace Roguelike.Discussions
   {
     public string EntityName { get; set; }
     DiscussionItem mainItem = new DiscussionItem();
-
-    public static Discussion CreateForMerchant(string merchantName, bool allowBuyHound)
-    {
-      var dis = new Discussion();
-      dis.EntityName = merchantName;
-      var mainItem = new DiscussionItem("", "What can I do for you?", allowBuyHound, true);
-            
-      if (merchantName.Contains("Ziemowit"))//TODO
-      {
-        var topic = new DiscussionItem("Could you make an iron sword for me ?", 
-          "Nope, due to the king's edict we are allowed to sell an iron equipment only to knights. There is a way to do it though. If you deliver me 10 pieces of the iron ore I can devote part of it for making you a weapon."
-          );
-
-        var subTopic = new DiscussionItem("Where would I find iron ore?", "There is a mine west of here. Be aware monters have nested there, so it won't be easy.");
-
-        var ok = new DiscussionItem("OK, I'll do it", KnownSentenceKind.QuestAccepted);
-        subTopic.InsertTopic(ok);
-
-        topic.InsertTopic(subTopic);
-        mainItem.InsertTopic(topic);
-      }
-
-      dis.mainItem = mainItem;
-      return dis;
-    }
-
-    public static Discussion CreateForLionel(bool allowBuyHound)
-    {
-      var dis = CreateForMerchant("Lionel", allowBuyHound);
-      var item1 = new DiscussionItem("What's up?", "Dark times have arrived...", allowBuyHound);
-      dis.MainItem.InsertTopic(item1, true);
-      return dis;
-    }
-
+        
     public static void CreateMerchantResponseOptions(DiscussionItem item, bool allowBuyHound)
     {
       item.AddTopic("Let's Trade", KnownSentenceKind.LetsTrade);
@@ -181,6 +148,55 @@ namespace Roguelike.Discussions
       disc = (Discussion)reader.Deserialize(file);
       file.Close();
       return disc;
+    }
+
+    /////////////////////////////////////////
+    public static Discussion CreateForLionel(bool allowBuyHound)
+    {
+      var dis = CreateForMerchant("Lionel", allowBuyHound);
+      var item1 = new DiscussionItem("What's up?", "Dark times have arrived... Bandits marauding on roads, monsters controlling dungeons. King's forces can not handle them as we have ongoing war on the easter border. All supply go for the army, it's hard to get any food or equipment these days.", allowBuyHound);
+      var topic1 = new DiscussionItem("As you know I can hadle it. Where would I find the root dungeon?", "Well I heard from one of drifters there is a place called The Gathering. Evil bosses have their meetings there from time to time. It's very had to enter it as you have to have all six Slavic Gods statues - together they unlock the entrance of it. ");
+      item1.InsertTopic(topic1);
+
+      var topic1_1 = new DiscussionItem("That is quite a task, any other just to get stronger?", @"If I were you I would start by visiting a couple of nearby places:
+A Mill - it is east of here.
+Blacksmith's workshop - it is west of here.");
+      //Pacanow Village - it's bit further west after Blacksmith's");
+      topic1.InsertTopic(topic1_1, false);
+
+      var topic11 = new DiscussionItem("Where would I find these statues?", "I suppose you can find them in dungeons scattered around the kingdom. Some evil bosses found a way to control them - it's gonna be a taught task to retrieve them.");
+      topic1.InsertTopic(topic11);
+
+      var topic111 = new DiscussionItem("All right, I'll finish what I started, this time for a good.", KnownSentenceKind.QuestAccepted);
+      topic11.InsertTopic(topic111);
+
+      dis.MainItem.InsertTopic(item1, true);
+      return dis;
+    }
+
+    public static Discussion CreateForMerchant(string merchantName, bool allowBuyHound)
+    {
+      var dis = new Discussion();
+      dis.EntityName = merchantName;
+      var mainItem = new DiscussionItem("", "What can I do for you?", allowBuyHound, true);
+
+      if (merchantName.Contains("Ziemowit"))//TODO
+      {
+        var topic = new DiscussionItem("Could you make an iron sword for me ?",
+          "Nope, due to the king's edict we are allowed to sell an iron equipment only to knights. There is a way to do it though. If you deliver me 10 pieces of the iron ore I can devote part of it for making you a weapon."
+          );
+
+        var subTopic = new DiscussionItem("Where would I find iron ore?", "There is a mine west of here. Be aware monters have nested there, so it won't be easy.");
+
+        var ok = new DiscussionItem("All right, I'll do it", KnownSentenceKind.QuestAccepted);
+        subTopic.InsertTopic(ok);
+
+        topic.InsertTopic(subTopic);
+        mainItem.InsertTopic(topic);
+      }
+
+      dis.MainItem = mainItem;
+      return dis;
     }
   }
 }
