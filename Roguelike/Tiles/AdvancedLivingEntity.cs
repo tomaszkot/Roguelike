@@ -27,9 +27,11 @@ namespace Roguelike.Tiles
 
   public class AdvancedLivingEntity : LivingEntity, IPersistable, IEquipable, IAdvancedEntity
   {
+    public bool HasUrgentTopic { get; set; }
     public Discussion Discussion { get; set; }
     public EntityProffesionKind Proffesion { get; set; }
     public event EventHandler ExpChanged;
+    public event EventHandler<bool> UrgentTopicChanged;
     public event EventHandler StatsRecalculated;
     public event EventHandler LeveledUp;
     //public event EventHandler<GodActivationChangedArgs> GodActivationChanged;
@@ -479,6 +481,13 @@ namespace Roguelike.Tiles
           }
         }
       }
+    }
+
+    public void SetHasUrgentTopic(bool ut)
+    {
+      this.HasUrgentTopic = ut;
+      if(UrgentTopicChanged!=null)
+        UrgentTopicChanged(this, HasUrgentTopic);
     }
   }
 }

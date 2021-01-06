@@ -1,5 +1,6 @@
 ﻿using Roguelike.Tiles;
 using System.Collections.Generic;
+using System.Xml.Serialization;
 
 namespace Roguelike.Discussions
 {
@@ -22,6 +23,11 @@ namespace Roguelike.Discussions
       Body = body;
       Id = id;
     }
+
+    public override string ToString()
+    {
+      return Body;
+    }
     //public DiscussionSentence Next { get;set;}
   }
 
@@ -30,11 +36,18 @@ namespace Roguelike.Discussions
     public DiscussionSentence Right { get; set; } = new DiscussionSentence();
     public DiscussionSentence Left { get; set; } = new DiscussionSentence();
     public List<DiscussionItem> Topics { get; set; } = new List<DiscussionItem>();
+
+    [XmlIgnoreAttribute]
     public DiscussionItem Parent { get => parent; set => parent = value; }
     const bool merchantItemsAtAllLevels = false;
 
     bool allowBuyHound;
     DiscussionItem parent;
+
+    public override string ToString()
+    {
+      return Right + "->"+Left;
+    }
 
     public DiscussionItem() { }
 
@@ -55,7 +68,7 @@ namespace Roguelike.Discussions
     public void InsertTopic(DiscussionItem subItem, bool atBegining = true)
     {
       var back = new DiscussionItem("Back", KnownSentenceKind.Back.ToString());
-      back.parent = this;
+      back.Parent = this;
       subItem.Topics.Add(back);
 
       if(atBegining)
@@ -135,5 +148,24 @@ namespace Roguelike.Discussions
     }
 
     public DiscussionItem MainItem { get => mainItem; set => mainItem = value; }
+
+    public void ToXml()
+    {
+      var writer = new System.Xml.Serialization.XmlSerializer(typeof(Discussion));
+      var path = EntityName+".xml";
+      var file = System.IO.File.Create(path);
+      writer.Serialize(file, this);
+      file.Close();
+    }
+
+    public static Discussion FromXml(string entityName)
+    {
+      Discussion disc = null;
+      var reader = new System.Xml.Serialization.XmlSerializer(typeof(Discussion));
+      var file = new System.IO.StreamReader(entityName+".xml");
+      disc = (Discussion)reader.Deserialize(file);
+      file.Close();
+      return disc;
+    }
   }
 }
