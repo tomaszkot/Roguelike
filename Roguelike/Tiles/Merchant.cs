@@ -39,7 +39,7 @@ namespace Roguelike.Tiles
     public override void SetNameFromTag1()
     {
       var name = GetNameFromTag1();
-      name.Replace("Merchant", "");
+      name.Replace("ally_Merchant", "");
       name = name.Trim();
       Name = name;
     }

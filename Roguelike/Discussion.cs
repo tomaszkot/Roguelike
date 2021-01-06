@@ -1,5 +1,6 @@
 ﻿using Roguelike.Tiles;
 using System.Collections.Generic;
+using System.Linq;
 using System.Xml.Serialization;
 
 namespace Roguelike.Discussions
@@ -44,6 +45,11 @@ namespace Roguelike.Discussions
     bool allowBuyHound;
     DiscussionItem parent;
 
+    public bool HasBack()
+    {
+      return Topics.Any(i => i.Right.Body == "Back");
+    }
+
     public override string ToString()
     {
       return Right + "->"+Left;
@@ -67,14 +73,23 @@ namespace Roguelike.Discussions
 
     public void InsertTopic(DiscussionItem subItem, bool atBegining = true)
     {
-      var back = new DiscussionItem("Back", KnownSentenceKind.Back.ToString());
-      back.Parent = this;
-      subItem.Topics.Add(back);
-
-      if(atBegining)
+      if (!subItem.HasBack())
+      {
+        var back = new DiscussionItem("Back", KnownSentenceKind.Back.ToString());
+        back.Parent = this;
+        subItem.Topics.Add(back);
+      }
+      if (atBegining)
         Topics.Insert(0, subItem);
       else
-        Topics.Add(subItem);
+      {
+        if (HasBack())
+        {
+          Topics.Insert(Topics.Count-1, subItem);
+        }
+        else
+          Topics.Add(subItem);
+      }
     }
 
     public void InsertTopic(string right, KnownSentenceKind knownSentenceKind)
