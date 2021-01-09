@@ -792,15 +792,17 @@ namespace Roguelike.Managers
       return src != dest;
     }
 
-    private void AddEqToMerchant(Merchant merch, List<LootKind> lootKinds)
+    private void AddLootToMerchantInv(Merchant merch, List<LootKind> lootKinds)
     {
-      var eqKinds = Enum.GetValues(typeof(EquipmentKind)).Cast<EquipmentKind>().ToList();
       for (int numOfLootPerKind = 0; numOfLootPerKind < 2; numOfLootPerKind++)
       {
         foreach (var lootKind in lootKinds)
         {
           int levelIndex = Hero.Level;
-          var loot = lootGenerator.GetRandomLoot(lootKind, levelIndex);
+          Loot loot = null;
+          loot = lootGenerator.GetRandomLoot(lootKind, levelIndex);
+          if (loot is Equipment)
+            continue;//generated lower
           if (loot != null && !merch.Inventory.Items.Any(i => i.tag1 == loot.tag1))
           {
             loot.Revealed = true;
@@ -808,40 +810,45 @@ namespace Roguelike.Managers
             merch.Inventory.Items.Add(loot);
           }
         }
-
-        GenerateMerchantEq(merch, eqKinds, true);
-        GenerateMerchantEq(merch, eqKinds, false);
       }
+
+      GenerateMerchantEq(merch, true);
+      GenerateMerchantEq(merch, false);
     }
 
-    private void GenerateMerchantEq(Merchant merch, List<EquipmentKind> eqKinds, bool magic)
+    private void GenerateMerchantEq(Merchant merch, bool magic)
     {
+      var eqKinds = Enum.GetValues(typeof(EquipmentKind)).Cast<EquipmentKind>().ToList();
       eqKinds.Shuffle();
-      int count = 0;
-      foreach (var lk in eqKinds)
+      int levelIndex = Hero.Level;
+      foreach (var eqKind in eqKinds)
       {
-        if (lk == EquipmentKind.Trophy || lk == EquipmentKind.Unset || lk == EquipmentKind.God)
+        if (eqKind == EquipmentKind.Trophy || eqKind == EquipmentKind.Unset || eqKind == EquipmentKind.God)
           continue;
 
-        int levelIndex = Hero.Level;
-        var eq = lootGenerator.GetRandomEquipment(lk, levelIndex);
-        if (eq != null && !merch.Inventory.Items.Any(i => i.tag1 == eq.tag1))
-        {
-          eq.Revealed = true;
-          if (magic)
-            eq.MakeMagic();
-          else
-            eq.MakeEnchantable();
-
-          //TODO Items used to avoid sound
-          merch.Inventory.Items.Add(eq);
-          count++;
-        }
         var breakCount = 2;
-        if (lk == EquipmentKind.Weapon)
+        if (eqKind == EquipmentKind.Weapon)
           breakCount = 3;
-        if (count == breakCount)
-          break;
+
+        int count = 0;
+        while (count < breakCount)
+        {
+          var eq = lootGenerator.GetRandomEquipment(eqKind, levelIndex);
+          if (eq != null && !merch.Inventory.Items.Any(i => i.tag1 == eq.tag1))
+          {
+            if (eq.Class == EquipmentClass.Unique)
+              continue;
+            eq.Revealed = true;
+            if (magic)
+              eq.MakeMagic();
+            else
+              eq.MakeEnchantable();
+
+            //TODO Items used to avoid sound
+            merch.Inventory.Items.Add(eq);
+            count++;
+          }
+        }
       }
     }
 
@@ -852,7 +859,7 @@ namespace Roguelike.Managers
         .Where(i => i != LootKind.Unset && i != LootKind.Other && i != LootKind.Seal && i != LootKind.SealPart && i != LootKind.Gold)
         .ToList();
 
-      AddEqToMerchant(merch, lootKinds);
+      AddLootToMerchantInv(merch, lootKinds);
 
       //for (int i = 0; i < 4; i++)
       {

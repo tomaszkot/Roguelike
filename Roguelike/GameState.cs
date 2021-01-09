@@ -32,8 +32,8 @@ namespace Roguelike
       {
         string name = "";
         if (Pit.Any())
-          //name += DungeonPit.GetPitDisplayName(Pit) + "/" + (LevelIndex + 1);
-          name += Pit + "/" + (LevelIndex + 1);
+          name += DungeonPit.GetPitDisplayName(Pit) + "/" + (LevelIndex + 1);
+          //name += Pit + "/" + (LevelIndex + 1);
         else
           name += World;
 

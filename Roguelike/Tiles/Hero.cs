@@ -78,10 +78,10 @@ namespace Roguelike.Tiles
       var scroll = Inventory.GetItems<Scroll>().Where(i=> i.Kind == Spells.SpellKind.Identify).FirstOrDefault();
       if (scroll != null)
       {
-        Inventory.Remove(scroll);
         if (eq.Identify())
         {
-          if(CurrentEquipment.PrimaryEquipment.Values.Contains(eq) ||
+          Inventory.Remove(scroll);
+          if (CurrentEquipment.PrimaryEquipment.Values.Contains(eq) ||
             CurrentEquipment.SpareEquipment.Values.Contains(eq))
             RecalculateStatFactors(false);
           return true;
