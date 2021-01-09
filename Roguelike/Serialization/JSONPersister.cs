@@ -3,6 +3,7 @@ using Dungeons.Core;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Serialization;
+using Roguelike.State;
 using Roguelike.TileContainers;
 using Roguelike.Tiles;
 using SimpleInjector;

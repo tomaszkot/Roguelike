@@ -1,4 +1,5 @@
-﻿using Roguelike.TileContainers;
+﻿using Roguelike.State;
+using Roguelike.TileContainers;
 using Roguelike.Tiles;
 
 namespace Roguelike.Serialization

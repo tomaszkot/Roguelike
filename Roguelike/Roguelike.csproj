@@ -44,9 +44,6 @@
     <Reference Include="Newtonsoft.Json">
       <HintPath>..\packages\Newtonsoft.Json.12.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
-    <Reference Include="OuaDII">
-      <HintPath>..\..\OuaDII\OuaDIISln\Assets\Dlls\OuaDII.dll</HintPath>
-    </Reference>
     <Reference Include="SimpleInjector">
       <HintPath>..\packages\SimpleInjector.4.4.3\lib\net45\SimpleInjector.dll</HintPath>
     </Reference>
@@ -96,7 +93,7 @@
     <Compile Include="Factors\PercentageFactor.cs" />
     <Compile Include="Game.cs" />
     <Compile Include="GameContext.cs" />
-    <Compile Include="GameState.cs" />
+    <Compile Include="State\GameState.cs" />
     <Compile Include="GenerationInfo.cs" />
     <Compile Include="Generators\LevelGenerator.cs" />
     <Compile Include="Generators\LootGenerator.cs" />
@@ -134,6 +131,7 @@
     <Compile Include="Spells\SpellConverter.cs" />
     <Compile Include="Spells\Spells.cs" />
     <Compile Include="LootContainers\CurrentEquipment.cs" />
+    <Compile Include="State\HeroPath.cs" />
     <Compile Include="TileParts\LootExtendedInfo.cs" />
     <Compile Include="Managers\EnemiesManager.cs" />
     <Compile Include="Managers\EntitiesManager.cs" />

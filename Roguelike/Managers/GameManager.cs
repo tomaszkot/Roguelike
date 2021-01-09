@@ -19,6 +19,7 @@ using Roguelike.Tiles.Looting;
 using System.Collections.Generic;
 using Roguelike.Spells;
 using Roguelike.History;
+using Roguelike.State;
 
 namespace Roguelike.Managers
 {
@@ -95,7 +96,7 @@ namespace Roguelike.Managers
     {
       Container = container;
 
-      gameState = container.GetInstance<Roguelike.GameState>();
+      gameState = container.GetInstance<GameState>();
       LootGenerator = container.GetInstance<LootGenerator>();
       Logger = container.GetInstance<ILogger>();
       levelGenerator = container.GetInstance<LevelGenerator>();
@@ -602,20 +603,20 @@ namespace Roguelike.Managers
     {
       string name = "";
       var gs = PrepareGameStateForSave();
-      name = gameState.HeroPathValue.GetDisplayName();
+      name = gameState.HeroPath.GetDisplayName();
       return name;
     }
 
     public virtual GameState PrepareGameStateForSave()
     {
       gameState.Settings.CoreInfo.LastSaved = DateTime.Now;
-      gameState.HeroPathValue.Pit = "";
+      gameState.HeroPath.Pit = "";
 
       if (CurrentNode is TileContainers.GameLevel)//TODO 
       {
         var gameLevel = CurrentNode as TileContainers.GameLevel;
-        gameState.HeroPathValue.Pit = gameLevel.PitName;
-        gameState.HeroPathValue.LevelIndex = gameLevel.Index;
+        gameState.HeroPath.Pit = gameLevel.PitName;
+        gameState.HeroPath.LevelIndex = gameLevel.Index;
       }
 
       return gameState;

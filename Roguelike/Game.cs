@@ -3,6 +3,7 @@ using Dungeons.Core;
 using Newtonsoft.Json;
 using Roguelike.Generators;
 using Roguelike.Managers;
+using Roguelike.State;
 using Roguelike.TileContainers;
 using Roguelike.Tiles;
 using Roguelike.Tiles.Interactive;
@@ -76,7 +77,7 @@ namespace Roguelike
       {
         levels.Clear();
         GameLevel lvl = null;
-        var maxLevel = gs.HeroPathValue.LevelIndex;//TODO gs shall have maxLevel, hero might have go upper. Maybe just count level files in dir ?
+        var maxLevel = gs.HeroPath.LevelIndex;//TODO gs shall have maxLevel, hero might have go upper. Maybe just count level files in dir ?
         for (var i = 0; i <= maxLevel; i++)
         {
           GameLevel nextLvl = null;
@@ -90,11 +91,11 @@ namespace Roguelike
             levels.Add(nextLvl);
           }
         }
-        for (var i = 0; i < gs.HeroPathValue.LevelIndex; i++)
+        for (var i = 0; i < gs.HeroPath.LevelIndex; i++)
         {
           levels[i].Reveal(true);//TODO, due to bugs with reveal of rooms it's better to do it for whole level
         }
-        lvl = levels[gs.HeroPathValue.LevelIndex];
+        lvl = levels[gs.HeroPath.LevelIndex];
         return lvl;
       };
 

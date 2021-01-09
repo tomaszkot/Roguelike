@@ -1,5 +1,4 @@
 ﻿using Dungeons.Core;
-using OuaDII.Tiles.Looting;
 using Roguelike.Abstract;
 using Roguelike.Policies;
 using Roguelike.Strategy;

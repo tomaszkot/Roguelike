@@ -6,6 +6,7 @@ using Roguelike.Events;
 using Roguelike.Managers;
 using Roguelike.Policies;
 using Roguelike.Spells;
+using Roguelike.State;
 using Roguelike.TileContainers;
 using Roguelike.Tiles;
 using Roguelike.Tiles.Interactive;
