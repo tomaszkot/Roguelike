@@ -9,9 +9,9 @@ namespace Roguelike.Tiles
 {
   public class Jewellery : Equipment
   {
-    public const char AmulerSymbol = '"';
+    public const char AmuletSymbol = '"';
     public const char RingSymbol = '=';
-    public const char PendantSymbol = AmulerSymbol;
+    public const char PendantSymbol = AmuletSymbol;
 
     public override EquipmentKind EquipmentKind
     {
@@ -32,7 +32,7 @@ namespace Roguelike.Tiles
             //IncludeDebugDetailsInToString = false;
             break;
           case EquipmentKind.Amulet:
-            Symbol = AmulerSymbol;
+            Symbol = AmuletSymbol;
             name = IsPendant ? "Pendant" : "Amulet";
             //IncludeDebugDetailsInToString = false;
             break;
@@ -49,12 +49,13 @@ namespace Roguelike.Tiles
     public bool IsPendant 
     {
       get { return isPendant; }
-      set {
-        if (!isPendant || EquipmentKind == EquipmentKind.Amulet)
+      set 
+      {
+        if (EquipmentKind == EquipmentKind.Amulet)
         {
-          if (!isPendant)
+          isPendant = value;
+          if (isPendant)
           {
-            isPendant = value;
             tag1 = "pendant";
             Name = "Pendant";
             MakeEnchantable();

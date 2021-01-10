@@ -342,7 +342,9 @@ namespace Roguelike.Tiles
     public bool IsSecondMagicLevel { get { return Class == EquipmentClass.MagicSecLevel; } }
     public EntityStat PrimaryStat { get => primaryStat; set => primaryStat = value; }
     public EntityStats RequiredStats { get => requiredStats; set => requiredStats = value; }
-    public int EnchantSlots { get => enchantSlots; }
+    
+    //setter needed from serialize
+    public int EnchantSlots { get => enchantSlots; set { enchantSlots = value; } }
 
     public List<EntityStat> GetEffectiveRequiredStats()
     {
@@ -501,6 +503,7 @@ namespace Roguelike.Tiles
     }
 
     public EntityStats UnidentifiedStats { get => unidentifiedStats; set => unidentifiedStats = value; }
+    public int MaxEnchants { get => maxEnchants; set => maxEnchants = value; }
 
     public void SetLevelIndex(int li) 
     {
