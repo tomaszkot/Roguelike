@@ -168,6 +168,11 @@ namespace Roguelike.Tiles
     public void SetLevel(int level)
     {
       Assert(level >= 1);
+      if (level > 6)
+      {
+        int k = 0;
+        k++;
+      }
       this.Level = level;
 
       if(!WereStatsIncreased(IncreaseStatsKind.Name))

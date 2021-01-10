@@ -29,7 +29,7 @@ namespace RoguelikeUnitTests
     {
       var inters = game.Level.GetTiles<T>();
       var intersCount = inters.Count;
-      Assert.Greater(intersCount, 5);
+      Assert.GreaterOrEqual(intersCount, 5);
       foreach (var inter in inters)
       {
         InteractHeroWith(inter);

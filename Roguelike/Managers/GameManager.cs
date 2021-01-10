@@ -832,6 +832,7 @@ namespace Roguelike.Managers
           breakCount = 3;
 
         int count = 0;
+        int attemptTries = 0;
         while (count < breakCount)
         {
           var eq = lootGenerator.GetRandomEquipment(eqKind, levelIndex);
@@ -849,6 +850,11 @@ namespace Roguelike.Managers
             merch.Inventory.Items.Add(eq);
             count++;
           }
+          else
+            attemptTries++;
+
+          if (attemptTries == 5)
+            break;
         }
       }
     }

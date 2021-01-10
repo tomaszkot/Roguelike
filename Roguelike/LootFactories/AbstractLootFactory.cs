@@ -76,6 +76,11 @@ namespace Roguelike.LootFactories
         var plains = prototypes.Values.Where(i => i.Class == EquipmentClass.Plain).ToList();
 
         var eqsAtLevel = plains.Where(i => i.LevelIndex == level).ToList();
+        if (!eqsAtLevel.Any())//TODO!
+        {
+          var maxLevel = plains.Max(i => i.LevelIndex);
+          eqsAtLevel = plains.Where(i => i.LevelIndex == maxLevel).ToList();
+        }
         var eq = RandHelper.GetRandomElem<Equipment>(eqsAtLevel);
         if (eq != null)
         {

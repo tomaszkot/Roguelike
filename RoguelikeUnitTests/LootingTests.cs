@@ -133,7 +133,7 @@ namespace RoguelikeUnitTests
       for (int i = 0; i < 10; i++)
       {
         var pot = env.LootGenerator.GetRandomLoot(LootKind.Equipment, 1);
-        var closeEmp = env.Game.Level.GetClosestEmpty(env.Game.Hero, true);
+        var closeEmp = env.Game.Level.GetClosestEmpty(env.Game.Hero, true, true);
         var set = env.Game.Level.SetTile(pot, closeEmp.Point);
         Assert.True(set);
       }
@@ -237,7 +237,7 @@ namespace RoguelikeUnitTests
       {
         var count = gr.Count();
         Assert.Less(count, 25);
-        int min = gr.Key == SpellKind.Portal ? 3 : 5;
+        int min = gr.Key == SpellKind.Portal ? 3 : 1;
         Assert.Greater(count, min);
 
         if (gr.Key != SpellKind.Identify)
@@ -246,7 +246,7 @@ namespace RoguelikeUnitTests
         }
         if (gr.Key != SpellKind.Portal)
         {
-          Assert.Less(identCount, count * 3);
+          Assert.LessOrEqual(identCount, count * 3);
         }
       }
             
