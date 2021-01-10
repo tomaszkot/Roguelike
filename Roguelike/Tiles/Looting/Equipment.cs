@@ -500,6 +500,8 @@ namespace Roguelike.Tiles
       get { return levelIndex; }
     }
 
+    public EntityStats UnidentifiedStats { get => unidentifiedStats; set => unidentifiedStats = value; }
+
     public void SetLevelIndex(int li) 
     {
       if (li <= 0)
@@ -529,7 +531,6 @@ namespace Roguelike.Tiles
       {
         //ExtendedInfo.Stats = lootStats;
         unidentifiedStats = lootStats;
-        //IsSecondMagicLevel = magicOfSecondLevel;
       }
       IncreasePriceBasedOnExtInfo();
     }
