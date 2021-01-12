@@ -213,7 +213,7 @@ namespace Roguelike.Tiles
     {
       get;
       set;
-    }
+    } = "";
 
     protected string[] extraStatDescription;
     

@@ -107,19 +107,33 @@ namespace RoguelikeUnitTests
     [Test]
     public void LootPropsTest()
     {
+      for (int i = 0; i < 1; i++)
+      {
+        LootPropsTest(FoodKind.Plum, "Sweet, delicious fruit");
+        LootPropsTest(FoodKind.Meat, "Raw yet nutritious piece of meat");
+        LootPropsTest(FoodKind.Fish, "Raw yet nutritious piece of fish");
+      }
+    }
+
+    void LootPropsTest(FoodKind kind, string desc)
+    {
       var game = CreateGame(true);
       var hero = game.Hero;
       hero.Name = "LootPropsTest";
-      var loot = new Food(FoodKind.Plum);
+      var loot = new Food(kind);
       hero.Inventory.Add(loot);
-      Assert.AreEqual(loot.PrimaryStatDescription, "Sweet, delicious fruit");
+      Assert.AreEqual(loot.PrimaryStatDescription, desc);
       Assert.AreEqual(game.Hero.Inventory.Items.Count, 1);
 
       game.GameManager.Save();
       game.GameManager.Load(hero.Name);
-      Assert.AreEqual(game.GameManager.Hero.Name, "LootPropsTest");
+      var loadedHero = game.GameManager.Hero;
+      Assert.AreNotEqual(hero, loadedHero);
+      Assert.AreEqual(loadedHero.Name, "LootPropsTest");
       Assert.AreEqual(game.Hero.Inventory.Items.Count, 1);
       var lootLoaded = game.Hero.Inventory.Items.ElementAt(0) as Food;
+      
+      Assert.AreEqual(loot.Kind, lootLoaded.Kind);
       Assert.AreEqual(loot.PrimaryStatDescription, lootLoaded.PrimaryStatDescription);
     }
 
