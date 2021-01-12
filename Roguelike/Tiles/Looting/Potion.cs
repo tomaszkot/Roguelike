@@ -12,7 +12,7 @@ namespace Roguelike.Tiles.Looting
   {
     public PotionKind Kind { get; set; }
 
-    public Potion() : this(PotionKind.Unset)
+    public Potion() : this(PotionKind.Health)
     {
       collectedSound = "bottle1";
       consumedSound = "drink";
