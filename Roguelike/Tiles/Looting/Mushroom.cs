@@ -102,14 +102,9 @@ namespace Roguelike.Tiles
       //desc += "Potion.";
       string desc = PartOfCraftingRecipe;
       desc+= GetConsumeDesc(" Consumable");
-      primaryStatDesc = desc;
+      PrimaryStatDescription = desc;
     }
-
-    public override string PrimaryStatDescription
-    {
-      get { return primaryStatDesc; }
-    }
-
+        
     public override string ToString()
     {
       return base.ToString() + " " + MushroomKind;
@@ -121,25 +116,6 @@ namespace Roguelike.Tiles
 
     public override string[] GetExtraStatDescription()
     {
-     
-      //var potion = Extensions.FirstCharToUpper(SrcPotion.ToString()) + " Potion";
-      //var gm = GameManager.Instance;
-      //if (gm.GameSettings.AllowInPlaceInventoryCrafting)
-      //{
-      //  if (extraStatDescription == null || extraStatDescription[0].StartsWith("Use it"))//TODO
-      //  {
-      //    extraStatDescription = new string[1];
-      //    extraStatDescription[0] = "Drop it on the " + potion + "\r\n  in the Inventory";
-      //  }
-      //}
-      //else
-      //{
-      //  if (extraStatDescription == null || extraStatDescription[0].StartsWith("Drop it"))
-      //  {
-      //    extraStatDescription = new string[1];
-      //    extraStatDescription[0] = "Use it on Crafting Panel along with\r\n" + potion + " and the Custom Recipe";
-      //  }
-      //}
       return extraStatDescription;
     }
   }

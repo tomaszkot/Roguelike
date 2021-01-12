@@ -100,7 +100,7 @@ namespace Roguelike.Tiles
       get { return false; }
     }
 
-    protected string primaryStatDesc = "?";
+    //protected string primaryStatDesc = "?";
         
     public bool StackedInInventory
     {
@@ -209,9 +209,10 @@ namespace Roguelike.Tiles
       return this.GetType() == other.GetType();
     }
 
-    public abstract string PrimaryStatDescription
+    public string PrimaryStatDescription
     {
       get;
+      set;
     }
 
     protected string[] extraStatDescription;

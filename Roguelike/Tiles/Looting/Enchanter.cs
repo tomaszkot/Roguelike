@@ -26,7 +26,6 @@ namespace Roguelike.Tiles.Looting
     public EnchantSrc EnchantSrc { get; set; }
     //public EnchanterKind EnchanterKind { get; set; }
 
-    protected string primaryStatDescription = "";
     protected static Dictionary<EnchanterSize, int> wpnAndArmorValues = new Dictionary<EnchanterSize, int>();
     protected static Dictionary<EnchanterSize, int> otherValues = new Dictionary<EnchanterSize, int>();
 

@@ -16,19 +16,15 @@ namespace Roguelike.Tiles.Looting
 
     public Hooch()
     {
-//      Symbol = '&';
-//#if ASCII_BUILD
-//      color = GoldColor;
-//#endif
-//      tag1 = "hooch";
-//      Name = "Hooch";
-//      Price = 5;
-//      StackedInventoryId = new Guid(HoochGuid);
-    }
-
-    public override string PrimaryStatDescription
-    {
-      get { return "Powerful liquid, can be drunk or used as part of a recipe."; }
+      //      Symbol = '&';
+      //#if ASCII_BUILD
+      //      color = GoldColor;
+      //#endif
+      //      tag1 = "hooch";
+      //      Name = "Hooch";
+      //      Price = 5;
+      //      StackedInventoryId = new Guid(HoochGuid);
+      PrimaryStatDescription = "Powerful liquid, can be drunk or used as part of a recipe.";
     }
 
     string[] extDesc;

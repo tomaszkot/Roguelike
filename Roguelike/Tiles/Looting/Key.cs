@@ -40,22 +40,17 @@ namespace Roguelike.Tiles.Looting
         kind = value; 
         if(kind == KeyKind.Chest)
           tag1 = "gold_chest_key";
-      } 
-    }
 
-    public override string PrimaryStatDescription
-    {
-      get
-      { 
-        if(kind == KeyKind.Room)
-          return "Opens door";
+        var desc = "";
+        if (kind == KeyKind.Room)
+          desc = "Opens door";
         else if (kind == KeyKind.BossRoom)
-          return "Opens special door";
+          desc = "Opens special door";
         else if (kind == KeyKind.Chest)
-          return "Opens chest";
+          desc = "Opens chest";
 
-        return "";
-      }
+        PrimaryStatDescription = desc;
+      } 
     }
 
     public bool Half { get; set; }

@@ -26,10 +26,7 @@ namespace Roguelike.Tiles.Looting
       Enchanter.Medium + "_claw",Enchanter.Medium+"_fang", 
       Enchanter.Small+"_claw", Enchanter.Small+"_fang" 
     };
-
-
-    public override string PrimaryStatDescription => primaryStatDescription;
-
+            
     static HunterTrophy()
     {
       PopulateProps(enhancmentPropsFang, EntityStatKind.Defense, EntityStatKind.ChanceToBulkAttack, EntityStatKind.MeleeAttackDamageReduction);
@@ -68,22 +65,22 @@ namespace Roguelike.Tiles.Looting
         case HunterTrophyKind.Fang:
           
           EnchantSrc = EnchantSrc.Fang;
-          primaryStatDescription = "Sharp, hard, ready to bite. ";
+          PrimaryStatDescription = "Sharp, hard, ready to bite. ";
           break;
         case HunterTrophyKind.Tusk:
           EnchantSrc = EnchantSrc.Tusk;
-          primaryStatDescription = "Big, sharp, ready to tear somebody apart. ";
+          PrimaryStatDescription = "Big, sharp, ready to tear somebody apart. ";
           break;
         case HunterTrophyKind.Claw:
           EnchantSrc = EnchantSrc.Claw;
-          primaryStatDescription = "Sharp, hard, ready to claw. ";
+          PrimaryStatDescription = "Sharp, hard, ready to claw. ";
           break;
         default:
           break;
       }
 
-      if(primaryStatDescription.Any())
-        primaryStatDescription += Strings.DropOnEnchantable;
+      if(PrimaryStatDescription.Any())
+        PrimaryStatDescription += Strings.DropOnEnchantable;
     }
        
 

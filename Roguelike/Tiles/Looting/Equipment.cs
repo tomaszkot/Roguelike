@@ -184,7 +184,7 @@ namespace Roguelike.Tiles
 
     protected virtual void SetPrimaryStatDesc()
     {
-      primaryStatDesc = primaryStat.Kind.ToString() + ": " + PrimaryStatValue;
+      PrimaryStatDescription = primaryStat.Kind.ToString() + ": " + PrimaryStatValue;
     }
 
     public float PrimaryStatValue
@@ -226,11 +226,6 @@ namespace Roguelike.Tiles
     internal bool IsBetter(Equipment currentEq)
     {
       return Price > currentEq.Price;
-    }
-
-    public override string PrimaryStatDescription
-    {
-      get { return primaryStatDesc; }
     }
 
     public static List<EntityStatKind> possibleChoicesWeapon = new List<EntityStatKind>() { EntityStatKind.Attack, EntityStatKind.ChanceToHit, EntityStatKind.ColdAttack,

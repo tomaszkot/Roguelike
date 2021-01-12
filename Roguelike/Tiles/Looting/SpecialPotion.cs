@@ -61,6 +61,7 @@ namespace Roguelike.Tiles.Looting
 
         //tag1 += "_"+size.ToString();maybe UI can scale ?
         Name = size.ToString().ToUpperFirstLetter() + " "+ Name;
+        PrimaryStatDescription = "Permamently increases " + GetDestStat();
       }
     }
     
@@ -98,15 +99,6 @@ namespace Roguelike.Tiles.Looting
     public EntityStatKind GetDestStat()
     {
       return SpecialPotionKind == SpecialPotionKind.Strength ? EntityStatKind.Strength : EntityStatKind.Magic;
-    }
-
-    public override string PrimaryStatDescription
-    {
-      get
-      {
-        var desc = "Permamently increases "+ GetDestStat();
-        return desc;
-      }
     }
 
     public SpecialPotionSize Size { get => size; set => size = value; }

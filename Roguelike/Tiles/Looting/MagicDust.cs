@@ -7,8 +7,6 @@ namespace Roguelike.Tiles.Looting
 {
   public class MagicDust : StackedLoot
   {
-    //public const string MagicDustGuid = "4fe06985-47d3-2b24-bddf-99a4af2b1dfc";
-
     public MagicDust()
     {
       Symbol = '&';
@@ -18,13 +16,7 @@ namespace Roguelike.Tiles.Looting
       tag1 = "magic_dust";
       Name = "Magic Dust";
       Price = 5;
-      //StackedInventoryId = new Guid(MagicDustGuid);
-      //Revealed = true;
-    }
-
-    public override string PrimaryStatDescription
-    {
-      get { return PartOfCraftingRecipe; }
+      PrimaryStatDescription = PartOfCraftingRecipe;
     }
   }
 }

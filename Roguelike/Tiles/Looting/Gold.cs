@@ -19,16 +19,12 @@ namespace Roguelike.Tiles.Looting
       Count = amount;
       LootKind = LootKind.Gold;
       collectedSound = "coin_collected";
+      PrimaryStatDescription = Count + " gold coins";
     }
 
     public Gold() : this(RandHelper.Random.Next(4, 8))
     {
       
-    }
-
-    public override string PrimaryStatDescription
-    {
-      get{ return Count + " gold coins"; }
     }
   }
 }

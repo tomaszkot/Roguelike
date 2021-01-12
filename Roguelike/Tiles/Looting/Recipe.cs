@@ -45,10 +45,9 @@ namespace Roguelike.Tiles.Looting
       
     }
 
-    public override string PrimaryStatDescription
+    void SetPrimaryStatDescription()
     {
-      get
-      {
+
         var desc = "";
         switch (Kind)
         {
@@ -85,8 +84,8 @@ namespace Roguelike.Tiles.Looting
           default:
             break;
         }
-        return desc;
-      }
+
+      PrimaryStatDescription = desc;
     }
 
     public override string[] GetExtraStatDescription()
@@ -174,7 +173,7 @@ namespace Roguelike.Tiles.Looting
             break;
         }
 
-        
+        SetPrimaryStatDescription();
 
       }
     }

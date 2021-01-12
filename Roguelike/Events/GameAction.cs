@@ -66,7 +66,7 @@ namespace Roguelike
       public ShorcutsBarActionKind Kind { get; set; }
     }
 
-    public enum InventoryActionKind { ItemAdded, ItemRemoved}
+    public enum InventoryActionKind { ItemAdded, ItemRemoved, DragDropDone}
     public enum InventoryActionDetailedKind { Unset, Collected, TradedDragDrop }
 
     public class InventoryAction : GameAction

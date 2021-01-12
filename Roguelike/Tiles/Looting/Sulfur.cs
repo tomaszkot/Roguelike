@@ -16,12 +16,8 @@ namespace Roguelike.Tiles.Looting
       tag1 = "sulfur";
       Name = "Sulfur Nugget";
       Price = 5;
+      PrimaryStatDescription = "Part of crafting recipe";
       //StackedInventoryId = new Guid(Guid);
-    }
-
-    public override string PrimaryStatDescription
-    {
-      get { return "Part of crafting recipe"; }
     }
   }
 }

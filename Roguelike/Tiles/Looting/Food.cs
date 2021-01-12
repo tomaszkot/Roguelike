@@ -138,7 +138,7 @@ namespace Roguelike.Tiles
 
       if (Kind == FoodKind.Plum)
       {
-        desc = "Sweat, delicious fruit";
+        desc = "Sweet, delicious fruit";
       }
       else if (Kind == FoodKind.Meat || Kind == FoodKind.Fish)
       {
@@ -148,11 +148,9 @@ namespace Roguelike.Tiles
           desc = "Raw yet nutritious piece of " + Kind.ToString().ToLower();
       }
       desc = GetConsumeDesc(desc);
-      primaryStatDesc = desc;
+      PrimaryStatDescription = desc;
     }
-
-    public override string PrimaryStatDescription => primaryStatDesc;
-
+        
     public override  string GetId()
     {
       return base.GetId() + "_" + Kind + "_"+ Roasted;

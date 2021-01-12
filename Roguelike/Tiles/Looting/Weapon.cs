@@ -74,7 +74,7 @@ namespace Roguelike.Tiles
 
     protected override void SetPrimaryStatDesc()
     {
-      primaryStatDesc = PrimaryStatKind.ToString() + ": " + GetDamageDescription();
+      PrimaryStatDescription = PrimaryStatKind.ToString() + ": " + GetDamageDescription();
     }
   }
 }

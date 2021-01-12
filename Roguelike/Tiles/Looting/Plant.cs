@@ -64,7 +64,7 @@ namespace Roguelike.Tiles
         desc = GetConsumeDesc("Eatable, sour plant");
         tag1 = "Sorrel";
       }
-      primaryStatDesc = desc;
+      PrimaryStatDescription = desc;
     }
 
     public override string GetId()
@@ -77,7 +77,7 @@ namespace Roguelike.Tiles
     //  return 10;// ConsumableHelper.GetStatIncrease(caller, this, 10);
     //}
 
-    public override string PrimaryStatDescription => primaryStatDesc;
+    //public override string PrimaryStatDescription => primaryStatDesc;
 
     //public EntityStatKind StatKind
     //{

@@ -15,15 +15,11 @@ namespace Roguelike.Tiles.Looting
       tag1 = "expl_cocktail";
       Name = "Explosive Cocktail";
       Price = 10;
-      //StackedInventoryId = new Guid(Guid);
+      PrimaryStatDescription = "Explodes hurting the victim and nearby entities with fire";
       //Kind = FightItemKind.ExplodePotion;
       //abilityKind = AbilityKind.ExplosiveMastering;
       //auxFactorName = "ChanceToBurnNeighbor";
     }
 
-    public override string PrimaryStatDescription
-    {
-      get { return "Explodes hurting the victim and nearby entities with fire"; }
-    }
   }
 }

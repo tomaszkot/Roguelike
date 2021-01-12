@@ -117,7 +117,7 @@ namespace Roguelike.Tiles.Looting
           break;
       }
 
-      primaryStatDesc = desc;
+      PrimaryStatDescription = desc;
     }
 
     //public bool EnemyRequired { get { return spell.EnemyRequired; } }
@@ -262,16 +262,5 @@ namespace Roguelike.Tiles.Looting
       return null;
     }
 
-    //public Scroll CloneAsScroll()
-    //{
-    //  return Clone() as Scroll;
-    //}
-
-    
-
-    public override string PrimaryStatDescription
-    {
-      get { return primaryStatDesc; }
-    }
   }
 }

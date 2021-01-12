@@ -40,6 +40,15 @@ namespace Roguelike.Tiles.Looting
         SetRandomKindAndLevelSize(gameLevel, kind == GemKind.Unset);
       else
         SetProps();
+
+      string desc = "Enchants equipment. ";
+      var allowInPlaceInventoryCrafting = true;
+      if (allowInPlaceInventoryCrafting)
+        desc += Strings.DropOnEnchantable;
+      else
+        desc += "Use it with the Enchant Equipment recipe on the Crafting Panel.";
+
+      PrimaryStatDescription = desc;
     }
 
     public void EnchantSrcFromGemKind()
@@ -164,22 +173,6 @@ namespace Roguelike.Tiles.Looting
       var skip = new[] { GemKind.Amber, kind, GemKind.Unset };
       var values = Enum.GetValues(typeof(GemKind)).Cast<GemKind>().Where(i => !skip.Contains(i)).ToList();
       return values.ToArray();
-    }
-
-    public override string PrimaryStatDescription
-    {
-      get
-      {
-        string desc = "Enchants equipment. ";
-        var allowInPlaceInventoryCrafting = true;
-        if (allowInPlaceInventoryCrafting)
-          desc += Strings.DropOnEnchantable; 
-        else
-          desc += "Use it with the Enchant Equipment recipe on the Crafting Panel.";
-
-
-        return desc;
-      }
     }
 
     int GetResistValue()

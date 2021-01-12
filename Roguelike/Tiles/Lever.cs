@@ -1,6 +1,4 @@
 ﻿using Dungeons.Core;
-using Dungeons.Tiles;
-using System;
 using System.Drawing;
 
 namespace Roguelike.Tiles
@@ -42,14 +40,10 @@ namespace Roguelike.Tiles
     {
       Symbol = ',';
       tag1 = "lever_part";
+      PrimaryStatDescription = "Part of a lever mechanism";
 #if ASCII_BUILD
       color = ConsoleColor.Blue;
 #endif
-    }
-
-    public override string PrimaryStatDescription
-    {
-      get { return "Part of a lever mechanism"; }
     }
   }
 }

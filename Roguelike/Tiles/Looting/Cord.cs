@@ -8,16 +8,13 @@ namespace Roguelike.Tiles.Looting
 {
   public class Cord : StackedLoot
   {
-    public string primaryStatDescription = Strings.PartOfCraftingRecipe;
-
-    public override string PrimaryStatDescription => primaryStatDescription;
-
     public Cord()
     {
       Price = 5;
       Symbol = '&';
       LootKind = LootKind.Other;
       tag1 = "cord";
+      PrimaryStatDescription = Strings.PartOfCraftingRecipe;
     }
   }
 }

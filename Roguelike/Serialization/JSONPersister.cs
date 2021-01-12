@@ -63,7 +63,7 @@ namespace Roguelike.Serialization
       try
       {
         var json = File.ReadAllText(filePath);
-        this.container.GetInstance<ILogger>().LogInfo("Engine_JsonDeserializer...");
+        //this.container.GetInstance<ILogger>().LogInfo("Engine_JsonDeserializer...");
         
         if (!IsValidJson(json))
         {

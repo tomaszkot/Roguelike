@@ -58,7 +58,9 @@ namespace Roguelike.Tiles.Looting
 
     protected string GetConsumeDesc(string desc)
     {
-      return desc + ", " + Strings.ConsumeDescPart;
+      if(Strings.ConsumeDescPart.Any())
+        return desc + ", " + Strings.ConsumeDescPart;
+      return desc;
     }
 
     public override LootStatInfo[] GetLootStatInfo(LivingEntity caller)
