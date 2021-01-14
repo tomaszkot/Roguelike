@@ -333,7 +333,20 @@ namespace Roguelike.Tiles
     {
       bool removed = from.Remove(eq);
       if (removed)
-        return SetEquipment(ek, eq, primary);
+      {
+        if (to.GetActiveEquipment()[ek] != null)
+        {
+          var prev = to.GetActiveEquipment()[ek];
+          if (!from.Add(prev))
+          {
+            Assert(false, "from.Add(prev)");
+            return false;
+          }
+        }
+        var set = SetEquipment(ek, eq, primary);
+
+        return set;
+      }
       else
       {
         bool reset = from.Add(eq);

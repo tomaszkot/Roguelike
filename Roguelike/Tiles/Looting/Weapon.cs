@@ -1,4 +1,5 @@
 ﻿using Roguelike.Attributes;
+using Roguelike.LootFactories;
 
 namespace Roguelike.Tiles
 {
@@ -31,9 +32,12 @@ namespace Roguelike.Tiles
       get => kind;
       set {
         kind = value;
-        if(kind == WeaponKind.Dagger || kind == WeaponKind.Sword || kind == WeaponKind.Axe ||
+        if (kind == WeaponKind.Dagger || kind == WeaponKind.Sword || kind == WeaponKind.Axe ||
           kind == WeaponKind.Scepter)
+        {
           this.collectedSound = "SWORD_Hit_Sword_RR9_mono";
+          Material = EquipmentMaterial.Bronze;
+        }
         else
           this.collectedSound = "none_steel_weapon_collected";
       } 
@@ -48,6 +52,19 @@ namespace Roguelike.Tiles
       {
         PrimaryStatValue = value;
       }
+    }
+
+    protected override void EnhanceStatsDueToMaterial(EquipmentMaterial material)
+    {
+      if (Material != material)//shall be already set
+        return;
+      var enh = 0;
+      if (material == EquipmentMaterial.Iron)
+        enh = MaterialProps.BronzeToIronMult;
+      else if (material == EquipmentMaterial.Steel)
+        enh = MaterialProps.BronzeToSteelMult;
+
+      Damage *= enh;
     }
 
     public bool StableDamage { get; set; } = false;

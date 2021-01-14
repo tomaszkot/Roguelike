@@ -16,8 +16,11 @@ namespace Roguelike.Tiles
     public int StatValue { get; set; }
   }
 
+  public enum EquipmentMaterial { Unset, Bronze, Iron, Steel }
+
   public class Equipment : Loot
   {
+    public EquipmentMaterial Material { get; set; }
     EquipmentKind kind;
     EntityStat primaryStat;
     EquipmentClass _class;
@@ -43,6 +46,45 @@ namespace Roguelike.Tiles
       EquipmentKind = kind;
       Class = EquipmentClass.Plain;
       LootKind = LootKind.Equipment;
+    }
+
+    public void SetMaterial(EquipmentMaterial material)
+    {
+      if (material == EquipmentMaterial.Iron ||
+         material == EquipmentMaterial.Steel)
+      {
+        if (this.Material != EquipmentMaterial.Bronze)
+        {
+          return;//TODO Assert
+        }
+      }
+
+      var eskToEnhance = EntityStatKind.Unset;
+      switch (EquipmentKind)
+      {
+        case EquipmentKind.Weapon:
+          eskToEnhance = EntityStatKind.Attack;
+          break;
+        //case EquipmentKind.Armor:
+        //case EquipmentKind.Helmet:
+        //case EquipmentKind.Shield:
+        //case EquipmentKind.Glove:
+        //  eskToEnhance = EntityStatKind.Defense;
+        //  break;
+        default:
+          break;
+      }
+
+      if (eskToEnhance != EntityStatKind.Unset)
+      {
+        this.Material = material;
+        EnhanceStatsDueToMaterial(material);
+      }
+    }
+
+    protected virtual void EnhanceStatsDueToMaterial(EquipmentMaterial material)
+    {
+      throw new Exception("EnhanceMaterial!");
     }
 
     public bool MakeEnchantable(int enchantSlotsToMake = 1)
@@ -298,7 +340,7 @@ namespace Roguelike.Tiles
 
     public void MakeMagic(bool magicOfSecondLevel = false)
     {
-      Debug.Assert(levelIndex >= 0);
+      //Debug.Assert(levelIndex >= 0);
       var toSkip = GetMagicStats().Select(i => i.Key).ToList();
       toSkip.AddRange(new[] { EntityStatKind.Unset, this.primaryStat.Kind });
 
@@ -420,7 +462,7 @@ namespace Roguelike.Tiles
 
     public override void HandleGenerationDone()
     {
-      Debug.Assert(this.MinDropDungeonLevel >= 0);
+      //Debug.Assert(this.MinDropDungeonLevel >= 0);
       //if (this.MinDropDungeonLevel >= 0) //set in SetPriceFromLevel
       //{
       //  if(this.MinDropDungeonLevel > 0)
@@ -488,6 +530,7 @@ namespace Roguelike.Tiles
     public void SetUnique(EntityStats lootStats, int lootLevel)
     {
       SetClass(EquipmentClass.Unique, lootLevel, lootStats);
+      Material = EquipmentMaterial.Unset;
     }
 
     public int MinDropDungeonLevel { get { return levelIndex; } }

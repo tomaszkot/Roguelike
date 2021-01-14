@@ -24,6 +24,15 @@ namespace RoguelikeUnitTests
       Assert.AreEqual(features[1], "Defense: +" + (BaseFactor+1) + "%");
     }
 
+
+    [Test]
+    public void TourLastingTest()
+    {
+      var game = CreateGame();
+      var spell = Scroll.CreateSpell(SpellKind.ManaShield, game.Hero) as ManaShieldSpell;
+      Assert.AreEqual(spell.TourLasting, 5);
+    }
+
     //[Test]
     //public void Test()
     //{
