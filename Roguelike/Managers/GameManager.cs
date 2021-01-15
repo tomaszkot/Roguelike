@@ -20,6 +20,7 @@ using System.Collections.Generic;
 using Roguelike.Spells;
 using Roguelike.History;
 using Roguelike.State;
+using Roguelike.LootFactories;
 
 namespace Roguelike.Managers
 {
@@ -91,6 +92,7 @@ namespace Roguelike.Managers
     public GameState GameState { get => gameState; }
     public SoundManager SoundManager { get; set; }
     public LevelGenerator LevelGenerator { get => levelGenerator; set => levelGenerator = value; }
+    public LootManager LootManager { get => lootManager; protected set => lootManager = value; }
 
     public GameManager(Container container)
     {
@@ -277,7 +279,12 @@ namespace Roguelike.Managers
     /// <returns></returns>
     public bool AddLootReward(Loot item, ILootSource lootSource, bool animated)
     {
-      return AddLootToNode(item, lootSource as Tile, animated);
+      if (item == null)
+        return false;
+      var res = AddLootToNode(item, lootSource as Tile, animated);
+      if(res)
+        item.Source = lootSource;
+      return res;
     }
 
     public bool AddLootToNode(Loot item, Tile lootSource, bool animated)
@@ -424,7 +431,12 @@ namespace Roguelike.Managers
 
     public virtual Loot TryGetRandomLootByDiceRoll(LootSourceKind lsk, int level)
     {
-      return LootGenerator.TryGetRandomLootByDiceRoll(lsk, level);
+      var loot = LootGenerator.TryGetRandomLootByDiceRoll(lsk, level);
+      //if (loot is Equipment eq)
+      //{
+      //  EnsureMaterialFromLootSource(eq);
+      //}
+      return loot;
     }
 
     public virtual void OnHeroPolicyApplied(Policies.Policy policy)
@@ -1026,5 +1038,22 @@ namespace Roguelike.Managers
     {
       return this.AlliesManager.Contains(le);
     }
+
+    public Loot GetBestLoot(EnemyPowerKind powerKind, int level, LootHistory lootHistory)
+    {
+      var loot = LootGenerator.GetBestLoot(powerKind, level, lootHistory);
+      //if (loot is Equipment eq)
+      //{
+      //   EnsureMaterialFromLootSource(eq);
+      //}
+      return loot;
+    }
+
+    public static bool IsMaterialAware(Equipment eq)
+    {
+      return eq.IsMaterialAware();
+    }
+
+    
   }
 }

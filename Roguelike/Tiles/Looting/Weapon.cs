@@ -26,17 +26,18 @@ namespace Roguelike.Tiles
         Kind == Weapon.WeaponKind.Staff;
     }
 
+
+
     public WeaponKind kind;
     public WeaponKind Kind
     {
       get => kind;
       set {
         kind = value;
-        if (kind == WeaponKind.Dagger || kind == WeaponKind.Sword || kind == WeaponKind.Axe ||
-          kind == WeaponKind.Scepter)
+        if (IsMaterialAware())
         {
           this.collectedSound = "SWORD_Hit_Sword_RR9_mono";
-          Material = EquipmentMaterial.Bronze;
+          SetMaterial(EquipmentMaterial.Bronze);
         }
         else
           this.collectedSound = "none_steel_weapon_collected";

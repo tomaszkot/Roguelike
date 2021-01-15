@@ -204,6 +204,8 @@ namespace Roguelike.Generators
       return eq;
     }
 
+    
+
     internal Loot TryGetRandomLootByDiceRoll(LootSourceKind lsk, int maxEqLevel)
     {
       //return null;
@@ -225,14 +227,15 @@ namespace Roguelike.Generators
         if (eqClass != EquipmentClass.Unset)
         {
           var item = GetRandomEquipment(eqClass, maxEqLevel);
-          //if (loot is Equipment)
-          {
-            if (item.LevelIndex < maxEqLevel)
-            {
-              int k = 0;
-              k++;
-            }
-          }
+         //if (item is Equipment eq)
+         // {
+         //   EnsureMaterialFromLootSource(eq);
+         //   if (item.LevelIndex < maxEqLevel)
+         //   {
+         //     //int k = 0;
+         //     //k++;
+         //   }
+         // }
           return item;
         }
       }
@@ -294,8 +297,13 @@ namespace Roguelike.Generators
       return eq;
     }
 
-    private static EquipmentKind GetPossibleEqKind()
+    public EquipmentKind ForcedEquipmentKind { get; set; }
+    private EquipmentKind GetPossibleEqKind()
     {
+      if (ForcedEquipmentKind != EquipmentKind.Unset)
+      {
+        return ForcedEquipmentKind;
+      }
       return RandHelper.GetRandomEnumValue<EquipmentKind>(new[] { EquipmentKind.Trophy, EquipmentKind.God, EquipmentKind.Unset });
     }
 

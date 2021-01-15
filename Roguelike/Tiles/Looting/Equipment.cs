@@ -50,15 +50,15 @@ namespace Roguelike.Tiles
 
     public void SetMaterial(EquipmentMaterial material)
     {
-      if (material == EquipmentMaterial.Iron ||
-         material == EquipmentMaterial.Steel)
-      {
-        if (this.Material != EquipmentMaterial.Bronze)
-        {
-          return;//TODO Assert
-        }
-      }
+      if (material == EquipmentMaterial.Unset)
+        return;
 
+      if (this.Material != EquipmentMaterial.Unset &&
+        this.Material != EquipmentMaterial.Bronze)
+      {
+        return;//TODO Assert
+      }
+      
       var eskToEnhance = EntityStatKind.Unset;
       switch (EquipmentKind)
       {
@@ -78,6 +78,7 @@ namespace Roguelike.Tiles
       if (eskToEnhance != EntityStatKind.Unset)
       {
         this.Material = material;
+        this.DisplayedName = material.ToDescription() + " " + Name.ToLower();
         EnhanceStatsDueToMaterial(material);
       }
     }
@@ -331,6 +332,19 @@ namespace Roguelike.Tiles
       }
       esk = RandHelper.GetRandomElem<EntityStatKind>(possibleChoices, skip);
       return esk;
+    }
+
+    public virtual bool IsMaterialAware()
+    {
+      if (Class == EquipmentClass.Unique)
+        return false;
+      if (this is Weapon wpn)
+      {
+        return wpn.Kind == Weapon.WeaponKind.Axe || wpn.Kind == Weapon.WeaponKind.Sword || wpn.Kind == Weapon.WeaponKind.Dagger ||
+          wpn.Kind == Weapon.WeaponKind.Scepter;
+      }
+
+      return false;
     }
 
     public void MakeMagic(EntityStatKind stat, int statValue, AddMagicStatReason reason = AddMagicStatReason.Unset)

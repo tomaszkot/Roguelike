@@ -24,6 +24,9 @@ namespace Roguelike.LootFactories
 
     public const int BronzeToIronMult = 2;
     public const int BronzeToSteelMult = 3;
+
+    public const int IronDropLootSrcLevel = 3;
+    public const int SteelDropLootSrcLevel = 4;
   }
 
   public class EquipmentFactory : AbstractLootFactory
@@ -242,6 +245,7 @@ namespace Roguelike.LootFactories
       return jew;
     }
 
+    
     private Jewellery AddRing(string asset, EntityStatKind sk, int minDropDungeonLevel,
       int statValue)
     {

@@ -1,5 +1,6 @@
 ﻿#define ASCII_BUILD  
 using Dungeons.Tiles;
+using Newtonsoft.Json;
 using Roguelike.Attributes;
 using Roguelike.Tiles.Abstract;
 using System;
@@ -255,6 +256,13 @@ namespace Roguelike.Tiles
     protected string PartOfCraftingRecipe
     {
       get { return "Part of a crafting recipe."; }
+    }
+
+    [JsonIgnore]
+    public ILootSource Source 
+    { 
+      get; 
+      internal set; 
     }
   }
 }

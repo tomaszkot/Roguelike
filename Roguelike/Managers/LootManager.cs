@@ -13,7 +13,7 @@ using System.Linq;
 
 namespace Roguelike.Managers
 {
-  class LootManager
+  public class LootManager
   {
     List<Loot> extraLoot = new List<Loot>();
     public GameManager GameManager { get; set; }
@@ -35,7 +35,7 @@ namespace Roguelike.Managers
     {
       var lootItems = new List<Loot>();
 
-      Loot debugLoot = null;// LootGenerator.GetLootByAsset("fire_ball_scroll"); 
+      Loot debugLoot = null;
       if(debugLoot != null)
         lootItems.Add(debugLoot);
 
@@ -91,8 +91,11 @@ namespace Roguelike.Managers
       }
 
       var loot = GameManager.TryGetRandomLootByDiceRoll(lsk, inter.Level);
-      if(loot!=null)
+      if (loot != null)
+      {
+        loot.Source = lootSource;
         lootItems.Add(loot);
+      }
       if (lootSource is Barrel)
       {
         bool repl = GameManager.ReplaceTile(loot, lootSource as Tile);
@@ -162,7 +165,8 @@ namespace Roguelike.Managers
       
       foreach (var extraLoot in extraLootItems)
       {
-        GameManager.AddLootReward(extraLoot, enemy, false);
+        if(extraLoot!=null)
+          GameManager.AddLootReward(extraLoot, enemy, false);
       }
 
       return loot;
@@ -176,7 +180,9 @@ namespace Roguelike.Managers
         loot = GameManager.LootGenerator.GetLootByAsset("Kafar");
       }
       else
-        loot =  GameManager.LootGenerator.GetBestLoot(enemy.PowerKind, enemy.Level, GameManager.GameState.History.Looting);
+      {
+        loot = GameManager.GetBestLoot(enemy.PowerKind, enemy.Level, GameManager.GameState.History.Looting);
+      }
       return loot;
     }
 
