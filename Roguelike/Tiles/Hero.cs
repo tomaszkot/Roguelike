@@ -67,7 +67,7 @@ namespace Roguelike.Tiles
       
       Dirty = true;//TODO
       Revealed = true;
-      
+            
 #if ASCII_BUILD
       color = ConsoleColor.Yellow;
 #endif

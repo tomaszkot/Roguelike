@@ -58,7 +58,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Abilities\AbilitiesSet.cs" />
     <Compile Include="Abilities\Ability.cs" />
+    <Compile Include="Abilities\LootAbility.cs" />
     <Compile Include="Abstract\IAdvancedEntity.cs" />
     <Compile Include="Abstract\IAlly.cs" />
     <Compile Include="Abstract\IDescriptable.cs" />

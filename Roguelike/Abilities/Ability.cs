@@ -174,26 +174,26 @@ namespace Roguelike.Abilities
     }
     public string LastIncError { get; set; }
 
-    public bool IncreaseLevel()
+    public bool IncreaseLevel(IAdvancedEntity entity)
     {
-      //LastIncError = "";
-      //if (Level == MaxLevel)
-      //{
-      //  LastIncError = "Max level of ability reached";
-      //  return false;
-      //}
-      //if (abilityLevelToPlayerLevel.ContainsKey(Level + 1))
-      //{
-      //  var lev = abilityLevelToPlayerLevel[Level + 1];
-      //  if (lev > GameManager.Instance.Hero.Character.Level)
-      //  {
-      //    LastIncError = "Required character level for ablility increase: " + lev;
-      //    return false;
-      //  }
-      //}
-      //Level++;
-      //SetStatsForLevel();
-      return false;
+      LastIncError = "";
+      if (Level == MaxLevel)
+      {
+        LastIncError = "Max level of ability reached";
+        return false;
+      }
+      if (abilityLevelToPlayerLevel.ContainsKey(Level + 1))
+      {
+        var lev = abilityLevelToPlayerLevel[Level + 1];
+        if (lev > entity.Level)
+        {
+          LastIncError = "Required character level for ablility increase: " + lev;
+          return false;
+        }
+      }
+      Level++;
+      SetStatsForLevel();
+      return true;
     }
 
     public float CalcFactor(bool primary)

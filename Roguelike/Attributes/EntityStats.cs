@@ -11,9 +11,9 @@ namespace Roguelike.Attributes
   public class EntityStats 
   {
     Dictionary<EntityStatKind, EntityStat> stats = new Dictionary<EntityStatKind, EntityStat>();
-    int level = 1;
+    //int level = 1;
     bool canAdvanceInExp = true;
-
+    
     public EntityStats()
     {
       var statKinds = Enum.GetValues(typeof(EntityStatKind));
@@ -182,8 +182,6 @@ namespace Roguelike.Attributes
         return this[EntityStatKind.Mana].CurrentValue;
       }
     }
-        
-    public int AbilityPoints { get; set; }
 
     public EntityStat GetStat(EntityStatKind esk)
     {
@@ -217,18 +215,18 @@ namespace Roguelike.Attributes
       }
     }
 
-    public int Level
-    {
-      get
-      {
-        return level;
-      }
+    //public int Level
+    //{
+    //  get
+    //  {
+    //    return level;
+    //  }
 
-      set
-      {
-        level = value;
-      }
-    }
+    //  set
+    //  {
+    //    level = value;
+    //  }
+    //}
         
     public void SetNominal(EntityStatKind kind, float value)
     {

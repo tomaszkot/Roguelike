@@ -16,6 +16,7 @@ using System.Windows.Markup;
 using SimpleInjector;
 using Roguelike.Abstract;
 using Roguelike.Discussions;
+using Roguelike.Abilities;
 
 namespace Roguelike.Tiles
 {
@@ -47,8 +48,7 @@ namespace Roguelike.Tiles
     public CurrentEquipment CurrentEquipment { get => currentEquipment; set => currentEquipment = value; }
     public event EventHandler<EntityStatKind> StatLeveledUp;
     public event EventHandler<int> GoldChanged;
-    //Character info
-    
+        
     public int Experience { get; private set; }
     public int NextLevelExperience { get; set; }
 
@@ -68,7 +68,23 @@ namespace Roguelike.Tiles
     int levelUpPoints = 0;
 
     Dictionary<SpellKind, int> coolingDownSpells = new Dictionary<SpellKind, int>();
-        
+    Abilities.AbilitiesSet abilities = new Abilities.AbilitiesSet();
+
+    public int AbilityPoints { get; set; } = 2;
+
+    public int LevelUpPoints
+    {
+      get
+      {
+        return levelUpPoints;
+      }
+
+      set
+      {
+        levelUpPoints = value;
+      }
+    }
+
     public AdvancedLivingEntity(Point point, char symbol) : base(point, symbol)
     {
     }
@@ -76,6 +92,25 @@ namespace Roguelike.Tiles
     public virtual bool IsSellable(Loot loot)
     {
       return loot.Price >= 0;
+    }
+
+    public bool IncreaseAbility(AbilityKind kind)
+    {
+      var ab = GetAbility(kind);
+      var increased = ab.IncreaseLevel(this);
+      if (increased)
+      {
+        AbilityPoints--;
+        RecalculateStatFactors(false);
+      }
+
+      return increased;
+    }
+
+    public Ability GetAbility(AbilityKind kind)
+    {
+      //Abilities.EnsureAbilities(false);
+      return Abilities.Items.Where(i => i.Kind == kind).SingleOrDefault();
     }
 
     public int GetPrice(Loot loot)
@@ -93,20 +128,7 @@ namespace Roguelike.Tiles
     {
       return new AdvancedLivingEntity(new Point(0, 0), '\0');
     }
-
-    public int LevelUpPoints
-    {
-      get
-      {
-        return levelUpPoints;
-      }
-
-      set
-      {
-        levelUpPoints = value;
-      }
-    }
-
+        
     public bool IncreaseExp(int factor)
     {
       bool leveledUp = false;
@@ -254,6 +276,7 @@ namespace Roguelike.Tiles
     public bool Dirty { get; set; }
     public int PrevLevelExperience { get; private set; }
     CurrentEquipment IEquipable.CurrentEquipment { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+    public Abilities.AbilitiesSet Abilities { get => abilities; set => abilities = value; }
 
     protected virtual void CreateInventory(Container cont)
     {
