@@ -115,9 +115,9 @@ namespace Roguelike
     public class InteractiveTileAction : GameAction
     {
       
-      public Tiles.InteractiveTile InvolvedTile { get; set; }
+      public Tiles.Interactive.InteractiveTile InvolvedTile { get; set; }
       public InteractiveActionKind InteractiveKind { get; set; }
-      public InteractiveTileAction(Tiles.InteractiveTile tile) { InvolvedTile = tile; }
+      public InteractiveTileAction(Tiles.Interactive.InteractiveTile tile) { InvolvedTile = tile; }
       public InteractiveTileAction() { }
     }
 

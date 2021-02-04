@@ -103,7 +103,7 @@ namespace Roguelike.Managers
         Logger.LogError("tile == null!!!");
         return InteractionResult.None;
       }
-      bool tileIsDoor = tile is Tiles.Door;
+      bool tileIsDoor = tile is Tiles.Interactive.Door;
       bool tileIsDoorBySumbol = tile.Symbol == Constants.SymbolDoor;
 
       if (tile is Enemy || tile is Dungeons.Tiles.Wall)
@@ -131,7 +131,7 @@ namespace Roguelike.Managers
       }
       else if (tileIsDoor || tileIsDoorBySumbol)
       {
-        var door = tile as Tiles.Door;
+        var door = tile as Tiles.Interactive.Door;
         if (door.Opened)
           return InteractionResult.None;
 
@@ -143,14 +143,14 @@ namespace Roguelike.Managers
         return opened ? InteractionResult.Handled : InteractionResult.None;
       }
 
-      else if (tile is Tiles.InteractiveTile it)
+      else if (tile is Tiles.Interactive.InteractiveTile it)
       {
         return HandleInteractionWithInteractive(it);
       }
       return InteractionResult.None;
     }
 
-    protected virtual InteractionResult HandleInteractionWithInteractive(Tiles.InteractiveTile tile)
+    protected virtual InteractionResult HandleInteractionWithInteractive(Tiles.Interactive.InteractiveTile tile)
     {
       if (tile is Stairs)
       {

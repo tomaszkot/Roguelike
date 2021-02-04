@@ -75,11 +75,11 @@ namespace RoguelikeUnitTests.Helpers
       game.GameManager.EnemiesManager.RemoveDead();
     }
 
-    public LootInfo TestInteractive<T>(Action<Roguelike.Tiles.InteractiveTile> init,
+    public LootInfo TestInteractive<T>(Action<Roguelike.Tiles.Interactive.InteractiveTile> init,
       int tilesToCreateCount = 50,
       int maxExpectedLootCount = 15,
       int maxExpectedUniqCount = 2) 
-      where T : Roguelike.Tiles.InteractiveTile, new()
+      where T : Roguelike.Tiles.Interactive.InteractiveTile, new()
     {
       var lootInfo = new LootInfo(game, null);
 
@@ -100,9 +100,9 @@ namespace RoguelikeUnitTests.Helpers
     public void AddThenDestroyInteractive<T>
     (
       int numberOfTilesToTest = 50,
-      Action<Roguelike.Tiles.InteractiveTile> init = null
+      Action<Roguelike.Tiles.Interactive.InteractiveTile> init = null
     ) 
-    where T : Roguelike.Tiles.InteractiveTile, new()
+    where T : Roguelike.Tiles.Interactive.InteractiveTile, new()
     {
       var createdTiles = new List<Tile>();
       for (int i = 0; i < numberOfTilesToTest; i++)
@@ -122,7 +122,7 @@ namespace RoguelikeUnitTests.Helpers
         var ni = Enemies.Where(e => e.State != EntityState.Idle).ToList();
 
         Assert.AreEqual(game.GameManager.Context.TurnOwner, TurnOwner.Hero);
-        test.InteractHeroWith(tile as Roguelike.Tiles.InteractiveTile);
+        test.InteractHeroWith(tile as Roguelike.Tiles.Interactive.InteractiveTile);
       }
     }
   }

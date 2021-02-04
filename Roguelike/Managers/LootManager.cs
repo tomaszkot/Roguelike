@@ -72,7 +72,7 @@ namespace Roguelike.Managers
     {
       GameManager.Logger.LogInfo("TryAddForNonEnemy lootSource.Level: " + lootSource.Level);
       var lootItems = new List<Loot>();
-      var inter = lootSource as Roguelike.Tiles.InteractiveTile;
+      var inter = lootSource as Roguelike.Tiles.Interactive.InteractiveTile;
       var lsk = LootSourceKind.Barrel;
       Chest chest = null;
       if (lootSource is Chest)

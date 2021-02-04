@@ -2,7 +2,7 @@
 using Dungeons.Core;
 using System.Drawing;
 
-namespace Roguelike.Tiles
+namespace Roguelike.Tiles.Interactive
 {
   
   public enum BarrelKind { Barrel, PileOfSkulls }

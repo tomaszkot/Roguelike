@@ -170,19 +170,19 @@ namespace Roguelike.Tiles
       coolingDownSpells[kind] = ActiveScroll.CreateSpell(this).CoolingDown;
     }
 
-    private void OnSpellUsed(Spell spell, Enemy targetEn)
-    {
-      ReduceMana(spell.ManaCost);
+    //private void OnSpellUsed(Spell spell, Enemy targetEn)
+    //{
+    //  ReduceMana(spell.ManaCost);
 
-      if (spell.CoolingDown > 0)
-      {
-        SetSpellCoolingDown(spell.Kind);
-      }
+    //  if (spell.CoolingDown > 0)
+    //  {
+    //    SetSpellCoolingDown(spell.Kind);
+    //  }
 
-      //TODO
-      //AppendAction(new ScrollAppliedAction() { Info = Hero.ActiveScroll + " used by " + Hero.Name, Kind = Hero.ActiveScroll.Kind, Spell = spell, Target = targetEn });
-      //HeroTurn = false;
-    }
+    //  //TODO
+    //  //AppendAction(new ScrollAppliedAction() { Info = Hero.ActiveScroll + " used by " + Hero.Name, Kind = Hero.ActiveScroll.Kind, Spell = spell, Target = targetEn });
+    //  //HeroTurn = false;
+    //}
 
     public void Consume(IConsumable consumable)
     {

@@ -492,11 +492,11 @@ namespace Roguelike.Managers
       var prevTile = CurrentNode.ReplaceTile(tile, point);
       if (prevTile != null)//this normally shall always be not null
       {
-        if (tile is Roguelike.Tiles.InteractiveTile)
+        if (tile is Tiles.Interactive.InteractiveTile)
         {
           AppendAction<InteractiveTileAction>((InteractiveTileAction ac) =>
           {
-            ac.InvolvedTile = tile as Roguelike.Tiles.InteractiveTile;
+            ac.InvolvedTile = tile as Tiles.Interactive.InteractiveTile;
             ac.InteractiveKind = InteractiveActionKind.AppendedToLevel;
           });
         }
@@ -515,7 +515,7 @@ namespace Roguelike.Managers
       var prevTile = node.ReplaceTile(replacer, point);
       if (prevTile != null)//this normally shall always be not null
       {
-        var it = prevTile as Tiles.InteractiveTile;
+        var it = prevTile as Tiles.Interactive.InteractiveTile;
         if (it != null)//barrel could be destroyed
         {
           if (it == positionSource)

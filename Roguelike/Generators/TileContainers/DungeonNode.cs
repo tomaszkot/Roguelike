@@ -49,7 +49,7 @@ namespace Roguelike.Generators.TileContainers
           //{
           //  int k = 0;
           //}
-          reveal = (tiles[row, col] is Wall) && (tiles[row, col] as Wall).IsSide || (tiles[row, col] is Roguelike.Tiles.Door);
+          reveal = (tiles[row, col] is Wall) && (tiles[row, col] as Wall).IsSide || (tiles[row, col] is Tiles.Interactive.Door);
         }
       }
 
@@ -59,7 +59,7 @@ namespace Roguelike.Generators.TileContainers
     public T SetTileAtRandomPosition<T>(int levelIndex, bool matchNodeIndex = true) where T : Tile, new()
     {
       var tile = new T();
-      var inter = tile as Roguelike.Tiles.InteractiveTile;
+      var inter = tile as Roguelike.Tiles.Interactive.InteractiveTile;
       if (inter != null)
         inter.Level = levelIndex;
       return SetTileAtRandomPosition(tile, matchNodeIndex) as T;

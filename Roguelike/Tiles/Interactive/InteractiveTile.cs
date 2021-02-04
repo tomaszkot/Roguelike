@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Roguelike.Abstract;
 
-namespace Roguelike.Tiles
+namespace Roguelike.Tiles.Interactive
 {
   public enum InteractiveTileKind
   {

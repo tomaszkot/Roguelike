@@ -2,7 +2,7 @@
 using System;
 using System.Drawing;
 
-namespace Roguelike.Tiles
+namespace Roguelike.Tiles.Interactive
 {
   public class Door : InteractiveTile, Dungeons.Tiles.IDoor  //Dungeons.Tiles.Door
   {

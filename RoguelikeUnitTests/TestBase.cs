@@ -205,7 +205,7 @@ namespace RoguelikeUnitTests
     { 
     }
 
-    public void InteractHeroWith(Roguelike.Tiles.InteractiveTile tile)
+    public void InteractHeroWith(InteractiveTile tile)
     {
       Game.GameManager.InteractHeroWith(tile);
       GotoNextHeroTurn(game);

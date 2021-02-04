@@ -153,7 +153,7 @@
     <Compile Include="Tiles\Abstract\IMovingDamager.cs" />
     <Compile Include="Tiles\AdvancedLivingEntity.cs" />
     <Compile Include="Tiles\Ally.cs" />
-    <Compile Include="Tiles\Barrel.cs" />
+    <Compile Include="Tiles\Interactive\Barrel.cs" />
     <Compile Include="Tiles\CrackedStone.cs" />
     <Compile Include="Tiles\Hound.cs" />
     <Compile Include="Tiles\Interactive\Portal.cs" />
@@ -162,12 +162,12 @@
     <Compile Include="Tiles\Looting\Enchanter.cs" />
     <Compile Include="Tiles\Looting\ExplosiveCocktail.cs" />
     <Compile Include="Tiles\Looting\Food.cs" />
-    <Compile Include="Tiles\InteractiveTile.cs" />
+    <Compile Include="Tiles\Interactive\InteractiveTile.cs" />
     <Compile Include="Tiles\Interactive\Chest.cs" />
     <Compile Include="Tiles\Looting\Gem.cs" />
     <Compile Include="Tiles\Looting\Hooch.cs" />
     <Compile Include="Tiles\Looting\Jewellery.cs" />
-    <Compile Include="Tiles\Lever.cs" />
+    <Compile Include="Tiles\Interactive\Lever.cs" />
     <Compile Include="Tiles\Looting\FightItem.cs" />
     <Compile Include="Tiles\Looting\Gold.cs" />
     <Compile Include="Tiles\Looting\MagicDust.cs" />
@@ -190,7 +190,7 @@
     <Compile Include="Generators\TileContainers\DungeonNode.cs" />
     <Compile Include="TileContainers\AbstractGameLevel.cs" />
     <Compile Include="Tiles\Looting\Armor.cs" />
-    <Compile Include="Tiles\Door.cs" />
+    <Compile Include="Tiles\Interactive\Door.cs" />
     <Compile Include="Tiles\Enemy.cs" />
     <Compile Include="Tiles\Looting\Equipment.cs" />
     <Compile Include="Tiles\Hero.cs" />
