@@ -69,30 +69,30 @@ namespace Roguelike.Abilities
             this.BeginTurnApply = true;
             psk = EntityStatKind.Mana;
             break;
-          //case AbilityKind.AxesMastering:
-          //  psk = EntityStatKind.ChanceToCauseTearApart;
-          //  ask = EntityStatKind.AxeExtraDamage;
-          //  break;
-          //case AbilityKind.BashingMastering:
-          //  psk = EntityStatKind.ChanceToCauseStunning;
-          //  ask = EntityStatKind.BashingExtraDamage;
-          //  break;
-          //case AbilityKind.DaggersMastering:
-          //  psk = EntityStatKind.ChanceToCauseBleeding;
-          //  ask = EntityStatKind.DaggerExtraDamage;
-          //  break;
-          //case AbilityKind.SwordsMastering:
-          //  psk = EntityStatKind.ChanceToHit;
-          //  ask = EntityStatKind.SwordExtraDamage;
-          //  break;
-          //case AbilityKind.MeleeDefender:
-          //  psk = EntityStatKind.ChanceToEvadeMeleeAttack;
-          //  ask = EntityStatKind.MeleeAttackDamageReduction;
-          //  break;
-          //case AbilityKind.MagicDefender:
-          //  psk = EntityStatKind.ChanceToEvadeMagicAttack;
-          //  ask = EntityStatKind.MagicAttackDamageReduction;
-          //  break;
+          case AbilityKind.AxesMastering:
+            psk = EntityStatKind.ChanceToCauseTearApart;
+            ask = EntityStatKind.AxeExtraDamage;
+            break;
+          case AbilityKind.BashingMastering:
+            psk = EntityStatKind.ChanceToCauseStunning;
+            ask = EntityStatKind.BashingExtraDamage;
+            break;
+          case AbilityKind.DaggersMastering:
+            psk = EntityStatKind.ChanceToCauseBleeding;
+            ask = EntityStatKind.DaggerExtraDamage;
+            break;
+          case AbilityKind.SwordsMastering:
+            psk = EntityStatKind.ChanceToHit;
+            ask = EntityStatKind.SwordExtraDamage;
+            break;
+          case AbilityKind.MeleeDefender:
+            psk = EntityStatKind.ChanceToEvadeMeleeAttack;
+            ask = EntityStatKind.MeleeAttackDamageReduction;
+            break;
+          case AbilityKind.MagicDefender:
+            psk = EntityStatKind.ChanceToEvadeMagicAttack;
+            ask = EntityStatKind.MagicAttackDamageReduction;
+            break;
           case AbilityKind.ExplosiveMastering:
           case AbilityKind.ThrowingWeaponsMastering:
           case AbilityKind.HuntingMastering:
@@ -104,28 +104,27 @@ namespace Roguelike.Abilities
             abilityLevelToPlayerLevel.Add(5, 11);//max level is about 13
             if (kind == AbilityKind.ThrowingWeaponsMastering)
             {
-              //ask = EntityStatKind.ChanceToCauseBleeding;
-
-              //Name = "Throwing Weapons Mastery";
+              ask = EntityStatKind.ChanceToCauseBleeding;
+              Name = "Throwing Weapons Mastery";
             }
             //if(kind == AbilityKind.HuntingMastering)
             //  psk = EntityStatKind.bl
             break;
           case AbilityKind.LootingMastering:
           case AbilityKind.StrikeBack:
-          //case AbilityKind.BulkAttack:
-          //  PageIndex = 1;
-          //  if (kind == AbilityKind.StrikeBack)
-          //  {
-          //    psk = EntityStatKind.ChanceToStrikeBack;
+          case AbilityKind.BulkAttack:
+            PageIndex = 1;
+            if (kind == AbilityKind.StrikeBack)
+            {
+              psk = EntityStatKind.ChanceToStrikeBack;
 
-          //  }
-          //  else if (kind == AbilityKind.BulkAttack)
-          //  {
-          //    psk = EntityStatKind.ChanceToBulkAttack;
+            }
+            else if (kind == AbilityKind.BulkAttack)
+            {
+              psk = EntityStatKind.ChanceToBulkAttack;
 
-          //  }
-          //  break;
+            }
+            break;
           default:
             break;
         }

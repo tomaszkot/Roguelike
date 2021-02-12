@@ -1,5 +1,6 @@
 ﻿using Dungeons.Core;
 using Newtonsoft.Json;
+using Roguelike.Abilities;
 using Roguelike.Attributes;
 using Roguelike.History;
 using Roguelike.LootFactories;
@@ -166,6 +167,17 @@ namespace Roguelike.Generators
         wpn.tag1 = "rusty_sword";
         wpn.Damage = 2;
         wpn.Name = "Rusty sword";
+        wpn.Kind = Weapon.WeaponKind.Sword;
+        return wpn;
+      }
+
+      if (loot == null && tileName == "axe")
+      {
+        var wpn = new Weapon();
+        wpn.tag1 = "axe";
+        wpn.Damage = 2;
+        wpn.Name = "Axe";
+        wpn.Kind = Weapon.WeaponKind.Axe;
         return wpn;
       }
 
@@ -176,6 +188,29 @@ namespace Roguelike.Generators
         wpn.Damage = 5;
         wpn.Name = "Gladius";
         wpn.Price *= 2;
+        wpn.Kind = Weapon.WeaponKind.Sword;
+        return wpn;
+      }
+
+      if (loot == null && tileName == "hammer")
+      {
+        var wpn = new Weapon();
+        wpn.tag1 = "hammer";
+        wpn.Damage = 5;
+        wpn.Name = "hammer";
+        wpn.Price *= 2;
+        wpn.Kind = Weapon.WeaponKind.Bashing;
+        return wpn;
+      }
+
+      if (loot == null && tileName == "war_dagger")
+      {
+        var wpn = new Weapon();
+        wpn.tag1 = "war_dagger";
+        wpn.Damage = 5;
+        wpn.Name = "War Dagger";
+        wpn.Price *= 2;
+        wpn.Kind = Weapon.WeaponKind.Dagger;
         return wpn;
       }
 
@@ -187,30 +222,34 @@ namespace Roguelike.Generators
       return GetLootByAsset(tileName) as T;
     }
 
-    public virtual Equipment GetRandomEquipment(int maxEqLevel)
+    public virtual Equipment GetRandomEquipment(int maxEqLevel, LootAbility ab)
     {
       var levelToUse = maxEqLevel > 0 ? maxEqLevel : (LevelIndex+1);
       
       if (levelToUse <= 0)
         Container.GetInstance<ILogger>().LogError("GetRandomEquipment levelToUse <=0!!!");
       var kind = GetPossibleEqKind();
-      return GetRandomEquipment(kind, levelToUse);
+      return GetRandomEquipment(kind, levelToUse, ab);
     }
 
-    public virtual Equipment GetRandomEquipment(EquipmentKind kind, int level)
+    public virtual Equipment GetRandomEquipment(EquipmentKind kind, int level, LootAbility ab = null)
     {
-      var eq = LootFactory.EquipmentFactory.GetRandom(kind, level);
+      var eqClass = EquipmentClass.Plain;
+      if (ab !=null && ab.ExtraChanceToGetMagicLoot > RandHelper.GetRandomDouble())
+        eqClass = EquipmentClass.Magic;
+      var eq = LootFactory.EquipmentFactory.GetRandom(kind, level, eqClass);
       //EnasureLevelIndex(eq);//level must be given by factory!
       return eq;
     }
 
     
 
-    internal Loot TryGetRandomLootByDiceRoll(LootSourceKind lsk, int maxEqLevel)
+    internal Loot TryGetRandomLootByDiceRoll(LootSourceKind lsk, int maxEqLevel, LootAbility ab)
     {
       //return null;
       LootKind lootKind = LootKind.Unset;
-      if (lsk == LootSourceKind.DeluxeGoldChest ||
+      if(
+        lsk == LootSourceKind.DeluxeGoldChest ||
         lsk == LootSourceKind.GoldChest
         )
       {
@@ -268,7 +307,7 @@ namespace Roguelike.Generators
     }
 
     protected LootHistory lootHistory;
-    public virtual Loot GetBestLoot(EnemyPowerKind powerKind, int level, LootHistory lootHistory)
+    public virtual Loot GetBestLoot(EnemyPowerKind powerKind, int level, LootHistory lootHistory, Abilities.LootAbility ab)
     {
       this.lootHistory = lootHistory;
       EquipmentClass eqClass = EquipmentClass.Plain;
@@ -277,7 +316,10 @@ namespace Roguelike.Generators
         eqClass = EquipmentClass.Unique;
       else if (powerKind == EnemyPowerKind.Champion)
       {
-        if (RandHelper.GetRandomDouble() > 0.75)
+        //var ab = hero.GetAbility(AbilityKind.LootingMastering) as LootAbility;
+        var threshold = 0.75f;
+        threshold -= ab.ExtraChanceToGetUniqueLoot;
+        if (RandHelper.GetRandomDouble() > threshold)
           eqClass = EquipmentClass.Unique;
         else
         {

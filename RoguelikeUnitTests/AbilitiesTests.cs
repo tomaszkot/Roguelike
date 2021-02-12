@@ -441,6 +441,7 @@ namespace RoguelikeUnitTests
       var statValue = Hero.Stats.GetCurrentValue(destStat);
       //wpn = game.LootDescriptionManager.GetEquipment(LootKind.Weapon, wpnName) as Weapon;
       wpn = game.GameManager.LootGenerator.GetLootByAsset(wpnName) as Weapon;
+      Assert.NotNull(wpn);
       Hero.SetEquipment(CurrentEquipmentKind.Weapon, wpn);
       var en = GetPlainEnemies().First();
       en.Stats.SetNominal(EntityStatKind.Health, 100);
@@ -456,6 +457,7 @@ namespace RoguelikeUnitTests
       {
         Hero.IncreaseAbility(kind);
         var ab = Hero.GetAbility(kind);
+        Assert.AreNotEqual(ab.PrimaryStat.Kind, EntityStatKind.Unset);
         AssertNextValue(i, ab, abVal, abValAux);
 
         abVal = GetFactor(ab, true);
@@ -469,7 +471,7 @@ namespace RoguelikeUnitTests
       var statValue1 = Hero.Stats.GetCurrentValue(destStat);
       Assert.Greater(statValue1, statValue);
 
-      var heroAttack1 = Hero.GetHitAttackValue(false);// Hero.Stats.Attack;
+      var heroAttack1 = Hero.GetHitAttackValue(false);
       var hav = Hero.GetHitAttackValue(false);
       Assert.Greater(heroAttack1, heroAttack);
       while (en.OnPhysicalHit(Hero) == 0)

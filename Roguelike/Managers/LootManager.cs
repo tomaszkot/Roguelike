@@ -202,7 +202,7 @@ namespace Roguelike.Managers
           }
           else
           {
-            var eq = LootGenerator.GetRandomEquipment(GameManager.Hero.Level);
+            var eq = LootGenerator.GetRandomEquipment(GameManager.Hero.Level, GameManager.Hero.GetLootAbility());
             if (eq.IsPlain())
             {
               eq.MakeEnchantable();
@@ -233,7 +233,7 @@ namespace Roguelike.Managers
       }
       if (primaryLoot is Gold)
       {
-        var loot = LootGenerator.TryGetRandomLootByDiceRoll(LootSourceKind.Enemy, lootSource.Level);
+        var loot = LootGenerator.TryGetRandomLootByDiceRoll(LootSourceKind.Enemy, lootSource.Level, GameManager.Hero.GetLootAbility());
         if (!(loot is Gold))
           extraLoot.Add(loot);
       }

@@ -313,7 +313,10 @@ namespace Roguelike
             return;
           }
           if (turnOwner == TurnOwner.Hero)
+          {
+            Hero.ApplyAbilities();
             Hero.ApplyLastingEffects();
+          }
         }
         //logger.LogInfo("to =>" + turnOwner);
       }

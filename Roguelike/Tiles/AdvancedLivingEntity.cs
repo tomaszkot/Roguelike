@@ -107,6 +107,11 @@ namespace Roguelike.Tiles
       return increased;
     }
 
+    public LootAbility GetLootAbility()
+    {
+      return GetAbility(AbilityKind.LootingMastering) as LootAbility;
+    }
+
     public Ability GetAbility(AbilityKind kind)
     {
       //Abilities.EnsureAbilities(false);
@@ -465,23 +470,43 @@ namespace Roguelike.Tiles
 
       var si = GetStrengthIncrease();
       Stats.AccumulateFactor(EntityStatKind.Attack, si);
-      //var abs = Abilities.GetItems();
-      //foreach (var ab in abs)
-      //{
-      //  if (!ab.BeginTurnApply)
-      //  {
-      //    if (ab.PrimaryStat.Kind != EntityStatKind.Unknown)
-      //    {
-      //      Stats.AccumulateFactor(ab.PrimaryStat.Kind, ab.PrimaryStat.Factor);
-      //      AddAuxStat(ab);
-      //    }
-      //  }
-      //}
+      var abs = Abilities.GetItems();
+      foreach (var ab in abs)
+      {
+        if (!ab.BeginTurnApply)
+        {
+          if (ab.PrimaryStat.Kind != EntityStatKind.Unset)
+          {
+            Stats.AccumulateFactor(ab.PrimaryStat.Kind, ab.PrimaryStat.Factor);
+            AddAuxStat(ab);
+          }
+        }
+      }
 
       AccumulateEqFactors(false);
 
       if (StatsRecalculated != null)
         StatsRecalculated(this, EventArgs.Empty);
+    }
+
+    private void AddAuxStat(Ability ab)
+    {
+      if (ab.AuxStat.Kind == EntityStatKind.AxeExtraDamage
+                      || ab.AuxStat.Kind == EntityStatKind.SwordExtraDamage
+                      || ab.AuxStat.Kind == EntityStatKind.BashingExtraDamage
+                      || ab.AuxStat.Kind == EntityStatKind.DaggerExtraDamage)
+      {
+        Stats.AccumulateFactor(ab.AuxStat.Kind, ab.AuxStat.Factor);
+      }
+      if (ab.Kind == AbilityKind.MagicDefender)
+      {
+        Stats.AccumulateFactor(EntityStatKind.MagicAttackDamageReduction, ab.AuxStat.Factor);
+      }
+      else if (ab.Kind == AbilityKind.MeleeDefender)
+      {
+        Stats.AccumulateFactor(EntityStatKind.MeleeAttackDamageReduction, ab.AuxStat.Factor);
+      }
+
     }
 
     protected virtual float GetStrengthIncrease()
@@ -524,6 +549,36 @@ namespace Roguelike.Tiles
       this.HasUrgentTopic = ut;
       if(UrgentTopicChanged!=null)
         UrgentTopicChanged(this, HasUrgentTopic);
+    }
+
+    public virtual void ApplyAbilities()
+    {
+      var toApply = Abilities.GetItems().Where(i => i.BeginTurnApply && i.Level > 0).ToList();
+      foreach (var ab in toApply)
+      {
+        if (ab.Kind == AbilityKind.RestoreHealth ||
+          ab.Kind == AbilityKind.RestoreMana)
+        {
+          var entityStatKind = EntityStatKind.Unset;
+
+          if (ab.Kind == AbilityKind.RestoreHealth)
+          {
+            entityStatKind = EntityStatKind.Health;
+          }
+          else
+            entityStatKind = EntityStatKind.Mana;
+          var stat = Stats.Stats[entityStatKind];
+          var factor = stat.Value.Subtracted;
+
+          if (factor > 0 && Math.Abs(factor) > 0.001)
+          {
+            var inc = ab.PrimaryStat.Factor;
+            var val = stat.Value.Nominal * inc / 100f;
+            Stats.IncreaseStatFactor(entityStatKind, val);
+            //GameManager.Instance.AppendDiagnosticsUnityLog("restored " + entityStatKind + " " + val);
+          }
+        }
+      }
     }
   }
 }

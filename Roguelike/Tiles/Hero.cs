@@ -160,11 +160,11 @@ namespace Roguelike.Tiles
         if (weapons2Esk.ContainsKey(wpn.Kind))
         {
           var esk = weapons2Esk[wpn.Kind];
-          //var ab = Abilities.GetByEntityStatKind(esk, false);
-          //if (ab != null)
-          //{
-          //  att += (att * ab.AuxStat.Factor / 100f);
-          //}
+          var ab = Abilities.GetByEntityStatKind(esk, false);
+          if (ab != null)
+          {
+            att += (att * ab.AuxStat.Factor / 100f);
+          }
         }
         //Abilities.GetFightItem
         //if (ab.AuxStat.Kind == EntityStatKind.AxeExtraDamage && wpn.Kind == Weapon.WeaponKind.Axe

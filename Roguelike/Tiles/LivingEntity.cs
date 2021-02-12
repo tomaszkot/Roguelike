@@ -807,5 +807,7 @@ namespace Roguelike.Tiles
     }
 
     public virtual void PlayAllySpawnedSound() { }
+
+    
   }
 }

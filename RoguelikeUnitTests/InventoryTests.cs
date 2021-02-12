@@ -141,7 +141,7 @@ namespace RoguelikeUnitTests
       Assert.True(hero.Inventory.Add(scroll));
       Assert.True(hero.Inventory.Contains(scroll));
 
-      var wpn = game.GameManager.LootGenerator.GetRandomEquipment(EquipmentKind.Weapon, 1);
+      var wpn = game.GameManager.LootGenerator.GetRandomEquipment(EquipmentKind.Weapon, 1, null);
       Assert.IsFalse(wpn.GetMagicStats().Any());
       wpn.MakeMagic();
       Assert.False(wpn.GetMagicStats().Any());

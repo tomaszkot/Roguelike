@@ -406,7 +406,7 @@ namespace Roguelike.Crafting
       var lks = Equipment.GetPossibleLootKindsForCrafting().ToList();
       var destLk = RandHelper.GetRandomElem<EquipmentKind>(lks, new EquipmentKind[] { srcLootKind });
       var lootGenerator = container.GetInstance<LootGenerator>();
-      var destEq = lootGenerator.GetRandomEquipment(destLk, srcEq.MinDropDungeonLevel);
+      var destEq = lootGenerator.GetRandomEquipment(destLk, srcEq.MinDropDungeonLevel, null);
       if (srcEq.Class == EquipmentClass.Magic)
       {
         destEq.SetClass(EquipmentClass.Magic, srcEq.MinDropDungeonLevel, null, srcEq.IsSecondMagicLevel);

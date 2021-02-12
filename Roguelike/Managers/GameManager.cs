@@ -431,7 +431,7 @@ namespace Roguelike.Managers
 
     public virtual Loot TryGetRandomLootByDiceRoll(LootSourceKind lsk, int level)
     {
-      var loot = LootGenerator.TryGetRandomLootByDiceRoll(lsk, level);
+      var loot = LootGenerator.TryGetRandomLootByDiceRoll(lsk, level, Hero.GetLootAbility());
       //if (loot is Equipment eq)
       //{
       //  EnsureMaterialFromLootSource(eq);
@@ -692,7 +692,7 @@ namespace Roguelike.Managers
 
     public virtual Equipment GenerateRandomEquipment(EquipmentKind kind)
     {
-      return lootGenerator.GetRandomEquipment(kind, Hero.Level);
+      return lootGenerator.GetRandomEquipment(kind, Hero.Level, Hero.GetLootAbility());
     }
 
     public void MakeGameTick()
@@ -847,7 +847,7 @@ namespace Roguelike.Managers
         int attemptTries = 0;
         while (count < breakCount)
         {
-          var eq = lootGenerator.GetRandomEquipment(eqKind, levelIndex);
+          var eq = lootGenerator.GetRandomEquipment(eqKind, levelIndex, merch.GetLootAbility());
           if (eq != null && !merch.Inventory.Items.Any(i => i.tag1 == eq.tag1))
           {
             if (eq.Class == EquipmentClass.Unique)
@@ -1041,7 +1041,7 @@ namespace Roguelike.Managers
 
     public Loot GetBestLoot(EnemyPowerKind powerKind, int level, LootHistory lootHistory)
     {
-      var loot = LootGenerator.GetBestLoot(powerKind, level, lootHistory);
+      var loot = LootGenerator.GetBestLoot(powerKind, level, lootHistory, Hero.GetAbility(Abilities.AbilityKind.LootingMastering) as Abilities.LootAbility);
       //if (loot is Equipment eq)
       //{
       //   EnsureMaterialFromLootSource(eq);

@@ -39,7 +39,7 @@ namespace RoguelikeUnitTests
         Assert.AreNotEqual(hero.Point, pt);
         gameNode.SetTile(hero, pt.Value);
 
-        eq = game.GameManager.LootGenerator.GetRandomEquipment(1);
+        eq = game.GameManager.LootGenerator.GetRandomEquipment(1, null);
         game.GameManager.GameState.History.Looting.GeneratedLoot.Add(new LootHistoryItem(eq));
         gameLevel = game.Level;
         heroPoint = hero.Point;
