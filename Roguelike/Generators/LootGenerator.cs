@@ -262,7 +262,7 @@ namespace Roguelike.Generators
 
       if (lootKind == LootKind.Equipment)
       {
-        var eqClass = Probability.RollDice(lsk);
+        var eqClass = Probability.RollDice(lsk, ab);
         if (eqClass != EquipmentClass.Unset)
         {
           var item = GetRandomEquipment(eqClass, maxEqLevel);

@@ -1,4 +1,5 @@
 ﻿using Dungeons.Core;
+using Roguelike.Abilities;
 using Roguelike.Tiles;
 using System;
 using System.Collections.Generic;
@@ -61,9 +62,14 @@ namespace Roguelike.Probability
       return lk;
     }
 
-    public EquipmentClass RollDice(LootSourceKind lsk)
+    public EquipmentClass RollDice(LootSourceKind lsk, LootAbility ab)
     {
-      return equipmentClassChances[lsk].RollDice(EquipmentClass.Unset, new EquipmentClass[]{ });
+      var chance = equipmentClassChances[lsk];
+      var chanceClone = chance.Clone(1);
+      chanceClone.SetValue(EquipmentClass.Magic, chanceClone.GetValue(EquipmentClass.Magic) + ab.ExtraChanceToGetMagicLoot);
+      var eqClass = chanceClone.RollDice(EquipmentClass.Unset, new EquipmentClass[] { });
+      return eqClass;
+      //ab.ExtraChanceToGetMagicLoot
     }
 
   }
