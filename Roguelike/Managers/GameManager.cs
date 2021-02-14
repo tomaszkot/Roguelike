@@ -113,7 +113,10 @@ namespace Roguelike.Managers
 
       Context = container.GetInstance<GameContext>();
       Context.EventsManager = EventsManager;
-      Context.AttackPolicyDone += () => { RemoveDeadEnemies(); };
+      Context.AttackPolicyDone += () => 
+      { 
+        RemoveDead(); 
+      };
 
       enemiesManager = new EnemiesManager(Context, EventsManager, Container, null);
       AlliesManager = new AlliesManager(Context, EventsManager, Container, enemiesManager);
@@ -326,9 +329,11 @@ namespace Roguelike.Managers
         Context.MoveToNextTurnOwner();
     }
 
-    private void RemoveDeadEnemies()
+    private void RemoveDead()
     {
       EnemiesManager.RemoveDead();
+      if (!Hero.Alive)//strike back of enemy could kill hero
+        Context.ReportHeroDeath();
     }
 
     public T GetCurrentNode<T>() where T : AbstractGameLevel
@@ -467,7 +472,7 @@ namespace Roguelike.Managers
         }
       }
       if (policy is AttackPolicy || policy is SpellCastPolicy)
-        RemoveDeadEnemies();
+        RemoveDead();
       context.IncreaseActions(TurnOwner.Hero);
 
       //  Logger.LogInfo("OnHeroPolicyApplied MoveToNextTurnOwner");

@@ -88,10 +88,12 @@ namespace Roguelike
           if (target is LivingEntity le && le.Alive)
           {
             var sb = le.GetTotalValue(EntityStatKind.ChanceToStrikeBack);
-            //if (sb > 0)
+            if (sb > 0)
             {
-              //if (sb / 100f > RandHelper.GetRandomDouble())
+              if (sb / 100f > RandHelper.GetRandomDouble())
               {
+                EventsManager.AppendAction(new LivingEntityAction(LivingEntityActionKind.StrikedBack)
+                { Info = target.Name + " used ability Strike Back", Level = ActionLevel.Important });
                 ApplyPhysicalAttackPolicy(le, attacker, (p) => 
                 {
                   if (AttackPolicyDone != null)
