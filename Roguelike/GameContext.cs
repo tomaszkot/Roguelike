@@ -2,6 +2,7 @@
 using Dungeons.Tiles;
 using Newtonsoft.Json;
 using Roguelike.Abstract;
+using Roguelike.Attributes;
 using Roguelike.Events;
 using Roguelike.Managers;
 using Roguelike.Policies;
@@ -58,6 +59,7 @@ namespace Roguelike
     //actions (move, attack) count in turn - typically 1
     Dictionary<TurnOwner, int> turnActionsCount = new Dictionary<TurnOwner, int>();
     public Action<Policy, LivingEntity , Tile > AttackPolicyInitializer;
+    public Action AttackPolicyDone;
 
     public GameContext(Container container)
     {
@@ -79,7 +81,26 @@ namespace Roguelike
 
       if (AttackPolicyInitializer != null)
         AttackPolicyInitializer(attackPolicy, attacker, target);
-      attackPolicy.OnApplied += (s, e) => AfterApply(e);
+      attackPolicy.OnApplied +=
+        (s, e) =>
+        {
+          AfterApply(e);
+          if (target is LivingEntity le && le.Alive)
+          {
+            var sb = le.GetTotalValue(EntityStatKind.ChanceToStrikeBack);
+            //if (sb > 0)
+            {
+              //if (sb / 100f > RandHelper.GetRandomDouble())
+              {
+                ApplyPhysicalAttackPolicy(le, attacker, (p) => 
+                {
+                  if (AttackPolicyDone != null)
+                    AttackPolicyDone();
+                });
+              }
+            }
+          }
+        };
       attackPolicy.Apply(attacker, target);
     }
 

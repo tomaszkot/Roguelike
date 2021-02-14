@@ -113,6 +113,7 @@ namespace Roguelike.Managers
 
       Context = container.GetInstance<GameContext>();
       Context.EventsManager = EventsManager;
+      Context.AttackPolicyDone += () => { RemoveDeadEnemies(); };
 
       enemiesManager = new EnemiesManager(Context, EventsManager, Container, null);
       AlliesManager = new AlliesManager(Context, EventsManager, Container, enemiesManager);

@@ -18,7 +18,7 @@ namespace RoguelikeUnitTests
     const int MaxAbilityInc = 5;
 
     [Test]
-    public void TestBulkAttack()
+    public void TestBulkAttackForced()
     {
       var game = CreateGame();
       var empOnes = game.GameManager.CurrentNode.GetEmptyNeighborhoodTiles(game.GameManager.Hero, false);
@@ -71,7 +71,27 @@ namespace RoguelikeUnitTests
     [Test]
     public void TestStrikeBack()
     {
-      //AbilityKind.StrikeBack
+      var game = CreateGame();
+      var empOnes = game.GameManager.CurrentNode.GetEmptyNeighborhoodTiles(game.GameManager.Hero, false);
+      Assert.Greater(empOnes.Count, 1);
+      var enemies = AllEnemies;
+      float en1Health = enemies[0].Stats.Health;
+      game.GameManager.CurrentNode.SetTile(enemies[0], empOnes[0].Point);
+
+      var ab = game.GameManager.Hero.GetAbility(AbilityKind.StrikeBack);
+      for (int i = 0; i < 5; i++)
+        ab.IncreaseLevel(game.Hero);
+
+      game.Hero.RecalculateStatFactors(false);
+      var sb = game.Hero.GetTotalValue(EntityStatKind.ChanceToStrikeBack);
+
+      for (int i = 0; i < 20; i++)
+      {
+        game.GameManager.Context.ApplyPhysicalAttackPolicy(enemies[0], game.Hero, (p) => { });
+        //GotoNextHeroTurn();
+      }
+
+      Assert.Greater(en1Health, enemies[0].Stats.Health);
     }
 
     [Test]
