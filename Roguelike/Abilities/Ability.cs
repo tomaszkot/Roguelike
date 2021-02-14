@@ -105,7 +105,7 @@ namespace Roguelike.Abilities
             if (kind == AbilityKind.ThrowingWeaponsMastering)
             {
               ask = EntityStatKind.ChanceToCauseBleeding;
-              Name = "Throwing Weapons Mastery";
+              Name = "Throwing Mastery";
             }
             //if(kind == AbilityKind.HuntingMastering)
             //  psk = EntityStatKind.bl
@@ -159,7 +159,7 @@ namespace Roguelike.Abilities
 
     void SetName()
     {
-      var nameToDisplay = Kind.ToString();
+      var nameToDisplay = Kind.ToDescription();
       nameToDisplay = nameToDisplay.Replace("Restore", "Restore ");
       nameToDisplay = nameToDisplay.Replace("Mastering", " Mastery");
       nameToDisplay = nameToDisplay.Replace("Defender", " Defender");

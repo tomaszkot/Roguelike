@@ -70,7 +70,7 @@ namespace Roguelike.Tiles
     Dictionary<SpellKind, int> coolingDownSpells = new Dictionary<SpellKind, int>();
     Abilities.AbilitiesSet abilities = new Abilities.AbilitiesSet();
 
-    public int AbilityPoints { get; set; } = 2;
+    public int AbilityPoints { get; set; } = 10;
 
     public int LevelUpPoints
     {
