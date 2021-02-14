@@ -22,7 +22,7 @@ namespace Roguelike.Tiles
     //public int Level { get; set; } = 1;
     public PrefferedFightStyle PrefferedFightStyle { get; set; }//= PrefferedFightStyle.Magic;
 
-    public static readonly EntityStat BaseAttack = new EntityStat(EntityStatKind.Attack, 10f*20);
+    public static readonly EntityStat BaseAttack = new EntityStat(EntityStatKind.Attack, 10);
     public static readonly EntityStat BaseHealth = new EntityStat(EntityStatKind.Health, 12);
     public static readonly EntityStat BaseDefence = new EntityStat(EntityStatKind.Defense, 5);
     public static readonly EntityStat BaseMana = new EntityStat(EntityStatKind.Mana, 4);
