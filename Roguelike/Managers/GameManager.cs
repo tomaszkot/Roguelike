@@ -21,6 +21,7 @@ using Roguelike.Spells;
 using Roguelike.History;
 using Roguelike.State;
 using Roguelike.LootFactories;
+using Roguelike.Attributes;
 
 namespace Roguelike.Managers
 {
@@ -448,20 +449,68 @@ namespace Roguelike.Managers
       else if (policy.Kind == PolicyKind.Attack)
       {
         HandlePolicyApplied(policy);
+        if (HeroBulkAttackTargets == null)
+        {
+          var ap = policy as AttackPolicy;
+          var en = ap.Victim as Enemy;
+          if (en != null)
+          {
+            GetBulkAttackTarget(ap.Victim as Enemy);
+            if (HeroBulkAttackTargets.Any())
+            {
+              var target = HeroBulkAttackTargets.First();
+              HeroBulkAttackTargets.Remove(target);
+              context.ApplyPhysicalAttackPolicy(Hero, target, (p)=> { });
+            }
+          }
+        }
       }
       if (policy is AttackPolicy || policy is SpellCastPolicy)
         RemoveDeadEnemies();
       context.IncreaseActions(TurnOwner.Hero);
 
       //  Logger.LogInfo("OnHeroPolicyApplied MoveToNextTurnOwner");
+      HeroBulkAttackTargets = null;
       context.MoveToNextTurnOwner();
+    }
+
+    public List<Enemy> HeroBulkAttackTargets { get; set; }
+
+    LivingEntity GetBulkAttackTarget(Enemy lastTarget)
+    {
+      HeroBulkAttackTargets = new List<Enemy>();
+      LivingEntity target = null;
+      var hero = Hero;
+      var sb = hero.GetTotalValue(EntityStatKind.ChanceToBulkAttack);
+      //sb = 100.0f;
+      if (sb > 0)
+      {
+        var fac = sb;// sb.GetFactor(true);
+        if (fac / 100f > RandHelper.GetRandomDouble())
+        {
+          HeroBulkAttackTargets = CurrentNode.GetNeighborTiles<Enemy>(hero)
+          .Where(i => i != lastTarget && !i.HeroAlly)
+          .ToList();
+
+          if (HeroBulkAttackTargets.Any())
+            AppendAction(new LivingEntityAction(LivingEntityActionKind.BulkAttack)
+            { Info = hero.Name + " used ability Bulk Attack", Level = ActionLevel.Important });
+        }
+      }
+
+      return target;
     }
 
     public void OnHeroPolicyApplied(object sender, Policies.Policy policy)
     {
       OnHeroPolicyApplied(policy);
     }
-        
+
+    public void AppendAction(GameAction ac)
+    {
+      this.EventsManager.AppendAction(ac);
+    }
+
     public void AppendAction<T>(Action<T> init) where T : GameAction, new()
     {
       var action = new T();

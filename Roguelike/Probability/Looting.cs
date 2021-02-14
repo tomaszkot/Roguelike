@@ -43,11 +43,11 @@ namespace Roguelike.Probability
       equipmentClassChances[lootSource] = lc;
     }
 
-    public LootKind RollDiceForKind(LootSourceKind lsk)
+    public LootKind RollDiceForKind(LootSourceKind lsk, LootAbility ab)
     {
-      var chance = lootKindChances[lsk];
-      //LootKind.Other
-      var lk  = chance.RollDice(LootKind.Unset, new LootKind[] {LootKind.Seal, LootKind.SealPart });
+      var chance = lootKindChances[lsk]; 
+       //LootKind.Other
+       var lk  = chance.RollDice(LootKind.Unset, new LootKind[] {LootKind.Seal, LootKind.SealPart }, ab.ExtraChanceToAnyLoot);
       if (lk != LootKind.Gold && lk != LootKind.Equipment && lk != LootKind.Unset)
       {
         int k = 0;
@@ -69,7 +69,6 @@ namespace Roguelike.Probability
       chanceClone.SetValue(EquipmentClass.Magic, chanceClone.GetValue(EquipmentClass.Magic) + ab.ExtraChanceToGetMagicLoot);
       var eqClass = chanceClone.RollDice(EquipmentClass.Unset, new EquipmentClass[] { });
       return eqClass;
-      //ab.ExtraChanceToGetMagicLoot
     }
 
   }

@@ -30,32 +30,35 @@ namespace Roguelike
 
       public GameContext Context { get => context; set => context = value; }
 
-      public bool AttackIfPossible(LivingEntity enemy, LivingEntity hero)
+      public bool AttackIfPossible(LivingEntity attacker, LivingEntity target)
       {
-        if (!enemy.CanAttack)
+        if (!attacker.CanAttack)
           return false;
 
-        if (MakeNonPhysicalMove(enemy, hero))
+        if (MakeNonPhysicalMove(attacker, target))
           return true;
 
-        var enemyCasted = enemy as Enemy;
-        if (enemyCasted.PrefferedFightStyle == PrefferedFightStyle.Magic)
+        var enemyCasted = attacker as Enemy;
+        if (enemyCasted != null)
         {
-          if (enemyCasted.DistanceFrom(hero) < 8)//TODO
+          if (enemyCasted.PrefferedFightStyle == PrefferedFightStyle.Magic)
           {
-            var scroll = new Scroll(Spells.SpellKind.FireBall);
-            Context.ApplySpellAttackPolicy(enemy, hero, scroll, null,
-              (p) => { OnPolicyApplied(p); }
-            );
+            if (attacker.DistanceFrom(target) < 8)//TODO
+            {
+              var scroll = new Scroll(Spells.SpellKind.FireBall);
+              Context.ApplySpellAttackPolicy(attacker, target, scroll, null,
+                (p) => { OnPolicyApplied(p); }
+              );
 
-            return true;
+              return true;
+            }
           }
         }
 
-        var victim = GetPhysicalAttackVictim(enemy, hero);
+        var victim = GetPhysicalAttackVictim(attacker, target);
         if (victim != null)
         {
-          var enCasted = enemy as Enemy;
+          var enCasted = attacker as Enemy;
           if (enCasted != null)
           {
             if (TurnOnSpecialSkill(enCasted, victim))
@@ -68,7 +71,7 @@ namespace Roguelike
 
           if (Context != null)
           {
-            Context.ApplyPhysicalAttackPolicy(enemy, hero, (pol) =>
+            Context.ApplyPhysicalAttackPolicy(attacker, target, (pol) =>
             {
               OnPolicyApplied(pol);
             }

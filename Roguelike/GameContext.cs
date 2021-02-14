@@ -263,7 +263,7 @@ namespace Roguelike
         TurnActionsCount[TurnOwner.Hero] = 0;
         turnCounts[TurnOwner.Hero]++;
         TurnOwner = TurnOwner.Allies;
-
+        
       }
       else if (turnOwner == TurnOwner.Allies)
       {
@@ -283,8 +283,6 @@ namespace Roguelike
 
       if (TurnOwnerChanged != null)
         TurnOwnerChanged(this, turnOwner);
-
-      
     }
 
     public bool HeroTurn

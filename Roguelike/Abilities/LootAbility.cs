@@ -80,7 +80,7 @@ namespace Roguelike.Abilities
       val /= 2;
       val *= 1 / 100f;
 
-      ExtraChanceToAnyLoot = val;
+      ExtraChanceToAnyLoot = val *3/2;
       ExtraChanceToGetMagicLoot = val * 2 / 3;
       ExtraChanceToGetUniqueLoot = ExtraChanceToGetMagicLoot * 2 / 3;
 

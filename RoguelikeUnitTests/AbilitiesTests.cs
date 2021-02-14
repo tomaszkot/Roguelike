@@ -1,4 +1,5 @@
-﻿using NUnit.Framework;
+﻿using Dungeons.Tiles;
+using NUnit.Framework;
 using Roguelike.Abilities;
 using Roguelike.Attributes;
 using Roguelike.Policies;
@@ -17,6 +18,63 @@ namespace RoguelikeUnitTests
     const int MaxAbilityInc = 5;
 
     [Test]
+    public void TestBulkAttack()
+    {
+      var game = CreateGame();
+      var empOnes = game.GameManager.CurrentNode.GetEmptyNeighborhoodTiles(game.GameManager.Hero, false);
+      Assert.Greater(empOnes.Count, 1);
+      float en1Health = AllEnemies[0].Stats.Health;
+      float en2Health = AllEnemies[1].Stats.Health;
+      for (int i = 0; i < 2; i++)
+      {
+        game.GameManager.CurrentNode.SetTile(AllEnemies[i], empOnes[i].Point);
+      }
+      var ab = game.GameManager.Hero.GetAbility(AbilityKind.BulkAttack);
+      ab.PrimaryStat.Value.Factor = 100;
+      game.Hero.RecalculateStatFactors(false);
+      game.GameManager.InteractHeroWith(AllEnemies[0]);
+      
+      Assert.Greater(en1Health, AllEnemies[0].Stats.Health);
+      Assert.Greater(en2Health, AllEnemies[1].Stats.Health);
+    }
+
+    [Test]
+    public void TestBulkAttackReal()
+    {
+      var game = CreateGame();
+      var empOnes = game.GameManager.CurrentNode.GetEmptyNeighborhoodTiles(game.GameManager.Hero, false);
+      Assert.Greater(empOnes.Count, 1);
+      var enemies = AllEnemies.Where(i => i.PowerKind == EnemyPowerKind.Champion).ToList();
+      float en1Health = enemies[0].Stats.Health;
+      float en2Health = enemies[1].Stats.Health;
+      for (int i = 0; i < 2; i++)
+      {
+        game.GameManager.CurrentNode.SetTile(enemies[i], empOnes[i].Point);
+      }
+      var ab = game.GameManager.Hero.GetAbility(AbilityKind.BulkAttack);
+      for(int i=0;i<5;i++)
+        ab.IncreaseLevel(game.Hero);
+
+      game.Hero.RecalculateStatFactors(false);
+      var sb = game.Hero.GetTotalValue(EntityStatKind.ChanceToBulkAttack);
+
+      for (int i = 0; i < 20; i++)
+      {
+        game.GameManager.InteractHeroWith(enemies[0]);
+        GotoNextHeroTurn();
+      }
+
+      Assert.Greater(en1Health, enemies[0].Stats.Health);
+      Assert.Greater(en2Health, enemies[1].Stats.Health);
+    }
+
+    [Test]
+    public void TestStrikeBack()
+    {
+      //AbilityKind.StrikeBack
+    }
+
+    [Test]
     public void TestLootMastery()
     {
       var game = CreateGame();
@@ -24,27 +82,25 @@ namespace RoguelikeUnitTests
       int barrelsCount = barrels.Count;
       Assert.Greater(barrelsCount, 15);
 
-      var numOfBarrelLootBeforeAbility = GetLootFromBarrels(barrels, barrelsCount);
+      var numOfBarrelLootBeforeAbility = GetLootFromSrc(game, barrels);
 
       var enemies = GetPlainEnemies();
-      var numOfEnemiesLootBeforeAbility = GetLootFromEnemies(game, enemies);
+      var numOfEnemiesLootBeforeAbility = GetLootFromSrc(game, enemies);
 
       game.Hero.AbilityPoints = 10;
       for (int i = 0; i < 5; i++)
         game.Hero.IncreaseAbility(AbilityKind.LootingMastering);
 
-      var numOfBarrelLootAfterAbility = GetLootFromBarrels(barrels, barrelsCount);
-      var numOfEnemiesLootAfterAbility = GetLootFromEnemies(game, enemies);
+      var numOfBarrelLootAfterAbility = GetLootFromSrc(game, barrels);
+      var numOfEnemiesLootAfterAbility = GetLootFromSrc(game, enemies);
 
-      Assert.Greater(barrels.Count, numOfEnemiesLootAfterAbility);
-      Assert.Greater(numOfEnemiesLootAfterAbility, numOfEnemiesLootBeforeAbility);
-
-      Assert.Greater(enemies.Count, numOfEnemiesLootAfterAbility);
-      Assert.Greater(numOfEnemiesLootAfterAbility, numOfEnemiesLootBeforeAbility);
+      Assert.Greater(numOfBarrelLootAfterAbility.Count, numOfBarrelLootBeforeAbility.Count);
+      Assert.Greater(numOfEnemiesLootAfterAbility.Count, numOfEnemiesLootBeforeAbility.Count);
     }
 
-    private int GetLootFromEnemies(Roguelike.RoguelikeGame game, IEnumerable<Enemy> enemies)
+    private List<Loot> GetLootFromSrc(Roguelike.RoguelikeGame game, IEnumerable<ILootSource> enemies)
     {
+      List<Loot> res = new List<Loot>();
       int numOfLoot = 0;
       foreach (var en in enemies)
       {
@@ -56,32 +112,33 @@ namespace RoguelikeUnitTests
           {
             game.Level.RemoveLoot(l.Point);
             game.Level.SetEmptyTile(l.Point);
+            res.Add(l);
           }
         }
       }
 
-      return numOfLoot;
+      return res;
     }
 
-    private int GetLootFromBarrels(List<Barrel> barrels, int barrelsCount)
-    {
-      int numOfLoot = 0;
-      for (int i = 0; i < barrelsCount; i++)
-      {
-        var loot = game.GameManager.LootManager.TryAddForLootSource(barrels[i]);
-        if (loot.Any())
-        {
-          numOfLoot++;
-          foreach (var l in loot)
-          {
-            game.Level.RemoveLoot(l.Point);
-            game.Level.SetEmptyTile(l.Point);
-          }
-        }
-      }
+    //private int GetLootFromBarrels(List<Barrel> barrels, int barrelsCount)
+    //{
+    //  int numOfLoot = 0;
+    //  for (int i = 0; i < barrelsCount; i++)
+    //  {
+    //    var loot = game.GameManager.LootManager.TryAddForLootSource(barrels[i]);
+    //    if (loot.Any())
+    //    {
+    //      numOfLoot++;
+    //      foreach (var l in loot)
+    //      {
+    //        game.Level.RemoveLoot(l.Point);
+    //        game.Level.SetEmptyTile(l.Point);
+    //      }
+    //    }
+    //  }
 
-      return numOfLoot;
-    }
+    //  return numOfLoot;
+    //}
 
     //[Test]
     //public void TestFightSkills()

@@ -258,7 +258,7 @@ namespace Roguelike.Generators
       else if (lsk == LootSourceKind.PlainChest)
         return GetRandomLoot(maxEqLevel);//some cheap loot
       else
-        lootKind = Probability.RollDiceForKind(lsk);
+        lootKind = Probability.RollDiceForKind(lsk, ab);
 
       if (lootKind == LootKind.Equipment)
       {

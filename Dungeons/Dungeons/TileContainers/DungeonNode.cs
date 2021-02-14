@@ -271,7 +271,7 @@ namespace Dungeons
 
       public List<T> GetNeighborTiles<T>(Tile tile, bool incDiagonal = false) where T : Tile
       {
-        return GetNeighborTiles(tile, incDiagonal).Where(i => i != null && i.GetType() == typeof(T)).Cast<T>().ToList();
+        return GetNeighborTiles(tile, incDiagonal).Where(i => i != null && i is T).Cast<T>().ToList();
       }
 
       public void AddChildIsland(Point? destStartPoint, DungeonNode childIsland)
@@ -877,9 +877,9 @@ namespace Dungeons
         return res;
       }
 
-      public List<Tile> GetEmptyNeighborhoodTiles(Tile target)
+      public List<Tile> GetEmptyNeighborhoodTiles(Tile target, bool incDiagonbal = true)
       {
-        var neibs = GetNeighborTiles(target, true);
+        var neibs = GetNeighborTiles(target, incDiagonbal);
         neibs.Shuffle();
         neibs = neibs.Where(i => IsTileEmpty(i)).ToList();
         return neibs;

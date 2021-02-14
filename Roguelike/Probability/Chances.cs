@@ -34,22 +34,24 @@ namespace Roguelike.Probability
       entry => entry.Value);
     }
 
-    public T RollDice(T unset, T[] skip)
+    public T RollDice(T unset, T[] skip, double factor = 0)
     {
       var rand = RandHelper.GetRandomDouble();
-      var matches = GetMatchesBeneathThreashold(rand);
+      if(factor!=0)
+        rand -= factor;
+      var matches = GetMatchesAboveThreashold(rand);
       if (matches.Any())
         return RandHelper.GetRandomElem<T>(matches, skip);
       return unset;
     }
 
-    public List<T> GetMatchesBeneathThreashold(double rand)
+    public List<T> GetMatchesAboveThreashold(double threshold)
     {
       var chances = values.OrderBy(i => i.Value).ToList();
       var matches = new List<T>();
       foreach (var ch in chances)
       {
-        if (rand <= ch.Value)
+        if (ch.Value >= threshold)
         {
           matches.Add(ch.Key);
         }
