@@ -167,7 +167,7 @@ namespace Roguelike.Tiles
       return true;
     }
 
-    public EntityStats GetStats()
+    public virtual EntityStats GetStats()
     {
       EntityStats stats = new EntityStats();
       stats[this.PrimaryStatKind].Accumulate(primaryStat.Value);

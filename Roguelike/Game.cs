@@ -48,7 +48,7 @@ namespace Roguelike
     public Container Container { get; set; }
     public Hero Hero { get { return GameManager.Hero; } }
     public abstract Dungeons.TileContainers.DungeonNode GenerateDungeon();
-    public static string Version { get; } = "0.0.5";
+    public static string Version { get; } = "0.0.6";
   }
 
   //sample game proving it works

@@ -150,6 +150,7 @@ namespace Roguelike.Effects
     {
       //if(Container != null)
         //Container.GetInstance<ILogger>().LogInfo(livingEntity + " ApplyLastingEffect: " + le);
+
       le.PendingTurns--;
 
       if (le.Application == EffectApplication.EachTurn)
@@ -169,6 +170,9 @@ namespace Roguelike.Effects
       var esk = le.StatKind != EntityStatKind.Unset || le.Type == EffectType.ResistAll 
         || le.Type == EffectType.Transform;
       Assert(esk);
+      if (le.Type == EffectType.TornApart)
+        value = livingEntity.Stats.Health;
+
       if (le.StatKind != EntityStatKind.Unset)
       {
         livingEntity.Stats.ChangeStatDynamicValue(le.StatKind, add ? value : -value);

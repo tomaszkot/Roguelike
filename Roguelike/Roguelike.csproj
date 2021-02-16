@@ -76,6 +76,7 @@
     <Compile Include="Astar\PathFinder.cs" />
     <Compile Include="Astar\PathFinderFast.cs" />
     <Compile Include="Astar\PriorityQueueB.cs" />
+    <Compile Include="AttackDescription.cs" />
     <Compile Include="AttackStrategy.cs" />
     <Compile Include="AttributesHelperExtension.cs" />
     <Compile Include="Attributes\EntityStat.cs" />

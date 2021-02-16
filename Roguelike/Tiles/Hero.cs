@@ -8,6 +8,7 @@ using SimpleInjector;
 using System.Linq;
 using Roguelike.LootContainers;
 using System.Collections.Generic;
+using Roguelike.Calculated;
 
 namespace Roguelike.Tiles
 {
@@ -29,15 +30,7 @@ namespace Roguelike.Tiles
         
       }
     }
-
-    static Dictionary<Weapon.WeaponKind, EntityStatKind> weapons2Esk = new Dictionary<Weapon.WeaponKind, EntityStatKind>()
-    {
-      {Weapon.WeaponKind.Axe,  EntityStatKind.AxeExtraDamage},
-      { Weapon.WeaponKind.Sword, EntityStatKind.SwordExtraDamage},
-      { Weapon.WeaponKind.Bashing, EntityStatKind.BashingExtraDamage},
-      { Weapon.WeaponKind.Dagger, EntityStatKind.DaggerExtraDamage}
-    };
-
+        
     public Hero(): base(new Point().Invalid(), '@')
     {
       canAdvanceInExp = true;
@@ -153,29 +146,8 @@ namespace Roguelike.Tiles
 
     public override float GetHitAttackValue(bool withVariation)
     {
-      var att = base.GetHitAttackValue(withVariation);
-      var wpn = GetActiveEquipment()[CurrentEquipmentKind.Weapon] as Weapon;
-      if (wpn != null)
-      {
-        if (weapons2Esk.ContainsKey(wpn.Kind))
-        {
-          var esk = weapons2Esk[wpn.Kind];
-          var ab = Abilities.GetByEntityStatKind(esk, false);
-          if (ab != null)
-          {
-            att += (att * ab.AuxStat.Factor / 100f);
-          }
-        }
-        //Abilities.GetFightItem
-        //if (ab.AuxStat.Kind == EntityStatKind.AxeExtraDamage && wpn.Kind == Weapon.WeaponKind.Axe
-        //    || ab.AuxStat.Kind == EntityStatKind.SwordExtraDamage && wpn.Kind == Weapon.WeaponKind.Sword
-        //    || ab.AuxStat.Kind == EntityStatKind.BashingExtraDamage && wpn.Kind == Weapon.WeaponKind.Bashing
-        //    || ab.AuxStat.Kind == EntityStatKind.DaggerExtraDamage && wpn.Kind == Weapon.WeaponKind.Dagger)
-        //{
-        //Stats.AccumulateFactor(EntityStatKind.Attack, ab.AuxStat.Factor);
-        //}
-      }
-
+      var ad = new AttackDescription(this);
+      var att = ad.CurrentPhysical;
       if (withVariation)//GUI is not meant to have it changed on character panel
       {
         var variation = GetAttackVariation();

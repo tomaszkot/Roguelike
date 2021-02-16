@@ -38,9 +38,14 @@
       return (int)((lvl * lvl) / divider);
     }
 
-    public static int CalcFactor(int prevValue, float inc)
+    public static int CalcFactor(int prevValue, float incPercentage)
     {
-      return prevValue + (int)(prevValue * inc / 100f);
+      return prevValue + (int)(prevValue * incPercentage / 100f);
+    }
+
+    public static float CalcFactor(float prevValue, float incPercentage)
+    {
+      return prevValue + (float)(prevValue * incPercentage / 100f);
     }
   }
 }

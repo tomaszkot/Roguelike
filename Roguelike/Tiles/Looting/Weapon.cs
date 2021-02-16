@@ -11,13 +11,15 @@ namespace Roguelike.Tiles
       Other
       //,Bow
     }
+    
+    public EntityStat SpecialFeature { get; set; }
+    public EntityStat SpecialFeatureAux { get; set; }
 
     public Weapon()
     {
       this.EquipmentKind = EquipmentKind.Weapon;
       this.PrimaryStatKind = EntityStatKind.Attack;
       this.Price = 5;
-      
     }
 
     public bool IsMagician()
@@ -32,7 +34,8 @@ namespace Roguelike.Tiles
     public WeaponKind Kind
     {
       get => kind;
-      set {
+      set
+      {
         kind = value;
         if (IsMaterialAware())
         {
@@ -41,9 +44,49 @@ namespace Roguelike.Tiles
         }
         else
           this.collectedSound = "none_steel_weapon_collected";
-      } 
+
+        var chanceForEffect = 10;
+        switch (value)
+        {
+          case WeaponKind.Dagger:
+            SpecialFeature = new EntityStat(EntityStatKind.ChanceToCauseBleeding, chanceForEffect);
+            break;
+          case WeaponKind.Sword:
+            SpecialFeature = new EntityStat(EntityStatKind.ChanceToHit, chanceForEffect);
+            break;
+          case WeaponKind.Bashing:
+            SpecialFeature = new EntityStat(EntityStatKind.ChanceToCauseStunning, chanceForEffect);
+            SpecialFeatureAux = new EntityStat(EntityStatKind.ChanceToHit, -chanceForEffect);
+
+            break;
+          case WeaponKind.Axe:
+            //Symbol = AxeSymbol;
+            SpecialFeature = new EntityStat(EntityStatKind.ChanceToCauseTearApart, chanceForEffect);
+            //Name = "Axe";
+            break;
+          default:
+            break;
+        }
+      }
     }
-   // public int MinDropDungeonLevel { get; set; }
+
+    public override EntityStats GetStats()
+    {
+      EntityStats stats = base.GetStats();
+      var wpn = this;
+      if (wpn.SpecialFeature != null)
+      {
+        stats.Ensure(wpn.SpecialFeature.Kind);
+        stats.Stats[wpn.SpecialFeature.Kind].Factor += wpn.SpecialFeature.Value.TotalValue;
+      }
+      if (wpn.SpecialFeatureAux != null)
+      {
+        stats.Ensure(wpn.SpecialFeatureAux.Kind);
+        stats.Stats[wpn.SpecialFeatureAux.Kind].Factor += wpn.SpecialFeatureAux.Value.TotalValue;
+      }
+      return stats;
+    }
+    // public int MinDropDungeonLevel { get; set; }
 
     public int Damage
     {

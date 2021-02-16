@@ -58,7 +58,7 @@ namespace Roguelike.Tiles
       set{state = value;}
     }
     List<Algorithms.PathFinderNode> pathToTarget;
-    private LastingEffectsSet lastingEffectsSet;
+    protected LastingEffectsSet lastingEffectsSet;
     protected List<EffectType> immunedEffects = new List<EffectType>();
 
     [JsonIgnore]
@@ -295,10 +295,14 @@ namespace Roguelike.Tiles
       //  PlayPunchSound();
       //}
       var dead = DieIfShould(EffectType.Unset);
-      if(!dead && IsWounded)
+      if(!dead)
       {
-        if(attacker.CanCauseBleeding())
-          lastingEffectsSet.EnsureEffect(EffectType.Bleeding, inflicted/3, attacker);
+        if (IsWounded)
+        {
+          if (attacker.CanCauseBleeding())
+            lastingEffectsSet.EnsureEffect(EffectType.Bleeding, inflicted / 3, attacker);
+        }
+        attacker.EnsurePhysicalHitEffect(inflicted, this, null);
       }
 
       return inflicted;
@@ -421,10 +425,10 @@ namespace Roguelike.Tiles
       }
     }
 
-    static LastingEffectCalcInfo heBase = new LastingEffectCalcInfo(EffectType.Unset, 0, new EffectiveFactor(0), new PercentageFactor(0));
-    protected virtual LastingEffectCalcInfo GetPhysicalHitEffect(LivingEntity victim, FightItem fi = null)
+    //static LastingEffectCalcInfo heBase = new LastingEffectCalcInfo(EffectType.Unset, 0, new EffectiveFactor(0), new PercentageFactor(0));
+    protected virtual LastingEffect EnsurePhysicalHitEffect(float inflicted, LivingEntity victim, FightItem fi = null)
     {
-      return heBase;
+      return null;
     }
 
     public virtual float GetChanceToExperienceEffect(EffectType et)
