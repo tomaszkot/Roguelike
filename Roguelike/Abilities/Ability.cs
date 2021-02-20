@@ -386,15 +386,14 @@ namespace Roguelike.Abilities
     public string[] GetExtraStatDescription()
     {
       List<string> desc = new List<string>();
-      //desc.Add("Level: " + Level);
 
-      //Func<EntityStat, string> GetFormattedCurrentValue = (EntityStat es) =>
-      //{
-      //  var fv = es.GetFormattedCurrentValue();
-      //  if (!es.IsPercentage && IsPercentageFromKind())
-      //    fv += "%";
-      //  return fv;
-      //};
+      Func<EntityStat, string> GetFormattedCurrentValue = (EntityStat es) =>
+      {
+        var fv = es.GetFormattedCurrentValue();
+        if (!es.IsPercentage && IsPercentageFromKind())
+          fv += "%";
+        return fv;
+      };
 
       //FightItemKind fightItemKind = GetFightItemKind(Kind);
       //FightItem fi = null;
@@ -404,51 +403,51 @@ namespace Roguelike.Abilities
       //  desc.AddRange(fi.GetExtraStatDescription(true, Level));
       //}
 
-      //else if (Kind == AbilityKind.LootingMastering)
-      //{
-      //  desc.AddRange(this.GetCustomExtraStatDescription(Level));
-      //}
-      //else
-      //{
-      //  desc.Add(PrimaryStat.Kind + ": " + GetFormattedCurrentValue(PrimaryStat));
-      //  if (AuxStat.Kind != EntityStatKind.Unset)
-      //    desc.Add(AuxStat.Kind + ": " + GetFormattedCurrentValue(AuxStat));
-      //}
+      if (Kind == AbilityKind.LootingMastering)
+      {
+        desc.AddRange(this.GetCustomExtraStatDescription(Level));
+      }
+      else
+      {
+        desc.Add(PrimaryStat.Kind + ": " + GetFormattedCurrentValue(PrimaryStat));
+        if (AuxStat.Kind != EntityStatKind.Unset)
+          desc.Add(AuxStat.Kind + ": " + GetFormattedCurrentValue(AuxStat));
+      }
 
-      //if (Level < MaxLevel)
-      //{
-      //  var esN = new EntityStat(PrimaryStat.Kind, 0);
-      //  desc.Add("Next Level: ");
+      if (Level < MaxLevel)
+      {
+        var esN = new EntityStat(PrimaryStat.Kind, 0);
+        desc.Add("Next Level: ");
 
-      //  if (fightItemKind != FightItemKind.None)
-      //  {
-      //    desc.AddRange(fi.GetExtraStatDescription(true, Level + 1));
-      //  }
-      //  else
-      //  {
-      //    var fac = CalcFactor(true, Level + 1);
-      //    if (Kind == AbilityKind.LootingMastering)
-      //    {
-      //      desc.AddRange(this.GetCustomExtraStatDescription(Level + 1));
-      //    }
-      //    else
-      //    {
-      //      esN.Factor = fac;
-      //      desc.Add(PrimaryStat.Kind + ": " + GetFormattedCurrentValue(esN));
-      //    }
-      //    if (AuxStat.Kind != EntityStatKind.Unset)
-      //    {
-      //      fac = CalcFactor(false, Level + 1);
-      //      esN = new EntityStat(AuxStat.Kind, 0);
-      //      esN.Factor = fac;
-      //      desc.Add(AuxStat.Kind + ": " + GetFormattedCurrentValue(esN));
-      //    }
-      //  }
-      //}
-      //else
-      //{
-      //  desc.Add(MaxLevelReached);
-      //}
+        //if (fightItemKind != FightItemKind.None)
+        //{
+        //  desc.AddRange(fi.GetExtraStatDescription(true, Level + 1));
+        //}
+        //else
+        {
+          var fac = CalcFactor(true, Level + 1);
+          if (Kind == AbilityKind.LootingMastering)
+          {
+            desc.AddRange(this.GetCustomExtraStatDescription(Level + 1));
+          }
+          else
+          {
+            esN.Factor = fac;
+            desc.Add(PrimaryStat.Kind + ": " + GetFormattedCurrentValue(esN));
+          }
+          if (AuxStat.Kind != EntityStatKind.Unset)
+          {
+            fac = CalcFactor(false, Level + 1);
+            esN = new EntityStat(AuxStat.Kind, 0);
+            esN.Factor = fac;
+            desc.Add(AuxStat.Kind + ": " + GetFormattedCurrentValue(esN));
+          }
+        }
+      }
+      else
+      {
+        desc.Add(MaxLevelReached);
+      }
       return desc.ToArray();
     }
 
