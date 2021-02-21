@@ -94,18 +94,23 @@ namespace Roguelike.Abilities
             ask = EntityStatKind.MagicAttackDamageReduction;
             break;
           case AbilityKind.ExplosiveMastering:
-          case AbilityKind.ThrowingWeaponsMastering:
-          case AbilityKind.HuntingMastering:
+          //case AbilityKind.ThrowingWeaponsMastering:
+          //case AbilityKind.HuntingMastering:
             PageIndex = 1;
             abilityLevelToPlayerLevel.Add(1, 0);
             abilityLevelToPlayerLevel.Add(2, 2);
             abilityLevelToPlayerLevel.Add(3, 5);
             abilityLevelToPlayerLevel.Add(4, 7);
             abilityLevelToPlayerLevel.Add(5, 11);//max level is about 13
-            if (kind == AbilityKind.ThrowingWeaponsMastering)
+            //if (kind == AbilityKind.ThrowingWeaponsMastering)
+            //{
+            //  ask = EntityStatKind.ChanceToCauseBleeding;
+            //  Name = "Throwing Mastery";
+            //}
+            if (kind == AbilityKind.ExplosiveMastering)
             {
-              ask = EntityStatKind.ChanceToCauseBleeding;
-              Name = "Throwing Mastery";
+              psk = EntityStatKind.ExlosiveCoctailDamage;
+              ask = EntityStatKind.ChanceToBurnNeighbour;
             }
             //if(kind == AbilityKind.HuntingMastering)
             //  psk = EntityStatKind.bl
@@ -367,14 +372,19 @@ namespace Roguelike.Abilities
       }
       primaryStatDescription = desc;
     }
+    
     public bool IsPercentageFromKind()
     {
-      if (this.kind == AbilityKind.RestoreHealth ||
-          this.kind == AbilityKind.RestoreMana)
+      return IsPercentageFromKind(Kind);
+    }
+
+    public static bool IsPercentageFromKind(AbilityKind kind)
+    {
+      if (kind == AbilityKind.RestoreHealth ||
+          kind == AbilityKind.RestoreMana)
         return true;
       return false;
     }
-
 
     public bool IsPercentage(bool primary)
     {
@@ -404,7 +414,8 @@ namespace Roguelike.Abilities
       //}
       if (currentLevel)
       {
-        if (Kind == AbilityKind.LootingMastering)
+        if (Kind == AbilityKind.LootingMastering ||
+            Kind == AbilityKind.ExplosiveMastering)
         {
           desc.AddRange(this.GetCustomExtraStatDescription(Level));
         }
@@ -429,7 +440,7 @@ namespace Roguelike.Abilities
           //else
           {
             var fac = CalcFactor(true, Level + 1);
-            if (Kind == AbilityKind.LootingMastering)
+            if (Kind == AbilityKind.LootingMastering || Kind == AbilityKind.ExplosiveMastering)
             {
               desc.AddRange(this.GetCustomExtraStatDescription(Level + 1));
             }
