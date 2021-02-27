@@ -11,6 +11,15 @@ namespace RoguelikeUnitTests
   class DungeonInteractionTests : TestBase
   {
     [Test]
+    public void GetNeighborTiles()
+    {
+      var game = CreateGame();
+      var neibs = game.GameManager.CurrentNode.GetNeighborTiles(game.Hero, true);
+      Assert.AreEqual(neibs.Count, 8);
+
+    }
+
+    [Test]
     public void ConsumeFood()
     {
       var game = CreateGame();

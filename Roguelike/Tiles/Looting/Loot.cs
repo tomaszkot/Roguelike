@@ -253,7 +253,7 @@ namespace Roguelike.Tiles
       }
     }
 
-    protected string PartOfCraftingRecipe
+    protected static string PartOfCraftingRecipe
     {
       get { return "Part of a crafting recipe."; }
     }

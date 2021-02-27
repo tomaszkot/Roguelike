@@ -102,7 +102,7 @@ namespace Roguelike.Tiles
     {
       if (Material != material)//shall be already set
         return;
-      var enh = 0;
+      var enh = 1;
       if (material == EquipmentMaterial.Iron)
         enh = MaterialProps.BronzeToIronMult;
       else if (material == EquipmentMaterial.Steel)

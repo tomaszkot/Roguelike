@@ -567,7 +567,7 @@ namespace RoguelikeUnitTests
         var lootItems = KillEnemies(100);
         var scrolls = lootItems.Get<Scroll>();
         Assert.Greater(scrolls.Count, 0);
-        Assert.Less(scrolls.Count, 10);
+        Assert.Less(scrolls.Count, 11);
         var typesGrouped = scrolls.GroupBy(f => f.Kind).ToList();
         var identCount = typesGrouped.Where(i => i.Key == SpellKind.Identify).First().Count();
         Assert.Less(identCount, 10);

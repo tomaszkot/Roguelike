@@ -78,6 +78,11 @@ namespace Roguelike.Tiles
       if (eskToEnhance != EntityStatKind.Unset)
       {
         this.Material = material;
+        if (material == EquipmentMaterial.Iron)
+        {
+          int k = 0;
+          k++;
+        }
         this.DisplayedName = material.ToDescription() + " " + Name.ToLower();
         EnhanceStatsDueToMaterial(material);
       }

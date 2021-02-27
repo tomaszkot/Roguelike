@@ -302,8 +302,7 @@ namespace Dungeons
           }
         }
 
-
-        return neibs;
+        return neibs.Distinct().ToList();
       }
 
 

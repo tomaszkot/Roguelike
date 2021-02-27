@@ -45,6 +45,7 @@ namespace RoguelikeUnitTests
       var empOnes = game.GameManager.CurrentNode.GetEmptyNeighborhoodTiles(game.GameManager.Hero, false);
       Assert.Greater(empOnes.Count, 1);
       var enemies = AllEnemies.Where(i => i.PowerKind == EnemyPowerKind.Champion).ToList();
+      enemies[0].Stats.GetStat(EntityStatKind.Health).Value.Nominal *= 10;//make sure wont' die
       float en1Health = enemies[0].Stats.Health;
       float en2Health = enemies[1].Stats.Health;
       for (int i = 0; i < 2; i++)
@@ -60,11 +61,14 @@ namespace RoguelikeUnitTests
 
       for (int i = 0; i < 20; i++)
       {
+        //hit only 1st enemy
         game.GameManager.InteractHeroWith(enemies[0]);
         GotoNextHeroTurn();
       }
 
       Assert.Greater(en1Health, enemies[0].Stats.Health);
+
+      //2nd shall be hit by an ability
       Assert.Greater(en2Health, enemies[1].Stats.Health);
     }
 
