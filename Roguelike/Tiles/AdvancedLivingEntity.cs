@@ -152,7 +152,7 @@ namespace Roguelike.Tiles
         PrevLevelExperience = NextLevelExperience;
         Level++;
         LevelUpPoints += GenerationInfo.LevelUpPoints;
-        //AbilityPoints += 2;
+        AbilityPoints += 2;
         NextLevelExperience = (int)(NextLevelExperience + (NextLevelExperience * GenerationInfo.NextExperienceIncrease));
         //if (Level == 2)
         //  nextExperience += Hero.BaseExperience;//TODO

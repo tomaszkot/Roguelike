@@ -137,12 +137,17 @@ namespace Roguelike.LootContainers
       return Items.FirstOrDefault(i => i == loot) as StackedLoot;
     }
         
-    public virtual bool Add(Loot item, bool notifyObservers = true, bool justSwappingHeroInv = false, 
-      InventoryActionDetailedKind detailedKind = InventoryActionDetailedKind.Unset)
+    public virtual bool Add
+    (
+      Loot item, 
+      bool notifyObservers = true, 
+      bool justSwappingHeroInv = false, 
+      InventoryActionDetailedKind detailedKind = InventoryActionDetailedKind.Unset
+    )
     {
       //container.GetInstance<ILogger>().LogInfo("Add(Loot item)");
       var exist = false;
-      StackedLoot stackedInInv = GetStackedItem(item);
+      var stackedInInv = GetStackedItem(item);
       var itemStacked = item as StackedLoot;
       if (stackedInInv != null)
       {

@@ -123,16 +123,16 @@ namespace Roguelike.Tiles
 
     Guid id;
 
-
+    /// <summary>
+    /// ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /// </summary>
     public Loot() : base('?')
     {
       Price = 1;
-      id = Guid.NewGuid();
+      Id = Guid.NewGuid();
 #if ASCII_BUILD
       color = ConsoleColor.Green;
 #endif
-
-      
     }
 
     public virtual Loot CreateCrafted(Loot other)
@@ -155,8 +155,6 @@ namespace Roguelike.Tiles
 
     public virtual bool IsConsumable()
     {
-      //return LootKind == LootKind.Food //|| this is Mushroom //TODO
-      //  || LootKind == LootKind.Potion;
       return this is IConsumable;
     }
 

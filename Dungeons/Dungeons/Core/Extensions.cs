@@ -69,5 +69,18 @@ namespace Dungeons.Core
     {
       return RandHelper.GetRandomElem<T>(list, new T[] { });
     }
+
+    public static void Raise<T>(this EventHandler<T> handler, object sender, T args)
+    {
+      if (handler != null) 
+        handler(sender, args);
+    }
+
+    public static void Raise(this EventHandler handler, object sender)
+    {
+      if (handler != null)
+        handler(sender, EventArgs.Empty);
+    }
+
   }
 }
