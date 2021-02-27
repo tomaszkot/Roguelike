@@ -461,10 +461,10 @@ namespace Roguelike.Managers
           var en = ap.Victim as Enemy;
           if (en != null)
           {
-            GetBulkAttackTarget(ap.Victim as Enemy);
+            FindBulkAttackTargets(ap.Victim as Enemy);
             if (HeroBulkAttackTargets.Any())
             {
-              var target = HeroBulkAttackTargets.First();
+              var target = HeroBulkAttackTargets.GetRandomElem();
               HeroBulkAttackTargets.Remove(target);
               context.ApplyPhysicalAttackPolicy(Hero, target, (p)=> { });
             }
@@ -482,10 +482,9 @@ namespace Roguelike.Managers
 
     public List<Enemy> HeroBulkAttackTargets { get; set; }
 
-    LivingEntity GetBulkAttackTarget(Enemy lastTarget)
+    void FindBulkAttackTargets(Enemy lastTarget)
     {
       HeroBulkAttackTargets = new List<Enemy>();
-      LivingEntity target = null;
       var hero = Hero;
       var sb = hero.GetTotalValue(EntityStatKind.ChanceToBulkAttack);
       //sb = 100.0f;
@@ -500,11 +499,9 @@ namespace Roguelike.Managers
 
           if (HeroBulkAttackTargets.Any())
             AppendAction(new LivingEntityAction(LivingEntityActionKind.BulkAttack)
-            { Info = hero.Name + " used ability Bulk Attack", Level = ActionLevel.Important });
+            { Info = hero.Name + " used ability Bulk Attack", Level = ActionLevel.Important , InvolvedEntity = hero });
         }
       }
-
-      return target;
     }
 
     public void OnHeroPolicyApplied(object sender, Policies.Policy policy)
