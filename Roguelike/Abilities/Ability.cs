@@ -3,9 +3,6 @@ using Roguelike.Attributes;
 using Roguelike.Tiles.Looting;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Roguelike.Abilities
 {
@@ -460,7 +457,7 @@ namespace Roguelike.Abilities
         }
         else
         {
-          desc.Add(MaxLevelReached);
+          desc.Add(MessageMaxLevelReached);
         }
       }
       return desc.ToArray();
@@ -528,7 +525,14 @@ namespace Roguelike.Abilities
       return customExtraStatDescription;
     }
 
-    public const string MaxLevelReached = "Max level reached";
+    public const string MessageMaxLevelReached = "Max level reached";
 
+    public bool MaxLevelReached 
+    {
+      get 
+      {
+        return Level >= MaxLevel;  
+      } 
+    }
   }
 }
