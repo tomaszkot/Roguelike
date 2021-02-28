@@ -70,7 +70,7 @@ namespace Roguelike.Tiles
     Dictionary<SpellKind, int> coolingDownSpells = new Dictionary<SpellKind, int>();
     Abilities.AbilitiesSet abilities = new Abilities.AbilitiesSet();
 
-    public int AbilityPoints { get; set; } = 10;
+    public int AbilityPoints { get; set; }
 
     public int LevelUpPoints
     {
@@ -154,8 +154,8 @@ namespace Roguelike.Tiles
         LevelUpPoints += GenerationInfo.LevelUpPoints;
         AbilityPoints += 2;
         NextLevelExperience = (int)(NextLevelExperience + (NextLevelExperience * GenerationInfo.NextExperienceIncrease));
-        //if (Level == 2)
-        //  nextExperience += Hero.BaseExperience;//TODO
+        if (Level == 2)
+          NextLevelExperience += NextLevelExperience / 2;//TODO
 
         leveledUp = true;
 

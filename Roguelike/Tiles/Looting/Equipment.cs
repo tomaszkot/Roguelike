@@ -83,8 +83,28 @@ namespace Roguelike.Tiles
           int k = 0;
           k++;
         }
-        this.DisplayedName = material.ToDescription() + " " + Name.ToLower();
-        EnhanceStatsDueToMaterial(material);
+        if (this.Name == "Tusk")
+        {
+          int k = 0;
+          k++;
+        }
+        if (Class != EquipmentClass.Unique)
+        {
+          
+          this.DisplayedName = material.ToDescription() + " " + Name.ToLower();
+          EnhanceStatsDueToMaterial(material);
+        }
+      }
+    }
+
+    public override string Name 
+    { 
+      get => base.Name;
+      set
+      {
+        base.Name = value;
+        if (Class == EquipmentClass.Unique)
+          DisplayedName = Name;
       }
     }
 
@@ -550,6 +570,7 @@ namespace Roguelike.Tiles
     {
       SetClass(EquipmentClass.Unique, lootLevel, lootStats);
       Material = EquipmentMaterial.Unset;
+      DisplayedName = Name.ToUpperFirstLetter();
     }
 
     public int MinDropDungeonLevel { get { return levelIndex; } }
