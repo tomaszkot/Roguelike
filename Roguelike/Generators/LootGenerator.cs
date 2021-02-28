@@ -476,7 +476,7 @@ namespace Roguelike.Generators
 
     private Loot GetRandomPotion() 
     {
-      var enumVal = RandHelper.GetRandomEnumValue<PotionKind>(new[] { PotionKind.Special});
+      var enumVal = RandHelper.GetRandomEnumValue<PotionKind>(new[] { PotionKind.Special, PotionKind.Unset});
       var potion = new Potion();
       potion.SetKind(enumVal);
       return potion;

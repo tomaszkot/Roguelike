@@ -71,6 +71,13 @@ namespace RoguelikeUnitTests
       var poison = new Potion();
       poison.SetKind(Roguelike.Tiles.Looting.PotionKind.Poison);
       Assert.Greater(poison.PrimaryStatDescription.Length, 5);
+
+      var game = CreateGame();
+      for (int i = 0; i < 50; i++)
+      {
+        var potion = game.GameManager.LootGenerator.GetRandomLoot(LootKind.Potion, 1) as Potion;
+        Assert.AreNotEqual(potion.Kind, PotionKind.Unset);
+      }
     }
 
     [Test]

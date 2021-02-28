@@ -1,5 +1,6 @@
 ﻿using NUnit.Framework;
 using Roguelike;
+using Roguelike.Attributes;
 using Roguelike.Effects;
 using Roguelike.Spells;
 using Roguelike.Tiles;
@@ -66,6 +67,32 @@ namespace RoguelikeUnitTests
       enemy.OnPhysicalHit(hero);
 
       Assert.Greater(enemyHealth, enemy.Stats.Health);
+    }
+
+    [Test]
+    public void StunnedEffectFromWeapon()
+    {
+      var game = CreateGame();
+      var hero = game.Hero;
+      hero.Stats.SetNominal(Roguelike.Attributes.EntityStatKind.ChanceToHit, 100);
+      var wpn = game.GameManager.LootGenerator.GetLootByTileName<Weapon>("hammer");
+      wpn.MakeMagic(EntityStatKind.ChanceToCauseStunning, 100);
+      wpn.Identify();
+      hero.SetEquipment(CurrentEquipmentKind.Weapon, wpn);
+      var ccs = hero.GetCurrentValue(EntityStatKind.ChanceToCauseStunning);
+      Assert.AreEqual(ccs, 100);
+
+      var enemy = ActiveEnemies.First();
+      enemy.OnPhysicalHit(hero);
+      Assert.True(enemy.LastingEffects.Any());
+      Assert.AreEqual(enemy.LastingEffects[0].Type, EffectType.Stunned);
+      Assert.AreEqual(enemy.LastingEffects[0].Description, "Stunned");
+      GotoNextHeroTurn();
+      Assert.AreEqual(enemy.LastingEffects[0].Type, EffectType.Stunned);
+      GotoNextHeroTurn();
+      Assert.AreEqual(enemy.LastingEffects[0].Type, EffectType.Stunned);
+      GotoNextHeroTurn();
+      Assert.False(enemy.LastingEffects.Any());
     }
 
     [Test]

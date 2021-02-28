@@ -30,8 +30,7 @@ namespace Roguelike.Effects
   public interface ILastingEffectOwner
   {
     string Name { get; set; }
-    //void OnEffectFinished(EffectType type);
-    //void OnEffectStarted(EffectType type);
+    
   }
 
   public enum EffectOrigin 
@@ -136,12 +135,8 @@ namespace Roguelike.Effects
       set
       {
         owner = value;
-        //if (owner != null)
-        //  owner.OnEffectStarted(Type);
       }
     }
-
-    //public LastingEffect() { }
 
     public LastingEffect(EffectType type, ILastingEffectOwner owner, int turns, EffectOrigin origin, EffectiveFactor effectiveFactor, 
                          PercentageFactor percentageFactor)
@@ -183,7 +178,11 @@ namespace Roguelike.Effects
     {
       string res = Type.ToDescription();
 
+      if (Type == EffectType.Stunned)
+        return res;
+
       var spellKind = SpellConverter.SpellKindFromEffectType(Type);
+      
       var middle = "";
       var end = "";
       //var sign = EffectiveFactor.EffectiveFactor.Value >= 0 ? "+" : "-";
@@ -209,6 +208,7 @@ namespace Roguelike.Effects
         if (StatKind != EntityStatKind.Unset)
           end = " to " + this.StatKind.ToDescription();
       }
+            
 
       if (middle.Any())
         res += middle;
@@ -220,7 +220,7 @@ namespace Roguelike.Effects
         res += EffectiveFactor;
       else
         res += PercentageFactor;
-
+            
       if (end.Any())
         res += end;
 
@@ -257,10 +257,8 @@ namespace Roguelike.Effects
         expected = ownerName;
         expected += " casted:";
       }
-      else //if (origin == EffectOrigin.Experieced)
+      else 
       {
-        //expected = ownerName;
-        //expected += " experienced:";
       }
       
       if (Origin == EffectOrigin.OtherCasted)

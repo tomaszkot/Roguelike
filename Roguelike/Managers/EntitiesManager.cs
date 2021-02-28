@@ -99,6 +99,9 @@ namespace Roguelike.Managers
           if (!entity.Alive)
             continue;
 
+          if(entity.LastingEffects.Where(i => i.Type == Effects.EffectType.Stunned).Any())
+            continue;
+                    
           MakeTurn(entity);
 
           if (!context.Hero.Alive)

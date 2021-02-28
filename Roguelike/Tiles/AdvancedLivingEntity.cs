@@ -601,7 +601,6 @@ namespace Roguelike.Tiles
       return wpn.Kind == Weapon.WeaponKind.Bashing;
     }
 
-    //static Tuple<EffectType, int> defaultEffectType = new Tuple<EffectType, int>();
     protected override LastingEffect EnsurePhysicalHitEffect(float inflicted, LivingEntity victim, FightItem fi = null)
     {
       LastingEffect lastingEffectCalcInfo = null;
@@ -609,17 +608,16 @@ namespace Roguelike.Tiles
       if (wpn != null)
       {
         if (CalculateIfStatChanceApplied(EntityStatKind.ChanceToCauseBleeding, victim, fi))
-          lastingEffectCalcInfo = lastingEffectsSet.EnsureEffect(EffectType.Bleeding, 20 / 3, this);
+          lastingEffectCalcInfo = victim.LastingEffectsSet.EnsureEffect(EffectType.Bleeding, 20 / 3, this);
         if (fi == null)//throwing knife will not cause stunning or tear apart
         {
           if (CurrentWeaponCausesStunning() && CalculateIfStatChanceApplied(EntityStatKind.ChanceToCauseStunning))
-            lastingEffectCalcInfo = lastingEffectsSet.EnsureEffect(EffectType.Stunned, 0, this);
+            lastingEffectCalcInfo = victim.LastingEffectsSet.EnsureEffect(EffectType.Stunned, 0, this);
           if (victim.Stats.Health < victim.Stats.GetNominal(EntityStatKind.Health) * 2 / 3)
           {
             if (CalculateIfStatChanceApplied(EntityStatKind.ChanceToCauseTearApart))
-              lastingEffectCalcInfo = lastingEffectsSet.EnsureEffect(EffectType.TornApart, 0, this);//this is a death
+              lastingEffectCalcInfo = victim.LastingEffectsSet.EnsureEffect(EffectType.TornApart, 0, this);//this is a death          
           }
-
           //swords does not have any effect by default(beside unique ones), but have high hit %
         }
       }

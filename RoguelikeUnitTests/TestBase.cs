@@ -221,6 +221,8 @@ namespace RoguelikeUnitTests
     {
       if (game == null)
         game = this.game;
+      if(game.GameManager.Context.TurnOwner == TurnOwner.Hero)
+        game.GameManager.SkipHeroTurn();
       Assert.AreEqual(game.GameManager.Context.TurnOwner, Roguelike.TurnOwner.Allies);
       //game.GameManager.Logger.LogInfo("make allies move");
       game.MakeGameTick();//make allies move

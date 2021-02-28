@@ -46,9 +46,12 @@ namespace Roguelike.Effects
       //le.PendingTurns = 50;
       LastingEffects.Add(le);
 
-      ApplyLastingEffect(le, true);
-      if (le.Application != EffectApplication.EachTurn)
-        HandleStatSubtraction(le, true);
+      if (le.Type != EffectType.Stunned)
+      {
+        ApplyLastingEffect(le, true);
+        if (le.Application != EffectApplication.EachTurn)
+          HandleStatSubtraction(le, true);
+      }
 
       //let observers know it happened
       LastingEffectStarted?.Invoke(this, le);
@@ -166,6 +169,9 @@ namespace Roguelike.Effects
     private void HandleStatSubtraction(LastingEffect le, bool add)
     {
       var value = le.EffectiveFactor.Value;
+
+      if (le.Type == EffectType.Stunned)
+        return;
 
       var esk = le.StatKind != EntityStatKind.Unset || le.Type == EffectType.ResistAll 
         || le.Type == EffectType.Transform;
@@ -333,9 +339,7 @@ namespace Roguelike.Effects
     public LastingEffect EnsureEffect(EffectType et, float inflictedDamage, LivingEntity attacker)
     {
       var effectInfo = CalcLastingEffDamage(et, inflictedDamage, null, null);
-      //var turns = effectInfo.Turns;
-      //if (turns <= 0)
-      //  turns = GetPendingTurns(et);
+
       var currentEffect = this.AddLastingEffect(effectInfo, EffectOrigin.External, null, EffectTypeConverter.Convert(et),  true);
       return currentEffect;
     }
