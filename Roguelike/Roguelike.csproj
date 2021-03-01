@@ -96,6 +96,8 @@
     <Compile Include="Factors\PercentageFactor.cs" />
     <Compile Include="Game.cs" />
     <Compile Include="GameContext.cs" />
+    <Compile Include="Managers\QuestManager.cs" />
+    <Compile Include="Quests\Quest.cs" />
     <Compile Include="State\GameState.cs" />
     <Compile Include="GenerationInfo.cs" />
     <Compile Include="Generators\LevelGenerator.cs" />

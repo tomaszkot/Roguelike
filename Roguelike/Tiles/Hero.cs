@@ -9,12 +9,14 @@ using System.Linq;
 using Roguelike.LootContainers;
 using System.Collections.Generic;
 using Roguelike.Calculated;
+using Roguelike.Quests;
 
 namespace Roguelike.Tiles
 {
   public class Hero : AdvancedLivingEntity
   {
-    
+    List<Quest> quests = new List<Quest>();
+    public List<Quest> Quests { get => quests; set => quests = value; }
     public static int FirstNextLevelExperienceThreshold = 50;
     public const int StartStrength = 15;//15;50
     
