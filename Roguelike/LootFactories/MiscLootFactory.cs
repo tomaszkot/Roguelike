@@ -22,8 +22,6 @@ namespace Roguelike.LootFactories
     {
       Func<string, Loot> createPotion = (string tag) =>
       {
-        //var loot = new Potion();
-        //loot.tag1 = tag;
         var kind = PotionKind.Unset;
         var specialKind = SpecialPotionKind.Unset;
 

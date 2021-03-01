@@ -17,6 +17,7 @@ namespace Roguelike.Tiles.Looting
     static Dictionary<EquipmentKind, EntityStatKind> enhancmentPropsDiam = new Dictionary<EquipmentKind, EntityStatKind>();
     
     static Dictionary<GemKind, Dictionary<EquipmentKind, EntityStatKind>> enhancmentProps = new Dictionary<GemKind, Dictionary<EquipmentKind, EntityStatKind>>();
+    public int GameLevel { get; set; } = 1;
 
     public Gem() : this(GemKind.Unset)
     { 
@@ -28,6 +29,8 @@ namespace Roguelike.Tiles.Looting
 
     public Gem(GemKind kind = GemKind.Unset, int gameLevel = 0)
     {
+      Damaged = true;
+      
       collectedSound = "gem_collected";
       LootKind = LootKind.Gem;
       Symbol = '*';
@@ -94,18 +97,35 @@ namespace Roguelike.Tiles.Looting
 
     public void SetRandomKindAndLevelSize(int gameLevel, bool setKind)
     {
-      if(setKind)
+      GameLevel = gameLevel;
+
+      if (setKind)
         GemKind = RandHelper.GetRandomEnumValue<GemKind>();
       EnchanterSize = EnchanterSize.Small;
-      
-      if (gameLevel >= 4)
-      {
-        EnchanterSize = EnchanterSize.Medium;
-      }
-      if (gameLevel >= 8)
+      var smaller = RandHelper.GetRandomDouble() < 0.5f;
+
+      if (gameLevel >= 10)
       {
         EnchanterSize = EnchanterSize.Big;
       }
+      else if (gameLevel >= 8)
+      {
+        EnchanterSize = smaller ? EnchanterSize.Medium : EnchanterSize.Big;
+      }
+      else if (gameLevel >= 6)
+      {
+        EnchanterSize = smaller ? EnchanterSize.Small : EnchanterSize.Medium;
+      }
+      else if (gameLevel >= 4)
+      {
+        smaller = false;
+      }
+
+      if (!smaller && gameLevel < 10)
+        Damaged = true;
+
+      if(RandHelper.GetRandomDouble() < 0.3f)
+        Damaged = true;
 
       SetProps();
     }
@@ -114,6 +134,7 @@ namespace Roguelike.Tiles.Looting
     {
       SetPrice();
       tag1 = CalcTagFrom();
+
       SetName(GemKind.ToDescription());
     }
 
@@ -138,8 +159,8 @@ namespace Roguelike.Tiles.Looting
       var props = enhancmentProps[gemKind];
       if (props.ContainsKey(eq.EquipmentKind))
       {
-        var propsGem = props[eq.EquipmentKind];
-        var propsToSet = new[] { propsGem }.ToList();
+        var esk = props[eq.EquipmentKind];
+        var propsToSet = new[] { esk }.ToList();
         if (this.GemKind == GemKind.Amber)
         {
           var otherKinds = GetOtherKinds(gemKind);
@@ -175,32 +196,67 @@ namespace Roguelike.Tiles.Looting
       return values.ToArray();
     }
 
-    int GetResistValue()
-    {
-      var res = (wpnAndArmorValues[this.EnchanterSize]) * resistMult;
-      if (this.EnchanterSize == EnchanterSize.Small)
-        res += 1;
-      else if (this.EnchanterSize == EnchanterSize.Medium)
-        res += 2;
-      else if (this.EnchanterSize == EnchanterSize.Big)
-        res += 4;
-      return res;
-    }
-    
-    LootStatInfo AddLootStatInfo(List<LootStatInfo>  list, LootStatKind lsk)
-    {
-      var lootStatInfo = new LootStatInfo();
-      lootStatInfo.Kind = lsk;
-      list.Add(lootStatInfo);
-      return lootStatInfo;
-    }
-
     public override int GetStatIncrease(EquipmentKind ek, EntityStatKind esk)
     {
       var val = base.GetStatIncrease(ek);
-      if (esk == EntityStatKind.ResistCold || esk == EntityStatKind.ResistFire || esk == EntityStatKind.ResistPoison)
-        val = GetResistValue();
+      if (esk == EntityStatKind.ResistCold || esk == EntityStatKind.ResistFire || esk == EntityStatKind.ResistPoison ||
+        esk == EntityStatKind.ResistLighting)
+      {
+        if (this.EnchanterSize == EnchanterSize.Small)
+          val += 1;
+        else if (this.EnchanterSize == EnchanterSize.Medium)
+          val += 2;
+        else if (this.EnchanterSize == EnchanterSize.Big)
+          val += 4;
+
+        val *= resistMult;
+      }
+
+      if (Damaged)
+        val = val / 2;
       return val;
+    }
+
+    LootStatInfo GetLootStatInfo(LootStatKind lsk, EquipmentKind ek, Dictionary<EquipmentKind, EntityStatKind> gemKindInfo)
+    {
+      var lootStatInfo = new LootStatInfo();
+      lootStatInfo.Kind = lsk;
+      var post = "";
+      var desc = "Weapons: ";
+      if (lsk == LootStatKind.Armor)
+      {
+        desc = "Armor: ";
+        post += "%";
+      }
+      else if (lsk == LootStatKind.Jewellery)
+        desc = "Jewellery: ";
+
+      lootStatInfo.Desc = desc;
+      if (this.GemKind == GemKind.Amber)
+      {
+        if(lsk == LootStatKind.Weapon)
+          lootStatInfo.Desc += "all elemental attacks";
+        else if(lsk == LootStatKind.Armor)
+          lootStatInfo.Desc += "all elemental resists";
+        else 
+        {
+          var gemKind = GemKind.Diamond;//read props from any 
+          var otherKinds = GetOtherKinds(gemKind);
+          foreach (var otherKind in otherKinds)
+          {
+            var gemKindInfo_ = enhancmentProps[otherKind];
+            lootStatInfo.Desc += ", " + gemKindInfo_[EquipmentKind.Ring].ToDescription();
+          }
+        }
+      }
+      else
+        lootStatInfo.Desc += gemKindInfo[ek].ToDescription();
+
+      lootStatInfo.Desc += " +" + GetStatIncrease(ek, gemKindInfo[ek]);
+
+      lootStatInfo.Desc += post;
+
+      return lootStatInfo;
     }
 
     public override LootStatInfo[] GetLootStatInfo(LivingEntity caller)
@@ -209,61 +265,31 @@ namespace Roguelike.Tiles.Looting
       {
         var lootStatsInfo = new List<LootStatInfo>();
 
-        var gemKind = this.GemKind;
-        if (this.GemKind == GemKind.Amber)
-        {
-          gemKind = GemKind.Diamond;
-        }
-        var gemKindInfo = enhancmentProps[gemKind];
+        var gemKindInfo = GetCalcKindInfo();
 
-        var lootStatInfo = AddLootStatInfo(lootStatsInfo, LootStatKind.Weapon);
-        lootStatInfo.Desc = "Weapons: ";
-        if (this.GemKind == GemKind.Amber)
-          lootStatInfo.Desc += "all elemental attacks";
-        else
-          lootStatInfo.Desc += gemKindInfo[EquipmentKind.Weapon].ToDescription();
-                
-        lootStatInfo.Desc += " +" + wpnAndArmorValues[this.EnchanterSize];
+        var lootStatInfo = GetLootStatInfo(LootStatKind.Weapon, EquipmentKind.Weapon, gemKindInfo);
+        lootStatsInfo.Add(lootStatInfo);
 
-        //
-        lootStatInfo = AddLootStatInfo(lootStatsInfo, LootStatKind.Armor);
-        lootStatInfo.Desc = "Armor: ";
-        if (this.GemKind == GemKind.Amber)
-          lootStatInfo.Desc += "all elemental resists";
-        else
-          lootStatInfo.Desc += gemKindInfo[EquipmentKind.Armor].ToDescription();
+        lootStatInfo = GetLootStatInfo(LootStatKind.Armor, EquipmentKind.Armor, gemKindInfo);
+        lootStatsInfo.Add(lootStatInfo);
 
-        lootStatInfo.Desc += " +" + GetResistValue() + "%";
-
-        //
-        lootStatInfo = AddLootStatInfo(lootStatsInfo, LootStatKind.Jewellery);
-        lootStatInfo.Desc = "Jewellery: ";
-        lootStatInfo.Desc += gemKindInfo[EquipmentKind.Ring].ToDescription();
-        if (this.GemKind == GemKind.Amber)
-        {
-          var otherKinds = GetOtherKinds(gemKind);
-          foreach (var otherKind in otherKinds)
-          {
-            var gemKindInfo_ = enhancmentProps[otherKind];
-            lootStatInfo.Desc += ", " + gemKindInfo_[EquipmentKind.Ring].ToDescription();
-          }
-        }
-        else
-        { 
-        }
-
-        lootStatInfo.Desc += " +" + otherValues[this.EnchanterSize];
-
-        //if (this.GemKind != GemKind.Amber)
-        //{
-        //  if (gemKindInfo[EquipmentKind.Ring] == EntityStatKind.ChanceToHit)
-        //    lootStatInfo.Desc += "%";
-        //}
+        lootStatInfo = GetLootStatInfo(LootStatKind.Jewellery, EquipmentKind.Ring, gemKindInfo);
+        lootStatsInfo.Add(lootStatInfo);
 
         m_lootStatInfo = lootStatsInfo.ToArray();
 
       }
       return m_lootStatInfo;
+    }
+
+    private Dictionary<EquipmentKind, EntityStatKind> GetCalcKindInfo()
+    {
+      var gemKind = this.GemKind;
+      if (this.GemKind == GemKind.Amber)
+        gemKind = GemKind.Diamond;//read props from any 
+
+      var gemKindInfo = enhancmentProps[gemKind];
+      return gemKindInfo;
     }
 
     public override string[] GetExtraStatDescription()

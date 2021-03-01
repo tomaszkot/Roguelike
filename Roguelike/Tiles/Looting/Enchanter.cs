@@ -11,6 +11,7 @@ namespace Roguelike.Tiles.Looting
     public static string Small = "small";
     public static string Medium = "medium";
     public static string Big = "big";
+    public bool Damaged { get; set; }
 
     EnchanterSize enchanterSize = EnchanterSize.Small;
     public EnchanterSize EnchanterSize 
@@ -26,18 +27,18 @@ namespace Roguelike.Tiles.Looting
     public EnchantSrc EnchantSrc { get; set; }
     //public EnchanterKind EnchanterKind { get; set; }
 
-    protected static Dictionary<EnchanterSize, int> wpnAndArmorValues = new Dictionary<EnchanterSize, int>();
-    protected static Dictionary<EnchanterSize, int> otherValues = new Dictionary<EnchanterSize, int>();
+    static Dictionary<EnchanterSize, int> wpnAndArmorEqKindValues = new Dictionary<EnchanterSize, int>();
+    static Dictionary<EnchanterSize, int> otherEqKindValues = new Dictionary<EnchanterSize, int>();
 
     static Enchanter()
     {
-      wpnAndArmorValues[EnchanterSize.Big] = 6;
-      wpnAndArmorValues[EnchanterSize.Medium] = 4;
-      wpnAndArmorValues[EnchanterSize.Small] = 2;
+      wpnAndArmorEqKindValues[EnchanterSize.Big] = 6;
+      wpnAndArmorEqKindValues[EnchanterSize.Medium] = 4;
+      wpnAndArmorEqKindValues[EnchanterSize.Small] = 2;
 
-      otherValues[EnchanterSize.Big] = 15;
-      otherValues[EnchanterSize.Medium] = 10;
-      otherValues[EnchanterSize.Small] = 5;
+      otherEqKindValues[EnchanterSize.Big] = 15;
+      otherEqKindValues[EnchanterSize.Medium] = 10;
+      otherEqKindValues[EnchanterSize.Small] = 5;
     }
 
     protected static void PopulateProps
@@ -66,11 +67,11 @@ namespace Roguelike.Tiles.Looting
       int val = 0;
       if (ek == EquipmentKind.Amulet || ek == EquipmentKind.Ring || ek == EquipmentKind.Trophy)
       {
-        val = otherValues[this.EnchanterSize];
+        val = otherEqKindValues[this.EnchanterSize];
       }
       else if (ek != EquipmentKind.Unset)
       {
-        val = wpnAndArmorValues[this.EnchanterSize];
+        val = wpnAndArmorEqKindValues[this.EnchanterSize];
       }
       return val;
     }

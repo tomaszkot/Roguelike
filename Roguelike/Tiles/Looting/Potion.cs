@@ -56,8 +56,8 @@ namespace Roguelike.Tiles.Looting
         PrimaryStatDescription = "Removes poison effect";
         StatKind = EntityStatKind.Unset;
       }
-      else
-        throw new Exception("Unknown potion kind: "+ kind);
+      else if (kind == PotionKind.Unset)
+        throw new Exception("kind == PotionKind.Unset");
     }
 
     public override string GetId()
