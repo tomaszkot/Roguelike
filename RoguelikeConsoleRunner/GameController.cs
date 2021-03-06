@@ -5,6 +5,7 @@ using Dungeons;
 using Dungeons.ASCIIDisplay;
 using Roguelike;
 using Roguelike.Abstract;
+using Roguelike.Abstract.Managers;
 using Roguelike.Events;
 using Roguelike.Managers;
 using Roguelike.Tiles;

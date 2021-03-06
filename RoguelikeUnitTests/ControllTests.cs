@@ -40,7 +40,7 @@ namespace RoguelikeUnitTests
     {
       var game = CreateGame(false);
       Assert.Null(game.Hero);
-      var gi = new Roguelike.GenerationInfo();
+      var gi = new Roguelike.Generators.GenerationInfo();
       gi.MakeEmpty();
       
       var level = game.GenerateLevel(0, gi);
@@ -70,7 +70,7 @@ namespace RoguelikeUnitTests
     {
       var game = CreateGame(false);
       Assert.Null(game.Hero);
-      var gi = new Roguelike.GenerationInfo();
+      var gi = new Roguelike.Generators.GenerationInfo();
       gi.MakeEmpty();
 
       var level = game.GenerateLevel(0, gi);
@@ -120,7 +120,7 @@ namespace RoguelikeUnitTests
       var game = CreateGame(false);
       Assert.Null(game.Hero);
       
-      var gi = new Roguelike.GenerationInfo();
+      var gi = new Roguelike.Generators.GenerationInfo();
       gi.MakeEmpty();
 
       var level = game.GenerateLevel(0, gi);
@@ -171,7 +171,7 @@ namespace RoguelikeUnitTests
       {
         var game = CreateGame(false);
         Assert.Null(game.Hero);
-        var gi = new Roguelike.GenerationInfo();
+        var gi = new Roguelike.Generators.GenerationInfo();
         gi.MakeEmpty();
 
         var level = game.GenerateLevel(0, gi);

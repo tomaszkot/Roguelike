@@ -3,6 +3,7 @@ using Dungeons.Core;
 using Dungeons.TileContainers;
 using Dungeons.Tiles;
 using Roguelike.Abstract;
+using Roguelike.Abstract.Tiles;
 using Roguelike.Events;
 using Roguelike.Tiles;
 using Roguelike.Tiles.Interactive;

@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Roguelike.Abstract;
 using Roguelike.Abstract.Spells;
+using Roguelike.Abstract.Tiles;
 
 namespace Roguelike.Tiles.Interactive
 {

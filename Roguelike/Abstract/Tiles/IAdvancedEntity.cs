@@ -1,8 +1,9 @@
 ﻿using Roguelike.Abilities;
+using Roguelike.Abstract.TileParts;
 using Roguelike.Tiles;
 using System.Collections.Generic;
 
-namespace Roguelike.Abstract
+namespace Roguelike.Abstract.Tiles
 {
   public interface IAdvancedEntity : IInventoryOwner
   {

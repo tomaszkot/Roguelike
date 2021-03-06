@@ -1,5 +1,6 @@
 ﻿using Dungeons.Core;
 using Roguelike.Abstract;
+using Roguelike.Abstract.Projectiles;
 using System;
 using System.Collections.Generic;
 using System.Linq;

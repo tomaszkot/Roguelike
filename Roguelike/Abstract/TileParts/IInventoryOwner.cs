@@ -1,11 +1,11 @@
 ﻿using Roguelike.LootContainers;
 using Roguelike.Tiles;
 
-namespace Roguelike.Abstract
+namespace Roguelike.Abstract.TileParts
 {
   public interface IInventoryOwner
   {
-    Inventory Inventory { get; set; }
+    Roguelike.LootContainers.Inventory Inventory { get; set; }
     int GetPrice(Loot loot);
     int Gold { get; set; }
   }

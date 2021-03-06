@@ -2,6 +2,7 @@
 using Dungeons.Tiles;
 using Newtonsoft.Json;
 using Roguelike.Abstract;
+using Roguelike.Abstract.Projectiles;
 using Roguelike.Attributes;
 using Roguelike.Events;
 using Roguelike.Managers;

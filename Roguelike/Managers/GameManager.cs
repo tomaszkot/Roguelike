@@ -22,6 +22,8 @@ using Roguelike.History;
 using Roguelike.State;
 using Roguelike.LootFactories;
 using Roguelike.Attributes;
+using Roguelike.Abstract.Tiles;
+using Roguelike.Extensions;
 
 namespace Roguelike.Managers
 {
@@ -792,9 +794,9 @@ namespace Roguelike.Managers
     public Loot SellItem
     (
       Loot loot,
-      Roguelike.Abstract.IAdvancedEntity src,
+      IAdvancedEntity src,
       InventoryBase srcInv,
-      Roguelike.Abstract.IAdvancedEntity dest,
+      IAdvancedEntity dest,
       InventoryBase destInv,
       bool dragDrop = false,
       int stackedCount = 1//in case of stacked there can be one than more sold at time
@@ -852,7 +854,7 @@ namespace Roguelike.Managers
       return sold;
     }
 
-    protected virtual bool GetGoldInvolvedOnSell(Abstract.IAdvancedEntity src, Abstract.IAdvancedEntity dest)
+    protected virtual bool GetGoldInvolvedOnSell(IAdvancedEntity src, IAdvancedEntity dest)
     {
       return src != dest;
     }

@@ -85,7 +85,7 @@ namespace Roguelike
           throw new Exception("levelIndex > LevelGenerator.MaxLevelIndex");
         LevelGenerator.LevelIndex = levelIndex;
         
-        var generInfo = gi ?? new GenerationInfo();
+        var generInfo = gi ?? new Generators.GenerationInfo();
         level = LevelGenerator.Generate(levelIndex, generInfo) as TileContainers.GameLevel;
 
         Merchant merch = new Merchant(this.Container);

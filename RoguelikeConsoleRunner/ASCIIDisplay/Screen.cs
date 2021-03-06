@@ -2,6 +2,7 @@
 using Dungeons.ASCIIDisplay;
 using Dungeons.ASCIIDisplay.Presenters;
 using Roguelike.Abstract;
+using Roguelike.Abstract.Managers;
 using Roguelike.Managers;
 using Roguelike.TileContainers;
 using System;

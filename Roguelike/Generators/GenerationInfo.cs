@@ -1,4 +1,4 @@
-﻿namespace Roguelike
+﻿namespace Roguelike.Generators
 {
   public class DebugGenerationInfo
   {

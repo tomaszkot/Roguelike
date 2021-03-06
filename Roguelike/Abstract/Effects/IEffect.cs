@@ -2,7 +2,7 @@
 using Roguelike.Factors;
 using Roguelike.Tiles;
 
-namespace Roguelike.Abstract
+namespace Roguelike.Abstract.Effects
 {
   /// <summary>
   /// ILastingEffectSrc can be Spell, Hit by melee or projectile

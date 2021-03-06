@@ -3,6 +3,7 @@ using Roguelike;
 using Roguelike.Attributes;
 using Roguelike.Effects;
 using Roguelike.Events;
+using Roguelike.Extensions;
 using Roguelike.Spells;
 using Roguelike.Tiles;
 using System;

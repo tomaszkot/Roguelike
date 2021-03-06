@@ -1,5 +1,6 @@
 ﻿using Dungeons.Core;
 using Roguelike.Attributes;
+using Roguelike.Extensions;
 using Roguelike.TileParts;
 using Roguelike.Tiles.Looting;
 using System;

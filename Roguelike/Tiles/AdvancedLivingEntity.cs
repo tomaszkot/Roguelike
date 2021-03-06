@@ -17,6 +17,8 @@ using SimpleInjector;
 using Roguelike.Abstract;
 using Roguelike.Discussions;
 using Roguelike.Abilities;
+using Roguelike.Abstract.Tiles;
+using Roguelike.Generators;
 
 namespace Roguelike.Tiles
 {

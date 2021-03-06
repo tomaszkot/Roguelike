@@ -1,5 +1,6 @@
 ﻿using Dungeons.Core;
 using Roguelike.Attributes;
+using Roguelike.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Linq;

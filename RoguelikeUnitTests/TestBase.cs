@@ -4,6 +4,7 @@ using NUnit.Framework;
 using Roguelike;
 using Roguelike.Attributes;
 using Roguelike.Events;
+using Roguelike.Generators;
 using Roguelike.Managers;
 using Roguelike.Spells;
 using Roguelike.Tiles;

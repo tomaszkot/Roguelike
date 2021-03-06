@@ -67,7 +67,7 @@
     <Compile Include="Abstract\Tiles\IAlly.cs" />
     <Compile Include="Abstract\IDescriptable.cs" />
     <Compile Include="Abstract\Managers\IGameManagerProvider.cs" />
-    <Compile Include="Abstract\Inventory\IInventoryOwner.cs" />
+    <Compile Include="Abstract\TileParts\IInventoryOwner.cs" />
     <Compile Include="Abstract\Effects\IEffect.cs" />
     <Compile Include="Abstract\Tiles\IObstacle.cs" />
     <Compile Include="Abstract\Projectiles\IProjectilesFactory.cs" />
@@ -102,7 +102,7 @@
     <Compile Include="Managers\QuestManager.cs" />
     <Compile Include="Quests\Quest.cs" />
     <Compile Include="State\GameState.cs" />
-    <Compile Include="GenerationInfo.cs" />
+    <Compile Include="Generators\GenerationInfo.cs" />
     <Compile Include="Generators\LevelGenerator.cs" />
     <Compile Include="Generators\LootGenerator.cs" />
     <Compile Include="Generators\ProjectilesFactory.cs" />
@@ -221,7 +221,9 @@
       <Name>Dungeons</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Abstract\Inventory\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>if  "$(SolutionName)" == "OuaDIISln" xcopy  "$(TargetPath)" "$(SolutionDir)\Assets\Dlls" /Y

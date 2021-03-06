@@ -2,6 +2,7 @@
 using Roguelike;
 using Roguelike.Attributes;
 using Roguelike.Effects;
+using Roguelike.Generators;
 using Roguelike.Spells;
 using Roguelike.Tiles;
 using Roguelike.Tiles.Looting;

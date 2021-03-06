@@ -1,6 +1,7 @@
 ﻿using NUnit.Framework;
 using Roguelike;
 using Roguelike.Attributes;
+using Roguelike.Extensions;
 using Roguelike.Spells;
 using Roguelike.Tiles;
 using Roguelike.Tiles.Interactive;

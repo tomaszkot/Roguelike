@@ -1,4 +1,5 @@
 ﻿using Dungeons.Core;
+using Roguelike.Extensions;
 using Roguelike.Tiles.Looting;
 
 namespace Roguelike.Tiles

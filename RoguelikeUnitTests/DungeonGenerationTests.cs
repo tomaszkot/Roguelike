@@ -33,7 +33,7 @@ namespace RoguelikeUnitTests
         return dungeon;
       };
 
-      var info = new Roguelike.GenerationInfo();
+      var info = new Roguelike.Generators.GenerationInfo();
       info.NumberOfRooms = 1;
       info.MakeEmpty();
       info.GenerateOuterWalls = false;
@@ -129,7 +129,7 @@ namespace RoguelikeUnitTests
       //game can have 1-n levels (sub-dungeons)
       var game = CreateGame(false);
       Assert.Null(game.Hero);
-      var gi = new Roguelike.GenerationInfo();
+      var gi = new Roguelike.Generators.GenerationInfo();
       Assert.Greater(gi.NumberOfRooms, 3);
       Assert.Greater(gi.ForcedNumberOfEnemiesInRoom, 2);
       //gi.NumberOfRooms = 5;
@@ -152,7 +152,7 @@ namespace RoguelikeUnitTests
       //game can have 1-n levels (sub-dungeons)
       var game = CreateGame(false);
       Assert.Null(game.Hero);
-      var gi = new Roguelike.GenerationInfo();
+      var gi = new Roguelike.Generators.GenerationInfo();
       gi.NumberOfRooms = 1;//tmp
       gi.MaxNodeSize = new System.Drawing.Size(11, 11);
       gi.MinNodeSize = gi.MaxNodeSize;
@@ -183,7 +183,7 @@ namespace RoguelikeUnitTests
     private DungeonLevel GenRoomWithEnemies()
     {
       var generator = Container.GetInstance<Dungeons.IDungeonGenerator>();
-      var info = new Roguelike.GenerationInfo();
+      var info = new Roguelike.Generators.GenerationInfo();
       info.NumberOfRooms = 1;
       info.GenerateEnemies = false;
       info.MinNodeSize = new Size(8, 8);
@@ -206,7 +206,7 @@ namespace RoguelikeUnitTests
     [Test]
     public void TestLootRevealFlagBasic()
     {
-      var info = new Roguelike.GenerationInfo();
+      var info = new Roguelike.Generators.GenerationInfo();
       info.NumberOfRooms = 1;
       info.MinNodeSize = new Size(15, 15);
       info.MaxNodeSize = new Size(30, 30);
@@ -233,7 +233,7 @@ namespace RoguelikeUnitTests
     [Test]
     public void TestLootRevealFlagAdv()
     {
-      var info = new Roguelike.GenerationInfo();
+      var info = new Roguelike.Generators.GenerationInfo();
       info.NumberOfRooms = 2;
       info.MinNodeSize = new Size(15, 15);
       info.MaxNodeSize = new Size(30, 30);

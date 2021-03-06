@@ -1,6 +1,6 @@
 ﻿using Dungeons.Tiles;
 
-namespace Roguelike.Abstract
+namespace Roguelike.Abstract.Projectiles
 {
   public interface IProjectile
   {

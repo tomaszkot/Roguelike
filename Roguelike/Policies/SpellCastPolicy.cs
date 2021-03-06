@@ -1,4 +1,5 @@
 ﻿using Roguelike.Abstract;
+using Roguelike.Abstract.Projectiles;
 using Roguelike.Tiles;
 using Roguelike.Tiles.Looting;
 

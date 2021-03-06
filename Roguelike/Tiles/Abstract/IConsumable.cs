@@ -1,4 +1,5 @@
 ﻿using Roguelike.Abstract;
+using Roguelike.Abstract.Effects;
 using Roguelike.Attributes;
 using Roguelike.Effects;
 using Roguelike.Factors;
