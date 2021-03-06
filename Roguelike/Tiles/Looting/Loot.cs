@@ -3,6 +3,7 @@ using Dungeons.Tiles;
 using Newtonsoft.Json;
 using Roguelike.Attributes;
 using Roguelike.Tiles.Abstract;
+using Roguelike.Tiles.LivingEntities;
 using System;
 using System.Linq;
 

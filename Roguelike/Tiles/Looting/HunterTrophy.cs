@@ -1,5 +1,6 @@
 ﻿using Roguelike.Attributes;
 using Roguelike.Extensions;
+using Roguelike.Tiles.LivingEntities;
 using System;
 using System.Collections.Generic;
 using System.Linq;

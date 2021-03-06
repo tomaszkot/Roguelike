@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using Roguelike.Abilities;
+using Roguelike.Tiles.LivingEntities;
 using System.Collections.Generic;
 
 namespace Roguelike.Tiles.Looting

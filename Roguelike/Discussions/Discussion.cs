@@ -1,4 +1,5 @@
 ﻿using Roguelike.Tiles;
+using Roguelike.Tiles.LivingEntities;
 using System.Collections.Generic;
 using System.Linq;
 using System.Xml.Serialization;

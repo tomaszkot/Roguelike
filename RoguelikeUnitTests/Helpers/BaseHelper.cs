@@ -5,6 +5,7 @@ using Roguelike;
 using Roguelike.Generators;
 using Roguelike.Managers;
 using Roguelike.Tiles;
+using Roguelike.Tiles.LivingEntities;
 
 namespace RoguelikeUnitTests.Helpers
 {

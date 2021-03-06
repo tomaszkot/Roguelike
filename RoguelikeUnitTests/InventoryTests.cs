@@ -1,6 +1,7 @@
 ﻿using NUnit.Framework;
 using Roguelike.LootContainers;
 using Roguelike.Tiles;
+using Roguelike.Tiles.LivingEntities;
 using Roguelike.Tiles.Looting;
 using System.Linq;
 

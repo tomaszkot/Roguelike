@@ -1,6 +1,7 @@
 ﻿using Roguelike.Abstract;
 using Roguelike.Abstract.Projectiles;
 using Roguelike.Tiles;
+using Roguelike.Tiles.LivingEntities;
 using Roguelike.Tiles.Looting;
 
 namespace Roguelike.Policies

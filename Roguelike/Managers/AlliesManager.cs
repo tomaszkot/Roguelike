@@ -3,6 +3,7 @@ using Roguelike.Abstract;
 using Roguelike.Policies;
 using Roguelike.Strategy;
 using Roguelike.Tiles;
+using Roguelike.Tiles.LivingEntities;
 using SimpleInjector;
 using System;
 using System.Linq;

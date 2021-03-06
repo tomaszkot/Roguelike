@@ -10,6 +10,7 @@ using Roguelike.Managers;
 using Roguelike.Multimedia;
 using Roguelike.Spells;
 using Roguelike.Tiles;
+using Roguelike.Tiles.LivingEntities;
 using RoguelikeUnitTests.Helpers;
 using SimpleInjector;
 using System;
@@ -96,12 +97,12 @@ namespace RoguelikeUnitTests
       GotoNextHeroTurn();
     }
 
-    protected List<Roguelike.Tiles.Enemy> ActiveEnemies
+    protected List<Roguelike.Tiles.LivingEntities.Enemy> ActiveEnemies
     {
       get { return game.GameManager.EnemiesManager.GetActiveEnemies().ToList(); }
     }
 
-    protected List<Roguelike.Tiles.Enemy> AllEnemies
+    protected List<Roguelike.Tiles.LivingEntities.Enemy> AllEnemies
     {
       get { return game.GameManager.EnemiesManager.AllEntities.Cast<Enemy>().ToList(); }
     }

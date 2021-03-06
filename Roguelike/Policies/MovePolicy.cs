@@ -1,5 +1,6 @@
 ﻿using Roguelike.TileContainers;
 using Roguelike.Tiles;
+using Roguelike.Tiles.LivingEntities;
 using System.Collections.Generic;
 using System.Drawing;
 

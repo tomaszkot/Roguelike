@@ -6,6 +6,7 @@ using Roguelike.Calculated;
 using Roguelike.Extensions;
 using Roguelike.Factors;
 using Roguelike.Tiles;
+using Roguelike.Tiles.LivingEntities;
 using System.Collections.Generic;
 
 namespace Roguelike.Spells

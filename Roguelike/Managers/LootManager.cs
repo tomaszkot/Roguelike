@@ -5,6 +5,7 @@ using Roguelike.Events;
 using Roguelike.Generators;
 using Roguelike.Tiles;
 using Roguelike.Tiles.Interactive;
+using Roguelike.Tiles.LivingEntities;
 using Roguelike.Tiles.Looting;
 using System;
 using System.Collections.Generic;

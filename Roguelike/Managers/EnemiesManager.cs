@@ -3,6 +3,7 @@ using Dungeons.Tiles;
 using Roguelike.Policies;
 using Roguelike.Strategy;
 using Roguelike.Tiles;
+using Roguelike.Tiles.LivingEntities;
 using Roguelike.Tiles.Looting;
 using SimpleInjector;
 using System.Collections.Generic;

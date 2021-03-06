@@ -5,6 +5,7 @@ using Roguelike.Effects;
 using Roguelike.Generators;
 using Roguelike.Spells;
 using Roguelike.Tiles;
+using Roguelike.Tiles.LivingEntities;
 using Roguelike.Tiles.Looting;
 using System.Collections.Generic;
 using System.Linq;

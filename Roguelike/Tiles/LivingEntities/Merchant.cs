@@ -8,7 +8,7 @@ using Roguelike.Tiles.LivingEntities;
 using SimpleInjector;
 using System.Drawing;
 
-namespace Roguelike.Tiles
+namespace Roguelike.Tiles.LivingEntities
 {
   public class Merchant : AdvancedLivingEntity, IAlly
   {

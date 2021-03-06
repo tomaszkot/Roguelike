@@ -6,6 +6,7 @@ using Roguelike.Policies;
 using Roguelike.Spells;
 using Roguelike.Tiles;
 using Roguelike.Tiles.Interactive;
+using Roguelike.Tiles.LivingEntities;
 using Roguelike.Tiles.Looting;
 using System.Collections.Generic;
 using System.Linq;

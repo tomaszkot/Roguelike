@@ -1,6 +1,7 @@
 ﻿using Roguelike.Abstract;
 using Roguelike.Abstract.Spells;
 using Roguelike.Attributes;
+using Roguelike.Tiles.LivingEntities;
 
 namespace Roguelike.Tiles.Interactive
 {

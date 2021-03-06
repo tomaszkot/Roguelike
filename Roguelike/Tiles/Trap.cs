@@ -2,6 +2,7 @@
 using Dungeons.Tiles;
 using Roguelike.Effects;
 using Roguelike.Spells;
+using Roguelike.Tiles.LivingEntities;
 using System;
 using System.Collections.Generic;
 using System.Drawing;

@@ -19,7 +19,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 
-namespace Roguelike.Tiles
+namespace Roguelike.Tiles.LivingEntities
 {
   public enum EntityState { Idle, Moving, Attacking, CastingSpell }
   public enum EntityMoveKind { Freestyle, FollowingHero, ReturningHome }

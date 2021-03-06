@@ -4,6 +4,7 @@ using Roguelike.Abstract;
 using Roguelike.Abstract.Spells;
 using Roguelike.Attributes;
 using Roguelike.Tiles;
+using Roguelike.Tiles.LivingEntities;
 using Roguelike.Tiles.Looting;
 using System;
 using System.Collections.Generic;

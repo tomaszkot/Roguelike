@@ -11,7 +11,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Roguelike.Tiles
+namespace Roguelike.Tiles.LivingEntities
 {
   public class TrainedHound : LivingEntities.AdvancedLivingEntity, IAlly
   {

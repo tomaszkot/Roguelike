@@ -5,6 +5,7 @@ using Roguelike.Extensions;
 using Roguelike.Spells;
 using Roguelike.Tiles;
 using Roguelike.Tiles.Interactive;
+using Roguelike.Tiles.LivingEntities;
 using Roguelike.Tiles.Looting;
 using RoguelikeUnitTests.Helpers;
 using System;

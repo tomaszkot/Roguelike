@@ -6,6 +6,7 @@ using Roguelike.Extensions;
 using Roguelike.Factors;
 using Roguelike.Spells;
 using Roguelike.Tiles;
+using Roguelike.Tiles.LivingEntities;
 using System;
 using System.Linq;
 using System.Xml.Serialization;

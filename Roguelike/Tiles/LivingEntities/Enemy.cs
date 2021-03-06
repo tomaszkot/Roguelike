@@ -9,7 +9,7 @@ using Roguelike.Effects;
 using Roguelike.Spells;
 using Roguelike.Tiles.Looting;
 
-namespace Roguelike.Tiles
+namespace Roguelike.Tiles.LivingEntities
 {
   public enum RoomKind { Unset, PuzzleRoom, Island }
   public enum EnemyPowerKind { Unset, Plain, Champion, Boss };

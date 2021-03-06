@@ -1,6 +1,7 @@
 ﻿using Roguelike.Abstract;
 using Roguelike.Abstract.Spells;
 using Roguelike.Tiles;
+using Roguelike.Tiles.LivingEntities;
 using System.Collections.Generic;
 
 namespace Roguelike.Spells

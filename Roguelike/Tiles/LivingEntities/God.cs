@@ -1,7 +1,7 @@
 ﻿using Dungeons.Core;
 using System.Drawing;
 
-namespace Roguelike.Tiles
+namespace Roguelike.Tiles.LivingEntities
 {
   public class God : LivingEntity
     //IDescriptable, 

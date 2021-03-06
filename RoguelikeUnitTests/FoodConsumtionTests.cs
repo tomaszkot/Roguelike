@@ -75,7 +75,7 @@ namespace RoguelikeUnitTests
 
     //  Hero.Consume(hooch);
     //  Assert.IsTrue(Hero.LastingEffects.Any());
-    //  Assert.IsTrue(Hero.LastingEffects.Where(i => i.Type == Roguelike.Tiles.LivingEntity.EffectType.Hooch).Any());
+    //  Assert.IsTrue(Hero.LastingEffects.Where(i => i.Type == Roguelike.Tiles.LivingEntities.LivingEntity.EffectType.Hooch).Any());
 
     //  var hoochAttack = Hero.Stats.Stats[EntityStatKind.Strength];
     //  var hoochChanceToHit = Hero.Stats.Stats[EntityStatKind.ChanceToHit];
@@ -93,7 +93,7 @@ namespace RoguelikeUnitTests
     //  SkipTurns(6);
 
     //  //now shall be off
-    //  Assert.IsFalse(Hero.LastingEffects.Where(i => i.Type == Roguelike.Tiles.LivingEntity.EffectType.Hooch).Any());
+    //  Assert.IsFalse(Hero.LastingEffects.Where(i => i.Type == Roguelike.Tiles.LivingEntities.LivingEntity.EffectType.Hooch).Any());
     //  hoochAttack = Hero.Stats.Stats[EntityStatKind.Strength];
     //  hoochChanceToHit = Hero.Stats.Stats[EntityStatKind.ChanceToHit];
     //  Assert.AreEqual(hoochAttack.CurrentValue, attack);

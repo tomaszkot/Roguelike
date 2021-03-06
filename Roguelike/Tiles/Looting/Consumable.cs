@@ -4,6 +4,7 @@ using Roguelike.Effects;
 using Roguelike.Extensions;
 using Roguelike.Factors;
 using Roguelike.Tiles.Abstract;
+using Roguelike.Tiles.LivingEntities;
 using System;
 using System.Collections.Generic;
 using System.Linq;

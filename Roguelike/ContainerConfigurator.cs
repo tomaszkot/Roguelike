@@ -10,6 +10,7 @@ using Roguelike.Serialization;
 using Roguelike.State;
 using Roguelike.TileContainers;
 using Roguelike.Tiles;
+using Roguelike.Tiles.LivingEntities;
 using SimpleInjector;
 
 namespace Roguelike

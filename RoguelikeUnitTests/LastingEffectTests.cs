@@ -6,6 +6,7 @@ using Roguelike.Events;
 using Roguelike.Extensions;
 using Roguelike.Spells;
 using Roguelike.Tiles;
+using Roguelike.Tiles.LivingEntities;
 using System;
 using System.Linq;
 

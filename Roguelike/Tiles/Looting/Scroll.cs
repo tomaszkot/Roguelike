@@ -2,6 +2,7 @@
 using Roguelike.Abstract.Spells;
 using Roguelike.Spells;
 using Roguelike.Tiles.Interactive;
+using Roguelike.Tiles.LivingEntities;
 using System;
 
 namespace Roguelike.Tiles.Looting

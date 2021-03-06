@@ -374,7 +374,7 @@ namespace Roguelike.Managers
           int counter = 0;
           foreach (var tile in CurrentNode.HiddenTiles)
           {
-            var en = tile as Roguelike.Tiles.Enemy;
+            var en = tile as Roguelike.Tiles.LivingEntities.Enemy;
             if (counter == 0)
             {
               var key = new Key();

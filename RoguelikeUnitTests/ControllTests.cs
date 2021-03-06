@@ -2,6 +2,7 @@
 using NUnit.Framework;
 using Roguelike;
 using Roguelike.Tiles;
+using Roguelike.Tiles.LivingEntities;
 using System;
 using System.Drawing;
 using System.Linq;

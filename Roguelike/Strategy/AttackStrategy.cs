@@ -8,6 +8,7 @@ using Roguelike.Policies;
 using Roguelike.Spells;
 using Roguelike.TileContainers;
 using Roguelike.Tiles;
+using Roguelike.Tiles.LivingEntities;
 using Roguelike.Tiles.Looting;
 using System;
 using System.Collections.Generic;
