@@ -2,6 +2,7 @@
 using Roguelike.Attributes;
 using Roguelike.Generators;
 using Roguelike.Tiles;
+using Roguelike.Tiles.LivingEntities;
 using System.Linq;
 
 namespace RoguelikeUnitTests

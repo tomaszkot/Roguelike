@@ -1,6 +1,7 @@
 ﻿using Roguelike.Abstract.Multimedia;
 using Roguelike.Events;
 using Roguelike.Tiles;
+using Roguelike.Tiles.LivingEntities;
 using Roguelike.Tiles.Looting;
 using SimpleInjector;
 using System;

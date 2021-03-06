@@ -6,6 +6,7 @@ using Newtonsoft.Json;
 using Roguelike.Serialization;
 using Roguelike.Tiles;
 using Roguelike.Tiles.Interactive;
+using Roguelike.Tiles.LivingEntities;
 using SimpleInjector;
 using System;
 using System.Collections.Generic;

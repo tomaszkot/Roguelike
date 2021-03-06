@@ -11,7 +11,7 @@ using System.Collections.Generic;
 using Roguelike.Calculated;
 using Roguelike.Quests;
 
-namespace Roguelike.Tiles
+namespace Roguelike.Tiles.LivingEntities
 {
   public class Hero : AdvancedLivingEntity
   {

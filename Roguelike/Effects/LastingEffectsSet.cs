@@ -9,6 +9,7 @@ using Roguelike.Factors;
 using Roguelike.Managers;
 using Roguelike.Spells;
 using Roguelike.Tiles;
+using Roguelike.Tiles.LivingEntities;
 using Roguelike.Tiles.Looting;
 using SimpleInjector;
 using System;

@@ -10,6 +10,7 @@ using Roguelike.Events;
 using Roguelike.Managers;
 using Roguelike.Tiles;
 using Roguelike.Tiles.Interactive;
+using Roguelike.Tiles.LivingEntities;
 using SimpleInjector;
 
 namespace RoguelikeConsoleRunner

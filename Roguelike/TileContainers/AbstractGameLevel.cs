@@ -4,6 +4,7 @@ using Dungeons.Tiles;
 using Newtonsoft.Json;
 using Roguelike.Tiles;
 using Roguelike.Tiles.Interactive;
+using Roguelike.Tiles.LivingEntities;
 using SimpleInjector;
 using System;
 using System.Collections.Generic;
@@ -282,7 +283,7 @@ namespace Roguelike.TileContainers
       return null;
     }
 
-    public virtual bool RevealRoom(Tiles.Interactive.Door door, Roguelike.Tiles.Hero hero)
+    public virtual bool RevealRoom(Tiles.Interactive.Door door, Hero hero)
     {
       if (door.IsFromChildIsland)
       {

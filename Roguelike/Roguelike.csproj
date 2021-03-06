@@ -158,8 +158,7 @@
     <Compile Include="Tiles\TilesExtensions.cs" />
     <Compile Include="Tiles\Abstract\IConsumable.cs" />
     <Compile Include="Tiles\Abstract\IMovingDamager.cs" />
-    <Compile Include="Tiles\AdvancedLivingEntity.cs" />
-    <Compile Include="Tiles\Ally.cs" />
+    <Compile Include="Tiles\LivingEntities\AdvancedLivingEntity.cs" />
     <Compile Include="Tiles\Interactive\Barrel.cs" />
     <Compile Include="Tiles\CrackedStone.cs" />
     <Compile Include="Tiles\Hound.cs" />
@@ -200,7 +199,7 @@
     <Compile Include="Tiles\Interactive\Door.cs" />
     <Compile Include="Tiles\Enemy.cs" />
     <Compile Include="Tiles\Looting\Equipment.cs" />
-    <Compile Include="Tiles\Hero.cs" />
+    <Compile Include="Tiles\LivingEntities\Hero.cs" />
     <Compile Include="Tiles\LivingEntity.cs" />
     <Compile Include="Tiles\Looting\Loot.cs" />
     <Compile Include="Tiles\Interactive\Stairs.cs" />

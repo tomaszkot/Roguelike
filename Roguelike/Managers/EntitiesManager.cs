@@ -10,6 +10,7 @@ using SimpleInjector;
 using System.Diagnostics;
 using static Dungeons.TileContainers.DungeonNode;
 using Roguelike.Strategy;
+using Roguelike.Tiles.LivingEntities;
 
 namespace Roguelike.Managers
 {

@@ -3,6 +3,7 @@ using Roguelike.Abstract;
 using Roguelike.Abstract.Tiles;
 using Roguelike.Attributes;
 using Roguelike.Managers;
+using Roguelike.Tiles.LivingEntities;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -12,7 +13,7 @@ using System.Threading.Tasks;
 
 namespace Roguelike.Tiles
 {
-  public class TrainedHound : AdvancedLivingEntity, IAlly
+  public class TrainedHound : LivingEntities.AdvancedLivingEntity, IAlly
   {
     public AllyKind Kind { get; set; }
     public bool Active { get ; set ; }

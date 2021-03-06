@@ -21,11 +21,12 @@ using Roguelike.Abstract.Tiles;
 using Roguelike.Generators;
 using Roguelike.TileParts;
 
-namespace Roguelike.Tiles
+namespace Roguelike.Tiles.LivingEntities
 {
   //public class GodActivationChangedArgs : EventArgs
   //{ 
   //}
+  public enum AllyKind { Unset, Hound, Enemy, Merchant }
   public enum EntityProffesionKind { Unset, King, Prince, Knight, Priest, Mercenary, Merchant, Peasant, Bandit, Adventurer, Slave }
   public enum EntityGender { Unset, Male, Female }
 

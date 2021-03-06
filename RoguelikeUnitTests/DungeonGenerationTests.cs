@@ -4,6 +4,7 @@ using NUnit.Framework;
 using Roguelike;
 using Roguelike.Tiles;
 using Roguelike.Tiles.Interactive;
+using Roguelike.Tiles.LivingEntities;
 using SimpleInjector;
 using System.Drawing;
 using System.Linq;

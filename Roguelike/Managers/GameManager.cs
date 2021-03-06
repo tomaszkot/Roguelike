@@ -24,6 +24,7 @@ using Roguelike.LootFactories;
 using Roguelike.Attributes;
 using Roguelike.Abstract.Tiles;
 using Roguelike.Extensions;
+using Roguelike.Tiles.LivingEntities;
 
 namespace Roguelike.Managers
 {

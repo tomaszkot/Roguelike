@@ -2,6 +2,7 @@
 using Roguelike.State;
 using Roguelike.TileContainers;
 using Roguelike.Tiles;
+using Roguelike.Tiles.LivingEntities;
 using System;
 using System.Diagnostics;
 using System.Linq;

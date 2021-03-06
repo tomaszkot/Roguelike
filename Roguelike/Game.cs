@@ -8,6 +8,7 @@ using Roguelike.State;
 using Roguelike.TileContainers;
 using Roguelike.Tiles;
 using Roguelike.Tiles.Interactive;
+using Roguelike.Tiles.LivingEntities;
 using SimpleInjector;
 using System;
 using System.Collections.Generic;

@@ -4,6 +4,7 @@ using Roguelike.Attributes;
 using Roguelike.Managers;
 using Roguelike.Tiles;
 using Roguelike.Tiles.Interactive;
+using Roguelike.Tiles.LivingEntities;
 using System.Linq;
 
 namespace RoguelikeUnitTests

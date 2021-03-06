@@ -7,6 +7,7 @@ using Roguelike.Abstract.Tiles;
 using Roguelike.Events;
 using Roguelike.Tiles;
 using Roguelike.Tiles.Interactive;
+using Roguelike.Tiles.LivingEntities;
 using System;
 using System.Drawing;
 

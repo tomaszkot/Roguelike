@@ -3,6 +3,7 @@ using Roguelike;
 using Roguelike.History;
 using Roguelike.TileContainers;
 using Roguelike.Tiles;
+using Roguelike.Tiles.LivingEntities;
 using System;
 using System.Collections.Generic;
 using System.Linq;

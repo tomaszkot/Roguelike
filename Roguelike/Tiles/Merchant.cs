@@ -4,6 +4,7 @@ using Roguelike.Abstract;
 using Roguelike.Abstract.Tiles;
 using Roguelike.Attributes;
 using Roguelike.LootContainers;
+using Roguelike.Tiles.LivingEntities;
 using SimpleInjector;
 using System.Drawing;
 
