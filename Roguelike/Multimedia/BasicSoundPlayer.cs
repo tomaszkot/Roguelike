@@ -1,4 +1,5 @@
-﻿using Roguelike.Managers;
+﻿using Roguelike.Abstract.Multimedia;
+using Roguelike.Managers;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -8,7 +9,7 @@ using System.Media;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Roguelike
+namespace Roguelike.Multimedia
 {
   public class BasicSoundPlayer : ISoundPlayer
   {

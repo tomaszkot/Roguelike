@@ -1,4 +1,5 @@
-﻿using Roguelike.Events;
+﻿using Roguelike.Abstract.Multimedia;
+using Roguelike.Events;
 using Roguelike.Tiles;
 using Roguelike.Tiles.Looting;
 using SimpleInjector;
@@ -10,12 +11,6 @@ using System.Threading.Tasks;
 
 namespace Roguelike.Managers
 {
-  public interface ISoundPlayer
-  {
-    void PlaySound(string sound);
-    void StopSound();
-  }
-
   public class SoundManager
   {
     ISoundPlayer player;

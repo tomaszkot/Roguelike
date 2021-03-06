@@ -19,6 +19,7 @@ using Roguelike.Discussions;
 using Roguelike.Abilities;
 using Roguelike.Abstract.Tiles;
 using Roguelike.Generators;
+using Roguelike.TileParts;
 
 namespace Roguelike.Tiles
 {

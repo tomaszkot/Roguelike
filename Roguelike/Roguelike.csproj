@@ -62,14 +62,15 @@
     <Compile Include="Abilities\Ability.cs" />
     <Compile Include="Abilities\LootAbility.cs" />
     <Compile Include="Abstract\IGame.cs" />
+    <Compile Include="Abstract\Multimedia\ISoundPlayer.cs" />
     <Compile Include="Abstract\Spells\ISpell.cs" />
-    <Compile Include="Abstract\Tiles\IAdvancedEntity.cs" />
-    <Compile Include="Abstract\Tiles\IAlly.cs" />
+    <Compile Include="Tiles\Abstract\IAdvancedEntity.cs" />
+    <Compile Include="Tiles\Abstract\IAlly.cs" />
     <Compile Include="Abstract\IDescriptable.cs" />
     <Compile Include="Abstract\Managers\IGameManagerProvider.cs" />
     <Compile Include="Abstract\TileParts\IInventoryOwner.cs" />
     <Compile Include="Abstract\Effects\IEffect.cs" />
-    <Compile Include="Abstract\Tiles\IObstacle.cs" />
+    <Compile Include="Tiles\Abstract\IObstacle.cs" />
     <Compile Include="Abstract\Projectiles\IProjectilesFactory.cs" />
     <Compile Include="Abstract\Projectiles\IProjectile.cs" />
     <Compile Include="Astar\AuthorAttribute.cs" />
@@ -150,7 +151,7 @@
     <Compile Include="Serialization\IPersister.cs" />
     <Compile Include="Serialization\JSONPersister.cs" />
     <Compile Include="Translations\Strings.cs" />
-    <Compile Include="TileParts\IEquipable.cs" />
+    <Compile Include="Tiles\Abstract\IEquipable.cs" />
     <Compile Include="Effects\LastingEffectsSet.cs" />
     <Compile Include="Tiles\God.cs" />
     <Compile Include="Tiles\Looting\Key.cs" />
