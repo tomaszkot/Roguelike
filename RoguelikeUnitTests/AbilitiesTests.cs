@@ -30,7 +30,7 @@ namespace RoguelikeUnitTests
       {
         game.GameManager.CurrentNode.SetTile(AllEnemies[i], empOnes[i].Point);
       }
-      var ab = game.GameManager.Hero.GetAbility(AbilityKind.BulkAttack);
+      var ab = game.GameManager.Hero.GetAbility(PassiveAbilityKind.BulkAttack);
       ab.PrimaryStat.Value.Factor = 100;
       game.Hero.RecalculateStatFactors(false);
       game.GameManager.InteractHeroWith(AllEnemies[0]);
@@ -53,7 +53,7 @@ namespace RoguelikeUnitTests
       {
         game.GameManager.CurrentNode.SetTile(enemies[i], empOnes[i].Point);
       }
-      var ab = game.GameManager.Hero.GetAbility(AbilityKind.BulkAttack);
+      var ab = game.GameManager.Hero.GetAbility(PassiveAbilityKind.BulkAttack);
       for(int i=0;i<5;i++)
         ab.IncreaseLevel(game.Hero);
 
@@ -83,7 +83,7 @@ namespace RoguelikeUnitTests
       float en1Health = enemies[0].Stats.Health;
       game.GameManager.CurrentNode.SetTile(enemies[0], empOnes[0].Point);
 
-      var ab = game.GameManager.Hero.GetAbility(AbilityKind.StrikeBack);
+      var ab = game.GameManager.Hero.GetAbility(PassiveAbilityKind.StrikeBack);
       for (int i = 0; i < 5; i++)
         ab.IncreaseLevel(game.Hero);
 
@@ -114,7 +114,7 @@ namespace RoguelikeUnitTests
 
       game.Hero.AbilityPoints = 10;
       for (int i = 0; i < 5; i++)
-        game.Hero.IncreaseAbility(AbilityKind.LootingMastering);
+        game.Hero.IncreaseAbility(PassiveAbilityKind.LootingMastering);
 
       var numOfBarrelLootAfterAbility = GetLootFromSrc(game, barrels);
       var numOfEnemiesLootAfterAbility = GetLootFromSrc(game, enemies);
@@ -325,8 +325,8 @@ namespace RoguelikeUnitTests
       var abVal = 0.0;
       for (int i = 0; i < MaxAbilityInc + 1; i++)
       {
-        var done = Hero.IncreaseAbility(forMana ? AbilityKind.RestoreMana : AbilityKind.RestoreHealth);
-        var ab = Hero.GetAbility(forMana ? AbilityKind.RestoreMana : AbilityKind.RestoreHealth);
+        var done = Hero.IncreaseAbility(forMana ? PassiveAbilityKind.RestoreMana : PassiveAbilityKind.RestoreHealth);
+        var ab = Hero.GetAbility(forMana ? PassiveAbilityKind.RestoreMana : PassiveAbilityKind.RestoreHealth);
         AssertNextValue(i, ab, abVal, null);
         var factor = GetFactor(ab, true);
         Assert.Less(factor, 10);
@@ -371,12 +371,12 @@ namespace RoguelikeUnitTests
       }
     }
 
-    float GetFactor(Ability ab, bool primary)
+    float GetFactor(PassiveAbility ab, bool primary)
     {
       return ab.GetFactor(primary);
     }
 
-    void AssertNextValue(int i, Ability ab, double valuePrimary, double? valueAux)
+    void AssertNextValue(int i, PassiveAbility ab, double valuePrimary, double? valueAux)
     {
       var factor = GetFactor(ab, true);
       var factorAux = GetFactor(ab, false);
@@ -467,19 +467,19 @@ namespace RoguelikeUnitTests
     public void BasicWeaponsMasteryTests()
     {
       var game = CreateGame();
-      Dictionary<AbilityKind, float> abs = new Dictionary<AbilityKind, float>()
+      Dictionary<PassiveAbilityKind, float> abs = new Dictionary<PassiveAbilityKind, float>()
       {
-        {AbilityKind.AxesMastering, 0 },
-        {AbilityKind.BashingMastering, 0 },
-        {AbilityKind.DaggersMastering, 0 },
-        {AbilityKind.SwordsMastering, 0 }
+        {PassiveAbilityKind.AxesMastering, 0 },
+        {PassiveAbilityKind.BashingMastering, 0 },
+        {PassiveAbilityKind.DaggersMastering, 0 },
+        {PassiveAbilityKind.SwordsMastering, 0 }
       };
-      Dictionary<AbilityKind, float> absR = new Dictionary<AbilityKind, float>()
+      Dictionary<PassiveAbilityKind, float> absR = new Dictionary<PassiveAbilityKind, float>()
       {
-        {AbilityKind.AxesMastering, 0 },
-        {AbilityKind.BashingMastering, 0 },
-        {AbilityKind.DaggersMastering, 0 },
-        {AbilityKind.SwordsMastering, 0 }
+        {PassiveAbilityKind.AxesMastering, 0 },
+        {PassiveAbilityKind.BashingMastering, 0 },
+        {PassiveAbilityKind.DaggersMastering, 0 },
+        {PassiveAbilityKind.SwordsMastering, 0 }
       };
       foreach (var abKV in abs)
       {
@@ -489,7 +489,7 @@ namespace RoguelikeUnitTests
       //Debug.WriteLine("end");
     }
 
-    private float TestWeaponKindMastering(AbilityKind kind)
+    private float TestWeaponKindMastering(PassiveAbilityKind kind)
     {
       var abVal = 0.0f;
       var abValAux = 0.0f;
@@ -499,19 +499,19 @@ namespace RoguelikeUnitTests
 
       switch (kind)
       {
-        case AbilityKind.AxesMastering:
+        case PassiveAbilityKind.AxesMastering:
           wpnName = "axe";
           destStat = EntityStatKind.ChanceToCauseTearApart;
           break;
-        case AbilityKind.BashingMastering:
+        case PassiveAbilityKind.BashingMastering:
           wpnName = "hammer";
           destStat = EntityStatKind.ChanceToCauseStunning;
           break;
-        case AbilityKind.DaggersMastering:
+        case PassiveAbilityKind.DaggersMastering:
           wpnName = "war_dagger";
           destStat = EntityStatKind.ChanceToCauseBleeding;
           break;
-        case AbilityKind.SwordsMastering:
+        case PassiveAbilityKind.SwordsMastering:
           wpnName = "rusty_sword";
           destStat = EntityStatKind.ChanceToHit;
           break;

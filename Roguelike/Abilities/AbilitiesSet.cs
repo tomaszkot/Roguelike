@@ -10,7 +10,7 @@ namespace Roguelike.Abilities
 {
   public class AbilitiesSet
   {
-    List<Ability> abilities = new List<Ability>();
+    List<PassiveAbility> abilities = new List<PassiveAbility>();
     //ExplosiveCocktail explosiveCocktailPropsProvider = new ExplosiveCocktail();
     //ThrowingKnife throwingKnifePropsProvider = new ThrowingKnife();
     //Trap trapPropsProvider = new Trap();
@@ -24,15 +24,15 @@ namespace Roguelike.Abilities
     public void EnsureItems()
     {
 
-      var kinds = Enum.GetValues(typeof(AbilityKind)).Cast<AbilityKind>().ToList();
+      var kinds = Enum.GetValues(typeof(PassiveAbilityKind)).Cast<PassiveAbilityKind>().ToList();
       foreach (var kind in kinds)
       {
-        if (abilities.Any(i => i.Kind == kind) || kind == AbilityKind.Unknown)
+        if (abilities.Any(i => i.Kind == kind) || kind == PassiveAbilityKind.Unset)
           continue;
-        if (kind == AbilityKind.LootingMastering)
-          abilities.Add(new LootAbility(true) { Kind = AbilityKind.LootingMastering });
+        if (kind == PassiveAbilityKind.LootingMastering)
+          abilities.Add(new LootAbility(true) { Kind = PassiveAbilityKind.LootingMastering });
         else
-          abilities.Add(new Ability() { Kind = kind });
+          abilities.Add(new PassiveAbility() { Kind = kind });
       }
       EnsureProps();
     }
@@ -53,13 +53,13 @@ namespace Roguelike.Abilities
       return fightItemsProps[kind];
     }
 
-    public List<Ability> GetItems()
+    public List<PassiveAbility> GetItems()
     {
       //EnsureAbilities(false);
       return abilities;
     }
 
-    public Ability GetByEntityStatKind(EntityStatKind esk, bool primary)
+    public PassiveAbility GetByEntityStatKind(EntityStatKind esk, bool primary)
     {
       if (primary)
         return Items.Where(i => i.PrimaryStat.Kind == esk).FirstOrDefault();
@@ -67,7 +67,7 @@ namespace Roguelike.Abilities
       return Items.Where(i => i.AuxStat.Kind == esk).FirstOrDefault();
     }
 
-    public List<Ability> Items
+    public List<PassiveAbility> Items
     {
       get
       {

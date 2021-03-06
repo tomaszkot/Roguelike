@@ -106,7 +106,7 @@ namespace Roguelike.Tiles.LivingEntities
       return loot.Price >= 0;
     }
 
-    public bool IncreaseAbility(AbilityKind kind)
+    public bool IncreaseAbility(PassiveAbilityKind kind)
     {
       var ab = GetAbility(kind);
       var increased = ab.IncreaseLevel(this);
@@ -121,10 +121,10 @@ namespace Roguelike.Tiles.LivingEntities
 
     public LootAbility GetLootAbility()
     {
-      return GetAbility(AbilityKind.LootingMastering) as LootAbility;
+      return GetAbility(PassiveAbilityKind.LootingMastering) as LootAbility;
     }
 
-    public Ability GetAbility(AbilityKind kind)
+    public PassiveAbility GetAbility(PassiveAbilityKind kind)
     {
       //Abilities.EnsureAbilities(false);
       return Abilities.Items.Where(i => i.Kind == kind).SingleOrDefault();
@@ -501,7 +501,7 @@ namespace Roguelike.Tiles.LivingEntities
         StatsRecalculated(this, EventArgs.Empty);
     }
 
-    private void AddAuxStat(Ability ab)
+    private void AddAuxStat(PassiveAbility ab)
     {
       if (ab.AuxStat.Kind == EntityStatKind.AxeExtraDamage
                       || ab.AuxStat.Kind == EntityStatKind.SwordExtraDamage
@@ -510,15 +510,6 @@ namespace Roguelike.Tiles.LivingEntities
       {
         Stats.AccumulateFactor(ab.AuxStat.Kind, ab.AuxStat.Factor);
       }
-      if (ab.Kind == AbilityKind.MagicDefender)
-      {
-        Stats.AccumulateFactor(EntityStatKind.MagicAttackDamageReduction, ab.AuxStat.Factor);
-      }
-      else if (ab.Kind == AbilityKind.MeleeDefender)
-      {
-        Stats.AccumulateFactor(EntityStatKind.MeleeAttackDamageReduction, ab.AuxStat.Factor);
-      }
-
     }
 
     protected virtual float GetStrengthIncrease()
@@ -568,12 +559,12 @@ namespace Roguelike.Tiles.LivingEntities
       var toApply = Abilities.GetItems().Where(i => i.BeginTurnApply && i.Level > 0).ToList();
       foreach (var ab in toApply)
       {
-        if (ab.Kind == AbilityKind.RestoreHealth ||
-          ab.Kind == AbilityKind.RestoreMana)
+        if (ab.Kind == PassiveAbilityKind.RestoreHealth ||
+          ab.Kind == PassiveAbilityKind.RestoreMana)
         {
           var entityStatKind = EntityStatKind.Unset;
 
-          if (ab.Kind == AbilityKind.RestoreHealth)
+          if (ab.Kind == PassiveAbilityKind.RestoreHealth)
           {
             entityStatKind = EntityStatKind.Health;
           }

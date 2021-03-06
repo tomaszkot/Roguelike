@@ -1096,7 +1096,7 @@ namespace Roguelike.Managers
 
     public Loot GetBestLoot(EnemyPowerKind powerKind, int level, LootHistory lootHistory)
     {
-      var loot = LootGenerator.GetBestLoot(powerKind, level, lootHistory, Hero.GetAbility(Abilities.AbilityKind.LootingMastering) as Abilities.LootAbility);
+      var loot = LootGenerator.GetBestLoot(powerKind, level, lootHistory, Hero.GetAbility(Abilities.PassiveAbilityKind.LootingMastering) as Abilities.LootAbility);
       //if (loot is Equipment eq)
       //{
       //   EnsureMaterialFromLootSource(eq);

@@ -106,7 +106,7 @@ namespace Roguelike.Spells
     public CrackedStoneSpell(LivingEntity caller) : base(caller, EntityStatKind.Unset)
     {
       Kind = SpellKind.CrackedStone;
-      Tile = new Tiles.CrackedStone();
+      Tile = new Tiles.LivingEntities.CrackedStone();
       SetHealthFromLevel(Tile as LivingEntity, 4f);
     }
 

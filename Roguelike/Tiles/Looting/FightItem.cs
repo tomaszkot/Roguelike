@@ -10,7 +10,7 @@ namespace Roguelike.Tiles.Looting
     private FightItemKind kind;
     public float baseDamage = 2.0f;
 
-    protected AbilityKind abilityKind;
+    protected PassiveAbilityKind abilityKind;
     protected string primaryFactorName = "Damage";
     protected string auxFactorName = "";
 
@@ -47,7 +47,7 @@ namespace Roguelike.Tiles.Looting
 
     public bool AlwaysCausesEffect { get; set; }
 
-    public Ability GetAbility()
+    public PassiveAbility GetAbility()
     {
       //var hero = Caller as Hero;
       //return hero.GetAbility(abilityKind);

@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Roguelike.Abilities
 {
-  public class LootAbility : Ability
+  public class LootAbility : PassiveAbility
   {
     public float ExtraChanceToAnyLoot { get; set; }
     public float ExtraChanceToGetMagicLoot { get; set; }

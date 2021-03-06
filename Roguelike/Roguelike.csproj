@@ -59,8 +59,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Abilities\AbilitiesSet.cs" />
-    <Compile Include="Abilities\Ability.cs" />
+    <Compile Include="Abilities\PassiveAbility.cs" />
     <Compile Include="Abilities\LootAbility.cs" />
+    <Compile Include="Abstract\Abilities\IAbility.cs" />
     <Compile Include="Abstract\IGame.cs" />
     <Compile Include="Abstract\Multimedia\ISoundPlayer.cs" />
     <Compile Include="Abstract\Spells\ISpell.cs" />
@@ -160,7 +161,7 @@
     <Compile Include="Tiles\Abstract\IMovingDamager.cs" />
     <Compile Include="Tiles\LivingEntities\AdvancedLivingEntity.cs" />
     <Compile Include="Tiles\Interactive\Barrel.cs" />
-    <Compile Include="Tiles\CrackedStone.cs" />
+    <Compile Include="Tiles\LivingEntities\CrackedStone.cs" />
     <Compile Include="Tiles\LivingEntities\Hound.cs" />
     <Compile Include="Tiles\Interactive\Portal.cs" />
     <Compile Include="Tiles\Looting\Consumable.cs" />

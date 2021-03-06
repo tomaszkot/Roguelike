@@ -12,8 +12,8 @@ namespace Roguelike.Abstract.Tiles
     Dictionary<CurrentEquipmentKind, Equipment> GetActiveEquipment();
     
     int AbilityPoints { get; set; }
-    Abilities.AbilitiesSet Abilities { get; }
-    bool IncreaseAbility(AbilityKind kind);
-    Ability GetAbility(AbilityKind kind);
+    AbilitiesSet Abilities { get; }
+    bool IncreaseAbility(PassiveAbilityKind kind);
+    PassiveAbility GetAbility(PassiveAbilityKind kind);
   }
 }

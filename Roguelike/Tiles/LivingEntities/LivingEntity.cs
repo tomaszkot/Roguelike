@@ -453,8 +453,8 @@ namespace Roguelike.Tiles.LivingEntities
             
     public bool IsImmuned(EffectType effect)
     {
-      //if (this is CrackedStone)
-      //  return true;
+      if (this is CrackedStone)
+        return true;
       return immunedEffects.Contains(effect) || chanceToExperienceEffect[effect] == 0;
     }
 

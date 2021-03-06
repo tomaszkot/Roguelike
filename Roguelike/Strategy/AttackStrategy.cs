@@ -87,8 +87,8 @@ namespace Roguelike
 
       bool TurnOnSpecialSkill(Enemy enemy, LivingEntity victim)
       {
-        //if (/*victim.HeroAlly ||*/ victim is CrackedStone)
-        //  return false;
+        if (/*victim.HeroAlly ||*/ victim is CrackedStone)
+          return false;
         if (enemy.Stats.HealthBelow(0.2f))
           return false;
         var cast = RandHelper.Random.NextDouble() <= GenerationInfo.ChanceToTurnOnSpecialSkillByEnemy;
