@@ -1,5 +1,6 @@
 ﻿using Roguelike.Abstract;
 using Roguelike.Attributes;
+using Roguelike.Calculated;
 using Roguelike.Tiles.Looting;
 using System;
 using System.Collections.Generic;

@@ -1,6 +1,7 @@
 ﻿//using Algorithms;
 using Dungeons.Core;
 using Newtonsoft.Json;
+using Roguelike.Abstract;
 using Roguelike.History;
 using Roguelike.Serialization;
 using Roguelike.Settings;

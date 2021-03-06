@@ -11,7 +11,11 @@ namespace Roguelike.Quests
   public class Quest
   {
     public QuestStatus Status { get; set; }
+    public string Tag { get; set; }
+    public string Name { get; set; }
     public string SenderName { get; set; }
-    public string Description { get; set; }
+    
   }
+
+  
 }

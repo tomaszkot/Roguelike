@@ -1,4 +1,5 @@
 ﻿using Roguelike.Abstract;
+using Roguelike.Abstract.Spells;
 using Roguelike.Tiles;
 using System.Collections.Generic;
 

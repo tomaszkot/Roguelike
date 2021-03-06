@@ -11,13 +11,6 @@ namespace RoguelikeUnitTests
   [TestFixture]
   class DiscussionTests : TestBase
   {
-    [Test]
-    public void TestLionel()
-    {
-      var disc = Discussion.CreateForLionel(true);
-      disc.ToXml();
-      var loaded = Discussion.FromXml(disc.EntityName);
-      Assert.AreEqual(loaded.MainItem.Topics.Count, disc.MainItem.Topics.Count);
-    }
+   
   }
 }

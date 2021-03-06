@@ -1,5 +1,6 @@
 ﻿using Dungeons.ASCIIDisplay;
 using Roguelike;
+using Roguelike.Abstract;
 using Roguelike.Managers;
 using System;
 using System.IO;

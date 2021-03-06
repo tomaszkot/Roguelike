@@ -4,17 +4,6 @@ using Roguelike.Tiles;
 
 namespace Roguelike.Abstract
 {
-  public interface IDamagingSpell
-  {
-    float Damage { get; }
-  }
-
-  public interface ISpell
-  {
-    LivingEntity Caller { get; set; }
-    int CoolingDown { get; set; }
-  }
-
   /// <summary>
   /// ILastingEffectSrc can be Spell, Hit by melee or projectile
   /// </summary>

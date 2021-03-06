@@ -1,6 +1,7 @@
 ﻿using Dungeons.Tiles;
 using Newtonsoft.Json;
 using Roguelike.Abstract;
+using Roguelike.Abstract.Spells;
 using Roguelike.Attributes;
 using Roguelike.Tiles;
 using Roguelike.Tiles.Looting;
