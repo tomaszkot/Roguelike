@@ -302,7 +302,11 @@ namespace Roguelike.Managers
       if (tileAtPos.IsEmpty)
         dest = tileAtPos;
       else
-        dest = context.CurrentNode.GetClosestEmpty(lootSource, true);
+      {
+        var empites = context.CurrentNode.GetEmptyNeighborhoodTiles(lootSource, true);
+        if (empites.Any())
+          dest = empites.First();
+      }
       if (dest != null)
       {
         //Logger.LogInfo("AddLootToNode calling ReplaceTile" + item + ", pt: "+ dest.Point);

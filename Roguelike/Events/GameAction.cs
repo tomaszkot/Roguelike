@@ -59,6 +59,14 @@ namespace Roguelike.Events
 
   }
 
+  public enum QuestActionKind { Unset, Accepted, AwaitingReward }
+
+  public class QuestAction : GameAction
+  {
+    public QuestActionKind QuestActionKind { get; set; }
+    public int QuestID { get; set; }
+  }
+
   public enum ShorcutsBarActionKind { ShorcutsBarChanged }
   public class ShorcutsBarAction : GameAction
   {
