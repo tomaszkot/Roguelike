@@ -6,7 +6,10 @@ using System.Threading.Tasks;
 
 namespace Roguelike.Quests
 {
-  public enum QuestStatus { Unset, Proposed, Accepted, Rejected, FailedToDo, AwaitingReward, Done }
+  public enum QuestStatus { Unset, Proposed, Accepted, Rejected, FailedToDo,
+    AwaitingReward,
+    Done
+  }
 
   public class Quest
   {

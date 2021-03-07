@@ -114,7 +114,7 @@ namespace Roguelike.TileContainers
       if (empties.Any())
         return empties.First();
 
-      //hmm, TODO! maybe that method shall be marked as trowing NotSupportedException? 
+      //hmm, TODO! maybe that method shall be marked as trowing NotSupportedException/deprecated? 
       //1(Loot is not considered here)
       //2 veeeery slow!
       return base.GetClosestEmpty(baseTile, sameNodeId, skip);

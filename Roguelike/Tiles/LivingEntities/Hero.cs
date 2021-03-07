@@ -16,7 +16,11 @@ namespace Roguelike.Tiles.LivingEntities
   public class Hero : AdvancedLivingEntity
   {
     List<Quest> quests = new List<Quest>();
-    public List<Quest> Quests { get => quests; set => quests = value; }
+    public List<Quest> Quests 
+    { 
+      get => quests; 
+      set => quests = value; 
+    }
     public static int FirstNextLevelExperienceThreshold = 50;
     public const int StartStrength = 15;//15;50
     

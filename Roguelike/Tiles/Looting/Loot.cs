@@ -73,7 +73,8 @@ namespace Roguelike.Tiles
 #endif
 
     public LootKind LootKind { get; set; }
-    
+    public string SourceQuestKind { get; set; }
+
     int price;
     protected int basePrice = -1;
     protected string collectedSound = "cloth";

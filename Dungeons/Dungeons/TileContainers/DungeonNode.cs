@@ -878,10 +878,18 @@ namespace Dungeons
 
       public List<Tile> GetEmptyNeighborhoodTiles(Tile target, bool incDiagonbal = true)
       {
-        var neibs = GetNeighborTiles(target, incDiagonbal);
-        neibs.Shuffle();
-        neibs = neibs.Where(i => IsTileEmpty(i)).ToList();
-        return neibs;
+        var neibs = GetNeighborTiles(target, incDiagonbal).Where(i=> i!=null).ToList();
+        if(neibs.Any())
+        {
+          neibs.Shuffle();
+          var neibsEmpty = neibs.Where(i => IsTileEmpty(i)).ToList();
+          if (neibsEmpty.Any())
+            return neibsEmpty;
+
+          return GetEmptyNeighborhoodTiles(neibs.First(), incDiagonbal);
+        }
+
+        return null;
       }
 
       public virtual bool IsTileEmpty(Tile tile)

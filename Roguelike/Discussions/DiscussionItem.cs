@@ -11,6 +11,7 @@ namespace Roguelike.Discussions
   {
     public DiscussionSentence Right { get; set; } = new DiscussionSentence();
     public DiscussionSentence Left { get; set; } = new DiscussionSentence();
+    public KnownSentenceKind KnownSentenceKind { get; set; }
     public List<DiscussionItem> Topics { get; set; } = new List<DiscussionItem>();
 
     [XmlIgnoreAttribute]
@@ -27,7 +28,8 @@ namespace Roguelike.Discussions
 
     public override string ToString()
     {
-      return Right + "->" + Left;
+      var res = Right + "->" + Left;
+      return res;
     }
 
     public DiscussionItem() { }
@@ -48,6 +50,7 @@ namespace Roguelike.Discussions
 
     public void InsertTopic(DiscussionItem subItem, bool atBegining = true)
     {
+      subItem.parent = this;
       if (!subItem.HasBack())
       {
         var back = new DiscussionItem("Back", KnownSentenceKind.Back.ToString());
@@ -80,12 +83,13 @@ namespace Roguelike.Discussions
 
     public void AddTopic(string right, KnownSentenceKind knownSentenceKind)
     {
-      AddTopic(right, knownSentenceKind.ToString(), false);
+      AddTopic(right, knownSentenceKind.ToString(), false, knownSentenceKind);
     }
 
-    public void AddTopic(string right, string left, bool addMerchantItems = merchantItemsAtAllLevels)
+    public void AddTopic(string right, string left, bool addMerchantItems = merchantItemsAtAllLevels, KnownSentenceKind knownSentenceKind = KnownSentenceKind.Unset)
     {
       var item = new DiscussionItem(right, left, allowBuyHound, addMerchantItems);
+      item.KnownSentenceKind = knownSentenceKind;
       InsertTopic(item, false);
     }
   }

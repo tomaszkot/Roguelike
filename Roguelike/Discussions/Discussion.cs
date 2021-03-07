@@ -1,12 +1,13 @@
 ﻿using Roguelike.Tiles;
 using Roguelike.Tiles.LivingEntities;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Xml.Serialization;
 
 namespace Roguelike.Discussions
 {
-  public enum KnownSentenceKind { Unset, LetsTrade, Bye, SellHound, Back, QuestAccepted }
+  public enum KnownSentenceKind { Unset, LetsTrade, Bye, SellHound, Back, QuestAccepted, QuestProgress, WorkingOnQuest, AwaitingReward }
    
   
   public class Discussion
@@ -25,23 +26,44 @@ namespace Roguelike.Discussions
 
     public DiscussionItem MainItem { get => mainItem; set => mainItem = value; }
 
+    //TODO use json
     public void ToXml()
     {
-      var writer = new System.Xml.Serialization.XmlSerializer(typeof(Discussion));
-      var path = EntityName+".xml";
-      var file = System.IO.File.Create(path);
-      writer.Serialize(file, this);
-      file.Close();
+      try
+      {
+        var writer = new System.Xml.Serialization.XmlSerializer(typeof(Discussion));
+        var path = EntityName + ".xml";
+        var file = System.IO.File.Create(path);
+        writer.Serialize(file, this);
+        file.Close();
+      }
+      catch (System.Exception ex)
+      {
+#if DEBUG
+        Debug.WriteLine(ex);
+#endif
+        throw;
+      }
     }
 
     public static Discussion FromXml(string entityName)
     {
-      Discussion disc = null;
-      var reader = new System.Xml.Serialization.XmlSerializer(typeof(Discussion));
-      var file = new System.IO.StreamReader(entityName+".xml");
-      disc = (Discussion)reader.Deserialize(file);
-      file.Close();
-      return disc;
+      try
+      {
+        Discussion disc = null;
+        var reader = new System.Xml.Serialization.XmlSerializer(typeof(Discussion));
+        var file = new System.IO.StreamReader(entityName + ".xml");
+        disc = (Discussion)reader.Deserialize(file);
+        file.Close();
+        return disc;
+      }
+      catch (System.Exception ex)
+      {
+#if DEBUG
+        Debug.WriteLine(ex);
+#endif
+        throw;
+      }
     }
 
     
