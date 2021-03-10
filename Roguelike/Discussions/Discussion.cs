@@ -7,7 +7,7 @@ using System.Xml.Serialization;
 
 namespace Roguelike.Discussions
 {
-  public enum KnownSentenceKind { Unset, LetsTrade, Bye, SellHound, Back, QuestAccepted, QuestProgress, WorkingOnQuest, AwaitingReward }
+  public enum KnownSentenceKind { Unset, LetsTrade, Bye, SellHound, Back, QuestAccepted, QuestProgress, WorkingOnQuest, AwaitingReward, Cheating }
    
   
   public class Discussion

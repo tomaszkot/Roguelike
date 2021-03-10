@@ -29,9 +29,17 @@ namespace Roguelike.Tiles.LivingEntities
   public enum AllyKind { Unset, Hound, Enemy, Merchant }
   public enum EntityProffesionKind { Unset, King, Prince, Knight, Priest, Mercenary, Merchant, Peasant, Bandit, Adventurer, Slave }
   public enum EntityGender { Unset, Male, Female }
+  public enum RelationToHeroKind { Unset, Neutral, Like, Dislike, Hate};
+
+  public class RelationToHero
+  {
+    public RelationToHeroKind Kind { get; set; }
+    public int CheatingCounter { get; set; }
+  }
 
   public class AdvancedLivingEntity : LivingEntity, IPersistable, IEquipable, IAdvancedEntity
   {
+    public RelationToHero RelationToHero { get; set; } = new RelationToHero();
     public bool HasUrgentTopic { get; set; }
     public Discussion Discussion { get; set; }
     public EntityProffesionKind Proffesion { get; set; }
@@ -39,7 +47,6 @@ namespace Roguelike.Tiles.LivingEntities
     public event EventHandler<bool> UrgentTopicChanged;
     public event EventHandler StatsRecalculated;
     public event EventHandler LeveledUp;
-    //public event EventHandler<GodActivationChangedArgs> GodActivationChanged;
     protected CurrentEquipment currentEquipment = new CurrentEquipment();
     protected Inventory inventory = null;
 
@@ -99,6 +106,7 @@ namespace Roguelike.Tiles.LivingEntities
 
     public AdvancedLivingEntity(Point point, char symbol) : base(point, symbol)
     {
+      RelationToHero.Kind = RelationToHeroKind.Neutral;
     }
 
     public virtual bool IsSellable(Loot loot)

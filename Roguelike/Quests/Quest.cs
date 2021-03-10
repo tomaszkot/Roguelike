@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Roguelike.Tiles;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,14 +11,20 @@ namespace Roguelike.Quests
     AwaitingReward,
     Done
   }
-
+  
+  public class QuestRequirement
+  {
+    
+  }
+    
   public class Quest
   {
     public QuestStatus Status { get; set; }
     public string Tag { get; set; }
     public string Name { get; set; }
     public string SenderName { get; set; }
-    
+    public QuestRequirement QuestRequirement { get; set; }
+
   }
 
   

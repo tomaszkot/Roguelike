@@ -48,6 +48,16 @@ namespace Roguelike.Discussions
     {
     }
 
+    public void EnsureBack()
+    {
+      if (!HasBack())
+      {
+        var back = new DiscussionItem("Back", KnownSentenceKind.Back.ToString());
+        back.Parent = this.parent;
+        Topics.Add(back);
+      }
+    }
+
     public void InsertTopic(DiscussionItem subItem, bool atBegining = true)
     {
       subItem.parent = this;
