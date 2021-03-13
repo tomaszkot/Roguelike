@@ -1,5 +1,4 @@
 ﻿using Dungeons.Core;
-using Roguelike.Abstract;
 using Roguelike.Abstract.Projectiles;
 using Roguelike.Crafting;
 using Roguelike.Generators;
