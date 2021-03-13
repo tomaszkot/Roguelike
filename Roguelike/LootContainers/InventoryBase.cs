@@ -127,6 +127,17 @@ namespace Roguelike.LootContainers
       return 0;
     }
 
+    public StackedLoot GetStackedLoot(string lootName)
+    {
+      return Items.Where(i => i is StackedLoot).Where(i => i.Name == lootName).FirstOrDefault() as StackedLoot;
+    }
+
+    public int GetStackedCount(string lootName)
+    {
+      var stacked = Items.Where(i => i is StackedLoot sl).Where(i=> i.Name == lootName).FirstOrDefault();
+      return stacked != null ? GetStackedCount(stacked as StackedLoot) : 0;
+    }
+
     public List<T> GetStacked<T>() where T : StackedLoot
     {
       return Items.Where(i => i.GetType() == typeof(T)).Cast<T>().ToList();

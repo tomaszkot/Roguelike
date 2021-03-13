@@ -68,6 +68,12 @@ namespace Roguelike.LootFactories
         return new MagicDust();
       };
 
+      factory["hour_glass"] = (string tag) =>
+      {
+        //new GenericLoot("Pick", "Tool for mining", "pick");
+        return new GenericLoot("Hourglass", "Hourglass - quite useless tool", "hour_glass");
+      };
+            
       factory["gold_chest_key"] = (string tag) =>
       {
         var key = new Key();
