@@ -48,10 +48,13 @@ namespace Roguelike.Discussions
     {
     }
 
-    public bool IsShowableOnDiscussionList()
+    public bool ShowableOnDiscussionList
     {
-      return KnownSentenceKind != KnownSentenceKind.Back && KnownSentenceKind != KnownSentenceKind.Bye &&
-             KnownSentenceKind != KnownSentenceKind.Unset && KnownSentenceKind != KnownSentenceKind.LetsTrade;
+      get
+      {
+        return KnownSentenceKind != KnownSentenceKind.Back && KnownSentenceKind != KnownSentenceKind.Bye &&
+               KnownSentenceKind != KnownSentenceKind.LetsTrade;
+      }
     }
 
     public DiscussionTopic GetTopic(string topic)
