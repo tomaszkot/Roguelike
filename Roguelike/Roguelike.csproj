@@ -62,9 +62,11 @@
     <Compile Include="Abilities\PassiveAbility.cs" />
     <Compile Include="Abilities\LootAbility.cs" />
     <Compile Include="Abstract\Abilities\IAbility.cs" />
+    <Compile Include="Abstract\Discussions\IDiscussPanel.cs" />
     <Compile Include="Abstract\IGame.cs" />
     <Compile Include="Abstract\Multimedia\ISoundPlayer.cs" />
     <Compile Include="Abstract\Spells\ISpell.cs" />
+    <Compile Include="Discussions\DiscussPanel.cs" />
     <Compile Include="Tiles\Abstract\IAdvancedEntity.cs" />
     <Compile Include="Tiles\Abstract\IAlly.cs" />
     <Compile Include="Abstract\IDescriptable.cs" />
@@ -89,7 +91,7 @@
     <Compile Include="Multimedia\BasicSoundPlayer.cs" />
     <Compile Include="ContainerConfigurator.cs" />
     <Compile Include="Crafting\LootConverter.cs" />
-    <Compile Include="Discussions\DiscussionItem.cs" />
+    <Compile Include="Discussions\DiscussionTopic.cs" />
     <Compile Include="Discussions\DiscussionSentence.cs" />
     <Compile Include="Discussions\Discussion.cs" />
     <Compile Include="Effects\EffectTypeConverter.cs" />
@@ -192,6 +194,8 @@
     <Compile Include="Tiles\Looting\Recipe.cs" />
     <Compile Include="Tiles\Trap.cs" />
     <Compile Include="Tiles\Surface.cs" />
+    <Compile Include="UI\Models\GenericListModel.cs" />
+    <Compile Include="UI\Models\ListModel.cs" />
     <Compile Include="Utils\SerializableDictionary.cs" />
     <Compile Include="TileContainers\GameLevel.cs" />
     <Compile Include="Generators\TileContainers\DungeonNode.cs" />

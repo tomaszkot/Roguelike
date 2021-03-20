@@ -41,7 +41,7 @@ namespace Roguelike.Tiles.LivingEntities
   {
     public RelationToHero RelationToHero { get; set; } = new RelationToHero();
     public bool HasUrgentTopic { get; set; }
-    public Discussion Discussion { get; set; }
+    public Discussion Discussion { get; set; } = new Discussion();
     public EntityProffesionKind Proffesion { get; set; }
     public event EventHandler ExpChanged;
     public event EventHandler<bool> UrgentTopicChanged;

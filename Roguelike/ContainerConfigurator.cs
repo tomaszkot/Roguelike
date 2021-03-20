@@ -43,7 +43,6 @@ namespace Roguelike
       container.Register<LootManager, LootManager>();
       //container.Register <MovePolicy, MovePolicy>();//move to exe
       Container = container;
-
     }
   }
 }

@@ -7,15 +7,25 @@ using System.Xml.Serialization;
 
 namespace Roguelike.Discussions
 {
-  public enum KnownSentenceKind { Unset, LetsTrade, Bye, SellHound, Back, QuestAccepted, QuestProgress, WorkingOnQuest, AwaitingReward, Cheating }
+  public enum KnownSentenceKind { Unset, WhatsUp, LetsTrade, Bye, SellHound, Back, QuestAccepted, QuestProgress, WorkingOnQuest, AwaitingReward, Cheating }
    
   
   public class Discussion
   {
     public string EntityName { get; set; }
-    DiscussionItem mainItem = new DiscussionItem();
-        
-    public static void CreateMerchantResponseOptions(DiscussionItem item, bool allowBuyHound)
+    DiscussionTopic mainItem;
+
+    public Discussion()
+    {
+      mainItem = CreateMainItem();
+    }
+
+    protected virtual DiscussionTopic CreateMainItem()
+    {
+      return new DiscussionTopic();
+    }
+
+    public static void CreateMerchantResponseOptions(DiscussionTopic item, bool allowBuyHound)
     {
       item.AddTopic("Let's Trade", KnownSentenceKind.LetsTrade);
       if(allowBuyHound)
@@ -24,7 +34,7 @@ namespace Roguelike.Discussions
       item.AddTopic("Bye", KnownSentenceKind.Bye);
     }
 
-    public DiscussionItem MainItem { get => mainItem; set => mainItem = value; }
+    public DiscussionTopic MainItem { get => mainItem; set => mainItem = value; }
 
     //TODO use json
     public void ToXml()
@@ -66,6 +76,8 @@ namespace Roguelike.Discussions
       }
     }
 
-    
+    public virtual void EmitCheating(DiscussionTopic item)
+    { 
+    }
   }
 }
