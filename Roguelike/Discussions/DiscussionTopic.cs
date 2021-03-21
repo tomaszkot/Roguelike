@@ -64,9 +64,9 @@ namespace Roguelike.Discussions
 
     public DiscussionTopic GetTopic(KnownSentenceKind kind)
     {
-      return Topics.FirstOrDefault(i => i.KnownSentenceKind == kind);
+      return Topics.SingleOrDefault(i => i.KnownSentenceKind == kind);
     }
-
+        
     public bool HasTopics(string topic)
     {
       return GetTopic(topic) != null;

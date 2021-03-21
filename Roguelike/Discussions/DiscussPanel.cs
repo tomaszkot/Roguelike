@@ -13,7 +13,7 @@ namespace Roguelike.Discussions
 
     public GenericListModel<DiscussionTopic> BoundTopics { get => boundTopics; set => boundTopics = value; }
 
-    public event EventHandler<GenericListItemModel<DiscussionTopic>> DiscussionOptionChosen;
+    public event EventHandler<DiscussionTopic> DiscussionOptionChosen;
     //public event EventHandler<Roguelike.Tiles.LivingEntities.RelationToHeroKind> RelationChanged;
     //Container container;
 
@@ -22,18 +22,16 @@ namespace Roguelike.Discussions
       //this.container = container;
     }
 
-    public virtual bool ChooseDiscussionTopic(GenericListItemModel<DiscussionTopic> itemModel)
+    public virtual bool ChooseDiscussionTopic(DiscussionTopic itemModel)
     {
       var handled = false;
-      var id = itemModel.Item.Left.Id;
+      var id = itemModel.Left.Id;
       if (id == KnownSentenceKind.Back.ToString())
       {
-        BindTopics(itemModel.Item.Parent, npc);
+        BindTopics(itemModel.Parent, npc);
         handled = true;
       }
-      else if (id == KnownSentenceKind.Bye.ToString() ||
-          id == KnownSentenceKind.QuestAccepted.ToString()
-          )
+      else if (id == KnownSentenceKind.Bye.ToString())
       {
         Hide();
         handled = true;
@@ -43,10 +41,15 @@ namespace Roguelike.Discussions
         Hide();
         handled = true;
       }
+      else if (id == KnownSentenceKind.QuestAccepted.ToString())
+      {
+        Hide();
+        handled = true;
+      }
       else
       {
         var merch = npc as Merchant;
-        var itemToBind = itemModel.Item;
+        var itemToBind = itemModel;
 
         if (id == KnownSentenceKind.WorkingOnQuest.ToString() ||
             id == KnownSentenceKind.AwaitingReward.ToString() ||
@@ -54,11 +57,11 @@ namespace Roguelike.Discussions
         {
           if (id == KnownSentenceKind.AwaitingReward.ToString())
           {
-            RewardHero(merch, itemModel.Item);
+            RewardHero(merch, itemModel);
           }
           else if (id == KnownSentenceKind.Cheating.ToString())
           {
-            npc.Discussion.EmitCheating(itemModel.Item);
+            npc.Discussion.EmitCheating(itemModel);
             if (merch.RelationToHero.CheatingCounter >= 2)
             {
               Hide();
@@ -103,6 +106,12 @@ namespace Roguelike.Discussions
     public GenericListItemModel<DiscussionTopic> GetTopicModel(KnownSentenceKind kind)
     {
       return boundTopics.TypedItems.Where(i => i.Item.KnownSentenceKind == kind).SingleOrDefault();
+    }
+
+    public DiscussionTopic GetTopic(KnownSentenceKind kind)
+    {
+      var found = boundTopics.TypedItems.Where(i => i.Item.KnownSentenceKind == kind).SingleOrDefault();
+      return found != null ? found.Item : null;
     }
 
     public GenericListItemModel<DiscussionTopic>  GetTopicModel(DiscussionTopic topic)
