@@ -19,7 +19,6 @@ namespace Roguelike.Tiles.LivingEntities
   public class Enemy : LivingEntity, ILootSource
   {
     public const string ChempTagSuffix = "_ch";
-    //public int Level { get; set; } = 1;
     public PrefferedFightStyle PrefferedFightStyle { get; set; }//= PrefferedFightStyle.Magic;
 
     public static readonly EntityStat BaseAttack = new EntityStat(EntityStatKind.Attack, 10);
