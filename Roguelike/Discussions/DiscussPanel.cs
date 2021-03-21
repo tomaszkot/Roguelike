@@ -46,6 +46,10 @@ namespace Roguelike.Discussions
         Hide();
         handled = true;
       }
+      else if (id == KnownSentenceKind.SellHound.ToString())//TODO
+      {
+        handled = true;
+      }
       else
       {
         var merch = npc as Merchant;

@@ -317,8 +317,7 @@ namespace Roguelike.Generators
         eqClass = EquipmentClass.Unique;
       else if (powerKind == EnemyPowerKind.Champion)
       {
-        //var ab = hero.GetAbility(AbilityKind.LootingMastering) as LootAbility;
-        var threshold = 0.75f;
+        var threshold = 0.85f;
         threshold -= ab.ExtraChanceToGetUniqueLoot;
         if (RandHelper.GetRandomDouble() > threshold)
           eqClass = EquipmentClass.Unique;

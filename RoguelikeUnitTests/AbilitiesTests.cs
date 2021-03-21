@@ -79,7 +79,7 @@ namespace RoguelikeUnitTests
       var game = CreateGame();
       var empOnes = game.GameManager.CurrentNode.GetEmptyNeighborhoodTiles(game.GameManager.Hero, false);
       Assert.Greater(empOnes.Count, 1);
-      var enemies = AllEnemies;
+      var enemies = PlainEnemies;
       float en1Health = enemies[0].Stats.Health;
       game.GameManager.CurrentNode.SetTile(enemies[0], empOnes[0].Point);
 

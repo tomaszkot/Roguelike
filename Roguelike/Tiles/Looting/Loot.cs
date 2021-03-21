@@ -258,11 +258,20 @@ namespace Roguelike.Tiles
       get { return "Part of a crafting recipe."; }
     }
 
+    public ILootSource source;
     [JsonIgnore]
     public ILootSource Source 
-    { 
-      get; 
-      internal set; 
+    {
+      get { return source; }
+      internal set 
+      {
+        if (this is Equipment eq && eq.IsPlain() && eq.EnchantSlots < 2)
+        {
+          int k = 0;
+          k++;
+        }
+        source = value;
+      }
     }
   }
 }

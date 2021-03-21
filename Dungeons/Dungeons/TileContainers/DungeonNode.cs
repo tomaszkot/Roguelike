@@ -855,7 +855,7 @@ namespace Dungeons
           OnRevealed(this, new NodeRevealedParam() { NodeIndex = NodeIndex, Tiles = revealedTiles });
         }
 
-        Log(revDesc + ", end", false);
+        //Log(revDesc + ", end", false);
       }
 
       protected virtual bool ShallReveal(int row, int col)

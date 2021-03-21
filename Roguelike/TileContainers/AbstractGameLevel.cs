@@ -529,7 +529,11 @@ namespace Roguelike.TileContainers
       Tile heroStartTile = null;
       if (baseTile != null)
       {
-        heroStartTile = GetClosestEmpty(baseTile, false);
+        var emptyOnes = GetEmptyNeighborhoodTiles(baseTile);
+        if (emptyOnes.Any())
+          heroStartTile = emptyOnes.First();
+        else
+          heroStartTile = GetClosestEmpty(baseTile, false);
       }
 
       if (heroStartTile == null)

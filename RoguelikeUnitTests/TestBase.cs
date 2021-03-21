@@ -107,6 +107,11 @@ namespace RoguelikeUnitTests
       get { return game.GameManager.EnemiesManager.AllEntities.Cast<Enemy>().ToList(); }
     }
 
+    protected List<Roguelike.Tiles.LivingEntities.Enemy> PlainEnemies
+    {
+      get { return game.GameManager.EnemiesManager.AllEntities.Cast<Enemy>().Where(i=>i.PowerKind == EnemyPowerKind.Plain).ToList(); }
+    }
+
     public List<Enemy> GetLimitedEnemies()
     {
       return game.GameManager.CurrentNode.GetTiles<Enemy>().Take(numEnemies).ToList();

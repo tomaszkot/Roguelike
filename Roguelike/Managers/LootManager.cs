@@ -159,8 +159,14 @@ namespace Roguelike.Managers
         extraLootItems.Add(potion);
         if (RandHelper.GetRandomDouble() > 0.5f)
         {
-          loot = GameManager.LootGenerator.GetRandomLoot(1, LootKind.Scroll);
-          extraLootItems.Add(loot);
+          //var exLoot = enemy.PowerKind == EnemyPowerKind.Plain ? GameManager.LootGenerator.GetRandomLoot(1, LootKind.Scroll) :
+          //                               GenerateLootForPowerfulEnemy(enemy);
+          var exLoot = GameManager.LootGenerator.GetRandomLoot(1, LootKind.Scroll);
+          if (exLoot is Equipment eq && eq.IsPlain())
+          {
+            eq.MakeEnchantable(2);
+          }
+          extraLootItems.Add(exLoot);
         }
       }
       
@@ -176,7 +182,7 @@ namespace Roguelike.Managers
     private Loot GenerateLootForPowerfulEnemy(Enemy enemy)
     {
       Loot loot = null;
-      if (enemy.Name == "Miller")//TODO Miller here in RL dll?
+      if (enemy.Name == "Miller Bratomir")//TODO Miller here in RL dll?
       {
         loot = GameManager.LootGenerator.GetLootByAsset("Kafar");
       }
@@ -184,6 +190,7 @@ namespace Roguelike.Managers
       {
         loot = GameManager.GetBestLoot(enemy.PowerKind, enemy.Level, GameManager.GameState.History.Looting);
       }
+     
       return loot;
     }
 
