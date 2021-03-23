@@ -1,16 +1,23 @@
 ﻿using Dungeons.Core;
+using Newtonsoft.Json;
 using System;
+using System.Collections.Generic;
 using System.Drawing;
 
 namespace Roguelike.Tiles.Interactive
 {
-  public class Door : InteractiveTile, Dungeons.Tiles.IDoor  //Dungeons.Tiles.Door
+  public class Door : InteractiveTile, Dungeons.Tiles.IDoor
   {
+    public string KeyName { get; set; } = "";
+
     public bool Opened 
     { 
       get; 
       set; 
     }
+
+    [JsonIgnore]
+    public List<Door> AllInSet { get; set; } = new List<Door>();
 
     string bossBehind = "";
     public string BossBehind

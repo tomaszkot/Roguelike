@@ -225,7 +225,7 @@ namespace Roguelike.Managers
       return LootGenerator.GetRandomLoot(victim.Level, skip);
     }
 
-    List<Loot> GetExtraLoot(ILootSource lootSource, Loot primaryLoot)
+    protected virtual List<Loot> GetExtraLoot(ILootSource lootSource, Loot primaryLoot)
     {
       extraLoot.Clear();
 
@@ -245,6 +245,7 @@ namespace Roguelike.Managers
         if (!(loot is Gold))
           extraLoot.Add(loot);
       }
+      
       return extraLoot;
     }
   }

@@ -21,6 +21,7 @@ namespace Roguelike.Attributes
     ChanceToCauseBleeding, ChanceToCauseStunning, ChanceToCauseTearApart, ChanceToEvadeMeleeAttack, ChanceToEvadeMagicAttack,
     MeleeAttackDamageReduction, MagicAttackDamageReduction, AxeExtraDamage, SwordExtraDamage, BashingExtraDamage, DaggerExtraDamage,
     LightingAttack, ResistLighting, ChanceToStrikeBack, ChanceToBulkAttack, ChanceToBurnNeighbour, ExlosiveCoctailDamage
+
   };
 
   public class EntityStats 

@@ -10,6 +10,7 @@ using Roguelike.Tiles.Interactive;
 using Roguelike.Tiles.LivingEntities;
 using System;
 using System.Drawing;
+using System.Linq;
 
 namespace Roguelike.Managers
 {
@@ -136,6 +137,20 @@ namespace Roguelike.Managers
         var door = tile as Tiles.Interactive.Door;
         if (door.Opened)
           return InteractionResult.None;
+
+        if (door.KeyName.Any())
+        {
+          var key = Hero.GetKey(door.KeyName);
+          if (key == null)
+          {
+            gm.AppendAction<InteractiveTileAction>((InteractiveTileAction ac) => { ac.InteractiveKind = InteractiveActionKind.DoorLocked; 
+              ac.InvolvedTile = door; ac.Info = "Proper key not available"; });
+            gm.SoundManager.PlayBeepSound();
+            return InteractionResult.Blocked;
+          }
+          Hero.RemoveLoot(key);
+          door.AllInSet.ForEach(i => i.KeyName = "");
+        }
 
         var opened = gm.CurrentNode.RevealRoom(door, Hero);
         if (opened)

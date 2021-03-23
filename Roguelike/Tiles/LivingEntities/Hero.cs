@@ -22,7 +22,7 @@ namespace Roguelike.Tiles.LivingEntities
       set => quests = value; 
     }
     public static int FirstNextLevelExperienceThreshold = 50;
-    public const int StartStrength = 15;//15;50
+    public const int StartStrength = 150;//15;50
     
     public LootContainers.Crafting Crafting { get; set; }
     public override Container Container 
@@ -140,6 +140,16 @@ namespace Roguelike.Tiles.LivingEntities
       return value;
     }
 
+    internal bool HasKey(string keyName)
+    {
+      return GetKey(keyName) != null;
+    }
+
+    internal Key GetKey(string keyName)
+    {
+      return this.Inventory.GetItems<Key>().Where(i => i.KeyName == keyName).SingleOrDefault();
+    }
+
     public override string GetFormattedStatValue(EntityStatKind kind)
     {
       var value = base.GetFormattedStatValue(kind);
@@ -148,6 +158,11 @@ namespace Roguelike.Tiles.LivingEntities
         value = GetTotalAttackValue();
       }
       return value;
+    }
+
+    internal void RemoveLoot(Loot loot)
+    {
+      Inventory.Remove(loot);
     }
 
     public override float GetHitAttackValue(bool withVariation)
