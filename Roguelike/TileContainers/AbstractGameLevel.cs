@@ -495,8 +495,13 @@ namespace Roguelike.TileContainers
     public Tile GetHeroStartTile()
     {
       Tile heroStartTile;
-      var emp = GetEmptyTiles(nodeIndexMustMatch: false)//merged level migth have index  999 and none tile has such
-               .FirstOrDefault();
+      var empOnes = GetEmptyTiles(nodeIndexMustMatch: false).Where(i=>i.DungeonNodeIndex > Dungeons.TileContainers.DungeonNode.ChildIslandNodeIndex);
+      var secret = Nodes.Where(i => i.Secret).FirstOrDefault();
+      if (secret != null)
+      {
+        empOnes = empOnes.Where(i => i.dungeonNodeIndex != secret.NodeIndex).ToList();
+      }
+      var emp = empOnes.FirstOrDefault();
       if (emp == null)
       {
         Logger.LogError("GetHeroStartTile failed!");

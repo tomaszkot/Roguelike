@@ -109,22 +109,32 @@ namespace Roguelike
     protected Hero AddHero(AbstractGameLevel node)
     {
       var hero = Container.GetInstance<Hero>();
-      //TODO PitUp here?
-      Dungeons.Tiles.Tile emptyForHero = node
-        .GetTiles<Stairs>()
-        .FirstOrDefault(i => 
-          i.StairsKind == StairsKind.LevelUp ||
-          i.StairsKind == StairsKind.PitUp);
 
-      if (emptyForHero == null)
-      {
-        if (LevelGenerator.LevelIndex != 0)
-        {
-          Container.GetInstance<ILogger>().LogError("emptyForHero == null " + LevelGenerator.LevelIndex);
-        }
-        emptyForHero = node.GetEmptyTiles(nodeIndexMustMatch:false).First();
-      }
-      var empty = node.GetClosestEmpty(emptyForHero, node.GetEmptyTiles());
+      var empOnes = node.GetEmptyTiles(nodeIndexMustMatch: false);
+      ////TODO PitUp here?
+      //Dungeons.Tiles.Tile emptyForHero = node
+      //  .GetTiles<Stairs>()
+      //  .FirstOrDefault(i => 
+      //    i.StairsKind == StairsKind.LevelUp ||
+      //    i.StairsKind == StairsKind.PitUp);
+
+
+      //var secret = node.Nodes.Where(i => i.Secret).FirstOrDefault();
+      //if (secret != null)
+      //{
+      //  empOnes = empOnes.Where(i => i.dungeonNodeIndex != secret.NodeIndex).ToList();
+      //}
+      //if (emptyForHero == null)
+      //{
+      //  if (LevelGenerator.LevelIndex != 0)
+      //  {
+      //    Container.GetInstance<ILogger>().LogError("emptyForHero == null " + LevelGenerator.LevelIndex);
+      //  }
+
+      //  emptyForHero = empOnes.First();
+      //}
+      //var empty = node.GetClosestEmpty(emptyForHero, empOnes);
+      var empty = empOnes.First();
       node.SetTile(hero, empty.Point);
       return hero;
     }

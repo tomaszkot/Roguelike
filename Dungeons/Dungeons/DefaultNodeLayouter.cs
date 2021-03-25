@@ -69,7 +69,7 @@ namespace Dungeons
       var localLevel = container.GetInstance<DungeonNode>();
       localLevel.Container = this.container;
       //Activator.CreateInstance(typeof(T), new object[] { container }) as T;
-      localLevel.Create(tw, th + nodesPadding * nodes.Count, gi, -1, null, false);
+      localLevel.Create(tw, th /*+ nodesPadding * nodes.Count*/, gi, -1, null, false);
       
       var maxLoc = localLevel.GetMaxXY();
       if (nodes.Count > 1)
@@ -104,11 +104,19 @@ namespace Dungeons
       float chanceForLevelTurn = 0.5f;
       EntranceSide? prevEntranceSide = null;
 
+      //mazeNodes[mazeNodes.Count-1].Secret = true;
+      mazeNodes[0].Secret = true;
+      bool secretRoom = false;
       for (int nodeIndex = 0; nodeIndex < mazeNodes.Count; nodeIndex++)
       {
         var infoNext = CalcNextValues(mazeNodes, info, chanceForLevelTurn, nodeIndex);
-        if(nodeIndex < mazeNodes.Count-1 && generateLayoutDoors)
-          mazeNodes[nodeIndex].GenerateLayoutDoors(infoNext.side, mazeNodes[nodeIndex+1]);
+        
+        if (nodeIndex < mazeNodes.Count - 1 && generateLayoutDoors)
+        {
+          var nextMaze = mazeNodes[nodeIndex + 1];
+          secretRoom = nodeIndex == 0 ? mazeNodes[nodeIndex].Secret :  nextMaze.Secret;
+          mazeNodes[nodeIndex].GenerateLayoutDoors(infoNext.side, nextMaze, secretRoom);
+        }
 
         EntranceSide? entranceSideToSkip = null;
         if (nodeIndex > 0)
@@ -161,7 +169,7 @@ namespace Dungeons
             if (RandHelper.GetRandomDouble() >= chanceForLevelTurn)
               infoNext.side = prevInfo.side == EntranceSide.Bottom ? EntranceSide.Right : EntranceSide.Bottom;
           }
-          chanceForLevelTurn -= 0.15f;
+          //chanceForLevelTurn -= 0.15f;
         }
       }
 

@@ -51,6 +51,7 @@ namespace Dungeons
       protected GenerationInfo generationInfo;
       protected static Random random;
       bool contentGenerated = false;
+      bool secret = false;
 
       [XmlIgnore]
       [JsonIgnore]
@@ -224,13 +225,22 @@ namespace Dungeons
 
       //methods
 
-      internal void GenerateLayoutDoors(EntranceSide side, DungeonNode nextNode)
+      internal void GenerateLayoutDoors(EntranceSide side, DungeonNode nextNode, bool secret)
       {
         List<Wall> wall = sides[side];
+        if (secret)
+        {
+          var count = sides[side].Count;
+          var index = Enumerable.Range(1, count - 2).ToList().GetRandomElem();
+          var door = CreateDoor(wall[index]);
+          door.Secret = true;
+          return;
+        }
+                
         for (int i = 0; i < wall.Count; i++)
         {
-          if (i > 0 && i % 2 == 0)// && (side != EntranceSide.Bottom || i < nextNode.Width))
-            CreateDoor(wall[i]);
+            if (i > 0 && i % 2 == 0)// && (side != EntranceSide.Bottom || i < nextNode.Width))
+              CreateDoor(wall[i]);
         }
       }
 
@@ -555,8 +565,15 @@ namespace Dungeons
       /// <param name="childMazeMaxSize"></param>
       /// <param name="childIsland"></param>
       /// <param name="entranceSideToSkip"></param>
-      public virtual void AppendMaze(DungeonNode childMaze, Point? destStartPoint = null, Point? childMazeMaxSize = null,
-        bool childIsland = false, EntranceSide? entranceSideToSkip = null, DungeonNode prevNode = null)
+      public virtual void AppendMaze
+      (
+        DungeonNode childMaze, 
+        Point? destStartPoint = null, 
+        Point? childMazeMaxSize = null,
+        bool childIsland = false,
+        EntranceSide? entranceSideToSkip = null, 
+        DungeonNode prevNode = null
+      )
       {
         childMaze.AppendedSide = entranceSideToSkip;
         Parts.Add(childMaze);
@@ -588,12 +605,15 @@ namespace Dungeons
               var childMazeWall = tileInChildMaze as Wall;
               if (childMaze.Sides[entranceSideToSkip.Value].Contains(childMazeWall))
               {
-                var indexOfWall = childMaze.Sides[entranceSideToSkip.Value].IndexOf(childMazeWall);
-                if (prevNode == null ||
-                  (entranceSideToSkip == EntranceSide.Left && indexOfWall < prevNode.Height - 1) ||
-                  (entranceSideToSkip == EntranceSide.Top && indexOfWall < prevNode.Width)
-                  )
-                  continue;
+                if (prevNode == null || !prevNode.Secret)
+                {
+                  var indexOfWall = childMaze.Sides[entranceSideToSkip.Value].IndexOf(childMazeWall);
+                  if (prevNode == null ||
+                    (entranceSideToSkip == EntranceSide.Left && indexOfWall < prevNode.Height - 1) ||
+                    (entranceSideToSkip == EntranceSide.Top && indexOfWall < prevNode.Width)
+                    )
+                    continue;
+                }
               }
             }
             SetCorner(childMazeMaxSize, row, col, tileInChildMaze);
@@ -610,8 +630,18 @@ namespace Dungeons
 
             //}
             var destPt = new Point(destCol, destRow);
+            var prevSecret = prevNode != null && prevNode.Secret;
+            if (prevSecret && this.GetTile(destPt) is IDoor)
+            {
+              continue;
+            }
             var set = this.SetTile(tileInChildMaze, destPt, autoSetTileDungeonIndex: false, reportError:false);
-            if (!set)
+            if (set)
+            {
+              if(prevSecret)
+                tileInChildMaze.DungeonNodeIndex = childMaze.NodeIndex;
+            }
+            else
             {
               var emp = this.GetClosestEmpty(tileInChildMaze);
               if (emp != null)
@@ -775,6 +805,7 @@ namespace Dungeons
 
       public bool Created { get => created; set => created = value; }
       public bool ContentGenerated { get => contentGenerated; set => contentGenerated = value; }
+      public bool Secret { get => secret; set => secret = value; }
 
       /// <summary>
       /// Delete unreachable doors 

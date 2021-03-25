@@ -67,7 +67,7 @@ namespace Dungeons.Tiles
     }
 
     public string GetNameFromTag1()
-    { 
+    {
       return tag1.Replace("_", " ").ToUpperFirstLetter();
     }
 
@@ -82,7 +82,8 @@ namespace Dungeons.Tiles
     public int DungeonNodeIndex
     {
       get { return dungeonNodeIndex; }
-      set {
+      set
+      {
         if (value == 100 && Symbol == '@')
         {
           int k = 0;
@@ -192,8 +193,18 @@ namespace Dungeons.Tiles
           return Name;
 
         return displayedName;
-      } 
+      }
       set => displayedName = value;
+    }
+
+    public bool Secret
+    {
+      get => secret;
+      internal set
+      {
+        secret = value;
+        Color = ConsoleColor.Blue;
+      }
     }
 
     public bool IsAtSamePosition(Tile other)
@@ -201,11 +212,13 @@ namespace Dungeons.Tiles
       return Point.Equals(other.Point);
     }
 
-    public static bool IncludeDebugDetailsInToString = false;
+    public static bool IncludeDebugDetailsInToString = true;
+    private bool secret;
+
     public override string ToString()
     {
       string res = GetType().ToString();
-      if(IncludeDebugDetailsInToString)
+      if (IncludeDebugDetailsInToString)
         res += " " + Symbol + " " + DungeonNodeIndex + " " + Point + " " + tag1 + " " + GetHashCode();
       return res;
     }
