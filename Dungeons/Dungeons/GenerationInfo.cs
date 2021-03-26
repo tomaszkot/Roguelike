@@ -32,18 +32,18 @@ namespace Dungeons
     internal bool GenerateEmptyTiles = true;
 
     public bool FirstNodeSmaller = false;
-    const int minSize = 13;
-    public Size MinNodeSize = new Size(minSize, minSize);
-    public Size MaxNodeSize = new Size(15, 25);
+    const int minRoomSideSize = 14;
+    public Size MinNodeSize = new Size(minRoomSideSize, minRoomSideSize);
+    public Size MaxNodeSize = new Size(minRoomSideSize+4, 25);
     public Size ForcedChilldIslandSize = new Size(0, 0);
 
     public readonly int MinSubMazeNodeSize = 6;
     public readonly int MinSimpleInteriorSize = 3;
-    public int MinRoomLeft = 6;
+    public int MinRoomLeft = 8;
 
     public bool ChildIslandAllowed = true;
     public int MaxNumberOfChildIslands = 1;
-    public bool ForceChildIslandInterior = false;
+    public bool ForceChildIslandInterior = true;
 
     public bool RevealTiles { get; set; } = false;
     public bool RevealAllNodes { get; set; } = false;
