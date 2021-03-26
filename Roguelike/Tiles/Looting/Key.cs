@@ -26,6 +26,7 @@ namespace Roguelike.Tiles.Looting
 #endif
       //AssetName = "key";
       Name = "Key";
+      tag1 = "key";
       Revealed = true;
     }
 

@@ -33,7 +33,7 @@ namespace Dungeons
 
       Interior? interior = null;
       var rand = RandHelper.GetRandomDouble();
-      if (generationInfo.ChildIslandAllowed && (generationInfo.ForceChildIslandInterior || rand < .33))
+      if (!dungeonNode.Secret && generationInfo.ChildIslandAllowed && (generationInfo.ForceChildIslandInterior || rand < .33))
       {
         var island = GenerateChildIslands();
         if (island == null)

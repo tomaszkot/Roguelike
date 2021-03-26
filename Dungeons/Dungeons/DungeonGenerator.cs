@@ -86,7 +86,7 @@ namespace Dungeons
     protected DungeonNode CreateNode(int w, int h, GenerationInfo gi, int nodeIndex)
     {
       DungeonNode dungeon = CreateDungeonNodeInstance();
-
+      dungeon.Secret = this.secretRoomIndex == nodeIndex;
       dungeon.ChildIslandCreated += Dungeon_ChildIslandCreated;
 
       OnCreate(dungeon, w, h, gi, nodeIndex);

@@ -49,6 +49,7 @@ namespace Roguelike.Generators
 
     public override List<DungeonNode> CreateDungeonNodes(Dungeons.GenerationInfo info = null)
     {
+      stairsUp = null;
       var mazeNodes = base.CreateDungeonNodes(info);
       CreateDynamicTiles(mazeNodes);
 
@@ -120,7 +121,8 @@ namespace Roguelike.Generators
       if (!node.Created)
         return node;
 
-      if((LevelIndex > 0 || StairsUpOnLevel0)  && nodeIndex == 0)
+      if((LevelIndex > 0 || StairsUpOnLevel0) 
+        && (!node.Secret && stairsUp == null))
       {
         AddStairsUp(node);
       }
@@ -134,9 +136,11 @@ namespace Roguelike.Generators
       return node;
     }
 
+    Stairs stairsUp;
     protected void AddStairsUp(DungeonNode node)
     {
       var stairs = CreateStairsUp(node.NodeIndex);
+      stairsUp = stairs;
       node.SetTile(stairs, node.GetEmptyTiles().First().Point);
       OnStairsUpCreated(stairs);
     }
