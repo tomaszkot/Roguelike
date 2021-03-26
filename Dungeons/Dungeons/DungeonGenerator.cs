@@ -63,7 +63,8 @@ namespace Dungeons
       {
         var minNodeSize = gi.MinNodeSize;
         var maxNodeSize = gi.MaxNodeSize;
-        if (secretRoomIndex == nodeIndex)
+        if (secretRoomIndex == nodeIndex 
+          )
         {
           maxNodeSize = minNodeSize;
         }

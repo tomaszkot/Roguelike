@@ -817,7 +817,7 @@ namespace Dungeons
         List<Tile> toDel = new List<Tile>();
         foreach (Tile tile in Tiles)
         {
-          if (tile is Door)
+          if (tile is IDoor)
           {
             var neibs = GetNeighborTiles(tile);
             if (neibs.Where(i => i is Wall).Count() >= 3 ||

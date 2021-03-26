@@ -34,7 +34,7 @@ namespace Dungeons
     public bool FirstNodeSmaller = false;
     const int minSize = 13;
     public Size MinNodeSize = new Size(minSize, minSize);
-    public Size MaxNodeSize = new Size(15, 18);
+    public Size MaxNodeSize = new Size(15, 25);
     public Size ForcedChilldIslandSize = new Size(0, 0);
 
     public readonly int MinSubMazeNodeSize = 6;
