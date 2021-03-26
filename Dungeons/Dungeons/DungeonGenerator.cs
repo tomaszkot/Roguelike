@@ -63,6 +63,10 @@ namespace Dungeons
       {
         var minNodeSize = gi.MinNodeSize;
         var maxNodeSize = gi.MaxNodeSize;
+        if (secretRoomIndex == nodeIndex)
+        {
+          maxNodeSize = minNodeSize;
+        }
         //var minNodeSize = nodeIndex == 0 && gi.FirstNodeSmaller ? gi.MinNodeSize - gi.MinNodeSize / 2 : gi.MinNodeSize;
         //var maxNodeSize = nodeIndex == 0 && gi.FirstNodeSmaller ? gi.MaxNodeSize - gi.MaxNodeSize / 2 : gi.MaxNodeSize;
 
@@ -70,6 +74,8 @@ namespace Dungeons
         var height = random.Next(minNodeSize.Height, maxNodeSize.Height);
 
         node = CreateNode(width, height, gi, nodeIndex);
+        if (secretRoomIndex == nodeIndex)
+          node.Secret = true;
       }
       if (NodeCreated != null)
         NodeCreated(this, node);
@@ -114,12 +120,14 @@ namespace Dungeons
       return dungeon;
     }
 
+    int secretRoomIndex = -1;
     //TODO public
     public virtual List<DungeonNode> CreateDungeonNodes(GenerationInfo info = null)
     {
       nodes = new List<DungeonNode>();
       var gi = info ?? this.CreateLevelGenerationInfo();
 
+      secretRoomIndex = 0;
       for (int i = 0; i < gi.NumberOfRooms; i++)
       {
         if (i > 0)

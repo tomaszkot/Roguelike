@@ -105,7 +105,7 @@ namespace Dungeons
       EntranceSide? prevEntranceSide = null;
 
       //mazeNodes[mazeNodes.Count-1].Secret = true;
-      mazeNodes[0].Secret = true;
+      //mazeNodes[0].Secret = true;
       bool secretRoom = false;
       for (int nodeIndex = 0; nodeIndex < mazeNodes.Count; nodeIndex++)
       {

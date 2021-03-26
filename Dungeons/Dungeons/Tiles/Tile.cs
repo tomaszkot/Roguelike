@@ -118,6 +118,10 @@ namespace Dungeons.Tiles
               int k = 0;
               k++;
             }
+            if (DungeonNodeIndex == 0)
+            {
+              int k = 0;
+            }
           }
           revealed = value;
         }

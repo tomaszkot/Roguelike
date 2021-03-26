@@ -234,6 +234,8 @@ namespace Dungeons
           var index = Enumerable.Range(1, count - 2).ToList().GetRandomElem();
           var door = CreateDoor(wall[index]);
           door.Secret = true;
+          if(nextNode !=null && nextNode.NodeIndex == 1)
+            door.DungeonNodeIndex = nextNode.NodeIndex;
           return;
         }
                 
