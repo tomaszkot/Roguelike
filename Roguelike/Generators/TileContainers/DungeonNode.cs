@@ -1,4 +1,5 @@
 ﻿using System.Drawing;
+using System.Linq;
 using Dungeons.Core;
 using Dungeons.Tiles;
 using Roguelike.Tiles.Interactive;
@@ -54,6 +55,24 @@ namespace Roguelike.Generators.TileContainers
       }
 
       return reveal;
+    }
+
+    public override Tile SetTileAtRandomPosition(Tile tile, bool matchNodeIndex = true)
+    {
+      var tileSet = base.SetTileAtRandomPosition(tile, matchNodeIndex);
+      if (tileSet!=null)
+      {
+        var doors = GetNeighborTiles<Door>(tileSet);
+        if (tileSet is Chest && doors.Any())//chest is blocking!
+        {
+          var emptyOnes = GetEmptyNeighborhoodTiles(tileSet);
+          if (emptyOnes.Any())
+          {
+            SetTile(tileSet, emptyOnes.First().Point);
+          }
+        }
+      }
+      return tileSet;
     }
 
     public T SetTileAtRandomPosition<T>(int levelIndex, bool matchNodeIndex = true) where T : Tile, new()

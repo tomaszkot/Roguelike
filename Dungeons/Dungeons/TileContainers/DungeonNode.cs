@@ -996,7 +996,7 @@ namespace Dungeons
         return GetTiles<Tile>();
       }
 
-      public Tile SetTileAtRandomPosition(Tile tile, bool matchNodeIndex = true) 
+      public virtual Tile SetTileAtRandomPosition(Tile tile, bool matchNodeIndex = true) 
       {
         var node = matchNodeIndex == true ? (int?)NodeIndex : null;
         var empty = this.GetRandomEmptyTile(nodeIndex: node);

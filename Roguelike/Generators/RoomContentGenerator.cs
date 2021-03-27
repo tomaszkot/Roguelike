@@ -126,6 +126,9 @@ namespace Roguelike.Generators
       {
         node.SetTileAtRandomPosition(new MagicDust());
       }
+
+      if(node.Secret)
+        node.SetTileAtRandomPosition(new Chest() { ChestKind = ChestKind.Gold });
     }
 
     protected virtual Enemy CreateEnemyInstance(string enemyName)
@@ -181,6 +184,8 @@ namespace Roguelike.Generators
 
     protected virtual bool ShallGenerateChampion(string enemy, int packIndex)
     {
+      if (node.Secret)
+        return true;
       if (gi.GeneratedInfo.ChempionsCount == gi.NumberOfRooms - 1)
         return false;
       var rand = RandHelper.GetRandomDouble();
