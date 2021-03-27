@@ -231,7 +231,8 @@ namespace Dungeons
         if (secret)
         {
           var count = sides[side].Count;
-          var index = Enumerable.Range(1, count - 2).ToList().GetRandomElem();
+          var diff = GenerationInfo.MaxRoomSideSize - GenerationInfo.MaxRoomSideSize;
+          var index = Enumerable.Range(1, count - diff).ToList().GetRandomElem();
           var door = CreateDoor(wall[index]);
           door.Secret = true;
           if(nextNode !=null && nextNode.NodeIndex == 1)

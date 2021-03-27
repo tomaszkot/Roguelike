@@ -97,7 +97,7 @@ namespace Dungeons
       return level;
     }
     
-    protected virtual void LayoutNodes(DungeonNode localLevel, List<DungeonNode> mazeNodes)
+    protected virtual void LayoutNodes(DungeonNode level, List<DungeonNode> mazeNodes)
     {
       AppendNodeInfo info = new AppendNodeInfo();
       info.side = EntranceSide.Right;
@@ -106,7 +106,7 @@ namespace Dungeons
 
       //mazeNodes[mazeNodes.Count-1].Secret = true;
       //mazeNodes[0].Secret = true;
-      bool secretRoom = false;
+      //bool secretRoom = false;
       for (int nodeIndex = 0; nodeIndex < mazeNodes.Count; nodeIndex++)
       {
         var infoNext = CalcNextValues(mazeNodes, info, chanceForLevelTurn, nodeIndex);
@@ -114,7 +114,7 @@ namespace Dungeons
         if (nodeIndex < mazeNodes.Count - 1 && generateLayoutDoors)
         {
           var nextMaze = mazeNodes[nodeIndex + 1];
-          secretRoom = nodeIndex == 0 ? mazeNodes[nodeIndex].Secret :  nextMaze.Secret;
+          var secretRoom = nodeIndex == 0 ? mazeNodes[nodeIndex].Secret :  nextMaze.Secret;
           mazeNodes[nodeIndex].GenerateLayoutDoors(infoNext.side, nextMaze, secretRoom);
         }
 
@@ -133,7 +133,7 @@ namespace Dungeons
 
         mazeNodes[nodeIndex].Reveal(options.RevealAllNodes, true);
 
-        localLevel.AppendMaze
+        level.AppendMaze
         (
           mazeNodes[nodeIndex],
           new Point(info.nextX, info.nextY),
