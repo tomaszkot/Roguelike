@@ -17,14 +17,12 @@ namespace Dungeons
   {
     public Point Position;
     public EntranceSide side;
-    //public EntranceSide? nextForcedSide;
     public DungeonNode DungeonNode;
 
-    public AppendNodeInfo(DungeonNode node)//, EntranceSide? nextForcedSide = null)
+    public AppendNodeInfo(DungeonNode node)
     {
       Position = new Point();
       side = EntranceSide.Left;
-      //this.nextForcedSide = nextForcedSide;
       DungeonNode = node;
     }
 
@@ -44,16 +42,13 @@ namespace Dungeons
   {
     int nodesPadding = 0;
     bool generateLayoutDoors = true;
-    //EntranceSide? forcedNextSide = null;//EntranceSide.Bottom;
-    EntranceSide? forcedEntranceSideToSkip = null;// EntranceSide.Right;
+    EntranceSide? forcedEntranceSideToSkip = null;
     LayouterOptions options;
     Container container;
 
     public DefaultNodeLayouter(Container container, GenerationInfo info = null)
     {
       this.container = container;
-      //if (info != null && info.ForcedNextRoomSide != null)
-      //  forcedNextSide = info.ForcedNextRoomSide.Value;
     }
 
     public DungeonLevel DoLayout(List<DungeonNode> nodes, LayouterOptions opt = null) 
@@ -114,12 +109,8 @@ namespace Dungeons
       
       float chanceForLevelTurn = 0.5f;
       EntranceSide? prevEntranceSide = null;
-
-      //mazeNodes[mazeNodes.Count-1].Secret = true;
-      //mazeNodes[0].Secret = true;
-      //bool secretRoom = false;
       var secretRoomIndex = mazeNodes.FindIndex(i => i.Secret);
-      //EntranceSide? nextEntranceSideToSkip = null;
+
       for (int currentNodeIndex = 0; currentNodeIndex < mazeNodes.Count; currentNodeIndex++)
       {
         appendNodeInfos.Add(mazeNodes[currentNodeIndex], info);
@@ -129,7 +120,6 @@ namespace Dungeons
         if (forcedEntranceSideToSkip != null)
         {
           entranceSideToSkip = forcedEntranceSideToSkip.Value;
-          //forcedEntranceSideToSkip = null;
         }
         else if (currentNodeIndex > 0)
         {
@@ -144,9 +134,7 @@ namespace Dungeons
         var currentNode = mazeNodes[currentNodeIndex];
         currentNode.Reveal(options.RevealAllNodes, true);
         if (!currentNode.Secret)
-        {
           lastNonSecretNode = currentNode;
-        }
 
 
         bool shallBreak = currentNodeIndex == mazeNodes.Count - 1;
@@ -202,8 +190,6 @@ namespace Dungeons
         if (shallBreak)
           break;
         entranceSideToSkip = null;
-        //if (nextEntranceSideToSkip != null)
-        // entranceSideToSkip = nextEntranceSideToSkip.Value;
         prevEntranceSide = infoNext.side;
         info = infoNext;
       }
@@ -221,11 +207,15 @@ namespace Dungeons
       
       if (currentNode.Secret)
       {
-        if (currentAppendInfo.side == EntranceSide.Bottom)
-            nextAppendInfo.side = EntranceSide.Right;
-        if (currentAppendInfo.side == EntranceSide.Right)
-          nextAppendInfo.side = EntranceSide.Bottom;
-
+        if (currentNode.NodeIndex == 0)
+          nextAppendInfo.side = GetRandSide();
+        else
+        { 
+          if (currentAppendInfo.side == EntranceSide.Bottom)
+              nextAppendInfo.side = EntranceSide.Right;
+          else if (currentAppendInfo.side == EntranceSide.Right)
+            nextAppendInfo.side = EntranceSide.Bottom;
+        }
         if (lastNonSecretNode != null)
         {
           sizeProvider = lastNonSecretNode;
@@ -234,20 +224,12 @@ namespace Dungeons
       }
       else
       {
-        //if (forcedNextSide != null)
-        //  nextAppendInfo.side = forcedNextSide.Value;
+        //if (currentNodeIndex == 0)
+        //  nextAppendInfo.side = EntranceSide.Bottom;
         //else
-        {
-          if (currentNodeIndex == 0)
-           // nextAppendInfo.side = EntranceSide.Right;
-           nextAppendInfo.side = EntranceSide.Bottom;
-          else
-            nextAppendInfo.side = CalcSide(currentAppendInfo.side, nextAppendInfo.side, chanceForLevelTurn);
-          //chanceForLevelTurn -= 0.15f;
-        }
+          nextAppendInfo.side = CalcSide(currentAppendInfo.side, nextAppendInfo.side, chanceForLevelTurn);
       }
 
-      //infoNext.side = EntranceSide.Right;//TODO
       var pt = nextAppendInfo.Position;
       if (nextAppendInfo.side == EntranceSide.Bottom)
       {
@@ -264,7 +246,7 @@ namespace Dungeons
 
     private static EntranceSide CalcSide(EntranceSide current, EntranceSide next, float chanceForLevelTurn)//, int currentNodeIndex)
     {
-      var side = RandHelper.GetRandomDouble() >= .5f ? EntranceSide.Bottom : EntranceSide.Right;
+      EntranceSide side = GetRandSide();
       if (current == next)
       {
         if (RandHelper.GetRandomDouble() >= chanceForLevelTurn)
@@ -272,6 +254,11 @@ namespace Dungeons
       }
 
       return side;
+    }
+
+    private static EntranceSide GetRandSide()
+    {
+      return RandHelper.GetRandomDouble() >= .5f ? EntranceSide.Bottom : EntranceSide.Right;
     }
   }
 }
