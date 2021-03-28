@@ -125,7 +125,13 @@ namespace Dungeons
         appendNodeInfos.Add(mazeNodes[currentNodeIndex], info);
 
         EntranceSide? entranceSideToSkip = null;
-        if (currentNodeIndex > 0)
+        
+        if (forcedEntranceSideToSkip != null)
+        {
+          entranceSideToSkip = forcedEntranceSideToSkip.Value;
+          //forcedEntranceSideToSkip = null;
+        }
+        else if (currentNodeIndex > 0)
         {
           if (prevEntranceSide == EntranceSide.Right)
             entranceSideToSkip = EntranceSide.Left;
@@ -133,11 +139,6 @@ namespace Dungeons
             entranceSideToSkip = EntranceSide.Top;
           else
             Debug.Assert(false);
-        }
-        if (forcedEntranceSideToSkip != null)
-        {
-          entranceSideToSkip = forcedEntranceSideToSkip.Value;
-          //forcedEntranceSideToSkip = null;
         }
 
         var currentNode = mazeNodes[currentNodeIndex];
@@ -174,14 +175,20 @@ namespace Dungeons
 
             if (nextMaze.Secret && mazeNodes.Count > currentNodeIndex+2)
             {
-              currentNode.GenerateLayoutDoors(infoNext.side == EntranceSide.Bottom ? EntranceSide.Right : EntranceSide.Bottom , nextMaze.NodeIndex, false, true);
-              forcedEntranceSideToSkip = infoNext.side == EntranceSide.Bottom ? EntranceSide.Top : EntranceSide.Left;
+              doors = currentNode.GenerateLayoutDoors(infoNext.side == EntranceSide.Bottom ? EntranceSide.Right : EntranceSide.Bottom , nextMaze.NodeIndex, false, true);
+              forcedEntranceSideToSkip = infoNext.side == EntranceSide.Right ? EntranceSide.Top : EntranceSide.Left;
             }
           }
         }
 
         if (secretRoomIndex == 0 && currentNodeIndex == 1)
           entranceSideToSkip = null;
+        else
+        {
+          entranceSideToSkip = null;
+          if (currentNodeIndex > 0)
+            entranceSideToSkip = info.side == EntranceSide.Bottom ? EntranceSide.Top : EntranceSide.Left;
+        }
         level.AppendMaze
         (
           currentNode,
@@ -232,7 +239,7 @@ namespace Dungeons
         //else
         {
           if (currentNodeIndex == 0)
-            //nextAppendInfo.side = EntranceSide.Right;
+           // nextAppendInfo.side = EntranceSide.Right;
            nextAppendInfo.side = EntranceSide.Bottom;
           else
             nextAppendInfo.side = CalcSide(currentAppendInfo.side, nextAppendInfo.side, chanceForLevelTurn);
