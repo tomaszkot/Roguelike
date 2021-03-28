@@ -10,16 +10,28 @@ namespace Roguelike.Tiles.Interactive
   {
     public string KeyName { get; set; } = "";
 
-    public bool Opened 
-    { 
-      get; 
-      set; 
+    public bool Opened
+    {
+      get;
+      set;
+    }
+
+    public bool Secret
+    {
+      get => secret;
+      set
+      {
+        secret = value;
+        Color = ConsoleColor.Blue;
+      }
     }
 
     [JsonIgnore]
     public List<Door> AllInSet { get; set; } = new List<Door>();
 
     string bossBehind = "";
+    private bool secret;
+
     public string BossBehind
     {
       get { return bossBehind; }

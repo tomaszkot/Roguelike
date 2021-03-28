@@ -11,6 +11,7 @@ namespace Dungeons.Tiles
       get;
       set;
     }
+    bool Secret { get; set; }
   }
 
   class Door : InteractiveTile, IDoor
@@ -24,6 +25,8 @@ namespace Dungeons.Tiles
     {
 
     }
+
+    public bool Secret { get; set; }
 
     public bool Opened
     {

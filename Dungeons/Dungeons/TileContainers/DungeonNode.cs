@@ -225,28 +225,31 @@ namespace Dungeons
 
       //methods
 
-      internal void GenerateLayoutDoors(EntranceSide side, int nextNodeIndex, bool secret, bool overWallls = false)
+      internal List<IDoor> GenerateLayoutDoors(EntranceSide side, int nextNodeIndex, bool secret, bool overWallls = false)
       {
+        var res = new List<IDoor>();
         List<Wall> wall = sides[side];
         if (secret)
         {
           var count = sides[side].Count;
           var diff = GenerationInfo.MaxRoomSideSize - GenerationInfo.MinRoomSideSize;
           var index = Enumerable.Range(1, count - diff).ToList().GetRandomElem();
-          var door = CreateDoor(wall[index]);
+          var door = CreateDoor(wall[index]) as IDoor;
           door.Secret = true;
-          //if(nextNodeIndex == 1)
-          //  door.DungeonNodeIndex = nextNodeIndex;
-          return;
+          res.Add(door);
+          //if (nextNodeIndex > 0)
+          // door.DungeonNodeIndex = nextNodeIndex;
+          return res;
         }
                 
         for (int i = 0; i < wall.Count; i++)
         {
           if (i > 0 && i % 2 == 0)// && (side != EntranceSide.Bottom || i < nextNode.Width))
-            CreateDoor(wall[i]);
-          //else if (overWallls)
-          //  wall[i].DungeonNodeIndex = 0;
+          {
+            res.Add(CreateDoor(wall[i]) as Door);
+          }
         }
+        return res;
       }
 
       protected virtual void GenerateContent()
@@ -523,7 +526,7 @@ namespace Dungeons
         return interiorGenerator.GetInteriorStartingPoint(minSizeReduce, child);
       }
 
-      public virtual Tile CreateDoor(Tile original)
+      public virtual InteractiveTile CreateDoor(Tile original)
       {
         if (generationInfo != null)
         {
@@ -635,7 +638,7 @@ namespace Dungeons
 
             //}
             var destPt = new Point(destCol, destRow);
-            var prevSecret = prevNode != null && prevNode.Secret;
+            var prevSecret = prevNode != null && prevNode.Secret && prevNode.NodeIndex == 0;
             if (prevSecret && this.GetTile(destPt) is IDoor)
             {
               continue;
@@ -643,8 +646,8 @@ namespace Dungeons
             var set = this.SetTile(tileInChildMaze, destPt, autoSetTileDungeonIndex: false, reportError:false);
             if (set)
             {
-                //if(prevSecret)
-                //  tileInChildMaze.DungeonNodeIndex = childMaze.NodeIndex;
+                if(prevSecret)
+                  tileInChildMaze.DungeonNodeIndex = childMaze.NodeIndex;
             }
             else
             {

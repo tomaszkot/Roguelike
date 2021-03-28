@@ -200,17 +200,7 @@ namespace Dungeons.Tiles
       }
       set => displayedName = value;
     }
-
-    public bool Secret
-    {
-      get => secret;
-      internal set
-      {
-        secret = value;
-        Color = ConsoleColor.Blue;
-      }
-    }
-
+        
     public bool IsAtSamePosition(Tile other)
     {
       return Point.Equals(other.Point);

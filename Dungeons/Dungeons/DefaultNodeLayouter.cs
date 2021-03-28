@@ -163,21 +163,25 @@ namespace Dungeons
               secretRoom = nextMaze.Secret;
 
             //this call must be done before AppendMaze because AppendMaze changes tiles x,y
-            currentNode.GenerateLayoutDoors(infoNext.side, nextMaze.NodeIndex, secretRoom);
+            var doors = currentNode.GenerateLayoutDoors(infoNext.side, nextMaze.NodeIndex, secretRoom);
 
             if (currentNode.Secret)
             {
               forcedEntranceSideToSkip = EntranceSide.Left;
+              if (currentNode.NodeIndex == 0)
+                (doors[0] as Tiles.Tile).DungeonNodeIndex = 1;
             }
 
-            if (nextMaze.Secret)
+            if (nextMaze.Secret && mazeNodes.Count > currentNodeIndex+2)
             {
-              currentNode.GenerateLayoutDoors(EntranceSide.Right, nextMaze.NodeIndex, false, true);
-              //nextEntranceSideToSkip = EntranceSide.Left;
-              forcedEntranceSideToSkip = EntranceSide.Top;
+              currentNode.GenerateLayoutDoors(infoNext.side == EntranceSide.Bottom ? EntranceSide.Right : EntranceSide.Bottom , nextMaze.NodeIndex, false, true);
+              forcedEntranceSideToSkip = infoNext.side == EntranceSide.Bottom ? EntranceSide.Top : EntranceSide.Left;
             }
           }
         }
+
+        if (secretRoomIndex == 0 && currentNodeIndex == 1)
+          entranceSideToSkip = null;
         level.AppendMaze
         (
           currentNode,
@@ -190,9 +194,9 @@ namespace Dungeons
 
         if (shallBreak)
           break;
-
+        entranceSideToSkip = null;
         //if (nextEntranceSideToSkip != null)
-         // entranceSideToSkip = nextEntranceSideToSkip.Value;
+        // entranceSideToSkip = nextEntranceSideToSkip.Value;
         prevEntranceSide = infoNext.side;
         info = infoNext;
       }
@@ -228,7 +232,8 @@ namespace Dungeons
         //else
         {
           if (currentNodeIndex == 0)
-            nextAppendInfo.side = EntranceSide.Bottom;
+            //nextAppendInfo.side = EntranceSide.Right;
+           nextAppendInfo.side = EntranceSide.Bottom;
           else
             nextAppendInfo.side = CalcSide(currentAppendInfo.side, nextAppendInfo.side, chanceForLevelTurn);
           //chanceForLevelTurn -= 0.15f;
