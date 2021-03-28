@@ -140,13 +140,13 @@ namespace Dungeons
           if (row == 0)
             dungeonNode.Sides[EntranceSide.Top].Add(this.dungeonNode.Tiles[row, col] as Wall);
 
-          else if (row == Height - 1)
+          if (row == Height - 1)
             dungeonNode.Sides[EntranceSide.Bottom].Add(this.dungeonNode.Tiles[row, col] as Wall);
 
-          else if (col == 0)
+          if (col == 0)
             dungeonNode.Sides[EntranceSide.Left].Add(this.dungeonNode.Tiles[row, col] as Wall);
 
-          else if (col == Width - 1)
+          if (col == Width - 1)
             dungeonNode.Sides[EntranceSide.Right].Add(this.dungeonNode.Tiles[row, col] as Wall);
         }
       }

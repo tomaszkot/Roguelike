@@ -128,7 +128,7 @@ namespace Dungeons
       nodes = new List<DungeonNode>();
       var gi = info ?? this.CreateLevelGenerationInfo();
 
-      secretRoomIndex = gi.NumberOfRooms-1;
+      secretRoomIndex = 1;
       for (int i = 0; i < gi.NumberOfRooms; i++)
       {
         if (i > 0)

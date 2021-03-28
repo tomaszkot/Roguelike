@@ -225,25 +225,27 @@ namespace Dungeons
 
       //methods
 
-      internal void GenerateLayoutDoors(EntranceSide side, DungeonNode nextNode, bool secret)
+      internal void GenerateLayoutDoors(EntranceSide side, int nextNodeIndex, bool secret, bool overWallls = false)
       {
         List<Wall> wall = sides[side];
         if (secret)
         {
           var count = sides[side].Count;
-          var diff = GenerationInfo.MaxRoomSideSize - GenerationInfo.MaxRoomSideSize;
+          var diff = GenerationInfo.MaxRoomSideSize - GenerationInfo.MinRoomSideSize;
           var index = Enumerable.Range(1, count - diff).ToList().GetRandomElem();
           var door = CreateDoor(wall[index]);
           door.Secret = true;
-          if(nextNode !=null && nextNode.NodeIndex == 1)
-            door.DungeonNodeIndex = nextNode.NodeIndex;
+          //if(nextNodeIndex == 1)
+          //  door.DungeonNodeIndex = nextNodeIndex;
           return;
         }
                 
         for (int i = 0; i < wall.Count; i++)
         {
-            if (i > 0 && i % 2 == 0)// && (side != EntranceSide.Bottom || i < nextNode.Width))
-              CreateDoor(wall[i]);
+          if (i > 0 && i % 2 == 0)// && (side != EntranceSide.Bottom || i < nextNode.Width))
+            CreateDoor(wall[i]);
+          //else if (overWallls)
+          //  wall[i].DungeonNodeIndex = 0;
         }
       }
 
@@ -608,7 +610,7 @@ namespace Dungeons
               var childMazeWall = tileInChildMaze as Wall;
               if (childMaze.Sides[entranceSideToSkip.Value].Contains(childMazeWall))
               {
-                if (prevNode == null || !prevNode.Secret)
+                //if (prevNode == null || !prevNode.Secret)
                 {
                   var indexOfWall = childMaze.Sides[entranceSideToSkip.Value].IndexOf(childMazeWall);
                   if (prevNode == null ||
@@ -641,8 +643,8 @@ namespace Dungeons
             var set = this.SetTile(tileInChildMaze, destPt, autoSetTileDungeonIndex: false, reportError:false);
             if (set)
             {
-              if(prevSecret)
-                tileInChildMaze.DungeonNodeIndex = childMaze.NodeIndex;
+                //if(prevSecret)
+                //  tileInChildMaze.DungeonNodeIndex = childMaze.NodeIndex;
             }
             else
             {

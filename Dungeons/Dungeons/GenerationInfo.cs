@@ -10,7 +10,7 @@ namespace Dungeons
   {
     public static bool DefaultRevealedValue = true;
     //Number of rooms inside a level, not counting ChildIslands (smallers rooms inside a room)
-    public int NumberOfRooms = 5;
+    public int NumberOfRooms = 4;
 
     /// <summary>
     /// Normally true, can be set to false for issue testing purposes
@@ -44,7 +44,7 @@ namespace Dungeons
 
     public bool ChildIslandAllowed = true;
     public int MaxNumberOfChildIslands = 1;
-    public bool ForceChildIslandInterior = true;
+    public bool ForceChildIslandInterior = false;
 
     public bool RevealTiles { get; set; } = false;
     public bool RevealAllNodes { get; set; } = false;

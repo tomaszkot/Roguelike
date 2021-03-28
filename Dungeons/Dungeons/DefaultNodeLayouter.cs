@@ -15,17 +15,22 @@ namespace Dungeons
 
   struct AppendNodeInfo 
   {
-    public int nextX;
-    public int nextY;
+    public Point Position;
     public EntranceSide side;
-    public EntranceSide? nextForcedSide;
+    //public EntranceSide? nextForcedSide;
+    public DungeonNode DungeonNode;
 
-    AppendNodeInfo(EntranceSide? nextForcedSide = null)
+    public AppendNodeInfo(DungeonNode node)//, EntranceSide? nextForcedSide = null)
     {
-      nextX = 0;
-      nextY = 0;
+      Position = new Point();
       side = EntranceSide.Left;
-      this.nextForcedSide = nextForcedSide;
+      //this.nextForcedSide = nextForcedSide;
+      DungeonNode = node;
+    }
+
+    public override string ToString()
+    {
+      return Position.X + ", " + Position.Y + " " + side + " " + DungeonNode;
     }
   }
 
@@ -39,7 +44,7 @@ namespace Dungeons
   {
     int nodesPadding = 0;
     bool generateLayoutDoors = true;
-    EntranceSide? forcedNextSide = null;//EntranceSide.Bottom;
+    //EntranceSide? forcedNextSide = null;//EntranceSide.Bottom;
     EntranceSide? forcedEntranceSideToSkip = null;// EntranceSide.Right;
     LayouterOptions options;
     Container container;
@@ -47,8 +52,8 @@ namespace Dungeons
     public DefaultNodeLayouter(Container container, GenerationInfo info = null)
     {
       this.container = container;
-      if (info != null && info.ForcedNextRoomSide != null)
-        forcedNextSide = info.ForcedNextRoomSide.Value;
+      //if (info != null && info.ForcedNextRoomSide != null)
+      //  forcedNextSide = info.ForcedNextRoomSide.Value;
     }
 
     public DungeonLevel DoLayout(List<DungeonNode> nodes, LayouterOptions opt = null) 
@@ -96,30 +101,31 @@ namespace Dungeons
 
       return level;
     }
-    
+
+    DungeonNode lastNonSecretNode;
+    List<DungeonNode> mazeNodes;
+    Dictionary<DungeonNode, AppendNodeInfo> appendNodeInfos = new Dictionary<DungeonNode, AppendNodeInfo>();
+
     protected virtual void LayoutNodes(DungeonNode level, List<DungeonNode> mazeNodes)
     {
-      AppendNodeInfo info = new AppendNodeInfo();
+      this.mazeNodes = mazeNodes;
+      var info = new AppendNodeInfo(mazeNodes[0]);
       info.side = EntranceSide.Right;
+      
       float chanceForLevelTurn = 0.5f;
       EntranceSide? prevEntranceSide = null;
 
       //mazeNodes[mazeNodes.Count-1].Secret = true;
       //mazeNodes[0].Secret = true;
       //bool secretRoom = false;
-      for (int nodeIndex = 0; nodeIndex < mazeNodes.Count; nodeIndex++)
+      var secretRoomIndex = mazeNodes.FindIndex(i => i.Secret);
+      //EntranceSide? nextEntranceSideToSkip = null;
+      for (int currentNodeIndex = 0; currentNodeIndex < mazeNodes.Count; currentNodeIndex++)
       {
-        var infoNext = CalcNextValues(mazeNodes, info, chanceForLevelTurn, nodeIndex);
-        
-        if (nodeIndex < mazeNodes.Count - 1 && generateLayoutDoors)
-        {
-          var nextMaze = mazeNodes[nodeIndex + 1];
-          var secretRoom = nodeIndex == 0 ? mazeNodes[nodeIndex].Secret :  nextMaze.Secret;
-          mazeNodes[nodeIndex].GenerateLayoutDoors(infoNext.side, nextMaze, secretRoom);
-        }
+        appendNodeInfos.Add(mazeNodes[currentNodeIndex], info);
 
         EntranceSide? entranceSideToSkip = null;
-        if (nodeIndex > 0)
+        if (currentNodeIndex > 0)
         {
           if (prevEntranceSide == EntranceSide.Right)
             entranceSideToSkip = EntranceSide.Left;
@@ -129,63 +135,131 @@ namespace Dungeons
             Debug.Assert(false);
         }
         if (forcedEntranceSideToSkip != null)
+        {
           entranceSideToSkip = forcedEntranceSideToSkip.Value;
+          //forcedEntranceSideToSkip = null;
+        }
 
-        mazeNodes[nodeIndex].Reveal(options.RevealAllNodes, true);
+        var currentNode = mazeNodes[currentNodeIndex];
+        currentNode.Reveal(options.RevealAllNodes, true);
+        if (!currentNode.Secret)
+        {
+          lastNonSecretNode = currentNode;
+        }
 
+
+        bool shallBreak = currentNodeIndex == mazeNodes.Count - 1;
+        AppendNodeInfo infoNext = new AppendNodeInfo();
+        
+        if (!shallBreak)
+        {
+          infoNext = CalcNextValues(info, chanceForLevelTurn, currentNodeIndex);
+
+          if (currentNodeIndex < mazeNodes.Count - 1 && generateLayoutDoors)
+          {
+            var nextMaze = mazeNodes[currentNodeIndex + 1];
+            var secretRoom = currentNodeIndex == 0 ? currentNode.Secret : nextMaze.Secret;
+            if (!secretRoom)
+              secretRoom = nextMaze.Secret;
+
+            //this call must be done before AppendMaze because AppendMaze changes tiles x,y
+            currentNode.GenerateLayoutDoors(infoNext.side, nextMaze.NodeIndex, secretRoom);
+
+            if (currentNode.Secret)
+            {
+              forcedEntranceSideToSkip = EntranceSide.Left;
+            }
+
+            if (nextMaze.Secret)
+            {
+              currentNode.GenerateLayoutDoors(EntranceSide.Right, nextMaze.NodeIndex, false, true);
+              //nextEntranceSideToSkip = EntranceSide.Left;
+              forcedEntranceSideToSkip = EntranceSide.Top;
+            }
+          }
+        }
         level.AppendMaze
         (
-          mazeNodes[nodeIndex],
-          new Point(info.nextX, info.nextY),
+          currentNode,
+          info.Position,
           null,
           false,
           entranceSideToSkip,
-          nodeIndex > 0 ? mazeNodes[nodeIndex - 1] : null
+          currentNodeIndex > 0 ? mazeNodes[currentNodeIndex - 1] : null
         );
 
+        if (shallBreak)
+          break;
+
+        //if (nextEntranceSideToSkip != null)
+         // entranceSideToSkip = nextEntranceSideToSkip.Value;
         prevEntranceSide = infoNext.side;
         info = infoNext;
       }
     }
         
-    private AppendNodeInfo CalcNextValues(List<DungeonNode> mazeNodes, AppendNodeInfo prevInfo, float chanceForLevelTurn, int nodeIndex)
+    private AppendNodeInfo CalcNextValues(AppendNodeInfo currentAppendInfo, float chanceForLevelTurn, int currentNodeIndex)
     {
-      AppendNodeInfo infoNext = prevInfo;
-            
-      if (prevInfo.nextForcedSide != null)
+      var currentNode = mazeNodes[currentNodeIndex];
+      //copy current append info (struct)
+      AppendNodeInfo nextAppendInfo = currentAppendInfo;
+      
+      nextAppendInfo.DungeonNode = mazeNodes[currentNodeIndex+1];
+      DungeonNode sizeProvider  = currentAppendInfo.DungeonNode;
+
+      
+      if (currentNode.Secret)
       {
-        infoNext.side = prevInfo.nextForcedSide.Value;
-        //nextForcedSide = null;
+        if (currentAppendInfo.side == EntranceSide.Bottom)
+            nextAppendInfo.side = EntranceSide.Right;
+        if (currentAppendInfo.side == EntranceSide.Right)
+          nextAppendInfo.side = EntranceSide.Bottom;
+
+        if (lastNonSecretNode != null)
+        {
+          sizeProvider = lastNonSecretNode;
+          nextAppendInfo.Position = appendNodeInfos[lastNonSecretNode].Position;
+        }
       }
       else
       {
-        if (forcedNextSide != null)
-          infoNext.side = forcedNextSide.Value;
-        else
+        //if (forcedNextSide != null)
+        //  nextAppendInfo.side = forcedNextSide.Value;
+        //else
         {
-          infoNext.side = RandHelper.GetRandomDouble() >= .5f ? EntranceSide.Bottom : EntranceSide.Right;
-          if (nodeIndex > 0 && prevInfo.side == infoNext.side)
-          {
-            if (RandHelper.GetRandomDouble() >= chanceForLevelTurn)
-              infoNext.side = prevInfo.side == EntranceSide.Bottom ? EntranceSide.Right : EntranceSide.Bottom;
-          }
+          if (currentNodeIndex == 0)
+            nextAppendInfo.side = EntranceSide.Bottom;
+          else
+            nextAppendInfo.side = CalcSide(currentAppendInfo.side, nextAppendInfo.side, chanceForLevelTurn);
           //chanceForLevelTurn -= 0.15f;
         }
       }
 
       //infoNext.side = EntranceSide.Right;//TODO
-
-      if (infoNext.side == EntranceSide.Bottom)
+      var pt = nextAppendInfo.Position;
+      if (nextAppendInfo.side == EntranceSide.Bottom)
       {
-        infoNext.nextY += mazeNodes[nodeIndex].Height -1 + nodesPadding;
-
+        pt.Y += sizeProvider.Height -1 + nodesPadding;
       }
-      else if (infoNext.side == EntranceSide.Right)
+      else if (nextAppendInfo.side == EntranceSide.Right)
       {
-        infoNext.nextX += mazeNodes[nodeIndex].Width - 1;
+        pt.X += sizeProvider.Width - 1;
+      }
+      nextAppendInfo.Position = pt;
+
+      return nextAppendInfo;
+    }
+
+    private static EntranceSide CalcSide(EntranceSide current, EntranceSide next, float chanceForLevelTurn)//, int currentNodeIndex)
+    {
+      var side = RandHelper.GetRandomDouble() >= .5f ? EntranceSide.Bottom : EntranceSide.Right;
+      if (current == next)
+      {
+        if (RandHelper.GetRandomDouble() >= chanceForLevelTurn)
+          side = side == EntranceSide.Bottom ? EntranceSide.Right : EntranceSide.Bottom;
       }
 
-      return infoNext;
+      return side;
     }
   }
 }
