@@ -236,7 +236,9 @@ namespace Roguelike.Managers
         {
           //ASCII printer needs that event
           //logger.LogInfo(" InteractionResult " + res + ", ac="  + ac);
-          gm.EventsManager.AppendAction(new LivingEntityAction(LivingEntityActionKind.Interacted) { InvolvedEntity = Hero });
+          var lea = new LivingEntityAction(LivingEntityActionKind.Interacted) { InvolvedEntity = Hero };
+          lea.InteractionResult = res;
+          gm.EventsManager.AppendAction(lea);
         }
         else
         {

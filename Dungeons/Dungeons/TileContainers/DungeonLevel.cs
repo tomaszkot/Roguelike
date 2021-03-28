@@ -73,6 +73,9 @@ namespace Dungeons.TileContainers
       get { return Parts[0].Parts.ToList(); }
     }
 
+    [JsonIgnore]
+    public int SecretRoomIndex { get; internal set; }
+
     public void Merge(List<Tile> src, Point point, Func<Tile, bool> rearrangeSelector)
     {
       var set = Rearrange(src, rearrangeSelector);

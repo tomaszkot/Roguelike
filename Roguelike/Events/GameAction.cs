@@ -228,6 +228,7 @@ namespace Roguelike.Events
     public LivingEntityActionKind Kind { get; set; }
     //public TileData TileData { get; set; }
     public double InvolvedValue { get; set; }
+    public InteractionResult InteractionResult { get; set; }
 
   }
 }

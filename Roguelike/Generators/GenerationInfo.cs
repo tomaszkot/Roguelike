@@ -22,7 +22,7 @@
     public GenerationInfo()
     {
       //TMP!!!
-      NumberOfRooms = 3;
+      NumberOfRooms = 5;
       GenerateEnemies = true;
       //ForcedNumberOfEnemiesInRoom = 1;
     }

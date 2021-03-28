@@ -85,7 +85,7 @@ namespace RoguelikeConsoleRunner
           screen.Redraw(lea.InvolvedEntity, true);
 
         screen.RedrawLists();
-        if(lea.Kind == LivingEntityActionKind.Interacted)
+        if(lea.Kind == LivingEntityActionKind.Interacted && lea.InteractionResult != InteractionResult.Attacked)
           Redraw();//e.g. room revealed
       }
       else if (e is GameStateAction)

@@ -12,6 +12,7 @@ namespace Dungeons.Tiles
       set;
     }
     bool Secret { get; set; }
+    int DungeonNodeIndex { get; set; }
   }
 
   class Door : InteractiveTile, IDoor

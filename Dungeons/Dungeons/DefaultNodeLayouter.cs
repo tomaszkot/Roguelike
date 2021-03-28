@@ -42,7 +42,6 @@ namespace Dungeons
   {
     int nodesPadding = 0;
     bool generateLayoutDoors = true;
-    EntranceSide? forcedEntranceSideToSkip = null;
     LayouterOptions options;
     Container container;
 
@@ -94,6 +93,10 @@ namespace Dungeons
       level.AppendMaze(localLevel, new Point(0, 0), new Point(width, height));
       level.DeleteWrongDoors();
 
+      level.SecretRoomIndex = -1;
+      var sn = nodes.Where(i => i.Secret).FirstOrDefault();
+      if(sn!=null)
+        level.SecretRoomIndex = sn.NodeIndex;
       return level;
     }
 
@@ -114,22 +117,6 @@ namespace Dungeons
       for (int currentNodeIndex = 0; currentNodeIndex < mazeNodes.Count; currentNodeIndex++)
       {
         appendNodeInfos.Add(mazeNodes[currentNodeIndex], info);
-
-        EntranceSide? entranceSideToSkip = null;
-        
-        if (forcedEntranceSideToSkip != null)
-        {
-          entranceSideToSkip = forcedEntranceSideToSkip.Value;
-        }
-        else if (currentNodeIndex > 0)
-        {
-          if (prevEntranceSide == EntranceSide.Right)
-            entranceSideToSkip = EntranceSide.Left;
-          else if (prevEntranceSide == EntranceSide.Bottom)
-            entranceSideToSkip = EntranceSide.Top;
-          else
-            Debug.Assert(false);
-        }
 
         var currentNode = mazeNodes[currentNodeIndex];
         currentNode.Reveal(options.RevealAllNodes, true);
@@ -156,19 +143,18 @@ namespace Dungeons
 
             if (currentNode.Secret)
             {
-              forcedEntranceSideToSkip = EntranceSide.Left;
               if (currentNode.NodeIndex == 0)
-                (doors[0] as Tiles.Tile).DungeonNodeIndex = 1;
+                (doors[0]).DungeonNodeIndex = 1;
             }
 
             if (nextMaze.Secret && mazeNodes.Count > currentNodeIndex+2)
             {
               doors = currentNode.GenerateLayoutDoors(infoNext.side == EntranceSide.Bottom ? EntranceSide.Right : EntranceSide.Bottom , nextMaze.NodeIndex, false, true);
-              forcedEntranceSideToSkip = infoNext.side == EntranceSide.Right ? EntranceSide.Top : EntranceSide.Left;
             }
           }
         }
 
+        EntranceSide? entranceSideToSkip = null;
         if (secretRoomIndex == 0 && currentNodeIndex == 1)
           entranceSideToSkip = null;
         else
