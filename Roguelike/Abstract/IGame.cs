@@ -1,13 +1,7 @@
 ﻿using Newtonsoft.Json;
 using Roguelike.Managers;
-using Roguelike.Tiles;
 using Roguelike.Tiles.LivingEntities;
 using SimpleInjector;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Roguelike.Abstract
 {
@@ -43,6 +37,6 @@ namespace Roguelike.Abstract
     public Container Container { get; set; }
     public Hero Hero { get { return GameManager.Hero; } }
     public abstract Dungeons.TileContainers.DungeonNode GenerateDungeon();
-    public static string Version { get; } = "0.0.7";
+    public static string Version { get; } = "0.0.8";
   }
 }

@@ -11,6 +11,7 @@ namespace Dungeons
     public static bool DefaultRevealedValue = true;
     //Number of rooms inside a level, not counting ChildIslands (smallers rooms inside a room)
     public int NumberOfRooms = 4;
+    public int SecretRooIndex { get; set; } = -1;
 
     /// <summary>
     /// Normally true, can be set to false for issue testing purposes

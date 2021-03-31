@@ -275,36 +275,6 @@ namespace RoguelikeUnitTests
       Assert.AreEqual(game.Hero.DungeonNodeIndex, 0);
     }
 
-
-    //[Test]
-    //public void TestLootGeneration()
-    //{
-
-    //  var node = new Roguelike.Generators.TileContainers.DungeonNode(Container);
-    //  node.Create(3, 3);
-    //  var loot = new Loot();
-    //  loot.tag = "super loot";
-    //  Assert.True(node.SetTile(loot, new System.Drawing.Point(1, 2)));
-
-    //  var level = new Roguelike.TileContainers.DungeonLevel(Container);
-    //  level.Create(3, 3);
-    //  var zeroIndexCount = level.GetTiles().Where(i => i.DungeonNodeIndex == 0).Count();
-    //  Assert.AreEqual(zeroIndexCount, 9);
-    //  Assert.True(!level.GetTiles<Loot>().Any());
-    //  Assert.True(!level.Loot.Any());
-
-    //  level.AppendMaze(node, new System.Drawing.Point(0,0));
-    //  Assert.True(level.Loot.Any());
-
-    //  var lootOnLevel = level.GetTiles<Loot>();
-    //  Assert.True(!lootOnLevel.Any());//TODO
-    //  //Assert.AreEqual(lootOnLevel[0].tag, "super loot");//TODO
-
-
-    //  Assert.AreEqual(level.GetTile(new System.Drawing.Point(1, 2)), loot);
-
-    //}
-
     [Test]
     public void EnemiesNames()
     {

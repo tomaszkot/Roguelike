@@ -139,8 +139,9 @@ namespace Dungeons
               secretRoom = nextMaze.Secret;
 
             //this call must be done before AppendMaze because AppendMaze changes tiles x,y
-            var doors = currentNode.GenerateLayoutDoors(infoNext.side, nextMaze.NodeIndex, secretRoom);
-
+            List<Tiles.IDoor> doors = null;
+            if(!currentNode.Secret || currentNode.NodeIndex == 0)
+              doors = currentNode.GenerateLayoutDoors(infoNext.side, nextMaze.NodeIndex, secretRoom);
             if (currentNode.Secret)
             {
               if (currentNode.NodeIndex == 0)

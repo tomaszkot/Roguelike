@@ -67,6 +67,7 @@
     <Compile Include="EquipmentTests.cs" />
     <Compile Include="FightMeleeTests.cs" />
     <Compile Include="LastingEffectTests.cs" />
+    <Compile Include="LevelGenerationTests.cs" />
     <Compile Include="LootingProbabilityTests.cs" />
     <Compile Include="LootingTests.cs" />
     <Compile Include="PotionTests.cs" />

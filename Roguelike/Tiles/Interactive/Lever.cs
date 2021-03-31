@@ -21,6 +21,7 @@ namespace Roguelike.Tiles.Interactive
 
     public Lever() : this(new Point().Invalid())
     {
+      tag1 = "lever";
     }
 
     public string GetPrimaryStatDescription()
