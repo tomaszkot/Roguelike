@@ -28,7 +28,7 @@ namespace RoguelikeUnitTests
       float en2Health = AllEnemies[1].Stats.Health;
       for (int i = 0; i < 2; i++)
       {
-        game.GameManager.CurrentNode.SetTile(AllEnemies[i], empOnes[i].Point);
+        game.GameManager.CurrentNode.SetTile(AllEnemies[i], empOnes[i].point);
       }
       var ab = game.GameManager.Hero.GetAbility(PassiveAbilityKind.BulkAttack);
       ab.PrimaryStat.Value.Factor = 100;
@@ -51,7 +51,7 @@ namespace RoguelikeUnitTests
       float en2Health = enemies[1].Stats.Health;
       for (int i = 0; i < 2; i++)
       {
-        game.GameManager.CurrentNode.SetTile(enemies[i], empOnes[i].Point);
+        game.GameManager.CurrentNode.SetTile(enemies[i], empOnes[i].point);
       }
       var ab = game.GameManager.Hero.GetAbility(PassiveAbilityKind.BulkAttack);
       for(int i=0;i<5;i++)
@@ -81,7 +81,7 @@ namespace RoguelikeUnitTests
       Assert.Greater(empOnes.Count, 1);
       var enemies = PlainEnemies;
       float en1Health = enemies[0].Stats.Health;
-      game.GameManager.CurrentNode.SetTile(enemies[0], empOnes[0].Point);
+      game.GameManager.CurrentNode.SetTile(enemies[0], empOnes[0].point);
 
       var ab = game.GameManager.Hero.GetAbility(PassiveAbilityKind.StrikeBack);
       for (int i = 0; i < 5; i++)
@@ -135,8 +135,8 @@ namespace RoguelikeUnitTests
           numOfLoot++;
           foreach (var l in loot)
           {
-            game.Level.RemoveLoot(l.Point);
-            game.Level.SetEmptyTile(l.Point);
+            game.Level.RemoveLoot(l.point);
+            game.Level.SetEmptyTile(l.point);
             res.Add(l);
           }
         }

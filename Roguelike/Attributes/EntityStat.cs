@@ -64,13 +64,25 @@ namespace Roguelike.Attributes
 
     public void Subtract(float amount)
     {
+      var finalSubtr = stat.Subtracted + amount;
+      CheckValue(finalSubtr);
       stat.Subtracted += amount;
       if (StatChanged != null)
         StatChanged(this, Kind);
     }
 
+    private void CheckValue(float finalSubtr)
+    {
+      var cv = stat.CalculateCurrentValue(finalSubtr);
+      if (cv < 0)
+      {
+        throw new Exception("Subtract, cv < 0 " + this.Kind);
+      }
+    }
+
     public void SetSubtraction(float amount)
     {
+      CheckValue(amount);
       stat.Subtracted = amount;
       if (StatChanged != null)
         StatChanged(this, Kind);

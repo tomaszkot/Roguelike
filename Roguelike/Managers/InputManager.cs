@@ -66,7 +66,7 @@ namespace Roguelike.Managers
     {
       int horizontal = 0;
       int vertical = 0;
-      var res = DungeonNode.GetNeighborPoint(new Tile() { Point = new Point(0, 0) }, neib);
+      var res = DungeonNode.GetNeighborPoint(new Tile() { point = new Point(0, 0) }, neib);
       if (res.X != 0)
         horizontal = res.X;
       else
@@ -212,7 +212,7 @@ namespace Roguelike.Managers
 
         if (gm.HeroMoveAllowed != null && !gm.HeroMoveAllowed())
           return res;
-        var newPos = GetNewPositionFromMove(Hero.Point, horizontal, vertical);
+        var newPos = GetNewPositionFromMove(Hero.point, horizontal, vertical);
         if (!newPos.Possible)
         {
           return res;

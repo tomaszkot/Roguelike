@@ -64,7 +64,12 @@ namespace Roguelike.Attributes
     [JsonIgnore]
     public float CurrentValue
     {
-      get { return TotalValue - Subtracted; }
+      get { return CalculateCurrentValue(Subtracted); }
+    }
+
+    public float CalculateCurrentValue(float subtracted)
+    {
+      return TotalValue - subtracted;
     }
 
     public float Subtracted

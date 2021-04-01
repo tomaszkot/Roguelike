@@ -136,11 +136,11 @@ namespace Roguelike.TileContainers
       //when data is loaded tiles must be revelaed by maching points;
       foreach (var revealedTile in revealedTiles)
       {
-        var dt = this.GetTile(revealedTile.Point);
+        var dt = this.GetTile(revealedTile.point);
         try
         {
           if (dt == null)
-            Logger.LogError("dt == null!!! tile.Symbol = [" + revealedTile.Symbol + "] " + revealedTile.Point + " ");
+            Logger.LogError("dt == null!!! tile.Symbol = [" + revealedTile.Symbol + "] " + revealedTile.point + " ");
           else
           {
             if (dt.Symbol != revealedTile.Symbol)
@@ -172,7 +172,7 @@ namespace Roguelike.TileContainers
     {
       if (dt is Hero && revealed.IsEmpty)
         return;//TODO
-      Logger.LogError(this + " dt.Symbol != revealed.Symbol [" + dt.Symbol + "," + revealed.Symbol + "] " + revealed.Point + " ");
+      Logger.LogError(this + " dt.Symbol != revealed.Symbol [" + dt.Symbol + "," + revealed.Symbol + "] " + revealed.point + " ");
     }
 
     [JsonIgnore]

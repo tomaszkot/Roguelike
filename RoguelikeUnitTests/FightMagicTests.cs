@@ -161,7 +161,7 @@ namespace RoguelikeUnitTests
     {
       var emp = game.GameManager.CurrentNode.GetClosestEmpty(hero);
       if(enemy!=null)
-        Assert.True(game.GameManager.CurrentNode.SetTile(enemy, emp.Point));
+        Assert.True(game.GameManager.CurrentNode.SetTile(enemy, emp.point));
       var scroll = new Scroll(spellKind);
       hero.Inventory.Add(scroll);
       
@@ -212,9 +212,9 @@ namespace RoguelikeUnitTests
     {
       var game = CreateGame();
       var hero = game.Hero;
-      var heroPos = hero.Point;
+      var heroPos = hero.point;
       TeleportByRange(1, false);
-      Assert.AreNotEqual(heroPos, hero.Point);
+      Assert.AreNotEqual(heroPos, hero.point);
     }
 
     [Test]
@@ -222,9 +222,9 @@ namespace RoguelikeUnitTests
     {
       var game = CreateGame();
       var hero = game.Hero;
-      var heroPos = hero.Point;
+      var heroPos = hero.point;
       TeleportByRange(10, true);
-      Assert.AreEqual(heroPos, hero.Point);
+      Assert.AreEqual(heroPos, hero.point);
     }
 
     private void TeleportByRange(int range, bool shallFail)
@@ -234,7 +234,7 @@ namespace RoguelikeUnitTests
       var scroll = PrepareScroll(hero, SpellKind.Teleport);
       Assert.AreEqual(hero.Inventory.GetItems<Scroll>().Count(), 1);
       var dest = game.GameManager.CurrentNode.GetEmptyTiles().Where(i=>i.DistanceFrom(hero) == range).FirstOrDefault();
-      var spell = game.GameManager.ApplyPassiveSpell(hero, scroll, dest.Point);
+      var spell = game.GameManager.ApplyPassiveSpell(hero, scroll, dest.point);
       if (!shallFail)
       {
         Assert.NotNull(spell);

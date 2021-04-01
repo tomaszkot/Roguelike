@@ -48,7 +48,7 @@ namespace RoguelikeUnitTests
       var game = CreateGame();
       var barrels = game.Level.GetTiles<Barrel>();
       Assert.Greater(barrels.Count, 0);
-      var pt = barrels.First().Point;
+      var pt = barrels.First().point;
       Assert.AreEqual(game.Level.GetTile(pt), barrels.First());
 
       var res = game.GameManager.InteractHeroWith(barrels.First());

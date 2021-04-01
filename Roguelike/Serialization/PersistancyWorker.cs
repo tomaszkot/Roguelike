@@ -25,7 +25,7 @@ namespace Roguelike.Serialization
 #endif
         //var nodeName = gm.CurrentNode.Name;
         //Hero is saved in a separate file
-        if (!gm.CurrentNode.SetEmptyTile(gm.Hero.Point))
+        if (!gm.CurrentNode.SetEmptyTile(gm.Hero.point))
           gm.Logger.LogError("failed to reset hero on save");
 
         gm.Persister.SaveHero(gm.Hero);
@@ -37,7 +37,7 @@ namespace Roguelike.Serialization
       gm.Persister.SaveGameState(gm.Hero.Name,gameState);
 
       //restore hero
-      gm.CurrentNode.SetTile(gm.Hero, gm.Hero.Point);
+      gm.CurrentNode.SetTile(gm.Hero, gm.Hero.point);
     }
 
     public void Load(string heroName, GameManager gm, Func<Hero, GameState, AbstractGameLevel> worldLoader)

@@ -48,20 +48,20 @@ namespace RoguelikeUnitTests
 
       Assert.AreEqual(game.GameManager.Context.TurnOwner, TurnOwner.Hero);
 
-      var heroPrevPos = game.Hero.Point;
+      var heroPrevPos = game.Hero.point;
 
       //var emptyHeroNeib = level.GetEmptyNeighborhoodPoint(game.Hero, Dungeons.TileContainers.DungeonNode.EmptyNeighborhoodCallContext.Move);
       //game.GameManager.HandleHeroShift(emptyHeroNeib.Item2);
       TryToMoveHero();
 
-      Assert.AreNotEqual(heroPrevPos, game.Hero.Point);
+      Assert.AreNotEqual(heroPrevPos, game.Hero.point);
 
       Assert.AreEqual(game.GameManager.Context.TurnOwner, TurnOwner.Allies);
-      heroPrevPos = game.Hero.Point;
+      heroPrevPos = game.Hero.point;
 
       var emptyHeroNeib = level.GetEmptyNeighborhoodPoint(game.Hero, EmptyNeighborhoodCallContext.Move);
       game.GameManager.HandleHeroShift(emptyHeroNeib.Item2);
-      Assert.AreEqual(heroPrevPos, game.Hero.Point);//shall not move as already did in turn
+      Assert.AreEqual(heroPrevPos, game.Hero.point);//shall not move as already did in turn
       
       Assert.AreEqual(game.GameManager.Context.TurnOwner, TurnOwner.Allies);
     }
@@ -81,16 +81,16 @@ namespace RoguelikeUnitTests
       Assert.AreEqual(game.GameManager.Context.TurnOwner, TurnOwner.Hero);
 
       //var emptyHeroNeib = level.GetEmptyNeighborhoodPoint(game.Hero, Dungeons.TileContainers.DungeonNode.EmptyNeighborhoodCallContext.Move);
-      var heroPos = game.Hero.Point;
+      var heroPos = game.Hero.point;
       //game.GameManager.HandleHeroShift(emptyHeroNeib.Item2);
       TryToMoveHero();
 
-      Assert.AreNotEqual(heroPos, game.Hero.Point);
+      Assert.AreNotEqual(heroPos, game.Hero.point);
       Assert.AreEqual(game.GameManager.Context.TurnActionsCount[TurnOwner.Hero], 1);
 
-      heroPos = game.Hero.Point;
+      heroPos = game.Hero.point;
       TryToMoveHero();
-      Assert.AreEqual(heroPos, game.Hero.Point);//hero shall not move as it already move this turn
+      Assert.AreEqual(heroPos, game.Hero.point);//hero shall not move as it already move this turn
       Assert.AreEqual(Game.GameManager.Context.GetActionsCount(), 1);
 
       Assert.AreEqual(game.GameManager.Context.TurnOwner, TurnOwner.Hero);
@@ -99,7 +99,7 @@ namespace RoguelikeUnitTests
 
       //try move agin
       TryToMoveHero();
-      Assert.AreNotEqual(heroPos, game.Hero.Point);//now shall move!
+      Assert.AreNotEqual(heroPos, game.Hero.point);//now shall move!
       Assert.AreEqual(Game.GameManager.Context.GetActionsCount(), 1);
     }
 
@@ -129,7 +129,7 @@ namespace RoguelikeUnitTests
       game.Hero.Stats.SetNominal(Roguelike.Attributes.EntityStatKind.ChanceToHit, 100);
 
       Assert.AreEqual(game.GameManager.Context.TurnOwner, TurnOwner.Hero);
-      var heroPos = game.Hero.Point;
+      var heroPos = game.Hero.point;
 
       var en = SpawnEnemy();
       var enHealth = en.Stats.Health;
@@ -138,14 +138,14 @@ namespace RoguelikeUnitTests
       var neib = emptyHeroNeib.Item2;
 
       game.GameManager.HandleHeroShift(neib);
-      Assert.AreEqual(heroPos, game.Hero.Point);
+      Assert.AreEqual(heroPos, game.Hero.point);
 
       Assert.Less(en.Stats.Health, enHealth);
       Assert.AreEqual(Game.GameManager.Context.GetActionsCount(), 1);
 
       enHealth = en.Stats.Health;
       game.GameManager.HandleHeroShift(neib);
-      Assert.AreEqual(heroPos, game.Hero.Point);
+      Assert.AreEqual(heroPos, game.Hero.point);
 
       //hit not done as hero already hit in this turn
       Assert.AreEqual(en.Stats.Health, enHealth);
@@ -153,15 +153,15 @@ namespace RoguelikeUnitTests
 
       MoveToHeroTurn(game);
       game.GameManager.HandleHeroShift(neib);
-      Assert.AreEqual(heroPos, game.Hero.Point);
+      Assert.AreEqual(heroPos, game.Hero.point);
 
       Assert.Less(en.Stats.Health, enHealth);
       Assert.AreEqual(Game.GameManager.Context.GetActionsCount(), 1);
 
-      heroPos = game.Hero.Point;
+      heroPos = game.Hero.point;
       TryToMoveHero();
       
-      Assert.AreEqual(heroPos, game.Hero.Point);//hero shall not move as it already made action this turn
+      Assert.AreEqual(heroPos, game.Hero.point);//hero shall not move as it already made action this turn
     }
 
 
@@ -177,7 +177,7 @@ namespace RoguelikeUnitTests
 
         var level = game.GenerateLevel(0, gi);
         game.Hero.Stats.SetNominal(Roguelike.Attributes.EntityStatKind.ChanceToHit, 100);
-        var heroPos = game.Hero.Point;
+        var heroPos = game.Hero.point;
         Assert.AreEqual(game.GameManager.Context.TurnOwner, TurnOwner.Hero);
 
         var en = SpawnEnemy();
@@ -187,7 +187,7 @@ namespace RoguelikeUnitTests
 
         //move hero toward enemy - hit it
         var res = game.GameManager.HandleHeroShift(emptyHeroNeib.Item2);
-        Assert.AreEqual(heroPos, game.Hero.Point);
+        Assert.AreEqual(heroPos, game.Hero.point);
         Assert.Less(en.Stats.Health, enHealth);
 
         Assert.AreEqual(game.GameManager.Context.TurnOwner, TurnOwner.Allies);

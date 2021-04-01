@@ -136,7 +136,7 @@ namespace RoguelikeUnitTests
       {
         var pot = env.LootGenerator.GetRandomLoot(LootKind.Equipment, 1);
         var closeEmp = env.Game.Level.GetClosestEmpty(env.Game.Hero, true, true);
-        var set = env.Game.Level.SetTile(pot, closeEmp.Point);
+        var set = env.Game.Level.SetTile(pot, closeEmp.point);
         Assert.True(set);
       }
       var newLootItems = lootInfo.GetDiff();
@@ -275,11 +275,11 @@ namespace RoguelikeUnitTests
       var enemies = game.GameManager.EnemiesManager.GetEnemies().Where(i => i.PowerKind == EnemyPowerKind.Plain).ToList();
       var en = enemies[0];
       env.KillEnemy(en);
-      var loot = env.Game.Level.GetTile(en.Point);//loot shall be at enemy point
+      var loot = env.Game.Level.GetTile(en.point);//loot shall be at enemy point
       Assert.NotNull(loot as Loot);
 
       var en1 = enemies[1];
-      Assert.True(env.Game.Level.SetTile(en1, en.Point));
+      Assert.True(env.Game.Level.SetTile(en1, en.point));
 
       Debug.WriteLine("Killing en1...");
       var li = new LootInfo(game, null);

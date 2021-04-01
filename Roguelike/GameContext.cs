@@ -134,13 +134,16 @@ namespace Roguelike
     }
        
 
-    public void ApplySpellAttackPolicy(LivingEntity caster, LivingEntity target, Scroll scroll, 
+    public void ApplySpellAttackPolicy(LivingEntity caster, Roguelike.Tiles.Abstract.IDestroyable target, Scroll scroll, 
       Action<Policy> BeforeApply, 
       Action<Policy> AfterApply)
     {
       if (!UtylizeScroll(caster, scroll))
         return;
 
+      var spell = scroll.CreateSpell(caster);
+      spell.Caller.ReduceMana(spell.ManaCost);
+ 
       var policy = Container.GetInstance<SpellCastPolicy>();
       policy.Target = target;
       policy.ProjectilesFactory = Container.GetInstance<IProjectilesFactory>();

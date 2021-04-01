@@ -73,7 +73,7 @@ namespace Roguelike.Spells
       manaCost = BaseManaCost;
       levelToMagic[1] = 10;
 
-      this.Caller.ReduceMana(ManaCost);
+      //this.Caller.ReduceMana(ManaCost);can not do it here
     }
 
     public int CoolingDown { get; set; } = 0;

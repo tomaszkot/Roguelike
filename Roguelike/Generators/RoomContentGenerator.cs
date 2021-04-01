@@ -165,7 +165,7 @@ namespace Roguelike.Generators
       
       var tile = node.GetRandomEmptyTile(emptyTiles, nodeIndex: node.NodeIndex);
       if (tile != null)
-        return tile.Point;
+        return tile.point;
 
       return null;
     }
@@ -178,7 +178,7 @@ namespace Roguelike.Generators
         // logger.LogInfo("placed " + enemy + " at :" + enemy.Point);
       }
       else
-        logger.LogError("not placed ! " + enemy + " at :" + enemy.Point);
+        logger.LogError("not placed ! " + enemy + " at :" + enemy.point);
       return res;
     }
 
@@ -265,14 +265,6 @@ namespace Roguelike.Generators
       PlaceEnemiesPack(packEnemies);
     }
 
-    //private void SetPowerFromLevel(List<Enemy> packEnemies)
-    //{
-    //  foreach (var en in packEnemies)
-    //  {
-    //    SetILootSourceLevel(en);
-    //  }
-    //}
-
     void SetILootSourceLevel(ILootSource src)
     {
       var esl = enemiesStartLevel;
@@ -305,7 +297,7 @@ namespace Roguelike.Generators
         if (node.NodeIndex == 0 && levelIndex == 0)
         {
           emptyCells = emptyCells.Where(i => i.DistanceFrom(emptyCells.First()) > (node.Width/2 + node.Height/2)/2 ).ToList();
-          enemyPoint = emptyCells.GetRandomElem<Tile>().Point;
+          enemyPoint = emptyCells.GetRandomElem<Tile>().point;
         }
         else
         {
@@ -317,7 +309,7 @@ namespace Roguelike.Generators
           }
         }
         
-        emptyCells.RemoveAll(i=> i.Point == enemyPoint);
+        emptyCells.RemoveAll(i=> i.point == enemyPoint);
         foreach (var en in packEnemies)
         {
           PlaceEnemy(en, node, enemyPoint.Value);
@@ -329,7 +321,7 @@ namespace Roguelike.Generators
 
           if (empty != null)
           {
-            enemyPoint = empty.Point;
+            enemyPoint = empty.point;
             emptyCells.Remove(empty);
           }
           else

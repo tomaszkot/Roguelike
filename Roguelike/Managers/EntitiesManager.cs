@@ -225,7 +225,7 @@ namespace Roguelike.Managers
     protected bool MakeMoveOnPath(LivingEntity entity, Point target, bool forHeroAlly)
     {
       bool moved = false;
-      entity.PathToTarget = Node.FindPath(entity.Point, target, forHeroAlly, true);
+      entity.PathToTarget = Node.FindPath(entity.point, target, forHeroAlly, true);
       if (entity.PathToTarget != null && entity.PathToTarget.Count > 1)
       {
         var fullPath = new List<Point>();

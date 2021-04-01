@@ -1,5 +1,7 @@
 ﻿////#define ASCII_BUILD  
 using Dungeons.Core;
+using Roguelike.Abstract.Spells;
+using Roguelike.Tiles.Abstract;
 using System.Drawing;
 
 namespace Roguelike.Tiles.Interactive
@@ -7,20 +9,25 @@ namespace Roguelike.Tiles.Interactive
   
   public enum BarrelKind { Barrel, PileOfSkulls }
 
-  public class Barrel : InteractiveTile, ILootSource
+  public class Barrel : InteractiveTile, IDestroyable
   {
     public const char BarrelSymbol = '~';
     private BarrelKind barrelKind;
 
-    public BarrelKind BarrelKind 
-    { 
-      get => barrelKind; 
-      set  
+    public BarrelKind BarrelKind
+    {
+      get => barrelKind;
+      set
       {
         barrelKind = value;
-        
+
         DestroySound = (barrelKind == BarrelKind.Barrel) ? "barrel_broken" : "bones_fall";
       }
+    }
+
+    public Point Position
+    {
+      get { return point; }
     }
 
     public Barrel(Point point) : base(BarrelSymbol)
@@ -37,7 +44,12 @@ namespace Roguelike.Tiles.Interactive
 
     }
 
-    public Point GetPoint() { return Point; }
+    public override bool OnHitBy(ISpell damager)
+    {
+      return true;
+    }
+
+    public Point GetPoint() { return point; }
 
     public void SetLevel(int level) { Level = level; }
 

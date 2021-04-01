@@ -17,5 +17,6 @@ namespace Roguelike.Abstract.Spells
   {
     LivingEntity Caller { get; set; }
     int CoolingDown { get; set; }
+    int ManaCost { get; }
   }
 }

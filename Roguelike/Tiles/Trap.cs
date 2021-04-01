@@ -61,7 +61,7 @@ namespace Roguelike.Tiles
     public Trap(Point point, bool setup) //: base(point, TrapSymbol)
     {
       SetUp = setup;
-      this.Point = point;
+      this.point = point;
       this.Symbol = TrapSymbol;
       Name = "Trap";
 

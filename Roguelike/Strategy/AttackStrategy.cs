@@ -204,7 +204,7 @@ namespace Roguelike
         if (enemy.ActiveScroll != null && enemy.ActiveScrollCoolDownCounter == 0)
         {
           var level = Context.CurrentNode;
-          enemy.PathToTarget = level.FindPath(enemy.Point, hero.Point, false, true);
+          enemy.PathToTarget = level.FindPath(enemy.point, hero.point, false, true);
           if (enemy.PathToTarget != null)
           {
             var path = enemy.PathToTarget.GetRange(0, enemy.PathToTarget.Count - 1);
@@ -221,7 +221,7 @@ namespace Roguelike
                 var straithPath = path.All(i => i.X == first.X || i.Y == first.Y);
                 if (straithPath)
                 {
-                  if (enemy.DistanceFrom(hero) < 5 || (enemy.Point.Y == hero.Point.Y && enemy.DistanceFrom(hero) < 7)) //|| VisibleFromCamera TODO
+                  if (enemy.DistanceFrom(hero) < 5 || (enemy.point.Y == hero.point.Y && enemy.DistanceFrom(hero) < 7)) //|| VisibleFromCamera TODO
                   {
                     //var spell = enemy.ActiveScroll.CreateSpell(enemy);
                     //if (spell is OffensiveSpell)

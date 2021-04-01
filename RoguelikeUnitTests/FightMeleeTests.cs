@@ -36,7 +36,7 @@ namespace RoguelikeUnitTests
         GenerationInfo.ChanceToTurnOnSpecialSkillByEnemy = 1f;
 
         var closeHero = game.Level.GetClosestEmpty(hero);
-        game.Level.SetTile(enemy, closeHero.Point);
+        game.Level.SetTile(enemy, closeHero.point);
         enemy.OnPhysicalHit(hero);
 
         game.GameManager.Context.TurnOwner = TurnOwner.Allies;
@@ -159,7 +159,7 @@ namespace RoguelikeUnitTests
       enemyHealth = enemy.Stats.Health;
 
       var emp = game.GameManager.CurrentNode.GetClosestEmpty(hero);
-      game.GameManager.CurrentNode.SetTile(enemy, emp.Point);
+      game.GameManager.CurrentNode.SetTile(enemy, emp.point);
 
       var scroll = new Scroll(SpellKind.Rage);
       hero.Inventory.Add(scroll);

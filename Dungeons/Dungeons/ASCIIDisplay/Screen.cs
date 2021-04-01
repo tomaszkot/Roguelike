@@ -42,7 +42,7 @@ namespace Dungeons.ASCIIDisplay
     public void Redraw(Tile tile, bool alsoNeibs)
     {
       if(tile!=null)
-        DungeonPresenter.RefreshPosition(Dungeon, null, tile.Point.X, tile.Point.Y);
+        DungeonPresenter.RefreshPosition(Dungeon, null, tile.point.X, tile.point.Y);
       if(alsoNeibs)
         RefreshNeibs(tile);
     }

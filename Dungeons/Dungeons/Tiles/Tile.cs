@@ -22,7 +22,7 @@ namespace Dungeons.Tiles
   public class Tile
   {
     //members public for speed purposes
-    public Point Point;
+    public Point point;
 
     private char symbol = Constants.SymbolBackground;
     public string name;
@@ -62,7 +62,7 @@ namespace Dungeons.Tiles
     public Tile(Point point, char symbol = Constants.SymbolBackground)
     {
       this.Name = GetType().Name;
-      this.Point = point;
+      this.point = point;
       this.Symbol = symbol;
     }
 
@@ -131,7 +131,7 @@ namespace Dungeons.Tiles
     [JsonIgnore]
     public bool IsAtValidPoint
     {
-      get { return Point != GenerationConstraints.InvalidPoint; }
+      get { return point != GenerationConstraints.InvalidPoint; }
     }
 
     [JsonIgnore]
@@ -203,7 +203,7 @@ namespace Dungeons.Tiles
         
     public bool IsAtSamePosition(Tile other)
     {
-      return Point.Equals(other.Point);
+      return point.Equals(other.point);
     }
 
     public static bool IncludeDebugDetailsInToString = true;
@@ -213,18 +213,18 @@ namespace Dungeons.Tiles
     {
       string res = GetType().ToString();
       if (IncludeDebugDetailsInToString)
-        res += " " + Symbol + " " + DungeonNodeIndex + " " + Point + " " + tag1 + " " + GetHashCode();
+        res += " " + Symbol + " " + DungeonNodeIndex + " " + point + " " + tag1 + " " + GetHashCode();
       return res;
     }
 
     public double DistanceFrom(Tile other)
     {
-      return DistanceFrom(other.Point);
+      return DistanceFrom(other.point);
     }
 
     public double DistanceFrom(Point other)
     {
-      var dPowered = (Math.Pow(Point.X - other.X, 2) + Math.Pow(Point.Y - other.Y, 2));
+      var dPowered = (Math.Pow(point.X - other.X, 2) + Math.Pow(point.Y - other.Y, 2));
       return Math.Sqrt(dPowered);
     }
   }

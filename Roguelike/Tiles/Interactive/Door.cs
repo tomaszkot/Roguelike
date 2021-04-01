@@ -44,7 +44,7 @@ namespace Roguelike.Tiles.Interactive
 
     public Door(Point point) : base(Dungeons.Tiles.Constants.SymbolDoor)
     {
-      Point = point;
+      base.point = point;
       Color = ConsoleColor.Yellow;
     }
 

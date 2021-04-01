@@ -135,7 +135,7 @@ namespace Roguelike
       //}
       //var empty = node.GetClosestEmpty(emptyForHero, empOnes);
       var empty = empOnes.First();
-      node.SetTile(hero, empty.Point);
+      node.SetTile(hero, empty.point);
       return hero;
     }
 

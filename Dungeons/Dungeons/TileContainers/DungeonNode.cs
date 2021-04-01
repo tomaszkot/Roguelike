@@ -280,8 +280,8 @@ namespace Dungeons
           return true;
         if (neibs.Count != 2)
           return false;
-        if (neibs.Count(i => i.Point.X == wall.Point.X) == 2 ||
-          neibs.Count(i => i.Point.Y == wall.Point.Y) == 2)
+        if (neibs.Count(i => i.point.X == wall.point.X) == 2 ||
+          neibs.Count(i => i.point.Y == wall.point.Y) == 2)
           return false;
         return true;
 
@@ -347,7 +347,7 @@ namespace Dungeons
 
       public static Point GetNeighborPoint(Tile tile, TileNeighborhood neighborhood)
       {
-        Point pt = tile.Point;
+        Point pt = tile.point;
         switch (neighborhood)
         {
           case TileNeighborhood.North:
@@ -372,7 +372,7 @@ namespace Dungeons
       public Point? GetFirstEmptyPoint()
       {
         var tile = GetEmptyTiles().FirstOrDefault();
-        return tile?.Point;
+        return tile?.point;
       }
 
       public virtual List<Tile> GetEmptyTiles
@@ -471,7 +471,7 @@ namespace Dungeons
           return false;
         }
 
-        if (tiles[point.Y, point.X] == tile && tile.Point == point)
+        if (tiles[point.Y, point.X] == tile && tile.point == point)
           return true;
 
         if (tiles[point.Y, point.X] != null)
@@ -491,12 +491,12 @@ namespace Dungeons
           if (resetOldTile)
           {
             //reset old tile
-            if (tile.IsAtValidPoint && (tile.Point != point) && Width > tile.Point.X && Height > tile.Point.Y)
+            if (tile.IsAtValidPoint && (tile.point != point) && Width > tile.point.X && Height > tile.point.Y)
             {
               var emp = GenerateEmptyTile();
               if (emp != null)
                 emp.DungeonNodeIndex = tile.DungeonNodeIndex;//preserve;
-              SetTile(emp, tile.Point);
+              SetTile(emp, tile.point);
               if (emp != null)
               {
                 if (revealReseted)
@@ -507,7 +507,7 @@ namespace Dungeons
             }
           }
 
-          tile.Point = point;
+          tile.point = point;
           return true;
           //if (OnTileRevealed != null)
           //  OnTileRevealed(this, new GenericEventArgs<Tile>(tile));
@@ -539,7 +539,7 @@ namespace Dungeons
         }
         var door = CreateDoorInstance();
         Debug.Assert(door!=null);
-        bool doorSet = SetTile(door, original.Point);
+        bool doorSet = SetTile(door, original.point);
         Debug.Assert(doorSet);
         door.DungeonNodeIndex = original.DungeonNodeIndex;
 
@@ -627,7 +627,7 @@ namespace Dungeons
             SetCorner(childMazeMaxSize, row, col, tileInChildMaze);
             int destCol = col + start.X;
             int destRow = row + start.Y;
-            tileInChildMaze.Point = new Point(destCol, destRow);
+            tileInChildMaze.point = new Point(destCol, destRow);
 
             if (childIsland)
               tileInChildMaze.DungeonNodeIndex = childMaze.NodeIndex;
@@ -654,7 +654,7 @@ namespace Dungeons
               var emp = this.GetClosestEmpty(tileInChildMaze);
               if (emp != null)
               {
-                set = this.SetTile(tileInChildMaze, emp.Point, autoSetTileDungeonIndex: false);
+                set = this.SetTile(tileInChildMaze, emp.point, autoSetTileDungeonIndex: false);
               }
               if (!set)
               {
@@ -695,9 +695,9 @@ namespace Dungeons
           for (int col = 0; col < Width; col++)
           {
             var tile = tiles[row, col];
-            if (tile != null && tile.Point.X > maxX)
+            if (tile != null && tile.point.X > maxX)
               maxX = col;
-            if (tile != null && tile.Point.Y > maxY)
+            if (tile != null && tile.point.Y > maxY)
               maxY = row;
           }
         }
@@ -836,7 +836,7 @@ namespace Dungeons
           for (int i = 0; i < toDel.Count; i++)
           {
             var wall = CreateWall();
-            if (this.SetTile(wall, toDel[i].Point))
+            if (this.SetTile(wall, toDel[i].point))
             {
               wall.dungeonNodeIndex = toDel[i].DungeonNodeIndex;
               wall.Revealed = toDel[i].Revealed;
@@ -953,7 +953,7 @@ namespace Dungeons
           if (IsTileEmpty(tile) || (extraTypesConsideredEmpty != null && 
                                     extraTypesConsideredEmpty.Any(i=> IsTypeMatching(i, tile.GetType()))))
           {
-            res = new Tuple<Point, TileNeighborhood>(tile.Point, side);
+            res = new Tuple<Point, TileNeighborhood>(tile.point, side);
             break;
           }
         }
@@ -1009,7 +1009,7 @@ namespace Dungeons
         if (empty == null)
           return null;
 
-        var set = SetTile(tile, empty.Point);
+        var set = SetTile(tile, empty.point);
 
         return set ? tile : null;
       }

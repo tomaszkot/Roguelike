@@ -83,7 +83,7 @@ namespace Roguelike.Generators
         var tile = maze.GetRandomEmptyTile();
         if (tile != null)
         {
-          maze.SetTile(stairs, tile.Point);
+          maze.SetTile(stairs, tile.point);
           if (stairs.IsFromChildIsland())
           {
             Logger.LogInfo("stairs.IsFromChildIsland! ");
@@ -141,7 +141,7 @@ namespace Roguelike.Generators
     {
       var stairs = CreateStairsUp(node.NodeIndex);
       stairsUp = stairs;
-      node.SetTile(stairs, node.GetEmptyTiles().First().Point);
+      node.SetTile(stairs, node.GetEmptyTiles().First().point);
       OnStairsUpCreated(stairs);
     }
 

@@ -64,7 +64,7 @@ namespace Roguelike.Tiles.Interactive
       return false;
     }
 
-    public bool OnHitBy(ISpell damager)
+    public virtual bool OnHitBy(ISpell damager)
     {
       return false;
     }

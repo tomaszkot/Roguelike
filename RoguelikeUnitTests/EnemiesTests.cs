@@ -163,16 +163,16 @@ namespace RoguelikeUnitTests
       enemy.SetSurfaceSkillLevel(SurfaceKind.ShallowWater, 1);
 
       var closeTile = game.Level.GetEmptyTiles().Where(i => i.DistanceFrom(game.Hero) == 3).FirstOrDefault();
-      game.Level.SetTile(enemy, closeTile.Point);
+      game.Level.SetTile(enemy, closeTile.point);
 
       var enemyDistFromHero = enemy.DistanceFrom(game.Hero);
       Assert.Less(enemyDistFromHero, 4);
       
       var emptyCount =  game.Level.GetEmptyTiles().Count;
-      game.Level.GetEmptyTiles().ForEach(i => game.Level.SetTile(new Surface() {Kind = SurfaceKind.ShallowWater}, i.Point));
+      game.Level.GetEmptyTiles().ForEach(i => game.Level.SetTile(new Surface() {Kind = SurfaceKind.ShallowWater}, i.point));
       Assert.AreEqual(emptyCount, game.Level.GetEmptyTiles().Count);//empty are not addected by surface
 
-      game.Level.SetTile(new Surface() { Kind = SurfaceKind.ShallowWater }, enemy.Point);
+      game.Level.SetTile(new Surface() { Kind = SurfaceKind.ShallowWater }, enemy.point);
       Assert.AreEqual(game.Level.GetSurfaceKindUnderTile(enemy), SurfaceKind.ShallowWater);
       enemies = game.Level.GetTiles<Enemy>();
       Assert.AreEqual(enemies.Count, 1);

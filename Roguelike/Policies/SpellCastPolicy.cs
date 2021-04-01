@@ -9,7 +9,7 @@ namespace Roguelike.Policies
   public class SpellCastPolicy : Policy
   {
     LivingEntity caster;
-    LivingEntity target;
+    Roguelike.Tiles.Abstract.IDestroyable target;
     Scroll scroll;
 
     public SpellCastPolicy()
@@ -17,7 +17,7 @@ namespace Roguelike.Policies
       this.Kind = PolicyKind.SpellCast;
     }
 
-    public LivingEntity Target { get => target; set => target = value; }
+    public Roguelike.Tiles.Abstract.IDestroyable Target { get => target; set => target = value; }
     public Scroll Scroll { get => scroll; set => scroll = value; }
     public LivingEntity Caster { get => caster; set => caster = value; }
     public IProjectilesFactory ProjectilesFactory { get ; set; }
@@ -27,7 +27,7 @@ namespace Roguelike.Policies
       Apply(this.Scroll, caster, this.Target, this.ProjectilesFactory);
     }
 
-    public void Apply(Scroll scroll, LivingEntity caster, LivingEntity target, IProjectilesFactory projectilesFactory)
+    public void Apply(Scroll scroll, LivingEntity caster, Roguelike.Tiles.Abstract.IDestroyable target, IProjectilesFactory projectilesFactory)
     {
       this.scroll = scroll;
       this.caster = caster;

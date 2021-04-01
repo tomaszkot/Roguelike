@@ -28,14 +28,14 @@ namespace Dungeons.TileContainers
       List<Tile> skip = new List<Tile>();
       foreach (var unityTile in src)
       {
-        var alreadyAtPos = GetTile(unityTile.Point);
+        var alreadyAtPos = GetTile(unityTile.point);
         if (alreadyAtPos != null && selector(alreadyAtPos))
         {
           logger.LogInfo("alreadyAtPos " + alreadyAtPos);
           var empty = GetClosestEmpty(alreadyAtPos, false, skip);
           while (empty!=null)
           {
-            var srcTile = src.FirstOrDefault(i=> i.Point == empty.Point);
+            var srcTile = src.FirstOrDefault(i=> i.point == empty.point);
             if (srcTile != null && !srcTile.IsEmpty)
             {
               skip.Add(empty);
@@ -49,13 +49,13 @@ namespace Dungeons.TileContainers
             logger.LogError("empty == null");
             return false;
           }
-          var set = SetTile(alreadyAtPos, empty.Point);
+          var set = SetTile(alreadyAtPos, empty.point);
           if (!set)
           {
             logger.LogError("!set alreadyAtPos " + alreadyAtPos);
             return false;
           }
-          var check = GetTile(empty.Point);
+          var check = GetTile(empty.point);
           if (check != alreadyAtPos)
           {
             logger.LogError("!check != alreadyAtPos");
@@ -82,7 +82,7 @@ namespace Dungeons.TileContainers
       
       foreach (var tile in src)
       {
-        this.SetTile(tile, tile.Point);
+        this.SetTile(tile, tile.point);
       }
     }
   }

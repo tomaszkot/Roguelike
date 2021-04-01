@@ -310,7 +310,7 @@ namespace RoguelikeUnitTests
       var placement = SetCloseToHero(sur);
       Assert.True(game.Level.Surfaces.Any());
       game.GameManager.HandleHeroShift(placement.Item2);
-      Assert.AreEqual(game.Hero.Point, sur.Point);
+      Assert.AreEqual(game.Hero.point, sur.point);
       Assert.AreEqual(game.Level.GetSurfaceKindUnderHero(game.Hero), sur.Kind);
     }
   }

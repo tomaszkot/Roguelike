@@ -122,7 +122,7 @@ namespace Roguelike.TileContainers
 
     bool IsLootTile(Tile tile)
     {
-      return Loot.Any(j => j.Value.Point == tile.Point);
+      return Loot.Any(j => j.Value.point == tile.point);
     }
 
     void RemoveLoot(List<Tile> tiles)
@@ -153,7 +153,7 @@ namespace Roguelike.TileContainers
       emptyTiles = GetEmptyTiles();
       if (excludeLootPositions)
       {
-        int removed = emptyTiles.RemoveAll(i => Loot.Any(j => j.Value.Point == i.Point));
+        int removed = emptyTiles.RemoveAll(i => Loot.Any(j => j.Value.point == i.point));
         Logger.LogInfo("removed " + removed);
       }
       return GetClosestEmpty(baseTile, emptyTiles);
@@ -198,7 +198,7 @@ namespace Roguelike.TileContainers
           return false;
         }
         //Logger.LogInfo("Adding Loot "+ tile + " at "+ point + " Loot.Count:"+ Loot.Count);
-        tile.Point = point;
+        tile.point = point;
         Loot[point] = loot;
 
         return true;
@@ -216,13 +216,13 @@ namespace Roguelike.TileContainers
           }
         }
         //Logger.LogInfo("Adding Loot "+ tile + " at "+ point + " Loot.Count:"+ Loot.Count);
-        tile.Point = point;
+        tile.point = point;
         Surfaces[point] = sur;
 
         return true;
       }
 
-      Point? prevPos = tile?.Point;
+      Point? prevPos = tile?.point;
       var res =  base.SetTile(tile, point, resetOldTile, revealReseted, autoSetTileDungeonIndex, reportError);
       if (res && tile is LivingEntity && prevPos!=null)
       {
@@ -326,7 +326,7 @@ namespace Roguelike.TileContainers
     public List<Tiles.Loot> GetLootTilesNearby(Tile tile)
     {
       List<Tiles.Loot> res = Loot.Values
-        .Where(i=> i.Revealed && i.DistanceFrom(tile.Point) < 3
+        .Where(i=> i.Revealed && i.DistanceFrom(tile.point) < 3
         //&& i.DungeonNodeIndex == tile.DungeonNodeIndex TODO
         )
         .ToList();//TODO 
@@ -382,11 +382,11 @@ namespace Roguelike.TileContainers
             value = 0;//0 mean can not move
           else
           {
-            if (tile.Point.X == from.X && tile.Point.Y == from.Y)
+            if (tile.point.X == from.X && tile.point.Y == from.Y)
             {
               continue;
             }
-            else if (tile.Point.X == end.X && tile.Point.Y == end.Y)
+            else if (tile.point.X == end.X && tile.point.Y == end.Y)
             {
               continue;
             }
@@ -519,13 +519,13 @@ namespace Roguelike.TileContainers
       //  Logger.LogError("SwitchTo heros.Count = " + heros.Count);
 
       if (heroInNode != null)
-        SetEmptyTile(heroInNode.Point);//Hero is going to be placed in the node, remove it from the old one (CurrentNode)
+        SetEmptyTile(heroInNode.point);//Hero is going to be placed in the node, remove it from the old one (CurrentNode)
     }
 
     public void PlaceHeroAtTile(GameContextSwitchKind context, Hero hero, Tile tile)
     {
       ClearOldHeroPosition(context);
-      if (SetTile(hero, tile.Point, false))
+      if (SetTile(hero, tile.point, false))
         hero.DungeonNodeIndex = tile.DungeonNodeIndex;
     }
 
@@ -556,7 +556,7 @@ namespace Roguelike.TileContainers
 
     public SurfaceKind GetSurfaceKindUnderTile(Tile tile)
     {
-      return GetSurfaceKindUnderPoint(tile.Point);
+      return GetSurfaceKindUnderPoint(tile.point);
     }
 
     public SurfaceKind GetSurfaceKindUnderPoint(Point point)

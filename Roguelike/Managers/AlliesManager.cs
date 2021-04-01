@@ -59,7 +59,7 @@ namespace Roguelike.Managers
           ally.FixedWalkTarget = null;
           //allyToRemove = ally;//TODO
         }
-        if (!MakeMoveOnPath(ally, ally.FixedWalkTarget.Point, true))
+        if (!MakeMoveOnPath(ally, ally.FixedWalkTarget.point, true))
           MakeRandomMove(ally);
         return;
       }
@@ -85,7 +85,7 @@ namespace Roguelike.Managers
           return;
         if (ShallChaseTarget(ally, ally.AllyModeTarget))//, MaxAllyDistToEnemyToChase))
         {
-          moveCloserToHero = !MakeMoveOnPath(ally, ally.AllyModeTarget.Point, true);//, true);
+          moveCloserToHero = !MakeMoveOnPath(ally, ally.AllyModeTarget.point, true);//, true);
         }
       }
 
@@ -94,7 +94,7 @@ namespace Roguelike.Managers
         if (ally.DistanceFrom(context.Hero) > 2)//do not block hero moves
         {
           //user false here as forHeroAlly as we want to find a hero on path
-          MakeMoveOnPath(ally, context.Hero.Point, false);
+          MakeMoveOnPath(ally, context.Hero.point, false);
         }
         else
         {

@@ -54,7 +54,7 @@ namespace Roguelike.Tiles.Interactive
       }
     }
 
-    public Point GetPoint() { return Point; }
+    public Point GetPoint() { return point; }
 
 
     public bool Closed

@@ -16,7 +16,7 @@ namespace Roguelike.Tiles.LivingEntities
   public enum PrefferedFightStyle { Physical, Magic, Distance }
   public enum IncreaseStatsKind { Level, PowerKind, Name }
 
-  public class Enemy : LivingEntity, ILootSource
+  public class Enemy : LivingEntity
   {
     public const string ChempTagSuffix = "_ch";
     public PrefferedFightStyle PrefferedFightStyle { get; set; }//= PrefferedFightStyle.Magic;
@@ -94,8 +94,6 @@ namespace Roguelike.Tiles.LivingEntities
       return false;
     }
 
-    public Point GetPoint() { return Point; }
-
     public void SetChampion()
     {
       SetNonPlain(false);
@@ -164,7 +162,7 @@ namespace Roguelike.Tiles.LivingEntities
       });
     }
 
-    public void SetLevel(int level)
+    public override void SetLevel(int level)
     {
       Assert(level >= 1);
       if (level > 6)

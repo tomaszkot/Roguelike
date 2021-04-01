@@ -30,5 +30,7 @@ namespace Roguelike.Tiles.Interactive
     public EntityStatKind StatKind { get; set; }
     public float StatKindFactor { get; set; }
     public int TourLasting { get; set; }
+
+    public int ManaCost => 5;
   }
 }

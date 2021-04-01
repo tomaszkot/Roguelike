@@ -37,13 +37,13 @@ namespace RoguelikeUnitTests
 
         //move hero to rand position.
         var pt = gameNode.GetFirstEmptyPoint();
-        Assert.AreNotEqual(hero.Point, pt);
+        Assert.AreNotEqual(hero.point, pt);
         gameNode.SetTile(hero, pt.Value);
 
         eq = game.GameManager.LootGenerator.GetRandomEquipment(1, null);
         game.GameManager.GameState.History.Looting.GeneratedLoot.Add(new LootHistoryItem(eq));
         gameLevel = game.Level;
-        heroPoint = hero.Point;
+        heroPoint = hero.point;
 
         hintsCount = game.GameManager.GameState.History.Hints.Hints.Count;
         game.GameManager.Save();

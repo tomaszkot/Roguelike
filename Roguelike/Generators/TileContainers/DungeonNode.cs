@@ -68,7 +68,7 @@ namespace Roguelike.Generators.TileContainers
           var emptyOnes = GetEmptyNeighborhoodTiles(tileSet);
           if (emptyOnes.Any())
           {
-            SetTile(tileSet, emptyOnes.First().Point);
+            SetTile(tileSet, emptyOnes.First().point);
           }
         }
       }

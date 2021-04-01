@@ -63,7 +63,7 @@ namespace RoguelikeUnitTests
 
     private void CollectLoot(Loot loot) 
     {
-      var set = Game.GameManager.CurrentNode.SetTile(game.Hero, loot.Point);
+      var set = Game.GameManager.CurrentNode.SetTile(game.Hero, loot.point);
       game.GameManager.CollectLootOnHeroPosition();
     }
 
@@ -168,7 +168,7 @@ namespace RoguelikeUnitTests
             var aboveThreshold = enemies.Skip(numEnemies).ToList();
             foreach(var en in aboveThreshold)
             {
-              level.SetEmptyTile(en.Point);
+              level.SetEmptyTile(en.point);
               GameManager.EnemiesManager.AllEntities.Remove(en);
             }
           }

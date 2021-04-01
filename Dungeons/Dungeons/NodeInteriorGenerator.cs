@@ -93,7 +93,7 @@ namespace Dungeons
       int index = RandHelper.Random.Next(points.Count - 2);
       if (index == 0)
         index++;//avoid corner
-      var pt = points[index].Point;
+      var pt = points[index].point;
       var entry = new Tile();
       dungeonNode.SetTile(entry, pt);
       return entry;
@@ -260,7 +260,7 @@ namespace Dungeons
       if (empty.Any())
       {
         var t = empty[RandHelper.Random.Next(empty.Count())];
-        var pts = new List<Point>() { t.Point };
+        var pts = new List<Point>() { t.point };
 
         var others = dungeonNode.GetNeighborTiles(t).Where(i => areNeibsEmpty(i)).ToList();
         if (others.Any())
@@ -268,7 +268,7 @@ namespace Dungeons
           int maxDecLen = 6;
           int max = RandHelper.Random.Next(1, maxDecLen);
           for (int i = 0; i < max && i < others.Count; i++)
-            pts.Add(others[i].Point);
+            pts.Add(others[i].point);
         }
 
         AddWalls(pts);

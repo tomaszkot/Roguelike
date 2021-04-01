@@ -73,6 +73,7 @@
     <Compile Include="Abstract\Managers\IGameManagerProvider.cs" />
     <Compile Include="Abstract\TileParts\IInventoryOwner.cs" />
     <Compile Include="Abstract\Effects\IEffect.cs" />
+    <Compile Include="Tiles\Abstract\IDestroyable.cs" />
     <Compile Include="Tiles\Abstract\IObstacle.cs" />
     <Compile Include="Abstract\Projectiles\IProjectilesFactory.cs" />
     <Compile Include="Abstract\Projectiles\IProjectile.cs" />

@@ -1,9 +1,10 @@
 ﻿using Dungeons.Tiles;
+using Roguelike.Tiles.Abstract;
 
 namespace Roguelike.Abstract.Projectiles
 {
   public interface IProjectile
   {
-    Tile Target { get; set; }
+    IDestroyable Target { get; set; }
   }
 }

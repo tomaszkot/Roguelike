@@ -11,6 +11,7 @@ using Roguelike.Factors;
 using Roguelike.Generators;
 using Roguelike.Managers;
 using Roguelike.Spells;
+using Roguelike.Tiles.Abstract;
 using Roguelike.Tiles.Looting;
 using Roguelike.Utils;
 using SimpleInjector;
@@ -24,7 +25,7 @@ namespace Roguelike.Tiles.LivingEntities
   public enum EntityState { Idle, Moving, Attacking, CastingSpell }
   public enum EntityMoveKind { Freestyle, FollowingHero, ReturningHome }
 
-  public class LivingEntity : Tile, ILastingEffectOwner
+  public class LivingEntity : Tile, ILastingEffectOwner, IDestroyable
   {
     static Dictionary<EntityStatKind, EntityStatKind> statsHitIncrease = new Dictionary<EntityStatKind, EntityStatKind> {
                 { EntityStatKind.LifeStealing, EntityStatKind.Health },
@@ -49,6 +50,11 @@ namespace Roguelike.Tiles.LivingEntities
       {
         return null;
       }
+    }
+
+    public Point Position
+    {
+      get { return point; }
     }
 
     public bool CanAttack { get; set; } = true;
@@ -138,7 +144,9 @@ namespace Roguelike.Tiles.LivingEntities
 
     public void ReduceMana(float amount)
     {
-      Stats.GetStat(EntityStatKind.Mana).Subtract(amount);
+      var stat = Stats.GetStat(EntityStatKind.Mana);
+      //if(stat.Value.CurrentValue >= amount)
+        stat.Subtract(amount);
     }
 
     public static LivingEntity CreateDummy()
@@ -815,6 +823,14 @@ namespace Roguelike.Tiles.LivingEntities
 
     public virtual void PlayAllySpawnedSound() { }
 
-    
+    public virtual void SetLevel(int level)
+    {
+      
+    }
+
+    public Point GetPoint()
+    {
+      return point;
+    }
   }
 }

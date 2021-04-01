@@ -78,7 +78,7 @@ namespace Roguelike.Managers
       bool makeRandMove = false;
       if (ShallChaseTarget(entity, target))
       {
-        makeRandMove = !MakeMoveOnPath(entity, target.Point, false);
+        makeRandMove = !MakeMoveOnPath(entity, target.point, false);
       }
       else
         makeRandMove = true;
@@ -110,7 +110,7 @@ namespace Roguelike.Managers
         {
           if (MakeMoveOnPath(entity, entity.InitialPoint, false))
           {
-            if(entity.Point == entity.InitialPoint)
+            if(entity.point == entity.InitialPoint)
               entity.MoveKind = EntityMoveKind.Freestyle;
 
             return;
@@ -124,7 +124,7 @@ namespace Roguelike.Managers
     {
       if (entity.InitialPoint == LivingEntity.DefaultInitialPoint)
       {
-        entity.InitialPoint = entity.Point;
+        entity.InitialPoint = entity.point;
       }
 
       var moved = base.MoveEntity(entity, newPos, fullPath);

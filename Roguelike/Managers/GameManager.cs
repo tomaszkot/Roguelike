@@ -54,8 +54,7 @@ namespace Roguelike.Managers
 
     IPersister persister;
     ILogger logger;
-
-    public EnemiesManager EnemiesManager { get => enemiesManager; set => enemiesManager = value; }
+        
     public Hero Hero { get => Context.Hero; }
     protected GameState gameState;
 
@@ -66,15 +65,12 @@ namespace Roguelike.Managers
       SetContext(node, hero, GameContextSwitchKind.GameLoaded);
     }
 
-    [JsonIgnore]
+    public EnemiesManager EnemiesManager { get => enemiesManager; set => enemiesManager = value; }
     public EventsManager EventsManager { get => eventsManager; set => eventsManager = value; }
-
-    //TODO shall be Jsonignored
     public GameContext Context { get => context; set => context = value; }
     public AbstractGameLevel CurrentNode { get => context.CurrentNode; }
     public AlliesManager AlliesManager { get => alliesManager; set => alliesManager = value; }
     public LootGenerator LootGenerator { get => lootGenerator; set => lootGenerator = value; }
-
 
     public IPersister Persister
     {
@@ -176,7 +172,7 @@ namespace Roguelike.Managers
 
       if (kind == GameContextSwitchKind.NewGame)
       {
-        gameState.HeroInitGamePosition = hero.Point;
+        gameState.HeroInitGamePosition = hero.point;
       }
 
       PrintHeroStats("SetContext " + kind);
@@ -253,7 +249,7 @@ namespace Roguelike.Managers
         {
           if (context.CurrentNode.HasTile(lea.InvolvedEntity))
           {
-            context.CurrentNode.SetTile(context.CurrentNode.GenerateEmptyTile(), lea.InvolvedEntity.Point);
+            context.CurrentNode.SetTile(context.CurrentNode.GenerateEmptyTile(), lea.InvolvedEntity.point);
           }
           else
           {
@@ -269,7 +265,7 @@ namespace Roguelike.Managers
               exp = 50;
             Hero.IncreaseExp(exp);
             //var loot = LootGenerator.GetRandomLoot();
-            context.CurrentNode.SetTile(new Tile(), lea.InvolvedEntity.Point);
+            context.CurrentNode.SetTile(new Tile(), lea.InvolvedEntity.point);
             var lootItems = lootManager.TryAddForLootSource(enemy);
             //Logger.LogInfo("Added loot count: "+ lootItems.Count + ", items: ");
             //lootItems.ForEach(i=> Logger.LogInfo("Added loot" + i));
@@ -298,7 +294,7 @@ namespace Roguelike.Managers
     public bool AddLootToNode(Loot item, Tile lootSource, bool animated)
     {
       Tile dest = null;
-      var tileAtPos = context.CurrentNode.GetTile(lootSource.Point);
+      var tileAtPos = context.CurrentNode.GetTile(lootSource.point);
       if (tileAtPos.IsEmpty)
         dest = tileAtPos;
       else
@@ -310,7 +306,7 @@ namespace Roguelike.Managers
       if (dest != null)
       {
         //Logger.LogInfo("AddLootToNode calling ReplaceTile" + item + ", pt: "+ dest.Point);
-        var set = ReplaceTileTyped<Loot>(item, dest.Point, animated, lootSource);
+        var set = ReplaceTileTyped<Loot>(item, dest.point, animated, lootSource);
         return set;
       }
 
@@ -389,7 +385,7 @@ namespace Roguelike.Managers
               en.SetChampion();
               
             }
-            AppendEnemy(en, tile.Point, chest.Level+1);
+            AppendEnemy(en, tile.point, chest.Level+1);
             counter++;
           }
         }
@@ -479,7 +475,17 @@ namespace Roguelike.Managers
         }
       }
       if (policy is AttackPolicy || policy is SpellCastPolicy)
+      {
+        if (policy is SpellCastPolicy scp)
+        {
+          var le = scp.Target is LivingEntity;
+          if (!le)//le is handled specially
+          {
+            this.lootManager.TryAddForLootSource(scp.Target as ILootSource);
+          }
+        }
         RemoveDead();
+      }
       context.IncreaseActions(TurnOwner.Hero);
 
       //  Logger.LogInfo("OnHeroPolicyApplied MoveToNextTurnOwner");
@@ -615,7 +621,7 @@ namespace Roguelike.Managers
 
     protected bool ReplaceTile<T>(T replacer, Tile toReplace) where T : Tile//T can be Loot, Enemy
     {
-      return ReplaceTileTyped<T>(replacer, toReplace.Point, false, toReplace);
+      return ReplaceTileTyped<T>(replacer, toReplace.point, false, toReplace);
     }
 
     protected bool ReplaceTileTyped<T>(T replacer, Point point, bool animated, Tile positionSource, AbstractGameLevel level = null) where T : Tile//T can be Loot, Enemy
@@ -708,7 +714,7 @@ namespace Roguelike.Managers
         //Hero.Inventory.Print(logger, "loot added");
         if(gold != null)
           Hero.Gold += gold.Count;
-        CurrentNode.RemoveLoot(lootTile.Point);
+        CurrentNode.RemoveLoot(lootTile.point);
         EventsManager.AppendAction(new LootAction(lootTile) { LootActionKind = LootActionKind.Collected, CollectedFromDistance = fromDistance });
         if (lootTile is Equipment)
         {
@@ -724,7 +730,7 @@ namespace Roguelike.Managers
 
     public bool CollectLootOnHeroPosition()
     {
-      var lootTile = CurrentNode.GetLootTile(Hero.Point);
+      var lootTile = CurrentNode.GetLootTile(Hero.point);
       if (lootTile != null)
       {
         return CollectLoot(lootTile, false);
