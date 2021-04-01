@@ -21,7 +21,9 @@ namespace RoguelikeUnitTests
       var hp2 = new Potion();
       hp2.SetKind(PotionKind.Health);
 
+#pragma warning disable 
       Assert.True(hp1 == hp1);
+#pragma warning restore 
       Assert.True(hp1.Equals(hp1));
       Assert.True(hp1.Equals(hp2));
 

@@ -121,6 +121,7 @@ namespace Dungeons.Tiles
             if (DungeonNodeIndex == 0)
             {
               int k = 0;
+              k++;
             }
           }
           revealed = value;
@@ -207,7 +208,6 @@ namespace Dungeons.Tiles
     }
 
     public static bool IncludeDebugDetailsInToString = true;
-    private bool secret;
 
     public override string ToString()
     {
