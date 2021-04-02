@@ -1,5 +1,6 @@
 ﻿using Roguelike.Abstract;
 using Roguelike.Abstract.Projectiles;
+using Roguelike.Spells;
 using Roguelike.Tiles;
 using Roguelike.Tiles.LivingEntities;
 using Roguelike.Tiles.Looting;
@@ -10,7 +11,7 @@ namespace Roguelike.Policies
   {
     LivingEntity caster;
     Roguelike.Tiles.Abstract.IDestroyable target;
-    Scroll scroll;
+    Spell spell;
 
     public SpellCastPolicy()
     {
@@ -18,18 +19,18 @@ namespace Roguelike.Policies
     }
 
     public Roguelike.Tiles.Abstract.IDestroyable Target { get => target; set => target = value; }
-    public Scroll Scroll { get => scroll; set => scroll = value; }
+    public Spell Spell { get => spell; set => spell = value; }
     public LivingEntity Caster { get => caster; set => caster = value; }
     public IProjectilesFactory ProjectilesFactory { get ; set; }
 
     public void Apply(LivingEntity caster)
     {
-      Apply(this.Scroll, caster, this.Target, this.ProjectilesFactory);
+      Apply(this.Spell, caster, this.Target, this.ProjectilesFactory);
     }
 
-    public void Apply(Scroll scroll, LivingEntity caster, Roguelike.Tiles.Abstract.IDestroyable target, IProjectilesFactory projectilesFactory)
+    public void Apply(Spell spell, LivingEntity caster, Roguelike.Tiles.Abstract.IDestroyable target, IProjectilesFactory projectilesFactory)
     {
-      this.scroll = scroll;
+      this.spell = spell;
       this.caster = caster;
       this.target = target;
       this.ProjectilesFactory = projectilesFactory;
@@ -42,7 +43,7 @@ namespace Roguelike.Policies
 
     protected virtual void DoApply(LivingEntity caster)
     {
-      var spell = Scroll.CreateSpell(Caster);
+      //var spell = Scroll.CreateSpell(Caster);
       Target.OnHitBy(spell);
     }
   }

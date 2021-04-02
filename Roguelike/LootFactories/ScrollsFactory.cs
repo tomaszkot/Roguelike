@@ -25,8 +25,9 @@ namespace Roguelike.LootFactories
         scroll.Kind = Scroll.DiscoverKindFromName(tag);
         return scroll;
       };
-      var names = new[] { "fire_ball_scroll" , "identify_scroll", "teleport_scroll", "portal_scroll", "transform_scroll", "mana_shield_scroll",
-      "rage_scroll", "skeleton_scroll"};
+      var names = new[] { "fire_ball_scroll" , "ice_ball_scroll", "poison_ball_scroll",
+        "identify_scroll", "teleport_scroll", "portal_scroll", "transform_scroll", "mana_shield_scroll",
+        "rage_scroll", "skeleton_scroll"};
       foreach(var name in names)
         factory[name] = createScroll;
     }

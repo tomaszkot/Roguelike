@@ -147,7 +147,7 @@ namespace Roguelike
       var policy = Container.GetInstance<SpellCastPolicy>();
       policy.Target = target;
       policy.ProjectilesFactory = Container.GetInstance<IProjectilesFactory>();
-      policy.Scroll = scroll;
+      policy.Spell = scroll.CreateSpell(caster) as Spell;
       if (BeforeApply!=null)
         BeforeApply(policy);
 

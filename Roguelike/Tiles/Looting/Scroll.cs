@@ -213,10 +213,10 @@ namespace Roguelike.Tiles.Looting
       //    return new CrackedStoneSpell(caller);
       //  case SpellKind.Trap:
       //    return new TrapSpell(caller);
-      //  case SpellKind.PoisonBall:
-      //    return new PoisonBallSpell(caller);
-      //  case SpellKind.IceBall:
-      //    return new IceBallSpell(caller);
+        case SpellKind.PoisonBall:
+          return new PoisonBallSpell(caller);
+        case SpellKind.IceBall:
+          return new IceBallSpell(caller);
         case SpellKind.Skeleton:
           return new SkeletonSpell(caller);
         case SpellKind.Transform:
@@ -227,8 +227,8 @@ namespace Roguelike.Tiles.Looting
       //    return new HealingSpell(caller);
         case SpellKind.ManaShield:
           return new ManaShieldSpell(caller);
-      //  case SpellKind.Telekinesis:
-      //    return new TelekinesisSpell(caller);
+        //case SpellKind.Telekinesis:
+        //  return new TelekinesisSpell(caller);
       //  case SpellKind.StonedBall:
       //    return new StonedBallSpell(caller);
       //  //case SpellKind.MindControl:

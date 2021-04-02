@@ -1,17 +1,12 @@
 ﻿using Dungeons.Core;
-using Roguelike.Abstract;
 using Roguelike.Abstract.Projectiles;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Roguelike.Spells;
 
 namespace Roguelike.Generators
 {
   public class ProjectilesFactory : IProjectilesFactory
   {
-    public IProjectile CreateProjectile(Vector2D pos)
+    public IProjectile CreateProjectile(Vector2D pos, SpellKind sk)
     {
       return null;
     }
