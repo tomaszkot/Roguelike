@@ -19,12 +19,11 @@ namespace Roguelike.Managers
 
     public AlliesManager AlliesManager { get => alliesManager; set => alliesManager = value; }
 
-    public EnemiesManager(GameContext context, EventsManager eventsManager, Container container, AlliesManager alliesManager) :
-      base(TurnOwner.Enemies, context, eventsManager, container)
+    public EnemiesManager(GameContext context, EventsManager eventsManager, Container container, AlliesManager alliesManager, GameManager gm) :
+      base(TurnOwner.Enemies, context, eventsManager, container, gm)
     {
       this.AlliesManager = alliesManager;
       this.context = context;
-      
 
       context.TurnOwnerChanged += OnTurnOwnerChanged;
       context.ContextSwitched += Context_ContextSwitched;

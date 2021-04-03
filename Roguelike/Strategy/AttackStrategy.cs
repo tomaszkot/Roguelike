@@ -4,6 +4,7 @@ using Roguelike.Abstract;
 using Roguelike.Attributes;
 using Roguelike.Effects;
 using Roguelike.Generators;
+using Roguelike.Managers;
 using Roguelike.Policies;
 using Roguelike.Spells;
 using Roguelike.TileContainers;
@@ -22,12 +23,14 @@ namespace Roguelike
     public class AttackStrategy
     {
       GameContext context;
+      public GameManager GameManager { get; set; }
       public Action<Policy> OnPolicyApplied;
       public AbstractGameLevel Node { get => context.CurrentNode; }
       
-      public AttackStrategy(GameContext context)
+      public AttackStrategy(GameContext context, GameManager gm)
       {
         this.context = context;
+        this.GameManager = gm;
       }
 
       public GameContext Context { get => context; set => context = value; }
@@ -49,8 +52,7 @@ namespace Roguelike
             if (attacker.DistanceFrom(target) < 8)//TODO
             {
               var scroll = new Scroll(Spells.SpellKind.FireBall);
-              Context.ApplySpellAttackPolicy(attacker, target, scroll, null,  (p) => { OnPolicyApplied(p); }
-              );
+              GameManager.ApplySpellAttackPolicy(attacker, target, scroll, null,  (p) => { OnPolicyApplied(p); });
 
               return true;
             }

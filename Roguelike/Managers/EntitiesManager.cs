@@ -24,6 +24,7 @@ namespace Roguelike.Managers
     public AbstractGameLevel Node { get => context.CurrentNode; }
     public GameContext Context { get => context; set => context = value; }
     public List<LivingEntity> AllEntities { get => entities; set => entities = value; }
+    protected GameManager gameManager;
 
     protected EventsManager eventsManager;
     protected GameContext context;
@@ -31,15 +32,18 @@ namespace Roguelike.Managers
     TurnOwner turnOwner;
     bool pendingForAllIdle = false;
 
-    public EntitiesManager(TurnOwner turnOwner, GameContext context, EventsManager eventsManager, Container container)
+    public EntitiesManager(TurnOwner turnOwner, GameContext context, EventsManager eventsManager, Container container,
+                          GameManager gameManager)
     {
       this.turnOwner = turnOwner;
       this.container = container;
+      this.gameManager = gameManager;
+
       Context = context;
       Context.ContextSwitched += Context_ContextSwitched;
       this.eventsManager = eventsManager;
 
-      attackStrategy = new AttackStrategy(context);
+      attackStrategy = new AttackStrategy(context, gameManager);
       attackStrategy.OnPolicyApplied = (Policy pol) => { OnPolicyApplied(pol); };
     }
 

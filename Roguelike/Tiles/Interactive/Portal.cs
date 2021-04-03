@@ -32,5 +32,7 @@ namespace Roguelike.Tiles.Interactive
     public int TourLasting { get; set; }
 
     public int ManaCost => 5;
+
+    public bool Utylized { get ; set ; }
   }
 }

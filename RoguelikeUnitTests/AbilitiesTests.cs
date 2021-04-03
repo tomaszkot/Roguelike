@@ -339,7 +339,7 @@ namespace RoguelikeUnitTests
         var fireBallScroll = new Scroll(Roguelike.Spells.SpellKind.FireBall);
         Hero.Inventory.Add(fireBallScroll);
 
-        game.GameManager.Context.ApplySpellAttackPolicy(Hero, en, fireBallScroll, (Policy pb) =>{ }, null);// (Policy pa) => { }
+        game.GameManager.ApplySpellAttackPolicy(Hero, en, fireBallScroll, (Policy pb) =>{ }, null);// (Policy pa) => { }
 
         var mana1 = Hero.Stats.Mana;
         Assert.Less(mana1, mana);

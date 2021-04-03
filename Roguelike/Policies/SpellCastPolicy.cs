@@ -37,7 +37,6 @@ namespace Roguelike.Policies
 
       caster.State = EntityState.CastingSpell;
       DoApply(caster);
-
       ReportApplied(caster);
     }
 

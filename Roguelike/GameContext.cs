@@ -128,51 +128,23 @@ namespace Roguelike
     //TODO move it somewhere
     public bool UtylizeScroll(LivingEntity caster, Scroll scroll, ISpell spell)
     {
-      if (!CanUseScroll(caster, scroll, spell))
-      {
-        return false;
-      }
-            
+      //scroll was already used why check here?
+      //if (!CanUseScroll(caster, scroll, spell))
+      //{
+      //  return false;
+      //}
+      if (spell.Utylized)
+        throw new Exception("spell.Utylized!");
+      caster.ReduceMana(spell.ManaCost);
+      spell.Utylized = true;
       if (caster is AdvancedLivingEntity advEnt)
         return advEnt.Inventory.Remove(scroll);
+
+      
 
       return true;
     }
        
-
-    public bool ApplySpellAttackPolicy
-    (
-      LivingEntity caster, 
-      Roguelike.Tiles.Abstract.IDestroyable target, 
-      Scroll scroll, 
-      Action<Policy> BeforeApply
-      , Action<Policy> AfterApply
-      )
-    {
-      var spell = scroll.CreateSpell(caster);
-
-      if (!UtylizeScroll(caster, scroll, spell))
-        return false;
-
-      
-      spell.Caller.ReduceMana(spell.ManaCost);
- 
-      var policy = Container.GetInstance<SpellCastPolicy>();
-      policy.Target = target;
-      policy.ProjectilesFactory = Container.GetInstance<IProjectilesFactory>();
-      policy.Spell = scroll.CreateSpell(caster) as Spell;
-      if (BeforeApply!=null)
-        BeforeApply(policy);
-
-      policy.OnApplied += (s, e) =>
-      {
-        AfterApply(policy);
-      };
-
-      policy.Apply(caster);
-      return true;
-    }
-
     //TODO move
     public void ApplyMovePolicy(LivingEntity entity, Point newPos, List<Point> fullPath, Action<Policy> OnApplied)
     {

@@ -45,7 +45,7 @@ namespace Roguelike.Spells
     public const int BaseManaCost = 4;
     protected Dictionary<int, int> levelToMagic = new Dictionary<int, int>();
     private LivingEntity caller;
-
+    public bool Utylized { get; set; }
     //public int GetExtraChanceForCausingEffect(LivingEntity caster)
     //{
     //  this.Caller = caster;
@@ -72,8 +72,6 @@ namespace Roguelike.Spells
       this.Caller = caller;
       manaCost = BaseManaCost;
       levelToMagic[1] = 10;
-
-      //this.Caller.ReduceMana(ManaCost);can not do it here
     }
 
     public int CoolingDown { get; set; } = 0;

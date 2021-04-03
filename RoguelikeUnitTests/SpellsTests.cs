@@ -1,7 +1,9 @@
 ﻿using NUnit.Framework;
 using Roguelike.Spells;
+using Roguelike.Tiles.Interactive;
 using Roguelike.Tiles.Looting;
 using System;
+using System.Linq;
 
 namespace RoguelikeUnitTests
 {
@@ -17,7 +19,13 @@ namespace RoguelikeUnitTests
       var hero = game.Hero;
             
       Assert.True(game.GameManager.HeroTurn);
-          
+      var barrel = game.Level.GetTiles<Barrel>().First();
+      Assert.AreEqual(game.Level.GetTile(barrel.point), barrel);
+
+      Assert.AreEqual(game.GameManager.Context.TurnOwner, Roguelike.TurnOwner.Hero); 
+      Assert.True(UseFireBallScroll(hero, barrel));
+      Assert.AreNotEqual(game.Level.GetTile(barrel.point), barrel);
+      Assert.AreEqual(game.GameManager.Context.TurnOwner, Roguelike.TurnOwner.Allies);
     }
 
     [Test]

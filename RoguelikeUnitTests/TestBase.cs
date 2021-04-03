@@ -10,6 +10,7 @@ using Roguelike.Managers;
 using Roguelike.Multimedia;
 using Roguelike.Spells;
 using Roguelike.Tiles;
+using Roguelike.Tiles.Abstract;
 using Roguelike.Tiles.LivingEntities;
 using Roguelike.Tiles.Looting;
 using RoguelikeUnitTests.Helpers;
@@ -308,13 +309,13 @@ namespace RoguelikeUnitTests
       return game.GameManager.ApplyPassiveSpell(caster, scroll) != null;
     }
 
-    protected bool UseScroll(Hero caster, LivingEntity victim, Scroll scroll)
+    protected bool UseScroll(Hero caster, IDestroyable victim, Scroll scroll)
     {
       caster.Inventory.Add(scroll);
-      return game.GameManager.Context.ApplySpellAttackPolicy(caster, victim, scroll, null, null);
+      return game.GameManager.ApplySpellAttackPolicy(caster, victim, scroll, null, null);
     }
 
-    protected bool UseFireBallScroll(Hero caster, LivingEntity victim)
+    protected bool UseFireBallScroll(Hero caster, IDestroyable victim)
     {
       var scroll = new Scroll(Roguelike.Spells.SpellKind.FireBall);
       return UseScroll(caster, victim, scroll);

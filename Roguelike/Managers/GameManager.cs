@@ -26,6 +26,7 @@ using Roguelike.Abstract.Tiles;
 using Roguelike.Extensions;
 using Roguelike.Tiles.LivingEntities;
 using Roguelike.Tiles.Abstract;
+using Roguelike.Abstract.Projectiles;
 
 namespace Roguelike.Managers
 {
@@ -118,8 +119,8 @@ namespace Roguelike.Managers
         RemoveDead(); 
       };
 
-      enemiesManager = new EnemiesManager(Context, EventsManager, Container, null);
-      AlliesManager = new AlliesManager(Context, EventsManager, Container, enemiesManager);
+      enemiesManager = new EnemiesManager(Context, EventsManager, Container, null, this);
+      AlliesManager = new AlliesManager(Context, EventsManager, Container, enemiesManager, this);
       enemiesManager.AlliesManager = AlliesManager;
 
       Persister = container.GetInstance<IPersister>();
@@ -148,7 +149,7 @@ namespace Roguelike.Managers
 
     protected virtual EnemiesManager CreateEnemiesManager(GameContext context, EventsManager eventsManager)
     {
-      return new EnemiesManager(Context, EventsManager, Container, AlliesManager);
+      return new EnemiesManager(Context, EventsManager, Container, AlliesManager, this);
     }
 
     public virtual void SetContext(AbstractGameLevel node, Hero hero, GameContextSwitchKind kind, Stairs stairs = null)
@@ -477,20 +478,51 @@ namespace Roguelike.Managers
       }
       if (policy is AttackPolicy || policy is SpellCastPolicy)
       {
-        //if (policy is SpellCastPolicy scp)
-        //{
-        //  var le = scp.Target is LivingEntity;
-        //  if (!le)//le is handled specially
-        //  {
-        //    this.lootManager.TryAddForLootSource(scp.Target as ILootSource);
-        //  }
-        //}
         RemoveDead();
       }
       context.IncreaseActions(TurnOwner.Hero);
 
       HeroBulkAttackTargets = null;
       context.MoveToNextTurnOwner();
+    }
+
+    public bool ApplySpellAttackPolicy
+    (
+      LivingEntity caster,
+      Roguelike.Tiles.Abstract.IDestroyable target,
+      Scroll scroll,
+      Action<Policy> BeforeApply = null
+      , Action<Policy> AfterApply = null
+    )
+    {
+      var spell = scroll.CreateSpell(caster);
+
+      if (!context.UtylizeScroll(caster, scroll, spell))
+        return false;
+
+      var policy = Container.GetInstance<SpellCastPolicy>();
+      policy.Target = target;
+      policy.ProjectilesFactory = Container.GetInstance<IProjectilesFactory>();
+      policy.Spell = scroll.CreateSpell(caster) as Spell;
+      if (BeforeApply != null)
+        BeforeApply(policy);
+
+      policy.OnApplied += (s, e) =>
+      {
+        var le = policy.Target is LivingEntity;
+        if (!le)//le is handled specially
+        {
+          this.lootManager.TryAddForLootSource(policy.Target as ILootSource);
+        }
+        if (caster is Hero)
+          OnHeroPolicyApplied(policy);
+
+        if (AfterApply != null)
+          AfterApply(policy);
+      };
+
+      policy.Apply(caster);
+      return true;
     }
 
     public List<Enemy> HeroBulkAttackTargets { get; set; }
@@ -517,16 +549,14 @@ namespace Roguelike.Managers
       }
     }
 
-    public void ApplySpellAttackPolicyForActiveScroll(IDestroyable target)
+    public void ApplySpellAttackPolicyForHeroActiveScroll(IDestroyable target)
     {
       var scroll = Hero.ActiveScroll;
-      Context.ApplySpellAttackPolicy
+      ApplySpellAttackPolicy
       (
         Hero,
         target,
-        scroll,
-        (p) => { },
-        (p) => OnHeroPolicyApplied(this, p)
+        scroll
       );
     }
 
@@ -1030,8 +1060,8 @@ namespace Roguelike.Managers
         {
           AddAlly(skeletonSpell.Enemy);
         }
-        if (caster is Hero)
-          context.MoveToNextTurnOwner();
+        //if (caster is Hero)
+        //  context.MoveToNextTurnOwner();
 
         return ps;
       }
@@ -1104,8 +1134,8 @@ namespace Roguelike.Managers
         AppendAction<LivingEntityAction>((LivingEntityAction ac) => 
         { ac.Kind = LivingEntityActionKind.Teleported; ac.Info = Hero.Name+" used " + scroll.Kind.ToDescription() + " scroll"; ac.InvolvedEntity = caster; });
 
-        if (caster is Hero)
-          context.MoveToNextTurnOwner();
+        //if (caster is Hero)
+        //  context.MoveToNextTurnOwner();
 
         return ps;
       }

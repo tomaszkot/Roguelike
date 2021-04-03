@@ -17,8 +17,8 @@ namespace Roguelike.Managers
     public event EventHandler<LivingEntity> AllyAdded;
     //public event EventHandler<LivingEntity> AllyRemoved;
 
-    public AlliesManager(GameContext context, EventsManager eventsManager, Container container, EnemiesManager enemiesManager) :
-                         base(TurnOwner.Allies, context, eventsManager, container)
+    public AlliesManager(GameContext context, EventsManager eventsManager, Container container, EnemiesManager enemiesManager, GameManager gm) :
+                         base(TurnOwner.Allies, context, eventsManager, container, gm)
     {
       context.TurnOwnerChanged += OnTurnOwnerChanged;
       context.ContextSwitched += Context_ContextSwitched;
