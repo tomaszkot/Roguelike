@@ -264,6 +264,7 @@ namespace Roguelike.Tiles.LivingEntities
       }
       if (!Alive)
       {
+        //hitting a dead man ?
         AppendAction(new GameStateAction() { Type = GameStateAction.ActionType.Assert, Info = "!Alive" });
         return 0;
       }

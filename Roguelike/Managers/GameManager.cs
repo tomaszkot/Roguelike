@@ -25,6 +25,7 @@ using Roguelike.Attributes;
 using Roguelike.Abstract.Tiles;
 using Roguelike.Extensions;
 using Roguelike.Tiles.LivingEntities;
+using Roguelike.Tiles.Abstract;
 
 namespace Roguelike.Managers
 {
@@ -476,19 +477,18 @@ namespace Roguelike.Managers
       }
       if (policy is AttackPolicy || policy is SpellCastPolicy)
       {
-        if (policy is SpellCastPolicy scp)
-        {
-          var le = scp.Target is LivingEntity;
-          if (!le)//le is handled specially
-          {
-            this.lootManager.TryAddForLootSource(scp.Target as ILootSource);
-          }
-        }
+        //if (policy is SpellCastPolicy scp)
+        //{
+        //  var le = scp.Target is LivingEntity;
+        //  if (!le)//le is handled specially
+        //  {
+        //    this.lootManager.TryAddForLootSource(scp.Target as ILootSource);
+        //  }
+        //}
         RemoveDead();
       }
       context.IncreaseActions(TurnOwner.Hero);
 
-      //  Logger.LogInfo("OnHeroPolicyApplied MoveToNextTurnOwner");
       HeroBulkAttackTargets = null;
       context.MoveToNextTurnOwner();
     }
@@ -515,6 +515,19 @@ namespace Roguelike.Managers
             { Info = hero.Name + " used ability Bulk Attack", Level = ActionLevel.Important , InvolvedEntity = hero });
         }
       }
+    }
+
+    public void ApplySpellAttackPolicyForActiveScroll(IDestroyable target)
+    {
+      var scroll = Hero.ActiveScroll;
+      Context.ApplySpellAttackPolicy
+      (
+        Hero,
+        target,
+        scroll,
+        (p) => { },
+        (p) => OnHeroPolicyApplied(this, p)
+      );
     }
 
     public void OnHeroPolicyApplied(object sender, Policies.Policy policy)
@@ -1006,10 +1019,12 @@ namespace Roguelike.Managers
 
     public OffensiveSpell ApplyOffensiveSpell(LivingEntity caster, Scroll scroll)
     {
-      if (!context.UtylizeScroll(caster, scroll))
+      var spell = scroll.CreateSpell(caster);
+
+      if (!context.UtylizeScroll(caster, scroll, spell))
         return null;
 
-      if (scroll.CreateSpell(caster) is OffensiveSpell ps)
+      if (spell is OffensiveSpell ps)
       {
         if (ps is SkeletonSpell skeletonSpell)
         {
@@ -1054,10 +1069,11 @@ namespace Roguelike.Managers
 
     public PassiveSpell ApplyPassiveSpell(LivingEntity caster, Scroll scroll, Point? destPoint = null)
     {
-      if (!context.CanUseScroll(caster, scroll))
+      var spell = scroll.CreateSpell(caster);
+      if (!context.CanUseScroll(caster, scroll, spell))
         return null;
            
-      if (scroll.CreateSpell(caster) is PassiveSpell ps)
+      if (spell is PassiveSpell ps)
       {
         if (ps.Kind == SpellKind.Teleport)
         {
@@ -1084,7 +1100,7 @@ namespace Roguelike.Managers
         else
           caster.ApplyPassiveSpell(ps);
 
-        context.UtylizeScroll(caster, scroll);
+        context.UtylizeScroll(caster, scroll, spell);
         AppendAction<LivingEntityAction>((LivingEntityAction ac) => 
         { ac.Kind = LivingEntityActionKind.Teleported; ac.Info = Hero.Name+" used " + scroll.Kind.ToDescription() + " scroll"; ac.InvolvedEntity = caster; });
 

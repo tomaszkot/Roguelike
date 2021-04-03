@@ -13,7 +13,7 @@ namespace Roguelike.Managers
   public class AlliesManager : EntitiesManager
   {
     EnemiesManager enemiesManager;
-    AttackStrategy attackStrategy;
+    
     public event EventHandler<LivingEntity> AllyAdded;
     //public event EventHandler<LivingEntity> AllyRemoved;
 
@@ -23,8 +23,7 @@ namespace Roguelike.Managers
       context.TurnOwnerChanged += OnTurnOwnerChanged;
       context.ContextSwitched += Context_ContextSwitched;
       this.enemiesManager = enemiesManager;
-      attackStrategy = new AttackStrategy(context);
-      attackStrategy.OnPolicyApplied = (Policy pol) => { OnPolicyApplied(pol); };
+      
     }
 
     private void Context_ContextSwitched(object sender, ContextSwitch e)

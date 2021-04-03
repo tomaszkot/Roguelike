@@ -16,6 +16,7 @@ namespace Roguelike.Managers
 {
   public class EntitiesManager
   {
+    protected AttackStrategy attackStrategy;
     public Hero Hero { get => context.Hero; }
 
     private List<LivingEntity> entities = new List<LivingEntity>();
@@ -37,6 +38,9 @@ namespace Roguelike.Managers
       Context = context;
       Context.ContextSwitched += Context_ContextSwitched;
       this.eventsManager = eventsManager;
+
+      attackStrategy = new AttackStrategy(context);
+      attackStrategy.OnPolicyApplied = (Policy pol) => { OnPolicyApplied(pol); };
     }
 
     public virtual List<LivingEntity> GetActiveEntities()

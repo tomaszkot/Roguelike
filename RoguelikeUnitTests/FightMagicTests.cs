@@ -35,7 +35,7 @@ namespace RoguelikeUnitTests
 
       Assert.True(game.GameManager.HeroTurn);
             
-      UseScroll(game, hero, enemy);
+      UseFireBallScroll(hero, enemy);
 
       Assert.Greater(enemyHealth, enemy.Stats.Health);
       Assert.Greater(mana, hero.Stats.Mana);
@@ -49,14 +49,15 @@ namespace RoguelikeUnitTests
     {
       var game = CreateGame();
       var hero = game.Hero;
-
+      Assert.Less(hero.Stats.Attack, 20);
       var enemy = AllEnemies.First();
-      enemy.Stats.SetNominal(Roguelike.Attributes.EntityStatKind.Health, 100);
+      enemy.Stats.SetNominal(Roguelike.Attributes.EntityStatKind.Health, 350);
+      hero.Stats.SetNominal(Roguelike.Attributes.EntityStatKind.Mana, 250);
       var enemyHealth = enemy.Stats.Health;
 
       for (int i = 0; i < 10; i++)
       {
-        UseScroll(game, hero, enemy);
+        Assert.True(UseFireBallScroll(hero, enemy));
         GotoNextHeroTurn();
       }
 
@@ -72,18 +73,10 @@ namespace RoguelikeUnitTests
         //GotoNextHeroTurn();
       }
       var diffMelee = enemyHealth - enemy.Stats.Health;
-      Assert.Greater(diffMelee, 50);
+      Assert.Greater(diffMelee, 45);
       Assert.Less(Math.Abs(diffMelee - diffScroll), 30);//TODO %
     }
-
-    private void UseScroll(Roguelike.RoguelikeGame game, Hero hero, LivingEntity enemy)
-    {
-      var scroll = new Scroll(Roguelike.Spells.SpellKind.FireBall);
-      hero.Inventory.Add(scroll);
-      game.GameManager.Context.ApplySpellAttackPolicy(hero, enemy, scroll, null, (p) => game.GameManager.OnHeroPolicyApplied(this, p));
-      
-    }
-
+        
     [Test]
     public void KillEnemy()
     {
@@ -98,7 +91,7 @@ namespace RoguelikeUnitTests
       var enemy = enemies.First();
       while (enemy.Alive)
       {
-        UseScroll(game, hero, enemy);
+        UseFireBallScroll(hero, enemy);
         GotoNextHeroTurn(game);
       }
 

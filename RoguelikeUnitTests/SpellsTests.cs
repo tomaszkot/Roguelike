@@ -11,6 +11,16 @@ namespace RoguelikeUnitTests
     public const int BaseFactor = 30;
 
     [Test]
+    public void HitBarrelTest()
+    {
+      var game = CreateGame();
+      var hero = game.Hero;
+            
+      Assert.True(game.GameManager.HeroTurn);
+          
+    }
+
+    [Test]
     public void TestDescriptions()
     {
       var game = CreateGame();

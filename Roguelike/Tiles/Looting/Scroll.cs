@@ -165,11 +165,11 @@ namespace Roguelike.Tiles.Looting
       return res + " " + base.ToString();
     }
 
-    public float ManaCost
-    {
-      //get { return spell.ManaCost; }
-      get { return 5; }
-    }
+    //public float ManaCost
+    //{
+    //  //get { return spell.ManaCost; }
+    //  get { return 5; }
+    //}
 
     //public void UpdateLevel(LivingEntity le)
     //{

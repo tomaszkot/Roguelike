@@ -12,6 +12,7 @@ namespace Roguelike.Attributes
     public static readonly EntityStatKind[] BasicStats = { EntityStatKind.Health, EntityStatKind.Magic, EntityStatKind.Mana, EntityStatKind.Attack,
       EntityStatKind.Defense, EntityStatKind.Dexterity };
     public bool Hidden { get; set; }
+    public bool CanBeBelowZero { get; set; } = false;
 
     public EntityStat() : this(EntityStatKind.Unset, 0)
     {
@@ -50,6 +51,9 @@ namespace Roguelike.Attributes
       {
         IsPercentage = true;
       }
+
+      if (kind == EntityStatKind.Health)
+        CanBeBelowZero = true;//death
     }
 
     public override string ToString()
@@ -74,9 +78,9 @@ namespace Roguelike.Attributes
     private void CheckValue(float finalSubtr)
     {
       var cv = stat.CalculateCurrentValue(finalSubtr);
-      if (cv < 0)
+      if (cv < 0 && !CanBeBelowZero)
       {
-        throw new Exception("Subtract, cv < 0 " + this.Kind);
+        throw new Exception("Subtract, cv < 0 " + this.Kind);//thow to find bugs in the game
       }
     }
 

@@ -3,6 +3,7 @@ using Dungeons.Tiles;
 using Newtonsoft.Json;
 using Roguelike.Abstract;
 using Roguelike.Abstract.Projectiles;
+using Roguelike.Abstract.Spells;
 using Roguelike.Attributes;
 using Roguelike.Events;
 using Roguelike.Managers;
@@ -108,7 +109,7 @@ namespace Roguelike
       attackPolicy.Apply(attacker, target);
     }
 
-    public bool CanUseScroll(LivingEntity caster, Scroll scroll)
+    public bool CanUseScroll(LivingEntity caster, Scroll scroll, ISpell spell)
     {
       if (scroll.Count <= 0)
       {
@@ -116,13 +117,18 @@ namespace Roguelike
         return false;
       }
 
+      if (spell.ManaCost > caster.GetCurrentValue(EntityStatKind.Mana))
+      {
+        return false;
+      }
+
       return true;
     }
 
     //TODO move it somewhere
-    public bool UtylizeScroll(LivingEntity caster, Scroll scroll)
+    public bool UtylizeScroll(LivingEntity caster, Scroll scroll, ISpell spell)
     {
-      if (!CanUseScroll(caster, scroll))
+      if (!CanUseScroll(caster, scroll, spell))
       {
         return false;
       }
@@ -134,14 +140,21 @@ namespace Roguelike
     }
        
 
-    public void ApplySpellAttackPolicy(LivingEntity caster, Roguelike.Tiles.Abstract.IDestroyable target, Scroll scroll, 
-      Action<Policy> BeforeApply, 
-      Action<Policy> AfterApply)
+    public bool ApplySpellAttackPolicy
+    (
+      LivingEntity caster, 
+      Roguelike.Tiles.Abstract.IDestroyable target, 
+      Scroll scroll, 
+      Action<Policy> BeforeApply
+      , Action<Policy> AfterApply
+      )
     {
-      if (!UtylizeScroll(caster, scroll))
-        return;
-
       var spell = scroll.CreateSpell(caster);
+
+      if (!UtylizeScroll(caster, scroll, spell))
+        return false;
+
+      
       spell.Caller.ReduceMana(spell.ManaCost);
  
       var policy = Container.GetInstance<SpellCastPolicy>();
@@ -157,6 +170,7 @@ namespace Roguelike
       };
 
       policy.Apply(caster);
+      return true;
     }
 
     //TODO move

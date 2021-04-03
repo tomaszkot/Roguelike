@@ -115,7 +115,9 @@ namespace RoguelikeUnitTests
       var heroMana = hero.Stats.Mana;
 
       hero.Stats.SetNominal(Roguelike.Attributes.EntityStatKind.Magic, 15);//TODO
-      var spell = new Spell(hero);
+      var scroll = new Scroll(SpellKind.Transform);
+      UseScroll(hero, SpellKind.Transform);
+      
       Assert.Greater(heroMana, hero.Stats.Mana);
 
       heroMana = hero.Stats.Mana;

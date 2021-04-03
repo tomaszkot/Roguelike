@@ -15,7 +15,6 @@ namespace Roguelike.Managers
 {
   public class EnemiesManager : EntitiesManager
   {
-    AttackStrategy attackStrategy;
     AlliesManager alliesManager;
 
     public AlliesManager AlliesManager { get => alliesManager; set => alliesManager = value; }
@@ -25,8 +24,7 @@ namespace Roguelike.Managers
     {
       this.AlliesManager = alliesManager;
       this.context = context;
-      attackStrategy = new AttackStrategy(context);
-      attackStrategy.OnPolicyApplied = (Policy pol)=>{ OnPolicyApplied(pol); };
+      
 
       context.TurnOwnerChanged += OnTurnOwnerChanged;
       context.ContextSwitched += Context_ContextSwitched;

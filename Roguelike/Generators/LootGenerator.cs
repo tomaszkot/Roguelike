@@ -386,8 +386,8 @@ namespace Roguelike.Generators
         var scroll = LootFactory.ScrollsFactory.GetRandom(level) as Scroll;
         var rand = RandHelper.GetRandomDouble();
 
-        if ( (scroll.Kind == Spells.SpellKind.Portal && rand > 0.4f) //no need for so many of them
-          || (scroll.Kind != Spells.SpellKind.Identify && rand >  0.2f)) //these are fine
+        if ( (scroll.Kind == Spells.SpellKind.Portal && rand > 0.2f) //no need for so many of them
+          || (scroll.Kind != Spells.SpellKind.Identify && rand >  0.4f)) //these are fine
         {
           var newScroll = LootFactory.ScrollsFactory.GetRandom(level) as Scroll;
           //if (newScroll.Kind != Spells.SpellKind.Portal || scroll.Kind == Spells.SpellKind.Portal)

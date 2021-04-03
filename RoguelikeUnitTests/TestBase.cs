@@ -11,6 +11,7 @@ using Roguelike.Multimedia;
 using Roguelike.Spells;
 using Roguelike.Tiles;
 using Roguelike.Tiles.LivingEntities;
+using Roguelike.Tiles.Looting;
 using RoguelikeUnitTests.Helpers;
 using SimpleInjector;
 using System;
@@ -24,6 +25,7 @@ namespace RoguelikeUnitTests
   [TestFixture]
   public class TestBase
   {
+    protected int createTestEnvCounter = 0;
     protected RoguelikeGame game;
 
     public RoguelikeGame Game { get => game; protected set => game = value; }
@@ -36,6 +38,10 @@ namespace RoguelikeUnitTests
     [SetUp]
     public void Init()
     {
+      var gi = new GenerationInfo();
+      Assert.Greater(gi.NumberOfRooms, 1);
+      Assert.Greater(gi.ForcedNumberOfEnemiesInRoom, 2);
+
       OnInit();
     }
 
@@ -49,9 +55,7 @@ namespace RoguelikeUnitTests
       Tile.IncludeDebugDetailsInToString = true;
       Container = new Roguelike.ContainerConfigurator().Container;
       Container.Register<ISoundPlayer, BasicSoundPlayer>();
-      var gi = new GenerationInfo();
-      Assert.Greater(gi.NumberOfRooms, 1);
-      Assert.Greater(gi.ForcedNumberOfEnemiesInRoom, 2);
+      
     }
 
     protected T GenerateRandomEqOnLevelAndCollectIt<T>() where T : Equipment, new()
@@ -121,6 +125,10 @@ namespace RoguelikeUnitTests
     int numEnemies = 0;
     public virtual RoguelikeGame CreateGame(bool autoLoadLevel = true, int numEnemies = 10, int numberOfRooms = 5, GenerationInfo gi = null)
     {
+      if (createTestEnvCounter > 0)
+      {
+        OnInit();
+      }
       game = new RoguelikeGame(Container);
 
       game.GameManager.EventsManager.ActionAppended += (object sender, Roguelike.Events.GameAction e)=>
@@ -184,6 +192,7 @@ namespace RoguelikeUnitTests
           AllEnemies[0].Revealed = true;
         }
       }
+      createTestEnvCounter++;
       return game;
     }
         
@@ -285,6 +294,31 @@ namespace RoguelikeUnitTests
       var set = level.SetTile(tile, emptyHeroNeib.Item1);
       Assert.True(set);
       return emptyHeroNeib;
+    }
+
+    protected bool UseScroll(Hero caster, SpellKind sk)
+    {
+      var scroll = new Scroll(sk);
+      return UseScroll(caster, scroll);
+    }
+
+    protected bool UseScroll(Hero caster, Scroll scroll)
+    {
+      caster.Inventory.Add(scroll);
+      return game.GameManager.ApplyPassiveSpell(caster, scroll) != null;
+    }
+
+    protected bool UseScroll(Hero caster, LivingEntity victim, Scroll scroll)
+    {
+      caster.Inventory.Add(scroll);
+      return game.GameManager.Context.ApplySpellAttackPolicy(caster, victim, scroll, null, null);
+    }
+
+    protected bool UseFireBallScroll(Hero caster, LivingEntity victim)
+    {
+      var scroll = new Scroll(Roguelike.Spells.SpellKind.FireBall);
+      return UseScroll(caster, victim, scroll);
+
     }
   }
 }

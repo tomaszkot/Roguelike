@@ -19,7 +19,7 @@ namespace Roguelike
 {
   namespace Strategy
   {
-    class AttackStrategy
+    public class AttackStrategy
     {
       GameContext context;
       public Action<Policy> OnPolicyApplied;
@@ -37,6 +37,7 @@ namespace Roguelike
         if (!attacker.CanAttack)
           return false;
 
+        //teleport or...
         if (MakeNonPhysicalMove(attacker, target))
           return true;
 
@@ -48,8 +49,7 @@ namespace Roguelike
             if (attacker.DistanceFrom(target) < 8)//TODO
             {
               var scroll = new Scroll(Spells.SpellKind.FireBall);
-              Context.ApplySpellAttackPolicy(attacker, target, scroll, null,
-                (p) => { OnPolicyApplied(p); }
+              Context.ApplySpellAttackPolicy(attacker, target, scroll, null,  (p) => { OnPolicyApplied(p); }
               );
 
               return true;

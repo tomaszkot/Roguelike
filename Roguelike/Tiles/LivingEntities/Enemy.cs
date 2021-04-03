@@ -24,7 +24,7 @@ namespace Roguelike.Tiles.LivingEntities
     public static readonly EntityStat BaseAttack = new EntityStat(EntityStatKind.Attack, 10);
     public static readonly EntityStat BaseHealth = new EntityStat(EntityStatKind.Health, 12);
     public static readonly EntityStat BaseDefence = new EntityStat(EntityStatKind.Defense, 5);
-    public static readonly EntityStat BaseMana = new EntityStat(EntityStatKind.Mana, 4);
+    public static readonly EntityStat BaseMana = new EntityStat(EntityStatKind.Mana, 10);
     public static readonly EntityStat BaseMagic = new EntityStat(EntityStatKind.Magic, 10);
 
     public static readonly EntityStats BaseStats;
@@ -346,6 +346,11 @@ namespace Roguelike.Tiles.LivingEntities
         {
           SetSurfaceSkillLevel(SurfaceKind.ShallowWater, 1);
           SetSurfaceSkillLevel(SurfaceKind.DeepWater, 1);
+        }
+        if (Name.ToLower().Contains("druid"))
+        {
+          PrefferedFightStyle = PrefferedFightStyle.Magic;
+          this.Stats.SetNominal(EntityStatKind.Mana, BaseMana.Value.TotalValue * 100);
         }
       }
     }
