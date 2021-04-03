@@ -6,27 +6,45 @@ using Roguelike.Managers;
 using Roguelike.Policies;
 using Roguelike.Spells;
 using Roguelike.TileContainers;
+using Roguelike.Tiles.Abstract;
 using Roguelike.Tiles.LivingEntities;
 using Roguelike.Tiles.Looting;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 
 namespace Roguelike
 {
   namespace Strategy
   {
+    public interface ITilesAtPathProvider
+    {
+      //public Func<, List<Tile>> TilesProvider;
+      List<IDestroyable> GetTilesAtPath(System.Drawing.Point from, System.Drawing.Point to);
+    }
+
+    class TilesAtPathProvider : ITilesAtPathProvider
+    {
+      public List<IDestroyable> GetTilesAtPath(Point from, Point to)
+      {
+        throw new NotImplementedException();
+      }
+    }
+
     public class AttackStrategy
     {
       GameContext context;
       public GameManager GameManager { get; set; }
       public Action<Policy> OnPolicyApplied;
       public AbstractGameLevel Node { get => context.CurrentNode; }
-      
+      public ITilesAtPathProvider TilesAtPathProvider { get; set; }
+
       public AttackStrategy(GameContext context, GameManager gm)
       {
         this.context = context;
         this.GameManager = gm;
+        TilesAtPathProvider = context.Container.GetInstance<ITilesAtPathProvider>();
       }
 
       public GameContext Context { get => context; set => context = value; }
@@ -51,20 +69,28 @@ namespace Roguelike
               useMagic = context.CurrentNode.GetNeighborTiles(attacker, true).Contains(target);
               if (!useMagic)
               {
-                var pathToTarget = FindPathForEnemy(attacker, target, 1, true);
-                if (pathToTarget != null)
+                if (TilesAtPathProvider != null)
                 {
-                  var enemies = pathToTarget.Where(i => context.CurrentNode.GetTile(new System.Drawing.Point(i.Y, i.X)) is Enemy).ToList();
-                  if (!enemies.Any())
-                  {
+                  var tiles = TilesAtPathProvider.GetTilesAtPath(attacker.point, target.point);
+                  if(!tiles.Any(i=> i is Enemy))
                     useMagic = true;
+                }
+                else
+                {
+                  var pathToTarget = FindPathForEnemy(attacker, target, 1, true);
+                  if (pathToTarget != null)
+                  {
+                    var enemies = pathToTarget.Where(i => context.CurrentNode.GetTile(new System.Drawing.Point(i.Y, i.X)) is Enemy).ToList();
+                    if (!enemies.Any())
+                    {
+                      useMagic = true;
+                    }
                   }
                 }
               }
               if (useMagic)
               {
-                var scroll = new Scroll(Spells.SpellKind.FireBall);
-                GameManager.ApplySpellAttackPolicy(attacker, target, scroll, null, (p) => { OnPolicyApplied(p); });
+                GameManager.ApplySpellAttackPolicy(attacker, target, attacker.ActiveScroll, null, (p) => { OnPolicyApplied(p); });
 
                 return true;
               }

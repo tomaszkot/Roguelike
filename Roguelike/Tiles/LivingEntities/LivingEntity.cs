@@ -51,12 +51,14 @@ namespace Roguelike.Tiles.LivingEntities
     public LivingEntity AllyModeTarget;
     public bool HeroAlly { get; set; }
 
+    Scroll activeScroll;
     public virtual Scroll ActiveScroll
     {
       get 
       {
-        return null;
+        return activeScroll;
       }
+      set { activeScroll = value; }
     }
 
     public Point Position
@@ -839,6 +841,11 @@ namespace Roguelike.Tiles.LivingEntities
     public Point GetPoint()
     {
       return point;
+    }
+
+    public virtual Scroll GetAttackingScroll()
+    {
+      return ActiveScroll; 
     }
   }
 }

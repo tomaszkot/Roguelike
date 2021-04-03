@@ -27,6 +27,7 @@ using Roguelike.Extensions;
 using Roguelike.Tiles.LivingEntities;
 using Roguelike.Tiles.Abstract;
 using Roguelike.Abstract.Projectiles;
+using Roguelike.Strategy;
 
 namespace Roguelike.Managers
 {
@@ -527,6 +528,7 @@ namespace Roguelike.Managers
     }
 
     public List<Enemy> HeroBulkAttackTargets { get; set; }
+    public ITilesAtPathProvider TilesAtPathProvider { get; set; }
 
     void FindBulkAttackTargets(Enemy lastTarget)
     {

@@ -171,8 +171,8 @@ namespace Roguelike.Tiles.LivingEntities
         k++;
       }
       this.Level = level;
-
-      if(!WereStatsIncreased(IncreaseStatsKind.Name))
+      
+      if (!WereStatsIncreased(IncreaseStatsKind.Name))
         UpdateStatsFromName();
 
       var hard = false;// GameManager.Instance.GameSettings.DifficultyLevel == Commons.GameSettings.Difficulty.Hard;
@@ -182,8 +182,22 @@ namespace Roguelike.Tiles.LivingEntities
       LevelSet = true;
     }
 
+    static List<SpellKind> attackSpells = new List<SpellKind>()
+    {
+      SpellKind.FireBall, SpellKind.IceBall, SpellKind.PoisonBall
+    };
+
+    private void InitActiveScroll()
+    {
+      ActiveScroll = new Scroll(SpellKind.IceBall);
+      //if (Name.ToLower() == "druid" || PowerKind != EnemyPowerKind.Plain)
+      //  ActiveScroll = new Scroll(attackSpells.GetRandomElem());
+    }
+
     void SetResistance()
     {
+      InitActiveScroll();
+
       float resistBasePercentage = 5 * GetIncrease(this.Level, 3f);
       var incPerc = GetResistanceLevelFactor(this.Level);
       resistBasePercentage += resistBasePercentage * incPerc / 100;
@@ -353,6 +367,15 @@ namespace Roguelike.Tiles.LivingEntities
           this.Stats.SetNominal(EntityStatKind.Mana, BaseMana.Value.TotalValue * 100);
         }
       }
+    }
+
+    public override Scroll GetAttackingScroll()
+    {
+      if (Name.ToLower().Contains("druid"))
+      {
+        return ActiveScroll;
+      }
+      return base.GetAttackingScroll();
     }
   }
 }
