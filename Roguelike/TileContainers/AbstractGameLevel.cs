@@ -341,7 +341,7 @@ namespace Roguelike.TileContainers
       return null;
     }
 
-    private byte[,] InitMatrixBeforePathSearch(Point from, Point end, bool forHeroAlly, bool canGoOverCrackedStone)
+    private byte[,] InitMatrixBeforePathSearch(Point from, Point end, bool forHeroAlly, bool canGoOverCrackedStone, bool forEnemyProjectile)
     {
       var findPathMatrix = new byte[Height, Width];
       int width = Width;
@@ -393,6 +393,11 @@ namespace Roguelike.TileContainers
             else if (tile is LivingEntity && !forHeroAlly)
             {
               value = 0;
+              if (forEnemyProjectile)
+              { 
+                if(tile is Enemy)
+                  value = 1;//outside code must get a straight line to the target
+              }
             }
           }
 
@@ -425,12 +430,13 @@ namespace Roguelike.TileContainers
       return null;
     }
 
-    public List<Algorithms.PathFinderNode> FindPath(Point from, Point endPoint, bool forHeroAlly, bool canGoOverCrackedStone)
+    public List<Algorithms.PathFinderNode> FindPath(Point from, Point endPoint, bool forHeroAlly, bool canGoOverCrackedStone,
+      bool forEnemyProjectile)
     {
       //Commons.TimeTracker tr = new Commons.TimeTracker();
 
       var startPoint = new Algorithms.Point(from.Y, from.X);
-      var findPathMatrix = InitMatrixBeforePathSearch(from, endPoint, forHeroAlly, canGoOverCrackedStone);
+      var findPathMatrix = InitMatrixBeforePathSearch(from, endPoint, forHeroAlly, canGoOverCrackedStone, forEnemyProjectile);
 
       var mPathFinder = new Algorithms.PathFinder(findPathMatrix);
       mPathFinder.Diagonals = false;

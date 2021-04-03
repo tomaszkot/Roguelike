@@ -14,6 +14,8 @@ namespace Roguelike.Tiles.Interactive
     public const char BarrelSymbol = '~';
     private BarrelKind barrelKind;
 
+    public bool Destroyed { get; set; }
+
     public BarrelKind BarrelKind
     {
       get => barrelKind;

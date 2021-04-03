@@ -1,20 +1,16 @@
 ﻿using Dungeons.Core;
 using Dungeons.Tiles;
-using Roguelike.Abstract;
-using Roguelike.Attributes;
 using Roguelike.Effects;
 using Roguelike.Generators;
 using Roguelike.Managers;
 using Roguelike.Policies;
 using Roguelike.Spells;
 using Roguelike.TileContainers;
-using Roguelike.Tiles;
 using Roguelike.Tiles.LivingEntities;
 using Roguelike.Tiles.Looting;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.InteropServices;
 
 namespace Roguelike
 {
@@ -51,10 +47,27 @@ namespace Roguelike
           {
             if (attacker.DistanceFrom(target) < 8)//TODO
             {
-              var scroll = new Scroll(Spells.SpellKind.FireBall);
-              GameManager.ApplySpellAttackPolicy(attacker, target, scroll, null,  (p) => { OnPolicyApplied(p); });
+              var useMagic = false;
+              useMagic = context.CurrentNode.GetNeighborTiles(attacker, true).Contains(target);
+              if (!useMagic)
+              {
+                var pathToTarget = FindPathForEnemy(attacker, target, 1, true);
+                if (pathToTarget != null)
+                {
+                  var enemies = pathToTarget.Where(i => context.CurrentNode.GetTile(new System.Drawing.Point(i.Y, i.X)) is Enemy).ToList();
+                  if (!enemies.Any())
+                  {
+                    useMagic = true;
+                  }
+                }
+              }
+              if (useMagic)
+              {
+                var scroll = new Scroll(Spells.SpellKind.FireBall);
+                GameManager.ApplySpellAttackPolicy(attacker, target, scroll, null, (p) => { OnPolicyApplied(p); });
 
-              return true;
+                return true;
+              }
             }
           }
         }
@@ -206,7 +219,7 @@ namespace Roguelike
         if (enemy.ActiveScroll != null && enemy.ActiveScrollCoolDownCounter == 0)
         {
           var level = Context.CurrentNode;
-          enemy.PathToTarget = level.FindPath(enemy.point, hero.point, false, true);
+          enemy.PathToTarget = FindPathForEnemy(enemy, hero);
           if (enemy.PathToTarget != null)
           {
             var path = enemy.PathToTarget.GetRange(0, enemy.PathToTarget.Count - 1);
@@ -247,6 +260,17 @@ namespace Roguelike
         }
 
         return false;
+      }
+
+      public List<Algorithms.PathFinderNode> FindPathForEnemy(LivingEntity enemy,LivingEntity target, int startIndex = 0, bool forEnemyProjectile = false)
+      {
+        var pathToTarget = context.CurrentNode.FindPath(enemy.point, target.point, false, true, forEnemyProjectile);
+        if (pathToTarget != null && pathToTarget.Any())
+        {
+          return pathToTarget.GetRange(startIndex, pathToTarget.Count - 1);
+        }
+
+        return pathToTarget;
       }
 
       private int GetCoolDown(Enemy enemy)

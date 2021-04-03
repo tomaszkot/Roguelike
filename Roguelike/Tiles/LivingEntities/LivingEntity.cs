@@ -32,6 +32,13 @@ namespace Roguelike.Tiles.LivingEntities
                 { EntityStatKind.ManaStealing, EntityStatKind.Mana }
     };
 
+    public bool Destroyed 
+    {
+      get { return !Alive; }
+      set {
+        throw new Exception("LivingEntity.Destroyed - use Alive!");
+      }
+    }
     public EntityMoveKind MoveKind { get; set; }
     public static Point DefaultInitialPoint = new Point(0, 0);
     public Point PrevPoint;

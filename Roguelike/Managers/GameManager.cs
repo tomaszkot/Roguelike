@@ -513,6 +513,7 @@ namespace Roguelike.Managers
         if (!le)//le is handled specially
         {
           this.lootManager.TryAddForLootSource(policy.Target as ILootSource);
+          policy.Target.Destroyed = true;
         }
         if (caster is Hero)
           OnHeroPolicyApplied(policy);

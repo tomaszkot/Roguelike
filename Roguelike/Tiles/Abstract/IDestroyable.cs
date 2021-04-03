@@ -12,5 +12,6 @@ namespace Roguelike.Tiles.Abstract
   {
     bool OnHitBy(ISpell md);
     Point Position { get; }
+    bool Destroyed { get; set; }
   }
 }
