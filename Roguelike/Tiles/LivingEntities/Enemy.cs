@@ -31,7 +31,7 @@ namespace Roguelike.Tiles.LivingEntities
     bool levelSet = false;
     public static char[] AllSymbols;
 
-    // public int NumberOfCastedEffectsForAllies = 0;
+    public int NumberOfCastedEffectsForAllies = 0;
     public int NumberOfEmergencyTeleports = 0;
     public EnemyPowerKind PowerKind { get; set; } = EnemyPowerKind.Plain;
     public bool LevelSet { get => levelSet; set => levelSet = value; }
@@ -189,9 +189,9 @@ namespace Roguelike.Tiles.LivingEntities
 
     private void InitActiveScroll()
     {
-      ActiveScroll = new Scroll(SpellKind.IceBall);
-      //if (Name.ToLower() == "druid" || PowerKind != EnemyPowerKind.Plain)
-      //  ActiveScroll = new Scroll(attackSpells.GetRandomElem());
+      //ActiveScroll = new Scroll(SpellKind.IceBall);
+      if (Name.ToLower() == "druid" || PowerKind != EnemyPowerKind.Plain)
+        ActiveScroll = new Scroll(attackSpells.GetRandomElem());
     }
 
     void SetResistance()
@@ -365,6 +365,7 @@ namespace Roguelike.Tiles.LivingEntities
         {
           PrefferedFightStyle = PrefferedFightStyle.Magic;
           this.Stats.SetNominal(EntityStatKind.Mana, BaseMana.Value.TotalValue * 100);
+          this.color = ConsoleColor.Magenta;
         }
       }
     }

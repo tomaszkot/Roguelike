@@ -24,11 +24,11 @@ namespace Roguelike
       List<IDestroyable> GetTilesAtPath(System.Drawing.Point from, System.Drawing.Point to);
     }
 
-    class TilesAtPathProvider : ITilesAtPathProvider
+    public class TilesAtPathProvider : ITilesAtPathProvider
     {
       public List<IDestroyable> GetTilesAtPath(Point from, Point to)
       {
-        throw new NotImplementedException();
+        return new List<IDestroyable>();
       }
     }
 
@@ -230,8 +230,6 @@ namespace Roguelike
 
       bool MakeNonPhysicalMove(LivingEntity enemy, LivingEntity hero)
       {
-        //TODO
-
         if (enemy.ActiveScrollCoolDownCounter > 0)
         {
           var en = enemy as Enemy;

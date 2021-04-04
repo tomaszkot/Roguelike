@@ -108,6 +108,7 @@ namespace RoguelikeUnitTests
 
       var enemy = AllEnemies.Cast<Enemy>().First();
       enemy.PrefferedFightStyle = PrefferedFightStyle.Magic;//use spells
+      enemy.ActiveScroll = new Scroll(SpellKind.FireBall);
       var heroHealth = hero.Stats.Health;
       var mana = enemy.Stats.Mana;
 

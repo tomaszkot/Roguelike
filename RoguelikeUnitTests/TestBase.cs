@@ -151,6 +151,8 @@ namespace RoguelikeUnitTests
           info.MinNodeSize = new System.Drawing.Size(30, 30);
           info.MaxNodeSize = info.MinNodeSize;
           this.numEnemies = numEnemies;
+          if (numberOfRooms == 1)
+            info.PreventSecretRoomGeneration = true;
 
           if (numEnemies > 1)
           {
@@ -312,7 +314,7 @@ namespace RoguelikeUnitTests
     protected bool UseScroll(Hero caster, IDestroyable victim, Scroll scroll)
     {
       caster.Inventory.Add(scroll);
-      return game.GameManager.ApplySpellAttackPolicy(caster, victim, scroll, null, null);
+      return game.GameManager.ApplySpellAttackPolicy(caster, victim, scroll);
     }
 
     protected bool UseFireBallScroll(Hero caster, IDestroyable victim)

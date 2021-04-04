@@ -25,14 +25,18 @@ namespace Roguelike.Generators
     protected LootGenerator lootGen;
     public string LevelBossName { get; set; }
 
+    public RoomContentGenerator(Container container)
+    {
+      this.container = container;
+    }
+
     public virtual void Run
     (
-      Dungeons.TileContainers.DungeonNode node, int levelIndex, int nodeIndex, int enemiesStartLevel, GenerationInfo gi, Container container
+      Dungeons.TileContainers.DungeonNode node, int levelIndex, int nodeIndex, int enemiesStartLevel, GenerationInfo gi
     )
     {
       this.enemiesStartLevel = enemiesStartLevel;
       this.node = node as TileContainers.DungeonNode;
-      this.container = container;
       this.levelIndex = levelIndex;
       this.gi = gi;
       this.logger = container.GetInstance<ILogger>();
@@ -92,6 +96,16 @@ namespace Roguelike.Generators
       node.GetTiles<Chest>().ForEach(i => SetILootSourceLevel(i));
     }
 
+    public void AddExtraEnemy(Dungeons.TileContainers.DungeonNode node, string enemy)
+    {
+      var tilePH = node.GetRandomEmptyTile();
+      if (tilePH != null)
+      {
+        var en = CreateEnemyInstance("druid");
+        node.SetTile(en, tilePH.point);
+      }
+    }
+
     protected bool allowSkullPiles = true; 
     protected virtual void SetBarrelKind(Barrel barrel)
     {
@@ -131,7 +145,7 @@ namespace Roguelike.Generators
         node.SetTileAtRandomPosition(new Chest() { ChestKind = ChestKind.Gold });
     }
 
-    protected virtual Enemy CreateEnemyInstance(string enemyName)
+    public virtual Enemy CreateEnemyInstance(string enemyName)
     {
       var enemy = container.GetInstance<Enemy>();
 

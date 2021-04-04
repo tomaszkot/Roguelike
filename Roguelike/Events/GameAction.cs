@@ -182,7 +182,7 @@ namespace Roguelike.Events
     public bool Value { get; set; }//revealed or hidden?
   }
 
-  public enum EnemyActionKind { Moved, /*Died,*/ AttackingHero, ChasingPlayer, RaiseCall, SpecialAction };
+  public enum EnemyActionKind { Moved, /*Died,*/ AttackingHero, ChasingPlayer, RaiseCall, SpecialAction, Teleported };
 
   public class EnemyAction : GameAction
   {

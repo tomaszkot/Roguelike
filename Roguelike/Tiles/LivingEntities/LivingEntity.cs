@@ -50,8 +50,10 @@ namespace Roguelike.Tiles.LivingEntities
     public Tile FixedWalkTarget = null;
     public LivingEntity AllyModeTarget;
     public bool HeroAlly { get; set; }
+    public bool HasRelocateSkill{ get; set; }
 
-    Scroll activeScroll;
+
+  Scroll activeScroll;
     public virtual Scroll ActiveScroll
     {
       get 
@@ -402,8 +404,10 @@ namespace Roguelike.Tiles.LivingEntities
       //  amount /= 10;
       //}
       var sound = "";
+      var src = "";
       if (spell != null)
       {
+        src = " from " + spell.Kind.ToDescription();
         if (spell.Kind == SpellKind.StonedBall)
           amount /= Stats.Defense;
         else
@@ -417,7 +421,7 @@ namespace Roguelike.Tiles.LivingEntities
       }
       ReduceHealth(amount);
       var ga = new LivingEntityAction(LivingEntityActionKind.GainedDamage) { InvolvedValue = amount, InvolvedEntity = this };
-      var desc = damageDesc ?? "received damage: " + amount.Formatted();
+      var desc = damageDesc ?? "received damage: " + amount.Formatted() + " " + src;
       ga.Info = Name.ToString() + " " + desc;
 
       AppendAction(ga);

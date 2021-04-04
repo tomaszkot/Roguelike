@@ -36,7 +36,7 @@ namespace RoguelikeUnitTests
 
       var info = new Roguelike.Generators.GenerationInfo();
       info.NumberOfRooms = 2;
-      info.SecretRooIndex = secretRooIndex;
+      info.SecretRoomIndex = secretRooIndex;
       info.ChildIslandAllowed = false;
 
       var level = game.LevelGenerator.Generate(0, info);
@@ -66,7 +66,7 @@ namespace RoguelikeUnitTests
 
       var info = new Roguelike.Generators.GenerationInfo();
       info.NumberOfRooms = 3;
-      info.SecretRooIndex = secretRooIndex;
+      info.SecretRoomIndex = secretRooIndex;
       info.ChildIslandAllowed = false;
 
       var level = game.LevelGenerator.Generate(0, info);

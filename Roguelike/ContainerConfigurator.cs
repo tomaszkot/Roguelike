@@ -7,6 +7,7 @@ using Roguelike.Managers;
 using Roguelike.Policies;
 using Roguelike.Serialization;
 using Roguelike.State;
+using Roguelike.Strategy;
 using Roguelike.TileContainers;
 using Roguelike.Tiles;
 using Roguelike.Tiles.LivingEntities;
@@ -37,11 +38,15 @@ namespace Roguelike
       container.Register<RoomContentGenerator, RoomContentGenerator>();
       container.Register<AbstractLootFactory, LootFactory>();
       container.Register<SpellCastPolicy, SpellCastPolicy>();
-      container.Register<IProjectilesFactory, ProjectilesFactory>();
+      
       container.Register<LootCrafterBase, LootCrafter>();
       container.Register<GameState, GameState>();
       container.Register<LootManager, LootManager>();
+
+      container.Register<ITilesAtPathProvider, TilesAtPathProvider>();
+      container.Register<IProjectilesFactory, ProjectilesFactory>();
       //container.Register <MovePolicy, MovePolicy>();//move to exe
+
       Container = container;
     }
   }

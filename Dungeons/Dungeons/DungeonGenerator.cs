@@ -128,11 +128,13 @@ namespace Dungeons
       nodes = new List<DungeonNode>();
       var gi = info ?? this.CreateLevelGenerationInfo();
 
-      if (gi.SecretRooIndex >= 0)
-        secretRoomIndex = gi.SecretRooIndex;
-      else
-        secretRoomIndex = RandHelper.GetRandomInt(gi.NumberOfRooms);
-
+      if (!gi.PreventSecretRoomGeneration)
+      {
+        if (gi.SecretRoomIndex >= 0)
+          secretRoomIndex = gi.SecretRoomIndex;
+        else
+          secretRoomIndex = RandHelper.GetRandomInt(gi.NumberOfRooms);
+      }
       for (int i = 0; i < gi.NumberOfRooms; i++)
       {
         if (i > 0)

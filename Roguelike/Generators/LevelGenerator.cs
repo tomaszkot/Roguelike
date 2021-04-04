@@ -19,6 +19,7 @@ namespace Roguelike.Generators
     public int LevelIndex { get; set; }
     public EventHandler<DungeonNode> CustomInteriorDecorator;
     public bool StairsUpOnLevel0 { get; set; }
+    protected List<string> extraEnemies = new List<string>();
 
     public LevelGenerator(Container container) : base(container)
     {
@@ -61,6 +62,8 @@ namespace Roguelike.Generators
       dungeon.Create(w, h, gi, nodeIndex);
     }
 
+    
+
     protected virtual void CreateDynamicTiles(List<Dungeons.TileContainers.DungeonNode> mazeNodes)
     {
       if (mazeNodes.Any(i => !i.Created))
@@ -68,6 +71,15 @@ namespace Roguelike.Generators
         Logger.LogError("!i.Created ");
         return;
       }
+      {
+        var roomGen = Container.GetInstance<RoomContentGenerator>();
+        foreach (var en in extraEnemies)
+        {
+          var maze = mazeNodes.GetRandomElem();
+          roomGen.AddExtraEnemy(maze, en);
+        }
+      }
+
       if (LevelIndex < MaxLevelIndex)
       {
         var indexWithStairsDown = mazeNodes.Count - 1;
@@ -91,15 +103,17 @@ namespace Roguelike.Generators
         }
         else
           Logger.LogError("no room for stairs, maze: " + maze);
-        //node.SetTile(stairs, new System.Drawing.Point(3, 1));
-      }
+
+        
+          //node.SetTile(stairs, new System.Drawing.Point(3, 1));
+        }
     }
 
     protected override void OnChildIslandCreated(ChildIslandCreationInfo e)
     {
       base.OnChildIslandCreated(e);
       var roomGen = Container.GetInstance<RoomContentGenerator>();
-      roomGen.Run(e.ChildIslandNode, LevelIndex, e.ChildIslandNode.NodeIndex, 0, e.GenerationInfoIsl as Roguelike.Generators.GenerationInfo, Container);
+      roomGen.Run(e.ChildIslandNode, LevelIndex, e.ChildIslandNode.NodeIndex, 0, e.GenerationInfoIsl as Roguelike.Generators.GenerationInfo);
     }
 
     protected virtual Stairs CreateStairsUp(int nodeIndex)
@@ -153,7 +167,7 @@ namespace Roguelike.Generators
     protected virtual void GenerateRoomContent(int nodeIndex, Dungeons.GenerationInfo gi, DungeonNode node)
     {
       var roomGen = Container.GetInstance<RoomContentGenerator>();
-      roomGen.Run(node, LevelIndex, nodeIndex, 0, gi as GenerationInfo, Container);
+      roomGen.Run(node, LevelIndex, nodeIndex, 0, gi as GenerationInfo);
     }
 
     protected override Dungeons.GenerationInfo CreateLevelGenerationInfo()

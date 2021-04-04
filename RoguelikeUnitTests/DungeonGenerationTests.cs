@@ -138,7 +138,7 @@ namespace RoguelikeUnitTests
 
       var level_0 = game.GenerateLevel(0, gi);
 
-      Assert.AreEqual(level_0.Nodes.Count, 5);
+      Assert.AreEqual(level_0.Nodes.Count, 6);
       var enemies = level_0.GetTiles<Enemy>();
       Assert.Greater(enemies.Count, 5);
       var chemps = enemies.Where(i => i.PowerKind == EnemyPowerKind.Champion).Count();
@@ -157,6 +157,7 @@ namespace RoguelikeUnitTests
       gi.NumberOfRooms = 1;//tmp
       gi.MaxNodeSize = new System.Drawing.Size(11, 11);
       gi.MinNodeSize = gi.MaxNodeSize;
+      gi.PreventSecretRoomGeneration = true;
       var level0 = game.GenerateLevel(0, gi);
       Assert.NotNull(level0);
 
@@ -212,6 +213,7 @@ namespace RoguelikeUnitTests
       info.MinNodeSize = new Size(15, 15);
       info.MaxNodeSize = new Size(30, 30);
       info.ForceChildIslandInterior = true;
+      info.PreventSecretRoomGeneration = true;
       var game = CreateGame(gi: info);
 
       var level = game.Level;
@@ -239,6 +241,7 @@ namespace RoguelikeUnitTests
       info.MinNodeSize = new Size(15, 15);
       info.MaxNodeSize = new Size(30, 30);
       info.ForceChildIslandInterior = true;
+      info.PreventSecretRoomGeneration = true;
       var game = CreateGame(gi: info);
 
       var level = game.Level;
