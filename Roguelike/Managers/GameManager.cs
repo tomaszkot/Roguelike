@@ -57,7 +57,7 @@ namespace Roguelike.Managers
 
     IPersister persister;
     ILogger logger;
-        
+
     public Hero Hero { get => Context.Hero; }
     protected GameState gameState;
 
@@ -68,6 +68,7 @@ namespace Roguelike.Managers
       SetContext(node, hero, GameContextSwitchKind.GameLoaded);
     }
 
+    public SpellManager SpellManager { get;set;}
     public EnemiesManager EnemiesManager { get => enemiesManager; set => enemiesManager = value; }
     public EventsManager EventsManager { get => eventsManager; set => eventsManager = value; }
     public GameContext Context { get => context; set => context = value; }
@@ -127,6 +128,7 @@ namespace Roguelike.Managers
       Persister = container.GetInstance<IPersister>();
 
       SoundManager = new SoundManager(this, container);
+      SpellManager = new SpellManager(this);
     }
 
     protected virtual void CreateInputManager()
@@ -335,7 +337,7 @@ namespace Roguelike.Managers
         Context.MoveToNextTurnOwner();
     }
 
-    private void RemoveDead()
+    public void RemoveDead()
     {
       EnemiesManager.RemoveDead();
       if (!Hero.Alive)//strike back of enemy could kill hero
@@ -357,91 +359,6 @@ namespace Roguelike.Managers
       return InteractionResult.Blocked;
     }
 
-    void HandlePolicyApplied(Policy policy)
-    {
-      var attackPolicy = policy as AttackPolicy;
-      //var chest = attackPolicy.Victim as Chest;
-      //if (chest != null)
-      //  return;
-      HandeTileHit(attackPolicy.Victim);
-    }
-
-    bool islandEnemiesAdded = false;
-    private void AppendIslandEnemies(Chest chest)
-    {
-      if (chest.OriginMap == "Island_Interactive" && chest.ChestKind == Roguelike.Tiles.Interactive.ChestKind.Gold)
-      {
-        if (CurrentNode.HiddenTiles.Any())
-        {
-          islandEnemiesAdded = true;
-          int counter = 0;
-          foreach (var tile in CurrentNode.HiddenTiles)
-          {
-            var en = tile as Roguelike.Tiles.LivingEntities.Enemy;
-            if (counter == 0)
-            {
-              var key = new Key();
-
-              key.Kind = KeyKind.Chest;
-              key.KeyName = chest.KeyName;
-              en.DeathLoot = key;
-              en.SetChampion();
-              
-            }
-            AppendEnemy(en, tile.point, chest.Level+1);
-            counter++;
-          }
-        }
-      }
-    }
-
-    protected virtual void HandeTileHit(Tile tile)
-    {
-      var info = "";
-      var hitBlocker = false;
-      var chest = tile as Chest;
-      var barrel = tile as Barrel;
-      if (tile is Wall || (chest != null) || (barrel != null))// && !chest.Closed))
-      {
-        hitBlocker = true;
-        if (chest != null)
-          info = "Hero hit a chest";
-        if (barrel != null)
-          info = "Hero hit a barrel";
-        else
-          info = "Hero hit a wall";
-      }
-
-      if (chest != null && chest.Closed)
-      {
-        if (chest.Locked)
-        {
-          var key = Hero.Inventory.GetItems<Key>().Where(i => i.KeyName == chest.KeyName).FirstOrDefault();
-          if (key == null)
-          {
-            AppendAction<HeroAction>((HeroAction ac) => { ac.Kind = HeroActionKind.HitLockedChest; ac.Info = "Chest is locked, a key is needed to open it."; });
-            if (!islandEnemiesAdded)
-              AppendIslandEnemies(chest);
-            return;
-          }
-          else
-          {
-            chest.Locked = false;
-          }
-        }
-      }
-      
-      if (hitBlocker)
-        AppendAction<HeroAction>((HeroAction ac) => { ac.Kind = HeroActionKind.HitWall; ac.Info = info; });
-      if (tile is Barrel || tile is Chest)
-      {
-        var tr = new TimeTracker();
-        this.lootManager.TryAddForLootSource(tile as ILootSource);
-        Logger.LogInfo("TimeTracker TryAddForLootSource: "+ tr.TotalSeconds);
-      }
-    }
-
-
     public virtual Loot TryGetRandomLootByDiceRoll(LootSourceKind lsk, int level)
     {
       var loot = LootGenerator.TryGetRandomLootByDiceRoll(lsk, level, Hero.GetLootAbility());
@@ -452,120 +369,13 @@ namespace Roguelike.Managers
       return loot;
     }
 
+    public ITilesAtPathProvider TilesAtPathProvider { get; set; }
+        
+    
+
     public virtual void OnHeroPolicyApplied(Policies.Policy policy)
     {
-      if (policy.Kind == PolicyKind.Move)
-      {
-
-      }
-      else if (policy.Kind == PolicyKind.Attack)
-      {
-        HandlePolicyApplied(policy);
-        if (HeroBulkAttackTargets == null)
-        {
-          var ap = policy as AttackPolicy;
-          var en = ap.Victim as Enemy;
-          if (en != null)
-          {
-            FindBulkAttackTargets(ap.Victim as Enemy);
-            if (HeroBulkAttackTargets.Any())
-            {
-              var target = HeroBulkAttackTargets.GetRandomElem();
-              HeroBulkAttackTargets.Remove(target);
-              context.ApplyPhysicalAttackPolicy(Hero, target, (p)=> { });
-            }
-          }
-        }
-      }
-      if (policy is AttackPolicy || policy is SpellCastPolicy)
-      {
-        RemoveDead();
-      }
-      context.IncreaseActions(TurnOwner.Hero);
-
-      HeroBulkAttackTargets = null;
-      context.MoveToNextTurnOwner();
-    }
-
-    public bool ApplySpellAttackPolicy
-    (
-      LivingEntity caster,
-      Roguelike.Tiles.Abstract.IDestroyable target,
-      Scroll scroll,
-      Action<Policy> BeforeApply = null
-      , Action<Policy> AfterApply = null
-    )
-    {
-      var spell = scroll.CreateSpell(caster);
-
-      if (!context.UtylizeScroll(caster, scroll, spell))
-        return false;
-
-      var policy = Container.GetInstance<SpellCastPolicy>();
-      policy.Target = target;
-      policy.ProjectilesFactory = Container.GetInstance<IProjectilesFactory>();
-      policy.Spell = scroll.CreateSpell(caster) as Spell;
-      if (BeforeApply != null)
-        BeforeApply(policy);
-
-      policy.OnApplied += (s, e) =>
-      {
-        var le = policy.Target is LivingEntity;
-        if (!le)//le is handled specially
-        {
-          this.lootManager.TryAddForLootSource(policy.Target as ILootSource);
-          policy.Target.Destroyed = true;
-        }
-        if (caster is Hero)
-          OnHeroPolicyApplied(policy);
-
-        if (AfterApply != null)
-          AfterApply(policy);
-      };
-
-      policy.Apply(caster);
-      return true;
-    }
-
-    public List<Enemy> HeroBulkAttackTargets { get; set; }
-    public ITilesAtPathProvider TilesAtPathProvider { get; set; }
-
-    void FindBulkAttackTargets(Enemy lastTarget)
-    {
-      HeroBulkAttackTargets = new List<Enemy>();
-      var hero = Hero;
-      var sb = hero.GetTotalValue(EntityStatKind.ChanceToBulkAttack);
-      //sb = 100.0f;
-      if (sb > 0)
-      {
-        var fac = sb;// sb.GetFactor(true);
-        if (fac / 100f > RandHelper.GetRandomDouble())
-        {
-          HeroBulkAttackTargets = CurrentNode.GetNeighborTiles<Enemy>(hero)
-          .Where(i => i != lastTarget && !i.HeroAlly)
-          .ToList();
-
-          if (HeroBulkAttackTargets.Any())
-            AppendAction(new LivingEntityAction(LivingEntityActionKind.BulkAttack)
-            { Info = hero.Name + " used ability Bulk Attack", Level = ActionLevel.Important , InvolvedEntity = hero });
-        }
-      }
-    }
-
-    public void ApplySpellAttackPolicyForHeroActiveScroll(IDestroyable target)
-    {
-      var scroll = Hero.ActiveScroll;
-      ApplySpellAttackPolicy
-      (
-        Hero,
-        target,
-        scroll
-      );
-    }
-
-    public void OnHeroPolicyApplied(object sender, Policies.Policy policy)
-    {
-      OnHeroPolicyApplied(policy);
+      SpellManager.OnHeroPolicyApplied(policy);
     }
 
     public void AppendAction(GameAction ac)
@@ -1050,29 +860,7 @@ namespace Roguelike.Managers
       le.PlayAllySpawnedSound();
     }
 
-    public OffensiveSpell ApplyOffensiveSpell(LivingEntity caster, Scroll scroll)
-    {
-      var spell = scroll.CreateSpell(caster);
-
-      if (!context.UtylizeScroll(caster, scroll, spell))
-        return null;
-
-      if (spell is OffensiveSpell ps)
-      {
-        if (ps is SkeletonSpell skeletonSpell)
-        {
-          AddAlly(skeletonSpell.Enemy);
-        }
-        //if (caster is Hero)
-        //  context.MoveToNextTurnOwner();
-
-        return ps;
-      }
-      else
-        logger.LogError("!OffensiveSpell " + scroll);
-
-      return null;
-    }
+    
 
     public bool CanUseScroll(LivingEntity caster, Scroll scroll)
     {
@@ -1169,5 +957,31 @@ namespace Roguelike.Managers
     }
 
     
+    public virtual void HandeTileHit(Tile tile)
+    {
+      var info = "";
+      var hitBlocker = false;
+      var chest = tile as Chest;
+      var barrel = tile as Barrel;
+      if (tile is Wall || (chest != null) || (barrel != null))// && !chest.Closed))
+      {
+        hitBlocker = true;
+        if (chest != null)
+          info = "Hero hit a chest";
+        if (barrel != null)
+          info = "Hero hit a barrel";
+        else
+          info = "Hero hit a wall";
+      }
+
+      if (hitBlocker)
+        AppendAction<HeroAction>((HeroAction ac) => { ac.Kind = HeroActionKind.HitWall; ac.Info = info; });
+      if (tile is Barrel || tile is Chest)
+      {
+        var tr = new TimeTracker();
+        this.LootManager.TryAddForLootSource(tile as ILootSource);
+        Logger.LogInfo("TimeTracker TryAddForLootSource: " + tr.TotalSeconds);
+      }
+    }
   }
 }

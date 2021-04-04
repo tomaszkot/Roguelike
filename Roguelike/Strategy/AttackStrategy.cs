@@ -90,7 +90,7 @@ namespace Roguelike
               }
               if (useMagic)
               {
-                GameManager.ApplySpellAttackPolicy(attacker, target, attacker.ActiveScroll, null, (p) => { OnPolicyApplied(p); });
+                GameManager.SpellManager.ApplyAttackPolicy(attacker, target, attacker.ActiveScroll, null, (p) => { OnPolicyApplied(p); });
 
                 return true;
               }

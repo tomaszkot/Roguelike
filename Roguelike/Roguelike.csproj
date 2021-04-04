@@ -67,6 +67,8 @@
     <Compile Include="Abstract\Multimedia\ISoundPlayer.cs" />
     <Compile Include="Abstract\Spells\ISpell.cs" />
     <Compile Include="Discussions\DiscussPanel.cs" />
+    <Compile Include="Managers\PolicyManager.cs" />
+    <Compile Include="Managers\SpellManager.cs" />
     <Compile Include="Tiles\Abstract\IAdvancedEntity.cs" />
     <Compile Include="Tiles\Abstract\IAlly.cs" />
     <Compile Include="Abstract\IDescriptable.cs" />

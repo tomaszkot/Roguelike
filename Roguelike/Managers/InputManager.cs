@@ -117,7 +117,7 @@ namespace Roguelike.Managers
         //  Logger.LogError("Hero attacks dead!" );
         //else
         //  Logger.LogInfo("Hero attacks en health = "+en.Stats.Health);
-        Context.ApplyPhysicalAttackPolicy(Hero, tile, (p) => gm.OnHeroPolicyApplied(this, p));
+        Context.ApplyPhysicalAttackPolicy(Hero, tile, (p) => gm.OnHeroPolicyApplied(p));
 
         return InteractionResult.Attacked;
       }
@@ -195,7 +195,7 @@ namespace Roguelike.Managers
       }
       else
       {
-        Context.ApplyPhysicalAttackPolicy(Hero, tile, (policy) => gm.OnHeroPolicyApplied(this, policy));
+        Context.ApplyPhysicalAttackPolicy(Hero, tile, (policy) => gm.OnHeroPolicyApplied(policy));
         return InteractionResult.Attacked;
       }
       return InteractionResult.Blocked;//blok hero by default
@@ -245,7 +245,7 @@ namespace Roguelike.Managers
           //logger.LogInfo(" Hero ac ="+ ac);
           Context.ApplyMovePolicy(gm.Hero, newPos.Point, null, (e) =>
           {
-            gm.OnHeroPolicyApplied(this, e);
+            gm.OnHeroPolicyApplied(e);
           });
         }
       }

@@ -314,7 +314,12 @@ namespace RoguelikeUnitTests
     protected bool UseScroll(Hero caster, IDestroyable victim, Scroll scroll)
     {
       caster.Inventory.Add(scroll);
-      return game.GameManager.ApplySpellAttackPolicy(caster, victim, scroll);
+      if (caster is Hero)
+      {
+        game.Hero.ActiveScroll = scroll;
+        return game.GameManager.SpellManager.ApplyActiveSpell(victim);
+      }
+      return false;
     }
 
     protected bool UseFireBallScroll(Hero caster, IDestroyable victim)

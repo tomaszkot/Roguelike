@@ -337,9 +337,7 @@ namespace RoguelikeUnitTests
         var en = GetPlainEnemies().First();
         var mana = Hero.Stats.Mana;
         var fireBallScroll = new Scroll(Roguelike.Spells.SpellKind.FireBall);
-        Hero.Inventory.Add(fireBallScroll);
-
-        game.GameManager.ApplySpellAttackPolicy(Hero, en, fireBallScroll);
+        UseScroll(Hero, fireBallScroll);
 
         var mana1 = Hero.Stats.Mana;
         Assert.Less(mana1, mana);

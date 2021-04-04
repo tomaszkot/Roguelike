@@ -194,7 +194,7 @@ namespace RoguelikeUnitTests
 
       var scroll = PrepareScroll(hero, SpellKind.Skeleton);
       var enemiesCount = game.GameManager.CurrentNode.GetTiles<Enemy>().Count;
-      var spell = game.GameManager.ApplyOffensiveSpell(hero, scroll) as SkeletonSpell;
+      var spell = game.GameManager.SpellManager.ApplySpell(hero, scroll) as SkeletonSpell;
       Assert.NotNull(spell);
       Assert.NotNull(spell.Enemy);
       Assert.AreEqual(game.GameManager.CurrentNode.GetTiles<Enemy>().Count, enemiesCount+1);
