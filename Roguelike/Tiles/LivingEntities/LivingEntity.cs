@@ -32,6 +32,7 @@ namespace Roguelike.Tiles.LivingEntities
                 { EntityStatKind.ManaStealing, EntityStatKind.Mana }
     };
 
+    [JsonIgnore]
     public bool Destroyed 
     {
       get { return !Alive; }

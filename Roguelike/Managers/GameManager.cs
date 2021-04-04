@@ -887,55 +887,6 @@ namespace Roguelike.Managers
       return true;
     }
 
-
-    public PassiveSpell ApplyPassiveSpell(LivingEntity caster, Scroll scroll, Point? destPoint = null)
-    {
-      var spell = scroll.CreateSpell(caster);
-      if (!context.CanUseScroll(caster, scroll, spell))
-        return null;
-           
-      if (spell is PassiveSpell ps)
-      {
-        if (ps.Kind == SpellKind.Teleport)
-        {
-          if (destPoint != null)
-          {
-            var currentTile = CurrentNode.GetTile(destPoint.Value);
-            var teleportSpell = ps as TeleportSpell;
-            if (teleportSpell.Range < Hero.DistanceFrom(currentTile))
-            {
-              SoundManager.PlayBeepSound();
-              EventsManager.AppendAction(new Events.GameInstructionAction() { Info = "Range of spell is too small (max:"+ teleportSpell.Range + ")" });
-              return null;
-            }
-
-            if (currentTile.IsEmpty || currentTile is Loot)
-              CurrentNode.SetTile(Hero, destPoint.Value);
-            else
-            {
-              SoundManager.PlayBeepSound();
-              return null;
-            }
-          }
-        }
-        else
-          caster.ApplyPassiveSpell(ps);
-
-        context.UtylizeScroll(caster, scroll, spell);
-        AppendAction<LivingEntityAction>((LivingEntityAction ac) => 
-        { ac.Kind = LivingEntityActionKind.Teleported; ac.Info = Hero.Name+" used " + scroll.Kind.ToDescription() + " scroll"; ac.InvolvedEntity = caster; });
-
-        //if (caster is Hero)
-        //  context.MoveToNextTurnOwner();
-
-        return ps;
-      }
-      else
-        logger.LogError("!PassiveSpell " + scroll);
-
-      return null;
-    }
-
     public bool IsAlly(LivingEntity le)
     {
       return this.AlliesManager.Contains(le);

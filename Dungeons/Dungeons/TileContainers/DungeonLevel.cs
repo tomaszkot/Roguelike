@@ -70,7 +70,12 @@ namespace Dungeons.TileContainers
     [JsonIgnore]
     public virtual List<DungeonNode> Nodes
     {
-      get { return Parts[0].Parts.ToList(); }
+      get 
+      {
+        if (!Parts.Any())
+          return new List<DungeonNode>();
+        return Parts[0].Parts.ToList();
+      }
     }
 
     [JsonIgnore]

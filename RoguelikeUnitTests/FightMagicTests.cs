@@ -138,7 +138,7 @@ namespace RoguelikeUnitTests
       PassiveSpell spell;
       var scroll = PrepareScroll(hero, SpellKind.Transform, enemy);
       Assert.True(game.GameManager.EnemiesManager.ShallChaseTarget(enemy, game.Hero));
-      spell = game.GameManager.ApplyPassiveSpell(hero, scroll);
+      spell = game.GameManager.SpellManager.ApplyPassiveSpell(hero, scroll);
       Assert.NotNull(spell);
 
       Assert.True(!game.GameManager.HeroTurn);
@@ -171,7 +171,7 @@ namespace RoguelikeUnitTests
       var enemy = AllEnemies.First();
 
       var scroll = PrepareScroll(hero, SpellKind.ManaShield, enemy);
-      var spell = game.GameManager.ApplyPassiveSpell(hero, scroll);
+      var spell = game.GameManager.SpellManager.ApplyPassiveSpell(hero, scroll);
       Assert.NotNull(spell);
             
       var heroHealth = game.Hero.Stats.Health;
@@ -228,7 +228,7 @@ namespace RoguelikeUnitTests
       var scroll = PrepareScroll(hero, SpellKind.Teleport);
       Assert.AreEqual(hero.Inventory.GetItems<Scroll>().Count(), 1);
       var dest = game.GameManager.CurrentNode.GetEmptyTiles().Where(i=>i.DistanceFrom(hero) == range).FirstOrDefault();
-      var spell = game.GameManager.ApplyPassiveSpell(hero, scroll, dest.point);
+      var spell = game.GameManager.SpellManager.ApplyPassiveSpell(hero, scroll, dest.point);
       if (!shallFail)
       {
         Assert.NotNull(spell);

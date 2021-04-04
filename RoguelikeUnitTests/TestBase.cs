@@ -308,7 +308,7 @@ namespace RoguelikeUnitTests
     protected bool UseScroll(Hero caster, Scroll scroll)
     {
       caster.Inventory.Add(scroll);
-      return game.GameManager.ApplyPassiveSpell(caster, scroll) != null;
+      return game.GameManager.SpellManager.ApplyPassiveSpell(caster, scroll) != null;
     }
 
     protected bool UseScroll(Hero caster, IDestroyable victim, Scroll scroll)

@@ -275,7 +275,7 @@ namespace RoguelikeUnitTests
     {
       var game = CreateGame();
       Assert.NotNull(game.Hero);
-      Assert.AreEqual(game.Hero.DungeonNodeIndex, 0);
+      Assert.AreEqual(game.Hero.DungeonNodeIndex, game.Level.Nodes.Where(i=> !i.Secret).First().NodeIndex);
     }
 
     [Test]
