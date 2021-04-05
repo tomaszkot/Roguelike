@@ -902,7 +902,7 @@ namespace Dungeons
         return true;
       }
             
-      public Tuple<Point, TileNeighborhood> GetEmptyNeighborhoodPoint(Tile target, EmptyNeighborhoodCallContext context, TileNeighborhood? prefferedSide = null, List<Type> extraTypesConsideredEmpty = null)
+      public Tuple<Point, TileNeighborhood> GetEmptyNeighborhoodPoint(Tile target, TileNeighborhood? prefferedSide = null, List<Type> extraTypesConsideredEmpty = null)
       {
         var set = new List<TileNeighborhood>();
         if (prefferedSide != null)

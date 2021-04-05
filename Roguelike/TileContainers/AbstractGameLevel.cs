@@ -50,7 +50,7 @@ namespace Roguelike.TileContainers
 
     public Tuple<Point, TileNeighborhood> GetEmptyNeighborhoodPoint(Tile target, EmptyNeighborhoodCallContext context, TileNeighborhood? prefferedSide = null)
     {
-      return GetEmptyNeighborhoodPoint(target, context, prefferedSide, context == EmptyNeighborhoodCallContext.Move ? extraTypesConsideredEmpty : null);
+      return GetEmptyNeighborhoodPoint(target, prefferedSide, context == EmptyNeighborhoodCallContext.Move ? extraTypesConsideredEmpty : null);
     }
 
     public void AddExtraTypesConsideredEmpty(Type type)

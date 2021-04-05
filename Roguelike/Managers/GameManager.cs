@@ -173,7 +173,7 @@ namespace Roguelike.Managers
       if(!node.Inited)
         InitNode(node, gameState, kind);
 
-      Context.SwitchTo(node, hero, gameState, kind, stairs);
+      Context.SwitchTo(node, hero, gameState, kind, AlliesManager, stairs);
 
       if (kind == GameContextSwitchKind.NewGame)
       {

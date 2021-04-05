@@ -1,4 +1,5 @@
-﻿using Roguelike.Tiles;
+﻿using Dungeons.Core;
+using Roguelike.Tiles;
 using Roguelike.Tiles.Looting;
 using SimpleInjector;
 using System;
@@ -23,6 +24,7 @@ namespace Roguelike.LootFactories
         var scroll = new Scroll();
         scroll.tag1 = tag;
         scroll.Kind = Scroll.DiscoverKindFromName(tag);
+        scroll.Count = Enumerable.Range(1, 3).ToList().GetRandomElem();
         return scroll;
       };
       var names = new[] { "fire_ball_scroll" , "ice_ball_scroll", "poison_ball_scroll",

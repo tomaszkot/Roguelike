@@ -1,17 +1,13 @@
 ﻿using Dungeons.Core;
 using Dungeons.Tiles;
 using Newtonsoft.Json;
-using Roguelike.Abstract;
-using Roguelike.Abstract.Projectiles;
 using Roguelike.Abstract.Spells;
 using Roguelike.Attributes;
 using Roguelike.Events;
 using Roguelike.Managers;
 using Roguelike.Policies;
-using Roguelike.Spells;
 using Roguelike.State;
 using Roguelike.TileContainers;
-using Roguelike.Tiles;
 using Roguelike.Tiles.Interactive;
 using Roguelike.Tiles.LivingEntities;
 using Roguelike.Tiles.Looting;
@@ -170,7 +166,15 @@ namespace Roguelike
       }
     }
 
-    public virtual void SwitchTo(AbstractGameLevel node, Hero hero, GameState gs, GameContextSwitchKind context, Stairs stairs = null)
+    public virtual void SwitchTo
+    (
+      AbstractGameLevel node, 
+      Hero hero, 
+      GameState gs, 
+      GameContextSwitchKind context, 
+      AlliesManager am,
+      Stairs stairs = null
+    )
     {
       if (node == CurrentNode)
       {
@@ -187,10 +191,14 @@ namespace Roguelike
         merch.OnContextSwitched(Container);
         
       var heroStartTile = PlaceHeroAtDungeon(node, gs, context, stairs);
+      List<LivingEntity> allies = am.AllEntities;
 
       CurrentNode = node;
 
       CurrentNode.OnHeroPlaced(Hero);
+      var pt = CurrentNode.GetEmptyNeighborhoodPoint(Hero, Dungeons.TileContainers.DungeonNode.EmptyNeighborhoodCallContext.Move);
+      if(allies.Any())
+        CurrentNode.SetTile(allies[0], pt.Item1);
 
       EmitContextSwitched(context);
     }
