@@ -28,7 +28,7 @@ namespace RoguelikeUnitTests
       Assert.Greater(ActiveEnemies.Count, 0);
       var heroHealth = hero.Stats.Health;
       while (hero.Stats.Health > 5)
-        hero.OnPhysicalHit(ActiveEnemies.First());
+        hero.OnPhysicalHitBy(ActiveEnemies.First());
 
       Assert.Greater(heroHealth, hero.Stats.Health);
       heroHealth = hero.Stats.Health;

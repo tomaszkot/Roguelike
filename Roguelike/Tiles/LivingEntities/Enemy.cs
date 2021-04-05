@@ -125,6 +125,7 @@ namespace Roguelike.Tiles.LivingEntities
       IncreaseStats(inc, IncreaseStatsKind.PowerKind);
 
       InitEffectsToUse(boss);
+      InitActiveScroll();
 
       if(!boss)
         this.tag1 += ChempTagSuffix;
@@ -179,6 +180,7 @@ namespace Roguelike.Tiles.LivingEntities
       var inc = GetIncrease(hard ? level + 1 : level);
       IncreaseStats(inc, IncreaseStatsKind.Level);
       SetResistance();
+      InitActiveScroll();
       LevelSet = true;
     }
 
@@ -191,13 +193,15 @@ namespace Roguelike.Tiles.LivingEntities
     {
       //ActiveScroll = new Scroll(SpellKind.IceBall);
       if (Name.ToLower() == "druid" || PowerKind != EnemyPowerKind.Plain)
+      {
         ActiveScroll = new Scroll(attackSpells.GetRandomElem());
+        SetResistanceFromScroll(ActiveScroll);
+        Stats.SetNominal(EntityStatKind.Mana, 1000);//TODO
+      }
     }
 
     void SetResistance()
     {
-      InitActiveScroll();
-
       float resistBasePercentage = 5 * GetIncrease(this.Level, 3f);
       var incPerc = GetResistanceLevelFactor(this.Level);
       resistBasePercentage += resistBasePercentage * incPerc / 100;
@@ -212,8 +216,6 @@ namespace Roguelike.Tiles.LivingEntities
       this.Stats.SetNominal(EntityStatKind.ResistCold, resistBasePercentage);
       var rli = resistBasePercentage * 2.5f / 3f;
       this.Stats.SetNominal(EntityStatKind.ResistLighting, rli);
-
-      SetResistanceFromScroll(ActiveScroll);
     }
 
         

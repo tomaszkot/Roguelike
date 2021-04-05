@@ -121,7 +121,7 @@ namespace Dungeons
       return dungeon;
     }
 
-    int secretRoomIndex = -1;
+    protected int secretRoomIndex = -1;
     //TODO public
     public virtual List<DungeonNode> CreateDungeonNodes(GenerationInfo info = null)
     {

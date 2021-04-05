@@ -31,7 +31,7 @@ namespace RoguelikeUnitTests
            
       var enemy = game.GameManager.EnemiesManager.AllEntities.First();
 
-      game.Hero.OnPhysicalHit(enemy);
+      game.Hero.OnPhysicalHitBy(enemy);
       Assert.Greater(health, game.Hero.Stats.Health);
       for (int i = 0; i < 100; i++)
       {

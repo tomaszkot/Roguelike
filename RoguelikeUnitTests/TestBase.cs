@@ -131,7 +131,7 @@ namespace RoguelikeUnitTests
         OnInit();
       }
       game = new RoguelikeGame(Container);
-
+      
       game.GameManager.EventsManager.ActionAppended += (object sender, Roguelike.Events.GameAction e)=>
       {
         if (e is GameStateAction)
@@ -196,6 +196,8 @@ namespace RoguelikeUnitTests
         }
       }
       createTestEnvCounter++;
+      if(game.Hero!=null)
+        game.Hero.Name = "Hero";
       return game;
     }
         

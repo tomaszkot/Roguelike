@@ -29,14 +29,14 @@ namespace RoguelikeUnitTests
 
     [TestCase(0)]
     [TestCase(1)]
-    public void OneRoomOneSecret(int secretRooIndex)
+    public void OneRoomOneSecret(int secretRoomIndex)
     {
       var game = CreateGame(false);
       Assert.Null(game.Hero);
 
       var info = new Roguelike.Generators.GenerationInfo();
       info.NumberOfRooms = 2;
-      info.SecretRoomIndex = secretRooIndex;
+      info.SecretRoomIndex = secretRoomIndex;
       info.ChildIslandAllowed = false;
 
       var level = game.LevelGenerator.Generate(0, info);
@@ -45,12 +45,12 @@ namespace RoguelikeUnitTests
 
       var doors = level.Nodes[0].GetTiles<Door>();
       Assert.AreEqual(doors.Count, 1);
-      if(secretRooIndex == 1)
+      if(secretRoomIndex == 1)
         Assert.AreEqual(doors[0].DungeonNodeIndex, 0);
       else
         Assert.AreEqual(doors[0].DungeonNodeIndex, 1);
 
-      Assert.AreEqual(level.Nodes[secretRooIndex].Secret, true);
+      Assert.AreEqual(level.Nodes[secretRoomIndex].Secret, true);
       level.Nodes[1].GetTiles().All(i => i.DungeonNodeIndex == 1);
       doors = level.Nodes[1].GetTiles<Door>();
       Assert.AreEqual(doors.Count, 0);

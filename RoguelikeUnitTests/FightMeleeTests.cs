@@ -23,7 +23,7 @@ namespace RoguelikeUnitTests
         var game = CreateGame(numEnemies: 1, numberOfRooms: 1);
         var hero = game.Hero;
 
-        var enemies = game.GameManager.CurrentNode.GetTiles<Enemy>().Where(i=> i.DungeonNodeIndex == hero.DungeonNodeIndex).ToList();
+        var enemies = game.GameManager.CurrentNode.GetTiles<Enemy>();//.Where(i=> i.DungeonNodeIndex == hero.DungeonNodeIndex).ToList();
         Assert.AreEqual(enemies.Count, 1);
         var enemy = enemies.Where(i => i.PowerKind != EnemyPowerKind.Plain).FirstOrDefault();
         if (enemy == null)
@@ -37,7 +37,8 @@ namespace RoguelikeUnitTests
 
         var closeHero = game.Level.GetClosestEmpty(hero);
         game.Level.SetTile(enemy, closeHero.point);
-        enemy.OnPhysicalHit(hero);
+        enemy.ActiveScroll = null;//this causes attack
+        enemy.OnPhysicalHitBy(hero);
 
         game.GameManager.Context.TurnOwner = TurnOwner.Allies;
         game.GameManager.Context.PendingTurnOwnerApply = true;
@@ -61,12 +62,12 @@ namespace RoguelikeUnitTests
       Assert.Greater(ActiveEnemies.Count, 0);
       var enemy = ActiveEnemies.First();
       var enemyHealth = enemy.Stats.Health;
-      enemy.OnPhysicalHit(hero);
+      enemy.OnPhysicalHitBy(hero);
       Assert.Greater(enemyHealth, enemy.Stats.Health);
       enemyHealth = enemy.Stats.Health;
 
       var wpn = GenerateRandomEqOnLevelAndCollectIt<Weapon>();
-      enemy.OnPhysicalHit(hero);
+      enemy.OnPhysicalHitBy(hero);
 
       Assert.Greater(enemyHealth, enemy.Stats.Health);
     }
@@ -85,7 +86,7 @@ namespace RoguelikeUnitTests
       Assert.AreEqual(ccs, 100);
 
       var enemy = ActiveEnemies.First();
-      enemy.OnPhysicalHit(hero);
+      enemy.OnPhysicalHitBy(hero);
       Assert.True(enemy.LastingEffects.Any());
       Assert.AreEqual(enemy.LastingEffects[0].Type, EffectType.Stunned);
       Assert.AreEqual(enemy.LastingEffects[0].Description, "Stunned");
@@ -138,7 +139,7 @@ namespace RoguelikeUnitTests
       var damages = new List<float>();
       for (int i = 0; i < 10; i++)
       {
-        var damage = en.OnPhysicalHit(game.Hero);
+        var damage = en.OnPhysicalHitBy(game.Hero);
         if(damage > 0)
           damages.Add(damage);
       }
@@ -154,7 +155,7 @@ namespace RoguelikeUnitTests
 
       var enemy = AllEnemies.First();
       var enemyHealth = enemy.Stats.Health;
-      enemy.OnPhysicalHit(game.Hero);
+      enemy.OnPhysicalHitBy(game.Hero);
       var enemyHealthDiff = enemyHealth - enemy.Stats.Health;
       enemyHealth = enemy.Stats.Health;
 
@@ -168,14 +169,14 @@ namespace RoguelikeUnitTests
       Assert.NotNull(spell);
       Assert.Greater(hero.GetCurrentValue(Roguelike.Attributes.EntityStatKind.Attack), attackPrev);
 
-      enemy.OnPhysicalHit(game.Hero);
+      enemy.OnPhysicalHitBy(game.Hero);
       var enemyHealthDiffRage = enemyHealth - enemy.Stats.Health;
       Assert.Greater(enemyHealthDiffRage, enemyHealthDiff);//rage
 
       enemyHealth = enemy.Stats.Health;
 
       GotoSpellEffectEnd(spell);
-      enemy.OnPhysicalHit(game.Hero);
+      enemy.OnPhysicalHitBy(game.Hero);
       var enemyHealthDiffAterRage = enemyHealth - enemy.Stats.Health;
       Assert.AreEqual(enemyHealthDiff, enemyHealthDiffAterRage);//rage over
 

@@ -266,7 +266,7 @@ namespace Roguelike.Tiles.LivingEntities
       return GetCurrentValue(EntityStatKind.Attack);
     }
 
-    public float OnPhysicalHit(LivingEntity attacker)
+    public float OnPhysicalHitBy(LivingEntity attacker)
     {
       float defense = GetDefense();
       if (defense == 0)
@@ -589,7 +589,7 @@ namespace Roguelike.Tiles.LivingEntities
 
     internal void ApplyPhysicalDamage(LivingEntity victim)
     {
-      victim.OnPhysicalHit(this);
+      victim.OnPhysicalHitBy(this);
     }
 
     public float GetCurrentValue(EntityStatKind kind)

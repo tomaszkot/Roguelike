@@ -54,48 +54,16 @@ namespace Roguelike
         if (!attacker.CanAttack)
           return false;
 
-        //teleport or...
-        if (MakeNonPhysicalMove(attacker, target))
-          return true;
-
         var enemyCasted = attacker as Enemy;
         if (enemyCasted != null)
         {
-          if (enemyCasted.PrefferedFightStyle == PrefferedFightStyle.Magic)
-          {
-            if (attacker.DistanceFrom(target) < 8)//TODO
-            {
-              var useMagic = false;
-              useMagic = context.CurrentNode.GetNeighborTiles(attacker, true).Contains(target);
-              if (!useMagic)
-              {
-                if (TilesAtPathProvider != null)
-                {
-                  var tiles = TilesAtPathProvider.GetTilesAtPath(attacker.point, target.point);
-                  if(!tiles.Any(i=> i is Enemy))
-                    useMagic = true;
-                }
-                else
-                {
-                  var pathToTarget = FindPathForEnemy(attacker, target, 1, true);
-                  if (pathToTarget != null)
-                  {
-                    var enemies = pathToTarget.Where(i => context.CurrentNode.GetTile(new System.Drawing.Point(i.Y, i.X)) is Enemy).ToList();
-                    if (!enemies.Any())
-                    {
-                      useMagic = true;
-                    }
-                  }
-                }
-              }
-              if (useMagic)
-              {
-                GameManager.SpellManager.ApplyAttackPolicy(attacker, target, attacker.ActiveScroll, null, (p) => { OnPolicyApplied(p); });
-
-                return true;
-              }
-            }
-          }
+          bool resistOn = TurnOnResistAll(enemyCasted, target);
+          if (resistOn)
+            return true;
+          
+          //teleport or...
+          if (TryUseMagicAttack(attacker, target))
+            return true;
         }
 
         var victim = GetPhysicalAttackVictim(attacker, target);
@@ -117,10 +85,47 @@ namespace Roguelike
             Context.ApplyPhysicalAttackPolicy(attacker, target, (pol) =>
             {
               OnPolicyApplied(pol);
-            }
-            );
+            });
           }
           return true;
+        }
+
+        return false;
+      }
+
+      private bool UseMagicAttack(LivingEntity attacker, LivingEntity target)
+      {
+        if (attacker.DistanceFrom(target) < 8)//TODO
+        {
+          var useMagic = false;
+          useMagic = context.CurrentNode.GetNeighborTiles(attacker, true).Contains(target);
+          if (!useMagic)
+          {
+            if (TilesAtPathProvider != null)
+            {
+              var tiles = TilesAtPathProvider.GetTilesAtPath(attacker.point, target.point);
+              if (!tiles.Any(i => i is Enemy))
+                useMagic = true;
+            }
+            else
+            {
+              var pathToTarget = FindPathForEnemy(attacker, target, 1, true);
+              if (pathToTarget != null)
+              {
+                var enemies = pathToTarget.Where(i => context.CurrentNode.GetTile(new System.Drawing.Point(i.Y, i.X)) is Enemy).ToList();
+                if (!enemies.Any())
+                {
+                  useMagic = true;
+                }
+              }
+            }
+          }
+          if (useMagic)
+          {
+            GameManager.SpellManager.ApplyAttackPolicy(attacker, target, attacker.ActiveScroll, null, (p) => { OnPolicyApplied(p); });
+
+            return true;
+          }
         }
 
         return false;
@@ -228,7 +233,7 @@ namespace Roguelike
         return false;
       }
 
-      bool MakeNonPhysicalMove(LivingEntity enemy, LivingEntity hero)
+      bool TryUseMagicAttack(LivingEntity enemy, LivingEntity hero)
       {
         if (enemy.ActiveScrollCoolDownCounter > 0)
         {
@@ -242,50 +247,16 @@ namespace Roguelike
         }
         if (enemy.ActiveScroll != null && enemy.ActiveScrollCoolDownCounter == 0)
         {
-          var level = Context.CurrentNode;
-          enemy.PathToTarget = FindPathForEnemy(enemy, hero);
-          if (enemy.PathToTarget != null)
+          if (UseMagicAttack(enemy, hero))
           {
-            var path = enemy.PathToTarget.GetRange(0, enemy.PathToTarget.Count - 1);
-            if (path.Any())
-            {
-              var clearPath = path.All(i =>
-                level.GetTile(new System.Drawing.Point(i.Y, i.X)) == enemy ||
-                level.GetTile(new System.Drawing.Point(i.Y, i.X)).IsEmpty
-              );
-
-              if (clearPath)
-              {
-                var first = path.FirstOrDefault();
-                var straithPath = path.All(i => i.X == first.X || i.Y == first.Y);
-                if (straithPath)
-                {
-                  if (enemy.DistanceFrom(hero) < 5 || (enemy.point.Y == hero.point.Y && enemy.DistanceFrom(hero) < 7)) //|| VisibleFromCamera TODO
-                  {
-                    //var spell = enemy.ActiveScroll.CreateSpell(enemy);
-                    //if (spell is OffensiveSpell)
-                    //  enemy.DamageApplier.ApplySpellDamage(enemy, hero, spell as AttackingSpell);
-                    //else
-                    //  hero.AddLastingEffect(EffectType.BushTrap, 3, 3);
-                    //enemy.ActiveScrollCoolDownCounter = GetCoolDown(enemy as Enemy);
-                    //return true;
-                    return false;//TODO
-                  }
-                }
-              }
-            }
+            enemy.ActiveScrollCoolDownCounter = GetCoolDown(enemy as Enemy);
+            return true;
           }
         }
-
-        bool resistOn = TurnOnResistAll(enemy, hero);
-        if (resistOn)
-        {
-          return true;
-        }
-
         return false;
       }
 
+      
       public List<Algorithms.PathFinderNode> FindPathForEnemy(LivingEntity enemy,LivingEntity target, int startIndex = 0, bool forEnemyProjectile = false)
       {
         var pathToTarget = context.CurrentNode.FindPath(enemy.point, target.point, false, true, forEnemyProjectile);

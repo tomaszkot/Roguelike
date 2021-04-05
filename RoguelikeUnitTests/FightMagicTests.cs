@@ -69,7 +69,7 @@ namespace RoguelikeUnitTests
       game.Hero.SetEquipment(CurrentEquipmentKind.Weapon, wpn);
       for (int i = 0; i < 10; i++)
       {
-        enemy.OnPhysicalHit(game.Hero);
+        enemy.OnPhysicalHitBy(game.Hero);
         //GotoNextHeroTurn();
       }
       var diffMelee = enemyHealth - enemy.Stats.Health;
@@ -122,7 +122,12 @@ namespace RoguelikeUnitTests
       GotoNextHeroTurn(game);
       if (heroHealth == hero.Stats.Health)
       {
-        game.GameManager.EnemiesManager.AttackIfPossible(enemy as Enemy, hero);//TODO
+        for (int i = 0; i < 10; i++)
+        {
+          game.GameManager.EnemiesManager.AttackIfPossible(enemy as Enemy, hero);//TODO
+          if (enemy.Stats.Mana < mana)
+            break;
+        }
       }
       Assert.Greater(heroHealth, hero.Stats.Health);
       Assert.Greater(mana, enemy.Stats.Mana);//used mana
@@ -175,13 +180,13 @@ namespace RoguelikeUnitTests
       Assert.NotNull(spell);
             
       var heroHealth = game.Hero.Stats.Health;
-      game.Hero.OnPhysicalHit(enemy);
+      game.Hero.OnPhysicalHitBy(enemy);
       Assert.AreEqual(game.Hero.Stats.Health, heroHealth);//mana shield
 
       GotoSpellEffectEnd(spell);
 
       heroHealth = game.Hero.Stats.Health;
-      game.Hero.OnPhysicalHit(enemy);
+      game.Hero.OnPhysicalHitBy(enemy);
       Assert.Less(game.Hero.Stats.Health, heroHealth);//mana shield gone
 
     }
