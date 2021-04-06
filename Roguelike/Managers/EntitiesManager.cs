@@ -11,6 +11,7 @@ using System.Diagnostics;
 using static Dungeons.TileContainers.DungeonNode;
 using Roguelike.Strategy;
 using Roguelike.Tiles.LivingEntities;
+using Roguelike.Abstract.Tiles;
 
 namespace Roguelike.Managers
 {
@@ -24,6 +25,7 @@ namespace Roguelike.Managers
     public AbstractGameLevel Node { get => context.CurrentNode; }
     public GameContext Context { get => context; set => context = value; }
     public List<LivingEntity> AllEntities { get => entities; set => entities = value; }
+    public IEnumerable<IAlly> AllAllies { get => entities.Cast<IAlly>();  }
     protected GameManager gameManager;
 
     protected EventsManager eventsManager;
@@ -223,6 +225,11 @@ namespace Roguelike.Managers
         Context.EventsManager.AppendAction(dead.GetDeadAction());
         RemoveEntity(dead);
       }
+    }
+
+    public bool RemoveAlly(IAlly ent)
+    {
+      return RemoveEntity(ent as LivingEntity);
     }
 
     public bool RemoveEntity(LivingEntity ent)

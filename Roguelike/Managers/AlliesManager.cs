@@ -1,5 +1,6 @@
 ﻿using Dungeons.Core;
 using Roguelike.Abstract;
+using Roguelike.Abstract.Tiles;
 using Roguelike.Policies;
 using Roguelike.Strategy;
 using Roguelike.Tiles;
@@ -14,7 +15,7 @@ namespace Roguelike.Managers
   {
     EnemiesManager enemiesManager;
     
-    public event EventHandler<LivingEntity> AllyAdded;
+    //public event EventHandler<LivingEntity> AllyAdded;
     //public event EventHandler<LivingEntity> AllyRemoved;
 
     public AlliesManager(GameContext context, EventsManager eventsManager, Container container, EnemiesManager enemiesManager, GameManager gm) :
@@ -111,9 +112,17 @@ namespace Roguelike.Managers
 
     public override void AddEntity(LivingEntity ent)
     {
-      base.AddEntity(ent);
-      if (AllyAdded != null)
-        AllyAdded(this, ent);
+      if (ent is IAlly)
+        base.AddEntity(ent as LivingEntity);
+      else
+        throw new Exception("AddEntity ent is !IAlly");
+    }
+
+    public void AddEntity(IAlly ent)
+    {
+      base.AddEntity(ent as LivingEntity);
+      //if (AllyAdded != null)
+        //AllyAdded(this, as LivingEntity);
     }
         
   }

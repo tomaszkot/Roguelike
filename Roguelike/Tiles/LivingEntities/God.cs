@@ -1,9 +1,10 @@
 ﻿using Dungeons.Core;
+using Roguelike.Abstract.Tiles;
 using System.Drawing;
 
 namespace Roguelike.Tiles.LivingEntities
 {
-  public class God : LivingEntity
+  public class God : AdvancedLivingEntity, IAlly
     //IDescriptable, 
     //IMerchant
   {
@@ -13,6 +14,9 @@ namespace Roguelike.Tiles.LivingEntities
     //List<string> awakingLoot = new List<string>();
     //public string AwakingGift { get; set; }
     public string PowerReleaseSpeach { get; set; }
+    public bool Active { get; set ; }
+
+    public AllyKind Kind => throw new System.NotImplementedException();
 
     public God() : this(new Point().Invalid(), '0')
     {
