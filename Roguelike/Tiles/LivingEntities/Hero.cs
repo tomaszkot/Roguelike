@@ -10,6 +10,7 @@ using Roguelike.LootContainers;
 using System.Collections.Generic;
 using Roguelike.Calculated;
 using Roguelike.Quests;
+using Roguelike.Abstract.Tiles;
 
 namespace Roguelike.Tiles.LivingEntities
 {
@@ -206,6 +207,15 @@ namespace Roguelike.Tiles.LivingEntities
     public override bool CanCauseBleeding()
     {
       return CurrentEquipment.GetWeapon() != null;
+    }
+
+    public override bool GetGoldWhenSellingTo(IAdvancedEntity dest)
+    {
+      var getGold = base.GetGoldWhenSellingTo(dest);
+      if (dest is Ally)
+        getGold = false;
+      
+      return getGold;
     }
   }
 }

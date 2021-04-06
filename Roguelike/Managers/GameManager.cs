@@ -723,7 +723,7 @@ namespace Roguelike.Managers
 
     protected virtual bool GetGoldInvolvedOnSell(IAdvancedEntity src, IAdvancedEntity dest)
     {
-      return src != dest;
+      return src.GetGoldWhenSellingTo(dest);
     }
 
     private void AddLootToMerchantInv(Merchant merch, List<LootKind> lootKinds)

@@ -96,6 +96,16 @@ namespace Roguelike.Tiles.LivingEntities
       }
     }
 
+    public override Container Container
+    {
+      get { return base.Container; }
+      set
+      {
+        base.Container = value;
+        this.Inventory.Container = value;
+      }
+    }
+
     public static Dictionary<Weapon.WeaponKind, EntityStatKind> Weapons2Esk = new Dictionary<Weapon.WeaponKind, EntityStatKind>()
     {
       {Weapon.WeaponKind.Axe,  EntityStatKind.AxeExtraDamage},
@@ -625,6 +635,11 @@ namespace Roguelike.Tiles.LivingEntities
         }
       }
       return lastingEffectCalcInfo;
+    }
+
+    public virtual bool GetGoldWhenSellingTo(IAdvancedEntity dest)
+    {
+      return this != dest;
     }
   }
 }

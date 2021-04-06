@@ -56,6 +56,12 @@ namespace Roguelike.Tiles.LivingEntities
       return ally;
     }
 
-    public abstract void SetTag(); 
+    public abstract void SetTag();
+
+    public override bool GetGoldWhenSellingTo(IAdvancedEntity dest)
+    {
+      return false;
+    }
   }
+    
 }
