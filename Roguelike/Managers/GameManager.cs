@@ -843,18 +843,20 @@ namespace Roguelike.Managers
       EnemiesManager.AddEntity(enemy);
     }
 
-    public void AddAlly<T>() where T : LivingEntity, new()
+    public void AddAlly<T>() where T : IAlly, new()
     {
       var ally = new T();
-      ally.Revealed = true;
       AddAlly(ally);
     }
 
-    public void AddAlly(LivingEntity le)
+    public void AddAlly(IAlly ally)
     {
+      ally.Active = true;
+      var le = ally as LivingEntity;
       le.Container = this.Container;
+      le.Revealed = true;
       AlliesManager.AddEntity(le);
-
+      
       var empty = CurrentNode.GetClosestEmpty(Hero, true, false);
       ReplaceTile<LivingEntity>(le, empty);
       le.PlayAllySpawnedSound();

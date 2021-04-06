@@ -1,9 +1,6 @@
 ﻿using Dungeons.Core;
-using Roguelike.Abstract;
 using Roguelike.Abstract.Tiles;
 using Roguelike.Attributes;
-using Roguelike.Managers;
-using Roguelike.Tiles.LivingEntities;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -13,15 +10,11 @@ using System.Threading.Tasks;
 
 namespace Roguelike.Tiles.LivingEntities
 {
-  public class TrainedHound : LivingEntities.AdvancedLivingEntity, IAlly
+  public abstract class Ally : LivingEntities.AdvancedLivingEntity, IAlly
   {
-    public AllyKind Kind { get; set; }
-    public bool Active { get ; set ; }
-
-    public TrainedHound() : base(new Point().Invalid(), '!')
+    public Ally(char symbol = '!') : base(new Point().Invalid(), symbol)
     {
       Stats.SetNominal(EntityStatKind.Health, 15);
-      // Character.Mana = 40;
       var str = 15;
       Stats.SetNominal(EntityStatKind.Strength, str);//15
       Stats.SetNominal(EntityStatKind.Attack, str);
@@ -33,23 +26,36 @@ namespace Roguelike.Tiles.LivingEntities
       CreateInventory(null);
 
       Dirty = true;//TODO
-
-      tag1 = "hound";
-
-      Kind = AllyKind.Hound;
-#if ASCII_BUILD
-        color = ConsoleColor.Yellow;
-#endif
     }
 
-    public void bark(bool strong)
+    public bool Active { get; set; }
+
+    public AllyKind Kind
     {
-      PlaySound("ANIMAL_Dog_Bark_02_Mono");
+      get
+      {
+        return AllyKind.Enemy;
+      }
+      set { }
     }
 
-    public override void PlayAllySpawnedSound() 
+    public override void SetLevel(int level)
     {
-      bark(false);
+      base.SetLevel(level);
     }
+
+    public static Ally Spawn<T>(char symbol, int level) where T : Ally, new()
+    {
+      var ally = new T();
+      ally.Symbol = symbol;
+      ally.SetLevel(level);
+      ally.SetTag();
+      ally.Revealed = true;
+      ally.Active = true;
+
+      return ally;
+    }
+
+    public abstract void SetTag(); 
   }
 }

@@ -10,7 +10,7 @@ using System.Drawing;
 
 namespace Roguelike.Tiles.LivingEntities
 {
-  public class Merchant : AdvancedLivingEntity, IAlly
+  public class Merchant : AdvancedLivingEntity//, IAlly
   {
     public const int HoundPrice = 100;
     

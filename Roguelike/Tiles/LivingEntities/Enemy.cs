@@ -171,7 +171,7 @@ namespace Roguelike.Tiles.LivingEntities
         int k = 0;
         k++;
       }
-      this.Level = level;
+      base.SetLevel(level);
       
       if (!WereStatsIncreased(IncreaseStatsKind.Name))
         UpdateStatsFromName();

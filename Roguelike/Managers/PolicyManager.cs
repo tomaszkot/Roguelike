@@ -57,7 +57,7 @@ namespace Roguelike.Managers
         if (fac / 100f > RandHelper.GetRandomDouble())
         {
           HeroBulkAttackTargets = gm.CurrentNode.GetNeighborTiles<Enemy>(hero)
-          .Where(i => i != lastTarget && !i.HeroAlly)
+          .Where(i => i != lastTarget)
           .ToList();
 
           if (HeroBulkAttackTargets.Any())

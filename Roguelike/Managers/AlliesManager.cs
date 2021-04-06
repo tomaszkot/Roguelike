@@ -28,18 +28,10 @@ namespace Roguelike.Managers
 
     private void Context_ContextSwitched(object sender, ContextSwitch e)
     {
-      //var allies = Context.CurrentNode.GetTiles<LivingEntity>().Where(i => i is Abstract.IAlly).Cast<IAlly>();
-      //var entities = allies.Where(i => i.Active).Cast<LivingEntity>().ToList();
-      var entities = Context.CurrentNode.GetTiles<LivingEntity>().Where(i => i.HeroAlly).ToList();
+      var entities = Context.CurrentNode.GetTiles<LivingEntity>().Where(i => i is Ally ally && ally.Active).ToList();
       base.SetEntities(entities);
     }
 
-    //protected override bool MoveEntity(LivingEntity entity, Point newPos)
-    //{
-    //  //return base.MoveEntity(entity, newPos);
-    //  MakeHeroAllyMove(entity);
-    //  return true;
-    //}
     public override void MakeTurn(LivingEntity entity)
     {
       MakeHeroAllyMove(entity);

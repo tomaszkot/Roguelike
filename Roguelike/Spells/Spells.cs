@@ -162,9 +162,9 @@ namespace Roguelike.Spells
   ///////////////////////////////////////////////////////////////////////////
   public class SkeletonSpell : OffensiveSpell
   {
-    Enemy enemy;
+    Ally enemy;
 
-    public Enemy Enemy { get => enemy; set => enemy = value; }
+    public Ally Ally { get => enemy; set => enemy = value; }
 
     public SkeletonSpell() : this(new LivingEntity())
     { }
@@ -175,11 +175,11 @@ namespace Roguelike.Spells
       damage = ProjectiveSpell.BaseDamage + 1;
 
       var level = GetCurrentLevel();
-      Enemy = Enemy.Spawn(EnemySymbols.SkeletonSymbol, level);
-      Enemy.HeroAlly = true;
-      Enemy.Stats[EntityStatKind.Attack].Nominal = Damage;
+      Ally = Ally.Spawn<AlliedEnemy>(EnemySymbols.SkeletonSymbol, level);
+      //Enemy.HeroAlly = true;
+      Ally.Stats[EntityStatKind.Attack].Nominal = Damage;
       var health = CalcHealth(level);
-      Enemy.Stats[EntityStatKind.Health].Nominal = health;
+      Ally.Stats[EntityStatKind.Health].Nominal = health;
       manaCost = (float)(BaseManaCost * 2) + 2;
     }
 
@@ -202,8 +202,8 @@ namespace Roguelike.Spells
 
     protected override void AppendPrivateFeatures(List<string> fe)
     {
-      fe.Add("Health: " + Enemy.Stats.GetNominal(EntityStatKind.Health));
-      fe.Add("Attack: " + Enemy.Stats.GetNominal(EntityStatKind.Attack));
+      fe.Add("Health: " + Ally.Stats.GetNominal(EntityStatKind.Health));
+      fe.Add("Attack: " + Ally.Stats.GetNominal(EntityStatKind.Attack));
     }
 
     protected override void AppendNextLevel(List<string> fe)

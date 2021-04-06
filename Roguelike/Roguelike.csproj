@@ -156,6 +156,8 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Serialization\IPersister.cs" />
     <Compile Include="Serialization\JSONPersister.cs" />
+    <Compile Include="Tiles\LivingEntities\AlliedEnemy.cs" />
+    <Compile Include="Tiles\LivingEntities\Ally.cs" />
     <Compile Include="Translations\Strings.cs" />
     <Compile Include="Tiles\Abstract\IEquipable.cs" />
     <Compile Include="Effects\LastingEffectsSet.cs" />
@@ -167,7 +169,7 @@
     <Compile Include="Tiles\LivingEntities\AdvancedLivingEntity.cs" />
     <Compile Include="Tiles\Interactive\Barrel.cs" />
     <Compile Include="Tiles\LivingEntities\CrackedStone.cs" />
-    <Compile Include="Tiles\LivingEntities\Hound.cs" />
+    <Compile Include="Tiles\LivingEntities\TrainedHound.cs" />
     <Compile Include="Tiles\Interactive\Portal.cs" />
     <Compile Include="Tiles\Looting\Consumable.cs" />
     <Compile Include="Tiles\Looting\Cord.cs" />

@@ -199,26 +199,27 @@ namespace RoguelikeUnitTests
       var hero = game.Hero;
 
       var scroll = PrepareScroll(hero, SpellKind.Skeleton);
-      var enemiesCount = game.GameManager.CurrentNode.GetTiles<Enemy>().Count;
-      var spell = game.GameManager.SpellManager.ApplySpell(hero, scroll) as SkeletonSpell;
+      var gm = game.GameManager;
+      var enemiesCount = gm.CurrentNode.GetTiles<Ally>().Count;
+      var spell = gm.SpellManager.ApplySpell(hero, scroll) as SkeletonSpell;
       Assert.NotNull(spell);
-      Assert.NotNull(spell.Enemy);
-      Assert.AreEqual(game.GameManager.CurrentNode.GetTiles<Enemy>().Count, enemiesCount+1);
-      Assert.True(game.GameManager.AlliesManager.AllEntities.Contains((spell.Enemy)));
-      var stairs = game.GameManager.CurrentNode.GetTiles<Stairs>().Where(i => i.StairsKind == StairsKind.LevelDown).SingleOrDefault();
+      Assert.NotNull(spell.Ally);
+      Assert.AreEqual(gm.CurrentNode.GetTiles<Ally>().Count, enemiesCount+1);
+      Assert.True(gm.AlliesManager.AllEntities.Contains((spell.Ally)));
+      var stairs = gm.CurrentNode.GetTiles<Stairs>().Where(i => i.StairsKind == StairsKind.LevelDown).SingleOrDefault();
       Assert.NotNull(stairs);
-      var index = game.GameManager.CurrentNode.Index;
-      game.GameManager.InteractHeroWith(stairs);
-      Assert.Greater(game.GameManager.CurrentNode.Index, index);
+      var index = gm.CurrentNode.Index;
+      gm.InteractHeroWith(stairs);
+      Assert.Greater(gm.CurrentNode.Index, index);
 
-      Assert.True(game.GameManager.AlliesManager.AllEntities.Contains((spell.Enemy)));
-      Assert.True(game.GameManager.CurrentNode.GetTiles<Enemy>().Contains(spell.Enemy));
-      spell.Enemy.Name = "hero_ally";
-      game.GameManager.Save();
-      game.GameManager.Load(hero.Name);
+      Assert.True(gm.AlliesManager.AllEntities.Contains((spell.Ally)));
+      Assert.True(gm.CurrentNode.GetTiles<Ally>().Contains(spell.Ally));
+      spell.Ally.Name = "hero_ally";
+      gm.Save();
+      gm.Load(hero.Name);
 
-      Assert.AreEqual(game.GameManager.AlliesManager.AllEntities.Count, 1);
-      Assert.AreEqual(game.GameManager.AlliesManager.AllEntities[0].Name, "hero_ally");
+      Assert.AreEqual(gm.AlliesManager.AllEntities.Count, 1);
+      Assert.AreEqual(gm.AlliesManager.AllEntities[0].Name, "hero_ally");
     }
 
     [Test]

@@ -50,7 +50,7 @@ namespace Roguelike.Tiles.LivingEntities
     Dictionary<EntityStatKind, float> nonPhysicalDamageStats = new Dictionary<EntityStatKind, float>();
     public Tile FixedWalkTarget = null;
     public LivingEntity AllyModeTarget;
-    public bool HeroAlly { get; set; }
+    //public bool HeroAlly { get; set; }
     public bool HasRelocateSkill{ get; set; }
 
 
@@ -840,7 +840,7 @@ namespace Roguelike.Tiles.LivingEntities
 
     public virtual void SetLevel(int level)
     {
-      
+      this.Level = level;
     }
 
     public Point GetPoint()

@@ -97,7 +97,7 @@ namespace Roguelike.Managers
       {
         if (ps is SkeletonSpell skeletonSpell)
         {
-          gm.AddAlly(skeletonSpell.Enemy);
+          gm.AddAlly(skeletonSpell.Ally);
         }
         if (caster is Hero)
           HandleHeroActionDone();
