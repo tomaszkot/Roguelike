@@ -73,7 +73,7 @@
     <Compile Include="Tiles\Abstract\IAlly.cs" />
     <Compile Include="Abstract\IDescriptable.cs" />
     <Compile Include="Abstract\Managers\IGameManagerProvider.cs" />
-    <Compile Include="Abstract\TileParts\IInventoryOwner.cs" />
+    <Compile Include="Abstract\Inventory\IInventoryOwner.cs" />
     <Compile Include="Abstract\Effects\IEffect.cs" />
     <Compile Include="Tiles\Abstract\IDestroyable.cs" />
     <Compile Include="Tiles\Abstract\IObstacle.cs" />
@@ -119,7 +119,6 @@
     <Compile Include="History\History.cs" />
     <Compile Include="LootContainers\Crafting.cs" />
     <Compile Include="LootContainers\Inventory.cs" />
-    <Compile Include="LootContainers\InventoryBase.cs" />
     <Compile Include="Extensions\LootExtensions.cs" />
     <Compile Include="LootFactories\EquipmentFactory.cs" />
     <Compile Include="LootFactories\AbstractLootFactory.cs" />
@@ -232,7 +231,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Abstract\Inventory\" />
+    <Folder Include="Abstract\TileParts\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

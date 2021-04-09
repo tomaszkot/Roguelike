@@ -12,22 +12,16 @@ using SimpleInjector;
 using Roguelike.Events;
 using Newtonsoft.Json;
 using Roguelike.Tiles.Interactive;
-using Roguelike.Policies;
 using Dungeons;
 using Roguelike.LootContainers;
 using Roguelike.Tiles.Looting;
 using System.Collections.Generic;
-using Roguelike.Spells;
 using Roguelike.History;
 using Roguelike.State;
-using Roguelike.LootFactories;
-using Roguelike.Attributes;
 using Roguelike.Abstract.Tiles;
-using Roguelike.Extensions;
 using Roguelike.Tiles.LivingEntities;
-using Roguelike.Tiles.Abstract;
-using Roguelike.Abstract.Projectiles;
 using Roguelike.Strategy;
+using Roguelike.Abstract.Inventory;
 
 namespace Roguelike.Managers
 {
@@ -560,12 +554,12 @@ namespace Roguelike.Managers
       if (!Context.HeroTurn)
         return false;
 
-      InventoryBase inv = Hero.Inventory;
+      Inventory inv = Hero.Inventory;
       var gold = lootTile as Gold;
       
       if (lootTile is Recipe)
-        inv = Hero.Crafting.Recipes;
-      if (gold !=null || inv.Add(lootTile, detailedKind: InventoryActionDetailedKind.Collected))
+        inv = Hero.Crafting.Recipes.Inventory;
+      if (gold !=null || inv.Add(lootTile,  new AddItemArg() { detailedKind = InventoryActionDetailedKind.Collected }))
       {
         //Hero.Inventory.Print(logger, "loot added");
         if(gold != null)
@@ -649,26 +643,27 @@ namespace Roguelike.Managers
     public Loot SellItem
     (
       Loot loot,
-      AdvancedLivingEntity src,
-      AdvancedLivingEntity dest,
-      bool dragDrop = false,
-      int stackedCount = 1//in case of stacked there can be one than more sold at time
+      IInventoryOwner src,
+      IInventoryOwner dest,
+      RemoveItemArg sellItemArg = null
     )
     {
-      return SellItem(loot, src, src.Inventory, dest, dest.Inventory, dragDrop, stackedCount);
+      return SellItem(loot, src, src.Inventory, dest, dest.Inventory, sellItemArg);
     }
 
     public Loot SellItem
     (
       Loot loot,
-      IAdvancedEntity src,
-      InventoryBase srcInv,
-      IAdvancedEntity dest,
-      InventoryBase destInv,
-      bool dragDrop = false,
-      int stackedCount = 1//in case of stacked there can be one than more sold at time
+      IInventoryOwner src,
+      Inventory srcInv,
+      IInventoryOwner dest,
+      Inventory destInv,
+      RemoveItemArg sellItemArg = null,
+      AddItemArg addItemArg = null
     )
     {
+      if(sellItemArg == null)
+        sellItemArg = new RemoveItemArg();
       bool goldInvolved = GetGoldInvolvedOnSell(src, dest);
 
       var price = 0;
@@ -690,7 +685,7 @@ namespace Roguelike.Managers
         return null;
       }
 
-      var removed = srcInv.Remove(loot, stackedCount);
+      var removed = srcInv.Remove(loot, sellItemArg);
       if (!removed)
       {
         logger.LogError("!removed");
@@ -699,13 +694,16 @@ namespace Roguelike.Managers
       Loot sold = loot;
       if (loot.StackedInInventory)
       {
-        sold = (loot as StackedLoot).Clone(stackedCount);
+        sold = (loot as StackedLoot).Clone(sellItemArg.StackedCount);
       }
 
       var detailedKind = InventoryActionDetailedKind.Unset;
-      if (dragDrop)
+      if (sellItemArg.DragDrop)
         detailedKind = InventoryActionDetailedKind.TradedDragDrop;
-      bool added = destInv.Add(sold, detailedKind: detailedKind);
+      if (addItemArg == null)
+        addItemArg = new AddItemArg() { detailedKind = detailedKind };
+
+      bool added = destInv.Add(sold, addItemArg);
       if (!added)//TODO revert item to src inv
       {
         logger.LogError("!added");
@@ -714,14 +712,14 @@ namespace Roguelike.Managers
 
       if (goldInvolved)
       {
-        dest.Gold -= price * stackedCount;
-        src.Gold += price * stackedCount;
+        dest.Gold -= price * sellItemArg.StackedCount;
+        src.Gold += price * sellItemArg.StackedCount;
         SoundManager.PlaySound("COINS_Rattle_04_mono");//coind_drop
       }
       return sold;
     }
 
-    protected virtual bool GetGoldInvolvedOnSell(IAdvancedEntity src, IAdvancedEntity dest)
+    protected virtual bool GetGoldInvolvedOnSell(IInventoryOwner src, IInventoryOwner dest)
     {
       return src.GetGoldWhenSellingTo(dest);
     }

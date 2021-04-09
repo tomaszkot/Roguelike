@@ -81,10 +81,10 @@ namespace Roguelike.Events
   {
     public Loot Loot { get; set; }
     public InventoryActionKind Kind { get; set; }
-    public InventoryBase Inv { get; set; }
+    public Inventory Inv { get; set; }
     public InventoryActionDetailedKind DetailedKind { get; set; }
 
-    public InventoryAction(InventoryBase inv)
+    public InventoryAction(Inventory inv)
     {
       Inv = inv;
     }

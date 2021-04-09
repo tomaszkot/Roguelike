@@ -177,7 +177,7 @@ namespace RoguelikeUnitTests
       var merch = game.GameManager.CurrentNode.GetTiles<Merchant>().First();
 
       var merchGold = merch.Gold;
-      Assert.NotNull(game.GameManager.SellItem(loot, hero, hero.Inventory, merch, merch.Inventory));
+      Assert.NotNull(game.GameManager.SellItem(loot, hero, merch));
       Assert.True(merch.Inventory.Contains(loot));
       Assert.Less(merch.Gold, merchGold);
 
@@ -195,19 +195,19 @@ namespace RoguelikeUnitTests
 
       var loot1 = game.GameManager.LootGenerator.GetLootByAsset("craft_one_eq");
       PutEqOnLevelAndCollectIt(loot1);
-      Assert.AreEqual(hero.Crafting.Recipes.ItemsCount, 1);
+      Assert.AreEqual(hero.Crafting.Recipes.Inventory.ItemsCount, 1);
 
       var loot2 = game.GameManager.LootGenerator.GetLootByAsset("craft_one_eq");
       PutEqOnLevelAndCollectIt(loot2);
-      Assert.AreEqual(hero.Crafting.Recipes.ItemsCount, 1);
+      Assert.AreEqual(hero.Crafting.Recipes.Inventory.ItemsCount, 1);
 
-      Assert.AreEqual(hero.Crafting.Recipes.GetStackedCount(loot2 as StackedLoot), 2);
+      Assert.AreEqual(hero.Crafting.Recipes.Inventory.GetStackedCount(loot2 as StackedLoot), 2);
 
       var loot3 = game.GameManager.LootGenerator.GetLootByAsset("craft_three_gems");
       PutEqOnLevelAndCollectIt(loot3);
-      Assert.AreEqual(hero.Crafting.Recipes.ItemsCount, 2);
-      Assert.AreEqual(hero.Crafting.Recipes.GetStackedCount(loot2 as StackedLoot), 2);
-      Assert.AreEqual(hero.Crafting.Recipes.GetStackedCount(loot3 as StackedLoot), 1);
+      Assert.AreEqual(hero.Crafting.Recipes.Inventory.ItemsCount, 2);
+      Assert.AreEqual(hero.Crafting.Recipes.Inventory.GetStackedCount(loot2 as StackedLoot), 2);
+      Assert.AreEqual(hero.Crafting.Recipes.Inventory.GetStackedCount(loot3 as StackedLoot), 1);
     }
 
     [Test]

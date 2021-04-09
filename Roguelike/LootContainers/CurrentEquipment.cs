@@ -1,13 +1,14 @@
-﻿using Roguelike.Tiles;
+﻿using Roguelike.Extensions;
+using Roguelike.Tiles;
 using Roguelike.Utils;
+using SimpleInjector;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.Remoting.Messaging;
 
 namespace Roguelike.LootContainers
 {
-  public class CurrentEquipment : IInventoryBase
+  public class CurrentEquipment : Inventory
   {
     //putOnEquipment - currently worn eq. all values can be not null  
     SerializableDictionary<CurrentEquipmentKind, Equipment> primaryEquipment = new SerializableDictionary<CurrentEquipmentKind, Equipment>();
@@ -15,7 +16,7 @@ namespace Roguelike.LootContainers
     //spareEquipment - currently only weapon/shield can be not null
     SerializableDictionary<CurrentEquipmentKind, Equipment> spareEquipment = new SerializableDictionary<CurrentEquipmentKind, Equipment>();
     
-    public CurrentEquipment()
+    public CurrentEquipment(Container container) : base(container)
     {
       var eqipTypes = Enum.GetValues(typeof(CurrentEquipmentKind));
       foreach (CurrentEquipmentKind et in eqipTypes)
@@ -31,8 +32,8 @@ namespace Roguelike.LootContainers
 
     //currently only weapon/shield can be not null
     public SerializableDictionary<CurrentEquipmentKind, bool> SpareEquipmentUsed { get; set; } = new SerializableDictionary<CurrentEquipmentKind, bool>();
-    float priceFactor = 1;
-    public float PriceFactor { get => priceFactor; set => priceFactor = value; }
+    //float priceFactor = 1;
+    //public float PriceFactor { get => priceFactor; set => priceFactor = value; }
 
     public Weapon GetWeapon()
     {
@@ -52,45 +53,88 @@ namespace Roguelike.LootContainers
       return result;
     }
 
-    public bool Remove(Loot loot, int stackedCount = 1)
+    public override bool Add(Loot item, AddItemArg args = null)
+    {
+      var eq = item as Equipment;
+      if (eq == null)
+        return false;
+
+      CurrentEquipmentAddItemArg castedArgs = null;
+      if (args != null)
+        castedArgs = args as CurrentEquipmentAddItemArg;
+      
+      if(castedArgs == null)
+        castedArgs = new CurrentEquipmentAddItemArg();
+
+      return SetEquipment(eq, castedArgs.cek, castedArgs.primary);
+    }
+
+    public override bool Remove(Loot loot, RemoveItemArg arg)
     {
       var eq = loot as Equipment;
-      SerializableDictionary<CurrentEquipmentKind, Equipment> owner = null;
+      SerializableDictionary<CurrentEquipmentKind, Equipment> equipmentSet = null;
       if (PrimaryEquipment.Any(i => i.Value == eq))
-        owner = PrimaryEquipment;
+        equipmentSet = PrimaryEquipment;
       else
-        owner = SpareEquipment;
+        equipmentSet = SpareEquipment;
 
-      CurrentEquipmentKind kind = CurrentEquipmentKind.Unset;
-      if (owner.Any(i => i.Value == eq))
+      CurrentEquipmentKind cek = CurrentEquipmentKind.Unset;
+      if (equipmentSet.Any(i => i.Value == eq))
       {
-        kind = owner.First(i => i.Value == eq).Key;
+        cek = equipmentSet.First(i => i.Value == eq).Key;
       }
-      if (kind != CurrentEquipmentKind.Unset)
+      if (cek != CurrentEquipmentKind.Unset)
       {
-        return SetEquipment(kind, eq, owner == PrimaryEquipment);
+        return SetEquipment(null, cek, equipmentSet == PrimaryEquipment);
       }
 
       return false;
     }
 
-    public bool SetEquipment(CurrentEquipmentKind kind, Equipment eq, bool primary = true)
+    public bool SetEquipment(Equipment eq, CurrentEquipmentKind cek = CurrentEquipmentKind.Unset, bool primary = true)
     {
+      if(!EnsureCurrEqKind(eq, ref cek))
+        return false;
       if (eq != null)
       {
-        CurrentEquipmentPosition pos1;
-        var ek = Equipment.FromCurrentEquipmentKind(kind, out pos1);
+        var ek = cek.GetEquipmentKind();
         var matches = ek == eq.EquipmentKind;
         if (!matches)
           return false;//TODO action
       }
 
       if (primary)
-        PrimaryEquipment[kind] = eq;
+      {
+        if (eq != null && PrimaryEquipment[cek] != null)
+          return false;
+        PrimaryEquipment[cek] = eq;
+      }
       else
-        SpareEquipment[kind] = eq;
+      {
+        if (eq != null && SpareEquipment[cek] != null)
+          return false;
+        SpareEquipment[cek] = eq;
+      }
 
       return true;
     }
+
+    public static bool EnsureCurrEqKind(Equipment eq, ref CurrentEquipmentKind cek)
+    {
+      if (cek == CurrentEquipmentKind.Unset)
+      {
+        if (eq == null)
+          return false;
+        //if (eq.EquipmentKind == EquipmentKind.Ring)
+        //  cek = CurrentEquipmentKind.RingLeft;
+
+        //else if (eq.EquipmentKind == EquipmentKind.Ring)
+        //  cek = CurrentEquipmentKind.TrophyLeft;
+
+        cek = eq.EquipmentKind.GetCurrentEquipmentKind(CurrentEquipmentPosition.Left);
+      }
+
+      return true;
     }
+  }
 }

@@ -11,6 +11,7 @@ using System.Collections.Generic;
 using Roguelike.Calculated;
 using Roguelike.Quests;
 using Roguelike.Abstract.Tiles;
+using Roguelike.Abstract.Inventory;
 
 namespace Roguelike.Tiles.LivingEntities
 {
@@ -97,11 +98,11 @@ namespace Roguelike.Tiles.LivingEntities
 
     public virtual void OnContextSwitched(Container container)
     {
+      //TODO
       this.Container = container;
-
-      Inventory.Owner = "Hero.Inv";
-      Crafting.InvItems.Owner = "Crafting.InvItems";
-      Crafting.Recipes.Owner = "Crafting.Recipes";
+      Inventory.Owner = this;
+      Crafting.InvItems.Inventory.Owner = this;
+      Crafting.Recipes.Inventory.Owner = this;
     }
 
     protected override float GetStrengthIncrease()
@@ -209,12 +210,16 @@ namespace Roguelike.Tiles.LivingEntities
       return CurrentEquipment.GetWeapon() != null;
     }
 
-    public override bool GetGoldWhenSellingTo(IAdvancedEntity dest)
+    public override bool GetGoldWhenSellingTo(IInventoryOwner dest)
     {
       var getGold = base.GetGoldWhenSellingTo(dest);
       if (dest is Ally)
         getGold = false;
-      
+
+      if(dest.Inventory.InvBasketKind == InvBasketKind.CraftingInvItems || dest.Inventory.InvBasketKind == InvBasketKind.CraftingRecipe)
+        getGold = false;
+      if (dest.Inventory.InvBasketKind == InvBasketKind.HeroChest)
+        getGold = false;
       return getGold;
     }
   }

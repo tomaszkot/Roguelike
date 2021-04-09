@@ -67,7 +67,7 @@ namespace RoguelikeUnitTests
 
       //melee
       var wpn = game.GameManager.LootGenerator.GetLootByTileName<Weapon>("rusty_sword");
-      game.Hero.SetEquipment(CurrentEquipmentKind.Weapon, wpn);
+      game.Hero.SetEquipment(wpn, CurrentEquipmentKind.Weapon);
       for (int i = 0; i < 10; i++)
       {
         enemy.OnPhysicalHitBy(game.Hero);

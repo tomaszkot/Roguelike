@@ -1,4 +1,6 @@
 ﻿using Newtonsoft.Json;
+using Roguelike.Abstract.Inventory;
+using Roguelike.Tiles;
 using SimpleInjector;
 using System;
 using System.Collections.Generic;
@@ -8,10 +10,26 @@ using System.Threading.Tasks;
 
 namespace Roguelike.LootContainers
 {
+  public class InventoryOwner : IInventoryOwner
+  {
+    public Inventory Inventory { get; set; }
+    public int Gold { get; set; }
+
+    public virtual bool GetGoldWhenSellingTo(IInventoryOwner other)
+    {
+      return false;
+    }
+
+    public int GetPrice(Loot loot)
+    {
+      throw new NotImplementedException();
+    }
+  }
+
   public class Crafting
   {
-    public InventoryBase Recipes { get; set; }
-    public InventoryBase InvItems { get; set; }
+    public InventoryOwner Recipes { get; set; }
+    public InventoryOwner InvItems { get; set; }
     Container container;
     public InvOwner InvOwner = InvOwner.Hero;
 
@@ -21,21 +39,27 @@ namespace Roguelike.LootContainers
       set 
       {
         container = value;
-        Recipes.Container = value;
-        InvItems.Container = value;
+        Recipes.Inventory.Container = value;
+        InvItems.Inventory.Container = value;
       } 
     }
 
     public Crafting(Container container)
     {
-      Recipes = new InventoryBase(container);
-      Recipes.Capacity = 14;
-      Recipes.InvOwner = InvOwner.Hero;
-      Recipes.InvBasketKind = InvBasketKind.CraftingRecipe;
+      var recipes = new Inventory(container);
+      recipes.Capacity = 14;
+      recipes.InvOwner = InvOwner.Hero;
+      recipes.InvBasketKind = InvBasketKind.CraftingRecipe;
 
-      InvItems = new InventoryBase(container);
-      InvItems.Capacity = 21;
-      InvItems.InvBasketKind = InvBasketKind.CraftingInvItems;
+      Recipes = new InventoryOwner();
+      Recipes.Inventory = recipes;
+
+      
+      var invItems =   new Inventory(container);
+      invItems.Capacity = 21;
+      invItems.InvBasketKind = InvBasketKind.CraftingInvItems;
+      InvItems = new InventoryOwner();
+      InvItems.Inventory = invItems;
 
       InvOwner = InvOwner.Hero;
       Container = container;

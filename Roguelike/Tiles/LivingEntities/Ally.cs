@@ -1,4 +1,5 @@
 ﻿using Dungeons.Core;
+using Roguelike.Abstract.Inventory;
 using Roguelike.Abstract.Tiles;
 using Roguelike.Attributes;
 using System;
@@ -58,7 +59,7 @@ namespace Roguelike.Tiles.LivingEntities
 
     public abstract void SetTag();
 
-    public override bool GetGoldWhenSellingTo(IAdvancedEntity dest)
+    public override bool GetGoldWhenSellingTo(IInventoryOwner dest)
     {
       return false;
     }

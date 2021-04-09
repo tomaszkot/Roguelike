@@ -1,5 +1,5 @@
 ﻿using Roguelike.Abilities;
-using Roguelike.Abstract.TileParts;
+using Roguelike.Abstract.Inventory;
 using Roguelike.Tiles;
 using System.Collections.Generic;
 
@@ -15,6 +15,6 @@ namespace Roguelike.Abstract.Tiles
     AbilitiesSet Abilities { get; }
     bool IncreaseAbility(PassiveAbilityKind kind);
     PassiveAbility GetAbility(PassiveAbilityKind kind);
-    bool GetGoldWhenSellingTo(IAdvancedEntity dest);
+    
   }
 }

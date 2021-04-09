@@ -275,7 +275,7 @@ namespace RoguelikeUnitTests
       var enemyHealth = enemy.Stats.Health;
 
       var wpn = game.GameManager.LootGenerator.GetLootByTileName<Weapon>("rusty_sword");
-      game.Hero.SetEquipment(CurrentEquipmentKind.Weapon, wpn);
+      game.Hero.SetEquipment(wpn);
 
       enemy.OnPhysicalHitBy(game.Hero);
       var le1 = enemy.LastingEffects.Where(i => i.Type == EffectType.Bleeding).FirstOrDefault();
@@ -316,7 +316,7 @@ namespace RoguelikeUnitTests
       healthStat.Value.Nominal = 150;
       enemy.SetIsWounded(true);//make sure will bleed
       var wpn = game.GameManager.LootGenerator.GetLootByTileName<Weapon>("rusty_sword");
-      game.Hero.SetEquipment(CurrentEquipmentKind.Weapon, wpn);
+      game.Hero.SetEquipment(wpn);
 
       enemy.OnPhysicalHitBy(game.Hero);
       var le1 = enemy.LastingEffects.Where(i => i.Type == EffectType.Bleeding).SingleOrDefault();

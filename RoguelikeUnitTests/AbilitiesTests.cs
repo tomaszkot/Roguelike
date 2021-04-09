@@ -522,7 +522,7 @@ namespace RoguelikeUnitTests
       //wpn = game.LootDescriptionManager.GetEquipment(LootKind.Weapon, wpnName) as Weapon;
       wpn = game.GameManager.LootGenerator.GetLootByAsset(wpnName) as Weapon;
       Assert.NotNull(wpn);
-      Hero.SetEquipment(CurrentEquipmentKind.Weapon, wpn);
+      Hero.SetEquipment(wpn, CurrentEquipmentKind.Weapon);
       var en = GetPlainEnemies().First();
       en.Stats.SetNominal(EntityStatKind.Health, 100);
       var health = en.Stats.Health;

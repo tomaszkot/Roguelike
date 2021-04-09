@@ -1,16 +1,39 @@
-﻿using Dungeons.TileContainers;
-using Roguelike.Tiles;
+﻿using Roguelike.Tiles;
 using Roguelike.Tiles.Looting;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Roguelike.Extensions
 {
+  public static class EquipmentExtensions
+  {
+    public static CurrentEquipmentKind GetCurrentEquipmentKind(this EquipmentKind ek, CurrentEquipmentPosition pos)
+    {
+      return Equipment.FromEquipmentKind(ek, pos);
+    }
+
+    public static CurrentEquipmentPosition GetCurrentEquipmentPosition(this CurrentEquipmentKind currentEquipmentKind)
+    {
+      var pos = CurrentEquipmentPosition.Left;
+      if (currentEquipmentKind == CurrentEquipmentKind.RingRight)
+      {
+        pos = CurrentEquipmentPosition.Right;
+      }
+      if (currentEquipmentKind == CurrentEquipmentKind.TrophyRight)
+      {
+        pos = CurrentEquipmentPosition.Right;
+      }
+      return pos;
+    }
+
+    public static EquipmentKind GetEquipmentKind(this CurrentEquipmentKind cek)
+    {
+      CurrentEquipmentPosition pos1;
+      return Equipment.FromCurrentEquipmentKind(cek, out pos1);
+    }
+  }
+
   public static class LootExtensions
   {
+    
     public static Mushroom AsToadstool(this Loot loot)
     {
       var mash = loot as Mushroom;

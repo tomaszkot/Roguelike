@@ -64,7 +64,7 @@ namespace Roguelike.Tiles.LivingEntities
     internal void OnContextSwitched(Container container)
     {
       Inventory.Container = container;
-      Inventory.Owner = "Merchant";
+      Inventory.Owner = this;
     }
   }
 }
