@@ -319,10 +319,10 @@ namespace Roguelike.Tiles.LivingEntities
       currentEquipment = new CurrentEquipment(container);
     }
 
-    public bool MoveEquipmentInv2Current(Equipment eq, CurrentEquipmentKind cek)
-    {
-      return MoveEquipmentInv2Current(eq, cek);
-    }
+    //public bool MoveEquipmentInv2Current(Equipment eq, CurrentEquipmentKind cek)
+    //{
+    //  return MoveEquipmentInv2Current(eq, cek);
+    //}
 
     public bool MoveEquipmentCurrent2Inv(Equipment eq, CurrentEquipmentPosition pos)
     {
