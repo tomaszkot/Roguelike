@@ -8,8 +8,15 @@ using System.Linq;
 
 namespace Roguelike.LootContainers
 {
+  public class EquipmentChangedArgs
+  {
+    public Equipment Equipment { get; set; }
+    public CurrentEquipmentKind CurrentEquipmentKind { get; set; }
+  };
+
   public class CurrentEquipment : Inventory
   {
+    public event EventHandler<EquipmentChangedArgs> EquipmentChanged;
     //putOnEquipment - currently worn eq. all values can be not null  
     SerializableDictionary<CurrentEquipmentKind, Equipment> primaryEquipment = new SerializableDictionary<CurrentEquipmentKind, Equipment>();
 
@@ -18,6 +25,7 @@ namespace Roguelike.LootContainers
     
     public CurrentEquipment(Container container) : base(container)
     {
+      this.InvBasketKind = InvBasketKind.HeroEquipment;
       var eqipTypes = Enum.GetValues(typeof(CurrentEquipmentKind));
       foreach (CurrentEquipmentKind et in eqipTypes)
       {
@@ -115,6 +123,8 @@ namespace Roguelike.LootContainers
           return false;
         SpareEquipment[cek] = eq;
       }
+      if (EquipmentChanged != null)
+        EquipmentChanged(this, new EquipmentChangedArgs() { Equipment = eq, CurrentEquipmentKind = cek });
 
       return true;
     }

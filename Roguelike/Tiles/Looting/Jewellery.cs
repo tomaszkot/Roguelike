@@ -45,30 +45,28 @@ namespace Roguelike.Tiles
       }
     }
 
-    bool isPendant;
+    bool isPendant = false;
     public bool IsPendant 
     {
       get { return isPendant; }
-      set 
-      {
-        if (EquipmentKind == EquipmentKind.Amulet)
-        {
-          isPendant = value;
-          if (isPendant)
-          {
-            tag1 = "pendant";
-            Name = "Pendant";
-            MakeEnchantable();
-          }
-        }
-        else
-          Debug.Assert(false);
-      } 
+      //for de-serialization
+      set { isPendant = value; }
     }
 
     public Jewellery() : base(EquipmentKind.Ring)
     {
 
+    }
+
+    public void SetIsPendant(bool isPendant)
+    {
+      this.isPendant = isPendant;
+      if (isPendant)
+      {
+        tag1 = "pendant";
+        Name = "Pendant";
+        MakeEnchantable();
+      }
     }
   }
 }

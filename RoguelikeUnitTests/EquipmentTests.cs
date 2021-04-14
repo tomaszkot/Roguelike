@@ -215,7 +215,7 @@ namespace RoguelikeUnitTests
       Assert.AreEqual(heroEq[CurrentEquipmentKind.Weapon], eq1);
       Assert.Greater(hero.GetTotalValue(eq1.PrimaryStatKind), heroStatBefore);
       heroStatBefore = hero.GetTotalValue(eq1.PrimaryStatKind);
-      Assert.False(hero.Inventory.Contains(eq1));
+      Assert.False(hero.Inventory.Contains(eq1));//it is on so not in inv
 
       var eq2 = lg.GetRandomEquipment(EquipmentKind.Weapon, 1);
       var wpnStatBefore = eq2.GetStats().GetTotalValue(eq2.PrimaryStatKind);

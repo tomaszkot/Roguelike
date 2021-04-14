@@ -270,7 +270,6 @@ namespace RoguelikeUnitTests
 
       var wpn1 = game.GameManager.LootGenerator.GetLootByAsset("rusty_sword") as Weapon;
       PutEqOnLevelAndCollectIt(wpn1);
-      //GotoNextHeroTurn();
 
       var heroEq = hero.GetActiveEquipment();
       Assert.AreEqual(heroEq[CurrentEquipmentKind.Weapon], wpn1);
@@ -286,5 +285,56 @@ namespace RoguelikeUnitTests
 
       Assert.True(hero.Inventory.Contains(wpn1));
     }
+
+    [Test]
+    public void EquipmentPutOnHeroRevert()
+    {
+      var game = CreateGame();
+      var hero = game.Hero;
+
+      var wpn1 = game.GameManager.LootGenerator.GetLootByAsset("rusty_sword") as Weapon;
+      PutEqOnLevelAndCollectIt(wpn1);
+      var heroEq = hero.GetActiveEquipment();
+      Assert.AreEqual(heroEq[CurrentEquipmentKind.Weapon], wpn1);
+
+      var wpn2 = game.GameManager.LootGenerator.GetLootByAsset("axe") as Weapon;
+      PutEqOnLevelAndCollectIt(wpn2);
+      Assert.True(hero.Inventory.Contains(wpn2));
+
+      //shall fail = not supported so far
+      Assert.Null(Game.GameManager.SellItem(wpn2, hero, hero.Inventory, hero, hero.CurrentEquipment));
+      Assert.AreEqual(heroEq[CurrentEquipmentKind.Weapon], wpn1);
+      Assert.True(hero.Inventory.Contains(wpn2));
+    }
+
+    [Test]
+    public void EquipmentFromCurrentEqToFullInv()
+    {
+      var game = CreateGame();
+      var hero = game.Hero;
+
+      var wpn1 = game.GameManager.LootGenerator.GetLootByAsset("rusty_sword") as Weapon;
+      PutEqOnLevelAndCollectIt(wpn1);
+      var heroEq = hero.GetActiveEquipment();
+      Assert.AreEqual(heroEq[CurrentEquipmentKind.Weapon], wpn1);
+
+      for (int i = 0; i < hero.Inventory.Capacity; i++)
+      {
+        var wpn2 = game.GameManager.LootGenerator.GetLootByAsset("axe") as Weapon;
+        PutEqOnLevelAndCollectIt(wpn2);
+        Assert.True(hero.Inventory.Contains(wpn2));
+      }
+
+      var wpnFail = game.GameManager.LootGenerator.GetLootByAsset("axe") as Weapon;
+      PutEqOnLevelAndCollectIt(wpnFail);
+      Assert.False(hero.Inventory.Contains(wpnFail));
+
+      //shall fail = not supported so far
+      Assert.Null(Game.GameManager.SellItem(wpn1, hero, hero.CurrentEquipment, hero, hero.Inventory));
+      Assert.AreEqual(heroEq[CurrentEquipmentKind.Weapon], wpn1);
+      //Assert.True(hero.Inventory.Contains(wpn2));
+    }
+
+   
   }
 }

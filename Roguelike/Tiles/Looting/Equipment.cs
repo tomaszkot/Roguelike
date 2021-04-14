@@ -728,7 +728,7 @@ namespace Roguelike.Tiles
       juwell.EquipmentKind = EquipmentKind.Amulet;
       juwell.SetLevelIndex(1);//TODO
       juwell.Price = 10;
-      juwell.IsPendant = true;
+      juwell.SetIsPendant(true);
       return juwell;
     }
 

@@ -138,7 +138,7 @@ namespace RoguelikeUnitTests
         {
           var gsa = e as GameStateAction;
           if(gsa.Type == GameStateAction.ActionType.Assert)
-            throw new System.Exception(gsa.Info);
+            game.GameManager.Logger.LogError(new System.Exception(gsa.Info));
         }
       };
 

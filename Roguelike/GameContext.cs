@@ -166,6 +166,7 @@ namespace Roguelike
       }
     }
 
+    ////////////////////////////////////////////////////////////////////////////////////////////////
     public virtual void SwitchTo
     (
       AbstractGameLevel node, 
@@ -193,6 +194,14 @@ namespace Roguelike
       var heroStartTile = PlaceHeroAtDungeon(node, gs, context, stairs);
       List<LivingEntity> allies = am.AllEntities;
 
+      if (CurrentNode !=null)
+      {
+        foreach (var ally in allies)
+        {
+          CurrentNode.SetEmptyTile(ally.point);
+        }
+      }
+      //swap active node
       CurrentNode = node;
 
       CurrentNode.OnHeroPlaced(Hero);

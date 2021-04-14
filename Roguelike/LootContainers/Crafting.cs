@@ -15,6 +15,11 @@ namespace Roguelike.LootContainers
     public Inventory Inventory { get; set; }
     public int Gold { get; set; }
 
+    //public bool InventoryAcceptsItem(Loot loot)
+    //{
+    //  return true;
+    //}
+
     public virtual bool GetGoldWhenSellingTo(IInventoryOwner other)
     {
       return false;

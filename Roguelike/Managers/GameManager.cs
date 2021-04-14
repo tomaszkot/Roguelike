@@ -664,6 +664,18 @@ namespace Roguelike.Managers
     {
       if(sellItemArg == null)
         sellItemArg = new RemoveItemArg();
+
+      var detailedKind = InventoryActionDetailedKind.Unset;
+      if (sellItemArg.DragDrop)
+        detailedKind = InventoryActionDetailedKind.TradedDragDrop;
+      if (addItemArg == null)
+        addItemArg = new AddItemArg() { detailedKind = detailedKind };
+
+      if (!destInv.CanAcceptItem(loot, addItemArg))
+      {
+        return null;
+      }
+
       bool goldInvolved = GetGoldInvolvedOnSell(src, dest);
 
       var price = 0;
@@ -696,16 +708,11 @@ namespace Roguelike.Managers
       {
         sold = (loot as StackedLoot).Clone(sellItemArg.StackedCount);
       }
-
-      var detailedKind = InventoryActionDetailedKind.Unset;
-      if (sellItemArg.DragDrop)
-        detailedKind = InventoryActionDetailedKind.TradedDragDrop;
-      if (addItemArg == null)
-        addItemArg = new AddItemArg() { detailedKind = detailedKind };
-
+            
       bool added = destInv.Add(sold, addItemArg);
       if (!added)//TODO revert item to src inv
       {
+        srcInv.Add(loot);
         logger.LogError("!added");
         return null;
       }

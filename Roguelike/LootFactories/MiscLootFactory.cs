@@ -88,7 +88,9 @@ namespace Roguelike.LootFactories
 
       factory["pendant"] = (string tag) =>
       {
-        return new Jewellery() { EquipmentKind = EquipmentKind.Amulet, IsPendant = true };
+        var jew = new Jewellery() { EquipmentKind = EquipmentKind.Amulet };
+        jew.SetIsPendant(true);
+        return jew;
       };
 
       factory["goblet"] = (string tag) =>

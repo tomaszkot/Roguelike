@@ -120,9 +120,7 @@ namespace Roguelike.Managers
 
     public void AddEntity(IAlly ent)
     {
-      base.AddEntity(ent as LivingEntity);
-      //if (AllyAdded != null)
-        //AllyAdded(this, as LivingEntity);
+      AddEntity(ent as LivingEntity);
     }
         
   }

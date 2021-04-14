@@ -350,5 +350,10 @@ namespace Roguelike.LootContainers
     {
       return InvOwner.ToString() + ", Count: "+ Items.Count;
     }
+
+    public bool CanAcceptItem(Loot loot, AddItemArg addItemArg)
+    {
+      return Owner.InventoryAcceptsItem(this, loot, addItemArg);
+    }
   }
 }

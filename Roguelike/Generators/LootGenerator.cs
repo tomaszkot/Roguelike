@@ -162,6 +162,7 @@ namespace Roguelike.Generators
         loot = uniqueLoot[tileName];
       else
         loot = LootFactory.GetByName(tileName);
+     
       if (loot == null && tileName == "rusty_sword")
       {
         var wpn = new Weapon();

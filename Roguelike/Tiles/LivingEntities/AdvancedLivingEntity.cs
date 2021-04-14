@@ -25,9 +25,6 @@ using Roguelike.Extensions;
 
 namespace Roguelike.Tiles.LivingEntities
 {
-  //public class GodActivationChangedArgs : EventArgs
-  //{ 
-  //}
   public enum AllyKind { Unset, Hound, Enemy, Merchant }
   public enum EntityProffesionKind { Unset, King, Prince, Knight, Priest, Mercenary, Merchant, Peasant, Bandit, Adventurer, Slave }
   public enum EntityGender { Unset, Male, Female }
@@ -58,7 +55,15 @@ namespace Roguelike.Tiles.LivingEntities
       set => inventory = value; 
     }
     //[JsonIgnoreAttribute]
-    public CurrentEquipment CurrentEquipment { get => currentEquipment; set => currentEquipment = value; }
+    public CurrentEquipment CurrentEquipment 
+    { 
+      get => currentEquipment;
+      set
+      {
+        currentEquipment = value;
+        currentEquipment.EquipmentChanged += OnEquipmentChanged;
+      }
+    }
     public event EventHandler<EntityStatKind> StatLeveledUp;
     public event EventHandler<int> GoldChanged;
         
@@ -96,6 +101,30 @@ namespace Roguelike.Tiles.LivingEntities
       {
         levelUpPoints = value;
       }
+    }
+
+    public bool InventoryAcceptsItem(Inventory inv, Loot loot, AddItemArg addItemArg)
+    {
+      if (inv is CurrentEquipment)
+      {
+        var eq = loot as Equipment;
+        if (eq == null)
+          return false;
+                
+        if(!CanUseEquipment(eq))
+          return false;
+
+        if (addItemArg == null)
+          return false;
+
+        var currArgs = addItemArg as CurrentEquipmentAddItemArg;
+        if(currArgs == null)
+          return false;
+
+        var slotEK = currArgs.cek.GetEquipmentKind();
+        return slotEK == eq.EquipmentKind;
+      }
+      return true;
     }
 
     public override Container Container
@@ -316,13 +345,10 @@ namespace Roguelike.Tiles.LivingEntities
     {
       this.Inventory = new Inventory(container);
       this.Inventory.Owner = this;
-      currentEquipment = new CurrentEquipment(container);
+      var currentEquipment = new CurrentEquipment(container);
+      currentEquipment.Owner = this;
+      CurrentEquipment = currentEquipment;
     }
-
-    //public bool MoveEquipmentInv2Current(Equipment eq, CurrentEquipmentKind cek)
-    //{
-    //  return MoveEquipmentInv2Current(eq, cek);
-    //}
 
     public bool MoveEquipmentCurrent2Inv(Equipment eq, CurrentEquipmentPosition pos)
     {
@@ -382,6 +408,8 @@ namespace Roguelike.Tiles.LivingEntities
 
     public bool CanUseEquipment(Equipment eq)
     {
+      if (!eq.IsIdentified)
+        return false;
       return Level >= eq.RequiredLevel;
     }
         
@@ -409,15 +437,15 @@ namespace Roguelike.Tiles.LivingEntities
       bool done = SetEquipment(null, cek, primary);
       if (done)
       {
-        done = inventory.Add(eq);
-        if (!done)
-        {
-          //revert!
-          if (primary)
-            CurrentEquipment.PrimaryEquipment[cek] = eq;
-          else
-            CurrentEquipment.SpareEquipment[cek] = eq;
-        }
+        //done = inventory.Add(eq);
+        //if (!done)
+        //{
+        //  //revert!
+        //  if (primary)
+        //    CurrentEquipment.PrimaryEquipment[cek] = eq;
+        //  else
+        //    CurrentEquipment.SpareEquipment[cek] = eq;
+        //}
       }
       
       return done;
@@ -428,11 +456,6 @@ namespace Roguelike.Tiles.LivingEntities
       return CurrentEquipment.GetActiveEquipment();
     }
 
-    //public bool MakeActive(CurrentEquipmentKind kind, Equipment eq, bool primary)
-    //{
-    //  return CurrentEquipment.SpareEquipmentUsed[kind] = !primary;
-    //}
-    
     public bool SetEquipment(Equipment eq, CurrentEquipmentKind cek = CurrentEquipmentKind.Unset, bool primary = true)
     {
       if (!CurrentEquipment.EnsureCurrEqKind(eq, ref cek))
@@ -445,7 +468,7 @@ namespace Roguelike.Tiles.LivingEntities
           Assert(false, "from.Add(prev)");
           return false;
         }
-        if(!this.CurrentEquipment.SetEquipment(null, cek, primary))
+        if (!this.CurrentEquipment.SetEquipment(null, cek, primary))
           return false;
       }
       var set = CurrentEquipment.SetEquipment(eq, cek, primary);
@@ -454,10 +477,19 @@ namespace Roguelike.Tiles.LivingEntities
 
       //if (kind == CurrentEquipmentKind.God)
       //{
-        
+
       //}
       //??
 
+      //OnEquipmentChanged(eq, cek);
+
+      return true;
+    }
+
+    private void OnEquipmentChanged(object sender, EquipmentChangedArgs args)//)
+    {
+      Equipment eq = args.Equipment;
+      CurrentEquipmentKind cek = args.CurrentEquipmentKind;
       RecalculateStatFactors(false);
 
       LootAction ac = null;
@@ -483,8 +515,6 @@ namespace Roguelike.Tiles.LivingEntities
         };
       }
       AppendAction(ac);
-
-      return true;
     }
 
     public void RecalculateStatFactors(bool fromLoad)
