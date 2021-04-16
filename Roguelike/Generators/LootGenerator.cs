@@ -33,7 +33,6 @@ namespace Roguelike.Generators
 
   public class LootGenerator
   {
-   // bool generateWeaponEarly = true;
     LootFactory lootFactory;
     Dictionary<string, Loot> uniqueLoot = new Dictionary<string, Loot>();
     Looting probability = new Looting();
@@ -53,7 +52,6 @@ namespace Roguelike.Generators
     {
       Container = cont;
       lootFactory = cont.GetInstance<LootFactory>();
-      //CreateEqFactory();
       var lootSourceKinds = Enum.GetValues(typeof(LootSourceKind)).Cast<LootSourceKind>();
 
       var lootingChancesForEqEnemy = new EquipmentClassChances();
@@ -89,14 +87,10 @@ namespace Roguelike.Generators
             if (lootSource == LootSourceKind.PlainChest || lootSource == LootSourceKind.Barrel)
             {
               if (lk == LootKind.Gem || lk == LootKind.HunterTrophy)
-                mult = 0.5f;
+                mult /= 2f;
               else
-                mult = .8f;
+                mult = 1f;
             }
-            //if (lootSource == LootSourceKind.PlainChest || lootSource == LootSourceKind.Barrel)
-            //{
-            //  mult = .8f;
-            //}
           }
           
           val *= mult;
@@ -388,7 +382,7 @@ namespace Roguelike.Generators
         var rand = RandHelper.GetRandomDouble();
 
         if ( (scroll.Kind == Spells.SpellKind.Portal && rand > 0.2f) //no need for so many of them
-          || (scroll.Kind != Spells.SpellKind.Identify && rand >  0.4f)) //these are fine
+          || (scroll.Kind != Spells.SpellKind.Identify && rand >  0.6f)) //these are fine
         {
           var newScroll = LootFactory.ScrollsFactory.GetRandom(level) as Scroll;
           //if (newScroll.Kind != Spells.SpellKind.Portal || scroll.Kind == Spells.SpellKind.Portal)

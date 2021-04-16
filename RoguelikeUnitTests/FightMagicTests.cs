@@ -83,7 +83,6 @@ namespace RoguelikeUnitTests
     {
       var game = CreateGame();
       var hero = game.Hero;
-
       var enemies = game.GameManager.EnemiesManager.AllEntities;
       var initEnemyCount = enemies.Count;
       Assert.Greater(initEnemyCount, 0);
@@ -92,7 +91,8 @@ namespace RoguelikeUnitTests
       var enemy = enemies.First();
       while (enemy.Alive)
       {
-        UseFireBallScroll(hero, enemy);
+        //UseFireBallScroll(hero, enemy);
+        enemy.OnPhysicalHitBy(hero);
         GotoNextHeroTurn(game);
       }
 

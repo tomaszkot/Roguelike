@@ -382,12 +382,12 @@ namespace RoguelikeUnitTests
     }
 
     [Test]
-    public void Barrels()
+    public void Barrels2Loot()
     {
       var env = CreateTestEnv();
-      int multiplicator = 3;
+      int multiplicator = 5;
       var numberOfInteractiveTiles = 100 * multiplicator;
-      //var magicDusts = env.Game.Level.GetTiles<MagicDust>();
+
       var newLootItems = env.TestInteractive<Barrel>(
          (InteractiveTile barrel) =>{}, 
          numberOfInteractiveTiles,
@@ -395,12 +395,12 @@ namespace RoguelikeUnitTests
          1//max uniq count
         );
 
-      var expCount = numberOfInteractiveTiles / 6;
+      var expCount = numberOfInteractiveTiles / 7;
       Assert.GreaterOrEqual(newLootItems.newLoot.Count, expCount);
       //scrolls
       var scrolls = newLootItems.Get<Scroll>();
       Assert.Greater(scrolls.Count, 0);
-      Assert.Less(scrolls.Count, 11);
+      Assert.Less(scrolls.Count, expCount/5);
       var typesGrouped = scrolls.GroupBy(f => f.Kind).ToList();
       var ident = typesGrouped.Where(i => i.Key == SpellKind.Identify).FirstOrDefault();
       Assert.NotNull(ident);

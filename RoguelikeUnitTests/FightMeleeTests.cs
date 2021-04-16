@@ -7,6 +7,7 @@ using Roguelike.Spells;
 using Roguelike.Tiles;
 using Roguelike.Tiles.LivingEntities;
 using Roguelike.Tiles.Looting;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -158,31 +159,33 @@ namespace RoguelikeUnitTests
       var hero = game.Hero;
 
       var enemy = AllEnemies.First();
-      var enemyHealth = enemy.Stats.Health;
-      enemy.OnPhysicalHitBy(game.Hero);
-      var enemyHealthDiff = enemyHealth - enemy.Stats.Health;
-      enemyHealth = enemy.Stats.Health;
+
+      Func<float> hitEnemy = ()=> {
+        var enemyHealth = enemy.Stats.Health;
+        enemy.OnPhysicalHitBy(game.Hero);
+        var lastEnemyHealthDiff = enemyHealth - enemy.Stats.Health;
+        return lastEnemyHealthDiff;
+      };
+      var healthDiff = hitEnemy();
 
       var emp = game.GameManager.CurrentNode.GetClosestEmpty(hero);
       game.GameManager.CurrentNode.SetTile(enemy, emp.point);
 
       var scroll = new Scroll(SpellKind.Rage);
       hero.Inventory.Add(scroll);
-      var attackPrev = hero.GetCurrentValue(Roguelike.Attributes.EntityStatKind.Attack);
+      var attackPrev = hero.GetCurrentValue(EntityStatKind.Attack);
       var spell = game.GameManager.SpellManager.ApplyPassiveSpell(hero, scroll);
       Assert.NotNull(spell);
-      Assert.Greater(hero.GetCurrentValue(Roguelike.Attributes.EntityStatKind.Attack), attackPrev);
+      Assert.Greater(hero.GetCurrentValue(EntityStatKind.Attack), attackPrev);
 
-      enemy.OnPhysicalHitBy(game.Hero);
-      var enemyHealthDiffRage = enemyHealth - enemy.Stats.Health;
-      Assert.Greater(enemyHealthDiffRage, enemyHealthDiff);//rage
-
-      enemyHealth = enemy.Stats.Health;
+      var healthDiffRage = hitEnemy();
+      Assert.Greater(healthDiffRage, healthDiff);//rage in work
 
       GotoSpellEffectEnd(spell);
-      enemy.OnPhysicalHitBy(game.Hero);
-      var enemyHealthDiffAterRage = enemyHealth - enemy.Stats.Health;
-      Assert.AreEqual(enemyHealthDiff, enemyHealthDiffAterRage);//rage over
+      Assert.AreEqual(hero.GetCurrentValue(EntityStatKind.Attack), attackPrev);
+      var healthDiffAfterRage = hitEnemy();
+      var delta = Math.Abs(healthDiffAfterRage - healthDiff);
+      Assert.Less(delta, 0.001);//rage was over
 
     }
   }

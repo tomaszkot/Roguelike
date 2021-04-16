@@ -463,6 +463,7 @@ namespace Roguelike.Tiles.LivingEntities
       return CurrentEquipment.GetActiveEquipment();
     }
 
+    //TODO make it priv. this is a dangerous method!, as not guarating user do not have same eq in the inventory. MoveEquipmentInv2Current shall be used.
     public bool SetEquipment(Equipment eq, CurrentEquipmentKind cek = CurrentEquipmentKind.Unset, bool primary = true)
     {
       if (!CurrentEquipment.EnsureCurrEqKind(eq, ref cek))

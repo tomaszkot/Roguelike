@@ -22,6 +22,7 @@ using Roguelike.Abstract.Tiles;
 using Roguelike.Tiles.LivingEntities;
 using Roguelike.Strategy;
 using Roguelike.Abstract.Inventory;
+using Roguelike.Extensions;
 
 namespace Roguelike.Managers
 {
@@ -645,10 +646,10 @@ namespace Roguelike.Managers
       Loot loot,
       IInventoryOwner src,
       IInventoryOwner dest,
-      RemoveItemArg sellItemArg = null
+      RemoveItemArg removeItemArg = null
     )
     {
-      return SellItem(loot, src, src.Inventory, dest, dest.Inventory, sellItemArg);
+      return SellItem(loot, src, src.Inventory, dest, dest.Inventory, removeItemArg);
     }
 
     public Loot SellItem
@@ -658,18 +659,29 @@ namespace Roguelike.Managers
       Inventory srcInv,
       IInventoryOwner dest,
       Inventory destInv,
-      RemoveItemArg sellItemArg = null,
+      RemoveItemArg removeItemArg = null,
       AddItemArg addItemArg = null
     )
     {
-      if(sellItemArg == null)
-        sellItemArg = new RemoveItemArg();
+      if(removeItemArg == null)
+        removeItemArg = new RemoveItemArg();
 
       var detailedKind = InventoryActionDetailedKind.Unset;
-      if (sellItemArg.DragDrop)
+      if (removeItemArg.DragDrop)
         detailedKind = InventoryActionDetailedKind.TradedDragDrop;
       if (addItemArg == null)
-        addItemArg = new AddItemArg() { detailedKind = detailedKind };
+      {
+        if (destInv is CurrentEquipment)
+        {
+          var eq = loot as Equipment;
+          if (eq == null)
+            return null;
+          addItemArg = new CurrentEquipmentAddItemArg() 
+          { detailedKind = detailedKind, cek = eq.EquipmentKind.GetCurrentEquipmentKind(CurrentEquipmentPosition.Unset) };
+        }
+        else
+          addItemArg = new AddItemArg() { detailedKind = detailedKind };
+      }
 
       if (!destInv.CanAcceptItem(loot, addItemArg))
       {
@@ -697,7 +709,7 @@ namespace Roguelike.Managers
         return null;
       }
 
-      var removed = srcInv.Remove(loot, sellItemArg);
+      var removed = srcInv.Remove(loot, removeItemArg);
       if (!removed)
       {
         logger.LogError("!removed");
@@ -706,7 +718,7 @@ namespace Roguelike.Managers
       Loot sold = loot;
       if (loot.StackedInInventory)
       {
-        sold = (loot as StackedLoot).Clone(sellItemArg.StackedCount);
+        sold = (loot as StackedLoot).Clone(removeItemArg.StackedCount);
       }
             
       bool added = destInv.Add(sold, addItemArg);
@@ -719,8 +731,8 @@ namespace Roguelike.Managers
 
       if (goldInvolved)
       {
-        dest.Gold -= price * sellItemArg.StackedCount;
-        src.Gold += price * sellItemArg.StackedCount;
+        dest.Gold -= price * removeItemArg.StackedCount;
+        src.Gold += price * removeItemArg.StackedCount;
         SoundManager.PlaySound("COINS_Rattle_04_mono");//coind_drop
       }
       return sold;

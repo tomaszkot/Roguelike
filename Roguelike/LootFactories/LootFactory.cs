@@ -84,10 +84,5 @@ namespace Roguelike.LootFactories
       }
       return res;
     }
-    //public override List<Loot> GetAll()
-    //{
-
-    //}
-
   }
 }

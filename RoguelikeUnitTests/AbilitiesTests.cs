@@ -8,6 +8,7 @@ using Roguelike.Tiles;
 using Roguelike.Tiles.Interactive;
 using Roguelike.Tiles.LivingEntities;
 using Roguelike.Tiles.Looting;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -502,10 +503,56 @@ namespace RoguelikeUnitTests
     {
       var abVal = 0.0f;
       var abValAux = 0.0f;
+      var Hero = game.Hero;
+
+      float statValue;
+      var destStat = SetWeapon(kind, Hero, out statValue);
+      var en = GetPlainEnemies().First();
+      en.Stats.SetNominal(EntityStatKind.Health, 100);
+
+      Func<float> hitEnemy = () =>
+      {
+        var health = en.Stats.Health;
+        en.OnPhysicalHitBy(Hero);
+        var health1 = en.Stats.Health;
+        return health - health1;
+      };
+      var damage = hitEnemy();
+
+      Assert.Greater(damage, 0);
+      var heroAttack = Hero.GetHitAttackValue(false);
+      
+      for (int i = 0; i < MaxAbilityInc + 1; i++)
+      {
+        Hero.IncreaseAbility(kind);
+        var ab = Hero.GetAbility(kind);
+        Assert.AreNotEqual(ab.PrimaryStat.Kind, EntityStatKind.Unset);
+        AssertNextValue(i, ab, abVal, abValAux);
+
+        abVal = GetFactor(ab, true);
+        abValAux = GetFactor(ab, false);
+        Assert.Less(abVal, 9);
+        Assert.Less(abValAux, 26);
+
+        abVal = ab.PrimaryStat.Factor;
+        //Debug.WriteLine(kind + " Level: " + ab.Level + ", value :" + ab.PrimaryStat.Factor);
+      }
+      var statValueWithAbility = Hero.Stats.GetCurrentValue(destStat);
+      Assert.Greater(statValueWithAbility, statValue);
+
+      var heroAttackWithAbility = Hero.GetHitAttackValue(false);
+      Assert.Greater(heroAttackWithAbility, heroAttack);
+      var damageWithAbility = hitEnemy();
+      
+      Assert.Greater(damageWithAbility, damage);
+      return abVal;
+    }
+
+    private EntityStatKind SetWeapon(PassiveAbilityKind kind, Hero Hero, out float statValue)
+    {
+      var destStat = EntityStatKind.Unset;
       Weapon wpn = null;
       string wpnName = "";
-      var destStat = EntityStatKind.Unset;
-
       switch (kind)
       {
         case PassiveAbilityKind.AxesMastering:
@@ -528,49 +575,13 @@ namespace RoguelikeUnitTests
         default:
           break;
       }
-      var Hero = game.Hero;
-      var statValue = Hero.Stats.GetCurrentValue(destStat);
+
+      statValue = Hero.Stats.GetCurrentValue(destStat);
       //wpn = game.LootDescriptionManager.GetEquipment(LootKind.Weapon, wpnName) as Weapon;
       wpn = game.GameManager.LootGenerator.GetLootByAsset(wpnName) as Weapon;
       Assert.NotNull(wpn);
       Hero.SetEquipment(wpn, CurrentEquipmentKind.Weapon);
-      var en = GetPlainEnemies().First();
-      en.Stats.SetNominal(EntityStatKind.Health, 100);
-      var health = en.Stats.Health;
-      while (en.OnPhysicalHitBy(Hero) == 0)
-        ;
-      var health1 = en.Stats.Health;
-      var damage = health - health1;
-      Assert.Greater(damage, 0);
-      var heroAttack = Hero.GetHitAttackValue(false);
-      var hav0 = Hero.GetHitAttackValue(false);
-      for (int i = 0; i < MaxAbilityInc + 1; i++)
-      {
-        Hero.IncreaseAbility(kind);
-        var ab = Hero.GetAbility(kind);
-        Assert.AreNotEqual(ab.PrimaryStat.Kind, EntityStatKind.Unset);
-        AssertNextValue(i, ab, abVal, abValAux);
-
-        abVal = GetFactor(ab, true);
-        abValAux = GetFactor(ab, false);
-        Assert.Less(abVal, 9);
-        Assert.Less(abValAux, 26);
-
-        abVal = ab.PrimaryStat.Factor;
-        //Debug.WriteLine(kind + " Level: " + ab.Level + ", value :" + ab.PrimaryStat.Factor);
-      }
-      var statValue1 = Hero.Stats.GetCurrentValue(destStat);
-      Assert.Greater(statValue1, statValue);
-
-      var heroAttack1 = Hero.GetHitAttackValue(false);
-      var hav = Hero.GetHitAttackValue(false);
-      Assert.Greater(heroAttack1, heroAttack);
-      while (en.OnPhysicalHitBy(Hero) == 0)
-        ;
-      var health2 = en.Stats.Health;
-      var damage1 = health1 - health2;
-      Assert.Greater(damage1, damage);
-      return abVal;
+      return destStat;
     }
   }
 }

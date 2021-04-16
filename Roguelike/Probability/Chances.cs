@@ -23,11 +23,6 @@ namespace Roguelike.Probability
       }
     }
 
-    //Chances<T> Clone()
-    //{ 
-      
-    //}
-
     public Dictionary<T, float> ValuesCopy()
     {
       return values.ToDictionary(entry => entry.Key,
