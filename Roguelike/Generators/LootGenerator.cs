@@ -79,7 +79,7 @@ namespace Roguelike.Generators
         var lkChance = new LootKindChances();
         foreach (var lk in lootKinds)
         {
-          var val = .2f;
+          var val = .25f;
           var mult = 1f;
           if (lk == LootKind.Potion || lk == LootKind.Scroll)
           {

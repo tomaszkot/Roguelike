@@ -23,7 +23,7 @@ namespace RoguelikeUnitTests
         var game = CreateGame(numEnemies: 1, numberOfRooms: 1);
         var hero = game.Hero;
 
-        var enemies = game.GameManager.CurrentNode.GetTiles<Enemy>();//.Where(i=> i.DungeonNodeIndex == hero.DungeonNodeIndex).ToList();
+        var enemies = game.GameManager.CurrentNode.GetTiles<Enemy>();
         Assert.AreEqual(enemies.Count, 1);
         var enemy = enemies.Where(i => i.PowerKind != EnemyPowerKind.Plain).FirstOrDefault();
         if (enemy == null)
@@ -35,14 +35,18 @@ namespace RoguelikeUnitTests
         Assert.AreEqual(enemy.LastingEffects.Count, 0);
         GenerationInfo.ChanceToTurnOnSpecialSkillByEnemy = 1f;
 
-        var closeHero = game.Level.GetClosestEmpty(hero);
-        game.Level.SetTile(enemy, closeHero.point);
+        var closeToHero = game.Level.GetClosestEmpty(hero, incDiagonals : false);
+        game.Level.SetTile(enemy, closeToHero.point);
         enemy.ActiveScroll = null;//this causes attack
+        
+        //hit enemy to force him to use effect
         enemy.OnPhysicalHitBy(hero);
 
         game.GameManager.Context.TurnOwner = TurnOwner.Allies;
         game.GameManager.Context.PendingTurnOwnerApply = true;
         GotoNextHeroTurn(game);
+
+        //enemy shall cast effect on itself or on hero
         var heroHasLastingEffect = hero.HasLastingEffect(EffectType.Inaccuracy) || hero.HasLastingEffect(EffectType.Weaken);
         if (!heroHasLastingEffect)
         {

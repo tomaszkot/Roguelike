@@ -261,65 +261,46 @@ namespace RoguelikeUnitTests
     [Test]
     public void KilledEnemyForScrolls1()
     {
-      bool passed = false;
       var totals = new Dictionary<SpellKind, int>();
-      for (int run = 0; run < 5; run++)
+      //for (int run = 0; run < 5; run++)
       {
-        try
-        {
-          var env = CreateTestEnv(true, 100);
-          env.LootGenerator.Probability = new Roguelike.Probability.Looting();
-          env.LootGenerator.Probability.SetLootingChance(LootSourceKind.Enemy, LootKind.Scroll, 1);
-          var scrolls = env.AssertLootFromEnemies(new[] { LootKind.Scroll }).Cast<Scroll>().ToList();
-          Assert.Less(scrolls.Count, 150);
-          var typesGrouped = scrolls.GroupBy(f => f.Kind).ToList();
-          Assert.GreaterOrEqual(typesGrouped.Count, 3);//TODO support more scrolls!
-          var identCount = typesGrouped.Where(i => i.Key == SpellKind.Identify).First().Count();
+        var env = CreateTestEnv(true, 200);
+        env.LootGenerator.Probability = new Roguelike.Probability.Looting();
+        env.LootGenerator.Probability.SetLootingChance(LootSourceKind.Enemy, LootKind.Scroll, 1);
+        var scrolls = env.AssertLootFromEnemies(new[] { LootKind.Scroll }).Cast<Scroll>().ToList();
+        Assert.Less(scrolls.Count, 150);
+        var typesGrouped = scrolls.GroupBy(f => f.Kind).ToList();
+        Assert.GreaterOrEqual(typesGrouped.Count, 6);//TODO support more scrolls!
+        var identCount = typesGrouped.Where(i => i.Key == SpellKind.Identify).First().Count();
 
-          foreach (var nextScrollType in typesGrouped)
-          {
-            var numberOfNextTypeOfScrolls = nextScrollType.Count();
-            Assert.Less(numberOfNextTypeOfScrolls, 25);
-            int min = 1;
-            int max = 10;
+        foreach (var nextScrollType in typesGrouped)
+        {
+          var numberOfNextTypeOfScrolls = nextScrollType.Count();
+          Assert.Less(numberOfNextTypeOfScrolls, 25);
+          int min = 1;
+          int max = 16;
             
-            if (nextScrollType.Key == SpellKind.Portal)
-            {
-              min = 2;
-            }
-            Assert.Greater(numberOfNextTypeOfScrolls, min, nextScrollType.Key.ToDescription());
-            Assert.Less(numberOfNextTypeOfScrolls, max, nextScrollType.Key.ToDescription());
-            //TODO
-            //else 
-            //{
-            //  if (nextScrollType.Key != SpellKind.Identify)
-            //  {
-            //    //ident  shall be common
-            //    Assert.GreaterOrEqual(identCount, numberOfNextTypeOfScrolls, "!SpellKind.Identify");
-            //  }
-
-            //  //but not too be common
-            //  Assert.LessOrEqual(identCount, numberOfNextTypeOfScrolls * 3, "!SpellKind.Portal");
-            //}
-
+          if (nextScrollType.Key == SpellKind.Portal)
+          {
+            min = 2;
           }
-          passed = true;
-          break;
-        }
-        catch (Exception ex)
-        {
-          Debug.WriteLine(ex);
-        }
-      }
+          if (nextScrollType.Key == SpellKind.Identify)
+            max = 25;
+          Assert.Greater(numberOfNextTypeOfScrolls, min, nextScrollType.Key.ToDescription());
+          Assert.Less(numberOfNextTypeOfScrolls, max, nextScrollType.Key.ToDescription());
+          //TODO
+          //else 
+          //{
+          //  if (nextScrollType.Key != SpellKind.Identify)
+          //  {
+          //    //ident  shall be common
+          //    Assert.GreaterOrEqual(identCount, numberOfNextTypeOfScrolls, "!SpellKind.Identify");
+          //  }
 
-      try
-      {
-        Assert.True(passed);
-      }
-      catch (Exception ex)
-      {
-        Debug.WriteLine(ex);
-        throw;
+          //  //but not too be common
+          //  Assert.LessOrEqual(identCount, numberOfNextTypeOfScrolls * 3, "!SpellKind.Portal");
+          //}
+        }
       }
     }
 
@@ -381,26 +362,41 @@ namespace RoguelikeUnitTests
     }
 
     [Test]
-    public void Barrels()
+    public void Barrels2Enemies()
     {
       var env = CreateTestEnv();
       int multiplicator = 3;
       var numberOfInteractiveTiles = 100 * multiplicator;
       var enemiesBefore = env.Game.Level.GetTiles<Enemy>();
-      //var magicDusts = env.Game.Level.GetTiles<MagicDust>();
+
       var newLootItems = env.TestInteractive<Barrel>(
-         (InteractiveTile barrel) =>
-         {
-         }, 
+         (InteractiveTile barrel) =>{},
          numberOfInteractiveTiles,
-         50* multiplicator,//max loot count
+         50 * multiplicator,//max loot count
          1//max uniq count
         );
       var enemiesAfter = env.Game.Level.GetTiles<Enemy>();
       Assert.Greater(enemiesAfter.Count, enemiesBefore.Count);
-      Assert.Greater(enemiesAfter.Count - enemiesBefore.Count, 5* multiplicator);
+      Assert.Greater(enemiesAfter.Count - enemiesBefore.Count, 5 * multiplicator);
       Assert.AreEqual(enemiesAfter.Count, game.GameManager.EnemiesManager.AllEntities.Count);
+    }
 
+    [Test]
+    public void Barrels()
+    {
+      var env = CreateTestEnv();
+      int multiplicator = 3;
+      var numberOfInteractiveTiles = 100 * multiplicator;
+      //var magicDusts = env.Game.Level.GetTiles<MagicDust>();
+      var newLootItems = env.TestInteractive<Barrel>(
+         (InteractiveTile barrel) =>{}, 
+         numberOfInteractiveTiles,
+         50* multiplicator,//max loot count
+         1//max uniq count
+        );
+
+      var expCount = numberOfInteractiveTiles / 6;
+      Assert.GreaterOrEqual(newLootItems.newLoot.Count, expCount);
       //scrolls
       var scrolls = newLootItems.Get<Scroll>();
       Assert.Greater(scrolls.Count, 0);
@@ -414,7 +410,7 @@ namespace RoguelikeUnitTests
 
       var magicDusts = newLootItems.Get<MagicDust>();
       Assert.Greater(magicDusts.Count, 0);
-      Assert.Less(magicDusts.Count, 10);
+      Assert.Less(magicDusts.Count, 15);
     }
 
     [Test]
@@ -569,7 +565,7 @@ namespace RoguelikeUnitTests
         var lootItems = li.GetDiff();
         Assert.Greater(lootItems.Count, 10);
         var potions = li.Get<Potion>();
-        Assert.Greater(potions.Count, 4);
+        Assert.Greater(potions.Count, 2);
         Assert.Less(potions.Count, 20);
       }
     }

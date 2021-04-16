@@ -100,27 +100,38 @@ namespace RoguelikeUnitTests
     }
 
     [Test]
-    public void TestLootMastery()
+    public void TestLootMasteryBarrels()
+    {
+      TestLootMastery<Barrel>();
+    }
+
+    private void TestLootMastery<T>() where T : Tile, ILootSource, new()
     {
       var game = CreateGame();
-      var barrels = game.Level.GetTiles<Barrel>();
-      int barrelsCount = barrels.Count;
-      Assert.Greater(barrelsCount, 15);
+      var numEntities = 150;
+      var lootSources = game.Level.GetTiles<T>();
+      var missing = numEntities - lootSources.Count;
+      for (int i = 0; i < missing; i++)
+      {
+        game.Level.SetTileAtRandomPosition(new T());
+      }
+      lootSources = game.Level.GetTiles<T>();
+      Assert.AreEqual(lootSources.Count, numEntities);
 
-      var numOfBarrelLootBeforeAbility = GetLootFromSrc(game, barrels);
-
-      var enemies = GetPlainEnemies();
-      var numOfEnemiesLootBeforeAbility = GetLootFromSrc(game, enemies);
-
+      var numOfLootSourcesLootBeforeAbility = GetLootFromSrc(game, lootSources);
       game.Hero.AbilityPoints = 10;
       for (int i = 0; i < 5; i++)
         game.Hero.IncreaseAbility(PassiveAbilityKind.LootingMastering);
 
-      var numOfBarrelLootAfterAbility = GetLootFromSrc(game, barrels);
-      var numOfEnemiesLootAfterAbility = GetLootFromSrc(game, enemies);
+      var numOfLootSourcesLootAfterAbility = GetLootFromSrc(game, lootSources);
 
-      Assert.Greater(numOfBarrelLootAfterAbility.Count, numOfBarrelLootBeforeAbility.Count);
-      Assert.Greater(numOfEnemiesLootAfterAbility.Count, numOfEnemiesLootBeforeAbility.Count);
+      Assert.Greater(numOfLootSourcesLootAfterAbility.Count, numOfLootSourcesLootBeforeAbility.Count);
+    }
+
+    [Test]
+    public void TestLootMasteryEnemies()
+    {
+      TestLootMastery<Enemy>();
     }
 
     private List<Loot> GetLootFromSrc(Roguelike.RoguelikeGame game, IEnumerable<ILootSource> enemies)

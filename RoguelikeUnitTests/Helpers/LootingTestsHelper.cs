@@ -49,6 +49,10 @@ namespace RoguelikeUnitTests.Helpers
             expectedKindsCounter++;
             res.Add(loot);
           }
+          else
+          {
+            Assert.True((loot.Source as Enemy).PowerKind != EnemyPowerKind.Plain);
+          }
           Assert.True(!string.IsNullOrEmpty(loot.tag1));
         }
       }

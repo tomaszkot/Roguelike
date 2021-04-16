@@ -137,10 +137,11 @@ namespace RoguelikeUnitTests
       var game = CreateGame();
       var hero = game.Hero;
 
-      var scroll = game.GameManager.LootGenerator.LootFactory.ScrollsFactory.GetByKind(Roguelike.Spells.SpellKind.Identify);
+      var scroll = game.GameManager.LootGenerator.LootFactory.ScrollsFactory.GetByKind(Roguelike.Spells.SpellKind.Identify) as Scroll;
       Assert.NotNull(scroll);
       Assert.True(hero.Inventory.Add(scroll));
       Assert.True(hero.Inventory.Contains(scroll));
+      int count = scroll.Count;
 
       var wpn = game.GameManager.LootGenerator.GetRandomEquipment(EquipmentKind.Weapon, 1, null);
       Assert.IsFalse(wpn.GetMagicStats().Any());
@@ -149,7 +150,7 @@ namespace RoguelikeUnitTests
 
       //identify
       hero.Identify(wpn);
-      Assert.False(hero.Inventory.Contains(scroll));
+      Assert.AreEqual(scroll.Count, count-1);
       Assert.True(wpn.GetMagicStats().Any());
 
     }

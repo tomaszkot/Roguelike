@@ -966,7 +966,7 @@ namespace Dungeons
         return pt.X >= 0 && pt.Y >= 0 && pt.X < this.Width && pt.Y < this.Height;
       }
 
-      public virtual Tile GetClosestEmpty(Tile baseTile, bool sameNodeId = false, List<Tile> skip = null)
+      public virtual Tile GetClosestEmpty(Tile baseTile, bool sameNodeId = false, List<Tile> skip = null, bool incDiagonals = true)
       {
         var emptyTiles = GetEmptyTiles();
         if (skip != null)

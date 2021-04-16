@@ -225,41 +225,6 @@ namespace Roguelike.Effects
     [JsonIgnore]
     public Container Container { get; internal set; }
 
-    //For the time of lasting effect some state is changed, then restored to the original value (flag add)
-    //public void HandleSpecialFightStat(LastingEffect le, bool add)
-    //{
-    //  var et = le.Type;
-    //  if (et == EffectType.ConsumedRawFood || et == EffectType.ConsumedRoastedFood)
-    //    return;
-    //  var subtr = le.EffectiveFactor;
-    //  if (et == EffectType.ResistAll)
-    //  {
-    //    var factor = add ? subtr.Value : -subtr.Value;
-
-    //    foreach (var res in resists)
-    //    {
-    //      var stat = this.livingEntity.Stats.GetStat(res);
-    //      stat.Subtract(-factor);
-    //    }
-    //    return;
-    //  }
-
-    //  EntityStatKind esk = le.StatKind;
-
-    //  if (esk != EntityStatKind.Unset)
-    //  {
-    //    var factor = add ? subtr.Value : -subtr.Value;
-    //    if (et == EffectType.Weaken || et == EffectType.Inaccuracy)
-    //    {
-    //      factor *= -1;
-    //    }
-    //    var st = this.livingEntity.Stats.GetStat(esk);
-    //    st.Subtract(-factor);
-    //    //st = this.Stats.Stats[esk];
-    //    // //Debug.WriteLine(" st = "+ st);
-    //  }
-    //}
-
     public LastingEffect AddLastingEffectFromSpell(SpellKind spellKind, EffectType effectType)
     {
       var spell = Scroll.CreateSpell(spellKind, this.livingEntity);

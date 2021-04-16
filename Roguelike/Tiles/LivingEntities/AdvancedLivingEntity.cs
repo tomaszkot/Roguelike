@@ -343,7 +343,14 @@ namespace Roguelike.Tiles.LivingEntities
 
     protected virtual void CreateInventory(Container container)
     {
-      this.Inventory = new Inventory(container);
+      var inv = new Inventory(container);
+
+      OnCreateInventory(container, inv);
+    }
+
+    protected void OnCreateInventory(Container container, Inventory inv)
+    {
+      this.Inventory = inv;
       this.Inventory.Owner = this;
       var currentEquipment = new CurrentEquipment(container);
       currentEquipment.Owner = this;
@@ -470,18 +477,12 @@ namespace Roguelike.Tiles.LivingEntities
         }
         if (!this.CurrentEquipment.SetEquipment(null, cek, primary))
           return false;
+        if (eq == null)
+          return true;
       }
       var set = CurrentEquipment.SetEquipment(eq, cek, primary);
       if (!set)
         return false;//TODO LOG
-
-      //if (kind == CurrentEquipmentKind.God)
-      //{
-
-      //}
-      //??
-
-      //OnEquipmentChanged(eq, cek);
 
       return true;
     }

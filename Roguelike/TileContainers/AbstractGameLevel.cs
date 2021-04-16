@@ -108,9 +108,9 @@ namespace Roguelike.TileContainers
       return IsTypeMatching(typeof(Loot), typeof(T));
     }
         
-    public override Tile GetClosestEmpty(Tile baseTile, bool sameNodeId = false, List<Tile> skip = null)
+    public override Tile GetClosestEmpty(Tile baseTile, bool sameNodeId = false, List<Tile> skip = null, bool incDiagonals = true)
     {
-      var empties = GetEmptyNeighborhoodTiles(baseTile);
+      var empties = GetEmptyNeighborhoodTiles(baseTile, incDiagonals);
       if (empties.Any())
         return empties.First();
 
