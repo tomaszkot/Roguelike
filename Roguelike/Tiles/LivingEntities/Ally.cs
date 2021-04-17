@@ -2,16 +2,13 @@
 using Roguelike.Abstract.Inventory;
 using Roguelike.Abstract.Tiles;
 using Roguelike.Attributes;
-using System;
-using System.Collections.Generic;
+using Roguelike.LootContainers;
+using SimpleInjector;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Roguelike.Tiles.LivingEntities
 {
-  public abstract class Ally : LivingEntities.AdvancedLivingEntity, IAlly
+  public abstract class Ally : AdvancedLivingEntity, IAlly
   {
     public Ally(char symbol = '!') : base(new Point().Invalid(), symbol)
     {
@@ -27,6 +24,12 @@ namespace Roguelike.Tiles.LivingEntities
       CreateInventory(null);
 
       Dirty = true;//TODO
+    }
+
+    protected override void CreateInventory(Container container)
+    {
+      base.CreateInventory(container);
+      Inventory.InvBasketKind = InvBasketKind.AllyEquipment;
     }
 
     public bool Active { get; set; }
