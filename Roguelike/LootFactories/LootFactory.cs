@@ -50,7 +50,7 @@ namespace Roguelike.LootFactories
 
     private void Eq_Identified(object sender, Loot e)
     {
-      container.GetInstance<EventsManager>().AppendAction(new Events.LootAction(e)
+      container.GetInstance<EventsManager>().AppendAction(new Events.LootAction(e, null)
       {
         LootActionKind = Events.LootActionKind.Identified
       });

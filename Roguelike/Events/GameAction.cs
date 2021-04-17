@@ -152,8 +152,9 @@ namespace Roguelike.Events
     public bool CollectedFromDistance { get; set; }
     public bool GenerationAnimated { get; set; }
     public Tile Source { get; set; }
+    public LivingEntity LootOwner { get; set; }
 
-    public LootAction(Loot loot) { Loot = loot; }
+    public LootAction(Loot loot, LivingEntity lootOwner) { Loot = loot; LootOwner = lootOwner; }
     public LootAction() { }
   }
 

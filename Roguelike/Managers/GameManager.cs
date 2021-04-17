@@ -228,7 +228,8 @@ namespace Roguelike.Managers
       {
         if (la.LootActionKind == LootActionKind.Consumed)
         {
-          Context.MoveToNextTurnOwner();
+          if(la.LootOwner != null && la.LootOwner is Hero)//TODO
+            Context.MoveToNextTurnOwner();
         }
         return;
       }
@@ -566,7 +567,7 @@ namespace Roguelike.Managers
         if(gold != null)
           Hero.Gold += gold.Count;
         CurrentNode.RemoveLoot(lootTile.point);
-        EventsManager.AppendAction(new LootAction(lootTile) { LootActionKind = LootActionKind.Collected, CollectedFromDistance = fromDistance });
+        EventsManager.AppendAction(new LootAction(lootTile, Hero) { LootActionKind = LootActionKind.Collected, CollectedFromDistance = fromDistance });
         if (lootTile is Equipment)
         {
           var eq = lootTile as Equipment;

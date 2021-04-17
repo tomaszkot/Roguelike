@@ -5,6 +5,7 @@ using Roguelike.Policies;
 using Roguelike.Strategy;
 using Roguelike.Tiles;
 using Roguelike.Tiles.LivingEntities;
+using Roguelike.Tiles.Looting;
 using SimpleInjector;
 using System;
 using System.Linq;
@@ -44,6 +45,21 @@ namespace Roguelike.Managers
     {
       if (!ally.Alive)
         return;
+
+      if (ally.Stats.HealthBelow(0.5f))
+      {
+        var allyCasted = ally as Ally;
+        if (allyCasted != null)
+        {
+          var food = allyCasted.Inventory.Items.FirstOrDefault(i => i is Consumable);
+          if (food != null)
+          {
+            (ally as AdvancedLivingEntity).Consume(food as Consumable);
+            return;
+          }
+        }
+      }
+
       if (ally.FixedWalkTarget != null)
       {
         if (ally.PathToTarget != null && ally.PathToTarget.Count == 1)
