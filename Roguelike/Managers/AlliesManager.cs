@@ -54,7 +54,7 @@ namespace Roguelike.Managers
           var food = allyCasted.Inventory.Items.FirstOrDefault(i => i is Consumable);
           if (food != null)
           {
-            (ally as AdvancedLivingEntity).Consume(food as Consumable);
+            allyCasted.Consume(food as Consumable);
             return;
           }
         }
