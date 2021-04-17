@@ -1,6 +1,7 @@
 ﻿using Roguelike.Abilities;
 using Roguelike.Abstract.Inventory;
 using Roguelike.Tiles;
+using System;
 using System.Collections.Generic;
 
 namespace Roguelike.Abstract.Tiles
@@ -15,6 +16,7 @@ namespace Roguelike.Abstract.Tiles
     AbilitiesSet Abilities { get; }
     bool IncreaseAbility(PassiveAbilityKind kind);
     PassiveAbility GetAbility(PassiveAbilityKind kind);
-    
+
+    event EventHandler StatsRecalculated;
   }
 }

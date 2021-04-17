@@ -689,6 +689,16 @@ namespace Roguelike.Managers
         return null;
       }
 
+      if (destInv is CurrentEquipment ce && destInv.Owner == srcInv.Owner && addItemArg is CurrentEquipmentAddItemArg ceAddArgs)
+      {
+        var eq = ce.GetActiveEquipment()[ceAddArgs.cek];
+        if (eq != null)
+        {
+          if (!srcInv.Owner.MoveEquipmentCurrent2Inv(eq, ceAddArgs.cek))
+            return null;
+        }
+      }
+
       bool goldInvolved = GetGoldInvolvedOnSell(src, dest);
 
       var price = 0;
