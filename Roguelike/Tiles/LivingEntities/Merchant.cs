@@ -57,6 +57,7 @@ namespace Roguelike.Tiles.LivingEntities
 
     public bool Active { get ; set ; }
     public AllyKind Kind { get => AllyKind.Merchant;  }
+    public Point Point { get => point; set => point = value; }
 
     internal void OnContextSwitched(Container container)
     {

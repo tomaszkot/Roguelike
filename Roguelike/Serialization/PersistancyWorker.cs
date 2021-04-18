@@ -27,8 +27,17 @@ namespace Roguelike.Serialization
         //Hero is saved in a separate file
         if (!gm.CurrentNode.SetEmptyTile(gm.Hero.point))
           gm.Logger.LogError("failed to reset hero on save");
-
         gm.Persister.SaveHero(gm.Hero);
+
+        var alliesStore = new AlliesStore();
+        foreach (var ally in gm.AlliesManager.AllAllies)
+        {
+          alliesStore.Allies.Add(ally);
+          var set = gm.CurrentNode.SetEmptyTile((ally as Ally).point);//TODO
+          if (!set)
+            gm.Logger.LogError("failed to reset ally on save " + ally);
+        }
+        gm.Persister.SaveAllies(alliesStore);
       }
   
       worldSaver();
@@ -48,6 +57,9 @@ namespace Roguelike.Serialization
       gm.Context.CurrentNode = null;
 
       var hero = gm.Persister.LoadHero(heroName);
+      var allies = gm.Persister.LoadAllies();
+      gm.AlliesManager.SetEntities(allies.Allies);
+
       var gs = gm.Persister.LoadGameState(heroName);
       gm.SetGameState(gs);
 

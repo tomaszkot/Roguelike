@@ -37,6 +37,8 @@ namespace Roguelike.Tiles.LivingEntities
       set { }
     }
 
+    public Point Point { get => point; set => point = value; }
+
     public override void SetLevel(int level)
     {
       base.SetLevel(level);

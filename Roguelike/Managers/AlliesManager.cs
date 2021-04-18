@@ -38,9 +38,7 @@ namespace Roguelike.Managers
     {
       MakeHeroAllyMove(entity);
     }
-
-    const int MaxAllyDistToEnemyToChase = 6;
-
+        
     public void MakeHeroAllyMove(LivingEntity ally)
     {
       if (!ally.Alive)
@@ -79,9 +77,9 @@ namespace Roguelike.Managers
           ally.AllyModeTarget = null;
       }
 
-      if (ally.AllyModeTarget == null || ally.AllyModeTarget.DistanceFrom(ally) >= MaxAllyDistToEnemyToChase)
+      if (ally.AllyModeTarget == null || ally.AllyModeTarget.DistanceFrom(ally) >= MaxEntityDistanceToToChase)
       {
-        ally.AllyModeTarget = enemiesManager.AllEntities.Where(i => i.DistanceFrom(ally) < MaxAllyDistToEnemyToChase).OrderBy(i => i.DistanceFrom(ally)).ToList().FirstOrDefault();
+        ally.AllyModeTarget = enemiesManager.AllEntities.Where(i => i.DistanceFrom(ally) < MaxEntityDistanceToToChase).OrderBy(i => i.DistanceFrom(ally)).ToList().FirstOrDefault();
       }
 
       bool moveCloserToHero = false;

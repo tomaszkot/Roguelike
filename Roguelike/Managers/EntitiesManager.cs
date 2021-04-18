@@ -152,7 +152,7 @@ namespace Roguelike.Managers
 
     bool entitiesSet = false;
     
-    public void SetEntities(List<Ally> list)
+    public void SetEntities(List<IAlly> list)
     {
       SetEntities(list.Cast<LivingEntity>().ToList());
     }
@@ -290,6 +290,7 @@ namespace Roguelike.Managers
       return moved;
     }
 
+    protected const int MaxEntityDistanceToToChase = 6;
     public bool ShallChaseTarget(LivingEntity enemy, LivingEntity target)
     {
       if (target.IsTransformed())
@@ -304,7 +305,7 @@ namespace Roguelike.Managers
       }
 
       var dist = enemy.DistanceFrom(target);
-      if (dist < 5)
+      if (dist < MaxEntityDistanceToToChase)
         return true;
 
       return false;

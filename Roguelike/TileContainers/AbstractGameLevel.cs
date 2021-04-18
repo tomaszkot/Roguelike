@@ -2,6 +2,7 @@
 using Dungeons.Core;
 using Dungeons.Tiles;
 using Newtonsoft.Json;
+using Roguelike.Abstract.Tiles;
 using Roguelike.Tiles;
 using Roguelike.Tiles.Interactive;
 using Roguelike.Tiles.LivingEntities;
@@ -85,9 +86,9 @@ namespace Roguelike.TileContainers
       return res;
     }
 
-    public List<Ally> GetActiveAllies()
+    public List<IAlly> GetActiveAllies()
     {
-      return GetTiles<LivingEntity>().Where(i => i is Ally ally && ally.Active).Cast<Ally>().ToList();
+      return GetTiles<LivingEntity>().Where(i => i is IAlly ally && ally.Active).Cast<IAlly>().ToList();
     }
 
     public override List<T> GetTiles<T>()

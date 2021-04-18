@@ -208,6 +208,7 @@ namespace Roguelike
       CurrentNode = node;
 
       CurrentNode.OnHeroPlaced(Hero);
+      var alliesByLevel = CurrentNode.GetActiveAllies();
       var allies = am.AllEntities;
       if (allies.Any())
       {

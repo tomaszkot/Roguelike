@@ -3,6 +3,7 @@ using Dungeons.Core;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Serialization;
+using Roguelike.Abstract.Tiles;
 using Roguelike.State;
 using Roguelike.TileContainers;
 using Roguelike.Tiles;
@@ -24,7 +25,7 @@ namespace Roguelike.Serialization
   public class JSONPersister : IPersister
   {
     protected const string extension = ".json";
-    public enum FileKind { Hero, GameLevel, GameState }
+    public enum FileKind { Hero, GameLevel, GameState, Allies }
     Container container;
 
     public JSONPersister(Container container)
@@ -162,10 +163,22 @@ namespace Roguelike.Serialization
 
     //protected virtual string GameFolder { get { return GameName; } }
 
+    public void SaveAllies(AlliesStore allies)
+    {
+      var fileName = GetFullFilePath(FileKind.GameLevel, "Allies");
+      Save<AlliesStore>(allies, fileName);
+    }
+
     public void SaveHero(Hero hero)
     {
       var fileName = GetFullFilePath(FileKind.Hero, hero.Name);
       Save<Hero>(hero, fileName);
+    }
+
+    public AlliesStore LoadAllies()
+    {
+      var fileName = GetFullFilePath(FileKind.GameLevel, "Allies");
+      return Load<AlliesStore>(fileName, container);
     }
 
     public Hero LoadHero(string heroName)

@@ -2,15 +2,25 @@
 using Dungeons.Core;
 using Newtonsoft.Json;
 using Roguelike.Abstract;
+using Roguelike.Abstract.Tiles;
 using Roguelike.History;
 using Roguelike.Serialization;
 using Roguelike.Settings;
 using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 
 namespace Roguelike.State
 {
+  public class AlliesStore : IPersistable
+  {
+    public AlliesStore() { Dirty = true; }
+    public List<IAlly> Allies { get; set; } = new List<IAlly>();
+
+    public bool Dirty { get ; set ; }
+  }
+
   public class GameState : IPersistable
   {
     public GameState()

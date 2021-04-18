@@ -18,6 +18,8 @@ namespace Roguelike.Tiles.LivingEntities
 
     public AllyKind Kind => throw new System.NotImplementedException();
 
+    public Point Point { get => point; set => point = value; }
+
     public God(Container cont) : this(cont, new Point().Invalid(), '0')
     {
      
