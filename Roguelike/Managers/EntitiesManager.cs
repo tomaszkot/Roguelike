@@ -151,6 +151,12 @@ namespace Roguelike.Managers
     }
 
     bool entitiesSet = false;
+    
+    public void SetEntities(List<Ally> list)
+    {
+      SetEntities(list.Cast<LivingEntity>().ToList());
+    }
+
     public void SetEntities(List<LivingEntity> list)
     {
       entities = list;

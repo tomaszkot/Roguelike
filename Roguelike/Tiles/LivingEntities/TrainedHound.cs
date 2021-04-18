@@ -4,6 +4,7 @@ using Roguelike.Abstract.Tiles;
 using Roguelike.Attributes;
 using Roguelike.Managers;
 using Roguelike.Tiles.LivingEntities;
+using SimpleInjector;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -15,7 +16,7 @@ namespace Roguelike.Tiles.LivingEntities
 {
   public class TrainedHound : Ally
   {
-    public TrainedHound() 
+    public TrainedHound(Container cont) : base(cont)
     {
       
       Kind = AllyKind.Hound;

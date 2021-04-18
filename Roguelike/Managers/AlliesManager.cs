@@ -30,7 +30,7 @@ namespace Roguelike.Managers
 
     private void Context_ContextSwitched(object sender, ContextSwitch e)
     {
-      var entities = Context.CurrentNode.GetTiles<LivingEntity>().Where(i => i is Ally ally && ally.Active).ToList();
+      var entities = Context.CurrentNode.GetActiveAllies();
       base.SetEntities(entities);
     }
 

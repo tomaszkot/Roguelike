@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SimpleInjector;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,7 +9,7 @@ namespace Roguelike.Tiles.LivingEntities
 {
   public class AlliedEnemy : Ally
   {
-    public AlliedEnemy()
+    public AlliedEnemy(Container cont) : base(cont)
     {
       Kind = AllyKind.Enemy;
 #if ASCII_BUILD

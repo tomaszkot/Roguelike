@@ -27,19 +27,19 @@ namespace Roguelike.Tiles.LivingEntities
     public const int StartStrength = 15;//15;50
     
     public LootContainers.Crafting Crafting { get; set; }
-    public override Container Container 
-    { 
-      get => base.Container; 
-      set 
-      {
-        base.Container = value;
-        Inventory.Container = value;
-        Crafting.Container = value;
+    //public override Container Container 
+    //{ 
+    //  get => base.Container; 
+    //  set 
+    //  {
+    //    base.Container = value;
+    //    //Inventory.Container = value;
+    //    //Crafting.Container = value;
         
-      }
-    }
+    //  }
+    //}
         
-    public Hero(): base(new Point().Invalid(), '@')
+    public Hero(Container container) : base(container, new Point().Invalid(), '@')
     {
       canAdvanceInExp = true;
       Stats.SetNominal(EntityStatKind.Health, 40);//level up +2 // 40 -> 140
@@ -60,11 +60,10 @@ namespace Roguelike.Tiles.LivingEntities
 
       NextLevelExperience = FirstNextLevelExperienceThreshold;
 
-      CreateInventory(null);
-      Inventory.InvOwner = InvOwner.Hero;
+      //Inventory.InvOwner = InvOwner.Hero;
       Inventory.InvBasketKind = InvBasketKind.Hero;
 
-      Crafting = new Roguelike.LootContainers.Crafting(null);
+      Crafting = Container.GetInstance<Roguelike.LootContainers.Crafting>();
       
       Dirty = true;//TODO
       Revealed = true;

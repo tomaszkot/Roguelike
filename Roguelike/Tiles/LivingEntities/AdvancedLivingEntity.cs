@@ -51,8 +51,12 @@ namespace Roguelike.Tiles.LivingEntities
 
     public virtual Inventory Inventory 
     { 
-      get => inventory; 
-      set => inventory = value; 
+      get => inventory;
+      set
+      {
+        inventory = value;
+        inventory.Owner = this;
+      }
     }
     //[JsonIgnoreAttribute]
     public CurrentEquipment CurrentEquipment 
@@ -61,6 +65,7 @@ namespace Roguelike.Tiles.LivingEntities
       set
       {
         currentEquipment = value;
+        currentEquipment.Owner = this;
         currentEquipment.EquipmentChanged += OnEquipmentChanged;
       }
     }
@@ -133,7 +138,7 @@ namespace Roguelike.Tiles.LivingEntities
       set
       {
         base.Container = value;
-        this.Inventory.Container = value;
+        //this.Inventory.Container = value;
       }
     }
 
@@ -145,9 +150,12 @@ namespace Roguelike.Tiles.LivingEntities
       { Weapon.WeaponKind.Dagger, EntityStatKind.DaggerExtraDamage}
     };
 
-    public AdvancedLivingEntity(Point point, char symbol) : base(point, symbol)
+    public AdvancedLivingEntity(Container cont, Point point, char symbol) : base(point, symbol)
     {
       RelationToHero.Kind = RelationToHeroKind.Neutral;
+      Container = cont;
+      Inventory = cont.GetInstance<Inventory>();
+      CurrentEquipment = cont.GetInstance<CurrentEquipment>();
     }
 
     public virtual bool IsSellable(Loot loot)
@@ -187,10 +195,10 @@ namespace Roguelike.Tiles.LivingEntities
       return price;
     }
 
-    public new static AdvancedLivingEntity CreateDummy()
-    {
-      return new AdvancedLivingEntity(new Point(0, 0), '\0');
-    }
+    //public new static AdvancedLivingEntity CreateDummy()
+    //{
+    //  return new AdvancedLivingEntity(new Point(0, 0), '\0');
+    //}
         
     public bool IncreaseExp(int factor)
     {
@@ -232,20 +240,6 @@ namespace Roguelike.Tiles.LivingEntities
 
       coolingDownSpells[kind] = ActiveScroll.CreateSpell(this).CoolingDown;
     }
-
-    //private void OnSpellUsed(Spell spell, Enemy targetEn)
-    //{
-    //  ReduceMana(spell.ManaCost);
-
-    //  if (spell.CoolingDown > 0)
-    //  {
-    //    SetSpellCoolingDown(spell.Kind);
-    //  }
-
-    //  //TODO
-    //  //AppendAction(new ScrollAppliedAction() { Info = Hero.ActiveScroll + " used by " + Hero.Name, Kind = Hero.ActiveScroll.Kind, Spell = spell, Target = targetEn });
-    //  //HeroTurn = false;
-    //}
 
     public void Consume(IConsumable consumable)
     {
@@ -322,40 +316,30 @@ namespace Roguelike.Tiles.LivingEntities
       var stat = Stats.GetStat(kind);
       var value = stat.GetFormattedCurrentValue(currentValue);
       
-      //var value = stat.Value.CurrentValue.ToString(""); ;
-      //if (stat.IsPercentage)
-      //{
-      //  value += " %";
-      //}
       return value;
     }
-
-    //public virtual string GetLevel()
-    //{
-    //  return "1";
-    //}
 
     [JsonIgnore]
     public bool Dirty { get; set; }
     public int PrevLevelExperience { get; private set; }
     CurrentEquipment IEquipable.CurrentEquipment { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-    public Abilities.AbilitiesSet Abilities { get => abilities; set => abilities = value; }
+    public AbilitiesSet Abilities { get => abilities; set => abilities = value; }
 
-    protected virtual void CreateInventory(Container container)
-    {
-      var inv = new Inventory(container);
+    //protected virtual void CreateInventory(Container container)
+    //{
+    //  var inv = new Inventory(container);
 
-      OnCreateInventory(container, inv);
-    }
+    //  OnCreateInventory(container, inv);
+    //}
 
-    protected void OnCreateInventory(Container container, Inventory inv)
-    {
-      this.Inventory = inv;
-      this.Inventory.Owner = this;
-      var currentEquipment = new CurrentEquipment(container);
-      currentEquipment.Owner = this;
-      CurrentEquipment = currentEquipment;
-    }
+    //protected void OnCreateInventory(Container container, Inventory inv)
+    //{
+    //  this.Inventory = inv;
+    //  this.Inventory.Owner = this;
+    //  var currentEquipment = new CurrentEquipment(container);
+    //  currentEquipment.Owner = this;
+    //  CurrentEquipment = currentEquipment;
+    //}
 
     public bool MoveEquipmentCurrent2Inv(Equipment eq, CurrentEquipmentPosition pos)
     {

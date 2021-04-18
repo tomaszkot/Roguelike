@@ -62,7 +62,7 @@ namespace Roguelike.LootContainers
 
     [JsonIgnore]
     public AdvancedLivingEntity Owner { get; set; }
-    public InvOwner InvOwner { get; set; }
+    //public InvOwner InvOwner { get; set; }
     public InvBasketKind InvBasketKind { get; set; }
 
     [JsonIgnore]
@@ -348,7 +348,9 @@ namespace Roguelike.LootContainers
 
     public override string ToString()
     {
-      return InvOwner.ToString() + ", Count: "+ Items.Count;
+      if (Owner == null)
+        return base.ToString();
+      return Owner.ToString() + ", Count: "+ Items.Count;
     }
 
     public bool CanAcceptItem(Loot loot, AddItemArg addItemArg)

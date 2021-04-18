@@ -2,6 +2,7 @@
 using Roguelike.Abstract.Projectiles;
 using Roguelike.Crafting;
 using Roguelike.Generators;
+using Roguelike.LootContainers;
 using Roguelike.LootFactories;
 using Roguelike.Managers;
 using Roguelike.Policies;
@@ -23,6 +24,11 @@ namespace Roguelike
     {
       var container = new Container();
       container.Options.ConstructorResolutionBehavior = new GreediestConstructorBehavior();
+
+      container.Register<Merchant, Merchant>();
+      container.Register<Hero, Hero>();
+      container.Register<Inventory, Inventory>();
+      container.Register<LootContainers.Crafting, LootContainers.Crafting>();
       container.Register<Dungeons.IDungeonGenerator, LevelGenerator>();
       container.Register<IPersister, JSONPersister>();
       container.Register<GameManager, GameManager>();

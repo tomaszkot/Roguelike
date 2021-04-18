@@ -192,22 +192,31 @@ namespace Roguelike
         merch.OnContextSwitched(Container);
         
       var heroStartTile = PlaceHeroAtDungeon(node, gs, context, stairs);
-      List<LivingEntity> allies = am.AllEntities;
 
-      if (CurrentNode !=null)
+      if (context == GameContextSwitchKind.DungeonSwitched)
       {
-        foreach (var ally in allies)
+        List<LivingEntity> alliesOldLevel = am.AllEntities;
+        if (CurrentNode != null)
         {
-          CurrentNode.SetEmptyTile(ally.point);
+          foreach (var ally in alliesOldLevel)
+          {
+            CurrentNode.SetEmptyTile(ally.point);
+          }
         }
       }
       //swap active node
       CurrentNode = node;
 
       CurrentNode.OnHeroPlaced(Hero);
-      var pt = CurrentNode.GetEmptyNeighborhoodPoint(Hero, Dungeons.TileContainers.DungeonNode.EmptyNeighborhoodCallContext.Move);
-      if(allies.Any())
-        CurrentNode.SetTile(allies[0], pt.Item1);
+      var allies = CurrentNode.GetActiveAllies();
+      if (allies.Any())
+      {
+        foreach(var ally in allies)
+        {
+          var pt = CurrentNode.GetEmptyNeighborhoodPoint(Hero, Dungeons.TileContainers.DungeonNode.EmptyNeighborhoodCallContext.Move);
+          CurrentNode.SetTile(allies[0], pt.Item1);
+        }
+      }
 
       EmitContextSwitched(context);
     }

@@ -85,6 +85,11 @@ namespace Roguelike.TileContainers
       return res;
     }
 
+    public List<Ally> GetActiveAllies()
+    {
+      return GetTiles<LivingEntity>().Where(i => i is Ally ally && ally.Active).Cast<Ally>().ToList();
+    }
+
     public override List<T> GetTiles<T>()
     {
       var res = base.GetTiles<T>();

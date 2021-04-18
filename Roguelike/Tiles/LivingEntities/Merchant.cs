@@ -14,7 +14,7 @@ namespace Roguelike.Tiles.LivingEntities
   {
     public const int HoundPrice = 100;
     
-    public Merchant(Container cont) : base(new Point().Invalid(), '!')
+    public Merchant(Container cont) : base(cont, new Point().Invalid(), '!')
     {
       Proffesion = EntityProffesionKind.Merchant;
       Stats.SetNominal(EntityStatKind.Health, 15);
@@ -28,10 +28,7 @@ namespace Roguelike.Tiles.LivingEntities
       Stats.SetNominal(EntityStatKind.Dexterity, 10);
 
       Gold = 100000;
-      CreateInventory(cont);
       Inventory.Capacity = 64;//TODO
-           
-
       Dirty = true;//TODO
 #if ASCII_BUILD
       color = ConsoleColor.Yellow;

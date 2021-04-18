@@ -1,12 +1,12 @@
 ﻿using Dungeons.Core;
 using Roguelike.Abstract.Tiles;
+using SimpleInjector;
 using System.Drawing;
 
 namespace Roguelike.Tiles.LivingEntities
 {
   public class God : AdvancedLivingEntity, IAlly
     //IDescriptable, 
-    //IMerchant
   {
     //Inventory inventory;
     //public bool Awoken { get; set; }
@@ -18,12 +18,12 @@ namespace Roguelike.Tiles.LivingEntities
 
     public AllyKind Kind => throw new System.NotImplementedException();
 
-    public God() : this(new Point().Invalid(), '0')
+    public God(Container cont) : this(cont, new Point().Invalid(), '0')
     {
      
     }
 
-    public God(Point point, char symbol) : base(point, symbol)
+    public God(Container cont, Point point, char symbol) : base(cont, point, symbol)
     {
       Alive = true;//for turn to work
       //HeroAlly = true;

@@ -301,8 +301,10 @@ namespace RoguelikeUnitTests
       var wpn2 = game.GameManager.LootGenerator.GetLootByAsset("axe") as Weapon;
       PutEqOnLevelAndCollectIt(wpn2);
       Assert.True(hero.Inventory.Contains(wpn2));
+      
+      wpn2.RequiredLevel = 100;
 
-      //shall fail = not supported so far
+      //shall fail  - level
       Assert.Null(Game.GameManager.SellItem(wpn2, hero, hero.Inventory, hero, hero.CurrentEquipment));
       Assert.AreEqual(heroEq[CurrentEquipmentKind.Weapon], wpn1);
       Assert.True(hero.Inventory.Contains(wpn2));

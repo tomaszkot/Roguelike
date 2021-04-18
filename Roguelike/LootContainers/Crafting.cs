@@ -53,7 +53,7 @@ namespace Roguelike.LootContainers
     {
       var recipes = new Inventory(container);
       recipes.Capacity = 14;
-      recipes.InvOwner = InvOwner.Hero;
+      //recipes.InvOwner = InvOwner.Hero;
       recipes.InvBasketKind = InvBasketKind.CraftingRecipe;
 
       Recipes = new InventoryOwner();
