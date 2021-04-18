@@ -192,7 +192,7 @@ namespace Roguelike.Tiles.LivingEntities
     private void InitActiveScroll()
     {
       //ActiveScroll = new Scroll(SpellKind.IceBall);
-      if (Name.ToLower() == "druid" || PowerKind != EnemyPowerKind.Plain)
+      if (Name.ToLower() == "druid" || PowerKind == EnemyPowerKind.Boss)
       {
         ActiveScroll = new Scroll(attackSpells.GetRandomElem());
         SetResistanceFromScroll(ActiveScroll);

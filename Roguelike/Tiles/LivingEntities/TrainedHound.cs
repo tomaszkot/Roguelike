@@ -18,8 +18,8 @@ namespace Roguelike.Tiles.LivingEntities
   {
     public TrainedHound(Container cont) : base(cont)
     {
-      
       Kind = AllyKind.Hound;
+      Name = "Hound";
 #if ASCII_BUILD
         color = ConsoleColor.Yellow;
 #endif

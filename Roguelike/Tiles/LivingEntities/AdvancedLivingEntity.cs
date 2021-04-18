@@ -684,5 +684,10 @@ namespace Roguelike.Tiles.LivingEntities
       var inc = (1 * victim.Level * exp);
       this.IncreaseExp(inc);
     }
+
+    public string GetExpInfo()
+    {
+      return (int)Experience + "/" + (int)NextLevelExperience;
+    }
   }
 }
