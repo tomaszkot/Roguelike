@@ -1,18 +1,11 @@
 ﻿using Dungeons.Core;
-using Dungeons.Tiles;
 using Roguelike.Attributes;
 using Roguelike.Events;
 using Roguelike.Policies;
-using Roguelike.Tiles;
-using Roguelike.Tiles.Interactive;
 using Roguelike.Tiles.LivingEntities;
-using Roguelike.Tiles.Looting;
 using SimpleInjector;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Roguelike.Managers
 {

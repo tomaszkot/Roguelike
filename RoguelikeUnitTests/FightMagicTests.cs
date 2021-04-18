@@ -206,6 +206,8 @@ namespace RoguelikeUnitTests
       Assert.NotNull(spell.Ally);
       Assert.AreEqual(gm.CurrentNode.GetTiles<Ally>().Count, enemiesCount+1);
       Assert.True(gm.AlliesManager.AllEntities.Contains((spell.Ally)));
+
+      //go dungeon down
       var stairs = gm.CurrentNode.GetTiles<Stairs>().Where(i => i.StairsKind == StairsKind.LevelDown).SingleOrDefault();
       Assert.NotNull(stairs);
       var index = gm.CurrentNode.Index;

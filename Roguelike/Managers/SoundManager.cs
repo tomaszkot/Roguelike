@@ -96,8 +96,6 @@ namespace Roguelike.Managers
         var ha = ac as HeroAction;
         if (ha.Kind == HeroActionKind.HitWall || ha.Kind == HeroActionKind.HitLockedChest)
           sndName = "punch";
-        else if (ha.Kind == HeroActionKind.LeveledUp)
-          sndName = "bell";
       }
       else if (ac is SoundRequestAction)
       {
@@ -118,6 +116,8 @@ namespace Roguelike.Managers
               sndName = "foot_steps";
           }
         }
+        else if (lea.Kind == LivingEntityActionKind.LeveledUp)
+          sndName = "bell";
         else if (lea.Kind == LivingEntityActionKind.Missed)
         {
           sndName = "melee_missed";

@@ -41,7 +41,6 @@ namespace Roguelike.Tiles.LivingEntities
         
     public Hero(Container container) : base(container, new Point().Invalid(), '@')
     {
-      canAdvanceInExp = true;
       Stats.SetNominal(EntityStatKind.Health, 40);//level up +2 // 40 -> 140
       // Character.Mana = 40;
       Stats.SetNominal(EntityStatKind.Strength, StartStrength);
@@ -57,8 +56,7 @@ namespace Roguelike.Tiles.LivingEntities
         Stats.SetNominal(EntityStatKind.Health, 140);
         Stats.SetNominal(EntityStatKind.Strength, 50);
       }
-
-      NextLevelExperience = FirstNextLevelExperienceThreshold;
+            
 
       //Inventory.InvOwner = InvOwner.Hero;
       Inventory.InvBasketKind = InvBasketKind.Hero;

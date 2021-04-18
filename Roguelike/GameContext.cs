@@ -208,7 +208,7 @@ namespace Roguelike
       CurrentNode = node;
 
       CurrentNode.OnHeroPlaced(Hero);
-      var allies = CurrentNode.GetActiveAllies();
+      var allies = am.AllEntities;
       if (allies.Any())
       {
         foreach(var ally in allies)

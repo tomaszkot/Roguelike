@@ -158,7 +158,7 @@ namespace Roguelike.Events
     public LootAction() { }
   }
 
-  public enum HeroActionKind { LeveledUp, ChangedLevel, Moved, HitWall, HitPrivateChest, HitLockedChest };
+  public enum HeroActionKind { ChangedLevel, Moved, HitWall, HitPrivateChest, HitLockedChest };
   public class HeroAction : GameAction
   {
     public Tile InvolvedTile { get; set; }
@@ -204,7 +204,7 @@ namespace Roguelike.Events
 
   public enum LivingEntityActionKind
   {
-    Moved, Died, GainedDamage, ExperiencedEffect, EffectFinished, Trapped, Interacted, Missed, UsedSpell,
+    LeveledUp, Moved, Died, GainedDamage, ExperiencedEffect, EffectFinished, Trapped, Interacted, Missed, UsedSpell,
     FailedToCastSpell, GodsTurn, GodsPowerReleased, StrikedBack, BulkAttack, UsedPortal, Teleported, AppendedToLevel
   }
 

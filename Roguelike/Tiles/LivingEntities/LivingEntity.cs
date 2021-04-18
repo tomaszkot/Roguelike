@@ -25,6 +25,9 @@ namespace Roguelike.Tiles.LivingEntities
   public enum EntityState { Idle, Moving, Attacking, CastingSpell }
   public enum EntityMoveKind { Freestyle, FollowingHero, ReturningHome }
 
+  /// <summary>
+  /// Base type for everything that is alive and can be potentialy killed
+  /// </summary>
   public class LivingEntity : Tile, ILastingEffectOwner, IDestroyable
   {
     static Dictionary<EntityStatKind, EntityStatKind> statsHitIncrease = new Dictionary<EntityStatKind, EntityStatKind> {
@@ -50,11 +53,10 @@ namespace Roguelike.Tiles.LivingEntities
     Dictionary<EntityStatKind, float> nonPhysicalDamageStats = new Dictionary<EntityStatKind, float>();
     public Tile FixedWalkTarget = null;
     public LivingEntity AllyModeTarget;
-    //public bool HeroAlly { get; set; }
     public bool HasRelocateSkill{ get; set; }
 
 
-  Scroll activeScroll;
+    Scroll activeScroll;
     public virtual Scroll ActiveScroll
     {
       get 
@@ -84,8 +86,7 @@ namespace Roguelike.Tiles.LivingEntities
 
     [JsonIgnore]
     public List<LivingEntity> EverHitBy { get; set; } = new List<LivingEntity>();
-    //public static Func<SpellCastPolicy> spellCastPolicyProvider;
-
+    
     bool alive = true;
     //[JsonIgnoreAttribute]
     public EntityStats Stats { get => stats; set => stats = value; }
@@ -95,8 +96,6 @@ namespace Roguelike.Tiles.LivingEntities
       get; 
       set; 
     } = 1;
-
-    //Dictionary<EffectType, float> lastingEffSubtractions = new Dictionary<EffectType, float>();
 
     public bool IsWounded { get; protected set; }
     protected Dictionary<EffectType, int> effectsToUse = new Dictionary<EffectType, int>();
@@ -286,7 +285,7 @@ namespace Roguelike.Tiles.LivingEntities
       if (defense <= 0)
         defense = 1;//HACK, TODO
       var inflicted = attack/defense;
-
+      
       var manaShieldEffect = LastingEffectsSet.GetByType(EffectType.ManaShield);
       if (manaShieldEffect != null && this.Stats.Mana > inflicted)
         ReduceMana(inflicted);
@@ -304,7 +303,9 @@ namespace Roguelike.Tiles.LivingEntities
         inflicted += npd;
         LastingEffectsSet.TryAddLastingEffectOnHit(npd, attacker, stat.Key);
       }
-            
+
+      attacker.OnDamageCaused(inflicted, this);
+
       var ga = new LivingEntityAction(LivingEntityActionKind.GainedDamage) { InvolvedValue = inflicted, InvolvedEntity = this };
       ga.Info = desc;
 
@@ -330,6 +331,11 @@ namespace Roguelike.Tiles.LivingEntities
       }
 
       return inflicted;
+    }
+
+    protected virtual void OnDamageCaused(float inflicted, LivingEntity victim)
+    { 
+      
     }
 
     List<EffectType> everCausedHero = new List<EffectType>();

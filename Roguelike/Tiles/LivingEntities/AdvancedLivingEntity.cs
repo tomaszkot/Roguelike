@@ -73,8 +73,8 @@ namespace Roguelike.Tiles.LivingEntities
     public event EventHandler<EntityStatKind> StatLeveledUp;
     public event EventHandler<int> GoldChanged;
         
-    public int Experience { get; private set; }
-    public int NextLevelExperience { get; set; }
+    public double Experience { get; private set; }
+    public double NextLevelExperience { get; set; }
 
     int gold;
     public int Gold 
@@ -153,6 +153,7 @@ namespace Roguelike.Tiles.LivingEntities
 
     public AdvancedLivingEntity(Container cont, Point point, char symbol) : base(point, symbol)
     {
+      NextLevelExperience = FirstNextLevelExperienceThreshold;
       RelationToHero.Kind = RelationToHeroKind.Neutral;
       Container = cont;
       Inventory = cont.GetInstance<Inventory>();
@@ -201,7 +202,7 @@ namespace Roguelike.Tiles.LivingEntities
     //  return new AdvancedLivingEntity(new Point(0, 0), '\0');
     //}
         
-    public bool IncreaseExp(int factor)
+    public bool IncreaseExp(double factor)
     {
       bool leveledUp = false;
       Experience += factor;
@@ -224,7 +225,7 @@ namespace Roguelike.Tiles.LivingEntities
         if (LeveledUp!=null)
           LeveledUp(this, EventArgs.Empty);
 
-        AppendAction(new HeroAction() { Kind = HeroActionKind.LeveledUp, Info = "Hero has gained a new level!" });
+        AppendAction(new LivingEntityAction() { Kind = LivingEntityActionKind.LeveledUp, Info = Name + " has gained a new level!", InvolvedEntity = this });
       }
       if (ExpChanged != null)
         ExpChanged(this, EventArgs.Empty);
@@ -322,7 +323,7 @@ namespace Roguelike.Tiles.LivingEntities
 
     [JsonIgnore]
     public bool Dirty { get; set; }
-    public int PrevLevelExperience { get; private set; }
+    public double PrevLevelExperience { get; private set; }
     CurrentEquipment IEquipable.CurrentEquipment { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
     public AbilitiesSet Abilities { get => abilities; set => abilities = value; }
 
@@ -659,6 +660,29 @@ namespace Roguelike.Tiles.LivingEntities
     public virtual bool GetGoldWhenSellingTo(IInventoryOwner dest)
     {
       return this != dest;
+    }
+
+    public static readonly Dictionary<EnemyPowerKind, double> EnemyDamagingTotalExpAward = new Dictionary<EnemyPowerKind, double>()
+    {
+      { EnemyPowerKind.Plain, 10 },
+      { EnemyPowerKind.Champion, 50 },
+      { EnemyPowerKind.Boss, 100 },
+    };
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="inflicted"></param>
+    /// <param name="victim"></param>
+    protected override void OnDamageCaused(float inflicted, LivingEntity victim)
+    {
+      double exp = 1f;
+      if (victim is Enemy en)
+      {
+        var livePercentage = inflicted/ en.GetTotalValue(EntityStatKind.Health) * 100;
+        exp = livePercentage * EnemyDamagingTotalExpAward[en.PowerKind]/ 100;
+      }
+      var inc = (1 * victim.Level * exp);
+      this.IncreaseExp(inc);
     }
   }
 }
