@@ -915,9 +915,9 @@ namespace Dungeons
         return res;
       }
 
-      public List<Tile> GetEmptyNeighborhoodTiles(Tile target, bool incDiagonbal = true)
+      public List<Tile> GetEmptyNeighborhoodTiles(Tile target, bool incDiagonal = true)
       {
-        var neibs = GetNeighborTiles(target, incDiagonbal).Where(i=> i!=null).ToList();
+        var neibs = GetNeighborTiles(target, incDiagonal).Where(i=> i!=null).ToList();
         if(neibs.Any())
         {
           neibs.Shuffle();
@@ -925,7 +925,7 @@ namespace Dungeons
           if (neibsEmpty.Any())
             return neibsEmpty;
 
-          return GetEmptyNeighborhoodTiles(neibs.First(), incDiagonbal);
+          return GetEmptyNeighborhoodTiles(neibs.First(), incDiagonal);
         }
 
         return null;

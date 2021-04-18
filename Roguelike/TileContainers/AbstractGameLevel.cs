@@ -125,13 +125,6 @@ namespace Roguelike.TileContainers
 
     public override Tile GetClosestEmpty(Tile baseTile, bool sameNodeId = false, List<Tile> skip = null, bool incDiagonals = true)
     {
-      var empties = GetEmptyNeighborhoodTiles(baseTile, incDiagonals);
-      if (empties.Any())
-        return empties.First();
-
-      //hmm, TODO! maybe that method shall be marked as trowing NotSupportedException/deprecated? 
-      //1(Loot is not considered here)
-      //2 veeeery slow!
       return base.GetClosestEmpty(baseTile, sameNodeId, skip);
     }
 
