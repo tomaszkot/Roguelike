@@ -213,8 +213,12 @@ namespace Roguelike
       {
         foreach(var ally in allies)
         {
-          var pt = CurrentNode.GetEmptyNeighborhoodPoint(Hero, Dungeons.TileContainers.DungeonNode.EmptyNeighborhoodCallContext.Move);
-          CurrentNode.SetTile(allies[0], pt.Item1);
+          var pt = CurrentNode.GetClosestEmpty(Hero).point;
+          var empties = CurrentNode.GetClosestEmpties(pt);
+          var notFar = empties.Where(i => i.DistanceFrom(Hero) > 1).ToList();
+          if (notFar.Any())
+            pt = notFar.First().point;
+          CurrentNode.SetTile(ally, pt);
         }
       }
 

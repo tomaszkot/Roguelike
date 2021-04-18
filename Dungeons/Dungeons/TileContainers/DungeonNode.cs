@@ -941,24 +941,32 @@ namespace Dungeons
         return other == first || other.IsSubclassOf(first);
       }
 
-      protected virtual Tuple<Point, TileNeighborhood> GetEmptyNeighborhoodPoint(Tile target, List<TileNeighborhood> sides, List<Type> extraTypesConsideredEmpty)
+      protected virtual List<Tuple<Point, TileNeighborhood>> GetEmptyNeighborhoodPoints(Tile target, List<TileNeighborhood> sides, List<Type> extraTypesConsideredEmpty)
       {
-        var res = new Tuple<Point, TileNeighborhood>(GenerationConstraints.InvalidPoint, TileNeighborhood.East);
+        var res = new List<Tuple<Point, TileNeighborhood>>();
 
         foreach (var side in sides)
         {
           Tile tile = GetNeighborTile(target, side);
           if (tile == null)
             continue;
-          if (IsTileEmpty(tile) || (extraTypesConsideredEmpty != null && 
-                                    extraTypesConsideredEmpty.Any(i=> IsTypeMatching(i, tile.GetType()))))
+          if (IsTileEmpty(tile) || (extraTypesConsideredEmpty != null &&
+                                    extraTypesConsideredEmpty.Any(i => IsTypeMatching(i, tile.GetType()))))
           {
-            res = new Tuple<Point, TileNeighborhood>(tile.point, side);
-            break;
+            res.Add(new Tuple<Point, TileNeighborhood>(tile.point, side));
           }
         }
 
         return res;
+      }
+
+      protected virtual Tuple<Point, TileNeighborhood> GetEmptyNeighborhoodPoint(Tile target, List<TileNeighborhood> sides, List<Type> extraTypesConsideredEmpty)
+      {
+        var empties = GetEmptyNeighborhoodPoints(target, sides, extraTypesConsideredEmpty);
+        if (empties.Any())
+          return empties.First();
+
+        return null;
       }
 
       public bool IsPointInBoundaries(Point pt)
@@ -968,6 +976,15 @@ namespace Dungeons
 
       public virtual Tile GetClosestEmpty(Tile baseTile, bool sameNodeId = false, List<Tile> skip = null, bool incDiagonals = true)
       {
+        var fastVersionResult = GetEmptyNeighborhoodPoint(baseTile);
+        if (fastVersionResult != null)
+        {
+          var tile = GetTile(fastVersionResult.Item1);
+          if(tile!=null && (!sameNodeId || tile.DungeonNodeIndex == baseTile.DungeonNodeIndex))
+            return tile;
+        }
+
+        Log("GetClosestEmpty - failed to find empty fast way!", true);
         var emptyTiles = GetEmptyTiles();
         if (skip != null)
           emptyTiles.RemoveAll(i=> skip.Contains(i));

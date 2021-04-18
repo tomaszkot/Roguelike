@@ -112,7 +112,17 @@ namespace Roguelike.TileContainers
     {
       return IsTypeMatching(typeof(Loot), typeof(T));
     }
-        
+
+    public List<Tile> GetClosestEmpties(Point pt)
+    {
+      return GetEmptyNeighborhoodTiles(GetTile(pt), true);
+    }
+
+    public List<Tile> GetClosestEmpties(Tile baseTile)
+    {
+      return GetEmptyNeighborhoodTiles(baseTile, true);
+    }
+
     public override Tile GetClosestEmpty(Tile baseTile, bool sameNodeId = false, List<Tile> skip = null, bool incDiagonals = true)
     {
       var empties = GetEmptyNeighborhoodTiles(baseTile, incDiagonals);
