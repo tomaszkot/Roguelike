@@ -38,6 +38,7 @@ namespace Roguelike.Tiles.LivingEntities
 
   public class AdvancedLivingEntity : LivingEntity, IPersistable, IEquipable, IAdvancedEntity
   {
+    public static int FirstNextLevelExperienceThreshold = 50;
     public RelationToHero RelationToHero { get; set; } = new RelationToHero();
     public bool HasUrgentTopic { get; set; }
     public Discussion Discussion { get; set; } = new Discussion();

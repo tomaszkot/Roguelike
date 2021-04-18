@@ -258,13 +258,16 @@ namespace Roguelike.Managers
           }
           if (lea.InvolvedEntity is Enemy enemy)
           {
-            //TODO based on enemy level, corelate iwth nextExp
-            var exp = 10;
+            //TODO based on enemy level, corelate with nextExp
+            var exp = 1;
             if (enemy.PowerKind == EnemyPowerKind.Boss)
-              exp = 100;
+              exp = 10;
             else if (enemy.PowerKind == EnemyPowerKind.Champion)
-              exp = 50;
+              exp = 5;
             Hero.IncreaseExp(exp);
+            var allies = context.CurrentNode.GetActiveAllies();
+            foreach (var al in allies)
+              al.IncreaseExp(exp);
             //var loot = LootGenerator.GetRandomLoot();
             context.CurrentNode.SetTile(new Tile(), lea.InvolvedEntity.point);
             var lootItems = lootManager.TryAddForLootSource(enemy);

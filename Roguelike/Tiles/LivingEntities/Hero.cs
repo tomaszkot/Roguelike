@@ -23,7 +23,7 @@ namespace Roguelike.Tiles.LivingEntities
       get => quests; 
       set => quests = value; 
     }
-    public static int FirstNextLevelExperienceThreshold = 50;
+    
     public const int StartStrength = 15;//15;50
     
     public LootContainers.Crafting Crafting { get; set; }

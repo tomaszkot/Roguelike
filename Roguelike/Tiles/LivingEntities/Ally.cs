@@ -21,7 +21,7 @@ namespace Roguelike.Tiles.LivingEntities
       Stats.SetNominal(EntityStatKind.Defense, 10);
       Stats.SetNominal(EntityStatKind.Dexterity, 10);
 
-      //CreateInventory(null);
+      canAdvanceInExp = true;
       Inventory.InvBasketKind = InvBasketKind.AllyEquipment;
       Dirty = true;//TODO
     }
