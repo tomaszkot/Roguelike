@@ -76,6 +76,7 @@
     <Compile Include="Abstract\Inventory\IInventoryOwner.cs" />
     <Compile Include="Abstract\Effects\IEffect.cs" />
     <Compile Include="Tiles\Abstract\IDestroyable.cs" />
+    <Compile Include="Tiles\Abstract\IMerchant.cs" />
     <Compile Include="Tiles\Abstract\IObstacle.cs" />
     <Compile Include="Abstract\Projectiles\IProjectilesFactory.cs" />
     <Compile Include="Abstract\Projectiles\IProjectile.cs" />

@@ -488,7 +488,7 @@ namespace Roguelike.TileContainers
 
     public Enemy SpawnEnemy(int level)
     {
-      var enemy = Enemy.Spawn(EnemySymbols.SkeletonSymbol, level);
+      var enemy = Enemy.Spawn(EnemySymbols.SkeletonSymbol, level, Container);
       enemy.Container = Container;
       return enemy;
     }

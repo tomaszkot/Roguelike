@@ -6,7 +6,7 @@ namespace Roguelike.Tiles
   public interface ILootSource
   {
     int Level { get; }
-    void SetLevel(int level);
+    bool SetLevel(int level);
     Point GetPoint(); 
   }
 }
@@ -66,7 +66,11 @@ namespace Roguelike.Tiles.Interactive
           SetColor();
       }
     }
-    public void SetLevel(int level) { Level = level; }
+    public bool SetLevel(int level) 
+    { 
+      Level = level;
+      return true;
+    }
 
     public Chest() : base(ChestSymbol)
     {

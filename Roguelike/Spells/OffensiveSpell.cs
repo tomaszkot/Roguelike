@@ -8,7 +8,7 @@ namespace Roguelike.Spells
 {
   public class OffensiveSpell : Spell, IDamagingSpell
   {
-    protected float damage = 0;
+   // protected float damage = 0;
 
     public OffensiveSpell() { }
 
@@ -59,7 +59,7 @@ namespace Roguelike.Spells
     {
       EntityRequired = true;
       EnemyRequired = true;
-      damage = (caller is Enemy) ? BaseDamage - 1 : BaseDamage;
+      //damage = (caller is Enemy) ? BaseDamage - 1 : BaseDamage;
     }
 
 

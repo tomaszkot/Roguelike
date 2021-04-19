@@ -4,7 +4,7 @@ using Roguelike.Tiles;
 using System;
 using System.Collections.Generic;
 
-namespace Roguelike.Abstract.Tiles
+namespace Roguelike.Tiles.Abstract
 {
   public interface IAdvancedEntity : IInventoryOwner
   {

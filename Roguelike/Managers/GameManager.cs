@@ -881,6 +881,14 @@ namespace Roguelike.Managers
       var le = ally as LivingEntity;
       le.Container = this.Container;
       le.Revealed = true;
+
+      if (ally is TrainedHound)//TODO
+      {
+        var lvl = Hero.Level / 2;
+        if (lvl == 0)
+          lvl = 1;
+        (ally as Ally).SetLevel(lvl);//TODO
+      }
       AlliesManager.AddEntity(le);
       
       var empty = CurrentNode.GetClosestEmpty(Hero, true, false);

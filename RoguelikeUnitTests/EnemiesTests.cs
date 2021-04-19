@@ -17,8 +17,9 @@ namespace RoguelikeUnitTests
     public void TestPhysicalDamage()
     {
       var game = CreateGame();
-      var enemy = new Enemy(EnemySymbols.SkeletonSymbol);//SpawnEnemy();
-      //enemy.Symbol = EnemySymbols.BatSymbol;
+      var enemy = SpawnEnemy();
+      enemy.Symbol = EnemySymbols.SkeletonSymbol;
+      
       Assert.False(enemy.GetNonPhysicalDamages().Any());
       enemy.Symbol = EnemySymbols.SpiderSymbol;
       Assert.True(enemy.GetNonPhysicalDamages().Any());
@@ -26,9 +27,12 @@ namespace RoguelikeUnitTests
       var poisonVal = enemy.GetNonPhysicalDamages()[EntityStatKind.PoisonAttack];
       Assert.Greater(poisonVal, 0);
       Assert.AreEqual(enemy.Level, 1);
-      enemy.SetLevel(2);
-      Assert.AreEqual(enemy.Level, 2);
-      Assert.Greater(enemy.GetNonPhysicalDamages()[EntityStatKind.PoisonAttack], poisonVal);
+
+      var enemy1 = SpawnEnemy();
+      enemy1.Symbol = EnemySymbols.SpiderSymbol;
+      Assert.True(enemy1.SetLevel(2));
+      Assert.AreEqual(enemy1.Level, 2);
+      Assert.Greater(enemy1.GetNonPhysicalDamages()[EntityStatKind.PoisonAttack], poisonVal);
     }
 
     [Test]

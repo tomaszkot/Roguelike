@@ -8,6 +8,7 @@ using Roguelike.Attributes;
 using Roguelike.Effects;
 using Roguelike.Spells;
 using Roguelike.Tiles.Looting;
+using SimpleInjector;
 
 namespace Roguelike.Tiles.LivingEntities
 {
@@ -18,40 +19,20 @@ namespace Roguelike.Tiles.LivingEntities
 
   public class Enemy : LivingEntity
   {
+    bool LevelSet { get; set; }
     public const string ChempTagSuffix = "_ch";
     public PrefferedFightStyle PrefferedFightStyle { get; set; }//= PrefferedFightStyle.Magic;
-
-    public static readonly EntityStat BaseAttack = new EntityStat(EntityStatKind.Attack, 10);
-    public static readonly EntityStat BaseHealth = new EntityStat(EntityStatKind.Health, 12);
-    public static readonly EntityStat BaseDefence = new EntityStat(EntityStatKind.Defense, 5);
-    public static readonly EntityStat BaseMana = new EntityStat(EntityStatKind.Mana, 10);
-    public static readonly EntityStat BaseMagic = new EntityStat(EntityStatKind.Magic, 10);
-
-    public static readonly EntityStats BaseStats;
-    bool levelSet = false;
     public static char[] AllSymbols;
 
     public int NumberOfCastedEffectsForAllies = 0;
     public int NumberOfEmergencyTeleports = 0;
     public EnemyPowerKind PowerKind { get; set; } = EnemyPowerKind.Plain;
-    public bool LevelSet { get => levelSet; set => levelSet = value; }
+    
     public Dictionary<IncreaseStatsKind, bool> StatsIncreased { get; set; } = new Dictionary<IncreaseStatsKind, bool>();
     public Loot DeathLoot { get; set; }
 
     public bool ShoutedAtHero { get; set; }
-
-    static Enemy()
-    {
-      BaseStats = new EntityStats();
-
-      BaseStats.SetStat(EntityStatKind.Attack, BaseAttack);
-      BaseStats.SetStat(EntityStatKind.Defense, BaseDefence);
-      BaseStats.SetStat(EntityStatKind.Health, BaseHealth);
-      BaseStats.SetStat(EntityStatKind.Mana,  BaseMana);
-      var mag = new EntityStat(EntityStatKind.Magic, BaseMagic.Value.Nominal + 2);
-      BaseStats.SetStat(EntityStatKind.Magic, mag);
-    }
-
+        
     public Enemy() : this(new Point().Invalid(), 'e')
     {
 
@@ -72,13 +53,6 @@ namespace Roguelike.Tiles.LivingEntities
 #endif
       Alive = true;
 
-
-      foreach (var basicStats in EntityStat.BasicStats)
-      {
-        var nv = BaseStats[basicStats].Nominal;
-        Stats.SetNominal(basicStats, nv);
-      }
-
       if (string.IsNullOrEmpty(Name) && symbol != EnemySymbols.CommonEnemySymbol)
         Name = NameFromSymbol(symbol);
       //Stats.Experience = 1;
@@ -87,8 +61,8 @@ namespace Roguelike.Tiles.LivingEntities
     }
 
     protected bool WereStatsIncreased(IncreaseStatsKind kind)
-    { 
-      if(StatsIncreased.ContainsKey(kind))
+    {
+      if (StatsIncreased.ContainsKey(kind))
         return StatsIncreased[kind];
 
       return false;
@@ -154,34 +128,34 @@ namespace Roguelike.Tiles.LivingEntities
       }
     }
 
-    protected void AssertFalse(string info)
+    protected override void IncreaseStats(float inc, IncreaseStatsKind kind)
     {
-      AppendAction(new Roguelike.Events.GameStateAction()
+      var wereInc = WereStatsIncreased(kind);
+      if (wereInc)
       {
-        Type = Roguelike.Events.GameStateAction.ActionType.Assert,
-        Info = info
-      });
+        AssertFalse("inc == " + inc + " " + kind + ", increasing for second time?");
+        return;
+      }
+      if (inc == 0)
+      {
+        AssertFalse("inc == 0 PowerKind =" + PowerKind + " fromPowerKind=" + kind);
+        inc = 1.2f;
+      }
+      base.IncreaseStats(inc, kind);
+
+      StatsIncreased[kind] = true;
     }
 
-    public override void SetLevel(int level)
+    public override bool SetLevel(int level)
     {
-      Assert(level >= 1);
-      if (level > 6)
-      {
-        int k = 0;
-        k++;
-      }
-      base.SetLevel(level);
-      
-      if (!WereStatsIncreased(IncreaseStatsKind.Name))
-        UpdateStatsFromName();
+      var set = base.SetLevel(level);
+      LevelSet = set;
+      return set;
+    }
 
-      var hard = false;// GameManager.Instance.GameSettings.DifficultyLevel == Commons.GameSettings.Difficulty.Hard;
-      var inc = GetIncrease(hard ? level + 1 : level);
-      IncreaseStats(inc, IncreaseStatsKind.Level);
-      SetResistance();
-      InitActiveScroll();
-      LevelSet = true;
+    protected override bool CanIncreaseLevel()
+    {
+      return Level == 1 || !LevelSet;
     }
 
     static List<SpellKind> attackSpells = new List<SpellKind>()
@@ -189,7 +163,7 @@ namespace Roguelike.Tiles.LivingEntities
       SpellKind.FireBall, SpellKind.IceBall, SpellKind.PoisonBall
     };
 
-    private void InitActiveScroll()
+    protected override void InitActiveScroll()
     {
       //ActiveScroll = new Scroll(SpellKind.IceBall);
       if (Name.ToLower() == "druid" || PowerKind == EnemyPowerKind.Boss)
@@ -200,25 +174,6 @@ namespace Roguelike.Tiles.LivingEntities
       }
     }
 
-    void SetResistance()
-    {
-      float resistBasePercentage = 5 * GetIncrease(this.Level, 3f);
-      var incPerc = GetResistanceLevelFactor(this.Level);
-      resistBasePercentage += resistBasePercentage * incPerc / 100;
-
-      //if (PlainSymbol == GolemSymbol || PlainSymbol == VampireSymbol || PlainSymbol == WizardSymbol
-      //  || kind != PowerKind.Plain)
-      //{
-      //  resistBasePercentage += 14;
-      //}
-      this.Stats.SetNominal(EntityStatKind.ResistFire, resistBasePercentage);
-      this.Stats.SetNominal(EntityStatKind.ResistPoison, resistBasePercentage);
-      this.Stats.SetNominal(EntityStatKind.ResistCold, resistBasePercentage);
-      var rli = resistBasePercentage * 2.5f / 3f;
-      this.Stats.SetNominal(EntityStatKind.ResistLighting, rli);
-    }
-
-        
     private void SetResistanceFromScroll(Scroll activeScroll)
     {
       if (activeScroll == null)
@@ -240,71 +195,23 @@ namespace Roguelike.Tiles.LivingEntities
         this.Stats.SetNominal(esk, val);
       }
     }
-
-    public static float GetResistanceLevelFactor(int level)
+        
+    protected override void InitStatsFromName()
     {
-      //TODO
-      return (level +1)* 10;
-      //if (!ResistanceFactors.Any())
-      //{
-      //  for (int i = 0; i <= GameManager.MaxLevelIndex; i++)
-      //  {
-      //    double inp = ((double)i) / GameManager.MaxLevelIndex;
-      //    float incPerc = (float)Sigmoid(inp);
-      //    ////Debug.WriteLine(i.ToString() + ") ResistanceLevelFactor = " + fac);
-      //    ResistanceFactors.Add(incPerc);
-      //  }
-      //}
-      //if (level >= ResistanceFactors.Count)
-      //  return 0;
-
-      //return ResistanceFactors[GameManager.MaxLevelIndex - level] * 20;
-    }
-
-    public float EnemyStatsIncreasePerLevel = .31f;
-    
-    private float GetIncrease(int level, float factor = 1)
-    {
-      return 1 + (level * EnemyStatsIncreasePerLevel * factor);
-    }
-
-    protected void UpdateStatsFromName()
-    {
-      if (tag1.ToLower().Contains("bear") ||
-          tag1.ToLower().Contains("demon"))
+      if (!WereStatsIncreased(IncreaseStatsKind.Name))
       {
-        IncreaseStats(1.5f, IncreaseStatsKind.Name);
+        if (tag1.ToLower().Contains("bear") ||
+            tag1.ToLower().Contains("demon"))
+        {
+          IncreaseStats(1.5f, IncreaseStatsKind.Name);
+        }
       }
       //else if (tag1.ToLower().Contains("bear"))
       //{
       //  IncreaseStats(1.5f, IncreaseStatsKind.Name);
       //}
     }
-
-    protected void IncreaseStats(float inc, IncreaseStatsKind kind)
-    {
-      var wereInc = WereStatsIncreased(kind);
-      if (wereInc)
-      {
-        AssertFalse("inc == " + inc + " " + kind + ", increasing for second time?");
-        return;
-      }
-      if (inc == 0)
-      {
-        AssertFalse("inc == 0 PowerKind =" + PowerKind + " fromPowerKind="+ kind);
-        inc = 1.2f;
-      }
-
-      foreach (var kv in Stats.GetStats())
-      {
-        var incToUse = inc;
-        var val = kv.Value.Value.TotalValue * incToUse;//TODO TotalValue ? -> SetNominal ?
-        Stats.SetNominal(kv.Key, val);
-      }
-
-      StatsIncreased[kind] = true;
-    }
-
+        
     public override string ToString()
     {
       return base.ToString() + " " + PowerKind + "";
@@ -342,9 +249,10 @@ namespace Roguelike.Tiles.LivingEntities
       return "";
     }
 
-    public static Enemy Spawn(char symbol, int level)
+    public static Enemy Spawn(char symbol, int level, Container cont)
     {
       var enemy = new Enemy(symbol);
+      enemy.Container = cont;
       enemy.SetLevel(level);
       enemy.tag1 = EnemySymbols.EnemiesToSymbols.Where(i => i.Value == symbol).Single().Key;
       enemy.Revealed = true;

@@ -48,7 +48,9 @@ namespace RoguelikeUnitTests
 
     protected Enemy SpawnEnemy()
     {
-      return game.GameManager.CurrentNode.SpawnEnemy(1);
+      if(game !=null)
+        return game.GameManager.CurrentNode.SpawnEnemy(1);
+      return Container.GetInstance<Enemy>();
     }
 
     protected virtual void OnInit()

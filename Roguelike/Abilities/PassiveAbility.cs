@@ -3,6 +3,7 @@ using Roguelike.Abstract.Tiles;
 using Roguelike.Attributes;
 using Roguelike.Calculated;
 using Roguelike.Extensions;
+using Roguelike.Tiles.Abstract;
 using Roguelike.Tiles.Looting;
 using System;
 using System.Collections.Generic;

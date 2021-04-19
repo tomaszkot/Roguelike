@@ -12,15 +12,6 @@ namespace Roguelike.Tiles.LivingEntities
   {
     public Ally(Container cont, char symbol = '!') : base(cont, new Point().Invalid(), symbol)
     {
-      Stats.SetNominal(EntityStatKind.Health, 15);
-      var str = 15;
-      Stats.SetNominal(EntityStatKind.Strength, str);//15
-      Stats.SetNominal(EntityStatKind.Attack, str);
-      Stats.SetNominal(EntityStatKind.Magic, 10);
-      Stats.SetNominal(EntityStatKind.Mana, 40);
-      Stats.SetNominal(EntityStatKind.Defense, 10);
-      Stats.SetNominal(EntityStatKind.Dexterity, 10);
-
       canAdvanceInExp = true;
       Inventory.InvBasketKind = InvBasketKind.AllyEquipment;
       Dirty = true;//TODO
@@ -39,9 +30,9 @@ namespace Roguelike.Tiles.LivingEntities
 
     public Point Point { get => point; set => point = value; }
 
-    public override void SetLevel(int level)
+    public override bool SetLevel(int level)
     {
-      base.SetLevel(level);
+      return base.SetLevel(level);
     }
 
     public static Ally Spawn<T>(Container cont, char symbol, int level) where T : Ally, new()

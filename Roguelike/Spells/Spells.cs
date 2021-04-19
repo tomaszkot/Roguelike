@@ -91,7 +91,7 @@ namespace Roguelike.Spells
     {
       manaCost = BaseManaCost * 2;
       Kind = SpellKind.StonedBall;
-      damage = ProjectiveSpell.BaseDamage * 3f;
+      //damage = ProjectiveSpell.BaseDamage * 3f;
     }
     public override string GetLifetimeSound() { return "thunder3"; }
     //public override string GetHitSound() { return "stone1.wav"; }
@@ -137,7 +137,7 @@ namespace Roguelike.Spells
       trap.Spell = this;
       trap.SetUp = true;
       
-      damage = ProjectiveSpell.BaseDamage * 5f;
+      //damage = ProjectiveSpell.BaseDamage * 5f;
       manaCost = (float)(BaseManaCost * 2);
     }
 
@@ -153,7 +153,7 @@ namespace Roguelike.Spells
     public BushTrapSpell(LivingEntity caller) : base(caller)
     {
       Kind = SpellKind.BushTrap;
-      damage = ProjectiveSpell.BaseDamage;
+      //damage = ProjectiveSpell.BaseDamage;
       manaCost = (float)(BaseManaCost * 2);
       EnemyRequired = true;
     }
@@ -172,17 +172,15 @@ namespace Roguelike.Spells
     public SkeletonSpell(LivingEntity caller) : base(caller)
     {
       Kind = SpellKind.Skeleton;
-      damage = ProjectiveSpell.BaseDamage + 1;
+      //damage = ProjectiveSpell.BaseDamage + 1;
 
       var level = GetCurrentLevel();
-      Ally = caller.Container.GetInstance<AlliedEnemy>();// Ally.Spawn<AlliedEnemy>(, EnemySymbols.SkeletonSymbol, level);
+      Ally = caller.Container.GetInstance<AlliedEnemy>();
       Ally.InitSpawned(EnemySymbols.SkeletonSymbol, level);
       Ally.Name = "Skeleton";
-
-
       Ally.Stats[EntityStatKind.Attack].Nominal = Damage;
-      var health = CalcHealth(level);
-      Ally.Stats[EntityStatKind.Health].Nominal = health;
+      //var health = CalcHealth(level);
+      //Ally.Stats[EntityStatKind.Health].Nominal = health;
       manaCost = (float)(BaseManaCost * 2) + 2;
     }
 

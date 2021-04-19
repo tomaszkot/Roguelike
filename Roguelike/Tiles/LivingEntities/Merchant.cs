@@ -4,13 +4,14 @@ using Roguelike.Abstract;
 using Roguelike.Abstract.Tiles;
 using Roguelike.Attributes;
 using Roguelike.LootContainers;
+using Roguelike.Tiles.Abstract;
 using Roguelike.Tiles.LivingEntities;
 using SimpleInjector;
 using System.Drawing;
 
 namespace Roguelike.Tiles.LivingEntities
 {
-  public class Merchant : AdvancedLivingEntity, IAlly
+  public class Merchant : AdvancedLivingEntity, IAlly, IMerchant
   {
     public const int HoundPrice = 100;
     

@@ -28,7 +28,7 @@ namespace Roguelike.Attributes
   {
     Dictionary<EntityStatKind, EntityStat> stats = new Dictionary<EntityStatKind, EntityStat>();
     //int level = 1;
-    bool canAdvanceInExp = true;
+    //bool canAdvanceInExp = true;
     
     public EntityStats()
     {
@@ -78,18 +78,19 @@ namespace Roguelike.Attributes
         myStat.Value.MakeNegative();
       }
     }
-    public bool CanAdvanceInExp
-    {
-      get
-      {
-        return canAdvanceInExp;
-      }
+    
+    //public bool CanAdvanceInExp
+    //{
+    //  get
+    //  {
+    //    return canAdvanceInExp;
+    //  }
 
-      set
-      {
-        canAdvanceInExp = value;
-      }
-    }
+    //  set
+    //  {
+    //    canAdvanceInExp = value;
+    //  }
+    //}
 
     public List<EntityStat> GetBasicStats()
     {

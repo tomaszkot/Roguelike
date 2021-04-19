@@ -1,7 +1,6 @@
 ﻿using Dungeons.Core;
 using Dungeons.Tiles;
 using Newtonsoft.Json;
-using Roguelike.Abstract;
 using Roguelike.Abstract.Spells;
 using Roguelike.Attributes;
 using Roguelike.Effects;
@@ -30,6 +29,13 @@ namespace Roguelike.Tiles.LivingEntities
   /// </summary>
   public class LivingEntity : Tile, ILastingEffectOwner, IDestroyable
   {
+    
+    public static readonly EntityStat BaseAttack = new EntityStat(EntityStatKind.Attack, 12);
+    public static readonly EntityStat BaseHealth = new EntityStat(EntityStatKind.Health, 15);
+    public static readonly EntityStat BaseDefence = new EntityStat(EntityStatKind.Defense, 7);
+    public static readonly EntityStat BaseMana = new EntityStat(EntityStatKind.Mana, 10);
+    public static readonly EntityStat BaseMagic = new EntityStat(EntityStatKind.Magic, 10);
+
     static Dictionary<EntityStatKind, EntityStatKind> statsHitIncrease = new Dictionary<EntityStatKind, EntityStatKind> {
                 { EntityStatKind.LifeStealing, EntityStatKind.Health },
                 { EntityStatKind.ManaStealing, EntityStatKind.Mana }
@@ -54,7 +60,7 @@ namespace Roguelike.Tiles.LivingEntities
     public Tile FixedWalkTarget = null;
     public LivingEntity AllyModeTarget;
     public bool HasRelocateSkill{ get; set; }
-
+    public static readonly EntityStats BaseStats;
 
     Scroll activeScroll;
     public virtual Scroll ActiveScroll
@@ -102,9 +108,17 @@ namespace Roguelike.Tiles.LivingEntities
     public static readonly EffectType[] PossibleEffectsToUse = new EffectType[] {
     EffectType.Weaken, EffectType.Rage, EffectType.IronSkin, EffectType.ResistAll, EffectType.Inaccuracy
     };
-    
+        
     static LivingEntity()
     {
+      BaseStats = new EntityStats();
+
+      BaseStats.SetStat(EntityStatKind.Attack, BaseAttack);
+      BaseStats.SetStat(EntityStatKind.Defense, BaseDefence);
+      BaseStats.SetStat(EntityStatKind.Health, BaseHealth);
+      BaseStats.SetStat(EntityStatKind.Mana, BaseMana);
+      var mag = new EntityStat(EntityStatKind.Magic, BaseMagic.Value.Nominal + 2);
+      BaseStats.SetStat(EntityStatKind.Magic, mag);
     }
 
     public LivingEntity():this(new Point(-1, -1), '\0')
@@ -113,6 +127,12 @@ namespace Roguelike.Tiles.LivingEntities
 
     public LivingEntity(Point point, char symbol) : base(point, symbol)
     {
+      foreach (var basicStats in EntityStat.BasicStats)
+      {
+        var nv = BaseStats[basicStats].Nominal;
+        Stats.SetNominal(basicStats, nv);
+      }
+
       lastingEffectsSet = new LastingEffectsSet(this, null);
       Alive = true;
       Name = "";
@@ -139,6 +159,70 @@ namespace Roguelike.Tiles.LivingEntities
       effectsToUse[EffectType.IronSkin] = GenerationInfo.DefaultEnemyIronSkinUsageCount;
       effectsToUse[EffectType.ResistAll] = GenerationInfo.DefaultEnemyResistAllUsageCount;
       effectsToUse[EffectType.Inaccuracy] = GenerationInfo.DefaultEnemyResistAllUsageCount;
+    }
+
+    protected void AssertFalse(string info)
+    {
+      AppendAction(new Roguelike.Events.GameStateAction()
+      {
+        Type = Roguelike.Events.GameStateAction.ActionType.Assert,
+        Info = info
+      });
+    }
+
+    protected virtual void IncreaseStats(float inc, IncreaseStatsKind kind)
+    {
+      foreach (var kv in Stats.GetStats())
+      {
+        var incToUse = inc;
+        var val = kv.Value.Value.TotalValue * incToUse;//TODO TotalValue ? -> SetNominal ?
+        Stats.SetNominal(kv.Key, val);
+      }
+    }
+
+    public static float GetResistanceLevelFactor(int level)
+    {
+      //TODO
+      return (level + 1) * 10;
+      //if (!ResistanceFactors.Any())
+      //{
+      //  for (int i = 0; i <= GameManager.MaxLevelIndex; i++)
+      //  {
+      //    double inp = ((double)i) / GameManager.MaxLevelIndex;
+      //    float incPerc = (float)Sigmoid(inp);
+      //    ////Debug.WriteLine(i.ToString() + ") ResistanceLevelFactor = " + fac);
+      //    ResistanceFactors.Add(incPerc);
+      //  }
+      //}
+      //if (level >= ResistanceFactors.Count)
+      //  return 0;
+
+      //return ResistanceFactors[GameManager.MaxLevelIndex - level] * 20;
+    }
+
+    protected virtual void InitResistance()
+    {
+      float resistBasePercentage = 5 * GetIncrease(this.Level, 3f);
+      var incPerc = GetResistanceLevelFactor(this.Level);
+      resistBasePercentage += resistBasePercentage * incPerc / 100;
+
+      //if (PlainSymbol == GolemSymbol || PlainSymbol == VampireSymbol || PlainSymbol == WizardSymbol
+      //  || kind != PowerKind.Plain)
+      //{
+      //  resistBasePercentage += 14;
+      //}
+      this.Stats.SetNominal(EntityStatKind.ResistFire, resistBasePercentage);
+      this.Stats.SetNominal(EntityStatKind.ResistPoison, resistBasePercentage);
+      this.Stats.SetNominal(EntityStatKind.ResistCold, resistBasePercentage);
+      var rli = resistBasePercentage * 2.5f / 3f;
+      this.Stats.SetNominal(EntityStatKind.ResistLighting, rli);
+    }
+
+    public float StatsIncreasePerLevel = .31f;
+
+    protected float GetIncrease(int level, float factor = 1)
+    {
+      return 1 + (level * StatsIncreasePerLevel * factor);
     }
 
     public bool WasEverHitBy(LivingEntity le) 
@@ -552,7 +636,7 @@ namespace Roguelike.Tiles.LivingEntities
 
     protected void Assert(bool check, string desc = "")
     {
-      if (EventsManager != null)
+      if (!check && EventsManager != null)
         EventsManager.Assert(check, desc);
     }
 
@@ -844,10 +928,36 @@ namespace Roguelike.Tiles.LivingEntities
 
     public virtual void PlayAllySpawnedSound() { }
 
-    public virtual void SetLevel(int level)
+    public virtual bool SetLevel(int level)
     {
+      Assert(level >= 1);
+      if (!CanIncreaseLevel())
+      {
+        return false;
+      }
       this.Level = level;
+      InitStatsFromName();
+      var hard = false;// GameManager.Instance.GameSettings.DifficultyLevel == Commons.GameSettings.Difficulty.Hard;
+      if (level > 1)
+      {
+        var inc = GetIncrease(hard ? level + 1 : level);
+        IncreaseStats(inc, IncreaseStatsKind.Level);
+      }
+      InitResistance();
+      InitActiveScroll();
+      return true;
     }
+
+    protected virtual bool CanIncreaseLevel()
+    {
+      return true;
+    }
+
+    protected virtual void InitActiveScroll()
+    {
+    }
+
+    protected virtual void InitStatsFromName() { }
 
     public Point GetPoint()
     {

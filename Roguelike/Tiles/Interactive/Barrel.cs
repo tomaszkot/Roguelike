@@ -53,7 +53,11 @@ namespace Roguelike.Tiles.Interactive
 
     public Point GetPoint() { return point; }
 
-    public void SetLevel(int level) { Level = level; }
+    public bool SetLevel(int level) 
+    { 
+      Level = level;
+      return true;
+    }
 
     //public override bool OnHitBy(IMovingDamager spell)
     //{

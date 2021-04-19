@@ -41,6 +41,7 @@ namespace Roguelike.Tiles.LivingEntities
         
     public Hero(Container container) : base(container, new Point().Invalid(), '@')
     {
+      canAdvanceInExp = true;
       Stats.SetNominal(EntityStatKind.Health, 40);//level up +2 // 40 -> 140
       // Character.Mana = 40;
       Stats.SetNominal(EntityStatKind.Strength, StartStrength);
@@ -49,14 +50,6 @@ namespace Roguelike.Tiles.LivingEntities
       Stats.SetNominal(EntityStatKind.Mana, 40);
       Stats.SetNominal(EntityStatKind.Defense, 10);
       Stats.SetNominal(EntityStatKind.Dexterity, 10);
-
-      bool debugMode = false;
-      if (debugMode)
-      {
-        Stats.SetNominal(EntityStatKind.Health, 140);
-        Stats.SetNominal(EntityStatKind.Strength, 50);
-      }
-            
 
       //Inventory.InvOwner = InvOwner.Hero;
       Inventory.InvBasketKind = InvBasketKind.Hero;
@@ -69,6 +62,10 @@ namespace Roguelike.Tiles.LivingEntities
 #if ASCII_BUILD
       color = ConsoleColor.Yellow;
 #endif
+    }
+
+    protected override void InitResistance()
+    {
     }
 
     public bool Identify(Equipment eq)
@@ -218,6 +215,12 @@ namespace Roguelike.Tiles.LivingEntities
       if (dest.Inventory.InvBasketKind == InvBasketKind.HeroChest)
         getGold = false;
       return getGold;
+    }
+
+    public override bool SetLevel(int level)
+    {
+      Level = level;
+      return true;
     }
   }
 }
