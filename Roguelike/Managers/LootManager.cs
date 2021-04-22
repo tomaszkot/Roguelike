@@ -35,7 +35,8 @@ namespace Roguelike.Managers
     public List<Loot> TryAddForLootSource(ILootSource lootSource)//Barrel, Chest from attackPolicy.Victim
     {
       var lootItems = new List<Loot>();
-
+      if (lootSource == null)//hit a wall ?
+        return lootItems;
       Loot debugLoot = null;
       if(debugLoot != null)
         lootItems.Add(debugLoot);

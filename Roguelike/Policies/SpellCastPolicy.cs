@@ -1,4 +1,5 @@
-﻿using Roguelike.Abstract;
+﻿using Dungeons.Tiles;
+using Roguelike.Abstract;
 using Roguelike.Abstract.Projectiles;
 using Roguelike.Spells;
 using Roguelike.Tiles;
@@ -10,7 +11,7 @@ namespace Roguelike.Policies
   public class SpellCastPolicy : Policy
   {
     LivingEntity caster;
-    Roguelike.Tiles.Abstract.IDestroyable target;
+    IObstacle target;
     Spell spell;
 
     public SpellCastPolicy()
@@ -18,7 +19,7 @@ namespace Roguelike.Policies
       this.Kind = PolicyKind.SpellCast;
     }
 
-    public Roguelike.Tiles.Abstract.IDestroyable Target { get => target; set => target = value; }
+    public IObstacle Target { get => target; set => target = value; }
     public Spell Spell { get => spell; set => spell = value; }
     public LivingEntity Caster { get => caster; set => caster = value; }
     public IProjectilesFactory ProjectilesFactory { get ; set; }
@@ -28,7 +29,7 @@ namespace Roguelike.Policies
       Apply(this.Spell, caster, this.Target, this.ProjectilesFactory);
     }
 
-    public void Apply(Spell spell, LivingEntity caster, Roguelike.Tiles.Abstract.IDestroyable target, IProjectilesFactory projectilesFactory)
+    public void Apply(Spell spell, LivingEntity caster, IObstacle target, IProjectilesFactory projectilesFactory)
     {
       this.spell = spell;
       this.caster = caster;

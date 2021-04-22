@@ -27,17 +27,6 @@ namespace Roguelike.Tiles.LivingEntities
     public const int StartStrength = 15;//15;50
     
     public LootContainers.Crafting Crafting { get; set; }
-    //public override Container Container 
-    //{ 
-    //  get => base.Container; 
-    //  set 
-    //  {
-    //    base.Container = value;
-    //    //Inventory.Container = value;
-    //    //Crafting.Container = value;
-        
-    //  }
-    //}
         
     public Hero(Container container) : base(container, new Point().Invalid(), '@')
     {

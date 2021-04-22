@@ -26,12 +26,7 @@ namespace Roguelike.Tiles.Interactive
         DestroySound = (barrelKind == BarrelKind.Barrel) ? "barrel_broken" : "bones_fall";
       }
     }
-
-    public Point Position
-    {
-      get { return point; }
-    }
-
+        
     public Barrel(Point point) : base(BarrelSymbol)
     {
       Kind = InteractiveTileKind.Barrel;
@@ -45,12 +40,7 @@ namespace Roguelike.Tiles.Interactive
     {
 
     }
-
-    public override bool OnHitBy(ISpell damager)
-    {
-      return true;
-    }
-
+        
     public Point GetPoint() { return point; }
 
     public bool SetLevel(int level) 
@@ -59,12 +49,11 @@ namespace Roguelike.Tiles.Interactive
       return true;
     }
 
-    //public override bool OnHitBy(IMovingDamager spell)
-    //{
-    //  GameManager.Instance.InputManager.HandleBarrelOrChest(this);
-    //  return base.OnHitBy(spell);
-    //}
-
+    public override bool OnHitBy(ISpell damager)
+    {
+      Destroyed = true;
+      return base.OnHitBy(damager);
+    }
   }
 
 

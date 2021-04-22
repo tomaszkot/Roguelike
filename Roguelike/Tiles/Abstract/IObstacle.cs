@@ -5,11 +5,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Roguelike.Abstract.Tiles
+namespace Roguelike.Tiles.Abstract
 {
   public interface IObstacle : Dungeons.Tiles.IObstacle
   {
-    bool OnHitBy(ISpell damager);
     bool CanBeHitBySpell();
   }
 }

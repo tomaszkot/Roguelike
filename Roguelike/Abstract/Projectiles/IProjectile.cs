@@ -5,6 +5,6 @@ namespace Roguelike.Abstract.Projectiles
 {
   public interface IProjectile
   {
-    IDestroyable Target { get; set; }
+    Dungeons.Tiles.IObstacle Target { get; set; }
   }
 }

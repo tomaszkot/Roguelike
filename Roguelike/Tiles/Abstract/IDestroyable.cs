@@ -8,10 +8,10 @@ using System.Threading.Tasks;
 
 namespace Roguelike.Tiles.Abstract
 {
-  public interface IDestroyable : ILootSource
+  public interface IDestroyable : ILootSource, IObstacle
   {
-    bool OnHitBy(ISpell md);
-    Point Position { get; }
+    //bool OnHitBy(Dungeons.Tiles.Abstract.ISpell md);
+    //Point Position { get; }
     bool Destroyed { get; set; }
   }
 }

@@ -7,6 +7,7 @@ using Newtonsoft.Json;
 using Roguelike.Abstract;
 using Roguelike.Abstract.Spells;
 using Roguelike.Abstract.Tiles;
+using Roguelike.Tiles.Abstract;
 
 namespace Roguelike.Tiles.Interactive
 {
@@ -59,9 +60,11 @@ namespace Roguelike.Tiles.Interactive
         }
       }
     }
+    
+    //??? TODO
     public bool CanBeHitBySpell()
     {
-      return false;
+      return true;
     }
 
     public virtual bool OnHitBy(ISpell damager)

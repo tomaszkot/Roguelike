@@ -13,7 +13,7 @@ namespace Roguelike.Abstract.Spells
     float Damage { get; }
   }
 
-  public interface ISpell
+  public interface ISpell : Dungeons.Tiles.Abstract.ISpell
   {
     LivingEntity Caller { get; set; }
     int CoolingDown { get; set; }

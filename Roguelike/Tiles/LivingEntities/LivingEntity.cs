@@ -758,8 +758,9 @@ namespace Roguelike.Tiles.LivingEntities
       return EntityStatKind.Unset;
     }
 
-    public bool OnHitBy(ISpell md)
+    public bool OnHitBy(Dungeons.Tiles.Abstract.ISpell ispell)
     {
+      ISpell md = ispell as ISpell;
       if (md is Spell)
       {
         var spell = md as Spell;
@@ -967,6 +968,11 @@ namespace Roguelike.Tiles.LivingEntities
     public virtual Scroll GetAttackingScroll()
     {
       return ActiveScroll; 
+    }
+        
+    public bool CanBeHitBySpell()
+    {
+      return true;
     }
   }
 }

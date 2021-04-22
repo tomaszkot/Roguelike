@@ -113,7 +113,7 @@ namespace Roguelike.Managers
     public bool ApplyAttackPolicy
     (
       LivingEntity caster,//hero, enemy, ally
-      Roguelike.Tiles.Abstract.IDestroyable target,
+      Roguelike.Tiles.Abstract.IObstacle target,
       Scroll scroll,
       Action<Policy> BeforeApply = null
       , Action<Policy> AfterApply = null
@@ -137,7 +137,8 @@ namespace Roguelike.Managers
         if (!le)//le is handled specially
         {
           this.gm.LootManager.TryAddForLootSource(policy.Target as ILootSource);
-          policy.Target.Destroyed = true;
+          //if(policy.Target is IDestroyable dest)
+          //dest.Destroyed = true;
         }
         if (caster is Hero)
           OnHeroPolicyApplied(policy);
