@@ -20,15 +20,14 @@ namespace Roguelike
   {
     public interface ITilesAtPathProvider
     {
-      //public Func<, List<Tile>> TilesProvider;
-      List<IDestroyable> GetTilesAtPath(System.Drawing.Point from, System.Drawing.Point to);
+      List<Dungeons.Tiles.IObstacle> GetTilesAtPath(System.Drawing.Point from, System.Drawing.Point to);
     }
 
     public class TilesAtPathProvider : ITilesAtPathProvider
     {
-      public List<IDestroyable> GetTilesAtPath(Point from, Point to)
+      public List<Dungeons.Tiles.IObstacle> GetTilesAtPath(Point from, Point to)
       {
-        return new List<IDestroyable>();
+        return new List<Dungeons.Tiles.IObstacle>();
       }
     }
 
@@ -98,13 +97,15 @@ namespace Roguelike
         if (attacker.DistanceFrom(target) < 8)//TODO
         {
           var useMagic = false;
+          //is target next to attacker
           useMagic = context.CurrentNode.GetNeighborTiles(attacker, true).Contains(target);
           if (!useMagic)
           {
+            //no...
             if (TilesAtPathProvider != null)
             {
               var tiles = TilesAtPathProvider.GetTilesAtPath(attacker.point, target.point);
-              if (!tiles.Any(i => i is Enemy))
+              if (!tiles.Any(i => i is Dungeons.Tiles.IObstacle))
                 useMagic = true;
             }
             else
@@ -112,8 +113,8 @@ namespace Roguelike
               var pathToTarget = FindPathForEnemy(attacker, target, 1, true);
               if (pathToTarget != null)
               {
-                var enemies = pathToTarget.Where(i => context.CurrentNode.GetTile(new System.Drawing.Point(i.Y, i.X)) is Enemy).ToList();
-                if (!enemies.Any())
+                var obstacles = pathToTarget.Where(i => context.CurrentNode.GetTile(new System.Drawing.Point(i.Y, i.X)) is Dungeons.Tiles.IObstacle).ToList();
+                if (!obstacles.Any())
                 {
                   useMagic = true;
                 }
