@@ -30,8 +30,8 @@ namespace Roguelike.Tiles.LivingEntities
   public class LivingEntity : Tile, ILastingEffectOwner, IDestroyable
   {
     
-    public static readonly EntityStat BaseAttack = new EntityStat(EntityStatKind.Attack, 12);
-    public static readonly EntityStat BaseHealth = new EntityStat(EntityStatKind.Health, 15);
+    public static readonly EntityStat BaseAttack = new EntityStat(EntityStatKind.Attack, 10);
+    public static readonly EntityStat BaseHealth = new EntityStat(EntityStatKind.Health, 12);
     public static readonly EntityStat BaseDefence = new EntityStat(EntityStatKind.Defense, 7);
     public static readonly EntityStat BaseMana = new EntityStat(EntityStatKind.Mana, 10);
     public static readonly EntityStat BaseMagic = new EntityStat(EntityStatKind.Magic, 10);
