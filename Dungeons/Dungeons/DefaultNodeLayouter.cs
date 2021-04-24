@@ -44,10 +44,15 @@ namespace Dungeons
     bool generateLayoutDoors = true;
     LayouterOptions options;
     Container container;
+    GenerationInfo info;
+    DungeonNode lastNonSecretNode;
+    List<DungeonNode> mazeNodes;
+    Dictionary<DungeonNode, AppendNodeInfo> appendNodeInfos = new Dictionary<DungeonNode, AppendNodeInfo>();
 
     public DefaultNodeLayouter(Container container, GenerationInfo info = null)
     {
       this.container = container;
+      this.info = info;
     }
 
     public DungeonLevel DoLayout(List<DungeonNode> nodes, LayouterOptions opt = null) 
@@ -99,11 +104,7 @@ namespace Dungeons
         level.SecretRoomIndex = sn.NodeIndex;
       return level;
     }
-
-    DungeonNode lastNonSecretNode;
-    List<DungeonNode> mazeNodes;
-    Dictionary<DungeonNode, AppendNodeInfo> appendNodeInfos = new Dictionary<DungeonNode, AppendNodeInfo>();
-
+        
     protected virtual void LayoutNodes(DungeonNode level, List<DungeonNode> mazeNodes)
     {
       this.mazeNodes = mazeNodes;
@@ -197,11 +198,16 @@ namespace Dungeons
         if (currentNode.NodeIndex == 0)
           nextAppendInfo.side = GetRandSide();
         else
-        { 
-          if (currentAppendInfo.side == EntranceSide.Bottom)
+        {
+          if (info != null && info.ForcedNextRoomSide != null)
+            nextAppendInfo.side = info.ForcedNextRoomSide.Value;
+          else
+          {
+            if (currentAppendInfo.side == EntranceSide.Bottom)
               nextAppendInfo.side = EntranceSide.Right;
-          else if (currentAppendInfo.side == EntranceSide.Right)
-            nextAppendInfo.side = EntranceSide.Bottom;
+            else if (currentAppendInfo.side == EntranceSide.Right)
+              nextAppendInfo.side = EntranceSide.Bottom;
+          }
         }
         if (lastNonSecretNode != null)
         {
@@ -231,8 +237,11 @@ namespace Dungeons
       return nextAppendInfo;
     }
 
-    private static EntranceSide CalcSide(EntranceSide current, EntranceSide next, float chanceForLevelTurn)//, int currentNodeIndex)
+    private EntranceSide CalcSide(EntranceSide current, EntranceSide next, float chanceForLevelTurn)//, int currentNodeIndex)
     {
+      if (info != null && info.ForcedNextRoomSide != null)
+       return info.ForcedNextRoomSide.Value;
+
       EntranceSide side = GetRandSide();
       if (current == next)
       {

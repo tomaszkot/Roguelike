@@ -592,7 +592,7 @@ namespace Roguelike.Tiles
       if (RequiredLevel < li)
         RequiredLevel = li;
 
-      if(Class != EquipmentClass.Unique)
+      //if(Class != EquipmentClass.Unique)
         SetPriceFromLevel();
     }
 
