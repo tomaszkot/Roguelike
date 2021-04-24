@@ -108,7 +108,7 @@ namespace Roguelike.Events
   /// <summary>
   /// /////////////////////////////////////////////
   /// </summary>
-  public enum AllyActionKind { Unset, Engaged }
+  public enum AllyActionKind { Unset, Engaged, Created, Died }
   public class AllyAction : GameAction
   {
     public IAlly InvolvedTile { get; set; }

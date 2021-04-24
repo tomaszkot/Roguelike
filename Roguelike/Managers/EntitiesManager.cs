@@ -229,13 +229,18 @@ namespace Roguelike.Managers
       foreach (var dead in deadOnes)
       {
         Context.EventsManager.AppendAction(dead.GetDeadAction());
-        RemoveEntity(dead);
+        RemoveDeadEntity(dead);
       }
     }
 
     public bool RemoveAlly(IAlly ent)
     {
       return RemoveEntity(ent as LivingEntity);
+    }
+
+    public virtual bool RemoveDeadEntity(LivingEntity ent)
+    {
+      return RemoveEntity(ent);
     }
 
     public bool RemoveEntity(LivingEntity ent)

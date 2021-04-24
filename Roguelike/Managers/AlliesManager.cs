@@ -1,6 +1,7 @@
 ﻿using Dungeons.Core;
 using Roguelike.Abstract;
 using Roguelike.Abstract.Tiles;
+using Roguelike.Events;
 using Roguelike.Policies;
 using Roguelike.Strategy;
 using Roguelike.Tiles;
@@ -15,9 +16,6 @@ namespace Roguelike.Managers
   public class AlliesManager : EntitiesManager
   {
     EnemiesManager enemiesManager;
-    
-    //public event EventHandler<LivingEntity> AllyAdded;
-    //public event EventHandler<LivingEntity> AllyRemoved;
 
     public AlliesManager(GameContext context, EventsManager eventsManager, Container container, EnemiesManager enemiesManager, GameManager gm) :
                          base(TurnOwner.Allies, context, eventsManager, container, gm)
@@ -26,6 +24,13 @@ namespace Roguelike.Managers
       context.ContextSwitched += Context_ContextSwitched;
       this.enemiesManager = enemiesManager;
       
+    }
+
+    public override bool RemoveDeadEntity(LivingEntity ent)
+    {
+      var res =  RemoveEntity(ent);
+      Context.EventsManager.AppendAction(new AllyAction() { Info="Ally was lost", AllyActionKind = AllyActionKind.Died, InvolvedTile = ent as Ally });
+      return res;
     }
 
     private void Context_ContextSwitched(object sender, ContextSwitch e)

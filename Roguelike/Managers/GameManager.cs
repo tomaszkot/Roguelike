@@ -897,9 +897,9 @@ namespace Roguelike.Managers
       var empty = CurrentNode.GetClosestEmpty(Hero, true, false);
       ReplaceTile<LivingEntity>(le, empty);
       le.PlayAllySpawnedSound();
-    }
 
-    
+      AppendAction(new AllyAction() { Info = le.Name + " has been added", InvolvedTile = ally, AllyActionKind = AllyActionKind.Created });
+    }
 
     public bool CanUseScroll(LivingEntity caster, Scroll scroll)
     {
