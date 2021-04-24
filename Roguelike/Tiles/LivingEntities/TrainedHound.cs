@@ -16,6 +16,11 @@ namespace Roguelike.Tiles.LivingEntities
 {
   public class TrainedHound : Ally
   {
+    //public TrainedHound() : base(null)
+    //{
+    //  throw new Exception("use other ctor");
+    //}
+    
     public TrainedHound(Container cont) : base(cont)
     {
       Kind = AllyKind.Hound;

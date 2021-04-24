@@ -120,26 +120,7 @@ namespace Roguelike
 
       return true;
     }
-
-    //TODO move it somewhere
-    public bool UtylizeScroll(LivingEntity caster, Scroll scroll, ISpell spell)
-    {
-      //scroll was already used why check here?
-      //if (!CanUseScroll(caster, scroll, spell))
-      //{
-      //  return false;
-      //}
-      if (spell.Utylized)
-        throw new Exception("spell.Utylized!");
-      caster.ReduceMana(spell.ManaCost);
-      spell.Utylized = true;
-      if (caster is AdvancedLivingEntity advEnt)
-        return advEnt.Inventory.Remove(scroll);
-
-      
-
-      return true;
-    }
+       
        
     //TODO move
     public void ApplyMovePolicy(LivingEntity entity, Point newPos, List<Point> fullPath, Action<Policy> OnApplied)

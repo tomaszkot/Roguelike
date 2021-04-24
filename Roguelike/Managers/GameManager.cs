@@ -23,6 +23,7 @@ using Roguelike.Tiles.LivingEntities;
 using Roguelike.Strategy;
 using Roguelike.Abstract.Inventory;
 using Roguelike.Extensions;
+using Roguelike.Abstract.Spells;
 
 namespace Roguelike.Managers
 {
@@ -868,11 +869,13 @@ namespace Roguelike.Managers
       ReplaceTile(enemy, pt);
       EnemiesManager.AddEntity(enemy);
     }
-
-    public void AddAlly<T>() where T : IAlly, new()
+        
+    public T AddAlly<T>() where T : class, IAlly
     {
-      var ally = new T();
+      //var ally = new T();
+      var ally = this.Container.GetInstance<T>();
       AddAlly(ally);
+      return ally;
     }
 
     public void AddAlly(IAlly ally)
@@ -969,6 +972,48 @@ namespace Roguelike.Managers
         this.LootManager.TryAddForLootSource(tile as ILootSource);
         Logger.LogInfo("TimeTracker TryAddForLootSource: " + tr.TotalSeconds);
       }
+    }
+
+    int GetAlliesCount<T>() where T : IAlly
+    {
+      return this.AlliesManager.AllEntities.Count(i => i is T);
+    }
+
+    public T TryAddAlly<T>() where T : class, IAlly
+    {
+      if (GetAlliesCount<T>() == 0)
+      { 
+        return AddAlly<T>();
+      }
+      AppendAction(new GameInstructionAction() { Info = "Currently you can not have more allies" }); ;
+      return default(T);
+    }
+
+    //TODO move it somewhere
+    public bool UtylizeScroll(LivingEntity caster, Scroll scroll, ISpell spell)
+    {
+      //scroll was already used why check here?
+      //if (!CanUseScroll(caster, scroll, spell))
+      //{
+      //  return false;
+      //}
+      if (scroll.Kind == Spells.SpellKind.Skeleton)
+      {
+        if (GetAlliesCount<AlliedEnemy>() > 0)
+        {
+          AppendAction(new GameInstructionAction() { Info = "Currently you can not instantiate more skeletons" }); ;
+          return false;
+        }
+      }
+
+      if (spell.Utylized)
+        throw new Exception("spell.Utylized!");
+      caster.ReduceMana(spell.ManaCost);
+      spell.Utylized = true;
+      if (caster is AdvancedLivingEntity advEnt)
+        return advEnt.Inventory.Remove(scroll);
+
+      return true;
     }
   }
 }

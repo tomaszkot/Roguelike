@@ -9,6 +9,11 @@ namespace Roguelike.Tiles.LivingEntities
 {
   public class AlliedEnemy : Ally
   {
+    //public AlliedEnemy() : base(null)
+    //{
+    //  throw new Exception("use other ctor");
+    //}
+
     public AlliedEnemy(Container cont) : base(cont)
     {
       Kind = AllyKind.Enemy;
