@@ -287,7 +287,6 @@ namespace Roguelike.Tiles.Looting
           break;
       }
 
-      IncreasePriceBasedOnExtInfo();
       if(makeEnchantable)
         MakeEnchantable();//it also increases price
     }

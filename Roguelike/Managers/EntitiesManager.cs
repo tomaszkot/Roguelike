@@ -143,7 +143,7 @@ namespace Roguelike.Managers
     public virtual void MakeRandomMove(LivingEntity entity)
     {
       var pt = Node.GetEmptyNeighborhoodPoint(entity, null, Node.GetExtraTypesConsideredEmpty());
-      if (pt.Item1.IsValid())
+      if (pt != null && pt.Item1.IsValid())
       {
         MoveEntity(entity, pt.Item1, null);
         //logger.WriteLine(entity + " moved to "+ pt);

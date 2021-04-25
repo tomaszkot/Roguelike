@@ -33,11 +33,15 @@ namespace Roguelike.InfoScreens
       if (ac.Info.Trim() == string.Empty)
         return;
 
-      if (ac is LivingEntityAction)
+      if (ac is LivingEntityAction leac)
       {
-        var leac = ac as LivingEntityAction;
         if (leac.Kind == LivingEntityActionKind.Moved)
           return;
+      }
+
+      if (ac is InventoryAction ia && ia.Kind == InventoryActionKind.DragDropDone)
+      {
+        return;
       }
 
 

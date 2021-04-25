@@ -184,8 +184,13 @@ namespace Roguelike.Tiles
       this.IsIdentified = true;
       if (unidentifiedStats != null)//TODO assert
       {
+        foreach (var stat in unidentifiedStats.GetStats())
+        {
+          if (stat.Value.Factor > 0)
+            Price += GetPriceForFactor(stat.Key, (int)stat.Value.Factor);
+        }
+
         ExtendedInfo.Stats.Accumulate(unidentifiedStats);
-        IncreasePriceBasedOnExtInfo();
       }
       if (Identified != null)
         Identified(this, this);
@@ -387,12 +392,10 @@ namespace Roguelike.Tiles
       var stat = AddMagicStat(toSkip.ToArray(), false);
       if (magicOfSecondLevel)
       {
-        priceAlrIncreased = false;
+        //priceAlrIncreased = false;
         toSkip.Add(stat);
         AddMagicStat(toSkip.ToArray(), true);
       }
-
-      IncreasePriceBasedOnExtInfo();
     }
 
     public EntityStatKind AddMagicStat(EntityStatKind[] skip, bool secMagicLevel)
@@ -472,7 +475,6 @@ namespace Roguelike.Tiles
       if (factorBefore > 0 && incrementFactor)
         statValue += statValue;
 
-      //TODO price based on amount of Magic Stat Value
       if (reason != AddMagicStatReason.Enchant)
       {
         SetClass(EquipmentClass.Magic);//we shall not lost that info
@@ -480,18 +482,22 @@ namespace Roguelike.Tiles
         if (unidentifiedStats == null)
         {
           unidentifiedStats = new EntityStats();
-          Price = (int)(Price * 1.5f);
         }
         unidentifiedStats.SetFactor(stat, statValue);
         if (Class == EquipmentClass.Magic && secLevel)
           Class = EquipmentClass.MagicSecLevel;
+
+        if (!priceAlrIncreased)
+        {
+          Price += Price / 5;
+          priceAlrIncreased = true;
+        }
       }
       else
       {
-        Price = (int)(Price * 1.5f);
         ExtendedInfo.Stats.SetFactor(stat, statValue);
+        Price += GetPriceForFactor(stat, statValue);
       }
-      IncreasePriceBasedOnExtInfo();
     }
 
     public virtual void PrepareForSave()
@@ -512,26 +518,25 @@ namespace Roguelike.Tiles
 
     public bool priceAlrIncreased;
     
-    public void IncreasePriceBasedOnExtInfo()
-    {
-      if(!IsIdentified)
-        return;
-      if (priceAlrIncreased)
-      {
-        //Debug.Assert(false, "priceAlrIncreased");
-        return;
-      }
-      basePrice = Price;
-      foreach (var st in ExtendedInfo.Stats.GetStats())
-      {
-        var prInc = GetPriceForFactor(st.Key, (int)st.Value.Factor);
-        if (prInc > 0)
-          Price += prInc;
-      }
+    //public void IncreasePriceBasedOnExtInfo()
+    //{
+    //  if(!IsIdentified)
+    //    return;
+    //  //if (priceAlrIncreased)
+    //  //{
+    //  //  //Debug.Assert(false, "priceAlrIncreased");
+    //  //  return;
+    //  //}
+    //  basePrice = Price;
+    //  foreach (var st in ExtendedInfo.Stats.GetStats())
+    //  {
+    //    var prInc = GetPriceForFactor(st.Key, (int)st.Value.Factor);
+    //    if (prInc > 0)
+    //      Price += prInc;
+    //  }
 
-      //Price += priceInc;
-      priceAlrIncreased = true;
-    }
+    //  //priceAlrIncreased = true;
+    //}
 
     public int GetPriceForFactor(EntityStatKind esk, int factor)
     {
@@ -611,10 +616,8 @@ namespace Roguelike.Tiles
       }
       else
       {
-        //ExtendedInfo.Stats = lootStats;
         unidentifiedStats = lootStats;
       }
-      IncreasePriceBasedOnExtInfo();
     }
 
     private void SetClass(EquipmentClass _class)
@@ -713,7 +716,7 @@ namespace Roguelike.Tiles
       foreach (var kind in kinds)
       {
         MakeMagic(kind, val, AddMagicStatReason.Enchant);
-        Price += (int)(GetPriceForFactor(kind, val));// *.9f);//crafted loot - price too hight comp to uniq.
+        //Price += (int)(GetPriceForFactor(kind, val));// *.9f);//crafted loot - price too hight comp to uniq.
         enchant.StatKinds.Add(kind);
       }
       

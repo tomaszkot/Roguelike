@@ -278,7 +278,7 @@ namespace RoguelikeUnitTests
           var numberOfNextTypeOfScrolls = nextScrollType.Count();
           Assert.Less(numberOfNextTypeOfScrolls, 25);
           int min = 1;
-          int max = 16;
+          int max = 20;
             
           if (nextScrollType.Key == SpellKind.Portal)
           {
@@ -400,7 +400,7 @@ namespace RoguelikeUnitTests
       //scrolls
       var scrolls = newLootItems.Get<Scroll>();
       Assert.Greater(scrolls.Count, 0);
-      Assert.Less(scrolls.Count, expCount/5);
+      Assert.Less(scrolls.Count, expCount);
       var typesGrouped = scrolls.GroupBy(f => f.Kind).ToList();
       var ident = typesGrouped.Where(i => i.Key == SpellKind.Identify).FirstOrDefault();
       Assert.NotNull(ident);

@@ -88,9 +88,9 @@ namespace Roguelike.Generators
 
           if (lk == LootKind.Potion || lk == LootKind.Scroll)
           {
-            mult = 1.6f;
-            if(lk == LootKind.Scroll)
-              mult = 1.8f;
+            mult = 1.3f;
+            //if(lk == LootKind.Scroll)
+            //  mult = 1.8f;
           }
           
           val *= mult;
