@@ -151,7 +151,7 @@ namespace Roguelike.LootFactories
 
     public override Loot GetByAsset(string tagPart)
     {
-      var tile = factory.FirstOrDefault(i => i.Key == tagPart);
+      var tile = factory.FirstOrDefault(i => i.Key.ToLower() == tagPart.ToLower());
       if (tile.Key != null)
         return tile.Value(tagPart);
 
