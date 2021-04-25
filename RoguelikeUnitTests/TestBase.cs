@@ -321,7 +321,7 @@ namespace RoguelikeUnitTests
       if (caster is Hero)
       {
         game.Hero.ActiveScroll = scroll;
-        return game.GameManager.SpellManager.ApplyActiveSpell(victim);
+        return game.GameManager.SpellManager.ApplyAttackPolicy(caster, victim,scroll);
       }
       return false;
     }

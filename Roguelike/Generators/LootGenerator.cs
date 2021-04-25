@@ -79,18 +79,18 @@ namespace Roguelike.Generators
         {
           var val = .25f;
           var mult = 1f;
+
+          if (lootSource == LootSourceKind.PlainChest || lootSource == LootSourceKind.Barrel)
+          {
+            if (lk == LootKind.Gem || lk == LootKind.HunterTrophy)
+              mult /= 2f;
+          }
+
           if (lk == LootKind.Potion || lk == LootKind.Scroll)
           {
             mult = 1.6f;
             if(lk == LootKind.Scroll)
               mult = 1.8f;
-            if (lootSource == LootSourceKind.PlainChest || lootSource == LootSourceKind.Barrel)
-            {
-              if (lk == LootKind.Gem || lk == LootKind.HunterTrophy)
-                mult /= 2f;
-              else
-                mult = 1f;
-            }
           }
           
           val *= mult;

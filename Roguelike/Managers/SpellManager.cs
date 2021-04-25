@@ -27,16 +27,16 @@ namespace Roguelike.Managers
       Container = gm.Container;
     }
 
-    public bool ApplyActiveSpell(IDestroyable target)
-    {
-      var scroll = gm.Hero.ActiveScroll;
-      return ApplyAttackPolicy
-      (
-        gm.Hero,
-        target,
-        scroll
-      );
-    }
+    //public bool ApplyActiveSpell(IDestroyable target)
+    //{
+    //  var scroll = gm.Hero.ActiveScroll;
+    //  return ApplyAttackPolicy
+    //  (
+    //    gm.Hero,
+    //    target,
+    //    scroll
+    //  );
+    //}
 
     public PassiveSpell ApplyPassiveSpell(LivingEntity caster, Scroll scroll, Point? destPoint = null)
     {

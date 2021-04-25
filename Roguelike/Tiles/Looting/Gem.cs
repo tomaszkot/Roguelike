@@ -244,10 +244,17 @@ namespace Roguelike.Tiles.Looting
         {
           var gemKind = GemKind.Diamond;//read props from any 
           var otherKinds = GetOtherKinds(gemKind);
+
+          string other = "";
           foreach (var otherKind in otherKinds)
           {
             var gemKindInfo_ = enhancmentProps[otherKind];
-            lootStatInfo.Desc += ", " + gemKindInfo_[EquipmentKind.Ring].ToDescription();
+            if (other.Any())
+              lootStatInfo.Desc += ", ";
+
+            var otDesc = gemKindInfo_[EquipmentKind.Ring].ToDescription();
+            lootStatInfo.Desc += otDesc;
+            other += otDesc;
           }
         }
       }

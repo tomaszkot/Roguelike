@@ -1,5 +1,4 @@
-﻿
-using Dungeons.Core;
+﻿using Dungeons.Core;
 using Dungeons.Tiles;
 using Roguelike.Events;
 using Roguelike.Generators;
@@ -7,9 +6,7 @@ using Roguelike.Tiles;
 using Roguelike.Tiles.Interactive;
 using Roguelike.Tiles.LivingEntities;
 using Roguelike.Tiles.Looting;
-using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 
 namespace Roguelike.Managers
