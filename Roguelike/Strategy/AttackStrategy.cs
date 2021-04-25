@@ -60,7 +60,6 @@ namespace Roguelike
           if (resistOn)
             return true;
           
-          //teleport or...
           if (TryUseMagicAttack(attacker, target))
             return true;
         }

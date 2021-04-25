@@ -211,7 +211,7 @@ namespace Roguelike.Abilities
         case PassiveAbilityKind.RestoreMana:
           try
           {
-            var mults = new float[] { 0, 0.15f, .3f, .75f, 1f, 1.5f };
+            var mults = new float[] { 0, .3f, .75f, 1f, 1.5f, 2.5f };
             factor = mults[level];
           }
           catch (Exception)

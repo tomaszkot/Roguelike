@@ -327,8 +327,6 @@ namespace Roguelike.Attributes
         Ensure(otherStat.Key);
         AccumulateFactor(otherStat.Key, otherStat.Value.Factor);
       }
-
-      //experience += other.experience;
     }
 
     public void Increase(float fixedFactorValue)
@@ -337,8 +335,6 @@ namespace Roguelike.Attributes
       {
         AccumulateFactor(stat.Key, fixedFactorValue);
       }
-
-      //experience += other.experience;
     }
 
     internal void AccumulateFactors(EntityStats otherStats, bool positive)

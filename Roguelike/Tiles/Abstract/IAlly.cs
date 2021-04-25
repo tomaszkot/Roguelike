@@ -15,5 +15,7 @@ namespace Roguelike.Abstract.Tiles
     AllyKind Kind { get; }
     bool IncreaseExp(double factor);
     Point Point { get; set; }
+
+    event EventHandler LeveledUp;
   }
 }

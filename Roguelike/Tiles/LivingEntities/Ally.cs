@@ -50,6 +50,12 @@ namespace Roguelike.Tiles.LivingEntities
       SetTag();
       Revealed = true;
       Active = true;
+
+      var abp = 5;
+      AbilityPoints = abp;
+      for(int i=0;i< abp;i++)
+        this.IncreaseAbility(Roguelike.Abilities.PassiveAbilityKind.RestoreHealth);
+      
     }
 
     public abstract void SetTag();

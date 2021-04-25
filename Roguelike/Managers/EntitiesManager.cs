@@ -106,6 +106,8 @@ namespace Roguelike.Managers
         {
           //Debug.Assert(context.CurrentNode.GetTiles<LivingEntity>().Any(i => i == entity));//TODO
 
+          if(entity is AdvancedLivingEntity ade)
+            ade.ApplyAbilities();
           entity.ApplyLastingEffects();
           if (!entity.Alive)
             continue;

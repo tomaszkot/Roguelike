@@ -30,7 +30,7 @@ namespace Roguelike.Tiles.LivingEntities
   public class LivingEntity : Tile, ILastingEffectOwner, IDestroyable
   {
     
-    public static readonly EntityStat BaseAttack = new EntityStat(EntityStatKind.Attack, 10);
+    public static readonly EntityStat BaseStrength = new EntityStat(EntityStatKind.Strength, 10);
     public static readonly EntityStat BaseHealth = new EntityStat(EntityStatKind.Health, 12);
     public static readonly EntityStat BaseDefence = new EntityStat(EntityStatKind.Defense, 7);
     public static readonly EntityStat BaseMana = new EntityStat(EntityStatKind.Mana, 10);
@@ -113,10 +113,11 @@ namespace Roguelike.Tiles.LivingEntities
     {
       BaseStats = new EntityStats();
 
-      BaseStats.SetStat(EntityStatKind.Attack, BaseAttack);
+      BaseStats.SetStat(EntityStatKind.Strength, BaseStrength);
       BaseStats.SetStat(EntityStatKind.Defense, BaseDefence);
       BaseStats.SetStat(EntityStatKind.Health, BaseHealth);
       BaseStats.SetStat(EntityStatKind.Mana, BaseMana);
+
       var mag = new EntityStat(EntityStatKind.Magic, BaseMagic.Value.Nominal + 2);
       BaseStats.SetStat(EntityStatKind.Magic, mag);
     }

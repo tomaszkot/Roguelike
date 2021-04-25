@@ -38,7 +38,7 @@ namespace Roguelike.Tiles.LivingEntities
 
   public class AdvancedLivingEntity : LivingEntity, IPersistable, IEquipable, IAdvancedEntity
   {
-    public static int FirstNextLevelExperienceThreshold = 50;
+    public static int FirstNextLevelExperienceThreshold = 60;
     public RelationToHero RelationToHero { get; set; } = new RelationToHero();
     public bool HasUrgentTopic { get; set; }
     public Discussion Discussion { get; set; } = new Discussion();
@@ -214,8 +214,7 @@ namespace Roguelike.Tiles.LivingEntities
         LevelUpPoints += GenerationInfo.LevelUpPoints;
         AbilityPoints += 2;
         NextLevelExperience = (int)(NextLevelExperience + (NextLevelExperience * GenerationInfo.NextExperienceIncrease));
-        //if (Level == 2)
-        //  NextLevelExperience += NextLevelExperience / 2;//TODO
+        
 
         leveledUp = true;
 
