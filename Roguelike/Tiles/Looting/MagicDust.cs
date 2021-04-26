@@ -9,6 +9,7 @@ namespace Roguelike.Tiles.Looting
   {
     public MagicDust()
     {
+      LootKind = LootKind.Other;
       Symbol = '&';
 #if ASCII_BUILD
       color = GoldColor;

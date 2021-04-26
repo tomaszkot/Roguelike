@@ -912,7 +912,6 @@ namespace Roguelike.Managers
       return true;
     }
 
-    //TODO move it somewhere
     public bool UtylizeScroll(LivingEntity caster, Scroll scroll)
     {
       if (!CanUseScroll(caster, scroll))
@@ -997,21 +996,36 @@ namespace Roguelike.Managers
       //{
       //  return false;
       //}
-      if (scroll.Kind == Spells.SpellKind.Skeleton)
+      try
       {
-        if (GetAlliesCount<AlliedEnemy>() > 0)
+        if (scroll.Kind == Spells.SpellKind.Skeleton)
         {
-          AppendAction(new GameInstructionAction() { Info = "Currently you can not instantiate more skeletons" }); ;
+          if (GetAlliesCount<AlliedEnemy>() > 0)
+          {
+            AppendAction(new GameInstructionAction() { Info = "Currently you can not instantiate more skeletons" }); ;
+            return false;
+          }
+        }
+
+        if (spell.Utylized)
+          throw new Exception("spell.Utylized!");
+
+        if (caster.Stats.Mana < spell.ManaCost)
+        {
+          SoundManager.PlayBeepSound();
+          AppendAction(new GameAction() { Info = "Not enough mana to cast a spell" });
           return false;
         }
+        caster.ReduceMana(spell.ManaCost);
+        spell.Utylized = true;
+        if (caster is AdvancedLivingEntity advEnt)
+          return advEnt.Inventory.Remove(scroll);
       }
-
-      if (spell.Utylized)
-        throw new Exception("spell.Utylized!");
-      caster.ReduceMana(spell.ManaCost);
-      spell.Utylized = true;
-      if (caster is AdvancedLivingEntity advEnt)
-        return advEnt.Inventory.Remove(scroll);
+      catch (Exception )
+      {
+        SoundManager.PlayBeepSound();
+        throw;
+      }
 
       return true;
     }
