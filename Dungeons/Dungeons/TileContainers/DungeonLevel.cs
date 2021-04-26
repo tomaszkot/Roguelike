@@ -14,8 +14,6 @@ namespace Dungeons.TileContainers
   //result of merging  of many DungeonNodes 
   public class DungeonLevel : DungeonNode, IDungeonLevel
   {
-   
-
     public DungeonLevel(Container container) : base(container)
     {
 
@@ -32,10 +30,18 @@ namespace Dungeons.TileContainers
         if (alreadyAtPos != null && selector(alreadyAtPos))
         {
           logger.LogInfo("alreadyAtPos " + alreadyAtPos);
+          //find new empty place 
           var empty = GetClosestEmpty(alreadyAtPos, false, skip);
-          while (empty!=null)
+          int counter = 0;
+          while (empty != null)
           {
-            var srcTile = src.FirstOrDefault(i=> i.point == empty.point);
+            counter++;
+            if (counter == 200)
+            {
+              logger.LogError("endless loop!");
+              return false;
+            }
+            var srcTile = src.FirstOrDefault(i => i.point == empty.point);
             if (srcTile != null && !srcTile.IsEmpty)
             {
               skip.Add(empty);
@@ -81,14 +87,17 @@ namespace Dungeons.TileContainers
     [JsonIgnore]
     public int SecretRoomIndex { get; internal set; }
 
-    public void Merge(List<Tile> src, Point point, Func<Tile, bool> rearrangeSelector)
+    public bool Merge(List<Tile> src, Point point, Func<Tile, bool> rearrangeSelector)
     {
       var set = Rearrange(src, rearrangeSelector);
-      
+      if (!set)
+        return false;
       foreach (var tile in src)
       {
-        this.SetTile(tile, tile.point);
+        set &= this.SetTile(tile, tile.point);
       }
+
+      return set;
     }
   }
 }

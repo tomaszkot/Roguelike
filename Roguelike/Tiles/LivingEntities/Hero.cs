@@ -23,16 +23,16 @@ namespace Roguelike.Tiles.LivingEntities
       get => quests; 
       set => quests = value; 
     }
-    
-    public const int StartStrength = 15;//15;50
-    
+            
     public LootContainers.Crafting Crafting { get; set; }
         
     public Hero(Container container) : base(container, new Point().Invalid(), '@')
     {
       canAdvanceInExp = true;
+      
       Stats.SetNominal(EntityStatKind.Health, 40);//level up +2 // 40 -> 140
       // Character.Mana = 40;
+      StartStrength += 5;
       Stats.SetNominal(EntityStatKind.Strength, StartStrength);
       Stats.SetNominal(EntityStatKind.Attack, StartStrength);
       Stats.SetNominal(EntityStatKind.Magic, 10);
@@ -135,9 +135,9 @@ namespace Roguelike.Tiles.LivingEntities
       return this.Inventory.GetItems<Key>().Where(i => i.KeyName == keyName).SingleOrDefault();
     }
 
-    public override string GetFormattedStatValue(EntityStatKind kind)
+    public override string GetFormattedStatValue(EntityStatKind kind, bool round)
     {
-      var value = base.GetFormattedStatValue(kind);
+      var value = base.GetFormattedStatValue(kind, round);
       if (kind == EntityStatKind.Attack)
       {
         value = GetTotalAttackValue();

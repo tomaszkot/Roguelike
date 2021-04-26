@@ -29,16 +29,17 @@ namespace Roguelike.Tiles.LivingEntities
   /// </summary>
   public class LivingEntity : Tile, ILastingEffectOwner, IDestroyable
   {
-    
+    protected int StartStrength = 10;
     public static readonly EntityStat BaseStrength = new EntityStat(EntityStatKind.Strength, 10);
     public static readonly EntityStat BaseHealth = new EntityStat(EntityStatKind.Health, 12);
     public static readonly EntityStat BaseDefence = new EntityStat(EntityStatKind.Defense, 7);
     public static readonly EntityStat BaseMana = new EntityStat(EntityStatKind.Mana, 10);
     public static readonly EntityStat BaseMagic = new EntityStat(EntityStatKind.Magic, 10);
 
-    static Dictionary<EntityStatKind, EntityStatKind> statsHitIncrease = new Dictionary<EntityStatKind, EntityStatKind> {
-                { EntityStatKind.LifeStealing, EntityStatKind.Health },
-                { EntityStatKind.ManaStealing, EntityStatKind.Mana }
+    static Dictionary<EntityStatKind, EntityStatKind> statsHitIncrease = new Dictionary<EntityStatKind, EntityStatKind> 
+    {
+      { EntityStatKind.LifeStealing, EntityStatKind.Health },
+      { EntityStatKind.ManaStealing, EntityStatKind.Mana }
     };
 
     [JsonIgnore]
@@ -117,9 +118,7 @@ namespace Roguelike.Tiles.LivingEntities
       BaseStats.SetStat(EntityStatKind.Defense, BaseDefence);
       BaseStats.SetStat(EntityStatKind.Health, BaseHealth);
       BaseStats.SetStat(EntityStatKind.Mana, BaseMana);
-
-      var mag = new EntityStat(EntityStatKind.Magic, BaseMagic.Value.Nominal + 2);
-      BaseStats.SetStat(EntityStatKind.Magic, mag);
+      BaseStats.SetStat(EntityStatKind.Magic, BaseMagic);
     }
 
     public LivingEntity():this(new Point(-1, -1), '\0')
@@ -128,11 +127,13 @@ namespace Roguelike.Tiles.LivingEntities
 
     public LivingEntity(Point point, char symbol) : base(point, symbol)
     {
-      foreach (var basicStats in EntityStat.BasicStats)
+      foreach (var basicStat in BaseStats.GetStats())
       {
-        var nv = BaseStats[basicStats].Nominal;
-        Stats.SetNominal(basicStats, nv);
+        var nv = basicStat.Value.Value.Nominal;
+        if(nv > 0)
+          Stats.SetNominal(basicStat.Key, nv);
       }
+      Stats.SetNominal(EntityStatKind.Attack, BaseStrength.Value.Nominal);//attack is same as str for a simple entity
 
       lastingEffectsSet = new LastingEffectsSet(this, null);
       Alive = true;

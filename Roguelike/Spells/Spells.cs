@@ -178,7 +178,7 @@ namespace Roguelike.Spells
       Ally = caller.Container.GetInstance<AlliedEnemy>();
       Ally.InitSpawned(EnemySymbols.SkeletonSymbol, level);
       Ally.Name = "Skeleton";
-      Ally.Stats[EntityStatKind.Attack].Nominal = Damage;
+      //Ally.Stats[EntityStatKind.Attack].Nominal = Damage;
       //var health = CalcHealth(level);
       //Ally.Stats[EntityStatKind.Health].Nominal = health;
       manaCost = (float)(BaseManaCost * 2) + 2;

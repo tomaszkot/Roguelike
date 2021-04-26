@@ -166,23 +166,25 @@ namespace RoguelikeUnitTests
       Assert.AreEqual(level0.GeneratorNodes[0].Height, gi.MaxNodeSize.Height);
     }
 
-    [Test]
-    public void AppendMazeTest()
+    [TestCase(2)]
+    [TestCase(3)]
+    public void AppendMazeTest(int numEnemies)
     {
-      var level1 = GenRoomWithEnemies();
-      Assert.AreEqual(level1.GetTiles<Enemy>().Count(), 2);
-      Assert.Greater(level1.GetTiles().Where(i => i.IsEmpty).Count(), 3);
+      var level1 = GenRoomWithEnemies(numEnemies);
+      Assert.AreEqual(level1.GetTiles<Enemy>().Count(), numEnemies);
+      Assert.Greater(level1.GetTiles().Where(i => i.IsEmpty).Count(), numEnemies+1);
 
-      var level2 = GenRoomWithEnemies();
-      Assert.AreEqual(level2.GetTiles<Enemy>().Count(), 2);
+      var level2 = GenRoomWithEnemies(numEnemies);
+      Assert.AreEqual(level2.GetTiles<Enemy>().Count(), numEnemies);
 
-      level2.Merge(level1.GetTiles().Where(i => i is Enemy).ToList(), new System.Drawing.Point(0, 0),
+      var res = level2.Merge(level1.GetTiles().Where(i => i is Enemy).ToList(), new System.Drawing.Point(0, 0),
         (Dungeons.Tiles.Tile tile) => { return tile is Enemy; });
+      Assert.True(res);
 
-      Assert.AreEqual(level2.GetTiles<Enemy>().Count(), 4);
+      Assert.AreEqual(level2.GetTiles<Enemy>().Count(), numEnemies + numEnemies);
     }
 
-    private DungeonLevel GenRoomWithEnemies()
+    private DungeonLevel GenRoomWithEnemies(int numEnemies)
     {
       var generator = Container.GetInstance<Dungeons.IDungeonGenerator>();
       var info = new Roguelike.Generators.GenerationInfo();
@@ -193,15 +195,20 @@ namespace RoguelikeUnitTests
       var level = generator.Generate(0, info);
       Assert.Greater(level.GetTiles().Where(i => i.IsEmpty).Count(), 0);
 
-      var en = SpawnEnemy();
-      var pt = new Point(2, 2);
-      var set = level.SetTile(en, pt);
-      Assert.True(set);
+      int y = 2;
+      for (int i = 0; i < numEnemies; i++)
+      {
+        var en = SpawnEnemy();
+        var pt = new Point(2, y++);
+        var set = level.SetTile(en, pt);
+        Assert.True(set);
 
-      en = SpawnEnemy();
-      pt = new Point(2, 3);
-      set = level.SetTile(en, pt);
-      Assert.True(set);
+        //en = SpawnEnemy();
+        //pt = new Point(2, 3);
+        //set = level.SetTile(en, pt);
+        //Assert.True(set);
+      }
+
       return level;
     }
 

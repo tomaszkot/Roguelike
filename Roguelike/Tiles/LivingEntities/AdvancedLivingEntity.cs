@@ -12,14 +12,10 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
-using System.Windows.Markup;
 using SimpleInjector;
-using Roguelike.Abstract;
 using Roguelike.Discussions;
 using Roguelike.Abilities;
-using Roguelike.Abstract.Tiles;
 using Roguelike.Generators;
-using Roguelike.TileParts;
 using Roguelike.Abstract.Inventory;
 using Roguelike.Extensions;
 
@@ -311,10 +307,12 @@ namespace Roguelike.Tiles.LivingEntities
         StatLeveledUp(this, stat);
     }
 
-    public virtual string GetFormattedStatValue(EntityStatKind kind)
+    public virtual string GetFormattedStatValue(EntityStatKind kind, bool round)
     {
       var currentValue = GetCurrentValue(kind);
       var stat = Stats.GetStat(kind);
+      if (round)
+        currentValue = (float)Math.Round((double)currentValue);
       var value = stat.GetFormattedCurrentValue(currentValue);
       
       return value;
@@ -551,7 +549,7 @@ namespace Roguelike.Tiles.LivingEntities
 
     protected virtual float GetStrengthIncrease()
     {
-      return 0;
+      return Stats.GetCurrentValue(EntityStatKind.Strength) - StartStrength;
     }
 
     public bool CanUseEquipment(Equipment eq, EntityStat eqStat)

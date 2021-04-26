@@ -92,10 +92,10 @@ namespace Roguelike.Attributes
     //  }
     //}
 
-    public List<EntityStat> GetBasicStats()
-    {
-      return stats.Where(i => EntityStat.BasicStats.Contains(i.Key)).ToList().Select(i => i.Value).ToList();
-    }
+    //public List<EntityStat> GetBasicStats()
+    //{
+    //  return stats.Where(i => EntityStat.BasicStats.Contains(i.Key)).ToList().Select(i => i.Value).ToList();
+    //}
 
     public float GetTotalValue(EntityStatKind esk)
     {

@@ -10,7 +10,7 @@ namespace RoguelikeUnitTests
   {
     string GetFormattedHealth()
     {
-      return game.Hero.GetFormattedStatValue(Roguelike.Attributes.EntityStatKind.Health);
+      return game.Hero.GetFormattedStatValue(Roguelike.Attributes.EntityStatKind.Health, false);
     }
 
     [Test]

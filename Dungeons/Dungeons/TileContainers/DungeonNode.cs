@@ -980,8 +980,11 @@ namespace Dungeons
         if (fastVersionResult != null)
         {
           var tile = GetTile(fastVersionResult.Item1);
-          if(tile!=null && (!sameNodeId || tile.DungeonNodeIndex == baseTile.DungeonNodeIndex))
-            return tile;
+          if (skip == null || !skip.Contains(tile))
+          {
+            if (tile != null && (!sameNodeId || tile.DungeonNodeIndex == baseTile.DungeonNodeIndex))
+              return tile;
+          }
         }
 
         Log("GetClosestEmpty - failed to find empty fast way!", true);

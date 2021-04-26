@@ -9,8 +9,8 @@ namespace Roguelike.Attributes
     public event EventHandler<EntityStatKind> StatChanged;
     
     StatValue stat = new StatValue();
-    public static readonly EntityStatKind[] BasicStats = { EntityStatKind.Health, EntityStatKind.Magic, EntityStatKind.Mana, EntityStatKind.Attack,
-      EntityStatKind.Defense, EntityStatKind.Dexterity };
+    //public static readonly EntityStatKind[] BasicStats = { EntityStatKind.Health, EntityStatKind.Magic, EntityStatKind.Mana, EntityStatKind.Attack,
+    //  EntityStatKind.Defense, EntityStatKind.Dexterity };
     public bool Hidden { get; set; }
     public bool CanBeBelowZero { get; set; } = false;
 

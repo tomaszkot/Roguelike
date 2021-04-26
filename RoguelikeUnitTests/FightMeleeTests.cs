@@ -138,7 +138,7 @@ namespace RoguelikeUnitTests
       var attackWithWpn = game.Hero.GetCurrentValue(Roguelike.Attributes.EntityStatKind.Attack);
       Assert.Greater(attackWithWpn, attack);
 
-      var attackFormatted = game.Hero.GetFormattedStatValue(Roguelike.Attributes.EntityStatKind.Attack);
+      var attackFormatted = game.Hero.GetFormattedStatValue(Roguelike.Attributes.EntityStatKind.Attack, false);
       Assert.AreEqual(attackFormatted, "16-18");
 
       var damages = new List<float>();
