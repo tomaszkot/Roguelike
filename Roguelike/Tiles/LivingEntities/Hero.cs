@@ -42,6 +42,7 @@ namespace Roguelike.Tiles.LivingEntities
 
       //Inventory.InvOwner = InvOwner.Hero;
       Inventory.InvBasketKind = InvBasketKind.Hero;
+      CurrentEquipment.InvBasketKind = InvBasketKind.HeroEquipment;
 
       Crafting = Container.GetInstance<Roguelike.LootContainers.Crafting>();
       

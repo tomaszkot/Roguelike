@@ -25,7 +25,6 @@ namespace Roguelike.LootContainers
     
     public CurrentEquipment(Container container) : base(container)
     {
-      this.InvBasketKind = InvBasketKind.HeroEquipment;
       var eqipTypes = Enum.GetValues(typeof(CurrentEquipmentKind));
       foreach (CurrentEquipmentKind et in eqipTypes)
       {
@@ -47,6 +46,12 @@ namespace Roguelike.LootContainers
     {
       CurrentEquipmentKind cek = CurrentEquipmentKind.Weapon;
       return GetActiveEquipment()[cek] as Weapon;
+    }
+
+    public Armor GetHelmet()
+    {
+      CurrentEquipmentKind cek = CurrentEquipmentKind.Helmet;
+      return GetActiveEquipment()[cek] as Armor;
     }
 
     public Dictionary<CurrentEquipmentKind, Equipment> GetActiveEquipment()
