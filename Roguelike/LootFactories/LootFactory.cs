@@ -52,7 +52,7 @@ namespace Roguelike.LootFactories
     {
       container.GetInstance<EventsManager>().AppendAction(new Events.LootAction(e, null)
       {
-        LootActionKind = Events.LootActionKind.Identified
+        Kind = Events.LootActionKind.Identified
       });
     }
 

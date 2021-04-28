@@ -142,7 +142,7 @@ namespace Roguelike.Events
     }
 
     //TODO can be named Kind ?
-    public LootActionKind LootActionKind { get; set; }
+    public LootActionKind Kind { get; set; }
     public EquipmentKind EquipmentKind { get; set; }
     public CurrentEquipmentKind CurrentEquipmentKind { get; set; }
     public bool CollectedFromDistance { get; set; }

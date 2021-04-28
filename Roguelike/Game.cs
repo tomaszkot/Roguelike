@@ -42,7 +42,7 @@ namespace Roguelike
       {
         levels.Clear();
         GameLevel lvl = null;
-        var maxLevel = gs.HeroPath.LevelIndex;//TODO gs shall have maxLevel, hero might have go upper. Maybe just count level files in dir ?
+        var maxLevel = gs.HeroPath.LevelIndex;
         for (var i = 0; i <= maxLevel; i++)
         {
           GameLevel nextLvl = null;
@@ -109,29 +109,6 @@ namespace Roguelike
       var hero = Container.GetInstance<Hero>();
 
       var empOnes = node.GetEmptyTiles(nodeIndexMustMatch: false);
-      ////TODO PitUp here?
-      //Dungeons.Tiles.Tile emptyForHero = node
-      //  .GetTiles<Stairs>()
-      //  .FirstOrDefault(i => 
-      //    i.StairsKind == StairsKind.LevelUp ||
-      //    i.StairsKind == StairsKind.PitUp);
-
-
-      //var secret = node.Nodes.Where(i => i.Secret).FirstOrDefault();
-      //if (secret != null)
-      //{
-      //  empOnes = empOnes.Where(i => i.dungeonNodeIndex != secret.NodeIndex).ToList();
-      //}
-      //if (emptyForHero == null)
-      //{
-      //  if (LevelGenerator.LevelIndex != 0)
-      //  {
-      //    Container.GetInstance<ILogger>().LogError("emptyForHero == null " + LevelGenerator.LevelIndex);
-      //  }
-
-      //  emptyForHero = empOnes.First();
-      //}
-      //var empty = node.GetClosestEmpty(emptyForHero, empOnes);
       var empty = empOnes.First();
       node.SetTile(hero, empty.point);
       return hero;

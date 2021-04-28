@@ -286,7 +286,7 @@ namespace Roguelike.Tiles.LivingEntities
         }
 
         var info = Name + " consumed " + (consumable as Dungeons.Tiles.Tile).Name + ", Health: " + this.GetCurrentValue(EntityStatKind.Health);
-        AppendAction(new LootAction(consumable.Loot, this) { LootActionKind = LootActionKind.Consumed, Info = info });
+        AppendAction(new LootAction(consumable.Loot, this) { Kind = LootActionKind.Consumed, Info = info });
       }
       else
         Assert(false);
@@ -485,7 +485,7 @@ namespace Roguelike.Tiles.LivingEntities
         ac = new LootAction(eq, this)
         {
           Info = Name + " put on " + eq.Name,
-          LootActionKind = LootActionKind.PutOn,
+          Kind = LootActionKind.PutOn,
           EquipmentKind = eq.EquipmentKind,
           CurrentEquipmentKind = cek
         };
@@ -495,7 +495,7 @@ namespace Roguelike.Tiles.LivingEntities
         ac = new LootAction(null, this)
         {
           Info = Name + " took off " + cek,
-          LootActionKind = LootActionKind.PutOff,
+          Kind = LootActionKind.PutOff,
           EquipmentKind = Equipment.FromCurrentEquipmentKind(cek, out pos),
           CurrentEquipmentKind = cek
         };

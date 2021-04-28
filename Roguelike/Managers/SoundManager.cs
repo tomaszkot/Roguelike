@@ -61,12 +61,12 @@ namespace Roguelike.Managers
       else if (ac is LootAction)
       {
         var la = ac as LootAction;
-        if (la.LootActionKind == LootActionKind.Consumed)
+        if (la.Kind == LootActionKind.Consumed)
         {
           sndName = (la.Loot as Consumable).ConsumedSound;
 
         }
-        else if (la.LootActionKind == LootActionKind.Collected)
+        else if (la.Kind == LootActionKind.Collected)
         {
           sndName = la.Loot.CollectedSound;
         }

@@ -227,7 +227,7 @@ namespace Roguelike.Managers
       var la = e as LootAction;
       if (la != null)
       {
-        if (la.LootActionKind == LootActionKind.Consumed)
+        if (la.Kind == LootActionKind.Consumed)
         {
           if (la.LootOwner != null && la.LootOwner is Hero)//TODO
             Context.MoveToNextTurnOwner();
@@ -440,7 +440,7 @@ namespace Roguelike.Managers
         var loot = replacer as Loot;
         if (loot != null)
         {
-          AppendAction<LootAction>((LootAction ac) => { ac.Loot = loot; ac.LootActionKind = LootActionKind.Generated; ac.GenerationAnimated = animated; ac.Source = positionSource; });
+          AppendAction<LootAction>((LootAction ac) => { ac.Loot = loot; ac.Kind = LootActionKind.Generated; ac.GenerationAnimated = animated; ac.Source = positionSource; });
           GameState.History.Looting.GeneratedLoot.Add(new LootHistoryItem(loot));
         }
         else
@@ -569,7 +569,7 @@ namespace Roguelike.Managers
         if (gold != null)
           Hero.Gold += gold.Count;
         CurrentNode.RemoveLoot(lootTile.point);
-        EventsManager.AppendAction(new LootAction(lootTile, Hero) { LootActionKind = LootActionKind.Collected, CollectedFromDistance = fromDistance });
+        EventsManager.AppendAction(new LootAction(lootTile, Hero) { Kind = LootActionKind.Collected, CollectedFromDistance = fromDistance });
         if (lootTile is Equipment)
         {
           var eq = lootTile as Equipment;
