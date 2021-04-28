@@ -50,6 +50,9 @@
     public static int DefaultEnemyResistAllUsageCount = 0;
     public static int DefaultEnemyInaccuracyUsageCount = 0;
 
+    public int MaxBarrelsPerRoom = 5;
+    public int MaxLootPerRoom = 2;
+
     public override void MakeEmpty()
     {
       base.MakeEmpty();

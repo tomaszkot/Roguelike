@@ -113,7 +113,7 @@ namespace Roguelike.LootContainers
         var ek = cek.GetEquipmentKind();
         var matches = ek == eq.EquipmentKind;
         if (!matches)
-          return false;//TODO action
+          return false;
       }
 
       if (primary)

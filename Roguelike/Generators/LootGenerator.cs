@@ -289,8 +289,7 @@ namespace Roguelike.Generators
       var eq = LootFactory.EquipmentFactory.GetRandom(randedEnum, level, eqClass);
       if ((eq == null || eq.Class != EquipmentClass.Unique) && eqClass == EquipmentClass.Unique)
       {
-        var skip = new[] { EquipmentKind.Trophy, EquipmentKind.God, EquipmentKind.Unset };
-        var values = Enum.GetValues(typeof(EquipmentKind)).Cast<EquipmentKind>().Where(i => !skip.Contains(i)).ToList();
+        var values = GetEqKinds();
         foreach (var kind in values)
         {
           eq = LootFactory.EquipmentFactory.GetRandom(kind, level, eqClass);
@@ -300,6 +299,13 @@ namespace Roguelike.Generators
       }
 
       return eq;
+    }
+
+    public static List<EquipmentKind> GetEqKinds()
+    {
+      var skip = new[] { EquipmentKind.Trophy, EquipmentKind.God, EquipmentKind.Unset };
+      var values = Enum.GetValues(typeof(EquipmentKind)).Cast<EquipmentKind>().Where(i => !skip.Contains(i)).ToList();
+      return values;
     }
 
     protected LootHistory lootHistory;

@@ -4,7 +4,9 @@ using Roguelike.Generators;
 using Roguelike.History;
 using Roguelike.Tiles;
 using SimpleInjector;
+using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Roguelike.LootFactories
 {
@@ -89,9 +91,29 @@ namespace Roguelike.LootFactories
       CreateKindFactories();
     }
 
+    //transient obj
+    LootHistory uniqLootHistory = new LootHistory();
+
     public virtual Equipment GetRandom(EquipmentKind kind, int maxEqLevel, EquipmentClass eqClass = EquipmentClass.Plain)
     {
       Equipment eq = null;
+
+      if (eqClass == EquipmentClass.Unique)
+      {
+        if (this.lootCreators.Any())
+        {
+          eq = this.lootCreators[EquipmentKind.Weapon].GetUniqueItems(maxEqLevel).FirstOrDefault();
+        }
+        if (eq == null)
+        {
+          eq = GetRandomWeapon();
+          eq.SetLevelIndex(maxEqLevel);
+        }
+
+        if (eq.LevelIndex <= 0)
+          throw new Exception("eq.LevelIndex <= 0!");
+        return eq;
+      }
 
       switch (kind)
       {
@@ -128,18 +150,9 @@ namespace Roguelike.LootFactories
         {
           MakeMagic(eqClass, eq);
         }
-        else
-        {
-          //TODO
-          var ees = new EqEntityStats();
-          ees.Add(EntityStatKind.Health, 15)
-          .Add(EntityStatKind.Attack, 15)
-          .Add(EntityStatKind.Defense, 15)
-          .Add(EntityStatKind.ChanceToCastSpell, 15);
-          eq.SetUnique(ees.Get(), 5);
-        }
       }
-      eq.SetLevelIndex(maxEqLevel);//TODO 
+      eq.SetLevelIndex(maxEqLevel);
+
       return eq;
     }
 

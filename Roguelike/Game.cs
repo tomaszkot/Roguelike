@@ -58,7 +58,7 @@ namespace Roguelike
         }
         for (var i = 0; i < gs.HeroPath.LevelIndex; i++)
         {
-          levels[i].Reveal(true);//TODO, due to bugs with reveal of rooms it's better to do it for whole level
+          levels[i].Reveal(true);
         }
         lvl = levels[gs.HeroPath.LevelIndex];
         return lvl;

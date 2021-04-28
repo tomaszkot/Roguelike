@@ -206,7 +206,7 @@ namespace Roguelike.Managers
 
     protected virtual bool MoveEntity(LivingEntity entity, Point newPos, List<Point> fullPath)
     {
-      context.ApplyMovePolicy(entity, newPos, fullPath, (e) => OnPolicyApplied(e));
+      gameManager.ApplyMovePolicy(entity, newPos, fullPath, (e) => OnPolicyApplied(e));
 
       return true;//TODO
     }

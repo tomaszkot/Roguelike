@@ -42,7 +42,7 @@ namespace Roguelike.Generators
 
       if (node.ContentGenerated)
       {
-        EnsureBoss();//TODO what is the point of it ?
+        EnsureBoss();//TODO what is the point of it, needed after load ?
         return;
       }
 
@@ -66,7 +66,7 @@ namespace Roguelike.Generators
       if (this.gi != null && !gi.GenerateInteractiveTiles)
         return;
 
-      int barrelsNumber = RandHelper.GetRandomInt(5);//TODO
+      int barrelsNumber = RandHelper.GetRandomInt(gi.MaxBarrelsPerRoom);
       if (node.IsChildIsland)
       {
         barrelsNumber = 2;
@@ -123,7 +123,7 @@ namespace Roguelike.Generators
       if (this.gi != null && !gi.GenerateLoot)
         return;
 
-      int lootNumber = RandHelper.GetRandomInt(2);//TODO
+      int lootNumber = RandHelper.GetRandomInt(gi.MaxLootPerRoom);
       if (lootNumber == 0)
         lootNumber++;//at least one
 

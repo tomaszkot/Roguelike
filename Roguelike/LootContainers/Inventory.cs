@@ -341,7 +341,7 @@ namespace Roguelike.LootContainers
 
     internal bool CanAddLoot(Loot loot)
     {
-      return Capacity > Items.Count || (loot.StackedInInventory && GetStackedCount(loot as StackedLoot) > 0);//TODO stacked
+      return Capacity > Items.Count || (loot is StackedLoot stacked && stacked.Count > 0);
     }
 
     public override string ToString()

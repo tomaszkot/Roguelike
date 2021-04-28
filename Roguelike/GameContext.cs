@@ -121,32 +121,6 @@ namespace Roguelike
       return true;
     }
 
-
-    //TODO move
-    public void ApplyMovePolicy(LivingEntity entity, Point newPos, List<Point> fullPath, Action<Policy> OnApplied)
-    {
-      var movePolicy = Container.GetInstance<MovePolicy>();
-      //Logger.LogInfo("moving " + entity + " to " + newPos + " mp = " + movePolicy);
-
-      movePolicy.OnApplied += (s, e) =>
-      {
-        if (OnApplied != null)
-        {
-          OnApplied(e);
-        }
-      };
-
-      if (movePolicy.Apply(CurrentNode, entity, newPos, fullPath))
-      {
-        EventsManager.AppendAction(new LivingEntityAction(kind: LivingEntityActionKind.Moved)
-        {
-          Info = entity.Name + " moved",
-          InvolvedEntity = entity,
-          MovePolicy = movePolicy
-        });
-      }
-    }
-
     ////////////////////////////////////////////////////////////////////////////////////////////////
     public virtual void SwitchTo
     (
@@ -280,9 +254,8 @@ namespace Roguelike
         return;
       DoMoveToNextTurnOwner();
     }
-
-    //TODO make priv, call in UT by refl.
-    public void DoMoveToNextTurnOwner()
+        
+    void DoMoveToNextTurnOwner()
     {
       if (turnOwner == TurnOwner.Hero)
       {

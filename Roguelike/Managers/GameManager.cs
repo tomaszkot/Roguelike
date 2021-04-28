@@ -10,6 +10,7 @@ using Roguelike.Extensions;
 using Roguelike.Generators;
 using Roguelike.History;
 using Roguelike.LootContainers;
+using Roguelike.Policies;
 using Roguelike.Serialization;
 using Roguelike.State;
 using Roguelike.Strategy;
@@ -130,6 +131,30 @@ namespace Roguelike.Managers
     protected virtual void CreateInputManager()
     {
       inputManager = new InputManager(this);
+    }
+
+    public void ApplyMovePolicy(LivingEntity entity, Point newPos, List<Point> fullPath, Action<Policy> OnApplied)
+    {
+      var movePolicy = Container.GetInstance<MovePolicy>();
+      //Logger.LogInfo("moving " + entity + " to " + newPos + " mp = " + movePolicy);
+
+      movePolicy.OnApplied += (s, e) =>
+      {
+        if (OnApplied != null)
+        {
+          OnApplied(e);
+        }
+      };
+
+      if (movePolicy.Apply(CurrentNode, entity, newPos, fullPath))
+      {
+        EventsManager.AppendAction(new LivingEntityAction(kind: LivingEntityActionKind.Moved)
+        {
+          Info = entity.Name + " moved",
+          InvolvedEntity = entity,
+          MovePolicy = movePolicy
+        });
+      }
     }
 
     public bool CanHeroDoAction()
@@ -782,7 +807,7 @@ namespace Roguelike.Managers
 
     private void GenerateMerchantEq(Merchant merch, bool magic)
     {
-      var eqKinds = Enum.GetValues(typeof(EquipmentKind)).Cast<EquipmentKind>().ToList();
+      var eqKinds = LootGenerator.GetEqKinds();
       eqKinds.Shuffle();
       int levelIndex = Hero.Level;
       foreach (var eqKind in eqKinds)

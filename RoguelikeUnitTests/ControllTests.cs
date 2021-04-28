@@ -100,14 +100,17 @@ namespace RoguelikeUnitTests
 
     private void MoveToHeroTurn(RoguelikeGame game)
     {
-      game.GameManager.Context.DoMoveToNextTurnOwner();
+      var old = game.GameManager.Context.AutoTurnManagement;
+      game.GameManager.Context.AutoTurnManagement = true;
+      game.GameManager.Context.MoveToNextTurnOwner();
       Assert.AreEqual(Game.GameManager.Context.TurnCounts[TurnOwner.Hero], 1);
       Assert.AreEqual(game.GameManager.Context.TurnOwner, TurnOwner.Allies);
-      game.GameManager.Context.DoMoveToNextTurnOwner();
+      game.GameManager.Context.MoveToNextTurnOwner();
       Assert.AreEqual(game.GameManager.Context.TurnOwner, TurnOwner.Enemies);
-      game.GameManager.Context.DoMoveToNextTurnOwner();
+      game.GameManager.Context.MoveToNextTurnOwner();
       Assert.AreEqual(game.GameManager.Context.TurnOwner, TurnOwner.Hero);
       Assert.AreEqual(Game.GameManager.Context.GetActionsCount(), 0);
+      game.GameManager.Context.AutoTurnManagement = old;
     }
 
     [Test]

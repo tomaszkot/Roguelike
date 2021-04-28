@@ -1,6 +1,7 @@
 ﻿using NUnit.Framework;
 using Roguelike.Attributes;
 using Roguelike.Extensions;
+using Roguelike.LootFactories;
 using Roguelike.Spells;
 using Roguelike.Tiles;
 using Roguelike.Tiles.Interactive;
@@ -18,6 +19,16 @@ namespace RoguelikeUnitTests
   [TestFixture]
   class LootingTests : TestBaseTyped<LootingTestsHelper>
   {
+
+    [Test]
+    public void UniqRandom()
+    {
+      var env = CreateTestEnv();
+      var ef = new EquipmentFactory(env.GameManager.Container);
+      var loot = ef.GetRandom(EquipmentKind.Weapon, 2, EquipmentClass.Unique);
+      Assert.NotNull(loot);
+   
+    }
 
     [Test]
     public void GemsLevel()
