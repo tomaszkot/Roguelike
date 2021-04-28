@@ -7,7 +7,7 @@ namespace Roguelike.UI.Models
     public string DisplayValue { get; set; }
     public string ReturnValue { get; set; }
     public bool Disabled { get; internal set; }
-    
+
     public ListItemModel(string returnValue, string displayValue = null)
     {
       DisplayValue = displayValue ?? returnValue;
@@ -35,7 +35,7 @@ namespace Roguelike.UI.Models
     }
 
     public virtual int Count()
-    { 
+    {
       return items.Count;
     }
 

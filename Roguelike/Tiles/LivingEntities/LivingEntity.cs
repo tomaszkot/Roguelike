@@ -36,17 +36,18 @@ namespace Roguelike.Tiles.LivingEntities
     public static readonly EntityStat BaseMana = new EntityStat(EntityStatKind.Mana, 10);
     public static readonly EntityStat BaseMagic = new EntityStat(EntityStatKind.Magic, 10);
 
-    static Dictionary<EntityStatKind, EntityStatKind> statsHitIncrease = new Dictionary<EntityStatKind, EntityStatKind> 
+    static Dictionary<EntityStatKind, EntityStatKind> statsHitIncrease = new Dictionary<EntityStatKind, EntityStatKind>
     {
       { EntityStatKind.LifeStealing, EntityStatKind.Health },
       { EntityStatKind.ManaStealing, EntityStatKind.Mana }
     };
 
     [JsonIgnore]
-    public bool Destroyed 
+    public bool Destroyed
     {
       get { return !Alive; }
-      set {
+      set
+      {
         throw new Exception("LivingEntity.Destroyed - use Alive!");
       }
     }
@@ -60,13 +61,13 @@ namespace Roguelike.Tiles.LivingEntities
     Dictionary<EntityStatKind, float> nonPhysicalDamageStats = new Dictionary<EntityStatKind, float>();
     public Tile FixedWalkTarget = null;
     public LivingEntity AllyModeTarget;
-    public bool HasRelocateSkill{ get; set; }
+    public bool HasRelocateSkill { get; set; }
     public static readonly EntityStats BaseStats;
 
     Scroll activeScroll;
     public virtual Scroll ActiveScroll
     {
-      get 
+      get
       {
         return activeScroll;
       }
@@ -80,12 +81,12 @@ namespace Roguelike.Tiles.LivingEntities
 
     public bool CanAttack { get; set; } = true;
     public EffectType DiedOfEffect;
-    
+
     public EntityState state;
     public EntityState State
     {
       get { return state; }
-      set{state = value;}
+      set { state = value; }
     }
     List<Algorithms.PathFinderNode> pathToTarget;
     protected LastingEffectsSet lastingEffectsSet;
@@ -93,15 +94,15 @@ namespace Roguelike.Tiles.LivingEntities
 
     [JsonIgnore]
     public List<LivingEntity> EverHitBy { get; set; } = new List<LivingEntity>();
-    
+
     bool alive = true;
     //[JsonIgnoreAttribute]
     public EntityStats Stats { get => stats; set => stats = value; }
 
-    public int Level 
-    { 
-      get; 
-      set; 
+    public int Level
+    {
+      get;
+      set;
     } = 1;
 
     public bool IsWounded { get; protected set; }
@@ -109,7 +110,7 @@ namespace Roguelike.Tiles.LivingEntities
     public static readonly EffectType[] PossibleEffectsToUse = new EffectType[] {
     EffectType.Weaken, EffectType.Rage, EffectType.IronSkin, EffectType.ResistAll, EffectType.Inaccuracy
     };
-        
+
     static LivingEntity()
     {
       BaseStats = new EntityStats();
@@ -121,7 +122,7 @@ namespace Roguelike.Tiles.LivingEntities
       BaseStats.SetStat(EntityStatKind.Magic, BaseMagic);
     }
 
-    public LivingEntity():this(new Point(-1, -1), '\0')
+    public LivingEntity() : this(new Point(-1, -1), '\0')
     {
     }
 
@@ -130,7 +131,7 @@ namespace Roguelike.Tiles.LivingEntities
       foreach (var basicStat in BaseStats.GetStats())
       {
         var nv = basicStat.Value.Value.Nominal;
-        if(nv > 0)
+        if (nv > 0)
           Stats.SetNominal(basicStat.Key, nv);
       }
       Stats.SetNominal(EntityStatKind.Attack, BaseStrength.Value.Nominal);//attack is same as str for a simple entity
@@ -140,7 +141,7 @@ namespace Roguelike.Tiles.LivingEntities
       Name = "";
       Stats.SetNominal(EntityStatKind.ChanceToHit, 75);
       Stats.SetNominal(EntityStatKind.ChanceToCastSpell, 75);
-      
+
       var effectTypes = Enum.GetValues(typeof(EffectType)).Cast<EffectType>().ToList();
       foreach (var et in effectTypes)
       {
@@ -227,11 +228,11 @@ namespace Roguelike.Tiles.LivingEntities
       return 1 + (level * StatsIncreasePerLevel * factor);
     }
 
-    public bool WasEverHitBy(LivingEntity le) 
+    public bool WasEverHitBy(LivingEntity le)
     {
       return EverHitBy.Contains(le);
     }
-        
+
     public virtual void SetChanceToExperienceEffect(EffectType et, int chance)
     {
       chanceToExperienceEffect[et] = chance;
@@ -243,14 +244,14 @@ namespace Roguelike.Tiles.LivingEntities
     {
       var stat = Stats.GetStat(EntityStatKind.Mana);
       //if(stat.Value.CurrentValue >= amount)
-        stat.Subtract(amount);
+      stat.Subtract(amount);
     }
 
     public static LivingEntity CreateDummy()
     {
       return new LivingEntity(new Point(0, 0), '\0');
     }
-    
+
     [JsonIgnore]
     public List<Algorithms.PathFinderNode> PathToTarget
     {
@@ -277,8 +278,8 @@ namespace Roguelike.Tiles.LivingEntities
       {
         if (alive != value)
         {
-            alive = value;
-          
+          alive = value;
+
         }
       }
     }
@@ -323,7 +324,7 @@ namespace Roguelike.Tiles.LivingEntities
         {
           if (ShouldEvade(target, EntityStatKind.ChanceToEvadeMeleeAttack, null))
           {
-            EventsManager.AppendAction(new LivingEntityAction(LivingEntityActionKind.Missed) { InvolvedEntity = this , Info = Name+" missed "+ target.Name});
+            EventsManager.AppendAction(new LivingEntityAction(LivingEntityActionKind.Missed) { InvolvedEntity = this, Info = Name + " missed " + target.Name });
             return false;
           }
 
@@ -370,8 +371,8 @@ namespace Roguelike.Tiles.LivingEntities
       var attack = attacker.GetHitAttackValue(true);
       if (defense <= 0)
         defense = 1;//HACK, TODO
-      var inflicted = attack/defense;
-      
+      var inflicted = attack / defense;
+
       var manaShieldEffect = LastingEffectsSet.GetByType(EffectType.ManaShield);
       if (manaShieldEffect != null && this.Stats.Mana > inflicted)
         ReduceMana(inflicted);
@@ -406,7 +407,7 @@ namespace Roguelike.Tiles.LivingEntities
       //  PlayPunchSound();
       //}
       var dead = DieIfShould(EffectType.Unset);
-      if(!dead)
+      if (!dead)
       {
         if (IsWounded)
         {
@@ -420,8 +421,8 @@ namespace Roguelike.Tiles.LivingEntities
     }
 
     protected virtual void OnDamageCaused(float inflicted, LivingEntity victim)
-    { 
-      
+    {
+
     }
 
     List<EffectType> everCausedHero = new List<EffectType>();
@@ -429,7 +430,7 @@ namespace Roguelike.Tiles.LivingEntities
     {
       return everCausedHero.Contains(type);
     }
-    
+
     internal void SetEverCausedHero(EffectType type)
     {
       everCausedHero.Add(type);
@@ -440,11 +441,11 @@ namespace Roguelike.Tiles.LivingEntities
       return true;
     }
 
-    public virtual  float GetAttackVariation()
+    public virtual float GetAttackVariation()
     {
       return 0;
     }
-        
+
     string GetAttackDesc(EntityStatKind esk)
     {
       if (esk == EntityStatKind.FireAttack)
@@ -466,7 +467,7 @@ namespace Roguelike.Tiles.LivingEntities
       foreach (var stat in Loot.AttackingNonPhysicalStats)
       {
         var cv = Stats.GetCurrentValue(stat);
-        if(cv > 0)
+        if (cv > 0)
           nonPhysicalDamageStats[stat] = cv;
       }
 
@@ -475,16 +476,16 @@ namespace Roguelike.Tiles.LivingEntities
 
     protected void PlaySound(string sound)
     {
-      if(sound.Any())
+      if (sound.Any())
         AppendAction(new SoundRequestAction() { SoundName = sound });
     }
 
     protected virtual void OnHitBy
     (
-      float amount, 
+      float amount,
       //FightItem fightItem, 
-      LivingEntity attacker = null, 
-      Spell spell = null, 
+      LivingEntity attacker = null,
+      Spell spell = null,
       string damageDesc = null
     )
     {
@@ -521,7 +522,7 @@ namespace Roguelike.Tiles.LivingEntities
       PlaySound(sound);
 
       var frighten = this.GetFirstLastingEffect(EffectType.Frighten);
-      if(frighten !=null)
+      if (frighten != null)
         RemoveLastingEffect(frighten);
 
       if (attacker != null || (spell.Caller != null && spell.Caller.LastingEffects.Any(i => i.Type == EffectType.Transform)))
@@ -565,7 +566,7 @@ namespace Roguelike.Tiles.LivingEntities
     {
       return LastingEffects.Where(i => i.Type == le).FirstOrDefault();
     }
-            
+
     public bool IsImmuned(EffectType effect)
     {
       if (this is CrackedStone)
@@ -577,13 +578,13 @@ namespace Roguelike.Tiles.LivingEntities
     {
       lastingEffectsSet.ApplyLastingEffects();
     }
-        
+
     protected void DoConsume(EntityStatKind statFromConsumable, LastingEffectCalcInfo inc)
     {
       this.Stats.ChangeStatDynamicValue(statFromConsumable, (float)inc.EffectiveFactor.Value);
     }
 
-  
+
     /// <summary>
     /// Increases health or mana by stealing
     /// </summary>
@@ -611,13 +612,13 @@ namespace Roguelike.Tiles.LivingEntities
       }
     }
 
-    public LastingEffectsSet LastingEffectsSet { get => lastingEffectsSet;  }
+    public LastingEffectsSet LastingEffectsSet { get => lastingEffectsSet; }
 
     public virtual void RemoveLastingEffect(LastingEffect le)
     {
       lastingEffectsSet.RemoveLastingEffect(le);
     }
-        
+
     public static float GetReducePercentage(float orgAmount, float discPerc)
     {
       return orgAmount * discPerc / 100f;
@@ -626,13 +627,13 @@ namespace Roguelike.Tiles.LivingEntities
     public override string ToString()
     {
       var str = base.ToString();
-      str += " "+this.State + ", Alive:"+Alive + ", H:"+Stats.Health + ", Lvl:" + this.Level;
+      str += " " + this.State + ", Alive:" + Alive + ", H:" + Stats.Health + ", Lvl:" + this.Level;
       return str;
     }
 
     protected void AppendAction(GameAction ac)
     {
-      if(EventsManager != null)
+      if (EventsManager != null)
         EventsManager.AppendAction(ac);
     }
 
@@ -658,7 +659,7 @@ namespace Roguelike.Tiles.LivingEntities
     {
       var info = Name + " Died";
       if (DiedOfEffect != EffectType.Unset)
-        info += ", killing effect: "+ DiedOfEffect.ToDescription();
+        info += ", killing effect: " + DiedOfEffect.ToDescription();
 
       return new LivingEntityAction(LivingEntityActionKind.Died) { InvolvedEntity = this, Level = ActionLevel.Important, Info = info };
     }
@@ -692,7 +693,7 @@ namespace Roguelike.Tiles.LivingEntities
       {
         cv = 100;
       }
-      
+
       return cv;
     }
 
@@ -904,7 +905,7 @@ namespace Roguelike.Tiles.LivingEntities
       var factor = statValue * nominalValuePercInc / 100f;// CalcEffectValue(nominalValuePercInc, statValue);
       return new EffectiveFactor(factor);
     }
-        
+
     public void ApplyPassiveSpell(PassiveSpell spell)
     {
       AddLastingEffectFromSpell(spell.Kind, SpellConverter.EffectTypeFromSpellKind(spell.Kind));
@@ -923,7 +924,7 @@ namespace Roguelike.Tiles.LivingEntities
 
     public int GetSurfaceSkillLevel(SurfaceKind kind)
     {
-      if(surfaceSkillLevel.ContainsKey(kind))
+      if (surfaceSkillLevel.ContainsKey(kind))
         return surfaceSkillLevel[kind];
 
       return 0;
@@ -969,9 +970,9 @@ namespace Roguelike.Tiles.LivingEntities
 
     public virtual Scroll GetAttackingScroll()
     {
-      return ActiveScroll; 
+      return ActiveScroll;
     }
-        
+
     public bool CanBeHitBySpell()
     {
       return true;

@@ -2,7 +2,6 @@
 using Dungeons.TileContainers;
 using SimpleInjector;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 
@@ -13,7 +12,7 @@ namespace Dungeons
     DungeonLevel DoLayout(List<DungeonNode> nodes, LayouterOptions opt = null);
   }
 
-  struct AppendNodeInfo 
+  struct AppendNodeInfo
   {
     public Point Position;
     public EntranceSide side;
@@ -36,7 +35,7 @@ namespace Dungeons
   {
     public bool RevealAllNodes { get; set; } = true;
   }
-  
+
   //Takes list of nodes and arranges them into a dungeon. Nodes are aligning one to another no special corridors.
   class DefaultNodeLayouter : INodeLayouter
   {
@@ -55,9 +54,9 @@ namespace Dungeons
       this.info = info;
     }
 
-    public DungeonLevel DoLayout(List<DungeonNode> nodes, LayouterOptions opt = null) 
+    public DungeonLevel DoLayout(List<DungeonNode> nodes, LayouterOptions opt = null)
     {
-      if(nodes.Any(i=> !i.Created))
+      if (nodes.Any(i => !i.Created))
         return container.GetInstance<DungeonLevel>();
       options = opt;
       if (options == null)
@@ -74,11 +73,11 @@ namespace Dungeons
       localLevel.Container = this.container;
       //Activator.CreateInstance(typeof(T), new object[] { container }) as T;
       localLevel.Create(tw, th /*+ nodesPadding * nodes.Count*/, gi, -1, null, false);
-      
+
       var maxLoc = localLevel.GetMaxXY();
       if (nodes.Count > 1)
       {
-        if(nodes[1].GetTiles().First().DungeonNodeIndex != nodes[1].NodeIndex)
+        if (nodes[1].GetTiles().First().DungeonNodeIndex != nodes[1].NodeIndex)
           container.GetInstance<ILogger>().LogError("nodes[1].GetTiles().First().DungeonNodeIndex != nodes[1].NodeIndex");
       }
 
@@ -86,7 +85,7 @@ namespace Dungeons
 
       if (localLevel.Tiles[0, 0].DungeonNodeIndex == DungeonNode.DefaultNodeIndex)
       {
-        container.GetInstance<ILogger>().LogError("localLevel.Tiles[0, 0].DungeonNodeIndex == "+ DungeonNode.DefaultNodeIndex);
+        container.GetInstance<ILogger>().LogError("localLevel.Tiles[0, 0].DungeonNodeIndex == " + DungeonNode.DefaultNodeIndex);
       }
 
       var max = localLevel.GetMaxXY();
@@ -100,17 +99,17 @@ namespace Dungeons
 
       level.SecretRoomIndex = -1;
       var sn = nodes.Where(i => i.Secret).FirstOrDefault();
-      if(sn!=null)
+      if (sn != null)
         level.SecretRoomIndex = sn.NodeIndex;
       return level;
     }
-        
+
     protected virtual void LayoutNodes(DungeonNode level, List<DungeonNode> mazeNodes)
     {
       this.mazeNodes = mazeNodes;
       var info = new AppendNodeInfo(mazeNodes[0]);
       info.side = EntranceSide.Right;
-      
+
       float chanceForLevelTurn = 0.5f;
       EntranceSide? prevEntranceSide = null;
       var secretRoomIndex = mazeNodes.FindIndex(i => i.Secret);
@@ -127,7 +126,7 @@ namespace Dungeons
 
         bool shallBreak = currentNodeIndex == mazeNodes.Count - 1;
         AppendNodeInfo infoNext = new AppendNodeInfo();
-        
+
         if (!shallBreak)
         {
           infoNext = CalcNextValues(info, chanceForLevelTurn, currentNodeIndex);
@@ -141,7 +140,7 @@ namespace Dungeons
 
             //this call must be done before AppendMaze because AppendMaze changes tiles x,y
             List<Tiles.IDoor> doors = null;
-            if(!currentNode.Secret || currentNode.NodeIndex == 0)
+            if (!currentNode.Secret || currentNode.NodeIndex == 0)
               doors = currentNode.GenerateLayoutDoors(infoNext.side, nextMaze.NodeIndex, secretRoom);
             if (currentNode.Secret)
             {
@@ -149,9 +148,9 @@ namespace Dungeons
                 (doors[0]).DungeonNodeIndex = 1;
             }
 
-            if (nextMaze.Secret && mazeNodes.Count > currentNodeIndex+2)
+            if (nextMaze.Secret && mazeNodes.Count > currentNodeIndex + 2)
             {
-              doors = currentNode.GenerateLayoutDoors(infoNext.side == EntranceSide.Bottom ? EntranceSide.Right : EntranceSide.Bottom , nextMaze.NodeIndex, false, true);
+              doors = currentNode.GenerateLayoutDoors(infoNext.side == EntranceSide.Bottom ? EntranceSide.Right : EntranceSide.Bottom, nextMaze.NodeIndex, false, true);
             }
           }
         }
@@ -182,17 +181,17 @@ namespace Dungeons
         info = infoNext;
       }
     }
-        
+
     private AppendNodeInfo CalcNextValues(AppendNodeInfo currentAppendInfo, float chanceForLevelTurn, int currentNodeIndex)
     {
       var currentNode = mazeNodes[currentNodeIndex];
       //copy current append info (struct)
       AppendNodeInfo nextAppendInfo = currentAppendInfo;
-      
-      nextAppendInfo.DungeonNode = mazeNodes[currentNodeIndex+1];
-      DungeonNode sizeProvider  = currentAppendInfo.DungeonNode;
 
-      
+      nextAppendInfo.DungeonNode = mazeNodes[currentNodeIndex + 1];
+      DungeonNode sizeProvider = currentAppendInfo.DungeonNode;
+
+
       if (currentNode.Secret)
       {
         if (currentNode.NodeIndex == 0)
@@ -220,13 +219,13 @@ namespace Dungeons
         //if (currentNodeIndex == 0)
         //  nextAppendInfo.side = EntranceSide.Bottom;
         //else
-          nextAppendInfo.side = CalcSide(currentAppendInfo.side, nextAppendInfo.side, chanceForLevelTurn);
+        nextAppendInfo.side = CalcSide(currentAppendInfo.side, nextAppendInfo.side, chanceForLevelTurn);
       }
 
       var pt = nextAppendInfo.Position;
       if (nextAppendInfo.side == EntranceSide.Bottom)
       {
-        pt.Y += sizeProvider.Height -1 + nodesPadding;
+        pt.Y += sizeProvider.Height - 1 + nodesPadding;
       }
       else if (nextAppendInfo.side == EntranceSide.Right)
       {
@@ -240,7 +239,7 @@ namespace Dungeons
     private EntranceSide CalcSide(EntranceSide current, EntranceSide next, float chanceForLevelTurn)//, int currentNodeIndex)
     {
       if (info != null && info.ForcedNextRoomSide != null)
-       return info.ForcedNextRoomSide.Value;
+        return info.ForcedNextRoomSide.Value;
 
       EntranceSide side = GetRandSide();
       if (current == next)

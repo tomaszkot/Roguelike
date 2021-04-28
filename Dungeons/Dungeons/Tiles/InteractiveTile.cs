@@ -9,12 +9,12 @@ namespace Dungeons.Tiles
     public Point Position => point;
 
     public InteractiveTile(Point point, char symbol) : base(point, symbol)
-    { 
+    {
     }
 
-    public InteractiveTile(char symbol) : this(new Point(-1,-1), symbol)
+    public InteractiveTile(char symbol) : this(new Point(-1, -1), symbol)
     {
-    
+
     }
 
     public bool OnHitBy(ISpell md)

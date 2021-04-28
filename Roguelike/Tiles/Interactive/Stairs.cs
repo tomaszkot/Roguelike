@@ -1,16 +1,11 @@
 ﻿#define ASCII_BUILD
-using Dungeons.Tiles;
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Roguelike.Tiles.Interactive
 {
   public enum StairsKind { Unset, PitDown, PitUp, LevelUp, LevelDown };
-  
+
   public class Stairs : InteractiveTile, IApproachableByHero
   {
     bool closed = false;

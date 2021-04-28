@@ -9,7 +9,7 @@ using System.Linq;
 namespace Roguelike.Tiles.Looting
 {
   public enum GemKind { Unset, Ruby, Emerald, Diamond, Amber }
-  
+
 
   public class Gem : Enchanter
   {
@@ -17,12 +17,12 @@ namespace Roguelike.Tiles.Looting
     static Dictionary<EquipmentKind, EntityStatKind> enhancmentPropsRuby = new Dictionary<EquipmentKind, EntityStatKind>();
     static Dictionary<EquipmentKind, EntityStatKind> enhancmentPropsEmer = new Dictionary<EquipmentKind, EntityStatKind>();
     static Dictionary<EquipmentKind, EntityStatKind> enhancmentPropsDiam = new Dictionary<EquipmentKind, EntityStatKind>();
-    
+
     static Dictionary<GemKind, Dictionary<EquipmentKind, EntityStatKind>> enhancmentProps = new Dictionary<GemKind, Dictionary<EquipmentKind, EntityStatKind>>();
     public int GameLevel { get; set; } = 1;
 
     public Gem() : this(GemKind.Unset)
-    { 
+    {
     }
 
     public Gem(int gameLevel) : this(GemKind.Unset, gameLevel)
@@ -32,7 +32,7 @@ namespace Roguelike.Tiles.Looting
     public Gem(GemKind kind = GemKind.Unset, int gameLevel = 0)
     {
       Damaged = true;
-      
+
       collectedSound = "gem_collected";
       LootKind = LootKind.Gem;
       Symbol = '*';
@@ -41,7 +41,7 @@ namespace Roguelike.Tiles.Looting
       EnchanterSize = EnchanterSize.Small;
       EnchantSrcFromGemKind();
 
-      if (gameLevel>=0)
+      if (gameLevel >= 0)
         SetRandomKindAndLevelSize(gameLevel, kind == GemKind.Unset);
       else
         SetProps();
@@ -126,7 +126,7 @@ namespace Roguelike.Tiles.Looting
       if (!smaller && gameLevel < 10)
         Damaged = true;
 
-      if(RandHelper.GetRandomDouble() < 0.3f)
+      if (RandHelper.GetRandomDouble() < 0.3f)
         Damaged = true;
 
       SetProps();
@@ -170,11 +170,11 @@ namespace Roguelike.Tiles.Looting
             propsToSet.Add(enhancmentProps[other][eq.EquipmentKind]);
         }
 
-        var values = new  List<int>();
+        var values = new List<int>();
         foreach (var prop in propsToSet)
         {
           int val = GetStatIncrease(eq.EquipmentKind, prop);
-                   
+
           //if (values.Any(i => i != val)) ??
           //  throw new Exception("Error on crafting");
           values.Add(val);
@@ -236,11 +236,11 @@ namespace Roguelike.Tiles.Looting
       lootStatInfo.Desc = desc;
       if (this.GemKind == GemKind.Amber)
       {
-        if(lsk == LootStatKind.Weapon)
+        if (lsk == LootStatKind.Weapon)
           lootStatInfo.Desc += "all elemental attacks";
-        else if(lsk == LootStatKind.Armor)
+        else if (lsk == LootStatKind.Armor)
           lootStatInfo.Desc += "all elemental resists";
-        else 
+        else
         {
           var gemKind = GemKind.Diamond;//read props from any 
           var otherKinds = GetOtherKinds(gemKind);

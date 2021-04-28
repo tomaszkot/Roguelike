@@ -6,7 +6,7 @@ using System.Drawing;
 namespace Roguelike.Tiles.LivingEntities
 {
   public class God : AdvancedLivingEntity, IAlly
-    //IDescriptable, 
+  //IDescriptable, 
   {
     //Inventory inventory;
     //public bool Awoken { get; set; }
@@ -14,7 +14,7 @@ namespace Roguelike.Tiles.LivingEntities
     //List<string> awakingLoot = new List<string>();
     //public string AwakingGift { get; set; }
     public string PowerReleaseSpeach { get; set; }
-    public bool Active { get; set ; }
+    public bool Active { get; set; }
 
     public AllyKind Kind => throw new System.NotImplementedException();
 
@@ -22,7 +22,7 @@ namespace Roguelike.Tiles.LivingEntities
 
     public God(Container cont) : this(cont, new Point().Invalid(), '0')
     {
-     
+
     }
 
     public God(Container cont, Point point, char symbol) : base(cont, point, symbol)
@@ -225,7 +225,7 @@ namespace Roguelike.Tiles.LivingEntities
 
   //  public Perun():this(Point.Invalid)
   //  {
-      
+
   //  }
 
   //  public override int GetMagicFactor()
@@ -272,7 +272,7 @@ namespace Roguelike.Tiles.LivingEntities
   //    AwakingLoot.Add("dziewanna_flower");
   //    AwakingLoot.Add(HiddenAwakingLoot);
   //  }
-        
+
   //  public override LootBase GetAwakeReward(bool primary)
   //  {
   //    if(primary)
@@ -285,7 +285,7 @@ namespace Roguelike.Tiles.LivingEntities
   //  {
   //    return "God of Nature";
   //  }
-    
+
   //}
 
   //public class Jarowit : God

@@ -1,15 +1,17 @@
 ﻿namespace Roguelike.Quests
 {
-  public enum QuestStatus { Unset, Proposed, Accepted, Rejected, FailedToDo,
+  public enum QuestStatus
+  {
+    Unset, Proposed, Accepted, Rejected, FailedToDo,
     AwaitingReward,
     Done
   }
-  
+
   public class QuestRequirement
   {
-    
+
   }
-    
+
   public class Quest
   {
     public QuestStatus Status { get; set; }
@@ -20,5 +22,5 @@
 
   }
 
-  
+
 }

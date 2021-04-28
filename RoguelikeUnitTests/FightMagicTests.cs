@@ -21,7 +21,7 @@ namespace RoguelikeUnitTests
       var fireBallScroll = new Scroll(Roguelike.Spells.SpellKind.FireBall);
       var spell = fireBallScroll.CreateSpell<OffensiveSpell>(hero);
       Assert.Greater(spell.Damage, 0);
-      
+
     }
 
     [Test]
@@ -35,14 +35,14 @@ namespace RoguelikeUnitTests
       var mana = hero.Stats.Mana;
 
       Assert.True(game.GameManager.HeroTurn);
-            
+
       UseFireBallScroll(hero, enemy);
 
       Assert.Greater(enemyHealth, enemy.Stats.Health);
       Assert.Greater(mana, hero.Stats.Mana);
       Assert.False(game.GameManager.HeroTurn);
 
-      var diff = enemyHealth- enemy.Stats.Health;
+      var diff = enemyHealth - enemy.Stats.Health;
     }
 
     [Test]
@@ -77,7 +77,7 @@ namespace RoguelikeUnitTests
       Assert.Greater(diffMelee, 45);
       Assert.Less(Math.Abs(diffMelee - diffScroll), 30);//TODO %
     }
-        
+
     [Test]
     public void KillEnemy()
     {
@@ -115,7 +115,7 @@ namespace RoguelikeUnitTests
 
       Assert.True(game.GameManager.HeroTurn);
       TryToMoveHero();
-      
+
       var emptyHeroNeib = game.Level.GetEmptyNeighborhoodPoint(game.Hero, EmptyNeighborhoodCallContext.Move);
       var set = game.Level.SetTile(enemy, emptyHeroNeib.Item1);
       Assert.True(set);
@@ -160,11 +160,11 @@ namespace RoguelikeUnitTests
     private Scroll PrepareScroll(Hero hero, SpellKind spellKind, Enemy enemy = null)
     {
       var emp = game.GameManager.CurrentNode.GetClosestEmpty(hero);
-      if(enemy!=null)
+      if (enemy != null)
         Assert.True(game.GameManager.CurrentNode.SetTile(enemy, emp.point));
       var scroll = new Scroll(spellKind);
       hero.Inventory.Add(scroll);
-      
+
       return scroll;
     }
 
@@ -179,7 +179,7 @@ namespace RoguelikeUnitTests
       var scroll = PrepareScroll(hero, SpellKind.ManaShield, enemy);
       var spell = game.GameManager.SpellManager.ApplyPassiveSpell(hero, scroll);
       Assert.NotNull(spell);
-            
+
       var heroHealth = game.Hero.Stats.Health;
       game.Hero.OnPhysicalHitBy(enemy);
       Assert.AreEqual(game.Hero.Stats.Health, heroHealth);//mana shield
@@ -204,7 +204,7 @@ namespace RoguelikeUnitTests
       var spell = gm.SpellManager.ApplySpell(hero, scroll) as SkeletonSpell;
       Assert.NotNull(spell);
       Assert.NotNull(spell.Ally);
-      Assert.AreEqual(gm.CurrentNode.GetTiles<Ally>().Count, enemiesCount+1);
+      Assert.AreEqual(gm.CurrentNode.GetTiles<Ally>().Count, enemiesCount + 1);
       Assert.True(gm.AlliesManager.AllEntities.Contains((spell.Ally)));
 
       //go dungeon down
@@ -247,10 +247,10 @@ namespace RoguelikeUnitTests
     private void TeleportByRange(int range, bool shallFail)
     {
       var hero = game.Hero;
-            
+
       var scroll = PrepareScroll(hero, SpellKind.Teleport);
       Assert.AreEqual(hero.Inventory.GetItems<Scroll>().Count(), 1);
-      var dest = game.GameManager.CurrentNode.GetEmptyTiles().Where(i=>i.DistanceFrom(hero) == range).FirstOrDefault();
+      var dest = game.GameManager.CurrentNode.GetEmptyTiles().Where(i => i.DistanceFrom(hero) == range).FirstOrDefault();
       var spell = game.GameManager.SpellManager.ApplyPassiveSpell(hero, scroll, dest.point);
       if (!shallFail)
       {

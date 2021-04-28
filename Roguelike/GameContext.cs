@@ -20,7 +20,7 @@ using System.Linq;
 
 namespace Roguelike
 {
-  public enum GameContextSwitchKind { DungeonSwitched, NewGame, GameLoaded}
+  public enum GameContextSwitchKind { DungeonSwitched, NewGame, GameLoaded }
   public enum TurnOwner { Unset, Hero, Allies, Enemies }
 
   public class HeroPlacementResult
@@ -32,7 +32,7 @@ namespace Roguelike
   public class ContextSwitch
   {
     public GameContextSwitchKind Kind { get; set; }
-    public AbstractGameLevel CurrentNode { get;  set; }
+    public AbstractGameLevel CurrentNode { get; set; }
     public Hero Hero { get; set; }
   }
 
@@ -57,7 +57,7 @@ namespace Roguelike
 
     //actions (move, attack) count in turn - typically 1
     Dictionary<TurnOwner, int> turnActionsCount = new Dictionary<TurnOwner, int>();
-    public Action<Policy, LivingEntity , Tile > AttackPolicyInitializer;
+    public Action<Policy, LivingEntity, Tile> AttackPolicyInitializer;
     public Action AttackPolicyDone;
 
     public GameContext(Container container)
@@ -93,7 +93,7 @@ namespace Roguelike
               {
                 EventsManager.AppendAction(new LivingEntityAction(LivingEntityActionKind.StrikedBack)
                 { Info = target.Name + " used ability Strike Back", Level = ActionLevel.Important, InvolvedEntity = target as LivingEntity });
-                ApplyPhysicalAttackPolicy(le, attacker, (p) => 
+                ApplyPhysicalAttackPolicy(le, attacker, (p) =>
                 {
                   if (AttackPolicyDone != null)
                     AttackPolicyDone();
@@ -120,8 +120,8 @@ namespace Roguelike
 
       return true;
     }
-       
-       
+
+
     //TODO move
     public void ApplyMovePolicy(LivingEntity entity, Point newPos, List<Point> fullPath, Action<Policy> OnApplied)
     {
@@ -150,10 +150,10 @@ namespace Roguelike
     ////////////////////////////////////////////////////////////////////////////////////////////////
     public virtual void SwitchTo
     (
-      AbstractGameLevel node, 
-      Hero hero, 
-      GameState gs, 
-      GameContextSwitchKind context, 
+      AbstractGameLevel node,
+      Hero hero,
+      GameState gs,
+      GameContextSwitchKind context,
       AlliesManager am,
       Stairs stairs = null
     )
@@ -169,9 +169,9 @@ namespace Roguelike
       Hero = hero;
       hero.OnContextSwitched(Container);
       var merchs = node.GetTiles<Merchant>();
-      foreach(var merch in merchs)
+      foreach (var merch in merchs)
         merch.OnContextSwitched(Container);
-        
+
       var heroStartTile = PlaceHeroAtDungeon(node, gs, context, stairs);
 
       if (context == GameContextSwitchKind.DungeonSwitched)
@@ -193,7 +193,7 @@ namespace Roguelike
       var allies = am.AllEntities;
       if (allies.Any())
       {
-        foreach(var ally in allies)
+        foreach (var ally in allies)
         {
           var pt = CurrentNode.GetClosestEmpty(Hero).point;
           var empties = CurrentNode.GetClosestEmpties(pt);
@@ -236,7 +236,7 @@ namespace Roguelike
       node.PlaceHeroNextToTile(context, Hero, res, baseTile);
       return res;
     }
-        
+
     public virtual HeroPlacementResult PlaceLoadedHero(AbstractGameLevel node, GameState gs)
     {
       HeroPlacementResult res = null;
@@ -251,7 +251,7 @@ namespace Roguelike
 
       return res;
     }
-        
+
     public void EmitContextSwitched(GameContextSwitchKind context)
     {
       if (ContextSwitched != null)
@@ -289,7 +289,7 @@ namespace Roguelike
         TurnActionsCount[TurnOwner.Hero] = 0;
         turnCounts[TurnOwner.Hero]++;
         TurnOwner = TurnOwner.Allies;
-        
+
       }
       else if (turnOwner == TurnOwner.Allies)
       {
@@ -326,7 +326,7 @@ namespace Roguelike
     public TurnOwner TurnOwner
     {
       get => turnOwner;
-      set  
+      set
       {
         if (turnOwner != value)
         {

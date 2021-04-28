@@ -1,5 +1,4 @@
 ﻿using Newtonsoft.Json;
-using System;
 
 namespace Roguelike.Attributes
 {
@@ -122,7 +121,7 @@ namespace Roguelike.Attributes
       if (other.Subtracted != 0)
         Subtracted /= other.Subtracted;
     }
-        
+
     public object Clone()
     {
       var clone = MemberwiseClone();

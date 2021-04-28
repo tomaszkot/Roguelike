@@ -32,8 +32,8 @@ namespace RoguelikeUnitTests
     public RoguelikeGame Game { get => game; protected set => game = value; }
     public Container Container { get; set; }
     public BaseHelper Helper { get => helper; set => helper = value; }
-    GameManager GameManager { get => game.GameManager;  }
-  
+    GameManager GameManager { get => game.GameManager; }
+
     protected BaseHelper helper;
 
     [SetUp]
@@ -48,7 +48,7 @@ namespace RoguelikeUnitTests
 
     protected Enemy SpawnEnemy()
     {
-      if(game !=null)
+      if (game != null)
         return game.GameManager.CurrentNode.SpawnEnemy(1);
       return Container.GetInstance<Enemy>();
     }
@@ -58,7 +58,7 @@ namespace RoguelikeUnitTests
       Tile.IncludeDebugDetailsInToString = true;
       Container = new Roguelike.ContainerConfigurator().Container;
       Container.Register<ISoundPlayer, BasicSoundPlayer>();
-      
+
     }
 
     protected T GenerateRandomEqOnLevelAndCollectIt<T>() where T : Equipment, new()
@@ -68,7 +68,7 @@ namespace RoguelikeUnitTests
       return eq;
     }
 
-    private void CollectLoot(Loot loot) 
+    private void CollectLoot(Loot loot)
     {
       var set = Game.GameManager.CurrentNode.SetTile(game.Hero, loot.point);
       game.GameManager.CollectLootOnHeroPosition();
@@ -116,7 +116,7 @@ namespace RoguelikeUnitTests
 
     protected List<Roguelike.Tiles.LivingEntities.Enemy> PlainEnemies
     {
-      get { return game.GameManager.EnemiesManager.AllEntities.Cast<Enemy>().Where(i=>i.PowerKind == EnemyPowerKind.Plain).ToList(); }
+      get { return game.GameManager.EnemiesManager.AllEntities.Cast<Enemy>().Where(i => i.PowerKind == EnemyPowerKind.Plain).ToList(); }
     }
 
     public List<Enemy> GetLimitedEnemies()
@@ -133,13 +133,13 @@ namespace RoguelikeUnitTests
         OnInit();
       }
       game = new RoguelikeGame(Container);
-      
-      game.GameManager.EventsManager.ActionAppended += (object sender, Roguelike.Events.GameAction e)=>
+
+      game.GameManager.EventsManager.ActionAppended += (object sender, Roguelike.Events.GameAction e) =>
       {
         if (e is GameStateAction)
         {
           var gsa = e as GameStateAction;
-          if(gsa.Type == GameStateAction.ActionType.Assert)
+          if (gsa.Type == GameStateAction.ActionType.Assert)
             game.GameManager.Logger.LogError(new System.Exception(gsa.Info));
         }
       };
@@ -179,7 +179,7 @@ namespace RoguelikeUnitTests
           if (enemies.Count > numEnemies)
           {
             var aboveThreshold = enemies.Skip(numEnemies).ToList();
-            foreach(var en in aboveThreshold)
+            foreach (var en in aboveThreshold)
             {
               level.SetEmptyTile(en.point);
               GameManager.EnemiesManager.AllEntities.Remove(en);
@@ -190,19 +190,19 @@ namespace RoguelikeUnitTests
         }
 
         Assert.GreaterOrEqual(AllEnemies.Count, numEnemies);//some are auto generated
-        Assert.Less(ActiveEnemies.Count, numEnemies*4);
-        
-        if (AllEnemies.Any() && !AllEnemies.Where(i=> i.Revealed).Any())
+        Assert.Less(ActiveEnemies.Count, numEnemies * 4);
+
+        if (AllEnemies.Any() && !AllEnemies.Where(i => i.Revealed).Any())
         {
           AllEnemies[0].Revealed = true;
         }
       }
       createTestEnvCounter++;
-      if(game.Hero!=null)
+      if (game.Hero != null)
         game.Hero.Name = "Hero";
       return game;
     }
-        
+
     protected Jewellery AddJewelleryToInv(Roguelike.RoguelikeGame game, EntityStatKind statKind)
     {
       Jewellery juw = GenerateJewellery(game, statKind);
@@ -227,7 +227,7 @@ namespace RoguelikeUnitTests
 
     [TearDown]
     public void Cleanup()
-    { 
+    {
     }
 
     public void InteractHeroWith(InteractiveTile tile)
@@ -246,7 +246,7 @@ namespace RoguelikeUnitTests
     {
       if (game == null)
         game = this.game;
-      if(game.GameManager.Context.TurnOwner == TurnOwner.Hero)
+      if (game.GameManager.Context.TurnOwner == TurnOwner.Hero)
         game.GameManager.SkipHeroTurn();
       Assert.AreEqual(game.GameManager.Context.TurnOwner, Roguelike.TurnOwner.Allies);
       //game.GameManager.Logger.LogInfo("make allies move");
@@ -279,7 +279,7 @@ namespace RoguelikeUnitTests
       Assert.AreEqual(game.GameManager.Context.TurnOwner, TurnOwner.Hero);
       var emptyHeroNeib = game.Level.GetEmptyNeighborhoodPoint(game.Hero, Dungeons.TileContainers.DungeonNode.EmptyNeighborhoodCallContext.Move);
       var res = game.GameManager.HandleHeroShift(emptyHeroNeib.Item2);
-      if(res != InteractionResult.None)
+      if (res != InteractionResult.None)
         Assert.False(game.GameManager.HeroTurn);
     }
 
@@ -321,7 +321,7 @@ namespace RoguelikeUnitTests
       if (caster is Hero)
       {
         game.Hero.ActiveScroll = scroll;
-        return game.GameManager.SpellManager.ApplyAttackPolicy(caster, victim,scroll);
+        return game.GameManager.SpellManager.ApplyAttackPolicy(caster, victim, scroll);
       }
       return false;
     }

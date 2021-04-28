@@ -2,11 +2,7 @@
 using Roguelike.Extensions;
 using Roguelike.Tiles;
 using Roguelike.Tiles.LivingEntities;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Roguelike.Spells
 {
@@ -136,7 +132,7 @@ namespace Roguelike.Spells
 
       trap.Spell = this;
       trap.SetUp = true;
-      
+
       //damage = ProjectiveSpell.BaseDamage * 5f;
       manaCost = (float)(BaseManaCost * 2);
     }
@@ -475,7 +471,7 @@ namespace Roguelike.Spells
       Kind = SpellKind.Rage;
     }
   }
-  
+
   /////////////////////////////////////////////////////////////////////
   public class ResistAllSpell : PassiveSpell
   {

@@ -1,6 +1,5 @@
 ﻿using Dungeons.ASCIIDisplay;
 using Dungeons.ASCIIDisplay.Presenters;
-using Dungeons.Core;
 using Newtonsoft.Json;
 using Roguelike.Events;
 using Roguelike.Managers;
@@ -8,7 +7,6 @@ using Roguelike.Tiles;
 using Roguelike.Tiles.LivingEntities;
 using Roguelike.Tiles.Looting;
 using SimpleInjector;
-using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -22,8 +20,8 @@ namespace Roguelike.LootContainers
     public int StackedCount = 1;//in case of stacked there can be one than more sold at time
 
     public RemoveItemArg()
-    { 
-    
+    {
+
     }
   }
 
@@ -66,18 +64,18 @@ namespace Roguelike.LootContainers
     public InvBasketKind InvBasketKind { get; set; }
 
     [JsonIgnore]
-    public EventsManager EventsManager 
+    public EventsManager EventsManager
     {
       get { return Container.GetInstance<EventsManager>(); }
     }
-    
+
     public Inventory(Container container)
     {
       this.Container = container;
       //Assert(this.Container != null);
       Capacity = 48;
     }
-        
+
     public List<ListItem> ToASCIIList()
     {
       var list = this.Items.Select(i => new ListItem() { Text = i.ToString() }).ToList();
@@ -165,7 +163,7 @@ namespace Roguelike.LootContainers
 
     public int GetStackedCount(string lootName)
     {
-      var stacked = Items.Where(i => i is StackedLoot sl).Where(i=> i.Name == lootName).FirstOrDefault();
+      var stacked = Items.Where(i => i is StackedLoot sl).Where(i => i.Name == lootName).FirstOrDefault();
       return stacked != null ? GetStackedCount(stacked as StackedLoot) : 0;
     }
 
@@ -178,7 +176,7 @@ namespace Roguelike.LootContainers
     {
       return Items.FirstOrDefault(i => i == loot) as StackedLoot;
     }
-        
+
     public virtual bool Add
     (
       Loot item,
@@ -303,7 +301,7 @@ namespace Roguelike.LootContainers
       }
       if (sendSignal)
       {
-        AppendAction(new InventoryAction(this) { Kind = InventoryActionKind.ItemRemoved, Loot = item , Inv = this});
+        AppendAction(new InventoryAction(this) { Kind = InventoryActionKind.ItemRemoved, Loot = item, Inv = this });
       }
       //else
       //  UnreportedRemovals.Add(item);
@@ -335,9 +333,9 @@ namespace Roguelike.LootContainers
     }
 
     [JsonIgnore]
-    public Container Container 
-    { 
-      get; 
+    public Container Container
+    {
+      get;
       set;
     }
 
@@ -350,7 +348,7 @@ namespace Roguelike.LootContainers
     {
       if (Owner == null)
         return base.ToString();
-      return Owner.ToString() + ", Count: "+ Items.Count;
+      return Owner.ToString() + ", Count: " + Items.Count;
     }
 
     public bool CanAcceptItem(Loot loot, AddItemArg addItemArg)

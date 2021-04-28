@@ -1,9 +1,6 @@
-﻿using Roguelike.Abstract.Tiles;
-using Roguelike.State;
+﻿using Roguelike.State;
 using Roguelike.TileContainers;
-using Roguelike.Tiles;
 using Roguelike.Tiles.LivingEntities;
-using System.Collections.Generic;
 
 namespace Roguelike.Serialization
 {

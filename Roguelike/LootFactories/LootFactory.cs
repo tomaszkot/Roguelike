@@ -33,7 +33,7 @@ namespace Roguelike.LootFactories
       foreach (var fac in factories)
       {
         var loot = fac.GetByAsset(tagPart);
-        if(loot != null)
+        if (loot != null)
           return ReturnLoot(loot);
       }
 
@@ -43,7 +43,7 @@ namespace Roguelike.LootFactories
     Loot ReturnLoot(Loot loot)
     {
       var eq = loot as Equipment;
-      if(eq != null)
+      if (eq != null)
         eq.Identified += Eq_Identified;
       return loot;
     }
@@ -64,7 +64,7 @@ namespace Roguelike.LootFactories
         if (loot != null)
           return ReturnLoot(loot);
       }
-      
+
       return null;
     }
 

@@ -76,7 +76,7 @@ namespace Roguelike.TileContainers
       base.AppendMaze(childMaze, destStartPoint, childMazeMaxSize, childIsland, entranceSideToSkip, prevNode);
     }
 
-    public List<Tile> GetTiles(bool includeLoot) 
+    public List<Tile> GetTiles(bool includeLoot)
     {
       var res = GetTiles<Tile>();
       if (includeLoot)
@@ -183,7 +183,7 @@ namespace Roguelike.TileContainers
         var ls = tile as ILootSource;
         if (ls.Level <= 0)
         {
-          ls.SetLevel(Index+1);//some UT needed it
+          ls.SetLevel(Index + 1);//some UT needed it
         }
       }
 
@@ -202,7 +202,7 @@ namespace Roguelike.TileContainers
         if (Loot.ContainsKey(point))
         {
           if (Logger != null)
-            Logger.LogError("loot already at point: " + Loot[point] + ", trying to add: " + tile + " point:"+ point);
+            Logger.LogError("loot already at point: " + Loot[point] + ", trying to add: " + tile + " point:" + point);
           Debug.Assert(false);
           return false;
         }
@@ -232,8 +232,8 @@ namespace Roguelike.TileContainers
       }
 
       Point? prevPos = tile?.point;
-      var res =  base.SetTile(tile, point, resetOldTile, revealReseted, autoSetTileDungeonIndex, reportError);
-      if (res && tile is LivingEntity && prevPos!=null)
+      var res = base.SetTile(tile, point, resetOldTile, revealReseted, autoSetTileDungeonIndex, reportError);
+      if (res && tile is LivingEntity && prevPos != null)
       {
         (tile as LivingEntity).PrevPoint = prevPos.Value;
       }
@@ -242,7 +242,7 @@ namespace Roguelike.TileContainers
 
     public virtual void OnGenerationDone()
     {
-      
+
     }
 
     public bool RemoveLoot(Point point)
@@ -271,7 +271,7 @@ namespace Roguelike.TileContainers
 
     public virtual void OnHeroPlaced(Hero hero)
     {
-      
+
     }
 
     public Dungeons.TileContainers.DungeonNode GetNodeFromTile(Tile tile)
@@ -302,10 +302,10 @@ namespace Roguelike.TileContainers
       }
       else
       {
-        var neib = GetNeighborTiles(door).Where(i => 
-        i !=null && 
-        i.DungeonNodeIndex != door.DungeonNodeIndex && 
-        i != hero && 
+        var neib = GetNeighborTiles(door).Where(i =>
+        i != null &&
+        i.DungeonNodeIndex != door.DungeonNodeIndex &&
+        i != hero &&
         i.DungeonNodeIndex != Dungeons.TileContainers.DungeonNode.DefaultNodeIndex).FirstOrDefault();
 
         if (neib != null)
@@ -314,7 +314,7 @@ namespace Roguelike.TileContainers
           GetNodeFromTile(neib).Reveal(true);
         }
         else
-          Container.GetInstance<ILogger>().LogError("neib == null "+ door);
+          Container.GetInstance<ILogger>().LogError("neib == null " + door);
       }
       door.Opened = true;
       return true;
@@ -335,7 +335,7 @@ namespace Roguelike.TileContainers
     public List<Tiles.Loot> GetLootTilesNearby(Tile tile)
     {
       List<Tiles.Loot> res = Loot.Values
-        .Where(i=> i.Revealed && i.DistanceFrom(tile.point) < 3
+        .Where(i => i.Revealed && i.DistanceFrom(tile.point) < 3
         //&& i.DungeonNodeIndex == tile.DungeonNodeIndex TODO
         )
         .ToList();//TODO 
@@ -403,8 +403,8 @@ namespace Roguelike.TileContainers
             {
               value = 0;
               if (forEnemyProjectile)
-              { 
-                if(tile is Enemy)
+              {
+                if (tile is Enemy)
                   value = 1;//outside code must get a straight line to the target
               }
             }
@@ -427,7 +427,7 @@ namespace Roguelike.TileContainers
       toUse.Revealed = true;
       if (SetTile(toUse, point))
       {
-        Logger.LogInfo("SetTile done for "+ toUse);
+        Logger.LogInfo("SetTile done for " + toUse);
         if (replacer is Loot)
         {
           var tile = new Tile(point);//reset old one, as loot is not hold in Tiles table
@@ -478,7 +478,7 @@ namespace Roguelike.TileContainers
 
     public Stairs GetPitStairs(string pitName)
     {
-      return GetAllStairs(StairsKind.PitDown).Where(i=> i.PitName == pitName).SingleOrDefault();
+      return GetAllStairs(StairsKind.PitDown).Where(i => i.PitName == pitName).SingleOrDefault();
     }
 
     public Enemy SpawnEnemy(ILootSource lootSource)
@@ -510,7 +510,7 @@ namespace Roguelike.TileContainers
     public Tile GetHeroStartTile()
     {
       Tile heroStartTile;
-      var empOnes = GetEmptyTiles(nodeIndexMustMatch: false).Where(i=>i.DungeonNodeIndex > Dungeons.TileContainers.DungeonNode.ChildIslandNodeIndex);
+      var empOnes = GetEmptyTiles(nodeIndexMustMatch: false).Where(i => i.DungeonNodeIndex > Dungeons.TileContainers.DungeonNode.ChildIslandNodeIndex);
       var secret = Nodes.Where(i => i.Secret).FirstOrDefault();
       if (secret != null)
       {

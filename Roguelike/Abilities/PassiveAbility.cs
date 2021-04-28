@@ -1,5 +1,4 @@
 ﻿using Roguelike.Abstract;
-using Roguelike.Abstract.Tiles;
 using Roguelike.Attributes;
 using Roguelike.Calculated;
 using Roguelike.Extensions;
@@ -20,9 +19,9 @@ namespace Roguelike.Abilities
 
     //Traps, RemoveClaws, RemoveTusk, Skinning, , ,
     //HuntingMastering /*<-(to del)*/
-    
+
     //,Scroll//user must invest in each scroll indywidually
-    
+
   }
 
   public class PassiveAbility : IDescriptable
@@ -87,10 +86,10 @@ namespace Roguelike.Abilities
             psk = EntityStatKind.ChanceToHit;
             ask = EntityStatKind.SwordExtraDamage;
             break;
-          
+
           case PassiveAbilityKind.ExplosiveMastering:
-          //case AbilityKind.ThrowingWeaponsMastering:
-          //case AbilityKind.HuntingMastering:
+            //case AbilityKind.ThrowingWeaponsMastering:
+            //case AbilityKind.HuntingMastering:
             PageIndex = 1;
             abilityLevelToPlayerLevel.Add(1, 0);
             abilityLevelToPlayerLevel.Add(2, 2);
@@ -229,7 +228,7 @@ namespace Roguelike.Abilities
           else
             factor = level * 5;
           break;
-        
+
         case PassiveAbilityKind.StrikeBack:
           var multsDefSB = new int[] { 0, 2, 4, 7, 10, 15 };
           factor = multsDefSB[level];
@@ -345,7 +344,7 @@ namespace Roguelike.Abilities
       }
       primaryStatDescription = desc;
     }
-    
+
     public bool IsPercentageFromKind()
     {
       return IsPercentageFromKind(Kind);
@@ -503,12 +502,12 @@ namespace Roguelike.Abilities
 
     public const string MessageMaxLevelReached = "Max level reached";
 
-    public bool MaxLevelReached 
+    public bool MaxLevelReached
     {
-      get 
+      get
       {
-        return Level >= MaxLevel;  
-      } 
+        return Level >= MaxLevel;
+      }
     }
   }
 }

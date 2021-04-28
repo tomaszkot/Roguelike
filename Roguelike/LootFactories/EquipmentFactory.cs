@@ -5,7 +5,6 @@ using Roguelike.History;
 using Roguelike.Tiles;
 using SimpleInjector;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace Roguelike.LootFactories
 {
@@ -49,7 +48,7 @@ namespace Roguelike.LootFactories
 
     public override Loot GetRandom(int level)
     {
-      var index = RandHelper.GetRandomEnumValue<EquipmentKind>(new[] { EquipmentKind.God, EquipmentKind .Trophy, EquipmentKind.Unset});
+      var index = RandHelper.GetRandomEnumValue<EquipmentKind>(new[] { EquipmentKind.God, EquipmentKind.Trophy, EquipmentKind.Unset });
       var lootCreator = lootCreators[index];
       return lootCreator.GetRandom(level);
     }
@@ -84,7 +83,7 @@ namespace Roguelike.LootFactories
     protected virtual void CreateKindFactories()
     {
     }
-       
+
     protected override void Create()
     {
       CreateKindFactories();
@@ -93,7 +92,7 @@ namespace Roguelike.LootFactories
     public virtual Equipment GetRandom(EquipmentKind kind, int maxEqLevel, EquipmentClass eqClass = EquipmentClass.Plain)
     {
       Equipment eq = null;
-      
+
       switch (kind)
       {
         case EquipmentKind.Unset:
@@ -148,7 +147,7 @@ namespace Roguelike.LootFactories
     {
       if (eq.Class == EquipmentClass.Unique)
         return;
-      if(eq.IsPlain())
+      if (eq.IsPlain())
         eq.MakeMagic();
       if (!eq.IsSecondMagicLevel && eqClass == EquipmentClass.MagicSecLevel)
       {
@@ -167,7 +166,7 @@ namespace Roguelike.LootFactories
       item.PrimaryStatValue = 3;
       return item;
     }
-    
+
     public virtual Weapon GetRandomWeapon()
     {
       var item = new Weapon();
@@ -245,7 +244,7 @@ namespace Roguelike.LootFactories
       return jew;
     }
 
-    
+
     private Jewellery AddRing(string asset, EntityStatKind sk, int minDropDungeonLevel,
       int statValue)
     {
@@ -255,7 +254,7 @@ namespace Roguelike.LootFactories
       jew.SetPrimaryStat(sk, statValue);
       var name = "ring of ";
       jew.Name = name + sk;
-      jew.tag1 = "ring_"+ sk;
+      jew.tag1 = "ring_" + sk;
 
       if (sk == EntityStatKind.ResistCold || sk == EntityStatKind.ResistFire || sk == EntityStatKind.ResistPoison)
       {

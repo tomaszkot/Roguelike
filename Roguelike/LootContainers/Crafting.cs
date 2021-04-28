@@ -3,10 +3,6 @@ using Roguelike.Abstract.Inventory;
 using Roguelike.Tiles;
 using SimpleInjector;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Roguelike.LootContainers
 {
@@ -39,14 +35,14 @@ namespace Roguelike.LootContainers
     public InvOwner InvOwner = InvOwner.Hero;
 
     [JsonIgnore]
-    public Container Container 
-    { 
-      set 
+    public Container Container
+    {
+      set
       {
         container = value;
         Recipes.Inventory.Container = value;
         InvItems.Inventory.Container = value;
-      } 
+      }
     }
 
     public Crafting(Container container)
@@ -59,8 +55,8 @@ namespace Roguelike.LootContainers
       Recipes = new InventoryOwner();
       Recipes.Inventory = recipes;
 
-      
-      var invItems =   new Inventory(container);
+
+      var invItems = new Inventory(container);
       invItems.Capacity = 21;
       invItems.InvBasketKind = InvBasketKind.CraftingInvItems;
       InvItems = new InventoryOwner();

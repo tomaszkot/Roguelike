@@ -2,10 +2,8 @@
 using Dungeons.Core;
 using Dungeons.TileContainers;
 using Dungeons.Tiles;
-using Roguelike.Abstract;
 using Roguelike.Abstract.Tiles;
 using Roguelike.Events;
-using Roguelike.Tiles;
 using Roguelike.Tiles.Interactive;
 using Roguelike.Tiles.LivingEntities;
 using System;
@@ -17,7 +15,7 @@ namespace Roguelike.Managers
   public class InputManager
   {
     protected GameManager gm;
-    
+
     public InputManager(GameManager gm)
     {
       this.gm = gm;
@@ -25,14 +23,14 @@ namespace Roguelike.Managers
 
     public Hero Hero { get => gm.Hero; }
 
-    public ILogger Logger 
-    { 
-      get => gm.Logger; 
+    public ILogger Logger
+    {
+      get => gm.Logger;
     }
 
-    public GameContext Context 
-    { 
-      get => gm.Context; 
+    public GameContext Context
+    {
+      get => gm.Context;
     }
 
     public bool CanHeroDoAction()
@@ -143,8 +141,11 @@ namespace Roguelike.Managers
           var key = Hero.GetKey(door.KeyName);
           if (key == null)
           {
-            gm.AppendAction<InteractiveTileAction>((InteractiveTileAction ac) => { ac.InteractiveKind = InteractiveActionKind.DoorLocked; 
-              ac.InvolvedTile = door; ac.Info = "Proper key not available"; });
+            gm.AppendAction<InteractiveTileAction>((InteractiveTileAction ac) =>
+            {
+              ac.InteractiveKind = InteractiveActionKind.DoorLocked;
+              ac.InvolvedTile = door; ac.Info = "Proper key not available";
+            });
             gm.SoundManager.PlayBeepSound();
             return InteractionResult.Blocked;
           }

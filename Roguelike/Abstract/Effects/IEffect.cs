@@ -1,6 +1,5 @@
 ﻿using Roguelike.Attributes;
 using Roguelike.Factors;
-using Roguelike.Tiles;
 
 namespace Roguelike.Abstract.Effects
 {
@@ -12,8 +11,8 @@ namespace Roguelike.Abstract.Effects
     int TourLasting { get; set; }
     EntityStatKind StatKind { get; set; }
 
-    PercentageFactor StatKindPercentage { get;  }
-    EffectiveFactor  StatKindEffective { get; }
+    PercentageFactor StatKindPercentage { get; }
+    EffectiveFactor StatKindEffective { get; }
   }
 
   public interface ILastingSpell : ILastingEffectSrc

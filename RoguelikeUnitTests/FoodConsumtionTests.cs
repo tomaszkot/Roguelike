@@ -36,7 +36,7 @@ namespace RoguelikeUnitTests
       var heroHurtHealth = heroHealth;
 
       var food = Helper.AddTile<Food>();
-      if(roasted)
+      if (roasted)
         food.MakeRoasted();
       AddItemToInv(food);
 

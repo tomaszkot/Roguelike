@@ -17,12 +17,12 @@ namespace RoguelikeUnitTests
     {
       var game = CreateGame();
       var hero = game.Hero;
-            
+
       Assert.True(game.GameManager.HeroTurn);
       var barrel = game.Level.GetTiles<Barrel>().First();
       Assert.AreEqual(game.Level.GetTile(barrel.point), barrel);
 
-      Assert.AreEqual(game.GameManager.Context.TurnOwner, Roguelike.TurnOwner.Hero); 
+      Assert.AreEqual(game.GameManager.Context.TurnOwner, Roguelike.TurnOwner.Hero);
       Assert.True(UseFireBallScroll(hero, barrel));
       Assert.AreNotEqual(game.Level.GetTile(barrel.point), barrel);
       Assert.AreEqual(game.GameManager.Context.TurnOwner, Roguelike.TurnOwner.Allies);
@@ -36,10 +36,10 @@ namespace RoguelikeUnitTests
       var castedSpell = spell as PassiveSpell;
       var features = castedSpell.GetFeatures();
       Assert.NotNull(features);
-      
+
       Assert.AreEqual(Math.Round(castedSpell.StatKindEffective.Value, 3), 3.1);
       Assert.AreEqual(castedSpell.StatKindPercentage.Value, 31);
-      Assert.AreEqual(features[1], "Defense: +" + (BaseFactor+1) + "%");
+      Assert.AreEqual(features[1], "Defense: +" + (BaseFactor + 1) + "%");
     }
 
 

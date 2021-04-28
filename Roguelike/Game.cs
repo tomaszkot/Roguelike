@@ -1,12 +1,9 @@
 ﻿using Dungeons;
-using Dungeons.Core;
-using Newtonsoft.Json;
 using Roguelike.Abstract;
 using Roguelike.Generators;
 using Roguelike.Managers;
 using Roguelike.State;
 using Roguelike.TileContainers;
-using Roguelike.Tiles;
 using Roguelike.Tiles.Interactive;
 using Roguelike.Tiles.LivingEntities;
 using SimpleInjector;
@@ -17,7 +14,7 @@ using System.Linq;
 namespace Roguelike
 {
   public enum Difficulty { Easy, Normal, Hard };
-    
+
   //sample game proving it works
   public class RoguelikeGame : Game
   {
@@ -29,7 +26,8 @@ namespace Roguelike
     public RoguelikeGame(Container container) : base(container)
     {
       Container = container;
-      GameManager.DungeonLevelStairsHandler = (int destLevelIndex, Stairs stairs) => {
+      GameManager.DungeonLevelStairsHandler = (int destLevelIndex, Stairs stairs) =>
+      {
 
         if (levels.Count <= destLevelIndex)
         {
@@ -77,7 +75,7 @@ namespace Roguelike
       DungeonGenerator = container.GetInstance<IDungeonGenerator>();
     }
 
-    public TileContainers.GameLevel GenerateLevel(int levelIndex, Dungeons.GenerationInfo gi = null, bool canSetActive = true) 
+    public TileContainers.GameLevel GenerateLevel(int levelIndex, Dungeons.GenerationInfo gi = null, bool canSetActive = true)
     {
       TileContainers.GameLevel level = null;
       if (LevelGenerator != null)
@@ -85,7 +83,7 @@ namespace Roguelike
         if (LevelGenerator.MaxLevelIndex > 0 && levelIndex > LevelGenerator.MaxLevelIndex)
           throw new Exception("levelIndex > LevelGenerator.MaxLevelIndex");
         LevelGenerator.LevelIndex = levelIndex;
-        
+
         var generInfo = gi ?? new Generators.GenerationInfo();
         level = LevelGenerator.Generate(levelIndex, generInfo) as TileContainers.GameLevel;
 
@@ -146,8 +144,8 @@ namespace Roguelike
       return level;
     }
 
-    
+
   }
 
- 
+
 }

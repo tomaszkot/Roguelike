@@ -4,7 +4,7 @@ namespace Roguelike.Effects
 {
   class EffectTypeConverter
   {
-    public static EffectType Convert(EntityStatKind  esk)
+    public static EffectType Convert(EntityStatKind esk)
     {
       switch (esk)
       {

@@ -40,7 +40,7 @@ namespace Dungeons
         {
           interior = GenerateRandomSimpleInterior(true);
         }
-        else if(CustomInteriorDecorator!=null)
+        else if (CustomInteriorDecorator != null)
           CustomInteriorDecorator(this, island.FirstOrDefault());//currently only one is send 
       }
       else if (generationInfo.GenerateRandomInterior)
@@ -161,7 +161,7 @@ namespace Dungeons
           if (wall != null)
             wall.IsSide = true;
           else
-            dungeonNode.Container.GetInstance<ILogger>().LogError("if (wall != null) , si="+ si);
+            dungeonNode.Container.GetInstance<ILogger>().LogError("if (wall != null) , si=" + si);
         }
       }
     }
@@ -287,7 +287,7 @@ namespace Dungeons
 
       return tiles;
     }
-    
+
     internal DungeonNode[] GenerateChildIslands()
     {
       if (!Inited())
@@ -327,7 +327,7 @@ namespace Dungeons
         destStartPoint = new Point(generationInfo.MinRoomLeft / 2 + 1, generationInfo.MinRoomLeft / 2);
       for (int i = 0; i < generationInfo.MaxNumberOfChildIslands; i++)
       {
-        var child = dungeonNode.CreateChildIslandInstance(islandWidth, islandHeight, generationInfoIsl, 
+        var child = dungeonNode.CreateChildIslandInstance(islandWidth, islandHeight, generationInfoIsl,
           parent: dungeonNode);
         if (ChildIslandCreated != null)
           ChildIslandCreated(this, new ChildIslandCreationInfo() { ChildIslandNode = child, GenerationInfoIsl = generationInfoIsl, ParentDungeonNode = dungeonNode });
@@ -345,7 +345,7 @@ namespace Dungeons
 
       return nodes.ToArray();
     }
-        
+
     public void GenerateRandomStonesBlocks()
     {
       if (!Inited())

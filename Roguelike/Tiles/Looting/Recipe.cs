@@ -1,13 +1,12 @@
 ﻿using Roguelike.Extensions;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace Roguelike.Tiles.Looting
 {
-  public enum RecipeKind { Unset, Custom, ThreeGems, OneEq, TransformPotion, TwoEq, TransformGem, Toadstool2Potions, ExplosiveCocktail, Pendant,
-                           EnchantEquipment }
+  public enum RecipeKind
+  {
+    Unset, Custom, ThreeGems, OneEq, TransformPotion, TwoEq, TransformGem, Toadstool2Potions, ExplosiveCocktail, Pendant,
+    EnchantEquipment
+  }
 
   public class Recipe : StackedLoot
   {
@@ -22,7 +21,7 @@ namespace Roguelike.Tiles.Looting
 
     public override string ToString()
     {
-      var res = base.ToString() + " "+ Name;
+      var res = base.ToString() + " " + Name;
       //if (GenerationTestFilter.MockingOn)
       //  res += ",PinCS=" + PlacedInCraftSlot + ", Ind ="+PositionInPage+ ", Page="+PageIndex; 
       return res;
@@ -43,48 +42,48 @@ namespace Roguelike.Tiles.Looting
       PageIndex = -1;
 
       PositionInPage = -1;
-      
+
     }
 
     void SetPrimaryStatDescription()
     {
 
-        var desc = "";
-        switch (Kind)
-        {
-          case RecipeKind.Custom:
-            desc = "Can craft anything, provided ingredients are valid";
-            break;
-          case RecipeKind.ThreeGems:
-            desc = "Turns three gems into a better one";
-            break;
-          case RecipeKind.OneEq:
-            desc = "Turns given equipment into other kind of equipment";
-            break;
-          case RecipeKind.TransformPotion:
-            desc = "Turns potion into other kind of potion";
-            break;
-          case RecipeKind.TwoEq:
-            desc = "Turns two equipments into one of better quality";
-            break;
-          case RecipeKind.TransformGem:
-            desc = "Turns given gem into other kind of gem";
-            break;
-          case RecipeKind.Toadstool2Potions:
-            desc = "Turns given toadstool into potions";
-            break;
-          case RecipeKind.ExplosiveCocktail:
-            desc = "Turns Hooch plus Sulfur into Explosive Cocktail";
-            break;
-          case RecipeKind.Pendant:
-            desc = "Turns a piece of cord into a pendant";
-            break;
-          case RecipeKind.EnchantEquipment:
-            desc = "Enchants equipment with a gem or a hunter's trophy";
-            break;
-          default:
-            break;
-        }
+      var desc = "";
+      switch (Kind)
+      {
+        case RecipeKind.Custom:
+          desc = "Can craft anything, provided ingredients are valid";
+          break;
+        case RecipeKind.ThreeGems:
+          desc = "Turns three gems into a better one";
+          break;
+        case RecipeKind.OneEq:
+          desc = "Turns given equipment into other kind of equipment";
+          break;
+        case RecipeKind.TransformPotion:
+          desc = "Turns potion into other kind of potion";
+          break;
+        case RecipeKind.TwoEq:
+          desc = "Turns two equipments into one of better quality";
+          break;
+        case RecipeKind.TransformGem:
+          desc = "Turns given gem into other kind of gem";
+          break;
+        case RecipeKind.Toadstool2Potions:
+          desc = "Turns given toadstool into potions";
+          break;
+        case RecipeKind.ExplosiveCocktail:
+          desc = "Turns Hooch plus Sulfur into Explosive Cocktail";
+          break;
+        case RecipeKind.Pendant:
+          desc = "Turns a piece of cord into a pendant";
+          break;
+        case RecipeKind.EnchantEquipment:
+          desc = "Enchants equipment with a gem or a hunter's trophy";
+          break;
+        default:
+          break;
+      }
 
       PrimaryStatDescription = desc;
     }
@@ -94,7 +93,7 @@ namespace Roguelike.Tiles.Looting
       if (extraStatDescription == null)
       {
         extraStatDescription = new string[1];
-       
+
         extraStatDescription[0] = "Required Magic Dust: " + MagicDustRequired;
 
       }
@@ -121,7 +120,7 @@ namespace Roguelike.Tiles.Looting
       set
       {
         kind = value;
-        Name = kind+ " Recipe";
+        Name = kind + " Recipe";
         DisplayedName = kind.ToDescription() + " Recipe";
         tag1 = "craft_";
         switch (kind)

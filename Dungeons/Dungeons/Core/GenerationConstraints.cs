@@ -17,7 +17,7 @@ namespace Dungeons.Core
     {
       get
       {
-         return min;
+        return min;
       }
 
       set

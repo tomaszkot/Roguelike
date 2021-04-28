@@ -172,7 +172,7 @@ namespace RoguelikeUnitTests
     {
       var level1 = GenRoomWithEnemies(numEnemies);
       Assert.AreEqual(level1.GetTiles<Enemy>().Count(), numEnemies);
-      Assert.Greater(level1.GetTiles().Where(i => i.IsEmpty).Count(), numEnemies+1);
+      Assert.Greater(level1.GetTiles().Where(i => i.IsEmpty).Count(), numEnemies + 1);
 
       var level2 = GenRoomWithEnemies(numEnemies);
       Assert.AreEqual(level2.GetTiles<Enemy>().Count(), numEnemies);
@@ -282,7 +282,7 @@ namespace RoguelikeUnitTests
     {
       var game = CreateGame();
       Assert.NotNull(game.Hero);
-      Assert.AreEqual(game.Hero.DungeonNodeIndex, game.Level.Nodes.Where(i=> !i.Secret).First().NodeIndex);
+      Assert.AreEqual(game.Hero.DungeonNodeIndex, game.Level.Nodes.Where(i => !i.Secret).First().NodeIndex);
     }
 
     [Test]

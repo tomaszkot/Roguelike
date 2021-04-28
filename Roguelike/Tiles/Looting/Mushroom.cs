@@ -25,7 +25,7 @@ namespace Roguelike.Tiles
 
     public override string GetId()
     {
-      return base.GetId() + "_"+ MushroomKind.ToString();
+      return base.GetId() + "_" + MushroomKind.ToString();
     }
 
     public void SetMushroomKind(MushroomKind kind)
@@ -37,7 +37,7 @@ namespace Roguelike.Tiles
         //TODO
         //SrcPotion = PotionKind.Mana;
         //DestPotion = SpecialPotionKind.Magic;
-        
+
         StatKind = Attributes.EntityStatKind.Mana;
       }
       else
@@ -102,10 +102,10 @@ namespace Roguelike.Tiles
 
       //desc += "Potion.";
       string desc = PartOfCraftingRecipe;
-      desc+= GetConsumeDesc(" Consumable");
+      desc += GetConsumeDesc(" Consumable");
       PrimaryStatDescription = desc;
     }
-        
+
     public override string ToString()
     {
       return base.ToString() + " " + MushroomKind;

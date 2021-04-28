@@ -1,7 +1,6 @@
 ﻿using Roguelike.Managers;
 using Roguelike.State;
 using Roguelike.TileContainers;
-using Roguelike.Tiles;
 using Roguelike.Tiles.LivingEntities;
 using System;
 using System.Diagnostics;
@@ -39,11 +38,11 @@ namespace Roguelike.Serialization
         }
         gm.Persister.SaveAllies(alliesStore);
       }
-  
+
       worldSaver();
 
       var gameState = gm.PrepareGameStateForSave();
-      gm.Persister.SaveGameState(gm.Hero.Name,gameState);
+      gm.Persister.SaveGameState(gm.Hero.Name, gameState);
 
       //restore hero
       gm.CurrentNode.SetTile(gm.Hero, gm.Hero.point);
@@ -68,7 +67,7 @@ namespace Roguelike.Serialization
 
       gm.SetLoadedContext(node, hero);
       //gm.SetContext(node, hero, GameContextSwitchKind.GameLoaded);
-      
+
       gm.PrintHeroStats("load");
     }
   }

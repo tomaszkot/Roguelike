@@ -1,14 +1,12 @@
 ﻿using Dungeons.Core;
 using Dungeons.Tiles;
 using Newtonsoft.Json;
-using Roguelike.Abstract;
 using Roguelike.Abstract.Effects;
 using Roguelike.Attributes;
 using Roguelike.Events;
 using Roguelike.Factors;
 using Roguelike.Managers;
 using Roguelike.Spells;
-using Roguelike.Tiles;
 using Roguelike.Tiles.LivingEntities;
 using Roguelike.Tiles.Looting;
 using SimpleInjector;
@@ -37,9 +35,9 @@ namespace Roguelike.Effects
     [JsonIgnore]
     public EventsManager EventsManager
     {
-      get 
+      get
       {
-        return livingEntity.EventsManager; 
+        return livingEntity.EventsManager;
       }
     }
 
@@ -154,7 +152,7 @@ namespace Roguelike.Effects
     private void ApplyLastingEffect(LastingEffect le, bool newOne)
     {
       //if(Container != null)
-        //Container.GetInstance<ILogger>().LogInfo(livingEntity + " ApplyLastingEffect: " + le);
+      //Container.GetInstance<ILogger>().LogInfo(livingEntity + " ApplyLastingEffect: " + le);
 
       le.PendingTurns--;
 
@@ -175,7 +173,7 @@ namespace Roguelike.Effects
       if (le.Type == EffectType.Stunned)
         return;
 
-      var esk = le.StatKind != EntityStatKind.Unset || le.Type == EffectType.ResistAll 
+      var esk = le.StatKind != EntityStatKind.Unset || le.Type == EffectType.ResistAll
         || le.Type == EffectType.Transform;
       Assert(esk);
       if (le.Type == EffectType.TornApart)
@@ -270,7 +268,7 @@ namespace Roguelike.Effects
           if (enemy.PowerKind != EnemyPowerKind.Plain)
           {
             float threshold = 0.65f;
-            if(attacker.EverCausedHero(effectInfo.Type))
+            if (attacker.EverCausedHero(effectInfo.Type))
               threshold = 0.85f;
             add = rand > threshold && GetByType(effectInfo.Type) == null;
             if (add)
@@ -307,7 +305,7 @@ namespace Roguelike.Effects
     {
       var effectInfo = CalcLastingEffDamage(et, inflictedDamage, null, null);
 
-      var currentEffect = this.AddLastingEffect(effectInfo, EffectOrigin.External, null, EffectTypeConverter.Convert(et),  true);
+      var currentEffect = this.AddLastingEffect(effectInfo, EffectOrigin.External, null, EffectTypeConverter.Convert(et), true);
       return currentEffect;
     }
 
@@ -318,7 +316,7 @@ namespace Roguelike.Effects
       le.PercentageFactor = effectInfo.PercentageFactor;
       le.EffectiveFactor = effectInfo.EffectiveFactor;
     }
-        
+
     LastingEffectCalcInfo CalcLastingEffDamage(EffectType et, float amount, Spell spell = null, FightItem fi = null)
     {
       return CreateLastingEffectCalcInfo(et, amount, 0, GetPendingTurns(et));
@@ -383,7 +381,7 @@ namespace Roguelike.Effects
       //  eff == EffectType.ManaShield)
       //{
       //}
-      
+
       //else
       //  Assert(false, "AddLastingEffect - unhandeled eff = " + eff);
 

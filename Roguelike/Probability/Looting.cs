@@ -1,5 +1,4 @@
-﻿using Dungeons.Core;
-using Roguelike.Abilities;
+﻿using Roguelike.Abilities;
 using Roguelike.Tiles;
 using System;
 using System.Collections.Generic;
@@ -12,7 +11,7 @@ namespace Roguelike.Probability
     Dictionary<LootSourceKind, EquipmentClassChances> equipmentClassChances = new Dictionary<LootSourceKind, EquipmentClassChances>();
     Dictionary<LootSourceKind, LootKindChances> lootKindChances = new Dictionary<LootSourceKind, LootKindChances>();
 
-    public Dictionary<LootSourceKind, EquipmentClassChances> EquipmentClassChances { get => equipmentClassChances;  }
+    public Dictionary<LootSourceKind, EquipmentClassChances> EquipmentClassChances { get => equipmentClassChances; }
     public Dictionary<LootSourceKind, LootKindChances> LootKindChances { get => lootKindChances; }
 
     public Looting()
@@ -45,9 +44,9 @@ namespace Roguelike.Probability
 
     public LootKind RollDiceForKind(LootSourceKind lsk, LootAbility ab)
     {
-      var chance = lootKindChances[lsk]; 
-       //LootKind.Other
-       var lk  = chance.RollDice(LootKind.Unset, new LootKind[] {LootKind.Seal, LootKind.SealPart }, ab.ExtraChanceToAnyLoot);
+      var chance = lootKindChances[lsk];
+      //LootKind.Other
+      var lk = chance.RollDice(LootKind.Unset, new LootKind[] { LootKind.Seal, LootKind.SealPart }, ab.ExtraChanceToAnyLoot);
       if (lk != LootKind.Gold && lk != LootKind.Equipment && lk != LootKind.Unset)
       {
         int k = 0;

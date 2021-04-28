@@ -10,7 +10,7 @@ using System.Linq;
 namespace Dungeons.TileContainers
 {
   public interface IDungeonLevel { }
-  
+
   //result of merging  of many DungeonNodes 
   public class DungeonLevel : DungeonNode, IDungeonLevel
   {
@@ -20,7 +20,7 @@ namespace Dungeons.TileContainers
     }
 
     public bool Rearrange(List<Tile> src, Func<Tile, bool> selector)
-    {      
+    {
       var logger = this.Container.GetInstance<ILogger>();
 
       List<Tile> skip = new List<Tile>();
@@ -76,7 +76,7 @@ namespace Dungeons.TileContainers
     [JsonIgnore]
     public virtual List<DungeonNode> Nodes
     {
-      get 
+      get
       {
         if (!Parts.Any())
           return new List<DungeonNode>();

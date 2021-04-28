@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Xml.Serialization;
 
 namespace Roguelike.Discussions
@@ -13,11 +10,11 @@ namespace Roguelike.Discussions
     public DiscussionSentence Left { get; set; } = new DiscussionSentence();
     public KnownSentenceKind KnownSentenceKind { get; set; }
     public List<DiscussionTopic> Topics { get; set; } = new List<DiscussionTopic>();
-        
+
     [XmlIgnoreAttribute]
     public DiscussionTopic Parent { get => parent; set => parent = value; }
     protected const bool merchantItemsAtAllLevels = false;
-        
+
     bool allowBuyHound;
     DiscussionTopic parent;
 
@@ -66,7 +63,7 @@ namespace Roguelike.Discussions
     {
       return Topics.SingleOrDefault(i => i.KnownSentenceKind == kind);
     }
-        
+
     public bool HasTopics(string topic)
     {
       return GetTopic(topic) != null;

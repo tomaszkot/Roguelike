@@ -5,7 +5,6 @@ using Roguelike.TileParts;
 using Roguelike.Tiles.Looting;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 
 namespace Roguelike.Tiles
@@ -13,7 +12,7 @@ namespace Roguelike.Tiles
   public class Enchant
   {
     public Enchanter Enchanter { get; set; }
-    public List<EntityStatKind> StatKinds { get; set; } = new List<EntityStatKind>(); 
+    public List<EntityStatKind> StatKinds { get; set; } = new List<EntityStatKind>();
     public int StatValue { get; set; }
   }
 
@@ -59,7 +58,7 @@ namespace Roguelike.Tiles
       {
         return;//TODO Assert
       }
-      
+
       var eskToEnhance = EntityStatKind.Unset;
       switch (EquipmentKind)
       {
@@ -91,15 +90,15 @@ namespace Roguelike.Tiles
         }
         if (Class != EquipmentClass.Unique)
         {
-          
+
           this.DisplayedName = material.ToDescription() + " " + Name.ToLower();
           EnhanceStatsDueToMaterial(material);
         }
       }
     }
 
-    public override string Name 
-    { 
+    public override string Name
+    {
       get => base.Name;
       set
       {
@@ -159,7 +158,7 @@ namespace Roguelike.Tiles
         enchants = value;
       }
     }
-        
+
     int GetMaxEnchants()
     {
       if (Class == EquipmentClass.Unique)
@@ -176,7 +175,7 @@ namespace Roguelike.Tiles
 
       return 3;
     }
-        
+
     public bool Identify()
     {
       if (IsIdentified)
@@ -202,10 +201,8 @@ namespace Roguelike.Tiles
     {
       EntityStats stats = new EntityStats();
       stats[this.PrimaryStatKind].Accumulate(primaryStat.Value);
-      //if (!IsPlain())
-      {
-        stats.Accumulate(ExtendedInfo.Stats);
-      }
+      stats.Accumulate(ExtendedInfo.Stats);
+
       return stats;
     }
 
@@ -235,14 +232,14 @@ namespace Roguelike.Tiles
       }
     }
 
-    readonly static EquipmentKind[] possibleLootKinds = new EquipmentKind[] { EquipmentKind.Armor, EquipmentKind.Weapon, EquipmentKind.Amulet, 
+    readonly static EquipmentKind[] possibleLootKinds = new EquipmentKind[] { EquipmentKind.Armor, EquipmentKind.Weapon, EquipmentKind.Amulet,
       EquipmentKind.Ring, EquipmentKind.Helmet, EquipmentKind.Glove, EquipmentKind.Shield};
 
     public static EquipmentKind[] GetPossibleLootKindsForCrafting()
     {
       return possibleLootKinds;
     }
-        
+
     public EntityStatKind PrimaryStatKind
     {
       get
@@ -422,14 +419,14 @@ namespace Roguelike.Tiles
     public bool IsSecondMagicLevel { get { return Class == EquipmentClass.MagicSecLevel; } }
     public EntityStat PrimaryStat { get => primaryStat; set => primaryStat = value; }
     public EntityStats RequiredStats { get => requiredStats; set => requiredStats = value; }
-    
+
     //setter needed from serialize
     public int EnchantSlots { get => enchantSlots; set { enchantSlots = value; } }
 
     public List<EntityStat> GetEffectiveRequiredStats()
     {
       //TODO too heavy?
-      return RequiredStats.GetStats().Where(i => GetReqStatValue(i.Value) > 0).Select(i=> i.Value).ToList();
+      return RequiredStats.GetStats().Where(i => GetReqStatValue(i.Value) > 0).Select(i => i.Value).ToList();
     }
 
     public float GetReqStatValue(EntityStat es)
@@ -450,7 +447,7 @@ namespace Roguelike.Tiles
       }
       if (stat == EntityStatKind.ResistCold || stat == EntityStatKind.ResistFire || stat == EntityStatKind.ResistPoison)
         value *= 2;
-      
+
       if (stat == EntityStatKind.FireAttack || stat == EntityStatKind.PoisonAttack || stat == EntityStatKind.ColdAttack)
       {
         value /= 2;
@@ -460,14 +457,14 @@ namespace Roguelike.Tiles
         value = 2;
       AddMagicStat(stat, secLevel, value, false);
     }
-        
+
     public void MakeMagicSecLevel(EntityStatKind stat, int statValue)
     {
       AddMagicStat(stat, true, statValue, false);
     }
 
     EntityStats unidentifiedStats;
-    public enum AddMagicStatReason { Unset, Enchant};
+    public enum AddMagicStatReason { Unset, Enchant };
 
     void AddMagicStat(EntityStatKind stat, bool secLevel, int statValue, bool incrementFactor = false, AddMagicStatReason reason = AddMagicStatReason.Unset)
     {
@@ -503,7 +500,7 @@ namespace Roguelike.Tiles
     public virtual void PrepareForSave()
     {
       ExtendedInfo.Stats.PrepareForSave();
-      
+
     }
 
     public override void HandleGenerationDone()
@@ -517,7 +514,7 @@ namespace Roguelike.Tiles
     }
 
     public bool priceAlrIncreased;
-    
+
     //public void IncreasePriceBasedOnExtInfo()
     //{
     //  if(!IsIdentified)
@@ -589,7 +586,7 @@ namespace Roguelike.Tiles
     public EntityStats UnidentifiedStats { get => unidentifiedStats; set => unidentifiedStats = value; }
     public int MaxEnchants { get => maxEnchants; set => maxEnchants = value; }
 
-    public void SetLevelIndex(int li) 
+    public void SetLevelIndex(int li)
     {
       if (li <= 0)
         throw new Exception("Eq SetLevelIndex = 0!");
@@ -598,7 +595,7 @@ namespace Roguelike.Tiles
         RequiredLevel = li;
 
       //if(Class != EquipmentClass.Unique)
-        SetPriceFromLevel();
+      SetPriceFromLevel();
     }
 
     public virtual void SetClass(EquipmentClass _class, int levelIndex, EntityStats lootStats = null, bool magicOfSecondLevel = false)
@@ -631,12 +628,12 @@ namespace Roguelike.Tiles
     {
       return Class == EquipmentClass.Plain;
     }
-        
+
     public override string ToString()
     {
       var res = base.ToString();
       if (IncludeDebugDetailsInToString)
-        res += " Kind:"+this.EquipmentKind + " Lvl:" + levelIndex;
+        res += " Kind:" + this.EquipmentKind + " Lvl:" + levelIndex;
 
       return res;
     }
@@ -719,7 +716,7 @@ namespace Roguelike.Tiles
         //Price += (int)(GetPriceForFactor(kind, val));// *.9f);//crafted loot - price too hight comp to uniq.
         enchant.StatKinds.Add(kind);
       }
-      
+
       enchant.Enchanter = enchantSrc;
       Enchants.Add(enchant);//only one slot is occupied
       return true;

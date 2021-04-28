@@ -38,10 +38,10 @@ namespace Roguelike.Generators
     Looting probability = new Looting();
 
     public Looting Probability { get => probability; set => probability = value; }
-    public int LevelIndex 
-    { 
-      get; 
-      set; 
+    public int LevelIndex
+    {
+      get;
+      set;
     } = -1;
 
     [JsonIgnore]
@@ -92,7 +92,7 @@ namespace Roguelike.Generators
             //if(lk == LootKind.Scroll)
             //  mult = 1.8f;
           }
-          
+
           val *= mult;
 
           lkChance.SetChance(lk, val);
@@ -156,7 +156,7 @@ namespace Roguelike.Generators
         loot = uniqueLoot[tileName];
       else
         loot = LootFactory.GetByName(tileName);
-     
+
       if (loot == null && tileName == "rusty_sword")
       {
         var wpn = new Weapon();
@@ -220,8 +220,8 @@ namespace Roguelike.Generators
 
     public virtual Equipment GetRandomEquipment(int maxEqLevel, LootAbility ab)
     {
-      var levelToUse = maxEqLevel > 0 ? maxEqLevel : (LevelIndex+1);
-      
+      var levelToUse = maxEqLevel > 0 ? maxEqLevel : (LevelIndex + 1);
+
       if (levelToUse <= 0)
         Container.GetInstance<ILogger>().LogError("GetRandomEquipment levelToUse <=0!!!");
       var kind = GetPossibleEqKind();
@@ -231,20 +231,20 @@ namespace Roguelike.Generators
     public virtual Equipment GetRandomEquipment(EquipmentKind kind, int level, LootAbility ab = null)
     {
       var eqClass = EquipmentClass.Plain;
-      if (ab !=null && ab.ExtraChanceToGetMagicLoot > RandHelper.GetRandomDouble())
+      if (ab != null && ab.ExtraChanceToGetMagicLoot > RandHelper.GetRandomDouble())
         eqClass = EquipmentClass.Magic;
       var eq = LootFactory.EquipmentFactory.GetRandom(kind, level, eqClass);
       //EnasureLevelIndex(eq);//level must be given by factory!
       return eq;
     }
 
-    
+
 
     internal Loot TryGetRandomLootByDiceRoll(LootSourceKind lsk, int maxEqLevel, LootAbility ab)
     {
       //return null;
       LootKind lootKind = LootKind.Unset;
-      if(
+      if (
         lsk == LootSourceKind.DeluxeGoldChest ||
         lsk == LootSourceKind.GoldChest
         )
@@ -262,15 +262,15 @@ namespace Roguelike.Generators
         if (eqClass != EquipmentClass.Unset)
         {
           var item = GetRandomEquipment(eqClass, maxEqLevel);
-         //if (item is Equipment eq)
-         // {
-         //   EnsureMaterialFromLootSource(eq);
-         //   if (item.LevelIndex < maxEqLevel)
-         //   {
-         //     //int k = 0;
-         //     //k++;
-         //   }
-         // }
+          //if (item is Equipment eq)
+          // {
+          //   EnsureMaterialFromLootSource(eq);
+          //   if (item.LevelIndex < maxEqLevel)
+          //   {
+          //     //int k = 0;
+          //     //k++;
+          //   }
+          // }
           return item;
         }
       }
@@ -355,7 +355,7 @@ namespace Roguelike.Generators
     }
 
     static string[] GemTags;
-    
+
     public virtual Loot GetRandomLoot(LootKind kind, int level)
     {
       Loot res = null;
@@ -381,8 +381,8 @@ namespace Roguelike.Generators
         var scroll = LootFactory.ScrollsFactory.GetRandom(level) as Scroll;
         var rand = RandHelper.GetRandomDouble();
 
-        if ( (scroll.Kind == Spells.SpellKind.Portal && rand > 0.2f) //no need for so many of them
-          || (scroll.Kind != Spells.SpellKind.Identify && rand >  0.6f)) //these are fine
+        if ((scroll.Kind == Spells.SpellKind.Portal && rand > 0.2f) //no need for so many of them
+          || (scroll.Kind != Spells.SpellKind.Identify && rand > 0.6f)) //these are fine
         {
           var newScroll = LootFactory.ScrollsFactory.GetRandom(level) as Scroll;
           //if (newScroll.Kind != Spells.SpellKind.Portal || scroll.Kind == Spells.SpellKind.Portal)
@@ -414,7 +414,7 @@ namespace Roguelike.Generators
         Debug.Assert(false);
 
       //if(res is Equipment)
-//        EnasureLevelIndex(res as Equipment);
+      //        EnasureLevelIndex(res as Equipment);
       return res;
     }
 
@@ -469,9 +469,9 @@ namespace Roguelike.Generators
       return gemTags.ToArray();
     }
 
-    private Loot GetRandomPotion() 
+    private Loot GetRandomPotion()
     {
-      var enumVal = RandHelper.GetRandomEnumValue<PotionKind>(new[] { PotionKind.Special, PotionKind.Unset});
+      var enumVal = RandHelper.GetRandomEnumValue<PotionKind>(new[] { PotionKind.Special, PotionKind.Unset });
       var potion = new Potion();
       potion.SetKind(enumVal);
       return potion;
@@ -480,8 +480,8 @@ namespace Roguelike.Generators
     //a cheap loot generated randomly on the level
     public virtual Loot GetRandomLoot(int level, LootKind skip = LootKind.Unset)
     {
-      var enumVal = RandHelper.GetRandomEnumValue<LootKind>(new[] 
-      { 
+      var enumVal = RandHelper.GetRandomEnumValue<LootKind>(new[]
+      {
         LootKind.Other, 
         //LootKind.Gem, LootKind.Recipe, LootKind.HunterTrophy
         LootKind.Seal, LootKind.SealPart, LootKind.Unset, skip
@@ -490,6 +490,6 @@ namespace Roguelike.Generators
       return loot;
     }
 
-    
+
   }
 }

@@ -1,21 +1,14 @@
-﻿using Dungeons.Tiles;
-using Roguelike.Abstract.Projectiles;
+﻿using Roguelike.Abstract.Projectiles;
 using Roguelike.Events;
 using Roguelike.Extensions;
 using Roguelike.Policies;
 using Roguelike.Spells;
 using Roguelike.Tiles;
-using Roguelike.Tiles.Abstract;
-using Roguelike.Tiles.Interactive;
 using Roguelike.Tiles.LivingEntities;
 using Roguelike.Tiles.Looting;
 using SimpleInjector;
 using System;
-using System.Collections.Generic;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Roguelike.Managers
 {
@@ -109,7 +102,7 @@ namespace Roguelike.Managers
 
       return null;
     }
-        
+
     public bool ApplyAttackPolicy
     (
       LivingEntity caster,//hero, enemy, ally
@@ -121,7 +114,7 @@ namespace Roguelike.Managers
     {
       var spell = scroll.CreateSpell(caster);
 
-      if (! gm.UtylizeScroll(caster, scroll, spell))
+      if (!gm.UtylizeScroll(caster, scroll, spell))
         return false;
 
       var policy = Container.GetInstance<SpellCastPolicy>();
@@ -151,7 +144,7 @@ namespace Roguelike.Managers
       return true;
     }
 
-    
+
 
   }
 }

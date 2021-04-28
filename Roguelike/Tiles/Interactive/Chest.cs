@@ -7,7 +7,7 @@ namespace Roguelike.Tiles
   {
     int Level { get; }
     bool SetLevel(int level);
-    Point GetPoint(); 
+    Point GetPoint();
   }
 }
 
@@ -62,12 +62,12 @@ namespace Roguelike.Tiles.Interactive
       get => closed;
       set
       {
-          closed = value;
-          SetColor();
+        closed = value;
+        SetColor();
       }
     }
-    public bool SetLevel(int level) 
-    { 
+    public bool SetLevel(int level)
+    {
       Level = level;
       return true;
     }

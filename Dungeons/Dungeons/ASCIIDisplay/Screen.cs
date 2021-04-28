@@ -1,12 +1,8 @@
 ﻿using Dungeons.ASCIIDisplay.Presenters;
 using Dungeons.TileContainers;
 using Dungeons.Tiles;
-using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Dungeons.ASCIIDisplay
 {
@@ -36,28 +32,28 @@ namespace Dungeons.ASCIIDisplay
     public Screen(IDrawingEngine drawingEngine)
     {
       this.DrawingEngine = drawingEngine;
-      
+
     }
 
     public void Redraw(Tile tile, bool alsoNeibs)
     {
-      if(tile!=null)
+      if (tile != null)
         DungeonPresenter.RefreshPosition(Dungeon, null, tile.point.X, tile.point.Y);
-      if(alsoNeibs)
+      if (alsoNeibs)
         RefreshNeibs(tile);
     }
 
     private void RefreshNeibs(Tile tile)
     {
-      var neibs = Dungeon.GetNeighborTiles(tile, true).Where(i=> i!= null).ToList();
+      var neibs = Dungeon.GetNeighborTiles(tile, true).Where(i => i != null).ToList();
       RedrawTiles(neibs);
     }
 
     private void RedrawTiles<T>(List<T> tiles) where T : Tile
     {
-      tiles.ForEach(i=> Redraw(i, false));
+      tiles.ForEach(i => Redraw(i, false));
     }
-    
+
     protected virtual void CreateLists()
     {
       Lists = new Dictionary<string, ListPresenter>();
@@ -121,7 +117,7 @@ namespace Dungeons.ASCIIDisplay
 
     protected virtual void UpdateItem(Item i)
     {
-      
+
     }
 
     public virtual void RedrawLists()

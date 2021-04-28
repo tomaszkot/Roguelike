@@ -4,8 +4,11 @@ using Roguelike.Attributes;
 
 namespace Roguelike.Tiles.Looting
 {
-  public enum TrophyKind { Unset, BatHead, RatHead, DragonClaw, DarkWizardHand, FallenOneHead, GriffinHead, Scorpion,
-                        SkeletonHead, SpiderHead, VampireHead, WolfHead, HydraHead, SkeletonChemp }
+  public enum TrophyKind
+  {
+    Unset, BatHead, RatHead, DragonClaw, DarkWizardHand, FallenOneHead, GriffinHead, Scorpion,
+    SkeletonHead, SpiderHead, VampireHead, WolfHead, HydraHead, SkeletonChemp
+  }
 
   public class Trophy : Equipment
   {
@@ -26,7 +29,7 @@ namespace Roguelike.Tiles.Looting
     {
       Kind = kind;
       Name = Kind.ToString();
-      
+
       var st = new EntityStat();
       bool makeEnchantable = false;
       switch (Kind)
@@ -48,7 +51,7 @@ namespace Roguelike.Tiles.Looting
 
           st = new EntityStat(EntityStatKind.Defense, 0);
           st.Factor = 3;
-          SetMagicStat(st.Kind,  st);
+          SetMagicStat(st.Kind, st);
 
           st = new EntityStat(EntityStatKind.Health, 0);
           st.Factor = 5;
@@ -67,7 +70,7 @@ namespace Roguelike.Tiles.Looting
           st.Factor = 4;
           SetMagicStat(st.Kind, st);
 
-          st = new EntityStat(EntityStatKind.Mana,0);
+          st = new EntityStat(EntityStatKind.Mana, 0);
           st.Factor = 4;
           SetMagicStat(st.Kind, st);
 
@@ -210,7 +213,7 @@ namespace Roguelike.Tiles.Looting
           st = new EntityStat(EntityStatKind.Mana, 0);
           st.Factor = 15;
           SetMagicStat(st.Kind, st);
-          
+
           st = new EntityStat(EntityStatKind.Magic, 0);
           st.Factor = 10;
           SetMagicStat(st.Kind, st);
@@ -287,7 +290,7 @@ namespace Roguelike.Tiles.Looting
           break;
       }
 
-      if(makeEnchantable)
+      if (makeEnchantable)
         MakeEnchantable();//it also increases price
     }
     string primaryStatDescription;

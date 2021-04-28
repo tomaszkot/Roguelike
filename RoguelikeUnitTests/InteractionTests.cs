@@ -1,13 +1,6 @@
 ﻿using Dungeons;
-using Dungeons.TileContainers;
-using Dungeons.Tiles;
 using NUnit.Framework;
-using Roguelike.Tiles;
 using Roguelike.Tiles.Interactive;
-using SimpleInjector;
-using System;
-using System.Drawing;
-using System.Linq;
 
 namespace RoguelikeUnitTests
 {

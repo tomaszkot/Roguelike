@@ -9,7 +9,7 @@ namespace Dungeons.Core
 
     public TimeTracker()
     {
-    
+
     }
     //DateTime pauseStart = DateTime.MinValue;
 

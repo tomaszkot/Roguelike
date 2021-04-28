@@ -1,5 +1,4 @@
-﻿using Dungeons.ASCIIDisplay;
-using System;
+﻿using System;
 
 namespace Dungeons.ASCIIDisplay.Presenters
 {
@@ -30,7 +29,7 @@ namespace Dungeons.ASCIIDisplay.Presenters
 
     public override void Redraw(IDrawingEngine drawingEngine)
     {
-      
+
       this.DrawingEngine = drawingEngine;
       base.Reset();
       WriteLine(Text);

@@ -1,17 +1,16 @@
 ﻿using Dungeons.Core;
-using System.Collections.Generic;
-using System.Linq;
+using Roguelike.Abstract.Tiles;
+using Roguelike.Policies;
+using Roguelike.Strategy;
 using Roguelike.TileContainers;
 using Roguelike.Tiles;
-using System.Drawing;
-using System;
-using Roguelike.Policies;
-using SimpleInjector;
-using System.Diagnostics;
-using static Dungeons.TileContainers.DungeonNode;
-using Roguelike.Strategy;
 using Roguelike.Tiles.LivingEntities;
-using Roguelike.Abstract.Tiles;
+using SimpleInjector;
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Drawing;
+using System.Linq;
 
 namespace Roguelike.Managers
 {
@@ -25,7 +24,7 @@ namespace Roguelike.Managers
     public AbstractGameLevel Node { get => context.CurrentNode; }
     public GameContext Context { get => context; set => context = value; }
     public List<LivingEntity> AllEntities { get => entities; set => entities = value; }
-    public IEnumerable<IAlly> AllAllies { get => entities.Cast<IAlly>();  }
+    public IEnumerable<IAlly> AllAllies { get => entities.Cast<IAlly>(); }
     protected GameManager gameManager;
 
     protected EventsManager eventsManager;
@@ -64,7 +63,7 @@ namespace Roguelike.Managers
           OnPolicyAppliedAllIdle();
           return true;
         }
-        else if(justEndedLoop)
+        else if (justEndedLoop)
           pendingForAllIdle = true;
       }
 
@@ -91,14 +90,14 @@ namespace Roguelike.Managers
       //context.Logger.LogInfo(this+" MakeTurn start, count: " + activeEntities.Count);
 
       pendingForAllIdle = false;
-      
+
       if (!activeEntities.Any())
       {
         OnPolicyAppliedAllIdle();
         //context.Logger.LogInfo("no one to move...");
         return;
       }
-      
+
       foreach (var entity in activeEntities)
       {
         //context.Logger.LogInfo("turn of: " + entity);
@@ -106,15 +105,15 @@ namespace Roguelike.Managers
         {
           //Debug.Assert(context.CurrentNode.GetTiles<LivingEntity>().Any(i => i == entity));//TODO
 
-          if(entity is AdvancedLivingEntity ade)
+          if (entity is AdvancedLivingEntity ade)
             ade.ApplyAbilities();
           entity.ApplyLastingEffects();
           if (!entity.Alive)
             continue;
 
-          if(entity.LastingEffects.Where(i => i.Type == Effects.EffectType.Stunned).Any())
+          if (entity.LastingEffects.Where(i => i.Type == Effects.EffectType.Stunned).Any())
             continue;
-                    
+
           MakeTurn(entity);
 
           if (!context.Hero.Alive)
@@ -125,7 +124,7 @@ namespace Roguelike.Managers
         }
         catch (Exception ex)
         {
-          context.Logger.LogError("ex: "+ ex);
+          context.Logger.LogError("ex: " + ex);
         }
       }
 
@@ -133,7 +132,7 @@ namespace Roguelike.Managers
 
       //context.Logger.LogInfo("EnemiesManager  MakeTurn ends");
       Debug.Assert(Context.TurnOwner == turnOwner);
-      
+
       ReportAllDone(true);
     }
 
@@ -153,7 +152,7 @@ namespace Roguelike.Managers
     }
 
     bool entitiesSet = false;
-    
+
     public void SetEntities(List<IAlly> list)
     {
       SetEntities(list.Cast<LivingEntity>().ToList());
@@ -183,7 +182,7 @@ namespace Roguelike.Managers
 
       if (context.TurnOwner != turnOwner)
       {
-        context.Logger.LogError("OnPolicyApplied " + policy + " context.TurnOwner != turnOwner, context.TurnOwner: "+ context.TurnOwner);
+        context.Logger.LogError("OnPolicyApplied " + policy + " context.TurnOwner != turnOwner, context.TurnOwner: " + context.TurnOwner);
         return;
       }
       //  return;//in ascii/UT mode this can happend
@@ -283,7 +282,7 @@ namespace Roguelike.Managers
             }
           }
         }
-                
+
         if (Node.GetTile(pt) is LivingEntity)
         {
           //gm.Assert(false, "Level.GetTile(pt) is LivingEntity "+ enemy + " "+pt);
@@ -319,5 +318,5 @@ namespace Roguelike.Managers
     }
   }
 
-  
+
 }

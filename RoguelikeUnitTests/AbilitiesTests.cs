@@ -2,8 +2,6 @@
 using NUnit.Framework;
 using Roguelike.Abilities;
 using Roguelike.Attributes;
-using Roguelike.Policies;
-using Roguelike.Spells;
 using Roguelike.Tiles;
 using Roguelike.Tiles.Interactive;
 using Roguelike.Tiles.LivingEntities;
@@ -35,7 +33,7 @@ namespace RoguelikeUnitTests
       ab.PrimaryStat.Value.Factor = 100;
       game.Hero.RecalculateStatFactors(false);
       game.GameManager.InteractHeroWith(AllEnemies[0]);
-      
+
       Assert.Greater(en1Health, AllEnemies[0].Stats.Health);
       Assert.Greater(en2Health, AllEnemies[1].Stats.Health);
     }
@@ -55,7 +53,7 @@ namespace RoguelikeUnitTests
         game.GameManager.CurrentNode.SetTile(enemies[i], empOnes[i].point);
       }
       var ab = game.GameManager.Hero.GetAbility(PassiveAbilityKind.BulkAttack);
-      for(int i=0;i<5;i++)
+      for (int i = 0; i < 5; i++)
         ab.IncreaseLevel(game.Hero);
 
       game.Hero.RecalculateStatFactors(false);
@@ -356,7 +354,7 @@ namespace RoguelikeUnitTests
 
         if (game.GameManager.Context.TurnOwner == Roguelike.TurnOwner.Hero)//TODO
           game.GameManager.Context.MoveToNextTurnOwner();
-                
+
         GotoNextHeroTurn();
 
         var mana2 = Hero.Stats.Mana;
@@ -521,7 +519,7 @@ namespace RoguelikeUnitTests
 
       Assert.Greater(damage, 0);
       var heroAttack = Hero.GetHitAttackValue(false);
-      
+
       for (int i = 0; i < MaxAbilityInc + 1; i++)
       {
         Hero.IncreaseAbility(kind);
@@ -543,7 +541,7 @@ namespace RoguelikeUnitTests
       var heroAttackWithAbility = Hero.GetHitAttackValue(false);
       Assert.Greater(heroAttackWithAbility, heroAttack);
       var damageWithAbility = hitEnemy();
-      
+
       Assert.Greater(damageWithAbility, damage);
       return abVal;
     }

@@ -166,7 +166,7 @@ namespace RoguelikeUnitTests
 
       wpn.MakeMagic(EntityStatKind.Attack, 4);
       wpn.Identify();
-      Assert.AreEqual(att+4, wpn.GetStats().GetTotalValue(EntityStatKind.Attack));
+      Assert.AreEqual(att + 4, wpn.GetStats().GetTotalValue(EntityStatKind.Attack));
       Assert.Greater(wpn.Price, price);
     }
 
@@ -177,7 +177,7 @@ namespace RoguelikeUnitTests
       lg.LevelIndex = 1;
       {
         var kinds = new[] { EquipmentKind.Weapon, EquipmentKind.Armor, EquipmentKind.Shield, EquipmentKind.Helmet, EquipmentKind.Ring, EquipmentKind.Amulet };
-        foreach(var kind in kinds)
+        foreach (var kind in kinds)
         {
           var eq = lg.GetRandomEquipment(kind, 1);
           Assert.Greater(eq.PrimaryStatValue, 0);
@@ -207,7 +207,7 @@ namespace RoguelikeUnitTests
 
       var lg = game.GameManager.LootGenerator;
       var eq1 = lg.GetRandomEquipment(EquipmentKind.Weapon, 1);
-      
+
       var heroStatBefore = hero.GetTotalValue(eq1.PrimaryStatKind);
       PutEqOnLevelAndCollectIt(eq1);
 
@@ -259,7 +259,7 @@ namespace RoguelikeUnitTests
         var active = hero.CurrentEquipment.GetActiveEquipment();
         var eqOn = active[Equipment.FromEquipmentKind(kind, kind == EquipmentKind.Ring ? AdvancedLivingEntity.DefaultCurrentEquipmentPosition : CurrentEquipmentPosition.Unset)];
         Assert.AreEqual(eqOn, eq);
-        Assert.AreEqual(heroStats.GetTotalValue(eq.PrimaryStatKind), statBefore+ eq.PrimaryStatValue);
+        Assert.AreEqual(heroStats.GetTotalValue(eq.PrimaryStatKind), statBefore + eq.PrimaryStatValue);
       }
     }
   }

@@ -1,9 +1,6 @@
 ﻿using Roguelike.Calculated;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Roguelike.Abilities
 {
@@ -81,7 +78,7 @@ namespace Roguelike.Abilities
       val /= 2;
       val *= 1 / 100f;
 
-      ExtraChanceToAnyLoot = val *3/2;
+      ExtraChanceToAnyLoot = val * 3 / 2;
       ExtraChanceToGetMagicLoot = val * 2 / 3;
       ExtraChanceToGetUniqueLoot = ExtraChanceToGetMagicLoot * 2 / 3;
 

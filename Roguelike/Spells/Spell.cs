@@ -1,12 +1,8 @@
-﻿using Dungeons.Tiles;
-using Newtonsoft.Json;
-using Roguelike.Abstract;
+﻿using Newtonsoft.Json;
 using Roguelike.Abstract.Spells;
 using Roguelike.Attributes;
-using Roguelike.Tiles;
 using Roguelike.Tiles.LivingEntities;
 using Roguelike.Tiles.Looting;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -30,15 +26,15 @@ namespace Roguelike.Spells
         //,MindControl
         , Mana, BushTrap, Rage, Weaken, NESWFireBall, Teleport, IronSkin, ResistAll, Inaccuracy, /*CallMerchant, CallGod,*/ Identify, Portal
   }
-   
+
   public class Spell : ISpell
   {
     protected float manaCost;
-   
+
     float manaCostMultiplicator = 20;
     public bool SendByGod { get; set; }
     public FightItem FightItem { get; internal set; }
-            
+
     public SpellKind Kind { get; set; }
     public bool EnemyRequired = false;
     public bool EntityRequired = false;
@@ -62,7 +58,7 @@ namespace Roguelike.Spells
         return (int)cost;
       }
     }
-   
+
     public Spell() : this(LivingEntity.CreateDummy())
     {
     }
@@ -75,7 +71,7 @@ namespace Roguelike.Spells
     }
 
     public int CoolingDown { get; set; } = 0;
-       
+
     //[XmlIgnore]
     [JsonIgnore]
     public LivingEntity Caller
@@ -90,7 +86,7 @@ namespace Roguelike.Spells
         caller = value;
       }
     }
-    
+
     public int GetNextLevelMagicNeeded()
     {
       var index = GetNextLevelMagicIndex();
@@ -126,7 +122,7 @@ namespace Roguelike.Spells
     {
       return "Next Level: " + suffix;
     }
-       
+
     public int GetCurrentLevel()
     {
       var lev = GetNextLevelMagicIndex() - 1;

@@ -1,7 +1,6 @@
 ﻿using Dungeons.Core;
 using Roguelike.Abstract.Inventory;
 using Roguelike.Abstract.Tiles;
-using Roguelike.Attributes;
 using Roguelike.LootContainers;
 using SimpleInjector;
 using System.Drawing;
@@ -53,9 +52,9 @@ namespace Roguelike.Tiles.LivingEntities
 
       var abp = 5;
       AbilityPoints = abp;
-      for(int i=0;i< abp;i++)
+      for (int i = 0; i < abp; i++)
         this.IncreaseAbility(Roguelike.Abilities.PassiveAbilityKind.RestoreHealth);
-      
+
     }
 
     public abstract void SetTag();
@@ -65,5 +64,5 @@ namespace Roguelike.Tiles.LivingEntities
       return false;
     }
   }
-    
+
 }

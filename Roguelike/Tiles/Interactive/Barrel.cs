@@ -6,7 +6,7 @@ using System.Drawing;
 
 namespace Roguelike.Tiles.Interactive
 {
-  
+
   public enum BarrelKind { Barrel, PileOfSkulls }
 
   public class Barrel : InteractiveTile, IDestroyable
@@ -26,13 +26,13 @@ namespace Roguelike.Tiles.Interactive
         DestroySound = (barrelKind == BarrelKind.Barrel) ? "barrel_broken" : "bones_fall";
       }
     }
-        
+
     public Barrel(Point point) : base(BarrelSymbol)
     {
       Kind = InteractiveTileKind.Barrel;
       BarrelKind = BarrelKind.Barrel;
       Name = Kind.ToString();
-      
+
       //BarrelKind = RandHelper.GetRandomDouble() < 0.5 ? BarrelKind.Barrel : BarrelKind.PileOfSkulls;
     }
 
@@ -40,11 +40,11 @@ namespace Roguelike.Tiles.Interactive
     {
 
     }
-        
+
     public Point GetPoint() { return point; }
 
-    public bool SetLevel(int level) 
-    { 
+    public bool SetLevel(int level)
+    {
       Level = level;
       return true;
     }

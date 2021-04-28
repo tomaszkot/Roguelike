@@ -1,13 +1,12 @@
-﻿using Dungeons.Core;
-using System;
+﻿using System;
 
 namespace Roguelike.Attributes
 {
-  public class EntityStat 
+  public class EntityStat
   {
     EntityStatKind kind = EntityStatKind.Unset;
     public event EventHandler<EntityStatKind> StatChanged;
-    
+
     StatValue stat = new StatValue();
     //public static readonly EntityStatKind[] BasicStats = { EntityStatKind.Health, EntityStatKind.Magic, EntityStatKind.Mana, EntityStatKind.Attack,
     //  EntityStatKind.Defense, EntityStatKind.Dexterity };
@@ -23,10 +22,12 @@ namespace Roguelike.Attributes
       this.Kind = kind;
       Value.Nominal = nominalValue;
     }
-    
-    public EntityStatKind Kind {
+
+    public EntityStatKind Kind
+    {
       get { return kind; }
-      set {
+      set
+      {
         SetKind(value);
       }
     }
@@ -46,7 +47,6 @@ namespace Roguelike.Attributes
         && sk != EntityStatKind.FireAttack
         && sk != EntityStatKind.ColdAttack
         && sk != EntityStatKind.PoisonAttack
-        //&& sk != EntityStatKind.LightingAttack //TODO
         )
       {
         IsPercentage = true;
@@ -97,8 +97,7 @@ namespace Roguelike.Attributes
       set
       {
         stat.Factor = value;
-        //   if (Kind == EntityStatKind.Health && stat.Factor > 0) WTF
-        //stat.Factor = 0;//?TODO 
+
         if (StatChanged != null)
           StatChanged(this, Kind);
       }
@@ -125,7 +124,7 @@ namespace Roguelike.Attributes
     {
       var val = Value.CurrentValue.ToString();
       if (IsPercentage)
-        val +=  " " + "%";
+        val += " " + "%";
       return val;
     }
 

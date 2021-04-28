@@ -123,7 +123,7 @@ namespace Dungeons
         Sides.Add(EntranceSide.Left, new List<Wall>());
         Sides.Add(EntranceSide.Right, new List<Wall>());
       }
-            
+
       public virtual void Create(int width = 10, int height = 10, GenerationInfo info = null,
                          int nodeIndex = DefaultNodeIndex, DungeonNode parent = null, bool generateContent = true)
       {
@@ -144,7 +144,7 @@ namespace Dungeons
 
         this.generationInfo = gi;
         this.interiorGenerator = new NodeInteriorGenerator(this, generationInfo);
-        interiorGenerator.ChildIslandCreated += (s,e) => 
+        interiorGenerator.ChildIslandCreated += (s, e) =>
         {
           ChildIslandCreated?.Invoke(s, e);
         };
@@ -163,7 +163,7 @@ namespace Dungeons
         EnsureLogger();
         if (logger != null)
         {
-          if(error)
+          if (error)
             logger.LogError(info);
           else
             logger.LogInfo(info);
@@ -189,7 +189,7 @@ namespace Dungeons
           nodeIndex = value;
         }
       }
-            
+
       [XmlIgnore]
       [JsonIgnore]
       public DungeonNode Parent
@@ -241,7 +241,7 @@ namespace Dungeons
           // door.DungeonNodeIndex = nextNodeIndex;
           return res;
         }
-                
+
         for (int i = 0; i < wall.Count; i++)
         {
           if (i > 0 && i % 2 == 0)// && (side != EntranceSide.Bottom || i < nextNode.Width))
@@ -262,7 +262,7 @@ namespace Dungeons
         if (generationInfo.GenerateOuterWalls)
           GenerateOuterWalls();
 
-        if(BeforeInteriorGenerated!=null)
+        if (BeforeInteriorGenerated != null)
           BeforeInteriorGenerated(this, this);
 
         interiorGenerator.GenerateRandomInterior(CustomInteriorDecorator);
@@ -377,7 +377,7 @@ namespace Dungeons
 
       public virtual List<Tile> GetEmptyTiles
       (
-        GenerationConstraints constraints = null, 
+        GenerationConstraints constraints = null,
         bool canBeNextToDoors = true,
         bool nodeIndexMustMatch = false//allows skipping childIsland tiles
       )
@@ -538,13 +538,13 @@ namespace Dungeons
             Debug.Assert(generationInfo.EntrancesCount == 0);
         }
         var door = CreateDoorInstance();
-        Debug.Assert(door!=null);
+        Debug.Assert(door != null);
         bool doorSet = SetTile(door, original.point);
         Debug.Assert(doorSet);
         door.DungeonNodeIndex = original.DungeonNodeIndex;
 
         var doorInterface = door as IDoor;
-        Debug.Assert(doorInterface !=null);
+        Debug.Assert(doorInterface != null);
         Doors.Add(doorInterface);
 
         return door;
@@ -575,11 +575,11 @@ namespace Dungeons
       /// <param name="entranceSideToSkip"></param>
       public virtual void AppendMaze
       (
-        DungeonNode childMaze, 
-        Point? destStartPoint = null, 
+        DungeonNode childMaze,
+        Point? destStartPoint = null,
         Point? childMazeMaxSize = null,
         bool childIsland = false,
-        EntranceSide? entranceSideToSkip = null, 
+        EntranceSide? entranceSideToSkip = null,
         DungeonNode prevNode = null
       )
       {
@@ -643,11 +643,11 @@ namespace Dungeons
             {
               continue;
             }
-            var set = this.SetTile(tileInChildMaze, destPt, autoSetTileDungeonIndex: false, reportError:false);
+            var set = this.SetTile(tileInChildMaze, destPt, autoSetTileDungeonIndex: false, reportError: false);
             if (set)
             {
-                if(prevSecret)
-                  tileInChildMaze.DungeonNodeIndex = childMaze.NodeIndex;
+              if (prevSecret)
+                tileInChildMaze.DungeonNodeIndex = childMaze.NodeIndex;
             }
             else
             {
@@ -727,7 +727,7 @@ namespace Dungeons
           {
             has = true;
             return true;//break loop
-        }
+          }
           return false;
         });
 
@@ -901,7 +901,7 @@ namespace Dungeons
       {
         return true;
       }
-            
+
       public Tuple<Point, TileNeighborhood> GetEmptyNeighborhoodPoint(Tile target, TileNeighborhood? prefferedSide = null, List<Type> extraTypesConsideredEmpty = null)
       {
         var set = new List<TileNeighborhood>();
@@ -917,8 +917,8 @@ namespace Dungeons
 
       public List<Tile> GetEmptyNeighborhoodTiles(Tile target, bool incDiagonal = true)
       {
-        var neibs = GetNeighborTiles(target, incDiagonal).Where(i=> i!=null).ToList();
-        if(neibs.Any())
+        var neibs = GetNeighborTiles(target, incDiagonal).Where(i => i != null).ToList();
+        if (neibs.Any())
         {
           neibs.Shuffle();
           var neibsEmpty = neibs.Where(i => IsTileEmpty(i)).ToList();
@@ -990,7 +990,7 @@ namespace Dungeons
         Log("GetClosestEmpty - failed to find empty fast way!", true);
         var emptyTiles = GetEmptyTiles();
         if (skip != null)
-          emptyTiles.RemoveAll(i=> skip.Contains(i));
+          emptyTiles.RemoveAll(i => skip.Contains(i));
         if (sameNodeId)
           emptyTiles = emptyTiles.Where(i => i.DungeonNodeIndex == baseTile.DungeonNodeIndex).ToList();
         return GetClosestEmpty(baseTile, emptyTiles);
@@ -1022,7 +1022,7 @@ namespace Dungeons
         return GetTiles<Tile>();
       }
 
-      public virtual Tile SetTileAtRandomPosition(Tile tile, bool matchNodeIndex = true) 
+      public virtual Tile SetTileAtRandomPosition(Tile tile, bool matchNodeIndex = true)
       {
         var node = matchNodeIndex == true ? (int?)NodeIndex : null;
         var empty = this.GetRandomEmptyTile(nodeIndex: node);

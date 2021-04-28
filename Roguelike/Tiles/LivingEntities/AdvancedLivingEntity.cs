@@ -1,30 +1,30 @@
 ﻿using Newtonsoft.Json;
+using Roguelike.Abilities;
+using Roguelike.Abstract.Inventory;
 using Roguelike.Attributes;
+using Roguelike.Discussions;
+using Roguelike.Effects;
 using Roguelike.Events;
+using Roguelike.Extensions;
+using Roguelike.Generators;
 using Roguelike.LootContainers;
 using Roguelike.Serialization;
 using Roguelike.Spells;
-using Roguelike.Effects;
 using Roguelike.Tiles.Abstract;
 using Roguelike.Tiles.Looting;
+using SimpleInjector;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
-using SimpleInjector;
-using Roguelike.Discussions;
-using Roguelike.Abilities;
-using Roguelike.Generators;
-using Roguelike.Abstract.Inventory;
-using Roguelike.Extensions;
 
 namespace Roguelike.Tiles.LivingEntities
 {
   public enum AllyKind { Unset, Hound, Enemy, Merchant }
   public enum EntityProffesionKind { Unset, King, Prince, Knight, Priest, Mercenary, Merchant, Peasant, Bandit, Adventurer, Slave }
   public enum EntityGender { Unset, Male, Female }
-  public enum RelationToHeroKind { Unset, Neutral, Like, Dislike, Hate};
+  public enum RelationToHeroKind { Unset, Neutral, Like, Dislike, Hate };
 
   public class RelationToHero
   {
@@ -46,8 +46,8 @@ namespace Roguelike.Tiles.LivingEntities
     protected CurrentEquipment currentEquipment;
     protected Inventory inventory = null;
 
-    public virtual Inventory Inventory 
-    { 
+    public virtual Inventory Inventory
+    {
       get => inventory;
       set
       {
@@ -56,8 +56,8 @@ namespace Roguelike.Tiles.LivingEntities
       }
     }
     //[JsonIgnoreAttribute]
-    public CurrentEquipment CurrentEquipment 
-    { 
+    public CurrentEquipment CurrentEquipment
+    {
       get => currentEquipment;
       set
       {
@@ -68,19 +68,20 @@ namespace Roguelike.Tiles.LivingEntities
     }
     public event EventHandler<EntityStatKind> StatLeveledUp;
     public event EventHandler<int> GoldChanged;
-        
+
     public double Experience { get; private set; }
     public double NextLevelExperience { get; set; }
 
     int gold;
-    public int Gold 
+    public int Gold
     {
       get { return gold; }
-      set {
+      set
+      {
         gold = value;
         if (GoldChanged != null)
-          GoldChanged(this,gold);
-      } 
+          GoldChanged(this, gold);
+      }
     }
 
     //public int AvailableExpPoints { get; set; } = 3;
@@ -112,15 +113,15 @@ namespace Roguelike.Tiles.LivingEntities
         var eq = loot as Equipment;
         if (eq == null)
           return false;
-                
-        if(!CanUseEquipment(eq))
+
+        if (!CanUseEquipment(eq))
           return false;
 
         if (addItemArg == null)
           return false;
 
         var currArgs = addItemArg as CurrentEquipmentAddItemArg;
-        if(currArgs == null)
+        if (currArgs == null)
           return false;
 
         var slotEK = currArgs.cek.GetEquipmentKind();
@@ -188,8 +189,8 @@ namespace Roguelike.Tiles.LivingEntities
     public int GetPrice(Loot loot)
     {
       int count = 1;
-      
-      var price = (int)(loot.Price * Inventory.PriceFactor)* count;
+
+      var price = (int)(loot.Price * Inventory.PriceFactor) * count;
       return price;
     }
 
@@ -197,7 +198,7 @@ namespace Roguelike.Tiles.LivingEntities
     //{
     //  return new AdvancedLivingEntity(new Point(0, 0), '\0');
     //}
-        
+
     public bool IncreaseExp(double factor)
     {
       bool leveledUp = false;
@@ -210,14 +211,14 @@ namespace Roguelike.Tiles.LivingEntities
         LevelUpPoints += GenerationInfo.LevelUpPoints;
         AbilityPoints += 2;
         NextLevelExperience = (int)(NextLevelExperience + (NextLevelExperience * GenerationInfo.NextExperienceIncrease));
-        
+
 
         leveledUp = true;
 
         this.Stats.GetStat(EntityStatKind.Health).SetSubtraction(0);
         this.Stats.GetStat(EntityStatKind.Mana).SetSubtraction(0);
 
-        if (LeveledUp!=null)
+        if (LeveledUp != null)
           LeveledUp(this, EventArgs.Empty);
 
         AppendAction(new LivingEntityAction() { Kind = LivingEntityActionKind.LeveledUp, Info = Name + " has gained a new level!", InvolvedEntity = this });
@@ -226,7 +227,7 @@ namespace Roguelike.Tiles.LivingEntities
         ExpChanged(this, EventArgs.Empty);
       return leveledUp;
     }
-        
+
     public void SetSpellCoolingDown(SpellKind kind)
     {
       if (coolingDownSpells.ContainsKey(kind) && coolingDownSpells[kind] > 0)
@@ -251,7 +252,7 @@ namespace Roguelike.Tiles.LivingEntities
 
         var stacked = consumable.Loot as StackedLoot;
         inventory.Remove(stacked);
-        
+
         if (consumable is SpecialPotion)
         {
           var sp = consumable as SpecialPotion;
@@ -284,7 +285,7 @@ namespace Roguelike.Tiles.LivingEntities
           }
         }
 
-        var info = Name + " consumed " + (consumable as Dungeons.Tiles.Tile).Name + ", Health: "+this.GetCurrentValue(EntityStatKind.Health);
+        var info = Name + " consumed " + (consumable as Dungeons.Tiles.Tile).Name + ", Health: " + this.GetCurrentValue(EntityStatKind.Health);
         AppendAction(new LootAction(consumable.Loot, this) { LootActionKind = LootActionKind.Consumed, Info = info });
       }
       else
@@ -314,7 +315,7 @@ namespace Roguelike.Tiles.LivingEntities
       if (round)
         currentValue = (float)Math.Round((double)currentValue);
       var value = stat.GetFormattedCurrentValue(currentValue);
-      
+
       return value;
     }
 
@@ -364,7 +365,7 @@ namespace Roguelike.Tiles.LivingEntities
       var cep = CurrentEquipmentPosition.Unset;
       if (eq.EquipmentKind == EquipmentKind.Ring || eq.EquipmentKind == EquipmentKind.Trophy)
         cep = CurrentEquipmentPosition.Left;
-      
+
       var cek = Equipment.FromEquipmentKind(eq.EquipmentKind, cep);
       var currentEq = activeSet[cek];
       if (currentEq != null)
@@ -392,7 +393,7 @@ namespace Roguelike.Tiles.LivingEntities
         var destKind = Equipment.FromEquipmentKind(eq.EquipmentKind, cep);
         return MoveEquipmentInv2Current(eq, destKind);
       }
-      
+
       return false;
     }
 
@@ -402,7 +403,7 @@ namespace Roguelike.Tiles.LivingEntities
         return false;
       return Level >= eq.RequiredLevel;
     }
-        
+
     public bool MoveEquipmentInv2Current(Equipment eq,
                               CurrentEquipmentKind cek, bool primary = true)
     {
@@ -437,7 +438,7 @@ namespace Roguelike.Tiles.LivingEntities
         //    CurrentEquipment.SpareEquipment[cek] = eq;
         //}
       }
-      
+
       return done;
     }
 
@@ -585,7 +586,7 @@ namespace Roguelike.Tiles.LivingEntities
     public void SetHasUrgentTopic(bool ut)
     {
       this.HasUrgentTopic = ut;
-      if(UrgentTopicChanged!=null)
+      if (UrgentTopicChanged != null)
         UrgentTopicChanged(this, HasUrgentTopic);
     }
 
@@ -605,7 +606,7 @@ namespace Roguelike.Tiles.LivingEntities
           }
           else
             entityStatKind = EntityStatKind.Mana;
-          var stat = Stats.Stats[entityStatKind];
+          var stat = Stats.GetStat(entityStatKind);
           var factor = stat.Value.Subtracted;
 
           if (factor > 0 && Math.Abs(factor) > 0.001)
@@ -675,8 +676,8 @@ namespace Roguelike.Tiles.LivingEntities
       double exp = 1f;
       if (victim is Enemy en)
       {
-        var livePercentage = inflicted/ en.GetTotalValue(EntityStatKind.Health) * 100;
-        exp = livePercentage * EnemyDamagingTotalExpAward[en.PowerKind]/ 100;
+        var livePercentage = inflicted / en.GetTotalValue(EntityStatKind.Health) * 100;
+        exp = livePercentage * EnemyDamagingTotalExpAward[en.PowerKind] / 100;
       }
       var inc = (1 * victim.Level * exp);
       this.IncreaseExp(inc);

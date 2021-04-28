@@ -56,11 +56,11 @@ namespace Dungeons.ASCIIDisplay.Presenters
         return;
       if (pi == null)
         pi = new PrintInfo();
-      
+
       drawingEngine.SetCursorPosition(left, top);
       for (int row = 0; row < node.Height; row++)
       {
-        drawingEngine.SetCursorPosition(left, top+row);
+        drawingEngine.SetCursorPosition(left, top + row);
         for (int col = 0; col < node.Width; col++)
         {
           var tile = node.GetTile(new Point(col, row));

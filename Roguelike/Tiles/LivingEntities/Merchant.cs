@@ -1,11 +1,9 @@
 ﻿using Dungeons.Core;
 using Newtonsoft.Json;
-using Roguelike.Abstract;
 using Roguelike.Abstract.Tiles;
 using Roguelike.Attributes;
 using Roguelike.LootContainers;
 using Roguelike.Tiles.Abstract;
-using Roguelike.Tiles.LivingEntities;
 using SimpleInjector;
 using System.Drawing;
 
@@ -14,7 +12,7 @@ namespace Roguelike.Tiles.LivingEntities
   public class Merchant : AdvancedLivingEntity, IAlly, IMerchant
   {
     public const int HoundPrice = 100;
-    
+
     public Merchant(Container cont) : base(cont, new Point().Invalid(), '!')
     {
       Proffesion = EntityProffesionKind.Merchant;
@@ -45,10 +43,10 @@ namespace Roguelike.Tiles.LivingEntities
     }
 
     [JsonIgnore]
-    public override Inventory Inventory 
-    { 
-      get => base.Inventory; 
-      set 
+    public override Inventory Inventory
+    {
+      get => base.Inventory;
+      set
       {
         base.Inventory = value;
         Inventory.PriceFactor = 4;
@@ -56,8 +54,8 @@ namespace Roguelike.Tiles.LivingEntities
       }
     }
 
-    public bool Active { get ; set ; }
-    public AllyKind Kind { get => AllyKind.Merchant;  }
+    public bool Active { get; set; }
+    public AllyKind Kind { get => AllyKind.Merchant; }
     public Point Point { get => point; set => point = value; }
 
     internal void OnContextSwitched(Container container)

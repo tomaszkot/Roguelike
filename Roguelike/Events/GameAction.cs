@@ -7,10 +7,7 @@ using Roguelike.Policies;
 using Roguelike.TileContainers;
 using Roguelike.Tiles;
 using Roguelike.Tiles.LivingEntities;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 
 namespace Roguelike.Events

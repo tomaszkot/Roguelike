@@ -11,7 +11,7 @@ namespace Roguelike.Tiles
       Other
       //,Bow
     }
-    
+
     public EntityStat SpecialFeature { get; set; }
     public EntityStat SpecialFeatureAux { get; set; }
 
@@ -112,7 +112,7 @@ namespace Roguelike.Tiles
     }
 
     public bool StableDamage { get; set; } = false;
-               
+
     public float GetPrimaryDamageVariation()
     {
       if (StableDamage)

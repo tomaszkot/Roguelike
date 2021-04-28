@@ -1,8 +1,6 @@
 ﻿using Roguelike.Attributes;
 using Roguelike.Factors;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace Roguelike.Tiles.Looting
 {
@@ -67,7 +65,7 @@ namespace Roguelike.Tiles.Looting
 
     public override string ToString()
     {
-      return base.ToString() + " PotionKind: "+ Kind;
+      return base.ToString() + " PotionKind: " + Kind;
     }
   }
 }

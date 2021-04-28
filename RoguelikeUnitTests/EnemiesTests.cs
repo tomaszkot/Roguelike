@@ -19,7 +19,7 @@ namespace RoguelikeUnitTests
       var game = CreateGame();
       var enemy = SpawnEnemy();
       enemy.Symbol = EnemySymbols.SkeletonSymbol;
-      
+
       Assert.False(enemy.GetNonPhysicalDamages().Any());
       enemy.Symbol = EnemySymbols.SpiderSymbol;
       Assert.True(enemy.GetNonPhysicalDamages().Any());
@@ -171,9 +171,9 @@ namespace RoguelikeUnitTests
 
       var enemyDistFromHero = enemy.DistanceFrom(game.Hero);
       Assert.Less(enemyDistFromHero, 4);
-      
-      var emptyCount =  game.Level.GetEmptyTiles().Count;
-      game.Level.GetEmptyTiles().ForEach(i => game.Level.SetTile(new Surface() {Kind = SurfaceKind.ShallowWater}, i.point));
+
+      var emptyCount = game.Level.GetEmptyTiles().Count;
+      game.Level.GetEmptyTiles().ForEach(i => game.Level.SetTile(new Surface() { Kind = SurfaceKind.ShallowWater }, i.point));
       Assert.AreEqual(emptyCount, game.Level.GetEmptyTiles().Count);//empty are not addected by surface
 
       game.Level.SetTile(new Surface() { Kind = SurfaceKind.ShallowWater }, enemy.point);
@@ -187,7 +187,7 @@ namespace RoguelikeUnitTests
       var enTurnsCountAfter = game.GameManager.Context.TurnCounts[TurnOwner.Enemies];
       Assert.Greater(enTurnsCountAfter, enTurnsCount);
       var enemyDistFromHeroNew = enemy.DistanceFrom(game.Hero);
-      Assert.AreEqual(enemyDistFromHeroNew, enemyDistFromHero-2);
+      Assert.AreEqual(enemyDistFromHeroNew, enemyDistFromHero - 2);
     }
 
   }

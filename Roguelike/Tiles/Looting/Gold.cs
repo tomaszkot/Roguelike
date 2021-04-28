@@ -1,9 +1,4 @@
 ﻿using Dungeons.Core;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Roguelike.Tiles.Looting
 {
@@ -24,7 +19,7 @@ namespace Roguelike.Tiles.Looting
 
     public Gold() : this(RandHelper.Random.Next(4, 8))
     {
-      
+
     }
   }
 }

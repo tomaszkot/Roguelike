@@ -1,5 +1,4 @@
-﻿using Roguelike.LootContainers;
-using Roguelike.Tiles;
+﻿using Roguelike.Tiles;
 
 namespace Roguelike.Abstract.Inventory
 {

@@ -1,14 +1,9 @@
 ﻿using Dungeons.Core;
 using Dungeons.Tiles;
 using Roguelike.Events;
-using Roguelike.Policies;
-using Roguelike.Strategy;
-using Roguelike.Tiles;
 using Roguelike.Tiles.LivingEntities;
-using Roguelike.Tiles.Looting;
 using SimpleInjector;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 
@@ -42,14 +37,14 @@ namespace Roguelike.Managers
 
     private void Context_ContextSwitched(object sender, ContextSwitch e)
     {
-      var entities = Context.CurrentNode.GetTiles<LivingEntity>().Where(i=> i is Enemy).ToList();
+      var entities = Context.CurrentNode.GetTiles<LivingEntity>().Where(i => i is Enemy).ToList();
       base.SetEntities(entities);
     }
 
     private void OnTurnOwnerChanged(object sender, TurnOwner turnOwner)
     {
       if (turnOwner == TurnOwner.Enemies)
-      { 
+      {
       }
     }
 
@@ -73,7 +68,7 @@ namespace Roguelike.Managers
     {
       var target = Hero;
 
-      if (enemy.LastingEffects.Any(i => i.Type ==  Effects.EffectType.Frighten))
+      if (enemy.LastingEffects.Any(i => i.Type == Effects.EffectType.Frighten))
       {
         MoveAwayFromHero(enemy);
         return;
@@ -89,7 +84,7 @@ namespace Roguelike.Managers
       {
         //if (CastEffectsForAllies(entity))
         //  return;
-        if(MakeEmergencyTeleport(enemy as Enemy))
+        if (MakeEmergencyTeleport(enemy as Enemy))
           return;
 
         if (AttackIfPossible(enemy, target))
@@ -175,7 +170,7 @@ namespace Roguelike.Managers
         {
           if (MakeMoveOnPath(entity, entity.InitialPoint, false))
           {
-            if(entity.point == entity.InitialPoint)
+            if (entity.point == entity.InitialPoint)
               entity.MoveKind = EntityMoveKind.Freestyle;
 
             return;
@@ -184,7 +179,7 @@ namespace Roguelike.Managers
       }
       base.MakeRandomMove(entity);
     }
-            
+
     protected override bool MoveEntity(LivingEntity entity, Point newPos, List<Point> fullPath = null)
     {
       if (entity.InitialPoint == LivingEntity.DefaultInitialPoint)
@@ -208,7 +203,7 @@ namespace Roguelike.Managers
 
     bool AttackAlly(LivingEntity enemy)
     {
-      var ally = AlliesManager.AllEntities.Where(i=>i.DistanceFrom(enemy) < 2).FirstOrDefault();
+      var ally = AlliesManager.AllEntities.Where(i => i.DistanceFrom(enemy) < 2).FirstOrDefault();
       if (ally != null)
       {
         if (RandHelper.Random.NextDouble() < 0.3f)
@@ -219,7 +214,7 @@ namespace Roguelike.Managers
 
     private bool MakeEmergencyTeleport(Enemy enemy)
     {
-      if (enemy.PowerKind !=  EnemyPowerKind.Plain)
+      if (enemy.PowerKind != EnemyPowerKind.Plain)
       {
         var enCasted = enemy;
         if (enCasted.Stats.HealthBelow(.6f)

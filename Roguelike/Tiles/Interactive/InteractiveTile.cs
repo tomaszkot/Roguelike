@@ -1,13 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Newtonsoft.Json;
-using Roguelike.Abstract;
+﻿using Newtonsoft.Json;
 using Roguelike.Abstract.Spells;
-using Roguelike.Abstract.Tiles;
 using Roguelike.Tiles.Abstract;
+using System;
 
 namespace Roguelike.Tiles.Interactive
 {
@@ -33,8 +27,8 @@ namespace Roguelike.Tiles.Interactive
     private InteractiveTileKind _kind = InteractiveTileKind.Unset;
     public int Level
     {
-      get; 
-      set; 
+      get;
+      set;
     } = -1;//should match level of dungeon or a level of world part
     [JsonIgnore]
     public string InteractSound { get; set; }
@@ -45,7 +39,7 @@ namespace Roguelike.Tiles.Interactive
     }
 
     public virtual void ResetToDefaults()
-    { 
+    {
     }
 
     public InteractiveTileKind Kind
@@ -56,11 +50,11 @@ namespace Roguelike.Tiles.Interactive
         _kind = value;
         if (_kind == InteractiveTileKind.TreasureChest)
         {
-          
+
         }
       }
     }
-    
+
     //??? TODO
     public bool CanBeHitBySpell()
     {
@@ -75,7 +69,7 @@ namespace Roguelike.Tiles.Interactive
     public override string ToString()
     {
       var res = base.ToString();
-      res += ", " + Kind + " Lvl:"+ Level;
+      res += ", " + Kind + " Lvl:" + Level;
       return res;
     }
 

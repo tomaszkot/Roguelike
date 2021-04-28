@@ -3,15 +3,12 @@ using Dungeons.Core;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Serialization;
-using Roguelike.Abstract.Tiles;
 using Roguelike.State;
 using Roguelike.TileContainers;
-using Roguelike.Tiles;
 using Roguelike.Tiles.LivingEntities;
 using SimpleInjector;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 
@@ -57,8 +54,8 @@ namespace Roguelike.Serialization
         throw;
       }
     }
-        
-    public T Load<T>(string filePath, Container container) where T: class, IPersistable
+
+    public T Load<T>(string filePath, Container container) where T : class, IPersistable
     {
       T entity = null;
 
@@ -66,14 +63,14 @@ namespace Roguelike.Serialization
       {
         var json = File.ReadAllText(filePath);
         //this.container.GetInstance<ILogger>().LogInfo("Engine_JsonDeserializer...");
-        
+
         if (!IsValidJson(json))
         {
           this.container.GetInstance<ILogger>().LogError("param json is not a valid json!");
           return null;
         }
         ITraceWriter traceWriter = null;// new MemoryTraceWriter();
-        JsonSerializerSettings settings = new JsonSerializerSettings 
+        JsonSerializerSettings settings = new JsonSerializerSettings
         { TraceWriter = traceWriter, TypeNameHandling = TypeNameHandling.All };
         //container.Options.DefaultScopedLifestyle = new ExecutionContextScopeLifestyle();
         //settings.TypeNameAssemblyFormatHandling = TypeNameAssemblyFormatHandling.Full;
@@ -125,10 +122,10 @@ namespace Roguelike.Serialization
 
     //Application.persistentDataPath
     public static string RootPath { get; set; } = Path.Combine(Path.GetTempPath(), GameName);
-    
+
     public string GamePath
     {
-      get{ return RootPath /*+ GameFolder*/; }
+      get { return RootPath /*+ GameFolder*/; }
     }
 
     public string GetFullFilePath(FileKind fileKind, string heroName, string fileSuffix = "")//, string fileName)
@@ -137,9 +134,9 @@ namespace Roguelike.Serialization
       var path = GetFilesPath(heroName);
       parts.Add(path);
       //if (supportManyLevels && fileKind == FileKind.GameLevel)
-      if(GameLevelsFolder.Any() && fileKind == FileKind.GameLevel)
+      if (GameLevelsFolder.Any() && fileKind == FileKind.GameLevel)
         parts.Add(GameLevelsFolder);
-     
+
       var fileName = fileKind.ToString() + fileSuffix + extension;
       parts.Add(fileName);
 
@@ -153,9 +150,9 @@ namespace Roguelike.Serialization
 
     protected virtual string GameLevelsFolder { get { return ""; } }
 
-    protected static string GameName 
-    { 
-      get { return "Roguelike"; } 
+    protected static string GameName
+    {
+      get { return "Roguelike"; }
     }
 
     [JsonIgnore]
@@ -186,7 +183,7 @@ namespace Roguelike.Serialization
       var fileName = GetFullFilePath(FileKind.Hero, heroName);
       return Load<Hero>(fileName, container);
     }
-    
+
     public void SaveLevel(string heroName, GameLevel level)
     {
       var filePath = GetFullFilePath(FileKind.GameLevel, heroName, level.Index.ToString());// GetLevelFileName(level.Index));
@@ -200,7 +197,7 @@ namespace Roguelike.Serialization
 
     public GameLevel LoadLevel(string heroName, int index)
     {
-      var filePath = GetFullFilePath( FileKind.GameLevel, heroName, index.ToString());
+      var filePath = GetFullFilePath(FileKind.GameLevel, heroName, index.ToString());
       return Load<GameLevel>(filePath, container);
     }
 

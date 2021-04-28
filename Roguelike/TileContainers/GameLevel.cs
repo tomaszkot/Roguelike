@@ -4,13 +4,11 @@ using Dungeons.TileContainers;
 using Dungeons.Tiles;
 using Newtonsoft.Json;
 using Roguelike.Serialization;
-using Roguelike.Tiles;
 using Roguelike.Tiles.Interactive;
 using Roguelike.Tiles.LivingEntities;
 using SimpleInjector;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 
 namespace Roguelike.TileContainers
@@ -18,7 +16,7 @@ namespace Roguelike.TileContainers
   //mid-size node like 100x100, part of the DungeonPit
   public class GameLevel : AbstractGameLevel, IPersistable
   {
-    
+
     public Stairs StairsUp { get => stairsUp; set => stairsUp = value; }
     public Stairs StairsDown { get => stairsDown; set => stairsDown = value; }
 
@@ -35,7 +33,7 @@ namespace Roguelike.TileContainers
     {
       var tile = new T();
       var inter = tile as Roguelike.Tiles.Interactive.InteractiveTile;
-      if(inter!=null)
+      if (inter != null)
         inter.Level = levelIndex;
       return SetTileAtRandomPosition(tile, matchNodeIndex) as T;
     }
@@ -56,7 +54,7 @@ namespace Roguelike.TileContainers
             Nodes[hero.DungeonNodeIndex].Reveal(true);
         }
 
-        }
+      }
       catch (Exception ex)
       {
         Logger.LogError(ex);
@@ -73,7 +71,7 @@ namespace Roguelike.TileContainers
     {
       get
       {
-        var desc = GetType() + " Index: " + Index + " W:" +Width + ", H:"+Height;
+        var desc = GetType() + " Index: " + Index + " W:" + Width + ", H:" + Height;
         if (PitName.Any())
           desc += " [" + PitName + "] ";
         return desc;
@@ -114,7 +112,7 @@ namespace Roguelike.TileContainers
     private void HookEvents(HookEventContext hookEventContext)
     {
       if (this.hookEventContext != HookEventContext.Unset && this.hookEventContext != hookEventContext)
-        throw new Exception("eventsHooked already hooked! "+ this.hookEventContext + ", tried: "+ hookEventContext);
+        throw new Exception("eventsHooked already hooked! " + this.hookEventContext + ", tried: " + hookEventContext);
 
       if (this.hookEventContext != HookEventContext.Unset)
         return;

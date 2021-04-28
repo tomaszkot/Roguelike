@@ -1,5 +1,4 @@
 ﻿using NUnit.Framework;
-using Roguelike.LootContainers;
 using Roguelike.Tiles;
 using Roguelike.Tiles.LivingEntities;
 using Roguelike.Tiles.Looting;
@@ -150,7 +149,7 @@ namespace RoguelikeUnitTests
 
       //identify
       hero.Identify(wpn);
-      Assert.AreEqual(scroll.Count, count-1);
+      Assert.AreEqual(scroll.Count, count - 1);
       Assert.True(wpn.GetMagicStats().Any());
 
     }
@@ -218,7 +217,7 @@ namespace RoguelikeUnitTests
       var hero = game.Hero;
 
       Assert.AreEqual(hero.Inventory.ItemsCount, 0);
-       
+
       var loot1 = game.GameManager.LootGenerator.GetLootByAsset("big_claw") as StackedLoot;
       Assert.NotNull(loot1);
       PutEqOnLevelAndCollectIt(loot1);
@@ -301,7 +300,7 @@ namespace RoguelikeUnitTests
       var wpn2 = game.GameManager.LootGenerator.GetLootByAsset("axe") as Weapon;
       PutEqOnLevelAndCollectIt(wpn2);
       Assert.True(hero.Inventory.Contains(wpn2));
-      
+
       wpn2.RequiredLevel = 100;
 
       //shall fail  - level
@@ -338,6 +337,6 @@ namespace RoguelikeUnitTests
       //Assert.True(hero.Inventory.Contains(wpn2));
     }
 
-   
+
   }
 }

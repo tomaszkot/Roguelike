@@ -1,6 +1,4 @@
-﻿using Roguelike.Abstract;
-using Roguelike.Abstract.Spells;
-using Roguelike.Tiles;
+﻿using Roguelike.Abstract.Spells;
 using Roguelike.Tiles.LivingEntities;
 using System.Collections.Generic;
 
@@ -8,7 +6,7 @@ namespace Roguelike.Spells
 {
   public class OffensiveSpell : Spell, IDamagingSpell
   {
-   // protected float damage = 0;
+    // protected float damage = 0;
 
     public OffensiveSpell() { }
 
@@ -21,7 +19,7 @@ namespace Roguelike.Spells
       //TODO
       //var dmg = damage + (damage * ((magicLevel - 1) * (damageMultiplicator + magicLevel * magicLevel / 2) / 100.0f));
       //return (float)Math.Ceiling(dmg);
-      return magicLevel+3;
+      return magicLevel + 3;
     }
 
     //Returns damage based on Spell level.

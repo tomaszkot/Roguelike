@@ -1,11 +1,9 @@
 ﻿using Dungeons.Tiles;
-using Roguelike.Abstract;
 using Roguelike.Abstract.Effects;
 using Roguelike.Attributes;
 using Roguelike.Calculated;
 using Roguelike.Extensions;
 using Roguelike.Factors;
-using Roguelike.Tiles;
 using Roguelike.Tiles.LivingEntities;
 using System.Collections.Generic;
 
@@ -80,7 +78,7 @@ namespace Roguelike.Spells
         tile = value;
       }
     }
-    
+
     protected int CalcTourLasting(float factor = 1)
     {
       return CalcTourLasting(GetCurrentLevel(), factor);

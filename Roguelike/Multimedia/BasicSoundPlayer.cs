@@ -1,13 +1,7 @@
 ﻿using Roguelike.Abstract.Multimedia;
-using Roguelike.Managers;
 using System;
-using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Media;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Roguelike.Multimedia
 {
@@ -22,9 +16,9 @@ namespace Roguelike.Multimedia
       {
         //return;
         var pathDir = Path.Combine(Environment.CurrentDirectory, "Sounds\\" + soundFileName);
-        filePath = pathDir + ".wav"; 
+        filePath = pathDir + ".wav";
         var ex = File.Exists(filePath);
-        if(!ex)
+        if (!ex)
           filePath = pathDir + ".mp3";
 
         ex = File.Exists(filePath);

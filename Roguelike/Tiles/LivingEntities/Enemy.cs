@@ -1,14 +1,14 @@
 ﻿#define ASCII_BUILD  
-using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
 using Dungeons.Core;
 using Roguelike.Attributes;
 using Roguelike.Effects;
 using Roguelike.Spells;
 using Roguelike.Tiles.Looting;
 using SimpleInjector;
+using System;
+using System.Collections.Generic;
+using System.Drawing;
+using System.Linq;
 
 namespace Roguelike.Tiles.LivingEntities
 {
@@ -27,12 +27,12 @@ namespace Roguelike.Tiles.LivingEntities
     public int NumberOfCastedEffectsForAllies = 0;
     public int NumberOfEmergencyTeleports = 0;
     public EnemyPowerKind PowerKind { get; set; } = EnemyPowerKind.Plain;
-    
+
     public Dictionary<IncreaseStatsKind, bool> StatsIncreased { get; set; } = new Dictionary<IncreaseStatsKind, bool>();
     public Loot DeathLoot { get; set; }
 
     public bool ShoutedAtHero { get; set; }
-        
+
     public Enemy() : this(new Point().Invalid(), 'e')
     {
 
@@ -101,7 +101,7 @@ namespace Roguelike.Tiles.LivingEntities
       InitEffectsToUse(boss);
       InitActiveScroll();
 
-      if(!boss)
+      if (!boss)
         this.tag1 += ChempTagSuffix;
     }
 
@@ -195,7 +195,7 @@ namespace Roguelike.Tiles.LivingEntities
         this.Stats.SetNominal(esk, val);
       }
     }
-        
+
     protected override void InitStatsFromName()
     {
       if (!WereStatsIncreased(IncreaseStatsKind.Name))
@@ -211,19 +211,19 @@ namespace Roguelike.Tiles.LivingEntities
       //  IncreaseStats(1.5f, IncreaseStatsKind.Name);
       //}
     }
-        
+
     public override string ToString()
     {
       return base.ToString() + " " + PowerKind + "";
     }
 
-    public override char Symbol 
-    { 
+    public override char Symbol
+    {
       get => base.Symbol;
       set
       {
         base.Symbol = value;
-        if(!Name.Any() && value != EnemySymbols.Unset)
+        if (!Name.Any() && value != EnemySymbols.Unset)
           Name = Enemy.NameFromSymbol(value);
         SetSpecialAttackStat();
       }
@@ -256,12 +256,12 @@ namespace Roguelike.Tiles.LivingEntities
       enemy.SetLevel(level);
       enemy.tag1 = EnemySymbols.EnemiesToSymbols.Where(i => i.Value == symbol).Single().Key;
       enemy.Revealed = true;
-      
+
       return enemy;
     }
 
-    public override string Name 
-    { 
+    public override string Name
+    {
       get => base.Name;
       set
       {

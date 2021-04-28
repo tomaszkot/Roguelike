@@ -10,7 +10,7 @@ namespace Roguelike.LootFactories
 {
   public class ScrollsFactory : AbstractLootFactory
   {
-    protected Dictionary<string, Func<string, Scroll>> factory = 
+    protected Dictionary<string, Func<string, Scroll>> factory =
       new Dictionary<string, Func<string, Scroll>>();
 
     public ScrollsFactory(Container container) : base(container)
@@ -30,7 +30,7 @@ namespace Roguelike.LootFactories
       var names = new[] { "fire_ball_scroll" , "ice_ball_scroll", "poison_ball_scroll",
         "identify_scroll", "teleport_scroll", "portal_scroll", "transform_scroll", "mana_shield_scroll",
         "rage_scroll", "skeleton_scroll"};
-      foreach(var name in names)
+      foreach (var name in names)
         factory[name] = createScroll;
     }
 

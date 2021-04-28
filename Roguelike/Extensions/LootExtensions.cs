@@ -33,7 +33,7 @@ namespace Roguelike.Extensions
 
   public static class LootExtensions
   {
-    
+
     public static Mushroom AsToadstool(this Loot loot)
     {
       var mash = loot as Mushroom;
@@ -60,6 +60,6 @@ namespace Roguelike.Extensions
         return false;
       return potion.Kind == kind;
     }
-       
+
   }
 }

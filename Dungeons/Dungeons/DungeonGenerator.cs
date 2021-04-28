@@ -63,7 +63,7 @@ namespace Dungeons
       {
         var minNodeSize = gi.MinNodeSize;
         var maxNodeSize = gi.MaxNodeSize;
-        if (secretRoomIndex == nodeIndex 
+        if (secretRoomIndex == nodeIndex
           )
         {
           minNodeSize.Width -= 1;
@@ -141,7 +141,7 @@ namespace Dungeons
           gi.RevealTiles = false;
         var node = CreateNode(i, gi);
         nodes.Add(node);
-        
+
       }
       return nodes;
     }
@@ -163,7 +163,7 @@ namespace Dungeons
       var diffIndexes = mazeNodes.GroupBy(i => i.NodeIndex).Count();
       if (diffIndexes != mazeNodes.Count)
       {
-        container.GetInstance<Logger>().LogError("diffIndexes != mazeNodes.Count", false );
+        container.GetInstance<Logger>().LogError("diffIndexes != mazeNodes.Count", false);
       }
       //var layouter = new CorridorNodeLayouter(container);
       var layouter = new DefaultNodeLayouter(container, info);

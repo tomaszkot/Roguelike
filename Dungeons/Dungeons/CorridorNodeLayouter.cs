@@ -32,7 +32,7 @@ namespace Dungeons
       var th = finalNodes.Sum(i => i.Height);
 
       var localLevel = container.GetInstance<DungeonLevel>();
-      localLevel.Create(tw , th );
+      localLevel.Create(tw, th);
       int nextX = 0;
       int nextY = 0;
       int nodeIndex = 0;
@@ -52,7 +52,7 @@ namespace Dungeons
         //nextY += node.Height;
       }
       //
-     // var maxLoc = localLevel.GetMaxXY();
+      // var maxLoc = localLevel.GetMaxXY();
       var max = localLevel.GetMaxXY();
 
       var level = container.GetInstance<DungeonLevel>();
@@ -105,7 +105,7 @@ namespace Dungeons
       //  info = infoNext;
       //}
     }
-    
+
     //private AppendNodeInfo CalcNextValues(List<DungeonNode> mazeNodes, AppendNodeInfo prevInfo, float chanceForLevelTurn, int nodeIndex)
     //{
     //  AppendNodeInfo infoNext = prevInfo;

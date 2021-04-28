@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Roguelike.UI.Models
 {
@@ -19,10 +16,10 @@ namespace Roguelike.UI.Models
 
   public class GenericListModel<T> : ListModel
   {
-    public List<GenericListItemModel<T>> TypedItems 
-    { 
-      get; 
-      private set; 
+    public List<GenericListItemModel<T>> TypedItems
+    {
+      get;
+      private set;
     } = new List<GenericListItemModel<T>>();
 
     public GenericListModel()
@@ -54,7 +51,7 @@ namespace Roguelike.UI.Models
 
     public override IEnumerable<ListItemModel> Items
     {
-      get => TypedItems.Cast<ListItemModel>().ToList(); 
+      get => TypedItems.Cast<ListItemModel>().ToList();
     }
   }
 }

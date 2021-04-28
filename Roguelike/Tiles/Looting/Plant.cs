@@ -1,10 +1,6 @@
 ﻿using Dungeons.Core;
 using Roguelike.Attributes;
-using Roguelike.Tiles;
 using Roguelike.Tiles.Looting;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace Roguelike.Tiles
 {
@@ -55,7 +51,7 @@ namespace Roguelike.Tiles
       string desc = "";
       if (Kind == PlantKind.Thistle)
       {
-        desc = "Unpleasant to touch, "+ Strings.PartOfCraftingRecipe;
+        desc = "Unpleasant to touch, " + Strings.PartOfCraftingRecipe;
         tag1 = "Thistle1";
         StatKind = EntityStatKind.Unset;
       }

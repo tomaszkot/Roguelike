@@ -1,6 +1,4 @@
-﻿using Dungeons.Core;
-using Newtonsoft.Json;
-using Roguelike.Tiles;
+﻿using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,19 +15,17 @@ namespace Roguelike.Attributes
     ResistFire, ResistCold, ResistPoison, ChanceToHit, ChanceToCastSpell, Mana, Attack,
     FireAttack, ColdAttack, PoisonAttack, LightPower, LifeStealing, ManaStealing,
 
-    //TODO generate dynamically this enum
+    //Would be nice to generate dynamically these enums
     ChanceToCauseBleeding, ChanceToCauseStunning, ChanceToCauseTearApart, ChanceToEvadeMeleeAttack, ChanceToEvadeMagicAttack,
     MeleeAttackDamageReduction, MagicAttackDamageReduction, AxeExtraDamage, SwordExtraDamage, BashingExtraDamage, DaggerExtraDamage,
     LightingAttack, ResistLighting, ChanceToStrikeBack, ChanceToBulkAttack, ChanceToBurnNeighbour, ExlosiveCoctailDamage
 
   };
 
-  public class EntityStats 
+  public class EntityStats
   {
     Dictionary<EntityStatKind, EntityStat> stats = new Dictionary<EntityStatKind, EntityStat>();
-    //int level = 1;
-    //bool canAdvanceInExp = true;
-    
+
     public EntityStats()
     {
       var statKinds = Enum.GetValues(typeof(EntityStatKind));
@@ -41,18 +37,18 @@ namespace Roguelike.Attributes
 
     public void Ensure(EntityStatKind kind)
     {
-      if(!stats.ContainsKey(kind))
+      if (!stats.ContainsKey(kind))
         stats[kind] = new EntityStat(kind, 0);
     }
 
-    //TODO rename, TODO public for serialization
+    [JsonProperty]
     public Dictionary<EntityStatKind, EntityStat> Stats
     {
       get
       {
         return stats;
       }
-      set
+      private set
       {
         stats = value;
       }
@@ -78,7 +74,7 @@ namespace Roguelike.Attributes
         myStat.Value.MakeNegative();
       }
     }
-    
+
     //public bool CanAdvanceInExp
     //{
     //  get
@@ -101,7 +97,7 @@ namespace Roguelike.Attributes
     {
       return this[esk].TotalValue;
     }
-        
+
     public void Divide(EntityStats otherStats)
     {
       foreach (var otherStat in otherStats.Stats.Values)
@@ -211,24 +207,24 @@ namespace Roguelike.Attributes
       Ensure(esk);
       Stats[esk] = es;
     }
-       
+
     public List<StatValue> Values()
     {
-      return Stats.Values.Select(i=> i.Value).ToList();
+      return Stats.Values.Select(i => i.Value).ToList();
     }
 
     public Dictionary<EntityStatKind, EntityStat> GetStats()
     {
       return Stats;
     }
-        
+
     [JsonIgnore]
     public StatValue this[EntityStatKind kind]
     {
-      get 
+      get
       {
         Ensure(kind);
-        return Stats[kind].Value; 
+        return Stats[kind].Value;
       }
     }
 
@@ -244,7 +240,7 @@ namespace Roguelike.Attributes
     //    level = value;
     //  }
     //}
-        
+
     public void SetNominal(EntityStatKind kind, float value)
     {
       if (kind == EntityStatKind.Health)
@@ -368,7 +364,7 @@ namespace Roguelike.Attributes
         Stats.Remove(rem.Key);
     }
   }
-    
+
   public class EntityStatsTotal : EntityStats
   {
   }

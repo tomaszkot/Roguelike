@@ -4,11 +4,6 @@ using Roguelike.Tiles;
 using Roguelike.Tiles.LivingEntities;
 using Roguelike.Tiles.Looting;
 using SimpleInjector;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Roguelike.Managers
 {
@@ -38,7 +33,7 @@ namespace Roguelike.Managers
     {
       if (Player != null)
       {
-        if(!string.IsNullOrEmpty(snd))
+        if (!string.IsNullOrEmpty(snd))
           Player.PlaySound(snd);
       }
       else
@@ -50,8 +45,8 @@ namespace Roguelike.Managers
       PlaySound("beep");
     }
 
-  private void EventsManager_ActionAppended(object sender, Events.GameAction ac)
-  {
+    private void EventsManager_ActionAppended(object sender, Events.GameAction ac)
+    {
       if (Player == null)
         return;
       var sndName = "";
@@ -69,7 +64,7 @@ namespace Roguelike.Managers
         if (la.LootActionKind == LootActionKind.Consumed)
         {
           sndName = (la.Loot as Consumable).ConsumedSound;
-          
+
         }
         else if (la.LootActionKind == LootActionKind.Collected)
         {
@@ -84,7 +79,7 @@ namespace Roguelike.Managers
         else if (ia.InteractiveKind == InteractiveActionKind.DoorOpened)
         {
           var door = ia.InvolvedTile as Tiles.Interactive.Door;
-          sndName = door.Secret ? "annulet-of-absorption" :  "door_open";
+          sndName = door.Secret ? "annulet-of-absorption" : "door_open";
         }
         else if (ia.InteractiveKind == InteractiveActionKind.DoorClosed)
           sndName = "door_close";
@@ -103,7 +98,7 @@ namespace Roguelike.Managers
         sndName = snd.SoundName;
 
       }
-      
+
       else if (ac is LivingEntityAction)
       {
         var lea = ac as LivingEntityAction;
@@ -112,7 +107,7 @@ namespace Roguelike.Managers
           if (lea.InvolvedEntity is Hero)
           {
             var sur = gm.CurrentNode.GetSurfaceKindUnderTile(lea.InvolvedEntity);
-            if(sur != SurfaceKind.DeepWater && sur != SurfaceKind.ShallowWater)
+            if (sur != SurfaceKind.DeepWater && sur != SurfaceKind.ShallowWater)
               sndName = "foot_steps";
           }
         }
@@ -140,17 +135,17 @@ namespace Roguelike.Managers
         //}
       }
 
-      if(!string.IsNullOrEmpty(sndName))
+      if (!string.IsNullOrEmpty(sndName))
         Player.PlaySound(sndName);
     }
 
-  public void PlaySpellCastedSound(Roguelike.Spells.SpellKind spellKind)
-  {
+    public void PlaySpellCastedSound(Roguelike.Spells.SpellKind spellKind)
+    {
       string sndToPlay = "scroll_";
       sndToPlay += spellKind.ToString().ToLower();
 
       PlaySound(sndToPlay);
-  }
+    }
 
   }
 }

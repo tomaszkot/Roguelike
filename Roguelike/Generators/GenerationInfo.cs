@@ -43,7 +43,7 @@
     public bool GenerateLoot { get; set; } = true && !ForceEmpty;
 
     public bool GenerateInteractiveTiles { get; set; } = true && !ForceEmpty;
-    
+
     public static int DefaultEnemyRageUsageCount = 0;
     public static int DefaultEnemyWeakenUsageCount = 0;
     public static int DefaultEnemyIronSkinUsageCount = 0;

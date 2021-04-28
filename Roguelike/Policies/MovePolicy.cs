@@ -1,5 +1,4 @@
 ﻿using Roguelike.TileContainers;
-using Roguelike.Tiles;
 using Roguelike.Tiles.LivingEntities;
 using System.Collections.Generic;
 using System.Drawing;
@@ -9,7 +8,7 @@ namespace Roguelike.Policies
   public class MovePolicy : Policy
   {
     LivingEntity entity;
-    
+
     AbstractGameLevel level;
     Point newPos;
 

@@ -6,7 +6,7 @@ using System.Linq;
 
 namespace Roguelike.Tiles
 {
-  public enum FoodKind { Unset, Mushroom, Plum, /*Herb,*/ Meat, Fish}
+  public enum FoodKind { Unset, Mushroom, Plum, /*Herb,*/ Meat, Fish }
 
   public class Food : Consumable
   {
@@ -20,7 +20,7 @@ namespace Roguelike.Tiles
 
     public Food() : this(RandHelper.GetRandomEnumValue<FoodKind>(new[] { FoodKind.Unset, FoodKind.Mushroom }))//Mushroom has it's own c-tor
     {
-      
+
     }
 
     public Food(FoodKind kind)
@@ -151,10 +151,10 @@ namespace Roguelike.Tiles
       desc = GetConsumeDesc(desc);
       PrimaryStatDescription = desc;
     }
-        
-    public override  string GetId()
+
+    public override string GetId()
     {
-      return base.GetId() + "_" + Kind + "_"+ Roasted;
+      return base.GetId() + "_" + Kind + "_" + Roasted;
     }
-}
+  }
 }

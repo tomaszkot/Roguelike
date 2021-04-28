@@ -1,9 +1,5 @@
 ﻿using SimpleInjector;
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Roguelike.Tiles.LivingEntities
 {
@@ -21,7 +17,7 @@ namespace Roguelike.Tiles.LivingEntities
         color = ConsoleColor.Yellow;
 #endif
     }
-        
+
     public override void PlayAllySpawnedSound()
     {
       //bark(false);

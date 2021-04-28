@@ -1,11 +1,9 @@
-﻿using System;
-
-namespace Roguelike.Tiles.Looting
+﻿namespace Roguelike.Tiles.Looting
 {
   public class ExplosiveCocktail : Loot// FightItem, IMovingDamager
   {
     public const string Guid = "1fe17985-47d3-2b35-bddf-99a4af2b1aaa";
-    
+
     public ExplosiveCocktail()
     {
       Symbol = '&';

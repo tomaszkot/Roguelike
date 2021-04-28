@@ -1,16 +1,13 @@
 ﻿using Roguelike.Attributes;
 using Roguelike.Extensions;
 using Roguelike.Tiles.LivingEntities;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Roguelike.Tiles.Looting
 {
   public enum HunterTrophyKind { Unset, Fang, Tusk, Claw }//Fang-Tooth
-  
+
   public class HunterTrophy : Enchanter
   {
     public HunterTrophyKind TinyTrophyKind { get; set; }
@@ -20,15 +17,15 @@ namespace Roguelike.Tiles.Looting
     static Dictionary<EquipmentKind, EntityStatKind> enhancmentPropsTusk = new Dictionary<EquipmentKind, EntityStatKind>();
     static Dictionary<EquipmentKind, EntityStatKind> enhancmentPropsClaw = new Dictionary<EquipmentKind, EntityStatKind>();
 
-    
 
-    public static string[] TinyTrophiesTags = new[] 
+
+    public static string[] TinyTrophiesTags = new[]
     {
-      Enchanter.Big+ "_claw", Enchanter.Big + "_fang", 
-      Enchanter.Medium + "_claw",Enchanter.Medium+"_fang", 
-      Enchanter.Small+"_claw", Enchanter.Small+"_fang" 
+      Enchanter.Big+ "_claw", Enchanter.Big + "_fang",
+      Enchanter.Medium + "_claw",Enchanter.Medium+"_fang",
+      Enchanter.Small+"_claw", Enchanter.Small+"_fang"
     };
-            
+
     static HunterTrophy()
     {
       PopulateProps(enhancmentPropsFang, EntityStatKind.Defense, EntityStatKind.ChanceToBulkAttack, EntityStatKind.MeleeAttackDamageReduction);
@@ -44,7 +41,7 @@ namespace Roguelike.Tiles.Looting
     {
       return base.GetId() + TinyTrophyKind + " " + EnchanterSize;
     }
-        
+
     public HunterTrophy(HunterTrophyKind kind)
     {
       Price = 5;
@@ -65,7 +62,7 @@ namespace Roguelike.Tiles.Looting
           EnchantSrc = EnchantSrc.Unset;
           break;
         case HunterTrophyKind.Fang:
-          
+
           EnchantSrc = EnchantSrc.Fang;
           PrimaryStatDescription = "Sharp, hard, ready to bite. ";
           break;
@@ -81,10 +78,10 @@ namespace Roguelike.Tiles.Looting
           break;
       }
 
-      if(PrimaryStatDescription.Any())
+      if (PrimaryStatDescription.Any())
         PrimaryStatDescription += Strings.DropOnEnchantable;
     }
-       
+
 
     public override LootStatInfo[] GetLootStatInfo(LivingEntity caller)
     {
@@ -94,7 +91,7 @@ namespace Roguelike.Tiles.Looting
         var props = enhancmentProps[this.TinyTrophyKind];
 
         var lootStatInfo = new LootStatInfo();
-        lootStatInfo.Desc = "Weapons: "+ props[EquipmentKind.Weapon].ToDescription() + " " + GetStatIncrease(EquipmentKind.Weapon);
+        lootStatInfo.Desc = "Weapons: " + props[EquipmentKind.Weapon].ToDescription() + " " + GetStatIncrease(EquipmentKind.Weapon);
         lootStatInfo.Kind = LootStatKind.Weapon;
         lootStatInfos.Add(lootStatInfo);
 

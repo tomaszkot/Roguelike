@@ -40,7 +40,7 @@ namespace RoguelikeUnitTests
 
       game.Hero.Inventory.Add(mp1);
       Assert.AreEqual(game.Hero.Inventory.ItemsCount, 2);
-      
+
       game.GameManager.Save();
       game.Hero.Inventory.Items.Clear();
       Assert.AreEqual(game.Hero.Inventory.ItemsCount, 0);
@@ -117,7 +117,7 @@ namespace RoguelikeUnitTests
       hero.Stats.SetNominal(Roguelike.Attributes.EntityStatKind.Magic, 15);//TODO
       var scroll = new Scroll(SpellKind.Transform);
       UseScroll(hero, SpellKind.Transform);
-      
+
       Assert.Greater(heroMana, hero.Stats.Mana);
 
       heroMana = hero.Stats.Mana;

@@ -87,7 +87,7 @@ namespace Roguelike.Discussions
 
     protected virtual void RewardHero(Merchant merch, DiscussionTopic topic)
     {
-      
+
     }
 
     public void Bind(AdvancedLivingEntity leftEntity, AdvancedLivingEntity rightEntity, GenericListModel<DiscussionTopic> options = null)
@@ -106,7 +106,7 @@ namespace Roguelike.Discussions
 
       return boundTopics;
     }
-        
+
     public GenericListItemModel<DiscussionTopic> GetTopicModel(KnownSentenceKind kind)
     {
       return boundTopics.TypedItems.Where(i => i.Item.KnownSentenceKind == kind).SingleOrDefault();
@@ -118,14 +118,14 @@ namespace Roguelike.Discussions
       return found != null ? found.Item : null;
     }
 
-    public GenericListItemModel<DiscussionTopic>  GetTopicModel(DiscussionTopic topic)
+    public GenericListItemModel<DiscussionTopic> GetTopicModel(DiscussionTopic topic)
     {
       return boundTopics.TypedItems.Where(i => i.Item == topic).SingleOrDefault();
     }
 
     public virtual void Hide()
     {
-      
+
     }
   }
 }

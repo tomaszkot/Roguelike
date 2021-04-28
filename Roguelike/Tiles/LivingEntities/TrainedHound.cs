@@ -1,16 +1,4 @@
-﻿using Dungeons.Core;
-using Roguelike.Abstract;
-using Roguelike.Abstract.Tiles;
-using Roguelike.Attributes;
-using Roguelike.Managers;
-using Roguelike.Tiles.LivingEntities;
-using SimpleInjector;
-using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using SimpleInjector;
 
 namespace Roguelike.Tiles.LivingEntities
 {
@@ -20,7 +8,7 @@ namespace Roguelike.Tiles.LivingEntities
     //{
     //  throw new Exception("use other ctor");
     //}
-    
+
     public TrainedHound(Container cont) : base(cont)
     {
       Kind = AllyKind.Hound;
@@ -35,7 +23,7 @@ namespace Roguelike.Tiles.LivingEntities
       PlaySound("ANIMAL_Dog_Bark_02_Mono");
     }
 
-    public override void PlayAllySpawnedSound() 
+    public override void PlayAllySpawnedSound()
     {
       bark(false);
     }

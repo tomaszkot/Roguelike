@@ -1,9 +1,9 @@
-﻿using System.Drawing;
-using System.Linq;
-using Dungeons.Core;
+﻿using Dungeons.Core;
 using Dungeons.Tiles;
 using Roguelike.Tiles.Interactive;
 using SimpleInjector;
+using System.Drawing;
+using System.Linq;
 
 namespace Roguelike.Generators.TileContainers
 {
@@ -18,7 +18,7 @@ namespace Roguelike.Generators.TileContainers
     {
     }
 
-    public override bool SetTile(Tile tile, Point point, bool resetOldTile = true, 
+    public override bool SetTile(Tile tile, Point point, bool resetOldTile = true,
       bool revealReseted = true, bool autoSetTileDungeonIndex = true, bool reportError = true)
     {
       var atPos = tiles[point.Y, point.X];
@@ -30,7 +30,7 @@ namespace Roguelike.Generators.TileContainers
           allowed = tile is Wall && atPos is Wall;
           if (!allowed)
           {
-            if(reportError)
+            if (reportError)
               Container.GetInstance<ILogger>().LogError("atPos != null: " + atPos + ", while setting " + tile);
             return false;
           }
@@ -41,7 +41,7 @@ namespace Roguelike.Generators.TileContainers
 
     protected override bool ShallReveal(int row, int col)
     {
-      var reveal = tiles[row, col].DungeonNodeIndex == NodeIndex; 
+      var reveal = tiles[row, col].DungeonNodeIndex == NodeIndex;
       if (!reveal)
       {
         if (tiles[row, col].IsFromChildIsland)
@@ -60,7 +60,7 @@ namespace Roguelike.Generators.TileContainers
     public override Tile SetTileAtRandomPosition(Tile tile, bool matchNodeIndex = true)
     {
       var tileSet = base.SetTileAtRandomPosition(tile, matchNodeIndex);
-      if (tileSet!=null)
+      if (tileSet != null)
       {
         var doors = GetNeighborTiles<Door>(tileSet);
         if (tileSet is Chest && doors.Any())//chest is blocking!

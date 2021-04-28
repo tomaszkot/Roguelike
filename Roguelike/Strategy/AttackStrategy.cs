@@ -6,9 +6,7 @@ using Roguelike.Managers;
 using Roguelike.Policies;
 using Roguelike.Spells;
 using Roguelike.TileContainers;
-using Roguelike.Tiles.Abstract;
 using Roguelike.Tiles.LivingEntities;
-using Roguelike.Tiles.Looting;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -59,7 +57,7 @@ namespace Roguelike
           bool resistOn = TurnOnResistAll(enemyCasted, target);
           if (resistOn)
             return true;
-          
+
           if (TryUseMagicAttack(attacker, target))
             return true;
         }
@@ -72,7 +70,7 @@ namespace Roguelike
           {
             if (TurnOnSpecialSkill(enCasted, victim))
             {
-              OnPolicyApplied(new Policy() { Kind = PolicyKind.Generic});
+              OnPolicyApplied(new Policy() { Kind = PolicyKind.Generic });
               return true;
             }
 
@@ -197,7 +195,7 @@ namespace Roguelike
             }
 
             var spellKind = SpellConverter.SpellKindFromEffectType(effectToUse);
-            
+
             if (spellKind != SpellKind.Unset)
             {
               LivingEntity lastingEffectTarget = enemy;
@@ -206,7 +204,7 @@ namespace Roguelike
 
               lastingEffectTarget.AddLastingEffectFromSpell(spellKind, effectToUse);
               enemy.ReduceEffectToUse(effectToUse);
-              
+
               return true;
             }
           }
@@ -214,7 +212,7 @@ namespace Roguelike
 
         return false;
       }
-            
+
       bool HasSpecialEffectOn(Enemy enemy, out int specialEffCounter)
       {
         specialEffCounter = 0;
@@ -256,8 +254,8 @@ namespace Roguelike
         return false;
       }
 
-      
-      public List<Algorithms.PathFinderNode> FindPathForEnemy(LivingEntity enemy,LivingEntity target, int startIndex = 0, bool forEnemyProjectile = false)
+
+      public List<Algorithms.PathFinderNode> FindPathForEnemy(LivingEntity enemy, LivingEntity target, int startIndex = 0, bool forEnemyProjectile = false)
       {
         var pathToTarget = context.CurrentNode.FindPath(enemy.point, target.point, false, true, forEnemyProjectile);
         if (pathToTarget != null && pathToTarget.Any())

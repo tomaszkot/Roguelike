@@ -36,10 +36,10 @@ namespace RoguelikeUnitTests
         Assert.AreEqual(enemy.LastingEffects.Count, 0);
         GenerationInfo.ChanceToTurnOnSpecialSkillByEnemy = 1f;
 
-        var closeToHero = game.Level.GetClosestEmpty(hero, incDiagonals : false);
+        var closeToHero = game.Level.GetClosestEmpty(hero, incDiagonals: false);
         game.Level.SetTile(enemy, closeToHero.point);
         enemy.ActiveScroll = null;//this causes attack
-        
+
         //hit enemy to force him to use effect
         enemy.OnPhysicalHitBy(hero);
 
@@ -54,7 +54,7 @@ namespace RoguelikeUnitTests
           Assert.AreEqual(enemy.LastingEffects.Count, 1);
           var eff = enemy.LastingEffects[0].Type;
           Assert.True(LivingEntity.PossibleEffectsToUse.Contains(eff));
-        } 
+        }
       }
     }
 
@@ -115,7 +115,7 @@ namespace RoguelikeUnitTests
       Assert.AreEqual(initEnemyCount, game.GameManager.CurrentNode.GetTiles<Enemy>().Count);
 
       var enemy = ActiveEnemies.First();
-      while(enemy.Alive)
+      while (enemy.Alive)
         InteractHeroWith(enemy as Enemy);
       var finalEnemyCount = enemies.Count;
       Assert.AreEqual(finalEnemyCount, initEnemyCount - 1);
@@ -126,14 +126,14 @@ namespace RoguelikeUnitTests
     public void WeaponDamageRandomisation()
     {
       var game = CreateGame();
-      var en = game.GameManager.EnemiesManager.GetEnemies().Where(i=>i.PowerKind == EnemyPowerKind.Champion).First();
+      var en = game.GameManager.EnemiesManager.GetEnemies().Where(i => i.PowerKind == EnemyPowerKind.Champion).First();
 
       var attack = game.Hero.GetCurrentValue(Roguelike.Attributes.EntityStatKind.Attack);
 
       var wpn = game.GameManager.LootGenerator.GetLootByTileName<Weapon>("rusty_sword");
       Assert.AreEqual(wpn.PrimaryStatValue, 2);
       Assert.AreEqual(wpn.PrimaryStatDescription, "Attack: 1-3");
-      
+
       game.Hero.SetEquipment(wpn);
       var attackWithWpn = game.Hero.GetCurrentValue(Roguelike.Attributes.EntityStatKind.Attack);
       Assert.Greater(attackWithWpn, attack);
@@ -145,7 +145,7 @@ namespace RoguelikeUnitTests
       for (int i = 0; i < 10; i++)
       {
         var damage = en.OnPhysicalHitBy(game.Hero);
-        if(damage > 0)
+        if (damage > 0)
           damages.Add(damage);
       }
       var grouped = damages.GroupBy(i => i);
@@ -160,7 +160,8 @@ namespace RoguelikeUnitTests
 
       var enemy = AllEnemies.First();
 
-      Func<float> hitEnemy = ()=> {
+      Func<float> hitEnemy = () =>
+      {
         var enemyHealth = enemy.Stats.Health;
         enemy.OnPhysicalHitBy(game.Hero);
         var lastEnemyHealthDiff = enemyHealth - enemy.Stats.Health;

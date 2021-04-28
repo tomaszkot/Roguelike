@@ -1,5 +1,5 @@
 ﻿namespace Roguelike.Calculated
-{ 
+{
   class FactorCalculator
   {
     public static int CalcFromLevel(int lvl, int baseFactor, float increase = 10.0f)

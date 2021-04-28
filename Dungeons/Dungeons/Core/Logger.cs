@@ -1,9 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Dungeons.Core
 {
@@ -11,7 +7,7 @@ namespace Dungeons.Core
   {
     public void LogError(string err, bool throwExc = true)
     {
-      Debug.WriteLine("ERROR: "+ err);
+      Debug.WriteLine("ERROR: " + err);
       if (throwExc)
         throw new Exception(err);
     }

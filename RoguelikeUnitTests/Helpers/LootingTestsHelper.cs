@@ -2,19 +2,16 @@
 using NUnit.Framework;
 using Roguelike;
 using Roguelike.Tiles;
-using Roguelike.Tiles.Interactive;
 using Roguelike.Tiles.LivingEntities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace RoguelikeUnitTests.Helpers
 {
   public class LootingTestsHelper : BaseHelper
   {
-    public LootingTestsHelper():base(null) 
+    public LootingTestsHelper() : base(null)
     {
     }
 
@@ -26,7 +23,7 @@ namespace RoguelikeUnitTests.Helpers
     {
       var res = AssertLootFromEnemies(expectedKinds);
 
-      return res.Select(i=> i.LootKind).ToList();
+      return res.Select(i => i.LootKind).ToList();
     }
 
     public List<Loot> AssertLootFromEnemies(LootKind[] expectedKinds)
@@ -83,7 +80,7 @@ namespace RoguelikeUnitTests.Helpers
     public LootInfo TestInteractive<T>(Action<Roguelike.Tiles.Interactive.InteractiveTile> init,
       int tilesToCreateCount = 50,
       int maxExpectedLootCount = 15,
-      int maxExpectedUniqCount = 2) 
+      int maxExpectedUniqCount = 2)
       where T : Roguelike.Tiles.Interactive.InteractiveTile, new()
     {
       var lootInfo = new LootInfo(game, null);
@@ -106,7 +103,7 @@ namespace RoguelikeUnitTests.Helpers
     (
       int numberOfTilesToTest = 50,
       Action<Roguelike.Tiles.Interactive.InteractiveTile> init = null
-    ) 
+    )
     where T : Roguelike.Tiles.Interactive.InteractiveTile, new()
     {
       var createdTiles = new List<Tile>();
@@ -119,7 +116,7 @@ namespace RoguelikeUnitTests.Helpers
         createdTiles.Add(tile);
       }
 
-      for(int i=0;i<createdTiles.Count;i++)
+      for (int i = 0; i < createdTiles.Count; i++)
       {
         var tile = createdTiles[i];
         var to = game.GameManager.Context.TurnOwner;

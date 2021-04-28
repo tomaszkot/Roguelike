@@ -14,11 +14,11 @@ namespace Roguelike.Tiles.Looting
     public bool Damaged { get; set; }
 
     EnchanterSize enchanterSize = EnchanterSize.Small;
-    public EnchanterSize EnchanterSize 
+    public EnchanterSize EnchanterSize
     {
       get { return enchanterSize; }
-      set 
-      { 
+      set
+      {
         enchanterSize = value;
         SetProps();
       }

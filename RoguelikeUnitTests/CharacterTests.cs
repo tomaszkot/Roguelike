@@ -20,12 +20,12 @@ namespace RoguelikeUnitTests
       var game = CreateGame();
       var health = game.Hero.Stats.Health;
       bool leveledUpDone = false;
-      game.Hero.LeveledUp += (object sender, EventArgs e)=>
+      game.Hero.LeveledUp += (object sender, EventArgs e) =>
       {
         Assert.AreEqual(health, game.Hero.Stats.Health);//Health restored
         leveledUpDone = true;
       };
-           
+
       var enemy = game.GameManager.EnemiesManager.AllEntities.First();
 
       game.Hero.OnPhysicalHitBy(enemy);
@@ -50,13 +50,13 @@ namespace RoguelikeUnitTests
       var health = game.Hero.Stats.Health;
       Assert.AreEqual(GetFormattedHealth(), ((int)health).ToString());
       game.Hero.Stats.SetFactor(Roguelike.Attributes.EntityStatKind.Health, -1);
-      Assert.AreEqual(health,  game.Hero.Stats.Health+1);
+      Assert.AreEqual(health, game.Hero.Stats.Health + 1);
 
       float reduce = 1.3f;
       game.Hero.Stats.SetFactor(Roguelike.Attributes.EntityStatKind.Health, -reduce);
       Assert.AreEqual(health, game.Hero.Stats.Health + reduce);
       var fh = GetFormattedHealth();
-      Assert.AreEqual(fh, ((int)(health-1)).ToString());
+      Assert.AreEqual(fh, ((int)(health - 1)).ToString());
 
 
       reduce = 1.6f;

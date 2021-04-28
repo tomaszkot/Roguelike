@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 namespace Roguelike
 {
@@ -54,12 +50,12 @@ namespace Roguelike
       {"lynx", CommonEnemySymbol},
       {"worm", CommonEnemySymbol},
       {"wolverine", CommonEnemySymbol},
-      
+
     };
 
     public static char GetSymbolFromName(string name)
     {
-      if(EnemiesToSymbols.ContainsKey(name))
+      if (EnemiesToSymbols.ContainsKey(name))
         return EnemiesToSymbols[name];
       return Unset;
     }

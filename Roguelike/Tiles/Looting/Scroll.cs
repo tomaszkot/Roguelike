@@ -1,5 +1,4 @@
-﻿using Roguelike.Abstract;
-using Roguelike.Abstract.Spells;
+﻿using Roguelike.Abstract.Spells;
 using Roguelike.Spells;
 using Roguelike.Tiles.Interactive;
 using Roguelike.Tiles.LivingEntities;
@@ -125,7 +124,7 @@ namespace Roguelike.Tiles.Looting
     //public bool EnemyRequired { get { return spell.EnemyRequired; } }
     //public bool EntityRequired { get { return spell.EntityRequired; } }
     //Spell spell;
-    
+
     //public int Level
     //{
     //  get { return spell.GetCurrentLevel(); }
@@ -192,7 +191,7 @@ namespace Roguelike.Tiles.Looting
 
     public T CreateSpell<T>(LivingEntity caller) where T : class, ISpell
     {
-      var ispell =  CreateSpell(Kind, caller);
+      var ispell = CreateSpell(Kind, caller);
       return ispell as T;
     }
 
@@ -207,12 +206,12 @@ namespace Roguelike.Tiles.Looting
       {
         case SpellKind.FireBall:
           return new FireBallSpell(caller);
-      //  case SpellKind.NESWFireBall:
-      //    return new NESWFireBallSpell(caller);
-      //  case SpellKind.CrackedStone:
-      //    return new CrackedStoneSpell(caller);
-      //  case SpellKind.Trap:
-      //    return new TrapSpell(caller);
+        //  case SpellKind.NESWFireBall:
+        //    return new NESWFireBallSpell(caller);
+        //  case SpellKind.CrackedStone:
+        //    return new CrackedStoneSpell(caller);
+        //  case SpellKind.Trap:
+        //    return new TrapSpell(caller);
         case SpellKind.PoisonBall:
           return new PoisonBallSpell(caller);
         case SpellKind.IceBall:
@@ -221,22 +220,22 @@ namespace Roguelike.Tiles.Looting
           return new SkeletonSpell(caller);
         case SpellKind.Transform:
           return new TransformSpell(caller);
-      //  case SpellKind.Frighten:
-      //    return new FrightenSpell(caller);
-      //  case SpellKind.Healing:
-      //    return new HealingSpell(caller);
+        //  case SpellKind.Frighten:
+        //    return new FrightenSpell(caller);
+        //  case SpellKind.Healing:
+        //    return new HealingSpell(caller);
         case SpellKind.ManaShield:
           return new ManaShieldSpell(caller);
         //case SpellKind.Telekinesis:
         //  return new TelekinesisSpell(caller);
-      //  case SpellKind.StonedBall:
-      //    return new StonedBallSpell(caller);
-      //  //case SpellKind.MindControl:
-      //  //	return new MindControlSpell(caller);
-      //  case SpellKind.Mana:
-      //    return new ManaSpell(caller);
-      //  case SpellKind.BushTrap:
-      //    return new BushTrapSpell(caller);
+        //  case SpellKind.StonedBall:
+        //    return new StonedBallSpell(caller);
+        //  //case SpellKind.MindControl:
+        //  //	return new MindControlSpell(caller);
+        //  case SpellKind.Mana:
+        //    return new ManaSpell(caller);
+        //  case SpellKind.BushTrap:
+        //    return new BushTrapSpell(caller);
         case SpellKind.Rage:
           return new RageSpell(caller);
         case SpellKind.Weaken:
@@ -249,17 +248,17 @@ namespace Roguelike.Tiles.Looting
           return new TeleportSpell(caller);
         case SpellKind.Portal:
           return new Portal(caller);
-          //  case SpellKind.CallMerchant:
-          //    return new CallMerchantSpell(caller);
-          //  case SpellKind.CallGod:
-          //    return new CallGodSpell(caller);
-          //  case SpellKind.LightingBall:
-          //    return new LightingBallSpell(caller);
+        //  case SpellKind.CallMerchant:
+        //    return new CallMerchantSpell(caller);
+        //  case SpellKind.CallGod:
+        //    return new CallGodSpell(caller);
+        //  case SpellKind.LightingBall:
+        //    return new LightingBallSpell(caller);
         case SpellKind.ResistAll:
           return new ResistAllSpell(caller);
         default:
           break;
-          throw new Exception("CreateSpell ???"+ Kind);
+          throw new Exception("CreateSpell ???" + Kind);
       }
       return null;
     }

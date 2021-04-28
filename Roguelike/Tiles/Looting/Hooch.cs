@@ -1,8 +1,5 @@
 ﻿using Roguelike.Attributes;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace Roguelike.Tiles.Looting
 {
@@ -36,8 +33,8 @@ namespace Roguelike.Tiles.Looting
         //extDesc[0] = "Press O to drink it.";
         extDesc[0] = "Drink Effect:";
         extDesc[1] = "Strength +" + Strength + "%";
-        extDesc[2] = "ChanceToChit -"+ChanceToHit+"%";
-        extDesc[3] = "Tour Lasting: "+ TourLasting;
+        extDesc[2] = "ChanceToChit -" + ChanceToHit + "%";
+        extDesc[3] = "Tour Lasting: " + TourLasting;
       }
       return extDesc;
     }

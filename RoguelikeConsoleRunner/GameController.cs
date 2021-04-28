@@ -1,20 +1,18 @@
-﻿using System;
-using System.Diagnostics;
-using System.Linq;
-using Dungeons;
+﻿using Dungeons;
 using Dungeons.ASCIIDisplay;
 using Roguelike;
 using Roguelike.Abstract;
 using Roguelike.Abstract.Managers;
 using Roguelike.Events;
 using Roguelike.Managers;
-using Roguelike.Tiles;
 using Roguelike.Tiles.Interactive;
 using Roguelike.Tiles.LivingEntities;
 using SimpleInjector;
+using System;
+using System.Linq;
 
 namespace RoguelikeConsoleRunner
-{ 
+{
   public class GameController : DungeonsConsoleRunner.GameController, IGameManagerProvider
   {
     IGame game;
@@ -50,7 +48,7 @@ namespace RoguelikeConsoleRunner
     public override Dungeons.TileContainers.DungeonNode GenerateDungeon()
     {
       var dungeon = Game.GenerateDungeon();
-     
+
       //var hero1 = dungeon.GetTiles<Hero>().SingleOrDefault();
       //Debug.Assert(Hero == hero1);
       return dungeon;
@@ -82,10 +80,10 @@ namespace RoguelikeConsoleRunner
       if (e is LivingEntityAction)
       {
         var lea = e as LivingEntityAction;
-          screen.Redraw(lea.InvolvedEntity, true);
+        screen.Redraw(lea.InvolvedEntity, true);
 
         screen.RedrawLists();
-        if(lea.Kind == LivingEntityActionKind.Interacted && lea.InteractionResult != InteractionResult.Attacked)
+        if (lea.Kind == LivingEntityActionKind.Interacted && lea.InteractionResult != InteractionResult.Attacked)
           Redraw();//e.g. room revealed
       }
       else if (e is GameStateAction)
@@ -98,7 +96,7 @@ namespace RoguelikeConsoleRunner
         screen.Redraw(la.Loot, false);
       }
     }
-    
+
     public override Dungeons.TileContainers.DungeonNode Dungeon
     {
       get

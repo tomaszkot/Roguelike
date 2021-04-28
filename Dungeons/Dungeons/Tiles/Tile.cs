@@ -4,7 +4,6 @@ using Newtonsoft.Json;
 using System;
 using System.Drawing;
 using System.Linq;
-using System.Xml.Serialization;
 
 namespace Dungeons.Tiles
 {
@@ -201,7 +200,7 @@ namespace Dungeons.Tiles
       }
       set => displayedName = value;
     }
-        
+
     public bool IsAtSamePosition(Tile other)
     {
       return point.Equals(other.point);

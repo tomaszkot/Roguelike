@@ -33,13 +33,13 @@ namespace Roguelike.Tiles.Looting
     public string KeyName { get; set; }
 
     public KeyKind kind;
-    public KeyKind Kind 
+    public KeyKind Kind
     {
       get { return kind; }
-      set 
+      set
       {
-        kind = value; 
-        if(kind == KeyKind.Chest)
+        kind = value;
+        if (kind == KeyKind.Chest)
           tag1 = "gold_chest_key";
 
         var desc = "";
@@ -51,7 +51,7 @@ namespace Roguelike.Tiles.Looting
           desc = "Opens chest";
 
         PrimaryStatDescription = desc;
-      } 
+      }
     }
 
     public bool Half { get; set; }

@@ -7,7 +7,7 @@ namespace Dungeons.Core
   public class RandHelper
   {
     private static Random random = new Random();
-    
+
     public static int GetRandomInt(int max)
     {
       return random.Next(max);
@@ -26,7 +26,7 @@ namespace Dungeons.Core
       }
     }
 
-    public static T GetRandomElem<T>(List<T> list) 
+    public static T GetRandomElem<T>(List<T> list)
     {
       if (!list.Any())
         return default(T);
@@ -71,8 +71,8 @@ namespace Dungeons.Core
 
     public static T GetRandomEnumValue<T>(T[] skip)
     {
-      var values = Enum.GetValues(typeof(T)).Cast<T>().Where(i=> !skip.Contains(i)).ToList();
-      
+      var values = Enum.GetValues(typeof(T)).Cast<T>().Where(i => !skip.Contains(i)).ToList();
+
       int index = random.Next(values.Count());
 
       return values[index];

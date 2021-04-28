@@ -1,15 +1,11 @@
-﻿using Roguelike.Tiles;
-using Roguelike.Tiles.LivingEntities;
-using System.Collections.Generic;
+﻿using Roguelike.Tiles.LivingEntities;
 using System.Diagnostics;
-using System.Linq;
-using System.Xml.Serialization;
 
 namespace Roguelike.Discussions
 {
   public enum KnownSentenceKind { Unset, WhatsUp, LetsTrade, Bye, SellHound, Back, QuestAccepted, QuestProgress, WorkingOnQuest, AwaitingReward, Cheating }
-   
-  
+
+
   public class Discussion
   {
     public string EntityName { get; set; }
@@ -28,15 +24,14 @@ namespace Roguelike.Discussions
     public static void CreateMerchantResponseOptions(DiscussionTopic item, bool allowBuyHound)
     {
       item.AddTopic("Let's Trade", KnownSentenceKind.LetsTrade);
-      if(allowBuyHound)
-        item.AddTopic("Sell me a hound ("+Merchant.HoundPrice+" gold)", KnownSentenceKind.SellHound);
+      if (allowBuyHound)
+        item.AddTopic("Sell me a hound (" + Merchant.HoundPrice + " gold)", KnownSentenceKind.SellHound);
 
       item.AddTopic("Bye", KnownSentenceKind.Bye);
     }
 
     public DiscussionTopic MainItem { get => mainItem; set => mainItem = value; }
 
-    //TODO use json
     public void ToXml()
     {
       try
@@ -77,7 +72,7 @@ namespace Roguelike.Discussions
     }
 
     public virtual void EmitCheating(DiscussionTopic item)
-    { 
+    {
     }
   }
 }

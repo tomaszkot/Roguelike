@@ -1,10 +1,6 @@
 ﻿using NUnit.Framework;
 using Roguelike.Tiles.Interactive;
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace RoguelikeUnitTests
 {
@@ -45,7 +41,7 @@ namespace RoguelikeUnitTests
 
       var doors = level.Nodes[0].GetTiles<Door>();
       Assert.AreEqual(doors.Count, 1);
-      if(secretRoomIndex == 1)
+      if (secretRoomIndex == 1)
         Assert.AreEqual(doors[0].DungeonNodeIndex, 0);
       else
         Assert.AreEqual(doors[0].DungeonNodeIndex, 1);
@@ -79,7 +75,7 @@ namespace RoguelikeUnitTests
       }
 
       var doors = level.Nodes[0].GetTiles<Door>();
-      
+
       if (secretRooIndex == 0)
         Assert.AreEqual(doors.Count, 1);
       else
@@ -92,7 +88,7 @@ namespace RoguelikeUnitTests
 
       AssertNodeIndex(level, 1);
       doors = level.Nodes[1].GetTiles<Door>();
-      if(secretRooIndex == 0)
+      if (secretRooIndex == 0)
         Assert.Greater(doors.Count, 4);
       else if (secretRooIndex == 1)
         Assert.AreEqual(doors.Count, 0);

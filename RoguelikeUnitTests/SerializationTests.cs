@@ -5,10 +5,7 @@ using Roguelike.TileContainers;
 using Roguelike.Tiles;
 using Roguelike.Tiles.LivingEntities;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace RoguelikeUnitTests
 {
@@ -28,7 +25,7 @@ namespace RoguelikeUnitTests
         var hero = game.Hero;
         Assert.Null(hero);
         Assert.Null(game.Level);
-        
+
         var gameNode = game.GenerateLevel(0);
         hero = game.Hero;
         //hero.Name = "Koto";
@@ -51,7 +48,7 @@ namespace RoguelikeUnitTests
       {
         var game = CreateGame(false);
         var hero = game.Hero;
-        
+
         game.GameManager.Load(heroName);
         Assert.AreEqual(hintsCount, game.GameManager.GameState.History.Hints.Hints.Count);
 
@@ -62,10 +59,10 @@ namespace RoguelikeUnitTests
         Assert.NotNull(heroLoaded);
 
         //hero position shall match
-        Assert.True(heroLoaded.DistanceFrom(heroPoint) <=1);
+        Assert.True(heroLoaded.DistanceFrom(heroPoint) <= 1);
         Assert.AreEqual(heroLoaded, game.Hero);
         Assert.AreEqual(game.GameManager.GameState.History.Looting.GeneratedLoot.Count, 1);
-        Assert.AreEqual(game.GameManager.GameState.History.Looting.GeneratedLoot[0].Name, eq.Name); 
+        Assert.AreEqual(game.GameManager.GameState.History.Looting.GeneratedLoot[0].Name, eq.Name);
         Assert.AreEqual(hintsCount, game.GameManager.GameState.History.Hints.Hints.Count);
       }
     }
@@ -133,19 +130,40 @@ namespace RoguelikeUnitTests
       Assert.AreEqual(loadedHero.Name, "LootPropsTest");
       Assert.AreEqual(game.Hero.Inventory.Items.Count, 1);
       var lootLoaded = game.Hero.Inventory.Items.ElementAt(0) as Food;
-      
+
       Assert.AreEqual(loot.Kind, lootLoaded.Kind);
       Assert.AreEqual(loot.PrimaryStatDescription, lootLoaded.PrimaryStatDescription);
     }
 
     [Test]
+    public void SaveHeroStatsTest()
+    {
+      var game = CreateGame(true);
+      var hero = game.Hero;
+      hero.Name = "SaveHeroStatsTest";
+
+      hero.LevelUpPoints = 5;
+
+      var health = hero.Stats[Roguelike.Attributes.EntityStatKind.Health].TotalValue;
+      hero.IncreaseStatByLevelUpPoint(Roguelike.Attributes.EntityStatKind.Health);
+      Assert.Greater(hero.Stats[Roguelike.Attributes.EntityStatKind.Health].TotalValue, health);
+      health = hero.Stats[Roguelike.Attributes.EntityStatKind.Health].TotalValue;
+
+      game.GameManager.Save();
+      game.GameManager.Load(hero.Name);
+      var loadedHero = game.GameManager.Hero;
+      Assert.AreEqual(health, loadedHero.Stats[Roguelike.Attributes.EntityStatKind.Health].TotalValue);
+    }
+
+    [Test]
     public void ManyGamesTest()
     {
-      Action<RoguelikeGame, string, Loot> createGame = (RoguelikeGame game, string heroName, Loot loot) => {
-        
+      Action<RoguelikeGame, string, Loot> createGame = (RoguelikeGame game, string heroName, Loot loot) =>
+      {
+
         var hero = game.Hero;
         hero.Name = heroName;
-                
+
         hero.Inventory.Add(loot);
         Assert.AreEqual(game.Hero.Inventory.Items.Count, 1);
 

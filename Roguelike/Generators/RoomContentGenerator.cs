@@ -5,12 +5,9 @@ using Roguelike.Tiles.Interactive;
 using Roguelike.Tiles.LivingEntities;
 using Roguelike.Tiles.Looting;
 using SimpleInjector;
-using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Roguelike.Generators
 {
@@ -48,7 +45,7 @@ namespace Roguelike.Generators
         EnsureBoss();//TODO what is the point of it ?
         return;
       }
-            
+
       GenerateLoot();
       GenerateInteractive();
       GenerateEnemies();
@@ -63,7 +60,7 @@ namespace Roguelike.Generators
 
       return enemy;
     }
-        
+
     protected virtual void GenerateInteractive()
     {
       if (this.gi != null && !gi.GenerateInteractiveTiles)
@@ -83,7 +80,7 @@ namespace Roguelike.Generators
       if (node.Width > 15 || node.Height > 15)
       {
         barrelsNumber += 2;
-        if(!node.IsChildIsland)
+        if (!node.IsChildIsland)
           AddPlainChestAtRandomLoc();
       }
       for (int i = 0; i < barrelsNumber; i++)
@@ -106,11 +103,11 @@ namespace Roguelike.Generators
       }
     }
 
-    protected bool allowSkullPiles = true; 
+    protected bool allowSkullPiles = true;
     protected virtual void SetBarrelKind(Barrel barrel)
     {
       var kind = BarrelKind.Barrel;
-      if(allowSkullPiles && RandHelper.GetRandomDouble() > 0.75)
+      if (allowSkullPiles && RandHelper.GetRandomDouble() > 0.75)
         kind = BarrelKind.PileOfSkulls;
       barrel.BarrelKind = kind;
     }
@@ -127,12 +124,12 @@ namespace Roguelike.Generators
         return;
 
       int lootNumber = RandHelper.GetRandomInt(2);//TODO
-      if(lootNumber == 0)
+      if (lootNumber == 0)
         lootNumber++;//at least one
-            
+
       for (int i = 0; i < lootNumber; i++)
       {
-        var loot = lootGen.GetRandomLoot(levelIndex+1);
+        var loot = lootGen.GetRandomLoot(levelIndex + 1);
         node.SetTileAtRandomPosition(loot);
       }
       float magicDustThreshold = .1f;
@@ -141,7 +138,7 @@ namespace Roguelike.Generators
         node.SetTileAtRandomPosition(new MagicDust());
       }
 
-      if(node.Secret)
+      if (node.Secret)
         node.SetTileAtRandomPosition(new Chest() { ChestKind = ChestKind.Gold });
     }
 
@@ -161,7 +158,7 @@ namespace Roguelike.Generators
     protected virtual bool PlaceEnemy(Enemy enemy, Dungeons.TileContainers.DungeonNode node, Tile keepDistFrom)
     {
       var pt = GetRandomEmptyPoint(node, keepDistFrom);
-      if(pt!=null)
+      if (pt != null)
         return PlaceEnemy(enemy, node, pt.Value);
 
       return false;
@@ -172,11 +169,11 @@ namespace Roguelike.Generators
       var emptyTiles = node.GetEmptyTiles();
       if (keepDistFrom != null)
       {
-        var emptyTilesDist = emptyTiles.Where(i => i.DistanceFrom(keepDistFrom) >= node.Width/2).ToList();
+        var emptyTilesDist = emptyTiles.Where(i => i.DistanceFrom(keepDistFrom) >= node.Width / 2).ToList();
         if (emptyTilesDist.Any())
           emptyTiles = emptyTilesDist;
       }
-      
+
       var tile = node.GetRandomEmptyTile(emptyTiles, nodeIndex: node.NodeIndex);
       if (tile != null)
         return tile.point;
@@ -218,7 +215,7 @@ namespace Roguelike.Generators
     protected virtual List<Enemy> CreateEnemiesPack(string enemyName)
     {
       List<Enemy> enemiesPack = new List<Enemy>();
-      
+
       var packSize = gi.ForcedNumberOfEnemiesInRoom;
       if (packSize == -1)
         packSize = RandHelper.GetRandomElem<int>(new List<int>() { 3, 4, 5 });
@@ -296,21 +293,21 @@ namespace Roguelike.Generators
       Tile stairs = null;
       if (keepDistFromHero)
       {
-        stairs = node.GetTiles<Stairs>().FirstOrDefault(i=>i.StairsKind == StairsKind.LevelUp ||
+        stairs = node.GetTiles<Stairs>().FirstOrDefault(i => i.StairsKind == StairsKind.LevelUp ||
                                                         i.StairsKind == StairsKind.PitUp);
-        if (stairs!=null)
+        if (stairs != null)
         {
 
         }
       }
-      
+
       if (placeEnemiesPackClosely)
       {
         var emptyCells = node.GetEmptyTiles();
         Point? enemyPoint = null;
         if (node.NodeIndex == 0 && levelIndex == 0)
         {
-          emptyCells = emptyCells.Where(i => i.DistanceFrom(emptyCells.First()) > (node.Width/2 + node.Height/2)/2 ).ToList();
+          emptyCells = emptyCells.Where(i => i.DistanceFrom(emptyCells.First()) > (node.Width / 2 + node.Height / 2) / 2).ToList();
           enemyPoint = emptyCells.GetRandomElem<Tile>().point;
         }
         else
@@ -322,8 +319,8 @@ namespace Roguelike.Generators
             return;
           }
         }
-        
-        emptyCells.RemoveAll(i=> i.point == enemyPoint);
+
+        emptyCells.RemoveAll(i => i.point == enemyPoint);
         foreach (var en in packEnemies)
         {
           PlaceEnemy(en, node, enemyPoint.Value);
@@ -376,7 +373,7 @@ namespace Roguelike.Generators
         //return CreateBoss(LevelBossName, bossSymbol);
       }
 
-      return ;
+      return;
     }
   }
 }

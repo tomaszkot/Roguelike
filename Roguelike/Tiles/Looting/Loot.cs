@@ -18,10 +18,10 @@ namespace Roguelike.Tiles
 
   [Flags]
   public enum LootStatKind
-  { 
-    Unset = 0, 
-    Weapon = 1, 
-    Armor = 2, 
+  {
+    Unset = 0,
+    Weapon = 1,
+    Armor = 2,
     Jewellery = 4,
     //Health = 8,
     //Mana = 16
@@ -39,8 +39,11 @@ namespace Roguelike.Tiles
     }
   }
 
-  public enum EquipmentKind { Unset, Weapon, Armor, Helmet, Shield, Ring, Amulet,
-                              Trophy, Glove, God }
+  public enum EquipmentKind
+  {
+    Unset, Weapon, Armor, Helmet, Shield, Ring, Amulet,
+    Trophy, Glove, God
+  }
 
   public enum CurrentEquipmentKind
   {
@@ -48,12 +51,15 @@ namespace Roguelike.Tiles
     TrophyLeft, Glove, God, RingRight, TrophyRight
   }
 
-  public enum CurrentEquipmentPosition { Unset, Left, Right}
+  public enum CurrentEquipmentPosition { Unset, Left, Right }
 
-  public enum LootKind { Unset, 
-                         Other, //MagicDust...
-                         Gold, Potion, Scroll, Equipment, Gem,
-                         Recipe, Seal, SealPart, Food, Plant, HunterTrophy}
+  public enum LootKind
+  {
+    Unset,
+    Other, //MagicDust...
+    Gold, Potion, Scroll, Equipment, Gem,
+    Recipe, Seal, SealPart, Food, Plant, HunterTrophy
+  }
 
   public enum LootSourceKind { Enemy, PlainChest, GoldChest, DeluxeGoldChest, Barrel }
   public enum EquipmentClass { Unset, Plain, Magic, MagicSecLevel, Unique }
@@ -97,19 +103,19 @@ namespace Roguelike.Tiles
 
     public int PositionInPage { get; set; }
     public int PageIndex { get; set; }
-    
+
     public virtual bool Positionable
     {
       get { return false; }
     }
 
     //protected string primaryStatDesc = "?";
-        
+
     public bool StackedInInventory
     {
       get { return this is Roguelike.Tiles.Looting.StackedLoot; }
     }
-    
+
     public Guid Id
     {
       get
@@ -169,7 +175,7 @@ namespace Roguelike.Tiles
     {
       return false;
     }
-    
+
     public virtual bool IsCraftable()
     {
       return false;
@@ -217,7 +223,7 @@ namespace Roguelike.Tiles
     } = "";
 
     protected string[] extraStatDescription;
-    
+
     public virtual string[] GetExtraStatDescription()
     {
       return extraStatDescription;
@@ -231,7 +237,7 @@ namespace Roguelike.Tiles
 
     public virtual void HandleGenerationDone()
     {
-      
+
     }
 
     public static T DiscoverKindFromName<T>(string name)
@@ -247,9 +253,9 @@ namespace Roguelike.Tiles
 
     public string DroppedSound
     {
-      get 
-      { 
-        return droppedSound.Any() ? droppedSound : collectedSound; 
+      get
+      {
+        return droppedSound.Any() ? droppedSound : collectedSound;
       }
     }
 
@@ -260,10 +266,10 @@ namespace Roguelike.Tiles
 
     public ILootSource source;
     [JsonIgnore]
-    public ILootSource Source 
+    public ILootSource Source
     {
       get { return source; }
-      internal set 
+      internal set
       {
         if (this is Equipment eq && eq.IsPlain() && eq.EnchantSlots < 2)
         {

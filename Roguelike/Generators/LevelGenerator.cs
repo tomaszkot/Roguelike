@@ -1,14 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using Dungeons;
+﻿using Dungeons;
 using Dungeons.Core;
 using Dungeons.TileContainers;
-using Roguelike.Abstract;
 using Roguelike.Tiles;
 using Roguelike.Tiles.Interactive;
 using SimpleInjector;
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
 
 namespace Roguelike.Generators
 {
@@ -24,7 +23,7 @@ namespace Roguelike.Generators
     public LevelGenerator(Container container) : base(container)
     {
       Logger = container.GetInstance<ILogger>();
-      MaxLevelIndex  = GenerationInfo.MaxLevelIndex;
+      MaxLevelIndex = GenerationInfo.MaxLevelIndex;
     }
 
     public override DungeonLevel Generate(int levelIndex, Dungeons.GenerationInfo info = null, LayouterOptions opt = null)
@@ -62,7 +61,7 @@ namespace Roguelike.Generators
       dungeon.Create(w, h, gi, nodeIndex);
     }
 
-    
+
 
     protected virtual void CreateDynamicTiles(List<Dungeons.TileContainers.DungeonNode> mazeNodes)
     {
@@ -104,9 +103,9 @@ namespace Roguelike.Generators
         else
           Logger.LogError("no room for stairs, maze: " + maze);
 
-        
-          //node.SetTile(stairs, new System.Drawing.Point(3, 1));
-        }
+
+        //node.SetTile(stairs, new System.Drawing.Point(3, 1));
+      }
     }
 
     protected override void OnChildIslandCreated(ChildIslandCreationInfo e)
@@ -135,7 +134,7 @@ namespace Roguelike.Generators
       if (!node.Created)
         return node;
 
-      if((LevelIndex > 0 || StairsUpOnLevel0) 
+      if ((LevelIndex > 0 || StairsUpOnLevel0)
         && (!node.Secret && stairsUp == null))
       {
         AddStairsUp(node);

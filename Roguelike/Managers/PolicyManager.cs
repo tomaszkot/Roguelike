@@ -34,10 +34,10 @@ namespace Roguelike.Managers
       gm.HandeTileHit(attackPolicy.Victim);
     }
 
-    
 
 
-    
+
+
     void FindBulkAttackTargets(Enemy lastTarget)
     {
       HeroBulkAttackTargets = new List<Enemy>();
@@ -85,7 +85,7 @@ namespace Roguelike.Managers
           }
         }
       }
-      
+
       HandleHeroActionDone();
     }
 

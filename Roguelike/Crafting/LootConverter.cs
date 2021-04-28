@@ -9,7 +9,6 @@ using SimpleInjector;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.InteropServices;
 
 namespace Roguelike.Crafting
 {
@@ -42,8 +41,6 @@ namespace Roguelike.Crafting
       error.Message = errorMessage;
       return error;
     }
-
-    public int LastCraftStackedCount { get; set; }
   }
 
   public class LootCrafter : LootCrafterBase
@@ -66,12 +63,11 @@ namespace Roguelike.Crafting
     //  juwell.Price = 10;
     //  return juwell;
     //}
-        
+
     public override CraftingResult Craft(Recipe recipe, List<Loot> lootToConvert)
     {
       if (recipe == null)
         return ReturnCraftingError("Recipe not set");
-      LastCraftStackedCount = 0;
 
       if (recipe.MagicDustRequired > 0)
       {
@@ -124,10 +120,10 @@ namespace Roguelike.Crafting
             return ReturnCraftingError("Only enchanting items (gems, claws,...)are alowed by the Recipe");
           }
           var eq = equips.ElementAt(0) as Equipment;
-          if(!eq.Enchantable)
-            return ReturnCraftingError("Equipment is not "+ Translations.Strings.Enchantable.ToLower());
+          if (!eq.Enchantable)
+            return ReturnCraftingError("Equipment is not " + Translations.Strings.Enchantable.ToLower());
           var freeSlots = eq.EnchantSlots - eq.Enchants.Count;
-          if(freeSlots < enchanters.Count())
+          if (freeSlots < enchanters.Count())
             return ReturnCraftingError("Too many enchantables added");
           string err;
           foreach (var ench in enchanters.Cast<Enchanter>())
@@ -142,10 +138,8 @@ namespace Roguelike.Crafting
         else if ((recipe.Kind == RecipeKind.Custom || recipe.Kind == RecipeKind.ExplosiveCocktail) &&
           sulfCount > 0 && hoochCount > 0)
         {
-
           if (sulfCount != hoochCount)
-            return ReturnCraftingError("Number of ingradients must be the same (not counting Magic Dust)");
-          LastCraftStackedCount = sulfCount;//TODO
+            return ReturnCraftingError("Number of ingradients must be the same (except for Magic Dust)");
           return ReturnCraftedLoot(new ExplosiveCocktail());
         }
 
@@ -158,7 +152,6 @@ namespace Roguelike.Crafting
         var allMp = lootToConvert.All(i => i.IsPotion(PotionKind.Mana));
         if ((recipe.Kind == RecipeKind.Custom || recipe.Kind == RecipeKind.TransformPotion) && (allHp || allMp))
         {
-          LastCraftStackedCount = lootToConvert.Count;//TODO
           if (lootToConvert[0].IsPotion(PotionKind.Mana))
             return ReturnCraftedLoot(new Potion(PotionKind.Health));
           else
@@ -173,7 +166,6 @@ namespace Roguelike.Crafting
             var toadstool = lootToConvert[0].AsToadstool();
             if (toadstool != null)
             {
-              LastCraftStackedCount = 3;
               Potion potion = null;
               if (toadstool.MushroomKind == MushroomKind.BlueToadstool)
                 potion = new Potion(PotionKind.Mana);
@@ -220,7 +212,7 @@ namespace Roguelike.Crafting
       }
       else if (recipe.Kind == RecipeKind.Custom && lootToConvert.Count == 2)
       {
-        var toadstools = lootToConvert.Where(i =>  i.IsToadstool()).ToList();
+        var toadstools = lootToConvert.Where(i => i.IsToadstool()).ToList();
         var potions = lootToConvert.Where(i => i is Potion).ToList();
         if (toadstools.Count == 1 && potions.Count == 1)
         {
@@ -327,14 +319,13 @@ namespace Roguelike.Crafting
         return ReturnCraftingError("Equipment for crafting must be of the same type");
 
       if (eq1.WasCraftedBy(RecipeKind.TwoEq) || eq2.WasCraftedBy(RecipeKind.TwoEq))
-        return ReturnCraftingError("Can not craft equipment which was already crafted in pairs"); 
+        return ReturnCraftingError("Can not craft equipment which was already crafted in pairs");
       var destEq = eq1.Price > eq2.Price ? eq1 : eq2;
 
       var srcEq = destEq == eq1 ? eq2 : eq1;
       var srcHadEmptyEnch = srcEq.Enchantable && !srcEq.MaxEnchantsReached();
       var destHadEmptyEnch = destEq.Enchantable && !destEq.MaxEnchantsReached();
 
-      //destEq = destEq.Clone() as Equipment; //TODo why clone  ?
       float priceInc = 0;
       var enhPr = GetEnhStatValue(destEq.PrimaryStatValue, destEq.Price, srcEq.Price);
       destEq.PrimaryStatValue += enhPr;

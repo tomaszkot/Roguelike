@@ -61,7 +61,7 @@ namespace Roguelike.Spells
         default:
           break;
       }
-      
+
       return EffectType.Unset;
     }
 

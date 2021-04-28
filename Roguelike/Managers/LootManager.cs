@@ -35,7 +35,7 @@ namespace Roguelike.Managers
       if (lootSource == null)//hit a wall ?
         return lootItems;
       Loot debugLoot = null;
-      if(debugLoot != null)
+      if (debugLoot != null)
         lootItems.Add(debugLoot);
 
       if (!lootItems.Any())
@@ -58,7 +58,7 @@ namespace Roguelike.Managers
           var eq = loot as Equipment;
           if (eq.Class == EquipmentClass.Plain && !eq.Enchantable)
           {
-            if(RandHelper.GetRandomDouble() > 0.2)//TODO
+            if (RandHelper.GetRandomDouble() > 0.2)//TODO
               eq.MakeEnchantable();
           }
         }
@@ -111,7 +111,7 @@ namespace Roguelike.Managers
         //  chest.ChestKind == ChestKind.Gold)
         {
           var lootEx1 = GetExtraLoot(lootSource, false, loot.LootKind);
-          if(lootEx1!=null)
+          if (lootEx1 != null)
             lootItems.Add(lootEx1);
           GameManager.AddLootReward(lootEx1, lootSource, true);
 
@@ -127,13 +127,13 @@ namespace Roguelike.Managers
 
       return lootItems;
     }
-        
+
     Loot TryAddLootForDeadEnemy(Enemy enemy)
     {
       //GameManager.Logger.LogInfo("TryAddLootForDeadEnemy "+ enemy);
       Loot loot = null;
       bool addConsumableOrOtherReward = false;
-      if(enemy.PowerKind == EnemyPowerKind.Champion ||
+      if (enemy.PowerKind == EnemyPowerKind.Champion ||
           enemy.PowerKind == EnemyPowerKind.Boss)
       {
         loot = GenerateLootForPowerfulEnemy(enemy);
@@ -145,7 +145,7 @@ namespace Roguelike.Managers
       if (loot != null)
         GameManager.AddLootReward(loot, enemy, false);
 
-      if(enemy.DeathLoot!=null)
+      if (enemy.DeathLoot != null)
         GameManager.AddLootReward(enemy.DeathLoot, enemy, false);
 
       var extraLootItems = GetExtraLoot(enemy, loot);
@@ -167,10 +167,10 @@ namespace Roguelike.Managers
           extraLootItems.Add(exLoot);
         }
       }
-      
+
       foreach (var extraLoot in extraLootItems)
       {
-        if(extraLoot!=null)
+        if (extraLoot != null)
           GameManager.AddLootReward(extraLoot, enemy, false);
       }
 
@@ -188,7 +188,7 @@ namespace Roguelike.Managers
       {
         loot = GameManager.GetBestLoot(enemy.PowerKind, enemy.Level, GameManager.GameState.History.Looting);
       }
-     
+
       return loot;
     }
 
@@ -243,7 +243,7 @@ namespace Roguelike.Managers
         if (!(loot is Gold))
           extraLoot.Add(loot);
       }
-      
+
       return extraLoot;
     }
   }

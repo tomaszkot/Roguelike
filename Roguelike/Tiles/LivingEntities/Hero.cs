@@ -1,35 +1,34 @@
 ﻿#define ASCII_BUILD  
 using Dungeons.Core;
-using System.Drawing;
-using System;
+using Roguelike.Abstract.Inventory;
 using Roguelike.Attributes;
+using Roguelike.Calculated;
+using Roguelike.LootContainers;
+using Roguelike.Quests;
 using Roguelike.Tiles.Looting;
 using SimpleInjector;
-using System.Linq;
-using Roguelike.LootContainers;
+using System;
 using System.Collections.Generic;
-using Roguelike.Calculated;
-using Roguelike.Quests;
-using Roguelike.Abstract.Tiles;
-using Roguelike.Abstract.Inventory;
+using System.Drawing;
+using System.Linq;
 
 namespace Roguelike.Tiles.LivingEntities
 {
   public class Hero : AdvancedLivingEntity
   {
     List<Quest> quests = new List<Quest>();
-    public List<Quest> Quests 
-    { 
-      get => quests; 
-      set => quests = value; 
+    public List<Quest> Quests
+    {
+      get => quests;
+      set => quests = value;
     }
-            
+
     public LootContainers.Crafting Crafting { get; set; }
-        
+
     public Hero(Container container) : base(container, new Point().Invalid(), '@')
     {
       canAdvanceInExp = true;
-      
+
       Stats.SetNominal(EntityStatKind.Health, 40);//level up +2 // 40 -> 140
       // Character.Mana = 40;
       StartStrength += 5;
@@ -45,10 +44,10 @@ namespace Roguelike.Tiles.LivingEntities
       CurrentEquipment.InvBasketKind = InvBasketKind.HeroEquipment;
 
       Crafting = Container.GetInstance<Roguelike.LootContainers.Crafting>();
-      
+
       Dirty = true;//TODO
       Revealed = true;
-            
+
 #if ASCII_BUILD
       color = ConsoleColor.Yellow;
 #endif
@@ -60,7 +59,7 @@ namespace Roguelike.Tiles.LivingEntities
 
     public bool Identify(Equipment eq)
     {
-      var scroll = Inventory.GetItems<Scroll>().Where(i=> i.Kind == Spells.SpellKind.Identify).FirstOrDefault();
+      var scroll = Inventory.GetItems<Scroll>().Where(i => i.Kind == Spells.SpellKind.Identify).FirstOrDefault();
       if (scroll != null)
       {
         if (eq.Identify())
@@ -107,7 +106,7 @@ namespace Roguelike.Tiles.LivingEntities
       var intAttack = (int)attack;
       var variation = (int)GetAttackVariation();
       if (variation != 0)
-        res = new Tuple<int, int>(intAttack- variation, intAttack+ variation);
+        res = new Tuple<int, int>(intAttack - variation, intAttack + variation);
       else
         res = new Tuple<int, int>(intAttack, intAttack);
 
@@ -182,9 +181,10 @@ namespace Roguelike.Tiles.LivingEntities
       Inventory.GetItems<Equipment>().ToList().ForEach(i => i.PrepareForSave());
       CurrentEquipment.PrimaryEquipment.ToList().ForEach
       (
-        i => {
-          if(i.Value!=null)
-            i.Value.PrepareForSave(); 
+        i =>
+        {
+          if (i.Value != null)
+            i.Value.PrepareForSave();
         }
       );
     }
@@ -200,7 +200,7 @@ namespace Roguelike.Tiles.LivingEntities
       if (dest is Ally)
         getGold = false;
 
-      if(dest.Inventory.InvBasketKind == InvBasketKind.CraftingInvItems || dest.Inventory.InvBasketKind == InvBasketKind.CraftingRecipe)
+      if (dest.Inventory.InvBasketKind == InvBasketKind.CraftingInvItems || dest.Inventory.InvBasketKind == InvBasketKind.CraftingRecipe)
         getGold = false;
       if (dest.Inventory.InvBasketKind == InvBasketKind.HeroChest)
         getGold = false;

@@ -59,7 +59,7 @@ namespace Roguelike.InfoScreens
           actions.RemoveAt(0);
       }
     }
-    
+
     internal void Add(string action, ActionLevel level = ActionLevel.Normal)
     {
       var ac = new GameAction() { Info = action, Level = level };

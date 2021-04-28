@@ -1,11 +1,10 @@
-﻿using System.Collections.Generic;
-using Dungeons.Tiles;
+﻿using Dungeons.Tiles;
 using NUnit.Framework;
 using Roguelike;
 using Roguelike.Generators;
 using Roguelike.Managers;
-using Roguelike.Tiles;
 using Roguelike.Tiles.LivingEntities;
+using System.Collections.Generic;
 
 namespace RoguelikeUnitTests.Helpers
 {
@@ -15,7 +14,7 @@ namespace RoguelikeUnitTests.Helpers
     protected TestBase test;
 
     public GameManager GameManager { get { return game.GameManager; } }
-    public LootGenerator LootGenerator { get { return GameManager.LootGenerator; }  }
+    public LootGenerator LootGenerator { get { return GameManager.LootGenerator; } }
 
     public BaseHelper(TestBase test)
     {

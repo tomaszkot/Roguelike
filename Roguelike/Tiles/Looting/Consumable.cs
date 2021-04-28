@@ -1,12 +1,9 @@
-﻿using Roguelike.Abstract;
-using Roguelike.Attributes;
+﻿using Roguelike.Attributes;
 using Roguelike.Effects;
 using Roguelike.Extensions;
 using Roguelike.Factors;
 using Roguelike.Tiles.Abstract;
 using Roguelike.Tiles.LivingEntities;
-using System;
-using System.Collections.Generic;
 using System.Linq;
 
 namespace Roguelike.Tiles.Looting
@@ -29,15 +26,15 @@ namespace Roguelike.Tiles.Looting
 
     public EntityStatKind StatKind { get => statKind; set => statKind = value; }
 
-    public Loot Loot {get=> this;}
+    public Loot Loot { get => this; }
 
     public EffectType EffectType { get; set; }
-    public bool PercentageStatIncrease { get ; set ; }
+    public bool PercentageStatIncrease { get; set; }
     public int TourLasting { get => ConsumptionSteps; set => ConsumptionSteps = value; }
     //public EntityStatKind StatKind { get => EnhancedStat; set => EnhancedStat = value; }
-    public PercentageFactor StatKindPercentage 
-    { 
-      get => GetPercentageStatIncrease();  
+    public PercentageFactor StatKindPercentage
+    {
+      get => GetPercentageStatIncrease();
     }
 
     public virtual EffectiveFactor StatKindEffective => new EffectiveFactor(0);
@@ -49,7 +46,7 @@ namespace Roguelike.Tiles.Looting
     public virtual PercentageFactor GetPercentageStatIncrease()
     {
       var divider = 20;
-      
+
       if (Roasted)
         divider /= 2;
       var inc = 100 / divider;
@@ -60,7 +57,7 @@ namespace Roguelike.Tiles.Looting
 
     protected string GetConsumeDesc(string desc)
     {
-      if(Strings.ConsumeDescPart.Any())
+      if (Strings.ConsumeDescPart.Any())
         return desc + ", " + Strings.ConsumeDescPart;
       return desc;
     }
@@ -75,7 +72,7 @@ namespace Roguelike.Tiles.Looting
         if (PercentageStatIncrease)
         {
           lsi.Desc += GetPercentageStatIncrease();
-          if(TourLasting > 1)
+          if (TourLasting > 1)
             lsi.Desc += " (x" + TourLasting + " turns)";
         }
 

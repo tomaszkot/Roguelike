@@ -3,13 +3,10 @@ using Roguelike.Attributes;
 using Roguelike.Factors;
 using Roguelike.Tiles.LivingEntities;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace Roguelike.Tiles.Looting
 {
-  public enum SpecialPotionKind { Unset, Strength, Magic}
+  public enum SpecialPotionKind { Unset, Strength, Magic }
   public enum SpecialPotionSize { Small, Medium, Big }
 
   [Serializable]
@@ -21,7 +18,7 @@ namespace Roguelike.Tiles.Looting
 
     public SpecialPotion() : this(SpecialPotionKind.Unset, SpecialPotionSize.Small)
     {
-      
+
     }
 
     public SpecialPotion(SpecialPotionKind kind, SpecialPotionSize size) : base(PotionKind.Special)
@@ -61,11 +58,11 @@ namespace Roguelike.Tiles.Looting
         }
 
         //tag1 += "_"+size.ToString();maybe UI can scale ?
-        Name = size.ToString().ToUpperFirstLetter() + " "+ Name;
+        Name = size.ToString().ToUpperFirstLetter() + " " + Name;
         PrimaryStatDescription = "Permamently increases " + GetDestStat();
       }
     }
-    
+
     public bool Apply(AdvancedLivingEntity ent)
     {
       if (used)
@@ -75,7 +72,7 @@ namespace Roguelike.Tiles.Looting
       var enh = GetEnhValue();
       ent.Stats[esk].Nominal += enh;
       for (int i = 0; i < enh; i++)
-         ent.EmitStatsLeveledUp(GetDestStat());
+        ent.EmitStatsLeveledUp(GetDestStat());
       //GameManager.Instance.AppendAction(new LootAction() { Info = ent.Name + " drunk " + Name, Loot = this, KindValue = LootAction.Kind.SpecialDrunk });
       used = true;
       return true;
@@ -92,11 +89,11 @@ namespace Roguelike.Tiles.Looting
       return value;
     }
 
-    public override EffectiveFactor StatKindEffective 
+    public override EffectiveFactor StatKindEffective
     {
       get { return new EffectiveFactor(GetEnhValue()); }
     }
-    
+
     public EntityStatKind GetDestStat()
     {
       return SpecialPotionKind == SpecialPotionKind.Strength ? EntityStatKind.Strength : EntityStatKind.Magic;
@@ -112,7 +109,7 @@ namespace Roguelike.Tiles.Looting
         //if (GameManager.Instance.GameSettings.GameControllingMode == GameControllingMode.MouseAndKeyboard)
         //  desc += "Press X in the inventory\r\nto consume";
         //else
-          desc += "Double Tap it in the inventory\r\nto consume";
+        desc += "Double Tap it in the inventory\r\nto consume";
         extraStatDescription = new string[1];
         extraStatDescription[0] = desc;
       }

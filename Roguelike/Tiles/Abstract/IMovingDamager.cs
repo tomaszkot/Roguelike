@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Roguelike.Tiles.Abstract
+﻿namespace Roguelike.Tiles.Abstract
 {
   //TODO raname to IDamager
   interface IMovingDamager

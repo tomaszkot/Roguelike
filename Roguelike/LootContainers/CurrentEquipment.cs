@@ -22,7 +22,7 @@ namespace Roguelike.LootContainers
 
     //spareEquipment - currently only weapon/shield can be not null
     SerializableDictionary<CurrentEquipmentKind, Equipment> spareEquipment = new SerializableDictionary<CurrentEquipmentKind, Equipment>();
-    
+
     public CurrentEquipment(Container container) : base(container)
     {
       var eqipTypes = Enum.GetValues(typeof(CurrentEquipmentKind));
@@ -75,8 +75,8 @@ namespace Roguelike.LootContainers
       CurrentEquipmentAddItemArg castedArgs = null;
       if (args != null)
         castedArgs = args as CurrentEquipmentAddItemArg;
-      
-      if(castedArgs == null)
+
+      if (castedArgs == null)
         castedArgs = new CurrentEquipmentAddItemArg();
 
       return SetEquipment(eq, castedArgs.cek, castedArgs.primary);
@@ -106,7 +106,7 @@ namespace Roguelike.LootContainers
 
     public bool SetEquipment(Equipment eq, CurrentEquipmentKind cek = CurrentEquipmentKind.Unset, bool primary = true)
     {
-      if(!EnsureCurrEqKind(eq, ref cek))
+      if (!EnsureCurrEqKind(eq, ref cek))
         return false;
       if (eq != null)
       {

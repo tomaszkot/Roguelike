@@ -1,5 +1,4 @@
 ﻿using NUnit.Framework;
-using Roguelike;
 using Roguelike.Attributes;
 using Roguelike.Effects;
 using Roguelike.Events;
@@ -83,7 +82,7 @@ namespace RoguelikeUnitTests
       }
 
       expected += le1.Description;
-            
+
 
       var ac = le1.CreateAction(le1);
       //Assert.True(ac.Info.StartsWith(expected));
@@ -97,7 +96,7 @@ namespace RoguelikeUnitTests
 
       game.Hero.Name = "Edd";
       var en = ActiveEnemies.First();
-      var le = game.Hero.LastingEffectsSet.EnsureEffect( EffectType.Bleeding, 10, en);
+      var le = game.Hero.LastingEffectsSet.EnsureEffect(EffectType.Bleeding, 10, en);
       Assert.NotNull(le);
 
       var expectedDesc = le.Type.ToDescription() + ", -10 Health (per turn)";
@@ -173,7 +172,7 @@ namespace RoguelikeUnitTests
 
       var turns = le1.PendingTurns;
       int appliedCounter = 0;
-      for (int i = 0; i < turns*2; i++)//there will be prolong
+      for (int i = 0; i < turns * 2; i++)//there will be prolong
       {
         game.GameManager.SkipHeroTurn();
         GotoNextHeroTurn();
@@ -191,24 +190,24 @@ namespace RoguelikeUnitTests
       Assert.AreEqual(actionCounter, 1);
       Assert.AreEqual(appliedCounter, 7);
     }
-  
+
 
     [Test]
     public void TestIronSkin()
     {
       var game = CreateGame();
       float statTotalValueBefore;
-      
+
       int actionCounter = 0;
 
-      game.GameManager.EventsManager.ActionAppended += (object sender, Roguelike.Events.GameAction e)=>
+      game.GameManager.EventsManager.ActionAppended += (object sender, Roguelike.Events.GameAction e) =>
       {
         if (e is LivingEntityAction)
         {
           var lea = e as LivingEntityAction;
           if (lea.Kind == LivingEntityActionKind.ExperiencedEffect)
           {
-            if(lea.Info.Contains(EffectType.IronSkin.ToDescription()))
+            if (lea.Info.Contains(EffectType.IronSkin.ToDescription()))
               actionCounter++;
           }
         }
@@ -222,11 +221,11 @@ namespace RoguelikeUnitTests
       for (int i = 0; i < turns; i++)
       {
         game.GameManager.SkipHeroTurn();
-        GotoNextHeroTurn();        
+        GotoNextHeroTurn();
       }
       Assert.AreEqual(le1.PendingTurns, 0);
       Assert.AreEqual(value.CurrentValue, statTotalValueBefore);
-      Assert.AreEqual(actionCounter, 1); 
+      Assert.AreEqual(actionCounter, 1);
     }
 
     [Test]
@@ -239,7 +238,7 @@ namespace RoguelikeUnitTests
       Assert.Less(defenseStat.Value.CurrentValue, defense);
       //var defenseWeaken = game.Hero.Stats.Defense;
       var turns = le1.PendingTurns;
-      for (int i = 0; i < turns ; i++)
+      for (int i = 0; i < turns; i++)
       {
         game.GameManager.SkipHeroTurn();
         GotoNextHeroTurn();
@@ -338,7 +337,7 @@ namespace RoguelikeUnitTests
         {
           enemy.OnPhysicalHitBy(game.Hero);
         }
-        
+
       }
       Assert.Greater(enemyHealth, enemy.Stats.Health);
       Assert.AreEqual(actionCounter, 5);
@@ -361,7 +360,7 @@ namespace RoguelikeUnitTests
       game.Hero.OnPhysicalHitBy(enemy);
       var le1 = game.Hero.GetFirstLastingEffect(EffectType.Poisoned);
       Assert.NotNull(le1);
-      
+
       Assert.Less(healthStat.Value.CurrentValue, health);
       var turns = le1.PendingTurns;
       for (int i = 0; i < turns; i++)

@@ -1,10 +1,7 @@
-﻿using Dungeons;
-using Dungeons.ASCIIDisplay;
+﻿using Dungeons.ASCIIDisplay;
 using Dungeons.ASCIIDisplay.Presenters;
-using Roguelike.Abstract;
 using Roguelike.Abstract.Managers;
 using Roguelike.Managers;
-using Roguelike.TileContainers;
 using System;
 using System.Diagnostics;
 
@@ -41,7 +38,7 @@ namespace RoguelikeConsoleRunner.ASCIIDisplay
       if (i == DungeonDesc)
       {
         var desc = "";
-        desc += " "+GameManager.Context.CurrentNode.ToString();
+        desc += " " + GameManager.Context.CurrentNode.ToString();
 
         var hero = GameManager.Context.Hero;
         desc += " Name:" + hero.Name;
@@ -58,7 +55,7 @@ namespace RoguelikeConsoleRunner.ASCIIDisplay
       Lists[UsageListName].Items.Add(new ListItem("L - Load"));
       Lists[UsageListName].Items.Add(new ListItem("G - Collect Loot (while standing over it)"));
 
-      var panelLeft = Console.WindowWidth - panelsWidth*2 - OriginX;
+      var panelLeft = Console.WindowWidth - panelsWidth * 2 - OriginX;
 
       lastActionsPrinter = new ListPresenter("Last Actions", panelLeft, DungeonBottom, panelsWidth);
       Lists.Add(lastActionsPrinter.Caption, lastActionsPrinter);

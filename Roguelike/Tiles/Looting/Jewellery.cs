@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Roguelike.Tiles
+﻿namespace Roguelike.Tiles
 {
   public class Jewellery : Equipment
   {
@@ -46,7 +39,7 @@ namespace Roguelike.Tiles
     }
 
     bool isPendant = false;
-    public bool IsPendant 
+    public bool IsPendant
     {
       get { return isPendant; }
       //for de-serialization

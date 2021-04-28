@@ -1,5 +1,4 @@
 ﻿using NUnit.Framework;
-using Roguelike;
 using Roguelike.Generators;
 using Roguelike.Managers;
 using Roguelike.Tiles;
@@ -39,7 +38,7 @@ namespace RoguelikeUnitTests
     //  var game = CreateGame();
     //  Loot loot = new Loot();
     //  CollectLoot(game, loot);
-      
+
     //}
 
     [Test]
@@ -54,10 +53,10 @@ namespace RoguelikeUnitTests
       var res = game.GameManager.InteractHeroWith(barrels.First());
       Assert.AreEqual(res, InteractionResult.Attacked);
       var barrels1 = game.Level.GetTiles<Barrel>();
-      Assert.AreEqual(barrels1.Count, barrels.Count-1);
+      Assert.AreEqual(barrels1.Count, barrels.Count - 1);
       Assert.AreNotEqual(game.Level.GetTile(pt), barrels.First());
-     // var tile = game.Level.GetTile(pt);
-     // Assert.True(tile.IsEmpty);
+      // var tile = game.Level.GetTile(pt);
+      // Assert.True(tile.IsEmpty);
     }
 
     private static void CollectLoot(Roguelike.RoguelikeGame game, Loot loot)
@@ -81,7 +80,7 @@ namespace RoguelikeUnitTests
       Assert.AreEqual(game.Level.Index, 0);
       var levelZero = game.Level;
       var stairs = game.Level.GetTiles<Stairs>().ToList();
-      var down = stairs.Where(i=> i.StairsKind == StairsKind.LevelDown).Single();
+      var down = stairs.Where(i => i.StairsKind == StairsKind.LevelDown).Single();
 
       //hero shall be on the level
       Assert.NotNull(game.Level.GetTiles<Hero>().SingleOrDefault());

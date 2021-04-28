@@ -19,7 +19,7 @@ namespace RoguelikeUnitTests
       helper.Test = this;
       helper.Enemies = this.GetLimitedEnemies();
       helper.Game = game;
-      
+
       return helper as T;
     }
   }

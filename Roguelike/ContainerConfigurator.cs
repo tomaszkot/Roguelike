@@ -10,7 +10,6 @@ using Roguelike.Serialization;
 using Roguelike.State;
 using Roguelike.Strategy;
 using Roguelike.TileContainers;
-using Roguelike.Tiles;
 using Roguelike.Tiles.LivingEntities;
 using SimpleInjector;
 
@@ -19,7 +18,7 @@ namespace Roguelike
   public class ContainerConfigurator : Dungeons.IContainerConfigurator
   {
     public Container Container { get; set; }
-    
+
     public ContainerConfigurator()
     {
       var container = new Container();
@@ -55,7 +54,7 @@ namespace Roguelike
       Container = container;
     }
 
-    protected virtual  void RegisterLogger(Container container)
+    protected virtual void RegisterLogger(Container container)
     {
       container.Register<ILogger, Logger>();
     }

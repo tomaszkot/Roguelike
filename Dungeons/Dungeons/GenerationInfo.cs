@@ -26,7 +26,7 @@ namespace Dungeons
     //global switch
     public const bool ForceEmpty = false;
 
-    
+
     public bool GenerateOuterWalls = true && !ForceEmpty;
     public bool GenerateRandomInterior = true && !ForceEmpty;
     public bool GenerateRandomStonesBlocks = true && !ForceEmpty;

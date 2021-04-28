@@ -4,7 +4,7 @@
   {
     protected float value;
 
-    public Factor(float val) 
+    public Factor(float val)
     {
       value = val;
     }
@@ -19,7 +19,7 @@
   public class PercentageFactor : Factor
   {
     public PercentageFactor(float val) : base(val)
-    { 
+    {
     }
 
     //percentage value deducted/added to a stat

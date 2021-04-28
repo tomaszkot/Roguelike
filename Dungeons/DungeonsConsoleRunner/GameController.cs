@@ -57,7 +57,7 @@ namespace DungeonsConsoleRunner
 
     public virtual DungeonNode GenerateDungeon()
     {
-      Dungeon = generator.Generate( levelIndex++);
+      Dungeon = generator.Generate(levelIndex++);
       return Dungeon;
     }
 
@@ -86,7 +86,7 @@ namespace DungeonsConsoleRunner
 
     protected virtual void RevealAll()
     {
-      
+
     }
 
     protected void Reload()

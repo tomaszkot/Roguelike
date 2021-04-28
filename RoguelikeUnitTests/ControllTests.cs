@@ -1,11 +1,6 @@
-﻿using Dungeons.Core;
-using NUnit.Framework;
+﻿using NUnit.Framework;
 using Roguelike;
-using Roguelike.Tiles;
 using Roguelike.Tiles.LivingEntities;
-using System;
-using System.Drawing;
-using System.Linq;
 using static Dungeons.TileContainers.DungeonNode;
 
 namespace RoguelikeUnitTests
@@ -43,7 +38,7 @@ namespace RoguelikeUnitTests
       Assert.Null(game.Hero);
       var gi = new Roguelike.Generators.GenerationInfo();
       gi.MakeEmpty();
-      
+
       var level = game.GenerateLevel(0, gi);
 
       Assert.AreEqual(game.GameManager.Context.TurnOwner, TurnOwner.Hero);
@@ -62,7 +57,7 @@ namespace RoguelikeUnitTests
       var emptyHeroNeib = level.GetEmptyNeighborhoodPoint(game.Hero, EmptyNeighborhoodCallContext.Move);
       game.GameManager.HandleHeroShift(emptyHeroNeib.Item2);
       Assert.AreEqual(heroPrevPos, game.Hero.point);//shall not move as already did in turn
-      
+
       Assert.AreEqual(game.GameManager.Context.TurnOwner, TurnOwner.Allies);
     }
 
@@ -114,13 +109,13 @@ namespace RoguelikeUnitTests
       Assert.AreEqual(game.GameManager.Context.TurnOwner, TurnOwner.Hero);
       Assert.AreEqual(Game.GameManager.Context.GetActionsCount(), 0);
     }
-        
+
     [Test]
     public void TestFightHitNumberCustomTurnOwner()
     {
       var game = CreateGame(false);
       Assert.Null(game.Hero);
-      
+
       var gi = new Roguelike.Generators.GenerationInfo();
       gi.MakeEmpty();
 
@@ -160,7 +155,7 @@ namespace RoguelikeUnitTests
 
       heroPos = game.Hero.point;
       TryToMoveHero();
-      
+
       Assert.AreEqual(heroPos, game.Hero.point);//hero shall not move as it already made action this turn
     }
 
@@ -193,7 +188,7 @@ namespace RoguelikeUnitTests
         Assert.AreEqual(game.GameManager.Context.TurnOwner, TurnOwner.Allies);
       }
     }
-       
-        
+
+
   }
 }

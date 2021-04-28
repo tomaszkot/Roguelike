@@ -1,5 +1,4 @@
 ﻿using NUnit.Framework;
-using Roguelike;
 using Roguelike.Attributes;
 using Roguelike.Extensions;
 using Roguelike.Spells;
@@ -58,7 +57,7 @@ namespace RoguelikeUnitTests
       var kind = Scroll.DiscoverKindFromName("fire_ball_scroll");
       Assert.AreEqual(kind, SpellKind.FireBall);
     }
-    
+
     [Test]
     public void HunterTrophyProps()
     {
@@ -74,8 +73,8 @@ namespace RoguelikeUnitTests
       Assert.Greater(siBig, siSmall);
       Assert.Greater(trophyBig.Price, trophySmall.Price);
     }
-    
-    
+
+
     [Test]
     public void GemsStats()
     {
@@ -236,7 +235,7 @@ namespace RoguelikeUnitTests
         scrolls.AddRange(env.AssertLootFromEnemies(new[] { LootKind.Scroll }).Cast<Scroll>().ToList());
       }
 
-      Assert.Less(scrolls.Count, 50*mult);
+      Assert.Less(scrolls.Count, 50 * mult);
       var typesGrouped = scrolls.GroupBy(f => f.Kind).ToList();
       Assert.GreaterOrEqual(typesGrouped.Count, 3);//TODO support more scrolls!
       var identCount = typesGrouped.Where(i => i.Key == SpellKind.Identify).First().Count();
@@ -279,7 +278,7 @@ namespace RoguelikeUnitTests
           Assert.Less(numberOfNextTypeOfScrolls, 25);
           int min = 1;
           int max = 20;
-            
+
           if (nextScrollType.Key == SpellKind.Portal)
           {
             min = 2;
@@ -305,7 +304,7 @@ namespace RoguelikeUnitTests
     }
 
     [Test]
-     public void KilledEnemyForEqipAndGold()
+    public void KilledEnemyForEqipAndGold()
     {
       var env = CreateTestEnv(numEnemies: 25);
       env.LootGenerator.Probability = new Roguelike.Probability.Looting();
@@ -370,7 +369,7 @@ namespace RoguelikeUnitTests
       var enemiesBefore = env.Game.Level.GetTiles<Enemy>();
 
       var newLootItems = env.TestInteractive<Barrel>(
-         (InteractiveTile barrel) =>{},
+         (InteractiveTile barrel) => { },
          numberOfInteractiveTiles,
          50 * multiplicator,//max loot count
          1//max uniq count
@@ -389,9 +388,9 @@ namespace RoguelikeUnitTests
       var numberOfInteractiveTiles = 100 * multiplicator;
 
       var newLootItems = env.TestInteractive<Barrel>(
-         (InteractiveTile barrel) =>{}, 
+         (InteractiveTile barrel) => { },
          numberOfInteractiveTiles,
-         50* multiplicator,//max loot count
+         50 * multiplicator,//max loot count
          1//max uniq count
         );
 
@@ -446,7 +445,7 @@ namespace RoguelikeUnitTests
       var ident = typesGrouped.Where(i => i.Key == SpellKind.Identify).FirstOrDefault();
       Assert.NotNull(ident);
       var identCount = ident.Count();
-      Assert.Less(identCount, maxScrolls/2);
+      Assert.Less(identCount, maxScrolls / 2);
       //Assert.Greater(identCount, maxScrolls/5);//TODO
     }
 
@@ -586,10 +585,10 @@ namespace RoguelikeUnitTests
       Assert.Greater(lootItems.Count, 0);
       var foods = li.Get<Food>().ToList();
       Assert.Greater(foods.Count, 40);
-      var kinds = Enum.GetValues(typeof(FoodKind)).Cast<FoodKind>().Where(i=> i != FoodKind.Unset).ToList();
+      var kinds = Enum.GetValues(typeof(FoodKind)).Cast<FoodKind>().Where(i => i != FoodKind.Unset).ToList();
       foreach (var kind in kinds)
       {
-        Assert.IsTrue(foods.Any(i=> i.Kind == kind));
+        Assert.IsTrue(foods.Any(i => i.Kind == kind));
       }
     }
 
@@ -684,6 +683,6 @@ namespace RoguelikeUnitTests
     }
     ///
 
-    
-    }
+
   }
+}

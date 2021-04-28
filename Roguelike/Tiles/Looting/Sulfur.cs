@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace Roguelike.Tiles.Looting
+﻿namespace Roguelike.Tiles.Looting
 {
   public class Sulfur : StackedLoot
   {

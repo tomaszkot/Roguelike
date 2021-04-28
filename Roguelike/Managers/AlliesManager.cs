@@ -1,10 +1,6 @@
 ﻿using Dungeons.Core;
-using Roguelike.Abstract;
 using Roguelike.Abstract.Tiles;
 using Roguelike.Events;
-using Roguelike.Policies;
-using Roguelike.Strategy;
-using Roguelike.Tiles;
 using Roguelike.Tiles.LivingEntities;
 using Roguelike.Tiles.Looting;
 using SimpleInjector;
@@ -23,13 +19,13 @@ namespace Roguelike.Managers
       context.TurnOwnerChanged += OnTurnOwnerChanged;
       context.ContextSwitched += Context_ContextSwitched;
       this.enemiesManager = enemiesManager;
-      
+
     }
 
     public override bool RemoveDeadEntity(LivingEntity ent)
     {
-      var res =  RemoveEntity(ent);
-      Context.EventsManager.AppendAction(new AllyAction() { Info="Ally was lost", AllyActionKind = AllyActionKind.Died, InvolvedTile = ent as Ally });
+      var res = RemoveEntity(ent);
+      Context.EventsManager.AppendAction(new AllyAction() { Info = "Ally was lost", AllyActionKind = AllyActionKind.Died, InvolvedTile = ent as Ally });
       return res;
     }
 
@@ -43,7 +39,7 @@ namespace Roguelike.Managers
     {
       MakeHeroAllyMove(entity);
     }
-        
+
     public void MakeHeroAllyMove(LivingEntity ally)
     {
       if (!ally.Alive)
@@ -141,6 +137,6 @@ namespace Roguelike.Managers
     {
       AddEntity(ent as LivingEntity);
     }
-        
+
   }
 }

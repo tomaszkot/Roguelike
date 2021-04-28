@@ -5,7 +5,6 @@ using Roguelike.Events;
 using Roguelike.Extensions;
 using Roguelike.Factors;
 using Roguelike.Spells;
-using Roguelike.Tiles;
 using Roguelike.Tiles.LivingEntities;
 using System;
 using System.Linq;
@@ -32,17 +31,17 @@ namespace Roguelike.Effects
   public interface ILastingEffectOwner
   {
     string Name { get; set; }
-    
+
   }
 
-  public enum EffectOrigin 
-  { 
-    Unset, 
-    SelfCasted, 
+  public enum EffectOrigin
+  {
+    Unset,
+    SelfCasted,
     OtherCasted,
     External
   }
-  public enum EffectApplication  { Single, EachTurn}
+  public enum EffectApplication { Single, EachTurn }
 
   public class LastingEffectCalcInfo
   {
@@ -82,7 +81,7 @@ namespace Roguelike.Effects
 
     public EffectApplication Application { get; set; }
     public EffectOrigin Origin { get; set; }
-    public EffectType Type {get;set;}
+    public EffectType Type { get; set; }
 
     public EntityStatKind StatKind;
     public int PendingTurns = DefaultPendingTurns;
@@ -92,7 +91,7 @@ namespace Roguelike.Effects
 
     //percentage value deducted/added to a stat
     public PercentageFactor PercentageFactor { get; set; }
-    
+
     //public bool FromTrapSpell { get; internal set; }
     ILastingEffectOwner owner;
 
@@ -102,7 +101,7 @@ namespace Roguelike.Effects
     /// <summary>
     /// src of effect e.g. food
     /// </summary>
-    public Tile Source 
+    public Tile Source
     {
       get { return source; }
       set
@@ -140,7 +139,7 @@ namespace Roguelike.Effects
       }
     }
 
-    public LastingEffect(EffectType type, ILastingEffectOwner owner, int turns, EffectOrigin origin, EffectiveFactor effectiveFactor, 
+    public LastingEffect(EffectType type, ILastingEffectOwner owner, int turns, EffectOrigin origin, EffectiveFactor effectiveFactor,
                          PercentageFactor percentageFactor)
     {
       this.Id = Guid.NewGuid();
@@ -163,19 +162,19 @@ namespace Roguelike.Effects
         Application = EffectApplication.EachTurn;
       }
     }
-    
+
     string description;
-    public string Description 
-    { 
-      get 
+    public string Description
+    {
+      get
       {
         if (description == null)
           description = GetDescription();
 
         return description;
-      } 
+      }
     }
-    
+
     string GetDescription()
     {
       string res = Type.ToDescription();
@@ -184,7 +183,7 @@ namespace Roguelike.Effects
         return res;
 
       var spellKind = SpellConverter.SpellKindFromEffectType(Type);
-      
+
       var middle = "";
       var end = "";
       //var sign = EffectiveFactor.EffectiveFactor.Value >= 0 ? "+" : "-";
@@ -210,19 +209,19 @@ namespace Roguelike.Effects
         if (StatKind != EntityStatKind.Unset)
           end = " to " + this.StatKind.ToDescription();
       }
-            
+
 
       if (middle.Any())
         res += middle;
 
       //if(EffectiveFactor.EffectiveFactor.Value >= 0)
       //  res += sign;
-      
+
       if (EffectiveFactor.Value != 0)
         res += EffectiveFactor;
       else
         res += PercentageFactor;
-            
+
       if (end.Any())
         res += end;
 
@@ -259,10 +258,10 @@ namespace Roguelike.Effects
         expected = ownerName;
         expected += " casted:";
       }
-      else 
+      else
       {
       }
-      
+
       if (Origin == EffectOrigin.OtherCasted)
       {
         //expected += Type.ToDescription();

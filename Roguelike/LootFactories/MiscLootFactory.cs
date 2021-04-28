@@ -1,10 +1,10 @@
-﻿using System;
+﻿using Roguelike.Tiles;
+using Roguelike.Tiles.Looting;
+using SimpleInjector;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using Roguelike.Tiles;
-using Roguelike.Tiles.Looting;
-using SimpleInjector;
 
 namespace Roguelike.LootFactories
 {
@@ -73,7 +73,7 @@ namespace Roguelike.LootFactories
         //new GenericLoot("Pick", "Tool for mining", "pick");
         return new GenericLoot("Hourglass", "Hourglass - quite useless tool", "hour_glass");
       };
-            
+
       factory["gold_chest_key"] = (string tag) =>
       {
         var key = new Key();
@@ -144,10 +144,10 @@ namespace Roguelike.LootFactories
       {
         foreach (var gs in gemTagSizes)
         {
-          gemTags.Add(gt+"_"+ gs);
+          gemTags.Add(gt + "_" + gs);
         }
       }
-            
+
       foreach (var gemTag in gemTags)
       {
         EnchanterSize enchanterSize = EnchanterSize.Small;
@@ -192,7 +192,7 @@ namespace Roguelike.LootFactories
         var proto = recipesPrototypes.Where(i => i.tag1 == tag).Single();
         return proto.Clone();
       };
-            
+
       foreach (var proto in recipesPrototypes)
       {
         factory[proto.tag1] = createRecipe;

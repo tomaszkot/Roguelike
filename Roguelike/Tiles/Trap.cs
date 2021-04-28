@@ -4,11 +4,7 @@ using Roguelike.Effects;
 using Roguelike.Spells;
 using Roguelike.Tiles.LivingEntities;
 using System;
-using System.Collections.Generic;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Roguelike.Tiles
 {
@@ -66,7 +62,7 @@ namespace Roguelike.Tiles
       Name = "Trap";
 
       tag1 = "trap_animated";
-      
+
       //Price = 10;
       //StackedInventoryId = new Guid(Guid);
       //abilityKind = AbilityKind.HuntingMastering;

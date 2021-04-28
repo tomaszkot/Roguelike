@@ -4,8 +4,6 @@ using Roguelike.Tiles;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Roguelike.Probability
 {
@@ -32,7 +30,7 @@ namespace Roguelike.Probability
     public T RollDice(T unset, T[] skip, double factor = 0)
     {
       var rand = RandHelper.GetRandomDouble();
-      if(factor!=0)
+      if (factor != 0)
         rand -= factor;
       var matches = GetMatchesAboveThreashold(rand);
       if (matches.Any())

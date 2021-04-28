@@ -34,7 +34,7 @@ namespace Roguelike.LootFactories
       return new List<Loot>();
     }
   }
-  
+
   public abstract class EquipmentTypeFactory : AbstractLootFactory
   {
     protected Dictionary<string, Func<string, Equipment>> factory = new Dictionary<string, Func<string, Equipment>>();
@@ -72,7 +72,7 @@ namespace Roguelike.LootFactories
     {
       if (!eq.IsMaterialAware())
         return;
-     // int level = eq.LevelIndex;
+      // int level = eq.LevelIndex;
       //if (level > MaterialProps.IronDropLootSrcLevel)
       {
         eq.SetMaterial(mat);
