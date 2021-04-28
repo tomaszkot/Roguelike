@@ -134,7 +134,7 @@ namespace RoguelikeUnitTests
       }
       game = new RoguelikeGame(Container);
 
-      game.GameManager.EventsManager.ActionAppended += (object sender, Roguelike.Events.GameAction e) =>
+      game.GameManager.EventsManager.ActionAppended += (object sender, Roguelike.Events.GameEvent e) =>
       {
         if (e is GameStateAction)
         {

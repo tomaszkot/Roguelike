@@ -631,7 +631,7 @@ namespace Roguelike.Tiles.LivingEntities
       return str;
     }
 
-    protected void AppendAction(GameAction ac)
+    protected void AppendAction(GameEvent ac)
     {
       if (EventsManager != null)
         EventsManager.AppendAction(ac);

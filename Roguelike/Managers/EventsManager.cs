@@ -12,7 +12,7 @@ namespace Roguelike.Managers
     public LastActions LastActions { get => lastActions; set => lastActions = value; }
     public GameManager GameManager { get => gameManager; set => gameManager = value; }
 
-    public event EventHandler<GameAction> ActionAppended;
+    public event EventHandler<GameEvent> ActionAppended;
     GameManager gameManager;
 
     public EventsManager()
@@ -29,7 +29,7 @@ namespace Roguelike.Managers
       }
     }
 
-    public void AppendAction(GameAction ac)
+    public void AppendAction(GameEvent ac)
     {
       if (GameManager.Hero != null && !GameManager.Hero.Alive && GameManager.Context.HeroDeadReported)
         return;

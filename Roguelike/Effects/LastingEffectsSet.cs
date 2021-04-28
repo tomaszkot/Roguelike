@@ -114,7 +114,7 @@ namespace Roguelike.Effects
       }
     }
 
-    protected void AppendAction(GameAction ac)
+    protected void AppendAction(GameEvent ac)
     {
       if (EventsManager != null)
         EventsManager.AppendAction(ac);
@@ -331,7 +331,6 @@ namespace Roguelike.Effects
 
     public virtual LastingEffect AddPercentageLastingEffect(EffectType eff, ILastingEffectSrc src, Tile effectSrc)
     {
-      bool onlyProlong = LastingEffects.Any(i => i.UniqueId == LastingEffect.CalcUniqueId(eff, effectSrc));//TODO is onlyProlong done ?
       var calcEffectValue = CalcLastingEffectInfo(eff, src);
 
       var origin = EffectOrigin.Unset;
@@ -400,7 +399,6 @@ namespace Roguelike.Effects
   }
 }
 
-//TODO merge from old
 //Assert(lastingEffHooch == null);
 //if (lastingEffHooch == null)
 //{
@@ -415,7 +413,7 @@ namespace Roguelike.Effects
 //    HoochApplied(this, EventArgs.Empty);
 //}
 
-//TODO
+
 //if (et == EffectType.Hooch)
 //{
 //  ApplyHoochEffects(false);

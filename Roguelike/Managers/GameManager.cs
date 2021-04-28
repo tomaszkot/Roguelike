@@ -207,12 +207,12 @@ namespace Roguelike.Managers
       return level;
     }
 
-    private void EventsManager_ActionAppended(object sender, GameAction e)
+    private void EventsManager_ActionAppended(object sender, GameEvent e)
     {
       OnActionAppended(e);
     }
 
-    protected virtual void OnActionAppended(GameAction e)
+    protected virtual void OnActionAppended(GameEvent e)
     {
       //var pac = e as PolicyAppliedAction;
       //if (pac!=null)
@@ -373,12 +373,12 @@ namespace Roguelike.Managers
       SpellManager.OnHeroPolicyApplied(policy);
     }
 
-    public void AppendAction(GameAction ac)
+    public void AppendAction(GameEvent ac)
     {
       this.EventsManager.AppendAction(ac);
     }
 
-    public void AppendAction<T>(Action<T> init) where T : GameAction, new()
+    public void AppendAction<T>(Action<T> init) where T : GameEvent, new()
     {
       var action = new T();
       if (init != null)
@@ -1016,7 +1016,7 @@ namespace Roguelike.Managers
         if (caster.Stats.Mana < spell.ManaCost)
         {
           SoundManager.PlayBeepSound();
-          AppendAction(new GameAction() { Info = "Not enough mana to cast a spell" });
+          AppendAction(new GameEvent() { Info = "Not enough mana to cast a spell" });
           return false;
         }
         caster.ReduceMana(spell.ManaCost);

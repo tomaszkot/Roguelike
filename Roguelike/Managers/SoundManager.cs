@@ -45,7 +45,7 @@ namespace Roguelike.Managers
       PlaySound("beep");
     }
 
-    private void EventsManager_ActionAppended(object sender, Events.GameAction ac)
+    private void EventsManager_ActionAppended(object sender, Events.GameEvent ac)
     {
       if (Player == null)
         return;

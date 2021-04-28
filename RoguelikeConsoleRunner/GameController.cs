@@ -75,7 +75,7 @@ namespace RoguelikeConsoleRunner
     }
 
 
-    private void ActionsManager_ActionAppended(object sender, GameAction e)
+    private void ActionsManager_ActionAppended(object sender, GameEvent e)
     {
       if (e is LivingEntityAction)
       {

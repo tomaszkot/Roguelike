@@ -14,7 +14,7 @@ namespace RoguelikeUnitTests
       var hero = game.Hero;
 
       var spellAttackDone = false;
-      game.GameManager.EventsManager.ActionAppended += (object sender, Roguelike.Events.GameAction e) =>
+      game.GameManager.EventsManager.ActionAppended += (object sender, Roguelike.Events.GameEvent e) =>
       {
         if (e is LivingEntityAction lea)
         {

@@ -46,7 +46,7 @@ namespace Roguelike.Discussions
         Hide();
         handled = true;
       }
-      else if (id == KnownSentenceKind.SellHound.ToString())//TODO
+      else if (id == KnownSentenceKind.SellHound.ToString())
       {
         handled = true;
       }

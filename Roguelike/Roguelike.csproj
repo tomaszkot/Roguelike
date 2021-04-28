@@ -101,7 +101,7 @@
     <Compile Include="Effects\EffectTypeConverter.cs" />
     <Compile Include="Effects\LastingEffect.cs" />
     <Compile Include="EnemySymbols.cs" />
-    <Compile Include="Events\GameAction.cs" />
+    <Compile Include="Events\GameEvent.cs" />
     <Compile Include="Calculated\FactorCalculator.cs" />
     <Compile Include="Factors\EffectiveFactor.cs" />
     <Compile Include="Factors\PercentageFactor.cs" />

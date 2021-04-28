@@ -149,7 +149,7 @@ namespace RoguelikeUnitTests
 
       int actionCounter = 0;
 
-      game.GameManager.EventsManager.ActionAppended += (object sender, Roguelike.Events.GameAction e) =>
+      game.GameManager.EventsManager.ActionAppended += (object sender, Roguelike.Events.GameEvent e) =>
       {
         if (e is LivingEntityAction)
         {
@@ -200,7 +200,7 @@ namespace RoguelikeUnitTests
 
       int actionCounter = 0;
 
-      game.GameManager.EventsManager.ActionAppended += (object sender, Roguelike.Events.GameAction e) =>
+      game.GameManager.EventsManager.ActionAppended += (object sender, Roguelike.Events.GameEvent e) =>
       {
         if (e is LivingEntityAction)
         {
@@ -253,7 +253,7 @@ namespace RoguelikeUnitTests
       Assert.AreEqual(AllEnemies.Count, 1);
       int actionCounter = 0;
 
-      game.GameManager.EventsManager.ActionAppended += (object sender, Roguelike.Events.GameAction e) =>
+      game.GameManager.EventsManager.ActionAppended += (object sender, Roguelike.Events.GameEvent e) =>
       {
         if (e is LivingEntityAction)
         {
@@ -297,7 +297,7 @@ namespace RoguelikeUnitTests
       var game = CreateGame();
       int actionCounter = 0;
 
-      game.GameManager.EventsManager.ActionAppended += (object sender, Roguelike.Events.GameAction e) =>
+      game.GameManager.EventsManager.ActionAppended += (object sender, Roguelike.Events.GameEvent e) =>
       {
         if (e is LivingEntityAction)
         {

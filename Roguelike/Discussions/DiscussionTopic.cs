@@ -96,7 +96,7 @@ namespace Roguelike.Discussions
       subItem.parent = this;
       if (!subItem.HasBack())
       {
-        var back = CreateBack(this);//TODO call subItem.CreateBack
+        var back = CreateBack(this);
         subItem.Topics.Add(back);
       }
       if (atBegining)

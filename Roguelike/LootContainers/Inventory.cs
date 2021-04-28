@@ -240,7 +240,7 @@ namespace Roguelike.LootContainers
       return changed;
     }
 
-    private void AppendAction(GameAction ac)
+    private void AppendAction(GameEvent ac)
     {
       if (EventsManager != null)
         EventsManager.AppendAction(ac);

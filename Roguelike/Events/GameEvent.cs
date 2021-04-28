@@ -18,19 +18,18 @@ namespace Roguelike.Events
     Important,
   }
 
-  //TODO rename to Event
-  public class GameAction
+  public class GameEvent
   {
     public string Info { get; set; } = "";
     public ActionLevel Level { get; set; }
     public int Index { get; set; }
     public virtual string GetSound() { return ""; }
 
-    public GameAction() : this("", ActionLevel.Normal)
+    public GameEvent() : this("", ActionLevel.Normal)
     {
     }
 
-    public GameAction(string info, ActionLevel lvl)
+    public GameEvent(string info, ActionLevel lvl)
     {
       Info = info;
       Level = lvl;
@@ -42,7 +41,7 @@ namespace Roguelike.Events
     }
   }
 
-  public class GameStateAction : GameAction
+  public class GameStateAction : GameEvent
   {
     public enum ActionType { Load, Save, NextLevel, PrevLevel, GameFinished, DemoFinished, EnteredLevel, ContextSwitched, HitGameOneEntry, Assert }
     public ActionType Type { get; set; }
@@ -51,21 +50,21 @@ namespace Roguelike.Events
     AbstractGameLevel involvedNode;
   }
 
-  public class DamageAppliedAction : GameAction
+  public class DamageAppliedAction : GameEvent
   {
 
   }
 
   public enum QuestActionKind { Unset, Accepted, AwaitingReward }
 
-  public class QuestAction : GameAction
+  public class QuestAction : GameEvent
   {
     public QuestActionKind QuestActionKind { get; set; }
     public int QuestID { get; set; }
   }
 
   public enum ShorcutsBarActionKind { ShorcutsBarChanged }
-  public class ShorcutsBarAction : GameAction
+  public class ShorcutsBarAction : GameEvent
   {
     public int Digit { get; set; } = -1;
     public ShorcutsBarActionKind Kind { get; set; }
@@ -74,7 +73,7 @@ namespace Roguelike.Events
   public enum InventoryActionKind { ItemAdded, ItemRemoved, DragDropDone }
   public enum InventoryActionDetailedKind { Unset, Collected, TradedDragDrop }
 
-  public class InventoryAction : GameAction
+  public class InventoryAction : GameEvent
   {
     public Loot Loot { get; set; }
     public InventoryActionKind Kind { get; set; }
@@ -87,7 +86,7 @@ namespace Roguelike.Events
     }
   }
 
-  public class ResourceNeededAction : GameAction
+  public class ResourceNeededAction : GameEvent
   {
 
   }
@@ -106,7 +105,7 @@ namespace Roguelike.Events
   /// /////////////////////////////////////////////
   /// </summary>
   public enum AllyActionKind { Unset, Engaged, Created, Died }
-  public class AllyAction : GameAction
+  public class AllyAction : GameEvent
   {
     public IAlly InvolvedTile { get; set; }
     public AllyActionKind AllyActionKind { get; set; }
@@ -120,7 +119,7 @@ namespace Roguelike.Events
     Unset, DoorOpened, DoorClosed, DoorUnlocked, DoorLocked, Destroyed, ChestOpened, AppendedToLevel,
     HitPortal, HitGroundPortal, GroundPortalApproached, HitClosedStairs
   }
-  public class InteractiveTileAction : GameAction
+  public class InteractiveTileAction : GameEvent
   {
 
     public Tiles.Interactive.InteractiveTile InvolvedTile { get; set; }
@@ -133,7 +132,7 @@ namespace Roguelike.Events
   /// ///////////////
   /// </summary>
   public enum LootActionKind { Generated, Collected, PutOn, PutOff, Crafted, SpecialDrunk, Enchanted, Consumed, Identified }
-  public class LootAction : GameAction
+  public class LootAction : GameEvent
   {
 
     public Loot Loot
@@ -156,7 +155,7 @@ namespace Roguelike.Events
   }
 
   public enum HeroActionKind { ChangedLevel, Moved, HitWall, HitPrivateChest, HitLockedChest };
-  public class HeroAction : GameAction
+  public class HeroAction : GameEvent
   {
     public Tile InvolvedTile { get; set; }
 
@@ -166,7 +165,7 @@ namespace Roguelike.Events
     }
   }
 
-  public class GameInstructionAction : GameAction
+  public class GameInstructionAction : GameEvent
   {
     public GameInstructionAction()
     {
@@ -174,7 +173,7 @@ namespace Roguelike.Events
     }
   }
 
-  public class TilesRevealedAction : GameAction
+  public class TilesRevealedAction : GameEvent
   {
     public IList<Tile> Revealed { get; set; }
     public bool Value { get; set; }//revealed or hidden?
@@ -182,7 +181,7 @@ namespace Roguelike.Events
 
   public enum EnemyActionKind { Moved, /*Died,*/ AttackingHero, ChasingPlayer, RaiseCall, SpecialAction, Teleported };
 
-  public class EnemyAction : GameAction
+  public class EnemyAction : GameEvent
   {
 
     public EnemyActionKind Kind;
@@ -194,7 +193,7 @@ namespace Roguelike.Events
     }
   }
 
-  public class SoundRequestAction : GameAction
+  public class SoundRequestAction : GameEvent
   {
     public string SoundName { get; set; }
   }
@@ -205,12 +204,12 @@ namespace Roguelike.Events
     FailedToCastSpell, GodsTurn, GodsPowerReleased, StrikedBack, BulkAttack, UsedPortal, Teleported, AppendedToLevel
   }
 
-  public class PolicyAppliedAction : GameAction
+  public class PolicyAppliedAction : GameEvent
   {
     public Policy Policy { get; set; }
   }
 
-  public class LivingEntityAction : GameAction
+  public class LivingEntityAction : GameEvent
   {
     public LivingEntityAction() { }
     public LivingEntityAction(LivingEntityActionKind kind)

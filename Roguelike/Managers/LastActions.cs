@@ -7,7 +7,7 @@ namespace Roguelike.InfoScreens
 {
   public class LastActions
   {
-    private List<GameAction> actions = new List<GameAction>();
+    private List<GameEvent> actions = new List<GameEvent>();
     const int MaxSize = 6;
     bool reverse = false;
     int actionsCount = 0;
@@ -20,7 +20,7 @@ namespace Roguelike.InfoScreens
       }
     }
 
-    public List<GameAction> Actions
+    public List<GameEvent> Actions
     {
       get
       {
@@ -28,7 +28,7 @@ namespace Roguelike.InfoScreens
       }
     }
 
-    internal void Add(GameAction ac)
+    internal void Add(GameEvent ac)
     {
       if (ac.Info.Trim() == string.Empty)
         return;
@@ -62,7 +62,7 @@ namespace Roguelike.InfoScreens
 
     internal void Add(string action, ActionLevel level = ActionLevel.Normal)
     {
-      var ac = new GameAction() { Info = action, Level = level };
+      var ac = new GameEvent() { Info = action, Level = level };
       Add(ac);
     }
 
