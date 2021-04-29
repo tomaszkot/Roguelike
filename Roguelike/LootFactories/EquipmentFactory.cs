@@ -106,7 +106,8 @@ namespace Roguelike.LootFactories
         }
         if (eq == null)
         {
-          eq = GetRandomWeapon();
+          eq = GetRandomWeapon();//TODO
+          eq.SetClass(EquipmentClass.Unique, maxEqLevel);
           eq.SetLevelIndex(maxEqLevel);
         }
 

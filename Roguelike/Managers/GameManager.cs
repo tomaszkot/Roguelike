@@ -133,7 +133,7 @@ namespace Roguelike.Managers
       inputManager = new InputManager(this);
     }
 
-    public void ApplyMovePolicy(LivingEntity entity, Point newPos, List<Point> fullPath, Action<Policy> OnApplied)
+    public bool ApplyMovePolicy(LivingEntity entity, Point newPos, List<Point> fullPath, Action<Policy> OnApplied)
     {
       var movePolicy = Container.GetInstance<MovePolicy>();
       //Logger.LogInfo("moving " + entity + " to " + newPos + " mp = " + movePolicy);
@@ -154,7 +154,11 @@ namespace Roguelike.Managers
           InvolvedEntity = entity,
           MovePolicy = movePolicy
         });
+
+        return true;
       }
+
+      return false;
     }
 
     public bool CanHeroDoAction()
@@ -180,15 +184,8 @@ namespace Roguelike.Managers
     {
       hero.Container = this.Container;
 
-      LootGenerator.LevelIndex = node.Index;//TODO
-      //if (kind == GameContextSwitchKind.NewGame)
-      //{
-      //  if (node.GeneratorNodes != null && node.GeneratorNodes.Any())
-      //    hero.DungeonNodeIndex = node.GeneratorNodes.First().NodeIndex;//TODOs
-      //  else
-      //    hero.DungeonNodeIndex = 0;//TODO
-      //}
-
+      LootGenerator.LevelIndex = node.Index;
+      
       Context.Hero = hero;
 
       if (!node.Inited)
@@ -254,7 +251,7 @@ namespace Roguelike.Managers
       {
         if (la.Kind == LootActionKind.Consumed)
         {
-          if (la.LootOwner != null && la.LootOwner is Hero)//TODO
+          if (la.LootOwner is Hero)//TODO
             Context.MoveToNextTurnOwner();
         }
         return;
@@ -568,7 +565,7 @@ namespace Roguelike.Managers
       gameState.Settings.CoreInfo.LastSaved = DateTime.Now;
       gameState.HeroPath.Pit = "";
 
-      if (CurrentNode is TileContainers.GameLevel)//TODO 
+      if (CurrentNode is TileContainers.GameLevel)
       {
         var gameLevel = CurrentNode as TileContainers.GameLevel;
         gameState.HeroPath.Pit = gameLevel.PitName;
@@ -760,7 +757,7 @@ namespace Roguelike.Managers
       }
 
       bool added = destInv.Add(sold, addItemArg);
-      if (!added)//TODO revert item to src inv
+      if (!added)
       {
         srcInv.Add(loot);
         logger.LogError("!added");
@@ -834,8 +831,7 @@ namespace Roguelike.Managers
             else
               eq.MakeEnchantable();
 
-            //TODO Items used to avoid sound
-            merch.Inventory.Items.Add(eq);
+            merch.Inventory.Add(eq);
             count++;
           }
           else
@@ -860,8 +856,7 @@ namespace Roguelike.Managers
       {
         var loot = new MagicDust();
         loot.Revealed = true;
-        //TODO
-        loot.Count = 4;
+        loot.Count = Generators.GenerationInfo.MaxMerchantMagicDust;
         merch.Inventory.Items.Add(loot);
       }
 
@@ -913,12 +908,12 @@ namespace Roguelike.Managers
       le.Container = this.Container;
       le.Revealed = true;
 
-      if (ally is TrainedHound)//TODO
+      if (ally.TakeLevelFromCaster)// is TrainedHound)//TODO
       {
         var lvl = Hero.Level / 2;
         if (lvl == 0)
           lvl = 1;
-        (ally as Ally).SetLevel(lvl);//TODO
+        ally.SetLevel(lvl);
       }
       AlliesManager.AddEntity(le);
 
@@ -1016,7 +1011,6 @@ namespace Roguelike.Managers
       return default(T);
     }
 
-    //TODO move it somewhere
     public bool UtylizeScroll(LivingEntity caster, Scroll scroll, ISpell spell)
     {
       //scroll was already used why check here?

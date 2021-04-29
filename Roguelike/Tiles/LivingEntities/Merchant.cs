@@ -27,8 +27,7 @@ namespace Roguelike.Tiles.LivingEntities
       Stats.SetNominal(EntityStatKind.Dexterity, 10);
 
       Gold = 100000;
-      Inventory.Capacity = 64;//TODO
-      Dirty = true;//TODO
+      Inventory.Capacity = 64;
 #if ASCII_BUILD
       color = ConsoleColor.Yellow;
 #endif
@@ -57,6 +56,8 @@ namespace Roguelike.Tiles.LivingEntities
     public bool Active { get; set; }
     public AllyKind Kind { get => AllyKind.Merchant; }
     public Point Point { get => point; set => point = value; }
+
+    public bool TakeLevelFromCaster { get; }
 
     internal void OnContextSwitched(Container container)
     {

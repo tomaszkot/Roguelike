@@ -178,7 +178,7 @@ namespace Roguelike.Tiles.LivingEntities
       foreach (var kv in Stats.GetStats())
       {
         var incToUse = inc;
-        var val = kv.Value.Value.TotalValue * incToUse;//TODO TotalValue ? -> SetNominal ?
+        var val = kv.Value.Value.Nominal * incToUse;
         Stats.SetNominal(kv.Key, val);
       }
     }
@@ -199,8 +199,6 @@ namespace Roguelike.Tiles.LivingEntities
       //}
       //if (level >= ResistanceFactors.Count)
       //  return 0;
-
-      //return ResistanceFactors[GameManager.MaxLevelIndex - level] * 20;
     }
 
     protected virtual void InitResistance()
@@ -504,11 +502,7 @@ namespace Roguelike.Tiles.LivingEntities
         src = " from " + spell.Kind.ToDescription();
         if (spell.Kind == SpellKind.StonedBall)
           amount /= Stats.Defense;
-        else
-        {
-          var magicAttackDamageReductionPerc = Stats.GetCurrentValue(EntityStatKind.MagicAttackDamageReduction);
-          amount -= GetReducePercentage(amount, magicAttackDamageReductionPerc);
-        }
+        
         sound = spell.GetHitSound();
 
         lastHitBySpell = true;
@@ -613,6 +607,7 @@ namespace Roguelike.Tiles.LivingEntities
     }
 
     public LastingEffectsSet LastingEffectsSet { get => lastingEffectsSet; }
+    public float MaxMagicAttackDistance { get; internal set; } = GenerationInfo.MaxMagicAttackDistance;
 
     public virtual void RemoveLastingEffect(LastingEffect le)
     {

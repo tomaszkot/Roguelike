@@ -59,17 +59,16 @@ namespace Roguelike.Managers
         }
       }
 
-      if (ally.FixedWalkTarget != null)
-      {
-        if (ally.PathToTarget != null && ally.PathToTarget.Count == 1)
-        {
-          ally.FixedWalkTarget = null;
-          //allyToRemove = ally;//TODO
-        }
-        if (!MakeMoveOnPath(ally, ally.FixedWalkTarget.point, true))
-          MakeRandomMove(ally);
-        return;
-      }
+      //if (ally.FixedWalkTarget != null)
+      //{
+      //  if (ally.PathToTarget != null && ally.PathToTarget.Count == 1)
+      //  {
+      //    ally.FixedWalkTarget = null;
+      //  }
+      //  if (!MakeMoveOnPath(ally, ally.FixedWalkTarget.point, true))
+      //    MakeRandomMove(ally);
+      //  return;
+      //}
 
       if (ally.AllyModeTarget != null)
       {

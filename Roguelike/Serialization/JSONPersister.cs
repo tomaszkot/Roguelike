@@ -16,7 +16,7 @@ namespace Roguelike.Serialization
 {
   public interface IPersistable
   {
-    bool Dirty { get; set; }
+    //bool Dirty { get; set; }
   }
 
   public class JSONPersister : IPersister

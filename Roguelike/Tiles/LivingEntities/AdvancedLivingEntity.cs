@@ -241,7 +241,6 @@ namespace Roguelike.Tiles.LivingEntities
 
     public void Consume(IConsumable consumable)
     {
-      //TODO hero turn?
       if (inventory.Contains(consumable.Loot))
       {
         if (consumable.StatKind == EntityStatKind.Unset)
@@ -268,7 +267,6 @@ namespace Roguelike.Tiles.LivingEntities
               var le = GetFirstLastingEffect(EffectType.Poisoned);
               if (le != null)
                 RemoveLastingEffect(le);
-              //DoConsume(consumable.StatKind, factor);
             }
             else
             {
@@ -319,8 +317,7 @@ namespace Roguelike.Tiles.LivingEntities
       return value;
     }
 
-    [JsonIgnore]
-    public bool Dirty { get; set; }
+
     public double PrevLevelExperience { get; private set; }
     CurrentEquipment IEquipable.CurrentEquipment { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
     public AbilitiesSet Abilities { get => abilities; set => abilities = value; }
@@ -467,7 +464,7 @@ namespace Roguelike.Tiles.LivingEntities
       }
       var set = CurrentEquipment.SetEquipment(eq, cek, primary);
       if (!set)
-        return false;//TODO LOG
+        return false;
 
       return true;
     }

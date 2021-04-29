@@ -56,10 +56,6 @@ namespace Roguelike.Effects
           break;
         case EntityStatKind.ChanceToEvadeMagicAttack:
           break;
-        case EntityStatKind.MeleeAttackDamageReduction:
-          break;
-        case EntityStatKind.MagicAttackDamageReduction:
-          break;
         case EntityStatKind.AxeExtraDamage:
           break;
         case EntityStatKind.SwordExtraDamage:

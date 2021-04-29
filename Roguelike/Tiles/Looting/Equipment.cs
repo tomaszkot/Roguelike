@@ -5,6 +5,7 @@ using Roguelike.TileParts;
 using Roguelike.Tiles.Looting;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 
 namespace Roguelike.Tiles
@@ -56,7 +57,8 @@ namespace Roguelike.Tiles
       if (this.Material != EquipmentMaterial.Unset &&
         this.Material != EquipmentMaterial.Bronze)
       {
-        return;//TODO Assert
+        Debug.Assert(false);
+        return;
       }
 
       var eskToEnhance = EntityStatKind.Unset;
@@ -181,7 +183,7 @@ namespace Roguelike.Tiles
       if (IsIdentified)
         return false;
       this.IsIdentified = true;
-      if (unidentifiedStats != null)//TODO assert
+      if (unidentifiedStats != null)
       {
         foreach (var stat in unidentifiedStats.GetStats())
         {
@@ -190,11 +192,13 @@ namespace Roguelike.Tiles
         }
 
         ExtendedInfo.Stats.Accumulate(unidentifiedStats);
-      }
-      if (Identified != null)
-        Identified(this, this);
+        if (Identified != null)
+          Identified(this, this);
 
-      return true;
+        return true;
+      }
+      Debug.Assert(false);
+      return false;
     }
 
     public virtual EntityStats GetStats()
@@ -306,7 +310,7 @@ namespace Roguelike.Tiles
     {
       EntityStatKind.Magic, EntityStatKind.Mana, /*EntityStatKind.ManaStealing, uniq*/
       EntityStatKind.ChanceToCastSpell
-      //,  EntityStatKind.ChanceToEvadeMeleeAttack, EntityStatKind.ChanceToEvadeMeleeAttack //TODO
+      ,EntityStatKind.ChanceToEvadeMeleeAttack, EntityStatKind.ChanceToEvadeMeleeAttack
     };
 
     public static List<EntityStatKind> possibleChoicesArmor = new List<EntityStatKind>() { EntityStatKind.Defense, EntityStatKind.ChanceToHit, EntityStatKind.Health,
@@ -329,19 +333,18 @@ namespace Roguelike.Tiles
 
           if (wpn != null)
           {
-            //TODO
-            //if (wpn.Kind == Weapon.WeaponKind.Bashing)
-            //{
-            //  possibleChoices.Add(EntityStatKind.ChanceToCauseStunning);
-            //}
-            //else if (wpn.Kind == Weapon.WeaponKind.Axe)
-            //{
-            //  possibleChoices.Add(EntityStatKind.ChanceToCauseTearApart);
-            //}
-            //else if (wpn.Kind == Weapon.WeaponKind.Dagger)
-            //{
-            //  possibleChoices.Add(EntityStatKind.ChanceToCauseBleeding);
-            //}
+            if (wpn.Kind == Weapon.WeaponKind.Bashing)
+            {
+              possibleChoices.Add(EntityStatKind.ChanceToCauseStunning);
+            }
+            else if (wpn.Kind == Weapon.WeaponKind.Axe)
+            {
+              possibleChoices.Add(EntityStatKind.ChanceToCauseTearApart);
+            }
+            else if (wpn.Kind == Weapon.WeaponKind.Dagger)
+            {
+              possibleChoices.Add(EntityStatKind.ChanceToCauseBleeding);
+            }
           }
           break;
         case EquipmentKind.Armor:
@@ -506,7 +509,7 @@ namespace Roguelike.Tiles
     public override void HandleGenerationDone()
     {
       //Debug.Assert(this.MinDropDungeonLevel >= 0);
-      //if (this.MinDropDungeonLevel >= 0) //set in SetPriceFromLevel
+      //if (this.MinDropDungeonLevel >= 0) 
       //{
       //  if(this.MinDropDungeonLevel > 0)
       //    Price = Price * this.MinDropDungeonLevel;
@@ -604,10 +607,6 @@ namespace Roguelike.Tiles
       SetClass(_class);
       if (lootStats == null)
       {
-        //TODO assert
-        //Assert(ExtendedInfo == null || ExtendedInfo.Stats.Stats.All(i => i.Value.NominalValue == 0));
-        //Assert(levelIndex >= 0);
-        //Assert(_class == EquipmentClass.Magic);
         if (_class == EquipmentClass.Magic)
           MakeMagic(magicOfSecondLevel);
       }
@@ -726,7 +725,7 @@ namespace Roguelike.Tiles
     {
       var juwell = new Jewellery();
       juwell.EquipmentKind = EquipmentKind.Amulet;
-      juwell.SetLevelIndex(1);//TODO
+      juwell.SetLevelIndex(1);
       juwell.Price = 10;
       juwell.SetIsPendant(true);
       return juwell;

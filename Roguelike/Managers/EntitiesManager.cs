@@ -103,8 +103,6 @@ namespace Roguelike.Managers
         //context.Logger.LogInfo("turn of: " + entity);
         try
         {
-          //Debug.Assert(context.CurrentNode.GetTiles<LivingEntity>().Any(i => i == entity));//TODO
-
           if (entity is AdvancedLivingEntity ade)
             ade.ApplyAbilities();
           entity.ApplyLastingEffects();
@@ -206,9 +204,7 @@ namespace Roguelike.Managers
 
     protected virtual bool MoveEntity(LivingEntity entity, Point newPos, List<Point> fullPath)
     {
-      gameManager.ApplyMovePolicy(entity, newPos, fullPath, (e) => OnPolicyApplied(e));
-
-      return true;//TODO
+      return gameManager.ApplyMovePolicy(entity, newPos, fullPath, (e) => OnPolicyApplied(e));
     }
 
     public bool CanMoveEntity(LivingEntity entity, Point pt)

@@ -185,7 +185,7 @@ namespace Roguelike.LootContainers
     {
       if (args == null)
         args = new AddItemArg();
-      //container.GetInstance<ILogger>().LogInfo("Add(Loot item)");
+      
       var exist = false;
       var stackedInInv = GetStackedItem(item);
       var itemStacked = item as StackedLoot;

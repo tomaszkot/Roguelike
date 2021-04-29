@@ -55,7 +55,6 @@ namespace Roguelike.Tiles.Interactive
       }
     }
 
-    //??? TODO
     public bool CanBeHitBySpell()
     {
       return true;

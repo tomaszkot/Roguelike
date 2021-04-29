@@ -286,19 +286,19 @@ namespace Roguelike.Generators
       var randedEnum = GetPossibleEqKind();
 
       LootFactory.EquipmentFactory.lootHistory = this.lootHistory;
-      var eq = LootFactory.EquipmentFactory.GetRandom(randedEnum, level, eqClass);
-      if ((eq == null || eq.Class != EquipmentClass.Unique) && eqClass == EquipmentClass.Unique)
+      var generatedEq = LootFactory.EquipmentFactory.GetRandom(randedEnum, level, eqClass);
+      if ((generatedEq == null || generatedEq.Class != EquipmentClass.Unique) && eqClass == EquipmentClass.Unique)
       {
         var values = GetEqKinds();
         foreach (var kind in values)
         {
-          eq = LootFactory.EquipmentFactory.GetRandom(kind, level, eqClass);
-          if (eq != null)
+          generatedEq = LootFactory.EquipmentFactory.GetRandom(kind, level, eqClass);
+          if (generatedEq != null)
             break;
         }
       }
 
-      return eq;
+      return generatedEq;
     }
 
     public static List<EquipmentKind> GetEqKinds()

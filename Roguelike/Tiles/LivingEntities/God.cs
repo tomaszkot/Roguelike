@@ -8,7 +8,6 @@ namespace Roguelike.Tiles.LivingEntities
   public class God : AdvancedLivingEntity, IAlly
   //IDescriptable, 
   {
-    //Inventory inventory;
     //public bool Awoken { get; set; }
     //List<string> acceptedLoot = new List<string>();
     //List<string> awakingLoot = new List<string>();
@@ -19,6 +18,8 @@ namespace Roguelike.Tiles.LivingEntities
     public AllyKind Kind => throw new System.NotImplementedException();
 
     public Point Point { get => point; set => point = value; }
+
+    public bool TakeLevelFromCaster { get; }
 
     public God(Container cont) : this(cont, new Point().Invalid(), '0')
     {
@@ -35,7 +36,7 @@ namespace Roguelike.Tiles.LivingEntities
 
       //SetMagicValue();
     }
-
+        
     //public virtual int GetMagicFactor()
     //{
     //  return 1;
@@ -182,12 +183,7 @@ namespace Roguelike.Tiles.LivingEntities
     //    fromHero = value;
     //  }
     //}
-
-    //public bool HasRoomInBackpack()
-    //{
-    //  return true;//TODO
-    //}
-
+        
     //public bool HasAcceptedGift(string giftName)
     //{
     //  return AcceptedLoot.Contains(giftName);

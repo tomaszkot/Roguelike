@@ -17,6 +17,8 @@ namespace Roguelike.Managers
     public GameManager GameManager { get; set; }
     public LootGenerator LootGenerator => GameManager.LootGenerator;
 
+    public Dictionary<string, string> PowerfulEnemyLoot { get => powerfulEnemyLoot; set => powerfulEnemyLoot = value; }
+
     public LootManager() { }
 
     public LootManager(GameManager mgr)
@@ -58,7 +60,7 @@ namespace Roguelike.Managers
           var eq = loot as Equipment;
           if (eq.Class == EquipmentClass.Plain && !eq.Enchantable)
           {
-            if (RandHelper.GetRandomDouble() > 0.2)//TODO
+            if (RandHelper.GetRandomDouble() > GenerationInfo.ChangeToGetEnchantableItem)
               eq.MakeEnchantable();
           }
         }
@@ -177,17 +179,15 @@ namespace Roguelike.Managers
       return loot;
     }
 
+    Dictionary<string, string> powerfulEnemyLoot = new Dictionary<string, string>();
+
     private Loot GenerateLootForPowerfulEnemy(Enemy enemy)
     {
       Loot loot = null;
-      if (enemy.Name == "Miller Bratomir")//TODO Miller here in RL dll?
-      {
-        loot = GameManager.LootGenerator.GetLootByAsset("Kafar");
-      }
+      if (powerfulEnemyLoot.ContainsKey(enemy.Name))
+        loot = GameManager.LootGenerator.GetLootByAsset(powerfulEnemyLoot[enemy.Name]);
       else
-      {
         loot = GameManager.GetBestLoot(enemy.PowerKind, enemy.Level, GameManager.GameState.History.Looting);
-      }
 
       return loot;
     }
@@ -204,7 +204,13 @@ namespace Roguelike.Managers
         {
           if (nonEquipment)
           {
-            return LootGenerator.GetRandomLoot(chest.Level, skip);//TODO Equipment might happen
+            var loot = LootGenerator.GetRandomLoot(chest.Level, skip);
+            int counter = 0;
+            while (loot is Equipment && counter++ < 1000)
+            {
+              loot = LootGenerator.GetRandomLoot(chest.Level, skip);
+            }
+            return loot;
           }
           else
           {

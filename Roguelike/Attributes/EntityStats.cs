@@ -17,7 +17,7 @@ namespace Roguelike.Attributes
 
     //Would be nice to generate dynamically these enums
     ChanceToCauseBleeding, ChanceToCauseStunning, ChanceToCauseTearApart, ChanceToEvadeMeleeAttack, ChanceToEvadeMagicAttack,
-    MeleeAttackDamageReduction, MagicAttackDamageReduction, AxeExtraDamage, SwordExtraDamage, BashingExtraDamage, DaggerExtraDamage,
+    AxeExtraDamage, SwordExtraDamage, BashingExtraDamage, DaggerExtraDamage,
     LightingAttack, ResistLighting, ChanceToStrikeBack, ChanceToBulkAttack, ChanceToBurnNeighbour, ExlosiveCoctailDamage
 
   };

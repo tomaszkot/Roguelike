@@ -37,8 +37,8 @@ namespace Roguelike.State
     public Point HeroInitGamePosition { get; set; } = new Point().Invalid();
     public HistoryContent History { get; set; } = new HistoryContent();
 
-    [JsonIgnore]
-    public bool Dirty { get; set; } = true;//TODO true
+    //[JsonIgnore]
+    //public bool Dirty { get; set; } = true;
 
     public override string ToString()
     {

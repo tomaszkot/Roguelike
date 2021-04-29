@@ -52,6 +52,9 @@
 
     public int MaxBarrelsPerRoom = 5;
     public int MaxLootPerRoom = 2;
+    public static int MaxMerchantMagicDust = 4;
+    public static float ChangeToGetEnchantableItem = 0.2f;
+    public static float MaxMagicAttackDistance = 8;
 
     public override void MakeEmpty()
     {

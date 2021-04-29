@@ -11,6 +11,7 @@ namespace Roguelike.Tiles.LivingEntities
 
     public TrainedHound(Container cont) : base(cont)
     {
+      TakeLevelFromCaster = true;
       Kind = AllyKind.Hound;
       Name = "Hound";
 #if ASCII_BUILD

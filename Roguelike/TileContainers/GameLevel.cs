@@ -16,7 +16,6 @@ namespace Roguelike.TileContainers
   //mid-size node like 100x100, part of the DungeonPit
   public class GameLevel : AbstractGameLevel, IPersistable
   {
-
     public Stairs StairsUp { get => stairsUp; set => stairsUp = value; }
     public Stairs StairsDown { get => stairsDown; set => stairsDown = value; }
 
@@ -26,7 +25,6 @@ namespace Roguelike.TileContainers
 
     public GameLevel(Container container) : base(container)
     {
-      Dirty = true;//TODO
     }
 
     internal T SetTileAtRandomPosition<T>(int levelIndex, bool matchNodeIndex = true) where T : Tile, new()

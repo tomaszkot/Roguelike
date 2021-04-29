@@ -13,7 +13,6 @@ namespace Roguelike.Tiles.LivingEntities
     {
       canAdvanceInExp = true;
       Inventory.InvBasketKind = InvBasketKind.AllyEquipment;
-      Dirty = true;//TODO
     }
 
     public bool Active { get; set; }
@@ -28,6 +27,8 @@ namespace Roguelike.Tiles.LivingEntities
     }
 
     public Point Point { get => point; set => point = value; }
+
+    public bool TakeLevelFromCaster { get; protected set; }
 
     public override bool SetLevel(int level)
     {

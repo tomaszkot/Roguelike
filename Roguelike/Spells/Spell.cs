@@ -42,13 +42,7 @@ namespace Roguelike.Spells
     protected Dictionary<int, int> levelToMagic = new Dictionary<int, int>();
     private LivingEntity caller;
     public bool Utylized { get; set; }
-    //public int GetExtraChanceForCausingEffect(LivingEntity caster)
-    //{
-    //  this.Caller = caster;
-
-    //  return 0;//TODO!
-    //}
-
+    
     public int ManaCost
     {
       get

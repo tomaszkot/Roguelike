@@ -88,10 +88,10 @@ namespace Roguelike
 
         return false;
       }
-
+      
       private bool UseMagicAttack(LivingEntity attacker, LivingEntity target)
       {
-        if (attacker.DistanceFrom(target) < 8)//TODO
+        if (attacker.DistanceFrom(target) < attacker.MaxMagicAttackDistance)
         {
           var useMagic = false;
           //is target next to attacker

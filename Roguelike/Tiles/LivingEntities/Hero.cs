@@ -45,7 +45,6 @@ namespace Roguelike.Tiles.LivingEntities
 
       Crafting = Container.GetInstance<Roguelike.LootContainers.Crafting>();
 
-      Dirty = true;//TODO
       Revealed = true;
 
 #if ASCII_BUILD
@@ -81,8 +80,7 @@ namespace Roguelike.Tiles.LivingEntities
 
     public virtual void OnContextSwitched(Container container)
     {
-      //TODO
-      this.Container = container;
+      //this.Container = container;
       Inventory.Owner = this;
       Crafting.InvItems.Inventory.Owner = this;
       Crafting.Recipes.Inventory.Owner = this;

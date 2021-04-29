@@ -32,7 +32,7 @@ namespace Roguelike.Serialization
         foreach (var ally in gm.AlliesManager.AllAllies)
         {
           alliesStore.Allies.Add(ally);
-          var set = gm.CurrentNode.SetEmptyTile((ally as Ally).point);//TODO
+          var set = gm.CurrentNode.SetEmptyTile(ally.Point);
           if (!set)
             gm.Logger.LogError("failed to reset ally on save " + ally);
         }

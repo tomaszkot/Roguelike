@@ -336,9 +336,7 @@ namespace Roguelike.TileContainers
     {
       List<Tiles.Loot> res = Loot.Values
         .Where(i => i.Revealed && i.DistanceFrom(tile.point) < 3
-        //&& i.DungeonNodeIndex == tile.DungeonNodeIndex TODO
-        )
-        .ToList();//TODO 
+        ).ToList();
       return res;
     }
 
@@ -503,7 +501,7 @@ namespace Roguelike.TileContainers
       var notRev = this.GetTiles().Where(i => i.DungeonNodeIndex == nodeIndex && !i.Revealed).ToList();
       if (notRev.Any())
       {
-        notRev.ForEach(i => i.Revealed = true);//TODO, that sucks
+        notRev.ForEach(i => i.Revealed = true);
       }
     }
 

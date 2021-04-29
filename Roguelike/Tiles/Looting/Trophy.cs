@@ -95,9 +95,9 @@ namespace Roguelike.Tiles.Looting
           st.Factor = 10;
           SetMagicStat(st.Kind, st);
 
-          st = new EntityStat(EntityStatKind.MagicAttackDamageReduction, 0);
-          st.Factor = 5;
-          SetMagicStat(st.Kind, st);
+          //st = new EntityStat(EntityStatKind.MagicAttackDamageReduction, 0);
+          //st.Factor = 5;
+          //SetMagicStat(st.Kind, st);
 
           st = new EntityStat(EntityStatKind.ChanceToEvadeMagicAttack, 0);
           st.Factor = 10;
@@ -120,9 +120,9 @@ namespace Roguelike.Tiles.Looting
           st.Factor = 10;
           SetMagicStat(st.Kind, st);
 
-          st = new EntityStat(EntityStatKind.MeleeAttackDamageReduction, 0);
-          st.Factor = 10;
-          SetMagicStat(st.Kind, st);
+          //st = new EntityStat(EntityStatKind.MeleeAttackDamageReduction, 0);
+          //st.Factor = 10;
+          //SetMagicStat(st.Kind, st);
           break;
         case TrophyKind.DragonClaw:
           tag1 = "dragon_claw";
@@ -165,9 +165,9 @@ namespace Roguelike.Tiles.Looting
           st.Factor = 10;
           SetMagicStat(st.Kind, st);
 
-          st = new EntityStat(EntityStatKind.MeleeAttackDamageReduction, 0);
-          st.Factor = 15;
-          SetMagicStat(st.Kind, st);
+          //st = new EntityStat(EntityStatKind.MeleeAttackDamageReduction, 0);
+          //st.Factor = 15;
+          //SetMagicStat(st.Kind, st);
 
           st = new EntityStat(EntityStatKind.ChanceToHit, 0);
           st.Factor = 10;
@@ -247,13 +247,13 @@ namespace Roguelike.Tiles.Looting
           st.Factor = 15;
           SetMagicStat(st.Kind, st);
 
-          st = new EntityStat(EntityStatKind.MagicAttackDamageReduction, 0);
-          st.Factor = 15;
-          SetMagicStat(st.Kind, st);
+          //st = new EntityStat(EntityStatKind.MagicAttackDamageReduction, 0);
+          //st.Factor = 15;
+          //SetMagicStat(st.Kind, st);
 
-          st = new EntityStat(EntityStatKind.MeleeAttackDamageReduction, 0);
-          st.Factor = 15;
-          SetMagicStat(st.Kind, st);
+          //st = new EntityStat(EntityStatKind.MeleeAttackDamageReduction, 0);
+          //st.Factor = 15;
+          //SetMagicStat(st.Kind, st);
 
           st = new EntityStat(EntityStatKind.ChanceToEvadeMagicAttack, 0);
           st.Factor = 15;

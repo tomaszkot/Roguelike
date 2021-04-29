@@ -34,15 +34,17 @@ namespace Roguelike.Tiles
       Name = MushroomKind.ToDescription();
       if (MushroomKind == MushroomKind.BlueToadstool)
       {
-        //TODO
-        //SrcPotion = PotionKind.Mana;
-        //DestPotion = SpecialPotionKind.Magic;
+        SrcPotion = PotionKind.Mana;
+        DestPotion = SpecialPotionKind.Magic;
 
         StatKind = Attributes.EntityStatKind.Mana;
       }
       else
+      {
+        SrcPotion = PotionKind.Health;
+        DestPotion = SpecialPotionKind.Strength;
         StatKind = Attributes.EntityStatKind.Health;
-
+      }
       NegativeFactor = MushroomKind == MushroomKind.RedToadstool;
 
       if (MushroomKind == MushroomKind.BlueToadstool || MushroomKind == MushroomKind.RedToadstool)
