@@ -972,5 +972,10 @@ namespace Roguelike.Tiles.LivingEntities
     {
       return true;
     }
+
+    internal virtual bool CanMakeRandomMove()
+    {
+      return true;
+    }
   }
 }

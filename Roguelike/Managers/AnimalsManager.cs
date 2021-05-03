@@ -18,5 +18,11 @@ namespace Roguelike.Managers
       entities.ForEach(i=> base.AllEntities.Add(i));
       entitiesSet = true;
     }
+
+    public override void MakeRandomMove(LivingEntity entity)
+    {
+      if(entity.CanMakeRandomMove())
+        base.MakeRandomMove(entity);
+    }
   }
 }
