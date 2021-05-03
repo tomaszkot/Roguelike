@@ -67,6 +67,7 @@
     <Compile Include="Abstract\Multimedia\ISoundPlayer.cs" />
     <Compile Include="Abstract\Spells\ISpell.cs" />
     <Compile Include="Discussions\DiscussPanel.cs" />
+    <Compile Include="Managers\AnimalsManager.cs" />
     <Compile Include="Managers\PolicyManager.cs" />
     <Compile Include="Managers\SpellManager.cs" />
     <Compile Include="Tiles\Abstract\IAdvancedEntity.cs" />
@@ -158,6 +159,7 @@
     <Compile Include="Serialization\JSONPersister.cs" />
     <Compile Include="Tiles\LivingEntities\AlliedEnemy.cs" />
     <Compile Include="Tiles\LivingEntities\Ally.cs" />
+    <Compile Include="Tiles\LivingEntities\Animal.cs" />
     <Compile Include="Translations\Strings.cs" />
     <Compile Include="Tiles\Abstract\IEquipable.cs" />
     <Compile Include="Effects\LastingEffectsSet.cs" />

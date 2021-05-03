@@ -28,6 +28,8 @@ namespace RoguelikeUnitTests
       game.GameManager.MakeGameTick();
       Assert.AreEqual(game.GameManager.Context.TurnOwner, TurnOwner.Enemies);
       game.GameManager.MakeGameTick();
+      Assert.AreEqual(game.GameManager.Context.TurnOwner, TurnOwner.Animals);
+      game.GameManager.MakeGameTick();
       Assert.AreEqual(game.GameManager.Context.TurnOwner, TurnOwner.Hero);
     }
 
@@ -108,8 +110,13 @@ namespace RoguelikeUnitTests
       game.GameManager.Context.MoveToNextTurnOwner();
       Assert.AreEqual(game.GameManager.Context.TurnOwner, TurnOwner.Enemies);
       game.GameManager.Context.MoveToNextTurnOwner();
+
+      Assert.AreEqual(game.GameManager.Context.TurnOwner, TurnOwner.Animals);
+      game.GameManager.Context.MoveToNextTurnOwner();
       Assert.AreEqual(game.GameManager.Context.TurnOwner, TurnOwner.Hero);
       Assert.AreEqual(Game.GameManager.Context.GetActionsCount(), 0);
+      //Assert.AreEqual(game.GameManager.Context.TurnOwner, TurnOwner.Hero);
+      //Assert.AreEqual(Game.GameManager.Context.GetActionsCount(), 0);
       game.GameManager.Context.AutoTurnManagement = old;
     }
 

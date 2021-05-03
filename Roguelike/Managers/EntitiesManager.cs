@@ -149,7 +149,7 @@ namespace Roguelike.Managers
       }
     }
 
-    bool entitiesSet = false;
+    protected bool entitiesSet = false;
 
     public void SetEntities(List<IAlly> list)
     {

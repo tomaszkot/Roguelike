@@ -48,6 +48,7 @@ namespace Roguelike.Managers
     EventsManager eventsManager;
     EnemiesManager enemiesManager;
     AlliesManager alliesManager;
+    AnimalsManager animalsManager;
     LevelGenerator levelGenerator;
     LootManager lootManager;
     protected InputManager inputManager;
@@ -121,6 +122,8 @@ namespace Roguelike.Managers
       enemiesManager = new EnemiesManager(Context, EventsManager, Container, null, this);
       AlliesManager = new AlliesManager(Context, EventsManager, Container, enemiesManager, this);
       enemiesManager.AlliesManager = AlliesManager;
+
+      animalsManager = new AnimalsManager(Context, EventsManager, Container, this);
 
       Persister = container.GetInstance<IPersister>();
 
@@ -652,6 +655,13 @@ namespace Roguelike.Managers
         else if (context.TurnOwner == TurnOwner.Enemies)
         {
           mgr = EnemiesManager;
+          //logger.LogInfo("MakeGameTick call to EnemiesManager.MakeEntitiesMove");
+          //context.PendingTurnOwnerApply = false;
+          //EnemiesManager.MakeEntitiesMove();
+        }
+        else if (context.TurnOwner == TurnOwner.Animals)
+        {
+          mgr = animalsManager;
           //logger.LogInfo("MakeGameTick call to EnemiesManager.MakeEntitiesMove");
           //context.PendingTurnOwnerApply = false;
           //EnemiesManager.MakeEntitiesMove();

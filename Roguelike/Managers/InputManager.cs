@@ -107,7 +107,7 @@ namespace Roguelike.Managers
       bool tileIsDoor = tile is Tiles.Interactive.Door;
       bool tileIsDoorBySumbol = tile.Symbol == Constants.SymbolDoor;
 
-      if (tile is Enemy || tile is Dungeons.Tiles.Wall)
+      if (tile is Enemy || tile is Dungeons.Tiles.Wall || tile is Animal)
       {
         //Logger.LogInfo("Hero attacks " + tile);
         // var en = tile as Enemy;

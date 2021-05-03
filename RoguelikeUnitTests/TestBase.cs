@@ -258,6 +258,7 @@ namespace RoguelikeUnitTests
       var ni = ActiveEnemies.Where(e => e.State != EntityState.Idle).ToList();
       //game.GameManager.Logger.LogInfo("make enemies move " + game.GameManager.Context.PendingTurnOwnerApply);
       game.MakeGameTick();//make enemies move
+      game.MakeGameTick();//make animals move
       if (!game.GameManager.HeroTurn)
       {
         var tac1 = game.GameManager.Context.TurnActionsCount;

@@ -70,6 +70,11 @@ namespace Dungeons.Core
       return RandHelper.GetRandomElem<T>(list, new T[] { });
     }
 
+    public static T GetRandomElem<T>(this T[] arr)
+    {
+      return RandHelper.GetRandomElem<T>(arr);
+    }
+
     public static void Raise<T>(this EventHandler<T> handler, object sender, T args)
     {
       if (handler != null)

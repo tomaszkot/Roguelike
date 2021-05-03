@@ -21,7 +21,7 @@ using System.Linq;
 namespace Roguelike
 {
   public enum GameContextSwitchKind { DungeonSwitched, NewGame, GameLoaded }
-  public enum TurnOwner { Unset, Hero, Allies, Enemies }
+  public enum TurnOwner { Unset, Hero, Allies, Enemies, Animals}
 
   public class HeroPlacementResult
   {
@@ -72,6 +72,7 @@ namespace Roguelike
       turnCounts[TurnOwner.Hero] = 0;
       turnCounts[TurnOwner.Allies] = 0;
       turnCounts[TurnOwner.Enemies] = 0;
+      turnCounts[TurnOwner.Animals] = 0;
     }
 
     public void ApplyPhysicalAttackPolicy(LivingEntity attacker, Tile target, Action<Policy> AfterApply)
@@ -270,11 +271,23 @@ namespace Roguelike
         turnCounts[TurnOwner.Allies]++;
         TurnOwner = TurnOwner.Enemies;
       }
-      else
+      else if (turnOwner == TurnOwner.Enemies)
       {
-        Debug.Assert(turnOwner == TurnOwner.Enemies);
         TurnActionsCount[TurnOwner.Enemies] = 0;
         turnCounts[TurnOwner.Enemies]++;
+        TurnOwner = TurnOwner.Animals;
+      }
+      //else if (turnOwner == TurnOwner.Animals)
+      //{
+      //  TurnActionsCount[TurnOwner.Enemies] = 0;
+      //  turnCounts[TurnOwner.Enemies]++;
+      //  TurnOwner = TurnOwner.Animals;
+      //}
+      else
+      {
+        Debug.Assert(turnOwner == TurnOwner.Animals);
+        TurnActionsCount[TurnOwner.Animals] = 0;
+        turnCounts[TurnOwner.Animals]++;
         TurnOwner = TurnOwner.Hero;
       }
 
