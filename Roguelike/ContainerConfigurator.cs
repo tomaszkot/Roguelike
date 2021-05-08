@@ -47,6 +47,7 @@ namespace Roguelike
       container.Register<LootCrafterBase, LootCrafter>();
       container.Register<GameState, GameState>();
       container.Register<LootManager, LootManager>();
+      container.Register<NPC, NPC>();
 
       container.Register<ITilesAtPathProvider, TilesAtPathProvider>();
       container.Register<IProjectilesFactory, ProjectilesFactory>();
