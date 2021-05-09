@@ -94,21 +94,21 @@ namespace Roguelike.Events
   /// <summary>
   /// /////////////////////////////////////////////
   /// </summary>
-  //public enum MerchantActionKind { Unset, Engaged }
-  //public class MerchantAction : GameAction
-  //{
-  //  public Tiles.Merchant InvolvedTile { get; set; }
-  //  public MerchantActionKind MerchantActionKind { get; set; }
-  //}
-
-  /// <summary>
-  /// /////////////////////////////////////////////
-  /// </summary>
   public enum AllyActionKind { Unset, Engaged, Created, Died }
   public class AllyAction : GameEvent
   {
     public IAlly InvolvedTile { get; set; }
     public AllyActionKind AllyActionKind { get; set; }
+  }
+
+  /// <summary>
+  /// /////////////////////////////////////////////
+  /// </summary>
+  public enum NPCActionKind { Unset, Engaged, Died }
+  public class NPCAction : GameEvent
+  {
+    public INPC InvolvedTile { get; set; }
+    public NPCActionKind NPCActionKind { get; set; }
   }
 
   /// <summary>

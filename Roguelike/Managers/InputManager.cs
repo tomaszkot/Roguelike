@@ -119,6 +119,11 @@ namespace Roguelike.Managers
 
         return InteractionResult.Attacked;
       }
+      else if (tile is INPC npc)
+      {
+        gm.AppendAction<NPCAction>((NPCAction ac) => { ac.NPCActionKind = NPCActionKind.Engaged; ac.InvolvedTile = npc; });
+        return InteractionResult.Blocked;
+      }
       else if (tile is IAlly)
       {
         var ally = tile as IAlly;
@@ -128,6 +133,11 @@ namespace Roguelike.Managers
           th.bark(false);
           //gm.SoundManager.PlaySound("ANIMAL_Dog_Bark_02_Mono");
         }
+        return InteractionResult.Blocked;
+      }
+      
+      else if (tile is INPC)
+      {
         return InteractionResult.Blocked;
       }
       else if (tileIsDoor || tileIsDoorBySumbol)
