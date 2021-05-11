@@ -1,4 +1,5 @@
-﻿using Roguelike.Tiles.LivingEntities;
+﻿using Roguelike.Managers;
+using Roguelike.Tiles.LivingEntities;
 using System.Diagnostics;
 
 namespace Roguelike.Discussions
@@ -73,6 +74,11 @@ namespace Roguelike.Discussions
 
     public virtual void EmitCheating(DiscussionTopic item)
     {
+    }
+
+    public virtual bool AcceptQuest(QuestManager qm, string questKind)
+    {
+      return false;
     }
   }
 }

@@ -9,11 +9,11 @@ using System.Drawing;
 
 namespace Roguelike.Tiles.LivingEntities
 {
-  public class Merchant : AdvancedLivingEntity, IAlly, IMerchant
+  public class Merchant : NPC, IAlly, IMerchant
   {
     public const int HoundPrice = 100;
 
-    public Merchant(Container cont) : base(cont, new Point().Invalid(), '!')
+    public Merchant(Container cont) : base(cont)
     {
       Proffesion = EntityProffesionKind.Merchant;
       Stats.SetNominal(EntityStatKind.Health, 15);

@@ -7,11 +7,8 @@ namespace Roguelike.Tiles.LivingEntities
 {
   public interface INPC
   {
-    Discussion Discussion { get; set; }
-    void SetHasUrgentTopic(bool ut);
-    string Name { get; }
+    //string Name { get; }
     TrainedHound TrainedHound { get; set; }
-    RelationToHero RelationToHero { get; set; }
     AdvancedLivingEntity AdvancedLivingEntity { get;}
   }
 

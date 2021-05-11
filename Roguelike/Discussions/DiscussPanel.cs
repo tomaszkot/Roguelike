@@ -8,18 +8,15 @@ namespace Roguelike.Discussions
 {
   public class DiscussPanel : Roguelike.Abstract.Discussions.IDiscussPanel
   {
-    protected Roguelike.Tiles.LivingEntities.AdvancedLivingEntity npc;
+    protected Roguelike.Tiles.LivingEntities.AdvancedLivingEntity ale;
     GenericListModel<DiscussionTopic> boundTopics = new GenericListModel<DiscussionTopic>();
 
     public GenericListModel<DiscussionTopic> BoundTopics { get => boundTopics; set => boundTopics = value; }
 
     public event EventHandler<DiscussionTopic> DiscussionOptionChosen;
-    //public event EventHandler<Roguelike.Tiles.LivingEntities.RelationToHeroKind> RelationChanged;
-    //Container container;
 
     public DiscussPanel()
     {
-      //this.container = container;
     }
 
     public virtual bool ChooseDiscussionTopic(DiscussionTopic itemModel)
@@ -28,7 +25,7 @@ namespace Roguelike.Discussions
       var id = itemModel.Left.Id;
       if (id == KnownSentenceKind.Back.ToString())
       {
-        BindTopics(itemModel.Parent, npc);
+        BindTopics(itemModel.Parent, ale);
         handled = true;
       }
       else if (id == KnownSentenceKind.Bye.ToString())
@@ -52,7 +49,7 @@ namespace Roguelike.Discussions
       }
       else
       {
-        var merch = npc as Merchant;
+        var merch = ale as Merchant;
         var itemToBind = itemModel;
 
         if (id == KnownSentenceKind.WorkingOnQuest.ToString() ||
@@ -65,7 +62,7 @@ namespace Roguelike.Discussions
           }
           else if (id == KnownSentenceKind.Cheating.ToString())
           {
-            npc.Discussion.EmitCheating(itemModel);
+            ale.Discussion.EmitCheating(itemModel);
             if (merch.RelationToHero.CheatingCounter >= 2)
             {
               Hide();
@@ -77,7 +74,7 @@ namespace Roguelike.Discussions
           itemToBind = itemToBind.Parent.Parent;
         }
 
-        BindTopics(itemToBind, npc);
+        BindTopics(itemToBind, ale);
       }
 
       if (handled)
@@ -97,7 +94,7 @@ namespace Roguelike.Discussions
 
     public virtual GenericListModel<DiscussionTopic> BindTopics(DiscussionTopic parentTopic, Roguelike.Tiles.LivingEntities.AdvancedLivingEntity npc)
     {
-      this.npc = npc;
+      this.ale = npc;
       boundTopics.Clear();
       foreach (var topic in parentTopic.Topics)
       {
