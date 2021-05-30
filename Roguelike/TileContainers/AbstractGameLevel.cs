@@ -34,6 +34,8 @@ namespace Roguelike.TileContainers
     public static Tile EmptyTile = new Tile(symbol: Constants.SymbolBackground);
     public Dictionary<Point, Loot> Loot { get; set; } = new Dictionary<Point, Tiles.Loot>();
     public Dictionary<Point, Surface> Surfaces { get; set; } = new Dictionary<Point, Tiles.Surface>();
+    [JsonIgnore]
+    public bool EventsHooked { get; set; }
 
     [JsonIgnore]
     public ILogger Logger { get; set; }

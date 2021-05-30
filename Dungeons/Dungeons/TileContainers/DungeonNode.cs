@@ -69,9 +69,10 @@ namespace Dungeons
 
       List<IDoor> doors = new List<IDoor>();
 
-      List<Tile> hiddenTiles = new List<Tile>();
-      public List<Tile> HiddenTiles { get => hiddenTiles; set => hiddenTiles = value; }
+      [JsonIgnore]
+      public HiddenTiles HiddenTiles { get; set; } = new HiddenTiles();
 
+      
       [XmlIgnore]
       //[JsonIgnore]
       public Tile[,] Tiles
@@ -150,6 +151,17 @@ namespace Dungeons
         };
         this.tiles = tiles;
         this.created = true;
+      }
+
+      Dictionary<string, bool> hiddenTilesAlreadyAdded = new Dictionary<string, bool>();
+      public bool GetHiddenTilesAlreadyAdded(string key)
+      {
+        return hiddenTilesAlreadyAdded[key];
+      }
+
+      public void SetAlreadyAdded(string key, bool alreadyAdded)
+      {
+        hiddenTilesAlreadyAdded[key] = alreadyAdded;
       }
 
       void EnsureLogger()

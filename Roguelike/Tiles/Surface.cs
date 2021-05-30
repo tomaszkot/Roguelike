@@ -7,6 +7,7 @@ namespace Roguelike.Tiles
   public class Surface : Tile
   {
     SurfaceKind kind;
+    public string OriginMap { get; set; }
 
     public Surface() : base(Constants.SymbolBackground)
     {

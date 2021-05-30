@@ -11,8 +11,10 @@ namespace Roguelike.Tiles.Interactive
 
   public class Barrel : InteractiveTile, IDestroyable
   {
+    public string OriginMap { get; set; }
     public const char BarrelSymbol = '~';
     private BarrelKind barrelKind;
+    public string UnhidingMapName { get; set; }
 
     public bool Destroyed { get; set; }
 

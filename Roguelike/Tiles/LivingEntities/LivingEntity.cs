@@ -63,7 +63,7 @@ namespace Roguelike.Tiles.LivingEntities
     public LivingEntity AllyModeTarget;
     public bool HasRelocateSkill { get; set; }
     public static readonly EntityStats BaseStats;
-
+    public string OriginMap { get; set; }
     Scroll activeScroll;
     public virtual Scroll ActiveScroll
     {

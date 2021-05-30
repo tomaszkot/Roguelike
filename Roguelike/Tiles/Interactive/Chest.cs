@@ -8,6 +8,7 @@ namespace Roguelike.Tiles
     int Level { get; }
     bool SetLevel(int level);
     Point GetPoint();
+    string OriginMap { get; set; }
   }
 }
 
@@ -25,6 +26,7 @@ namespace Roguelike.Tiles.Interactive
     public event EventHandler RequiredKey;
     public bool Locked { get; set; } = false;
     public string KeyName { get; set; }//key for unlocking
+    public string UnhidingMapName { get; set; }
 
     public ChestKind ChestKind
     {

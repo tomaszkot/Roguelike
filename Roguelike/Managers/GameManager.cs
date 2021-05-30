@@ -890,22 +890,32 @@ namespace Roguelike.Managers
     public void AppendEnemy(ILootSource lootSource)
     {
       var enemy = CurrentNode.SpawnEnemy(lootSource);
-      enemy.Container = this.Container;
-      ReplaceTile(enemy, lootSource as Tile);
-      EnemiesManager.AddEntity(enemy);
+      AppendEnemy(enemy, lootSource.GetPoint());
     }
 
-    public void AppendEnemy(Enemy enemy, Point pt, int level)
+    private void AppendEnemy(Enemy enemy, Point pt)
     {
-      enemy.Level = level;
       enemy.Container = this.Container;
       ReplaceTile(enemy, pt);
       EnemiesManager.AddEntity(enemy);
     }
 
+    public void AppendTile(Tile tile, Point pt, int level)
+    {
+      if (tile is Enemy en)
+        AppendEnemy(en, pt, level);
+      else
+        ReplaceTile(tile, pt);
+    }
+
+    public void AppendEnemy(Enemy enemy, Point pt, int level)
+    {
+      enemy.Level = level;
+      AppendEnemy(enemy, pt);
+    }
+
     public T AddAlly<T>() where T : class, IAlly
     {
-      //var ally = new T();
       var ally = this.Container.GetInstance<T>();
       AddAlly(ally);
       return ally;
@@ -1000,10 +1010,21 @@ namespace Roguelike.Managers
         AppendAction<HeroAction>((HeroAction ac) => { ac.Kind = HeroActionKind.HitWall; ac.Info = info; });
       if (tile is Barrel || tile is Chest)
       {
+        var ls = tile as ILootSource;
+        if (!GeneratesLoot(ls))
+        {
+          ReplaceTile(new Tile(), ls.GetPoint());
+          return;
+        }
         var tr = new TimeTracker();
-        this.LootManager.TryAddForLootSource(tile as ILootSource);
+        this.LootManager.TryAddForLootSource(ls);
         Logger.LogInfo("TimeTracker TryAddForLootSource: " + tr.TotalSeconds);
       }
+    }
+
+    protected virtual bool GeneratesLoot(ILootSource ls)
+    {
+      return true;
     }
 
     int GetAlliesCount<T>() where T : IAlly

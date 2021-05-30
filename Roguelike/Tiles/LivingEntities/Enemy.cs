@@ -266,7 +266,7 @@ namespace Roguelike.Tiles.LivingEntities
       set
       {
         base.Name = value;
-        if (Name.ToLower() == "drowned man")
+        if (Name.ToLower().Contains("drowned"))
         {
           SetSurfaceSkillLevel(SurfaceKind.ShallowWater, 1);
           SetSurfaceSkillLevel(SurfaceKind.DeepWater, 1);
