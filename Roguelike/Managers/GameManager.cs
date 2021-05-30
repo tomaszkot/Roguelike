@@ -995,6 +995,13 @@ namespace Roguelike.Managers
       var hitBlocker = false;
       var chest = tile as Chest;
       var barrel = tile as Barrel;
+      if (barrel != null && barrel.OutOfOrder)
+      {
+        AppendAction<HeroAction>((HeroAction ac) => { ac.Kind = HeroActionKind.HitLockedChest; ac.Info = "This element is out of order"; });
+        SoundManager.PlayBeepSound();
+        return;
+      }
+
       if (tile is Wall || (chest != null) || (barrel != null))// && !chest.Closed))
       {
         hitBlocker = true;

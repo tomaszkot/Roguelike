@@ -25,6 +25,7 @@ namespace Roguelike.Tiles.Interactive
   public class InteractiveTile : Dungeons.Tiles.InteractiveTile, IObstacle
   {
     private InteractiveTileKind _kind = InteractiveTileKind.Unset;
+    public bool OutOfOrder { get; set; }
     public int Level
     {
       get;
