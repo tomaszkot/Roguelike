@@ -32,9 +32,9 @@ namespace Roguelike.UI.Models
       TypedItems = items;
     }
 
-    public override int Count()
+    public override int Count
     {
-      return TypedItems.Count;
+      get { return TypedItems.Count; }
     }
 
     public void Add(GenericListItemModel<T> item)

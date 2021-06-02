@@ -27,11 +27,19 @@ namespace Roguelike.Discussions
       item.AddTopic("Let's Trade", KnownSentenceKind.LetsTrade);
       if (allowBuyHound)
         item.AddTopic("Sell me a hound (" + Merchant.HoundPrice + " gold)", KnownSentenceKind.SellHound);
-
-      item.AddTopic("Bye", KnownSentenceKind.Bye);
     }
 
-    public DiscussionTopic MainItem { get => mainItem; set => mainItem = value; }
+    public void SetMainItem(DiscussionTopic topic) 
+    {
+      topic.AddTopic("Bye", KnownSentenceKind.Bye);
+      MainItem = topic;
+    }
+
+    public DiscussionTopic MainItem 
+    { 
+      get => mainItem; 
+      set => mainItem = value; 
+    }
 
     public void ToXml()
     {

@@ -25,6 +25,11 @@ namespace Dungeons
       return Tiles.ContainsKey(key);
     }
 
+    public IEnumerable<String> GetKeys()
+    {
+      return Tiles.Keys;
+    }
+
     public HiddenTilesInfo Get(string key)
     {
       return Tiles[key];

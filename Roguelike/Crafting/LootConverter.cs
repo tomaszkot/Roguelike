@@ -33,6 +33,9 @@ namespace Roguelike.Crafting
 
     protected CraftingResult ReturnCraftedLoot(Loot loot, bool deleteCraftedLoot = true)
     {
+      if (loot == null)//ups
+        return ReturnCraftingError("Improper ingredients");
+
       return new CraftingResult() { Loot = loot, DeleteCraftedLoot = deleteCraftedLoot };
     }
 
@@ -148,30 +151,36 @@ namespace Roguelike.Crafting
         {
           return HandleAllGems(lootToConvert);
         }
-        var allHp = lootToConvert.All(i => i.IsPotion(PotionKind.Health));
-        var allMp = lootToConvert.All(i => i.IsPotion(PotionKind.Mana));
-        if ((recipe.Kind == RecipeKind.Custom || recipe.Kind == RecipeKind.TransformPotion) && (allHp || allMp))
-        {
-          if (lootToConvert[0].IsPotion(PotionKind.Mana))
-            return ReturnCraftedLoot(new Potion(PotionKind.Health));
-          else
-            return ReturnCraftedLoot(new Potion(PotionKind.Mana));
-        }
 
-        if (recipe.Kind == RecipeKind.Custom || recipe.Kind == RecipeKind.Toadstool2Potions)
+
+        //var allHp = lootToConvert.All(i => i.IsPotion(PotionKind.Health));
+        //var allMp = lootToConvert.All(i => i.IsPotion(PotionKind.Mana));
+        //if ((recipe.Kind == RecipeKind.Custom || recipe.Kind == RecipeKind.TransformPotion) && (allHp || allMp))
+        //{
+        //  if (lootToConvert[0].IsPotion(PotionKind.Mana))
+        //    return ReturnCraftedLoot(new Potion(PotionKind.Health));
+        //  else
+        //    return ReturnCraftedLoot(new Potion(PotionKind.Mana));
+        //}
+
+        if (recipe.Kind == RecipeKind.Custom || recipe.Kind == RecipeKind.Toadstools2Potion)
         {
-          var allToadstool = lootToConvert.All(i => i.IsToadstool());
-          if (allToadstool && lootToConvert.Count == 1)
+          var allToadstool = lootToConvert.All(i => i.IsToadstool()) && lootToConvert.Count == 3;
+          if (allToadstool)
           {
-            var toadstool = lootToConvert[0].AsToadstool();
-            if (toadstool != null)
+            var toadstools = lootToConvert.Cast<Mushroom>().GroupBy(i => i.MushroomKind);
+            if (toadstools.Count() == 3)//same kind?
             {
-              Potion potion = null;
-              if (toadstool.MushroomKind == MushroomKind.BlueToadstool)
-                potion = new Potion(PotionKind.Mana);
-              else
-                potion = new Potion(PotionKind.Health);
-              return ReturnCraftedLoot(potion);
+              var toadstool = lootToConvert[0].AsToadstool();
+              if (toadstool != null)
+              {
+                Potion potion = null;
+                if (toadstool.MushroomKind == MushroomKind.BlueToadstool)
+                  potion = new Potion(PotionKind.Mana);
+                else
+                  potion = new Potion(PotionKind.Health);
+                return ReturnCraftedLoot(potion);
+              }
             }
           }
         }
@@ -212,12 +221,13 @@ namespace Roguelike.Crafting
       }
       else if (recipe.Kind == RecipeKind.Custom && lootToConvert.Count == 2)
       {
+        //turn one Toadstool kind into other (using Potion)
         var toadstools = lootToConvert.Where(i => i.IsToadstool()).ToList();
-        var potions = lootToConvert.Where(i => i is Potion).ToList();
+        var potions = lootToConvert.Where(i => i.IsPotion()).ToList();
         if (toadstools.Count == 1 && potions.Count == 1)
         {
           var tk = (toadstools[0].AsToadstool()).MushroomKind;
-          var pk = (potions[0] as Potion).Kind;
+          var pk = (potions[0].AsPotion()).Kind;
 
           if (tk == MushroomKind.RedToadstool && pk == PotionKind.Mana)
             return ReturnCraftedLoot(new Mushroom(MushroomKind.BlueToadstool));
@@ -233,18 +243,19 @@ namespace Roguelike.Crafting
     {
       if (lootToConvert.Count == 2)
       {
-        if (
-          (lootToConvert[0].IsToadstool() && lootToConvert[1].IsPotion(PotionKind.Health)) ||
-          (lootToConvert[1].IsToadstool() && lootToConvert[0].IsPotion(PotionKind.Health)) ||
-          (lootToConvert[0].IsToadstool() && lootToConvert[1].IsPotion(PotionKind.Mana)) ||
-          (lootToConvert[1].IsToadstool() && lootToConvert[0].IsPotion(PotionKind.Mana))
-          )
-        {
-          var srcLoot = lootToConvert[0].IsToadstool() ? lootToConvert[0] : lootToConvert[1];
-          var destLoot = lootToConvert[0].IsToadstool() ? lootToConvert[1] : lootToConvert[0];
-          var crafted = srcLoot.CreateCrafted(destLoot);
-          return ReturnCraftedLoot(crafted);
-        }
+        //if (
+        //  (lootToConvert[0].IsToadstool() && lootToConvert[1].IsPotion(PotionKind.Health)) ||
+        //  (lootToConvert[1].IsToadstool() && lootToConvert[0].IsPotion(PotionKind.Health)) ||
+        //  (lootToConvert[0].IsToadstool() && lootToConvert[1].IsPotion(PotionKind.Mana)) ||
+        //  (lootToConvert[1].IsToadstool() && lootToConvert[0].IsPotion(PotionKind.Mana))
+        //  )
+        //{
+        //  var srcLoot = lootToConvert[0].IsToadstool() ? lootToConvert[0] : lootToConvert[1];
+        //  var destLoot = lootToConvert[0].IsToadstool() ? lootToConvert[1] : lootToConvert[0];
+        //  var crafted = srcLoot.CreateCrafted(destLoot);
+        //  if(crafted!=null)
+        //    return ReturnCraftedLoot(crafted);
+        //}
         //////////////////////////////////////////////////////////////////////////////
         if (lootToConvert[0] is Gem && lootToConvert[1] is Equipment ||
            lootToConvert[1] is Gem && lootToConvert[0] is Equipment
@@ -261,15 +272,15 @@ namespace Roguelike.Crafting
             return ReturnCraftingError(err);
         }
         //////////////////////////////////////////////////////////////////////////////
-        if (lootToConvert[0].IsCraftableWith(lootToConvert[1]) ||
-            lootToConvert[1].IsCraftableWith(lootToConvert[0])
-          )
-        {
-          if (lootToConvert[0].IsCraftableWith(lootToConvert[1]))
-            return ReturnCraftedLoot(lootToConvert[0].CreateCrafted(lootToConvert[1]));
-          else
-            return ReturnCraftedLoot(lootToConvert[1].CreateCrafted(lootToConvert[0]));
-        }
+        //if (lootToConvert[0].IsCraftableWith(lootToConvert[1]) ||
+        //    lootToConvert[1].IsCraftableWith(lootToConvert[0])
+        //  )
+        //{
+        //  if (lootToConvert[0].IsCraftableWith(lootToConvert[1]))
+        //    return ReturnCraftedLoot(lootToConvert[0].CreateCrafted(lootToConvert[1]));
+        //  else
+        //    return ReturnCraftedLoot(lootToConvert[1].CreateCrafted(lootToConvert[0]));
+        //}
 
         return ReturnCraftingError("Improper ingredients");
       }

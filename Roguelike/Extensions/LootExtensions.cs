@@ -53,12 +53,23 @@ namespace Roguelike.Extensions
       return mash.MushroomKind == MushroomKind.BlueToadstool || mash.MushroomKind == MushroomKind.RedToadstool;
     }
 
+    public static bool IsPotion(this Loot loot)
+    {
+      var potion = loot as Potion;
+      return potion != null;
+    }
+
     public static bool IsPotion(this Loot loot, PotionKind kind)
     {
       var potion = loot as Potion;
       if (potion == null)
         return false;
       return potion.Kind == kind;
+    }
+
+    public static Potion AsPotion(this Loot loot)
+    {
+      return loot as Potion;
     }
 
   }

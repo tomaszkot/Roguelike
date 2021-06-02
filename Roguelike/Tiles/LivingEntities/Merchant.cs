@@ -12,6 +12,7 @@ namespace Roguelike.Tiles.LivingEntities
   public class Merchant : NPC, IAlly, IMerchant
   {
     public const int HoundPrice = 100;
+    public bool AllowBuyHound { get; set; } = false;
 
     public Merchant(Container cont) : base(cont)
     {

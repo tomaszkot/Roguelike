@@ -34,9 +34,9 @@ namespace Roguelike.UI.Models
       items.Add(item);
     }
 
-    public virtual int Count()
+    public virtual int Count
     {
-      return items.Count;
+      get { return items.Count; }
     }
 
     public virtual void Clear()

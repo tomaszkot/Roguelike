@@ -10,6 +10,7 @@ namespace Roguelike.Discussions
     public DiscussionSentence Left { get; set; } = new DiscussionSentence();
     public KnownSentenceKind KnownSentenceKind { get; set; }
     public List<DiscussionTopic> Topics { get; set; } = new List<DiscussionTopic>();
+    public bool NPCJoinsAsAlly { get; internal set; }
 
     [XmlIgnoreAttribute]
     public DiscussionTopic Parent { get => parent; set => parent = value; }
@@ -38,6 +39,9 @@ namespace Roguelike.Discussions
       Left = new DiscussionSentence(left);
       if (addMerchantItems)
         Discussion.CreateMerchantResponseOptions(this, allowBuyHound);
+
+      //if("Bye" != right) //prevent loop 
+      //  AddTopic("Bye", KnownSentenceKind.Bye);
     }
 
     public DiscussionTopic(string right, KnownSentenceKind knownSentenceKind, bool allowBuyHound = false)

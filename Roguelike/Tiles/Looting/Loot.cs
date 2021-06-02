@@ -143,10 +143,10 @@ namespace Roguelike.Tiles
 #endif
     }
 
-    public virtual Loot CreateCrafted(Loot other)
-    {
-      return null;
-    }
+    //public virtual Loot CreateCrafted(Loot other)
+    //{
+    //  return null;
+    //}
 
     public override bool Equals(object obj)
     {
@@ -171,10 +171,10 @@ namespace Roguelike.Tiles
       return id.GetHashCode();
     }
 
-    public virtual bool IsCraftableWith(Loot other)
-    {
-      return false;
-    }
+    //public virtual bool IsCraftableWith(Loot other)
+    //{
+    //  return false;
+    //}
 
     public virtual bool IsCraftable()
     {

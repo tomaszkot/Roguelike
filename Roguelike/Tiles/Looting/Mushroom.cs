@@ -65,21 +65,15 @@ namespace Roguelike.Tiles
         tag1 = "mash_Boletus";
     }
 
-    //public bool ApplyTo(Potion potion, out string error)
+    //public override Loot CreateCrafted(Loot other)
     //{
-    //  error = "";
-    //  return false;
-    //}
-
-    //public override LootBase CreateCrafted(LootBase other)
-    //{
-    //  if (other is HealthPotion)
+    //  if (other is Potion && (other as Potion).Kind == PotionKind.Health)
     //  {
-    //    return new SpecialPotion(SpecialPotionKind.Strength, false);
+    //    return new SpecialPotion(SpecialPotionKind.Strength, SpecialPotionSize.Small);
     //  }
-    //  else if (other is ManaPotion)
+    //  else if (other is Potion && (other as Potion).Kind == PotionKind.Mana)
     //  {
-    //    return new SpecialPotion(SpecialPotionKind.Magic, false);
+    //    return new SpecialPotion(SpecialPotionKind.Magic, SpecialPotionSize.Small);
     //  }
 
     //  return null;

@@ -3,5 +3,6 @@
   public interface IMerchant
   {
     int GetPrice(Loot loot);
+    bool AllowBuyHound { get; set; }
   }
 }

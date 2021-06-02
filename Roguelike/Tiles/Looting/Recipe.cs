@@ -4,8 +4,8 @@ namespace Roguelike.Tiles.Looting
 {
   public enum RecipeKind
   {
-    Unset, Custom, ThreeGems, OneEq, TransformPotion, TwoEq, TransformGem, Toadstool2Potions, ExplosiveCocktail, Pendant,
-    EnchantEquipment
+    Unset, Custom, ThreeGems, OneEq, TransformPotion, TwoEq, TransformGem, Toadstools2Potion, ExplosiveCocktail, Pendant,
+    EnchantEquipment, CraftSpecialPotion
   }
 
   public class Recipe : StackedLoot
@@ -69,8 +69,8 @@ namespace Roguelike.Tiles.Looting
         case RecipeKind.TransformGem:
           desc = "Turns given gem into other kind of gem";
           break;
-        case RecipeKind.Toadstool2Potions:
-          desc = "Turns given toadstool into potions";
+        case RecipeKind.Toadstools2Potion:
+          desc = "Turns toadstools into a potion";
           break;
         case RecipeKind.ExplosiveCocktail:
           desc = "Turns Hooch plus Sulfur into Explosive Cocktail";
@@ -80,6 +80,10 @@ namespace Roguelike.Tiles.Looting
           break;
         case RecipeKind.EnchantEquipment:
           desc = "Enchants equipment with a gem or a hunter's trophy";
+          break;
+
+        case RecipeKind.CraftSpecialPotion:
+          desc = "Turns potion plus boletus into a special potion";
           break;
         default:
           break;
@@ -154,7 +158,7 @@ namespace Roguelike.Tiles.Looting
             tag1 += "transform_gem";
             //Name = "";
             break;
-          case RecipeKind.Toadstool2Potions:
+          case RecipeKind.Toadstools2Potion:
             tag1 += "toad_potions";
             //Name = "";
             break;
@@ -168,6 +172,9 @@ namespace Roguelike.Tiles.Looting
           case RecipeKind.EnchantEquipment:
             tag1 += "enchant";
             MagicDustRequired = 0;//drop in inv is free
+            break;
+          case RecipeKind.CraftSpecialPotion:
+            tag1 += "special_potion";
             break;
           default:
             break;
