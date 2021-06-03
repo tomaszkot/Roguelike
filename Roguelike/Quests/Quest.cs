@@ -1,4 +1,6 @@
-﻿namespace Roguelike.Quests
+﻿using Roguelike.Tiles;
+
+namespace Roguelike.Quests
 {
   public enum QuestStatus
   {
@@ -19,7 +21,8 @@
     public string Name { get; set; }
     public string QuestPrincipalName { get; set; }//typically merchant's name
     public QuestRequirement QuestRequirement { get; set; } = new QuestRequirement();
-
+    public LootKind RewardLootKind { get; set; }
+    public string RewardLootName { get; set; }
   }
 
 

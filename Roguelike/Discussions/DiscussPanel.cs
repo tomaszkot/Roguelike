@@ -19,50 +19,53 @@ namespace Roguelike.Discussions
     {
     }
 
-    public virtual bool ChooseDiscussionTopic(DiscussionTopic itemModel)
+    public virtual bool ChooseDiscussionTopic(DiscussionTopic topic)
     {
       var handled = false;
-      var id = itemModel.Left.Id;
-      if (id == KnownSentenceKind.Back.ToString())
+      var leftId = topic.Left.Id;
+      if (leftId == KnownSentenceKind.Back.ToString())
       {
-        BindTopics(itemModel.Parent, ale);
+        BindTopics(topic.Parent, ale);
         handled = true;
       }
-      else if (id == KnownSentenceKind.Bye.ToString())
-      {
-        Hide();
-        handled = true;
-      }
-      else if (id == KnownSentenceKind.LetsTrade.ToString())
+      else if (leftId == KnownSentenceKind.Bye.ToString())
       {
         Hide();
         handled = true;
       }
-      else if (id == KnownSentenceKind.QuestAccepted.ToString())
+      else if (leftId == KnownSentenceKind.LetsTrade.ToString())
       {
         Hide();
         handled = true;
       }
-      else if (id == KnownSentenceKind.SellHound.ToString())
+      else if (leftId == KnownSentenceKind.QuestAccepted.ToString())
+      {
+        Hide();
+        handled = true;
+      }
+      else if (leftId == KnownSentenceKind.SellHound.ToString())
       {
         handled = true;
       }
       else
       {
         var merch = ale as Merchant;
-        var itemToBind = itemModel;
+        var itemToBind = topic;
 
-        if (id == KnownSentenceKind.WorkingOnQuest.ToString() ||
-            id == KnownSentenceKind.AwaitingReward.ToString() ||
-            id == KnownSentenceKind.Cheating.ToString())
+        if (leftId == KnownSentenceKind.WorkingOnQuest.ToString() ||
+            leftId == KnownSentenceKind.AwaitingReward.ToString() ||
+            leftId == KnownSentenceKind.RewardSkipped.ToString() ||
+            leftId == KnownSentenceKind.Cheating.ToString() ||
+            leftId == KnownSentenceKind.AwaitingRewardAfterRewardDeny.ToString())
         {
-          if (id == KnownSentenceKind.AwaitingReward.ToString())
+          if (leftId == KnownSentenceKind.AwaitingReward.ToString() ||
+              leftId == KnownSentenceKind.AwaitingRewardAfterRewardDeny.ToString())
           {
-            RewardHero(merch, itemModel);
+            RewardHero(merch, topic);
           }
-          else if (id == KnownSentenceKind.Cheating.ToString())
+          else if (leftId == KnownSentenceKind.Cheating.ToString())
           {
-            ale.Discussion.EmitCheating(itemModel);
+            ale.Discussion.EmitCheating(topic);
             if (merch.RelationToHero.CheatingCounter >= 2)
             {
               Hide();
@@ -78,7 +81,7 @@ namespace Roguelike.Discussions
       }
 
       if (handled)
-        DiscussionOptionChosen.Raise(this, itemModel);
+        DiscussionOptionChosen.Raise(this, topic);
       return handled;
     }
 
