@@ -27,15 +27,15 @@ namespace Roguelike.Discussions
 
     public static void CreateMerchantResponseOptions(DiscussionTopic item, bool allowBuyHound)
     {
-      item.AddTopic("Let's Trade", KnownSentenceKind.LetsTrade);
+      item.AddTopic(KnownSentenceKind.LetsTrade);
       if (allowBuyHound)
-        item.AddTopic(KnownSentenceKind.SellHound.ToDescription() + " (" + Merchant.HoundPrice + " gold)", KnownSentenceKind.SellHound);
+        item.AddTopic(KnownSentenceKind.SellHound, " (" + Merchant.HoundPrice + " gold)");
       //item.AddTopic("Sell me a hound (" + Merchant.HoundPrice + " gold)", KnownSentenceKind.SellHound);
     }
 
     public void SetMainItem(DiscussionTopic topic) 
     {
-      topic.AddTopic("Bye", KnownSentenceKind.Bye);
+      topic.AddTopic(KnownSentenceKind.Bye);
       MainItem = topic;
     }
 

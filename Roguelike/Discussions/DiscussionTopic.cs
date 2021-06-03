@@ -9,7 +9,7 @@ namespace Roguelike.Discussions
   {
     public DiscussionSentence Right { get; set; } = new DiscussionSentence();
     public DiscussionSentence Left { get; set; } = new DiscussionSentence();
-    public KnownSentenceKind KnownSentenceKind { get; set; }
+   // public KnownSentenceKind RightKnownSentenceKind { get; set; }
     public List<DiscussionTopic> Topics { get; set; } = new List<DiscussionTopic>();
     public bool NPCJoinsAsAlly { get; internal set; }
 
@@ -34,34 +34,61 @@ namespace Roguelike.Discussions
     public DiscussionTopic() { }
 
     public DiscussionTopic(KnownSentenceKind right, string left, bool allowBuyHound = false, bool addMerchantItems = merchantItemsAtAllLevels)
-      : this(right.ToDescription(), left, allowBuyHound, addMerchantItems)
     {
-      KnownSentenceKind = right;
+      //RightKnownSentenceKind = right;
+      Right = new DiscussionSentence(right);
+      if(right == KnownSentenceKind.Bye && left == "")
+        Left = new DiscussionSentence(KnownSentenceKind.Bye);
+      else
+        Left = new DiscussionSentence(left);
+
+      Init(allowBuyHound, addMerchantItems);
+    }
+
+    private void Init(bool allowBuyHound, bool addMerchantItems)
+    {
+      this.allowBuyHound = allowBuyHound;
+      if (addMerchantItems)
+        Discussion.CreateMerchantResponseOptions(this, allowBuyHound);
     }
 
     public DiscussionTopic(string right, string left, bool allowBuyHound = false, bool addMerchantItems = merchantItemsAtAllLevels)
     {
-      this.allowBuyHound = allowBuyHound;
       Right = new DiscussionSentence(right);
       Left = new DiscussionSentence(left);
-      if (addMerchantItems)
-        Discussion.CreateMerchantResponseOptions(this, allowBuyHound);
 
-      //if("Bye" != right) //prevent loop 
-      //  AddTopic("Bye", KnownSentenceKind.Bye);
+      Init(allowBuyHound, addMerchantItems);
     }
 
     public DiscussionTopic(string right, KnownSentenceKind leftKnownSentenceKind, bool allowBuyHound = false)
-      : this(right, leftKnownSentenceKind.ToString(), allowBuyHound, false)
     {
+      Right = new DiscussionSentence(right);
+      Left = new DiscussionSentence(leftKnownSentenceKind);
+
+      Init(allowBuyHound, false);
+    }
+
+    public void AddTopic(KnownSentenceKind knownSentenceKind, string rightSuffix = "")
+    {
+      var item = new DiscussionTopic(knownSentenceKind, "", false, false);
+      item.Right.Body += rightSuffix;
+      InsertTopic(item, false);
+      //AddTopic(right, knownSentenceKind.ToDescription(), false, knownSentenceKind);
+    }
+
+    public void AddTopic(string right, string left, bool addMerchantItems = merchantItemsAtAllLevels)//, KnownSentenceKind knownSentenceKind = KnownSentenceKind.Unset)
+    {
+      var item = new DiscussionTopic(right, left, allowBuyHound, addMerchantItems);
+      //item.Right.KnownSentenceKind = knownSentenceKind;
+      InsertTopic(item, false);
     }
 
     public bool ShowableOnDiscussionList
     {
       get
       {
-        return KnownSentenceKind != KnownSentenceKind.Back && KnownSentenceKind != KnownSentenceKind.Bye &&
-               KnownSentenceKind != KnownSentenceKind.LetsTrade;
+        return Right.KnownSentenceKind != KnownSentenceKind.Back && Right.KnownSentenceKind != KnownSentenceKind.Bye &&
+               Right.KnownSentenceKind != KnownSentenceKind.LetsTrade;
       }
     }
 
@@ -72,7 +99,7 @@ namespace Roguelike.Discussions
 
     public DiscussionTopic GetTopic(KnownSentenceKind kind)
     {
-      return Topics.SingleOrDefault(i => i.KnownSentenceKind == kind);
+      return Topics.SingleOrDefault(i => i.Right.KnownSentenceKind == kind);
     }
 
     public bool HasTopics(string topic)
@@ -134,16 +161,6 @@ namespace Roguelike.Discussions
       InsertTopic(item, true);
     }
 
-    public void AddTopic(string right, KnownSentenceKind knownSentenceKind)
-    {
-      AddTopic(right, knownSentenceKind.ToDescription(), false, knownSentenceKind);
-    }
-
-    public void AddTopic(string right, string left, bool addMerchantItems = merchantItemsAtAllLevels, KnownSentenceKind knownSentenceKind = KnownSentenceKind.Unset)
-    {
-      var item = new DiscussionTopic(right, left, allowBuyHound, addMerchantItems);
-      item.KnownSentenceKind = knownSentenceKind;
-      InsertTopic(item, false);
-    }
+    
   }
 }
