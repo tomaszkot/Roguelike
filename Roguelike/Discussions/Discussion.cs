@@ -1,4 +1,5 @@
-﻿using Roguelike.Managers;
+﻿using Roguelike.Extensions;
+using Roguelike.Managers;
 using Roguelike.Tiles.LivingEntities;
 using System.Diagnostics;
 
@@ -26,7 +27,8 @@ namespace Roguelike.Discussions
     {
       item.AddTopic("Let's Trade", KnownSentenceKind.LetsTrade);
       if (allowBuyHound)
-        item.AddTopic("Sell me a hound (" + Merchant.HoundPrice + " gold)", KnownSentenceKind.SellHound);
+        item.AddTopic(KnownSentenceKind.SellHound.ToDescription() + " (" + Merchant.HoundPrice + " gold)", KnownSentenceKind.SellHound);
+      //item.AddTopic("Sell me a hound (" + Merchant.HoundPrice + " gold)", KnownSentenceKind.SellHound);
     }
 
     public void SetMainItem(DiscussionTopic topic) 

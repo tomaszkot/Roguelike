@@ -42,6 +42,8 @@ namespace Roguelike.Tiles.LivingEntities
       { EntityStatKind.ManaStealing, EntityStatKind.Mana }
     };
 
+    public string Herd { get; set; } = "";
+
     [JsonIgnore]
     public bool Destroyed
     {

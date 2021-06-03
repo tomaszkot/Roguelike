@@ -210,7 +210,7 @@ namespace Dungeons.Tiles
 
     public override string ToString()
     {
-      string res = GetType().ToString();
+      string res = GetType().ToString() + " " + Name;
       if (IncludeDebugDetailsInToString)
         res += " " + Symbol + " " + DungeonNodeIndex + " " + point + " " + tag1 + " " + GetHashCode();
       return res;

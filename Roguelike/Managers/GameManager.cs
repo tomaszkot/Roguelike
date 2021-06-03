@@ -199,9 +199,35 @@ namespace Roguelike.Managers
       if (kind == GameContextSwitchKind.NewGame)
       {
         gameState.HeroInitGamePosition = hero.point;
+        var allEnemies = node.GetTiles<Enemy>();
+        var chemps = allEnemies.Where(i => i.PowerKind == EnemyPowerKind.Champion).ToList();
+        var plains = allEnemies.Where(i => i.PowerKind == EnemyPowerKind.Plain).ToList();
+        foreach (var chemp in chemps)
+        {
+          var chempHerdMembers = GetHerdMembers(chemp, allEnemies);
+          foreach (var chempHerdMember in chempHerdMembers)
+          {
+            chempHerdMember.Herd = chemp.Herd;
+          }
+          
+        }
       }
 
       PrintHeroStats("SetContext " + kind);
+    }
+
+    public virtual void HandleDeath(LivingEntity dead)
+    {
+      
+    }
+
+    public List<Enemy> GetHerdMembers(Enemy chemp, List<Enemy> allEnemies = null)
+    {
+      if(allEnemies == null)
+        allEnemies = CurrentNode.GetTiles<Enemy>();
+      var plains = allEnemies.Where(i => i.PowerKind == EnemyPowerKind.Plain).ToList();
+      var chempHerdMembers = plains.Where(i => i.DistanceFrom(chemp) < 5).ToList();
+      return chempHerdMembers;
     }
 
     protected virtual void InitNodeOnLoad(AbstractGameLevel node)

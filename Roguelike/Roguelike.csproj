@@ -66,7 +66,9 @@
     <Compile Include="Abstract\IGame.cs" />
     <Compile Include="Abstract\Multimedia\ISoundPlayer.cs" />
     <Compile Include="Abstract\Spells\ISpell.cs" />
+    <Compile Include="Discussions\DiscussionExtensions.cs" />
     <Compile Include="Discussions\DiscussPanel.cs" />
+    <Compile Include="History\LivingEntityHistory.cs" />
     <Compile Include="Managers\AnimalsManager.cs" />
     <Compile Include="Managers\PolicyManager.cs" />
     <Compile Include="Managers\SpellManager.cs" />

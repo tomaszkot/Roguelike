@@ -7,28 +7,14 @@ namespace Roguelike
 {
   namespace History
   {
-
-    public class LootHistoryItem
+    public class HistoryItem
     {
       public string Name { get; set; }
-      public LootKind LootKind { get; set; }
-      public EquipmentKind EquipmentKind { get; set; }
       public string Tag1 { get; set; }
-
-      public LootHistoryItem() { }
-
-      public LootHistoryItem(Loot loot)
-      {
-        Name = loot.Name;
-        LootKind = loot.LootKind;
-        Tag1 = loot.tag1;
-        if (loot is Equipment)
-          EquipmentKind = (loot as Equipment).EquipmentKind;
-      }
 
       public override bool Equals(object obj)
       {
-        var other = obj as LootHistoryItem;
+        var other = obj as HistoryItem;
         if (other == null)
           return false;
         return this.GetHashCode() == other.GetHashCode();
@@ -36,10 +22,10 @@ namespace Roguelike
 
       public override int GetHashCode()
       {
-        return (Name + "_" + LootKind.ToString() + "_" + EquipmentKind.ToString()).GetHashCode();
+        return (Name + "_" + Tag1).GetHashCode();
       }
 
-      static public bool operator ==(LootHistoryItem a, LootHistoryItem b)
+      static public bool operator==(HistoryItem a, HistoryItem b)
       {
         if (Object.ReferenceEquals(a, b))
         {
@@ -53,10 +39,33 @@ namespace Roguelike
         return a.Equals(b);
       }
 
-      static public bool operator !=(LootHistoryItem a, LootHistoryItem b)
+      static public bool operator !=(HistoryItem a, HistoryItem b)
       {
         return !(a == b);
       }
+    }
+
+    public class LootHistoryItem : HistoryItem
+    {
+      public LootKind LootKind { get; set; }
+      public EquipmentKind EquipmentKind { get; set; }
+      
+      public LootHistoryItem() { }
+
+      public LootHistoryItem(Loot loot)
+      {
+        Name = loot.Name;
+        LootKind = loot.LootKind;
+        Tag1 = loot.tag1;
+        if (loot is Equipment)
+          EquipmentKind = (loot as Equipment).EquipmentKind;
+      }
+            
+      public override int GetHashCode()
+      {
+        return (Name + "_" + LootKind.ToString() + "_" + EquipmentKind.ToString()).GetHashCode();
+      }
+            
     }
 
     public class LootHistory

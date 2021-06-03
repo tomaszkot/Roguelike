@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using Roguelike.Extensions;
+using System.Collections.Generic;
 using System.Linq;
 using System.Xml.Serialization;
 
@@ -32,6 +33,12 @@ namespace Roguelike.Discussions
 
     public DiscussionTopic() { }
 
+    public DiscussionTopic(KnownSentenceKind right, string left, bool allowBuyHound = false, bool addMerchantItems = merchantItemsAtAllLevels)
+      : this(right.ToDescription(), left, allowBuyHound, addMerchantItems)
+    {
+      KnownSentenceKind = right;
+    }
+
     public DiscussionTopic(string right, string left, bool allowBuyHound = false, bool addMerchantItems = merchantItemsAtAllLevels)
     {
       this.allowBuyHound = allowBuyHound;
@@ -44,8 +51,8 @@ namespace Roguelike.Discussions
       //  AddTopic("Bye", KnownSentenceKind.Bye);
     }
 
-    public DiscussionTopic(string right, KnownSentenceKind knownSentenceKind, bool allowBuyHound = false)
-      : this(right, knownSentenceKind.ToString(), allowBuyHound, false)
+    public DiscussionTopic(string right, KnownSentenceKind leftKnownSentenceKind, bool allowBuyHound = false)
+      : this(right, leftKnownSentenceKind.ToString(), allowBuyHound, false)
     {
     }
 
@@ -89,8 +96,8 @@ namespace Roguelike.Discussions
 
     private DiscussionTopic CreateBack(DiscussionTopic parent)
     {
-      var back = new DiscussionTopic("Back", KnownSentenceKind.Back.ToString());
-      back.KnownSentenceKind = KnownSentenceKind.Back;
+      var back = new DiscussionTopic(KnownSentenceKind.Back, KnownSentenceKind.Back.ToString());
+      //back.KnownSentenceKind = ;
       back.Parent = parent;
       return back;
     }
@@ -129,7 +136,7 @@ namespace Roguelike.Discussions
 
     public void AddTopic(string right, KnownSentenceKind knownSentenceKind)
     {
-      AddTopic(right, knownSentenceKind.ToString(), false, knownSentenceKind);
+      AddTopic(right, knownSentenceKind.ToDescription(), false, knownSentenceKind);
     }
 
     public void AddTopic(string right, string left, bool addMerchantItems = merchantItemsAtAllLevels, KnownSentenceKind knownSentenceKind = KnownSentenceKind.Unset)

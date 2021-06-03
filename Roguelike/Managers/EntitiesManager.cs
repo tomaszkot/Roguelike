@@ -227,6 +227,7 @@ namespace Roguelike.Managers
       {
         Context.EventsManager.AppendAction(dead.GetDeadAction());
         RemoveDeadEntity(dead);
+        gameManager.HandleDeath(dead);
       }
     }
 
