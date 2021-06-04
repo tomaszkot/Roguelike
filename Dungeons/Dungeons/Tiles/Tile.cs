@@ -22,6 +22,11 @@ namespace Dungeons.Tiles
   {
     //members public for speed purposes
     public Point point;
+    //public Point point
+    //{
+    //  get { return _point; }
+    //  set { _point = value; }
+    //}
 
     private char symbol = Constants.SymbolBackground;
     public string name;

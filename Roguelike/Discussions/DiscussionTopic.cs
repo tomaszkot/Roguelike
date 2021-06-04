@@ -9,9 +9,14 @@ namespace Roguelike.Discussions
   {
     public DiscussionSentence Right { get; set; } = new DiscussionSentence();
     public DiscussionSentence Left { get; set; } = new DiscussionSentence();
-   // public KnownSentenceKind RightKnownSentenceKind { get; set; }
+    public KnownSentenceKind RightKnownSentenceKind 
+    {
+      get { return Right.KnownSentenceKind; }
+      set { Right.KnownSentenceKind = value; } 
+    }
     public List<DiscussionTopic> Topics { get; set; } = new List<DiscussionTopic>();
     public bool NPCJoinsAsAlly { get; internal set; }
+    public bool HoundJoinsAsAlly { get;  set; }
 
     [XmlIgnoreAttribute]
     public DiscussionTopic Parent { get => parent; set => parent = value; }
@@ -73,13 +78,11 @@ namespace Roguelike.Discussions
       var item = new DiscussionTopic(knownSentenceKind, "", false, false);
       item.Right.Body += rightSuffix;
       InsertTopic(item, false);
-      //AddTopic(right, knownSentenceKind.ToDescription(), false, knownSentenceKind);
     }
 
-    public void AddTopic(string right, string left, bool addMerchantItems = merchantItemsAtAllLevels)//, KnownSentenceKind knownSentenceKind = KnownSentenceKind.Unset)
+    public void AddTopic(string right, string left, bool addMerchantItems = merchantItemsAtAllLevels)
     {
       var item = new DiscussionTopic(right, left, allowBuyHound, addMerchantItems);
-      //item.Right.KnownSentenceKind = knownSentenceKind;
       InsertTopic(item, false);
     }
 
@@ -87,8 +90,8 @@ namespace Roguelike.Discussions
     {
       get
       {
-        return Right.KnownSentenceKind != KnownSentenceKind.Back && Right.KnownSentenceKind != KnownSentenceKind.Bye &&
-               Right.KnownSentenceKind != KnownSentenceKind.LetsTrade;
+        return RightKnownSentenceKind != KnownSentenceKind.Back && RightKnownSentenceKind != KnownSentenceKind.Bye &&
+               RightKnownSentenceKind != KnownSentenceKind.LetsTrade;
       }
     }
 
@@ -99,7 +102,7 @@ namespace Roguelike.Discussions
 
     public DiscussionTopic GetTopic(KnownSentenceKind kind)
     {
-      return Topics.SingleOrDefault(i => i.Right.KnownSentenceKind == kind);
+      return Topics.SingleOrDefault(i => i.RightKnownSentenceKind == kind);
     }
 
     public bool HasTopics(string topic)
@@ -121,10 +124,9 @@ namespace Roguelike.Discussions
       }
     }
 
-    private DiscussionTopic CreateBack(DiscussionTopic parent)
+    public DiscussionTopic CreateBack(DiscussionTopic parent)
     {
       var back = new DiscussionTopic(KnownSentenceKind.Back, KnownSentenceKind.Back.ToString());
-      //back.KnownSentenceKind = ;
       back.Parent = parent;
       return back;
     }

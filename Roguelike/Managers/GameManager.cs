@@ -218,7 +218,7 @@ namespace Roguelike.Managers
 
     public virtual void HandleDeath(LivingEntity dead)
     {
-      
+      GameState.History.LivingEntity.AddItem(new Roguelike.History.LivingEntityHistoryItem(dead));
     }
 
     public List<Enemy> GetHerdMembers(Enemy chemp, List<Enemy> allEnemies = null)

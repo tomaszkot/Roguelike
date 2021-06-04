@@ -101,7 +101,7 @@ namespace Roguelike.Tiles.LivingEntities
       InitEffectsToUse(boss);
       InitActiveScroll();
 
-      if (!boss)
+      if (!boss && !tag1.EndsWith(ChempTagSuffix))
         this.tag1 += ChempTagSuffix;
     }
 

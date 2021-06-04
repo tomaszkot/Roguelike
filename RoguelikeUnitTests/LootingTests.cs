@@ -19,6 +19,13 @@ namespace RoguelikeUnitTests
   [TestFixture]
   class LootingTests : TestBaseTyped<LootingTestsHelper>
   {
+    [Test]
+    public void Names()
+    {
+      //var env = CreateTestEnv();
+      var rec = new Recipe(RecipeKind.Toadstools2Potion);
+      Assert.AreEqual(rec.Name, "Potion from Toadstools");
+    }
 
     [Test]
     public void UniqRandom()

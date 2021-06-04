@@ -160,7 +160,8 @@ namespace Roguelike.Tiles.Looting
             break;
           case RecipeKind.Toadstools2Potion:
             tag1 += "toad_potions";
-            //Name = "";
+            DisplayedName = "Potion from Toadstools Recipe";
+            //Name = "Potion from Toadstools";
             break;
           case RecipeKind.ExplosiveCocktail:
             tag1 += "expl_cocktail";

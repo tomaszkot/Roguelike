@@ -10,6 +10,7 @@ namespace Roguelike.Tiles.LivingEntities
     //string Name { get; }
     TrainedHound TrainedHound { get; set; }
     AdvancedLivingEntity AdvancedLivingEntity { get;}
+    Discussion Discussion { get; set; } 
   }
 
   public class NPC : AdvancedLivingEntity, INPC

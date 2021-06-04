@@ -12,6 +12,8 @@ namespace Roguelike.Extensions
         return "What's up?";
       else if (valueString == KnownSentenceKind.SellHound.ToString())
         return "Sell me a hound";
+      else if (valueString == KnownSentenceKind.LetsTrade.ToString())
+        return "Let's trade";
 
       var res = "";
 

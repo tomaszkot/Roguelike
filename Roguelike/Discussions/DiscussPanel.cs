@@ -21,26 +21,22 @@ namespace Roguelike.Discussions
 
     public virtual bool ChooseDiscussionTopic(DiscussionTopic topic)
     {
-      var handled = false;
-      var knownSentenceKind = topic.Right.KnownSentenceKind;
+      var knownSentenceKind = topic.RightKnownSentenceKind;
       if (knownSentenceKind == KnownSentenceKind.Back)
       {
         BindTopics(topic.Parent, ale);
-        handled = true;
       }
       else if (knownSentenceKind == KnownSentenceKind.Bye || knownSentenceKind == KnownSentenceKind.LetsTrade ||
         knownSentenceKind == KnownSentenceKind.QuestAccepted)
       {
         Hide();
-        handled = true;
       }
       else if (knownSentenceKind == KnownSentenceKind.SellHound)
       {
-        handled = true;
       }
       else
       {
-        var merch = ale as Merchant;
+        //var merch = ale as Merchant;
         var itemToBind = topic;
 
         if (knownSentenceKind == KnownSentenceKind.WorkingOnQuest||
@@ -50,33 +46,32 @@ namespace Roguelike.Discussions
             knownSentenceKind == KnownSentenceKind.AwaitingRewardAfterRewardDeny)
         {
           if (knownSentenceKind == KnownSentenceKind.AwaitingReward||
-              knownSentenceKind == KnownSentenceKind.AwaitingRewardAfterRewardDeny)
+              knownSentenceKind == KnownSentenceKind.AwaitingRewardAfterRewardDeny ||
+              knownSentenceKind == KnownSentenceKind.RewardSkipped)
           {
-            RewardHero(merch, topic);
+            RewardHero(ale as INPC, topic);
           }
           else if (knownSentenceKind == KnownSentenceKind.Cheating)
           {
             ale.Discussion.EmitCheating(topic);
-            if (merch.RelationToHero.CheatingCounter >= 2)
+            if (ale.RelationToHero.CheatingCounter >= 2)
             {
               Hide();
               //RelationChanged.Raise(this, merch.RelationToHero.Kind);
             }
           }
 
-          handled = true;
           itemToBind = itemToBind.Parent.Parent;
         }
 
         BindTopics(itemToBind, ale);
       }
 
-      if (handled)
-        DiscussionOptionChosen.Raise(this, topic);
-      return handled;
+      DiscussionOptionChosen.Raise(this, topic);
+      return true;
     }
 
-    protected virtual void RewardHero(Merchant merch, DiscussionTopic topic)
+    protected virtual void RewardHero(Roguelike.Tiles.LivingEntities.INPC npc, DiscussionTopic topic)
     {
 
     }
@@ -100,12 +95,12 @@ namespace Roguelike.Discussions
 
     public GenericListItemModel<DiscussionTopic> GetTopicModel(KnownSentenceKind kind)
     {
-      return boundTopics.TypedItems.Where(i => i.Item.Right.KnownSentenceKind == kind).SingleOrDefault();
+      return boundTopics.TypedItems.Where(i => i.Item.RightKnownSentenceKind == kind).SingleOrDefault();
     }
 
     public DiscussionTopic GetTopic(KnownSentenceKind kind)
     {
-      var found = boundTopics.TypedItems.Where(i => i.Item.Right.KnownSentenceKind == kind).SingleOrDefault();
+      var found = boundTopics.TypedItems.Where(i => i.Item.RightKnownSentenceKind == kind).SingleOrDefault();
       return found != null ? found.Item : null;
     }
 
