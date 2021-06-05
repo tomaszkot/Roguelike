@@ -28,7 +28,7 @@ namespace Roguelike.Tiles.LivingEntities
 
     public God(Container cont, Point point, char symbol) : base(cont, point, symbol)
     {
-      Alive = true;//for turn to work
+      Alive = false;//TODO, for turn to work
       //HeroAlly = true;
       //inventory = new InventoryGod();
       //inventory.InvType = InvType.God; //InvType.Merchant;

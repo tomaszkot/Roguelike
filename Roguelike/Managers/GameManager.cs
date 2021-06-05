@@ -1033,7 +1033,7 @@ namespace Roguelike.Managers
         hitBlocker = true;
         if (chest != null)
           info = "Hero hit a chest";
-        if (barrel != null)
+        else if (barrel != null)
           info = "Hero hit a barrel";
         else
           info = "Hero hit a wall";
