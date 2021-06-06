@@ -177,7 +177,9 @@ namespace Roguelike
             pt = notFar.First().point;
           CurrentNode.SetTile(ally, pt);
           var dist = ally.DistanceFrom(Hero);
-          Debug.WriteLine("dist="+ dist + " ally: "+ ally + " hero: "+Hero.point);
+          var info = "dist=" + dist + " ally: " + ally + " hero: " + Hero.point;
+          //Debug.WriteLine(info);
+          Logger.LogInfo(info);
         }
       }
 
