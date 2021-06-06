@@ -211,7 +211,8 @@ namespace Roguelike.Tiles.LivingEntities
         LevelUpPoints += GenerationInfo.LevelUpPoints;
         AbilityPoints += 2;
         NextLevelExperience = (int)(NextLevelExperience + (NextLevelExperience * GenerationInfo.NextExperienceIncrease));
-
+        if (Level == 2 || Level == 3)
+          NextLevelExperience *= 1.2f;
 
         leveledUp = true;
 

@@ -165,14 +165,14 @@ namespace Roguelike.Crafting
 
         if (recipe.Kind == RecipeKind.Custom || recipe.Kind == RecipeKind.Toadstools2Potion)
         {
-          var allToadstool = lootToConvert.All(i => i.IsToadstool()) && lootToConvert.Count == 3;
+          var allToadstool = lootToConvert.All(i => i.IsToadstool()) && lootToConvert.Count == 1;// && lootToConvert[0].Count;
           if (allToadstool)
           {
-            var toadstools = lootToConvert.Cast<Mushroom>().GroupBy(i => i.MushroomKind);
-            if (toadstools.Count() == 3)//same kind?
+            //var toadstools = lootToConvert.Cast<Mushroom>().GroupBy(i => i.MushroomKind);
+            //if (toadstools[0] as Mushroom)//same kind?
             {
               var toadstool = lootToConvert[0].AsToadstool();
-              if (toadstool != null)
+              if (toadstool != null && toadstool.Count == 3)
               {
                 Potion potion = null;
                 if (toadstool.MushroomKind == MushroomKind.BlueToadstool)

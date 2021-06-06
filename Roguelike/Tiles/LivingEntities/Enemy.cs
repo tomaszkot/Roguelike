@@ -235,7 +235,7 @@ namespace Roguelike.Tiles.LivingEntities
                  Symbol == EnemySymbols.SpiderSymbol)
       {
         var poisonAttack = Stats.GetStat(EntityStatKind.PoisonAttack);
-        poisonAttack.Value.Nominal = 2;
+        poisonAttack.Value.Nominal = 1.5f;
       }
     }
 
