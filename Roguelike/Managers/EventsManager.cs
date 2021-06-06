@@ -33,6 +33,7 @@ namespace Roguelike.Managers
     {
       if (GameManager.Hero != null && !GameManager.Hero.Alive && GameManager.Context.HeroDeadReported)
         return;
+
       LastActions.Add(ac);
       if (ActionAppended != null)//send it to listeners as logic of game depends on it
       {
