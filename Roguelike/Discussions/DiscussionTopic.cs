@@ -73,9 +73,9 @@ namespace Roguelike.Discussions
       Init(allowBuyHound, false);
     }
 
-    public void AddTopic(KnownSentenceKind knownSentenceKind, string rightSuffix = "")
+    public void AddTopic(KnownSentenceKind rightKnownSentenceKind, string rightSuffix = "")
     {
-      var item = new DiscussionTopic(knownSentenceKind, "", false, false);
+      var item = new DiscussionTopic(rightKnownSentenceKind, "", false, false);
       item.Right.Body += rightSuffix;
       InsertTopic(item, false);
     }

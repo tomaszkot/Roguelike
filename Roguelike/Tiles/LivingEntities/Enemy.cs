@@ -232,11 +232,17 @@ namespace Roguelike.Tiles.LivingEntities
     private void SetSpecialAttackStat()
     {
       if (Symbol == EnemySymbols.SnakeSymbol ||
-                 Symbol == EnemySymbols.SpiderSymbol)
+         Symbol == EnemySymbols.SpiderSymbol
+         )
       {
-        var poisonAttack = Stats.GetStat(EntityStatKind.PoisonAttack);
-        poisonAttack.Value.Nominal = 1.5f;
+        SetStat(EntityStatKind.PoisonAttack);
       }
+    }
+
+    private void SetStat(EntityStatKind esk)
+    {
+      var att = Stats.GetStat(esk);
+      att.Value.Nominal = 1.5f;
     }
 
     public static string NameFromSymbol(char symbol)
@@ -277,6 +283,8 @@ namespace Roguelike.Tiles.LivingEntities
           this.Stats.SetNominal(EntityStatKind.Mana, BaseMana.Value.TotalValue * 100);
           this.color = ConsoleColor.Magenta;
         }
+        if (Name.ToLower().Contains("hornet"))
+          SetStat(EntityStatKind.PoisonAttack);
       }
     }
 

@@ -153,15 +153,18 @@ namespace Roguelike.Crafting
         }
 
 
-        //var allHp = lootToConvert.All(i => i.IsPotion(PotionKind.Health));
-        //var allMp = lootToConvert.All(i => i.IsPotion(PotionKind.Mana));
-        //if ((recipe.Kind == RecipeKind.Custom || recipe.Kind == RecipeKind.TransformPotion) && (allHp || allMp))
-        //{
-        //  if (lootToConvert[0].IsPotion(PotionKind.Mana))
-        //    return ReturnCraftedLoot(new Potion(PotionKind.Health));
-        //  else
-        //    return ReturnCraftedLoot(new Potion(PotionKind.Mana));
-        //}
+        var allHp = lootToConvert.All(i => i.IsPotion(PotionKind.Health));
+        var allMp = lootToConvert.All(i => i.IsPotion(PotionKind.Mana));
+        if ((recipe.Kind == RecipeKind.Custom || recipe.Kind == RecipeKind.TransformPotion) && (allHp || allMp))
+        {
+          if ((lootToConvert[0] as Potion).Count == 1)//TODO allow many conv (use many M Dust)
+          {
+            if (lootToConvert[0].IsPotion(PotionKind.Mana))
+              return ReturnCraftedLoot(new Potion(PotionKind.Health));
+            else
+              return ReturnCraftedLoot(new Potion(PotionKind.Mana));
+          }
+        }
 
         if (recipe.Kind == RecipeKind.Custom || recipe.Kind == RecipeKind.Toadstools2Potion)
         {

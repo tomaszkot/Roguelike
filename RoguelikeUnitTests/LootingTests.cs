@@ -24,7 +24,7 @@ namespace RoguelikeUnitTests
     {
       //var env = CreateTestEnv();
       var rec = new Recipe(RecipeKind.Toadstools2Potion);
-      Assert.AreEqual(rec.Name, "Potion from Toadstools");
+      Assert.AreEqual(rec.DisplayedName, "Potion from Toadstools Recipe");
     }
 
     [Test]
@@ -335,7 +335,7 @@ namespace RoguelikeUnitTests
     [Test]
     public void KilledEnemyAtSamePlace()
     {
-      var env = CreateTestEnv();
+      var env = CreateTestEnv(true, 20);
       env.LootGenerator.Probability = new Roguelike.Probability.Looting();
       env.LootGenerator.Probability.SetLootingChance(LootSourceKind.Enemy, LootKind.Equipment, 1f);
 
