@@ -83,14 +83,12 @@ namespace Roguelike.Generators
           if (lootSource == LootSourceKind.PlainChest || lootSource == LootSourceKind.Barrel)
           {
             if (lk == LootKind.Gem || lk == LootKind.HunterTrophy)
-              mult /= 2f;
+              mult /= 3f;
           }
 
           if (lk == LootKind.Potion || lk == LootKind.Scroll)
           {
             mult = 1.3f;
-            //if(lk == LootKind.Scroll)
-            //  mult = 1.8f;
           }
 
           val *= mult;
@@ -409,8 +407,7 @@ namespace Roguelike.Generators
       }
       else if (kind == LootKind.Recipe)
       {
-        var kind_ = RandHelper.GetRandomEnumValue<RecipeKind>();
-        res = new Recipe(kind_);
+        res = GetRandRecipe();
       }
       else if (kind == LootKind.Other)
       {
@@ -421,6 +418,13 @@ namespace Roguelike.Generators
 
       //if(res is Equipment)
       //        EnasureLevelIndex(res as Equipment);
+      return res;
+    }
+
+    protected virtual Recipe GetRandRecipe()
+    {
+      var kind_ = RandHelper.GetRandomEnumValue<RecipeKind>();
+      var res = new Recipe(kind_);
       return res;
     }
 

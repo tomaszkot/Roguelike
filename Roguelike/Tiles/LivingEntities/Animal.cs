@@ -1,4 +1,5 @@
 ﻿using Dungeons.Core;
+using Roguelike.Spells;
 
 namespace Roguelike.Tiles.LivingEntities
 {
@@ -17,6 +18,20 @@ namespace Roguelike.Tiles.LivingEntities
       if (res)
         RandMoveCoolDown = RandHelper.GetRandomInt(4);
       return res;
+    }
+
+    protected override void OnHitBy(float amount, LivingEntity attacker = null, Spell spell = null, string damageDesc = null)
+    {
+      base.OnHitBy(amount, attacker, spell, damageDesc);
+    }
+
+    public override float OnPhysicalHitBy(LivingEntity attacker)
+    {
+      if(tag1 == "rooster" || tag1 == "hen")
+        PlaySound("rooster_scream");
+      else if (tag1 == "pig")
+        PlaySound("pig_scream");
+      return base.OnPhysicalHitBy(attacker);
     }
   }
 }

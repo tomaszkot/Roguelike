@@ -23,7 +23,7 @@ namespace Roguelike.Settings
     public bool RestoreHeroToSafePointAfterLoad { get; set; } = true;
     public bool RestoreHeroToDungeon { get; set; } = false;////TODO this way loading predefinied levels did not worked in Unity
     public bool RegenerateLevelsOnLoad { get; set; } = true;
-    public static bool Demo { get; set; } = false;
+    public static bool Demo { get; set; } = true;
     //public GameSession Session = new GameSession();
 
     public override string ToString()
