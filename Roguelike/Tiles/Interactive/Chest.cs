@@ -15,6 +15,7 @@ namespace Roguelike.Tiles
 namespace Roguelike.Tiles.Interactive
 {
   public enum ChestKind { Unset, Plain, Gold, GoldDeluxe }
+  public enum ChestVisualKind { Unset, Chest, Grave }
 
   public class Chest : InteractiveTile, ILootSource
   {
@@ -27,6 +28,7 @@ namespace Roguelike.Tiles.Interactive
     public bool Locked { get; set; } = false;
     public string KeyName { get; set; }//key for unlocking
     public string UnhidingMapName { get; set; }
+    public ChestVisualKind ChestVisualKind { get; set; } = ChestVisualKind.Chest;
 
     public ChestKind ChestKind
     {

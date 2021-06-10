@@ -76,6 +76,7 @@ namespace Roguelike.Managers
       var inter = lootSource as Roguelike.Tiles.Interactive.InteractiveTile;
       var lsk = LootSourceKind.Barrel;
       Chest chest = null;
+
       if (lootSource is Chest)
       {
         chest = (lootSource as Chest);
@@ -84,10 +85,16 @@ namespace Roguelike.Managers
         lsk = chest.LootSourceKind;
       }
 
-      if (lootSource is Barrel && RandHelper.GetRandomDouble() < GenerationInfo.ChanceToGenerateEnemyFromBarrel)
+      if (lootSource is Barrel && RandHelper.GetRandomDouble() < GenerationInfo.ChanceToGenerateEnemyFromBarrel ||
+          (lootSource is Chest ch && ch.ChestVisualKind == ChestVisualKind.Grave && RandHelper.GetRandomDouble() < GenerationInfo.ChanceToGenerateEnemyFromGrave))
       {
         GameManager.AppendEnemy(lootSource);
-
+        if (chest != null)
+        {
+          if (!chest.Open())
+            return lootItems;
+          GameManager.AppendAction<InteractiveTileAction>((InteractiveTileAction ac) => { ac.InvolvedTile = chest; ac.InteractiveKind = InteractiveActionKind.ChestOpened; });
+        }
         return lootItems;
       }
 

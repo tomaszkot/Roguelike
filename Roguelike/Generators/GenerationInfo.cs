@@ -34,6 +34,7 @@
     public static DebugGenerationInfo DebugInfo = new DebugGenerationInfo();
 
     public static float ChanceToGenerateEnemyFromBarrel = .15f;
+    public static float ChanceToGenerateEnemyFromGrave = .4f;
     public static float ChanceToTurnOnSpecialSkillByEnemy = 0.5f;
 
     public const int LevelUpPoints = 5;

@@ -916,13 +916,20 @@ namespace Roguelike.Managers
     public void AppendEnemy(ILootSource lootSource)
     {
       var enemy = CurrentNode.SpawnEnemy(lootSource);
-      AppendEnemy(enemy, lootSource.GetPoint());
+      AppendEnemy(enemy, lootSource.GetPoint(), lootSource is Barrel);
     }
 
-    private void AppendEnemy(Enemy enemy, Point pt)
+    private void AppendEnemy(Enemy enemy, Point pt, bool replace)
     {
       enemy.Container = this.Container;
-      ReplaceTile(enemy, pt);
+      if (replace)
+        ReplaceTile(enemy, pt);
+      else
+      {
+        var empty = CurrentNode.GetClosestEmpty(CurrentNode.GetTile(pt), true, false);
+        ReplaceTile(enemy, empty.point);
+        //CurrentNode.SetTile(enemy, empty.point);
+      }
       EnemiesManager.AddEntity(enemy);
     }
 
@@ -937,7 +944,7 @@ namespace Roguelike.Managers
     public void AppendEnemy(Enemy enemy, Point pt, int level)
     {
       enemy.Level = level;
-      AppendEnemy(enemy, pt);
+      AppendEnemy(enemy, pt, true);
     }
 
     public T AddAlly<T>() where T : class, IAlly
@@ -1032,7 +1039,13 @@ namespace Roguelike.Managers
       {
         hitBlocker = true;
         if (chest != null)
-          info = "Hero hit a chest";
+        {
+          info = "Hero hit a ";
+          if(chest.ChestVisualKind == ChestVisualKind.Chest)
+            info += "chest";
+          else if(chest.ChestVisualKind == ChestVisualKind.Grave)
+            info += "gave";
+        }
         else if (barrel != null)
           info = "Hero hit a barrel";
         else
