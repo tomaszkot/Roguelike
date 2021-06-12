@@ -22,14 +22,25 @@ namespace Roguelike.Tiles.Interactive
     public const char ChestSymbol = '~';
     private ChestKind chestKind = ChestKind.Plain;
     private bool closed = true;
+    private ChestVisualKind chestVisualKind = ChestVisualKind.Chest;
+
     public string OriginMap { get; set; }
     public event EventHandler Opened;
     public event EventHandler RequiredKey;
     public bool Locked { get; set; } = false;
     public string KeyName { get; set; }//key for unlocking
     public string UnhidingMapName { get; set; }
-    public ChestVisualKind ChestVisualKind { get; set; } = ChestVisualKind.Chest;
 
+    public ChestVisualKind ChestVisualKind
+    {
+      get => chestVisualKind;
+      set
+      {
+        chestVisualKind = value;
+        if (chestVisualKind == ChestVisualKind.Grave)
+          InteractSound = "grave_open";
+      }
+    }
     public ChestKind ChestKind
     {
       get => chestKind;
@@ -82,6 +93,7 @@ namespace Roguelike.Tiles.Interactive
       Name = "Chest";
 
       Kind = InteractiveTileKind.TreasureChest;
+
       InteractSound = "chest_open";
     }
 

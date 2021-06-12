@@ -32,7 +32,7 @@ namespace Roguelike.Tiles.Interactive
       set;
     } = -1;//should match level of dungeon or a level of world part
     [JsonIgnore]
-    public string InteractSound { get; set; }
+    public virtual string InteractSound { get; set; }
 
     public InteractiveTile(char symbol) : base(symbol)
     {

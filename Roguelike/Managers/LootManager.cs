@@ -93,6 +93,8 @@ namespace Roguelike.Managers
         {
           if (!chest.Open())
             return lootItems;
+
+          GameManager.SoundManager.PlaySound("grave_open");
           GameManager.AppendAction<InteractiveTileAction>((InteractiveTileAction ac) => { ac.InvolvedTile = chest; ac.InteractiveKind = InteractiveActionKind.ChestOpened; });
         }
         return lootItems;
