@@ -163,6 +163,7 @@
     <Compile Include="Tiles\LivingEntities\Ally.cs" />
     <Compile Include="Tiles\LivingEntities\Animal.cs" />
     <Compile Include="Tiles\LivingEntities\NPC.cs" />
+    <Compile Include="Tiles\Looting\Book.cs" />
     <Compile Include="Translations\Strings.cs" />
     <Compile Include="Tiles\Abstract\IEquipable.cs" />
     <Compile Include="Effects\LastingEffectsSet.cs" />

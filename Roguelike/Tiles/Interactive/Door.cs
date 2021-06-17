@@ -52,5 +52,10 @@ namespace Roguelike.Tiles.Interactive
     {
 
     }
+
+    public bool IsBigGate() 
+    {
+      return tag1.Contains("gate");
+    }
   }
 }

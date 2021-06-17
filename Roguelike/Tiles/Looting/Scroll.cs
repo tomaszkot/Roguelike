@@ -6,9 +6,22 @@ using System;
 
 namespace Roguelike.Tiles.Looting
 {
-  public class Scroll : StackedLoot//, ICloneable
+  public class SpellSource : StackedLoot
   {
-    //LivingEntity dummy = LivingEntity.CreateDummy();
+    public SpellSource()
+    {
+      Symbol = '?';
+      Price = 20;
+      Kind = kind;
+      PositionInPage = -1;
+    }
+
+    string desc;
+    public string GetDescription()
+    {
+      return desc;
+    }
+
     SpellKind kind;
     public SpellKind Kind
     {
@@ -27,9 +40,9 @@ namespace Roguelike.Tiles.Looting
       }
     }
 
-    public string GetNameFromKind()
+    public  string GetNameFromKind()
     {
-      return kind + " " + "Scroll";
+      return kind + " " +  GetType().Name;
     }
 
     private void SetDesc()
@@ -121,39 +134,11 @@ namespace Roguelike.Tiles.Looting
       PrimaryStatDescription = desc;
     }
 
-    //public bool EnemyRequired { get { return spell.EnemyRequired; } }
-    //public bool EntityRequired { get { return spell.EntityRequired; } }
-    //Spell spell;
-
-    //public int Level
-    //{
-    //  get { return spell.GetCurrentLevel(); }
-    //}
-
-    string desc;
-    public string GetDescription()
+    //->name fire_ball -> FireBall
+    //->name fire_book -> FireBook
+    public static SpellKind DiscoverKindFromName(string name, bool book)
     {
-      return desc;
-    }
-
-    public Scroll() : this(SpellKind.Unset)
-    {
-
-    }
-
-    public Scroll(SpellKind kind = SpellKind.Unset) : base()
-    {
-      //dummy.Stats.SetNominal(EntityStatKind.Magic, LivingEntity.BaseMagic.TotalValue);
-      Symbol = '?';
-      Price = 20;
-      Kind = kind;
-      PositionInPage = -1;
-      LootKind = LootKind.Scroll;
-    }
-
-    public static SpellKind DiscoverKindFromName(string name)//->name fire_ball -> FireBall
-    {
-      name = name.Replace("_scroll", "");
+      name = name.Replace(book ? "_book" : "_scroll", "");
       name = name.Replace("_", "");
       return DiscoverKindFromName<SpellKind>(name);
     }
@@ -262,6 +247,39 @@ namespace Roguelike.Tiles.Looting
       }
       return null;
     }
+  }
+  
+  
+  public class Scroll : SpellSource
+  {
+    //public bool EnemyRequired { get { return spell.EnemyRequired; } }
+    //public bool EntityRequired { get { return spell.EntityRequired; } }
+    //Spell spell;
+
+    //public int Level
+    //{
+    //  get { return spell.GetCurrentLevel(); }
+    //}
+        
+
+    public Scroll() : this(SpellKind.Unset)
+    {
+
+    }
+
+    public Scroll(SpellKind kind = SpellKind.Unset) : base()
+    {
+      //dummy.Stats.SetNominal(EntityStatKind.Magic, LivingEntity.BaseMagic.TotalValue);
+   
+      LootKind = LootKind.Scroll;
+    }
+
+    public static SpellKind DiscoverKindFromName(string name)//->name fire_ball -> FireBall
+    {
+      return DiscoverKindFromName(name, false);
+    }
+
+    
 
   }
 }
