@@ -57,5 +57,35 @@ namespace Roguelike.Tiles.Interactive
     {
       return tag1.Contains("gate");
     }
+
+    public string OpenedSound()
+    {
+      if (IsBigGate())
+        return "GateMetalOpen";
+      return "door_open";
+    }
+
+    public string ClosedSound()
+    {
+      if (IsBigGate())
+        return "GateMetalClose";
+      return "door_close";
+    }
+
+    public override string InteractSound 
+    {
+      get 
+      {
+        if (IsBigGate())
+          return "GATE_Metal_Close_11.wav";
+
+
+        return base.InteractSound;
+      }
+      set 
+      {
+        base.InteractSound = value;
+      } 
+    }
   }
 }

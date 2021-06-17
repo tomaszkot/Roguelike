@@ -79,10 +79,13 @@ namespace Roguelike.Managers
         else if (ia.InteractiveKind == InteractiveActionKind.DoorOpened)
         {
           var door = ia.InvolvedTile as Tiles.Interactive.Door;
-          sndName = door.Secret ? "annulet-of-absorption" : "door_open";
+          sndName = door.Secret ? "annulet-of-absorption" : door.OpenedSound();
         }
         else if (ia.InteractiveKind == InteractiveActionKind.DoorClosed)
-          sndName = "door_close";
+        {
+          var door = ia.InvolvedTile as Tiles.Interactive.Door;
+          sndName = door.ClosedSound();
+        }
         else //if (ia.InteractiveKind == InteractiveActionKind.ChestOpened)
           sndName = ia.InvolvedTile.InteractSound;
       }
