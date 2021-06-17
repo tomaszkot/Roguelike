@@ -8,7 +8,7 @@ namespace Roguelike.Tiles.Looting
 {
   public class SpellSource : StackedLoot
   {
-    public SpellSource()
+    public SpellSource(SpellKind kind)
     {
       Symbol = '?';
       Price = 20;
@@ -267,10 +267,9 @@ namespace Roguelike.Tiles.Looting
 
     }
 
-    public Scroll(SpellKind kind = SpellKind.Unset) : base()
+    public Scroll(SpellKind kind = SpellKind.Unset) : base(kind)
     {
       //dummy.Stats.SetNominal(EntityStatKind.Magic, LivingEntity.BaseMagic.TotalValue);
-   
       LootKind = LootKind.Scroll;
     }
 

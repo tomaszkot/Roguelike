@@ -25,16 +25,17 @@
 
       //TMP!!!
       //GenerateEnemies = true;
-      //ForcedNumberOfEnemiesInRoom = 1;
+      ForcedNumberOfEnemiesInRoom = 1;
+      NumberOfRooms = 2;
     }
 
     public static bool RevealUpperLevelsOnLoad { get; set; } = true;
-    public const int MaxLevelIndex = 1;//0 - only one level, 1 - two levels,./... -1 endless
+    public const int MaxLevelIndex = 0;//0 - only one level, 1 - two levels,./... -1 endless
     public int ForcedNumberOfEnemiesInRoom { get; set; } = 5;//-1 means field is not used
     public static DebugGenerationInfo DebugInfo = new DebugGenerationInfo();
 
     public static float ChanceToGenerateEnemyFromBarrel = .15f;
-    public static float ChanceToGenerateEnemyFromGrave = 1;//.4f;
+    public static float ChanceToGenerateEnemyFromGrave = .4f;
     public static float ChanceToTurnOnSpecialSkillByEnemy = 0.5f;
 
     public const int LevelUpPoints = 5;

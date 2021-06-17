@@ -233,6 +233,7 @@ namespace Roguelike.Tiles.LivingEntities
     {
       if (Symbol == EnemySymbols.SnakeSymbol ||
          Symbol == EnemySymbols.SpiderSymbol
+         //hornet has it done in : public override string Name
          )
       {
         SetStat(EntityStatKind.PoisonAttack);
