@@ -85,10 +85,14 @@ namespace Roguelike.Managers
         lsk = chest.LootSourceKind;
       }
 
+      var enFromChest = (lootSource is Chest ch && ch.ChestVisualKind == ChestVisualKind.Grave && RandHelper.GetRandomDouble() < GenerationInfo.ChanceToGenerateEnemyFromGrave);
       if (lootSource is Barrel && RandHelper.GetRandomDouble() < GenerationInfo.ChanceToGenerateEnemyFromBarrel ||
-          (lootSource is Chest ch && ch.ChestVisualKind == ChestVisualKind.Grave && RandHelper.GetRandomDouble() < GenerationInfo.ChanceToGenerateEnemyFromGrave))
+          enFromChest)
       {
-        GameManager.AppendEnemy(lootSource);
+        if (enFromChest)
+          GameManager.RegisterDelayedEnemy(lootSource);
+        else
+          GameManager.AppendEnemy(lootSource);
         if (chest != null)
         {
           if (!chest.Open())

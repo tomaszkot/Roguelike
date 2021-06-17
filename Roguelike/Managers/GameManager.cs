@@ -913,6 +913,26 @@ namespace Roguelike.Managers
       //}
     }
 
+    List<ILootSource> lootSourcesWithDelayedEnemies = new List<ILootSource>();
+    public void RegisterDelayedEnemy(ILootSource lootSource)
+    {
+      lootSourcesWithDelayedEnemies.Add(lootSource);
+    }
+
+    public bool HasDelayedEnemy(ILootSource lootSource)
+    {
+      return lootSourcesWithDelayedEnemies.Contains(lootSource);
+    }
+
+    public void AppendDelayedEnemy(ILootSource lootSource)
+    {
+      if (HasDelayedEnemy(lootSource))
+      {
+        lootSourcesWithDelayedEnemies.Remove(lootSource);
+        AppendEnemy(lootSource);
+      }
+    }
+
     public void AppendEnemy(ILootSource lootSource)
     {
       var enemy = CurrentNode.SpawnEnemy(lootSource);
