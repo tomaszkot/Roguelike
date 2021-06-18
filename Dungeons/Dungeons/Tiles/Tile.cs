@@ -117,16 +117,21 @@ namespace Dungeons.Tiles
         {
           if (value)
           {
-            if (DungeonNodeIndex > 0 && DungeonNodeIndex < 999)
-            {
-              int k = 0;
-              k++;
-            }
-            if (DungeonNodeIndex == 0)
-            {
-              int k = 0;
-              k++;
-            }
+            //if (this.GetType().Name.Contains("Enemy"))
+            //{
+            //  int k = 0;
+            //  k++;
+            //}
+            //if (DungeonNodeIndex > 0 && DungeonNodeIndex < 999)
+            //{
+            //  int k = 0;
+            //  k++;
+            //}
+            //if (DungeonNodeIndex == 0)
+            //{
+            //  int k = 0;
+            //  k++;
+            //}
           }
           revealed = value;
         }

@@ -60,6 +60,7 @@ namespace Roguelike.Tiles.LivingEntities
       //Name = "Enemy";
     }
 
+    
     protected bool WereStatsIncreased(IncreaseStatsKind kind)
     {
       if (StatsIncreased.ContainsKey(kind))
