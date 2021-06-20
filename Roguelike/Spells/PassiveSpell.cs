@@ -1,5 +1,6 @@
 ﻿using Dungeons.Tiles;
 using Roguelike.Abstract.Effects;
+using Roguelike.Abstract.Spells;
 using Roguelike.Attributes;
 using Roguelike.Calculated;
 using Roguelike.Extensions;
@@ -25,14 +26,14 @@ namespace Roguelike.Spells
       manaCost = (float)(BaseManaCost * 2);
       StatKind = statKind;
 
-      StatKindPercentage = CalcFactor(GetCurrentLevel());
+      StatKindPercentage = CalcFactor(CurrentLevel);
       StatKindEffective = caller.CalcEffectiveFactor(StatKind, StatKindPercentage.Value);
       TourLasting = CalcTourLasting();
     }
 
     protected virtual PercentageFactor CalcFactor()
     {
-      return CalcFactor(GetCurrentLevel());
+      return CalcFactor(CurrentLevel);
     }
 
     protected virtual PercentageFactor CalcFactor(int magicLevel)
@@ -42,7 +43,7 @@ namespace Roguelike.Spells
 
     protected void SetHealthFromLevel(LivingEntity spellTarget, float factor = 1)
     {
-      var lvl = GetCurrentLevel();
+      var lvl = CurrentLevel;
       var he = GetHealthFromLevel(lvl) * factor;
       spellTarget.Stats.SetNominal(EntityStatKind.Health, he);
     }
@@ -81,7 +82,7 @@ namespace Roguelike.Spells
 
     protected int CalcTourLasting(float factor = 1)
     {
-      return CalcTourLasting(GetCurrentLevel(), factor);
+      return CalcTourLasting(CurrentLevel, factor);
     }
 
     protected int CalcTourLasting(int magicLevel, float factor = 1)
@@ -91,44 +92,55 @@ namespace Roguelike.Spells
       return (int)(baseVal / 4f);
     }
 
-    protected override void AppendPrivateFeatures(List<string> fe)
+    public override SpellStatsDescription CreateSpellStatsDescription(bool currentMagicLevel)
     {
-      fe.Add(StatKind.ToDescription() + ": " + StatKindPercentage);
-      fe.Add(GetTourLasting(TourLasting));
+      var desc = base.CreateSpellStatsDescription(currentMagicLevel);
+      if(currentMagicLevel)
+        desc.TourLasting = TourLasting;
+      else
+        desc.TourLasting = CalcTourLasting(CurrentLevel+1);
+      desc.StatKind = StatKind;
+      return desc;
     }
 
-    public string GetCoolingDown()
-    {
-      return "Cooling Down: " + CoolingDown;
-    }
+    //protected override void AppendPrivateFeatures(List<string> fe)
+    //{
+    //  fe.Add(StatKind.ToDescription() + ": " + StatKindPercentage);
+    //  fe.Add(GetTourLasting(TourLasting));
+    //}
 
-    public static string GetTourLasting(int tourLasting)
-    {
-      return "Tour Lasting: " + tourLasting;
-    }
+    //public string GetCoolingDown()
+    //{
+    //  return "Cooling Down: " + CoolingDown;
+    //}
 
-    protected string GetNextLevelTourLasting()
-    {
-      return GetNextLevelTourLasting(CalcTourLasting(GetCurrentLevel() + 1));
-    }
+    //public static string GetTourLasting(int tourLasting)
+    //{
+    //  return "Tour Lasting: " + tourLasting;
+    //}
 
-    protected string GetNextLevelTourLasting(int tourLasting)
-    {
-      return GetNextLevel(GetTourLasting(tourLasting));
-    }
+    //protected string GetNextLevelTourLasting()
+    //{
+    //  return GetNextLevelTourLasting(CalcTourLasting(CurrentLevel() + 1));
+    //}
+
+    //protected string GetNextLevelTourLasting(int tourLasting)
+    //{
+    //  return GetNextLevel(GetTourLasting(tourLasting));
+    //}
 
     //public static string GetNextLevelTourLasting(int tourLasting)
     //{
     //  return "Next Level: Tour Lasting: " + tourLasting;
     //}
 
-    protected override void AppendNextLevel(List<string> fe)
-    {
-      base.AppendNextLevel(fe);
+    //protected override void AppendNextLevel(List<string> fe)
+    //{
+    //  base.AppendNextLevel(fe);
 
-      var suffix = StatKind.ToDescription() + " " + CalcFactor(GetCurrentLevel() + 1);
-      fe.Add(GetNextLevel(suffix));
-      fe.Add(GetNextLevelTourLasting());
-    }
+    //  var suffix = StatKind.ToDescription() + " " + CalcFactor(GetCurrentLevel() + 1);
+    //  fe.Add(GetNextLevel(suffix));
+    //  fe.Add(GetNextLevelTourLasting());
+    //}
   }
 }

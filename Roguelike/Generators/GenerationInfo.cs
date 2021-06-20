@@ -1,4 +1,4 @@
-﻿#define TEST_ON
+﻿//#define TEST_ON
 namespace Roguelike.Generators
 {
   public class DebugGenerationInfo

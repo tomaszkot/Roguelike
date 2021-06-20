@@ -6,8 +6,7 @@ namespace Roguelike.Spells
 {
   public class OffensiveSpell : Spell, IDamagingSpell
   {
-    // protected float damage = 0;
-
+   
     public OffensiveSpell() { }
 
     public OffensiveSpell(LivingEntity caller) : base(caller)
@@ -29,22 +28,32 @@ namespace Roguelike.Spells
     {
       get
       {
-        var level = GetCurrentLevel();
+        var level = CurrentLevel;
         var dmg = CalcDamage(level);
         return dmg;
       }
     }
 
-    protected override void AppendNextLevel(List<string> fe)
+    public override SpellStatsDescription CreateSpellStatsDescription(bool currentMagicLevel)
     {
-      base.AppendNextLevel(fe);
-      fe.Add(GetNextLevel("Damage " + CalcDamage(GetCurrentLevel() + 1)));
+      var desc = base.CreateSpellStatsDescription(currentMagicLevel);
+      if(currentMagicLevel)
+        desc.Damage = Damage;
+      else
+        desc.Damage = CalcDamage(CurrentLevel+1);
+      return desc;
     }
 
-    protected override void AppendPrivateFeatures(List<string> fe)
-    {
-      fe.Add("Damage: " + Damage);
-    }
+    //protected override void AppendNextLevel(List<string> fe)
+    //{
+    //  base.AppendNextLevel(fe);
+    //  fe.Add(GetNextLevel("Damage " + CalcDamage(CurrentLevel + 1)));
+    //}
+
+    //protected override void AppendPrivateFeatures(List<string> fe)
+    //{
+    //  fe.Add("Damage: " + Damage);
+    //}
     //float damageMultiplicator = 45.0f;//%
   }
 
@@ -60,6 +69,7 @@ namespace Roguelike.Spells
       //damage = (caller is Enemy) ? BaseDamage - 1 : BaseDamage;
     }
 
+    
 
 
   }

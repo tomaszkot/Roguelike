@@ -42,14 +42,12 @@ namespace Roguelike.Spells
     protected Dictionary<int, int> levelToMagic = new Dictionary<int, int>();
     private LivingEntity caller;
     public bool Utylized { get; set; }
-    
+
     public int ManaCost
     {
       get
       {
-        var level = GetCurrentLevel();
-        var cost = manaCost + (manaCost * (level - 1)) * manaCostMultiplicator / 100.0f;
-        return (int)cost;
+        return CalcManaCost(CurrentLevel);
       }
     }
 
@@ -62,6 +60,12 @@ namespace Roguelike.Spells
       this.Caller = caller;
       manaCost = BaseManaCost;
       levelToMagic[1] = 10;
+    }
+
+    protected int CalcManaCost(int level)
+    {
+      var cost = manaCost + (manaCost * (level - 1)) * manaCostMultiplicator / 100.0f;
+      return (int)cost;
     }
 
     public int CoolingDown { get; set; } = 0;
@@ -81,10 +85,13 @@ namespace Roguelike.Spells
       }
     }
 
-    public int GetNextLevelMagicNeeded()
+    public int NextLevelMagicNeeded
     {
-      var index = GetNextLevelMagicIndex();
-      return index < 0 ? index : levelToMagic[index];
+      get
+      {
+        var index = GetNextLevelMagicIndex();
+        return index< 0 ? index : levelToMagic[index];
+      }
     }
 
     public int GetNextLevelMagicIndex()
@@ -103,39 +110,55 @@ namespace Roguelike.Spells
     public virtual string GetLifetimeSound() { return ""; }
     public virtual string GetHitSound() { return ""; }
 
-    public string[] GetFeatures()
+    //public string[] GetFeatures(bool currentLevel)
+    //{
+    //  var fe = new List<string>();
+    //  AppendBasePart(fe);
+    //  AppendPrivateFeatures(fe);
+    //  //AppendNextLevel(fe);
+    //  return fe.ToArray();
+    //}
+
+    //protected static string GetNextLevel(string suffix)
+    //{
+    //  return "Next Level: " + suffix;
+    //}
+
+    public int CurrentLevel
     {
-      var fe = new List<string>();
-      AppendBasePart(fe);
-      AppendPrivateFeatures(fe);
-      AppendNextLevel(fe);
-      return fe.ToArray();
+      get
+      {
+        var lev = GetNextLevelMagicIndex() - 1;
+        return lev;
+      }
     }
 
-    protected static string GetNextLevel(string suffix)
-    {
-      return "Next Level: " + suffix;
-    }
+    //protected virtual void AppendPrivateFeatures(List<string> fe)
+    //{
+    //}
 
-    public int GetCurrentLevel()
-    {
-      var lev = GetNextLevelMagicIndex() - 1;
-      return lev;
-    }
+    //protected virtual void AppendNextLevel(List<string> fe)
+    //{
+    //  fe.Add("Magic: " + GetNextLevelMagicNeeded());
+    //}
 
-    protected virtual void AppendPrivateFeatures(List<string> fe)
-    {
-    }
+    //protected void AppendBasePart(List<string> fe)
+    //{
+    //  fe.Add("Mana Cost: " + ManaCost);
+    //}
 
-    protected virtual void AppendNextLevel(List<string> fe)
-    {
-      fe.Add(GetNextLevel("Magic " + GetNextLevelMagicNeeded()));
-    }
+    //string[] extraStatDescription = new string[0];
 
-    protected void AppendBasePart(List<string> fe)
-    {
-      fe.Add("Mana Cost: " + ManaCost);
-    }
+    //public string[] GetLevelDescription(bool currentLevel)
+    //{
+    //  //string currentLevelDesc = "Current Level: " + GetCurrentLevel();
+    //  //string manaCost = "Mana Cost: " + ManaCost;
+    //  ////string damage = "Damage: "
+    //  //extraStatDescription = new string[2];
+    //  //extraStatDescription[0] = currentLevelDesc;
+    //  //extraStatDescription[1] = manaCost;
+    //  return extraStatDescription;
+    //}
 
     //public Tuple<LivingEntity.EffectType, int> GetEffectType()
     //{
@@ -167,9 +190,15 @@ namespace Roguelike.Spells
     //    default:
     //      break;
     //  }
-
     //  return et;
     //}
+
+    public virtual SpellStatsDescription CreateSpellStatsDescription(bool currentMagicLevel) 
+    {
+      int level = currentMagicLevel ? CurrentLevel : CurrentLevel + 1;
+      var desc = new SpellStatsDescription(level, CalcManaCost(level), NextLevelMagicNeeded);
+      return desc;
+    }
   }
 
 

@@ -13,6 +13,36 @@ namespace RoguelikeUnitTests
   [TestFixture]
   class FightMagicTests : TestBase
   {
+    [TestCase(true)]
+    [TestCase(false)]
+    public void SpellSourcePropertiesTest(bool scroll)
+    {
+      var game = CreateGame();
+      var hero = game.Hero;
+      SpellSource spellSource = null;
+      if (scroll)
+        spellSource = new Scroll(Roguelike.Spells.SpellKind.FireBall);
+      else
+        spellSource = new Book(Roguelike.Spells.SpellKind.FireBall);
+
+      {
+        var desc = spellSource.GetDescription();
+        var extraDesc = spellSource.GetExtraStatDescription(hero, true);
+        Assert.NotNull(extraDesc);
+        Assert.Greater(extraDesc.GetDescription().Count(), 0);
+
+        Assert.Greater(extraDesc.Level , 0);
+        Assert.Greater(extraDesc.ManaCost, 0);
+        Assert.Greater(extraDesc.Damage, 0);
+      }
+      {
+        //var fireBallBook = new Book(Roguelike.Spells.SpellKind.FireBall);
+        //var spellFromBook = fireBallBook.CreateSpell<OffensiveSpell>(hero);
+        //Assert.Greater(spellFromBook.Damage, 0);
+      }
+    }
+
+
     [Test]
     public void SpellPropertiesTest()
     {

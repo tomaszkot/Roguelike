@@ -395,6 +395,10 @@ namespace Roguelike.Generators
 
         res = scroll;
       }
+      else if (kind == LootKind.Book)
+      {
+        res =  LootFactory.BooksFactory.GetRandom(level) as Book;
+      }
       else if (kind == LootKind.Gem)
       {
         res = GetRandomEnchanter(level, false);

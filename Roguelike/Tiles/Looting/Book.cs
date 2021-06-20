@@ -16,7 +16,7 @@ namespace Roguelike.Tiles.Looting
 
     public Book(SpellKind kind = SpellKind.Unset) : base(kind)
     {
-      LootKind = LootKind.Food;
+      LootKind = LootKind.Book;
       Price *= 10;
     }
 

@@ -4,6 +4,7 @@ using Roguelike.Tiles.Interactive;
 using Roguelike.Tiles.LivingEntities;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -153,6 +154,8 @@ namespace Roguelike.Tiles.Looting
       return res + " " + base.ToString();
     }
 
+    
+
     //public float ManaCost
     //{
     //  //get { return spell.ManaCost; }
@@ -188,7 +191,7 @@ namespace Roguelike.Tiles.Looting
     {
       return base.GetId() + "_" + Kind;
     }
-
+        
     public static ISpell CreateSpell(SpellKind Kind, LivingEntity caller)
     {
       switch (Kind)
@@ -250,6 +253,33 @@ namespace Roguelike.Tiles.Looting
           throw new Exception("CreateSpell ???" + Kind);
       }
       return null;
+    }
+
+    public override string[] GetExtraStatDescription()
+    {
+      Debug.Assert(false, "call the one with (LivingEntity caller)");
+      return base.GetExtraStatDescription();
+    }
+
+    public string GetExtraStatDescriptionFormatted(LivingEntity caller)
+    {
+      var statDescCurrent = GetExtraStatDescription(caller, true);
+      var str = string.Join("\r\n", statDescCurrent.GetDescription(false));
+      var res = "Current Level: " + statDescCurrent.Level + "\r\n" + str;
+
+      var statDescNext = GetExtraStatDescription(caller, false);
+      str = string.Join("\r\n", statDescNext.GetDescription(false));
+      res += "\r\n\r\n";
+      res += "Next Level (Magic Required: "+ statDescNext.MagicRequired+ "):" + "\r\n" + str;
+      return res;
+    }
+
+    public SpellStatsDescription GetExtraStatDescription(LivingEntity caller, bool currentLevel)
+    {
+      ISpell spell = CreateSpell(caller);
+      var spellStatsDescription = spell.CreateSpellStatsDescription(currentLevel);
+      //SpellStatsDescription(spell.CurrentLevel, spell.ManaCost);
+      return spellStatsDescription;
     }
   }
 }

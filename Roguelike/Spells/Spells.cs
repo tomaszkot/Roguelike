@@ -106,16 +106,16 @@ namespace Roguelike.Spells
       SetHealthFromLevel(Tile as LivingEntity, 4f);
     }
 
-    protected override void AppendPrivateFeatures(List<string> fe)
-    {
-      fe.Add("Durability: " + GetHealthFromLevel(GetCurrentLevel()));
-    }
+    //protected override void AppendPrivateFeatures(List<string> fe)
+    //{
+    //  fe.Add("Durability: " + GetHealthFromLevel(GetCurrentLevel()));
+    //}
 
-    protected override void AppendNextLevel(List<string> fe)
-    {
-      base.AppendNextLevel(fe);
-      fe.Add(GetNextLevel("Durability " + GetHealthFromLevel(GetCurrentLevel() + 1)));
-    }
+    //protected override void AppendNextLevel(List<string> fe)
+    //{
+    //  base.AppendNextLevel(fe);
+    //  fe.Add(GetNextLevel("Durability " + GetHealthFromLevel(GetCurrentLevel() + 1)));
+    //}
   }
 
   ///////////////////////////////////////////////////////////////////////////
@@ -170,7 +170,7 @@ namespace Roguelike.Spells
       Kind = SpellKind.Skeleton;
       //damage = ProjectiveSpell.BaseDamage + 1;
 
-      var level = GetCurrentLevel();
+      var level = CurrentLevel;
       Ally = caller.Container.GetInstance<AlliedEnemy>();
       Ally.InitSpawned(EnemySymbols.SkeletonSymbol, level);
       Ally.Name = "Skeleton";
@@ -197,18 +197,18 @@ namespace Roguelike.Spells
       return baseD;
     }
 
-    protected override void AppendPrivateFeatures(List<string> fe)
-    {
-      fe.Add("Health: " + Ally.Stats.GetNominal(EntityStatKind.Health));
-      fe.Add("Attack: " + Ally.Stats.GetNominal(EntityStatKind.Attack));
-    }
+    //protected override void AppendPrivateFeatures(List<string> fe)
+    //{
+    //  fe.Add("Health: " + Ally.Stats.GetNominal(EntityStatKind.Health));
+    //  fe.Add("Attack: " + Ally.Stats.GetNominal(EntityStatKind.Attack));
+    //}
 
-    protected override void AppendNextLevel(List<string> fe)
-    {
-      base.AppendNextLevel(fe);
-      fe.Add(GetNextLevel("Health " + CalcHealth(GetCurrentLevel() + 1)));
-      fe.Add(GetNextLevel("Attack " + CalcDamage(GetCurrentLevel() + 1)));
-    }
+    //protected override void AppendNextLevel(List<string> fe)
+    //{
+    //  base.AppendNextLevel(fe);
+    //  fe.Add(GetNextLevel("Health " + CalcHealth(GetCurrentLevel() + 1)));
+    //  fe.Add(GetNextLevel("Attack " + CalcDamage(GetCurrentLevel() + 1)));
+    //}
   }
 
   public class TransformSpell : PassiveSpell
@@ -224,17 +224,17 @@ namespace Roguelike.Spells
       CoolingDown = 10;
     }
 
-    protected override void AppendPrivateFeatures(List<string> fe)
-    {
-      fe.Add(GetCoolingDown());
-      fe.Add(GetTourLasting(TourLasting));
-    }
+    //protected override void AppendPrivateFeatures(List<string> fe)
+    //{
+    //  fe.Add(GetCoolingDown());
+    //  fe.Add(GetTourLasting(TourLasting));
+    //}
 
-    protected override void AppendNextLevel(List<string> fe)
-    {
-      base.AppendNextLevel(fe);
-      fe.Add(GetNextLevelTourLasting());
-    }
+    //protected override void AppendNextLevel(List<string> fe)
+    //{
+    //  base.AppendNextLevel(fe);
+    //  fe.Add(GetNextLevelTourLasting());
+    //}
   }
 
   public class TeleportSpell : PassiveSpell
@@ -249,7 +249,7 @@ namespace Roguelike.Spells
 
     public TeleportSpell(LivingEntity caller) : base(caller, EntityStatKind.Unset)
     {
-      Range += GetCurrentLevel();
+      Range += CurrentLevel;
       if (Range < baseRange + 1)
         Range = baseRange + 1;
       EntityRequired = true;
@@ -257,18 +257,18 @@ namespace Roguelike.Spells
       CoolingDown = 8;
     }
 
-    protected override void AppendPrivateFeatures(List<string> fe)
-    {
-      fe.Add("Range: " + (Range));
-      fe.Add(GetCoolingDown());
-      fe.Add(GetTourLasting(TourLasting));
-    }
+    //protected override void AppendPrivateFeatures(List<string> fe)
+    //{
+    //  fe.Add("Range: " + (Range));
+    //  fe.Add(GetCoolingDown());
+    //  fe.Add(GetTourLasting(TourLasting));
+    //}
 
-    protected override void AppendNextLevel(List<string> fe)
-    {
-      base.AppendNextLevel(fe);
-      fe.Add(GetNextLevel("Range: " + (Range + 1)));
-    }
+    //protected override void AppendNextLevel(List<string> fe)
+    //{
+    //  base.AppendNextLevel(fe);
+    //  fe.Add(GetNextLevel("Range: " + (Range + 1)));
+    //}
   }
 
   //public class FrightenSpell : DefensiveSpell
@@ -486,19 +486,19 @@ namespace Roguelike.Spells
       StatKindEffective = new Factors.EffectiveFactor(25);
     }
 
-    protected override void AppendPrivateFeatures(List<string> fe)
-    {
-      fe.Add(Kind.ToDescription() + ":" + StatKindEffective);
-      fe.Add(GetTourLasting(TourLasting));
-    }
+    //protected override void AppendPrivateFeatures(List<string> fe)
+    //{
+    //  fe.Add(Kind.ToDescription() + ":" + StatKindEffective);
+    //  fe.Add(GetTourLasting(TourLasting));
+    //}
 
-    protected override void AppendNextLevel(List<string> fe)
-    {
-      base.AppendNextLevel(fe);
-      var suffix = Kind.ToDescription() + ":" + CalcFactor(GetCurrentLevel() + 1);
-      fe.Add(GetNextLevel(suffix));
-      fe.Add(GetNextLevelTourLasting());
-    }
+    //protected override void AppendNextLevel(List<string> fe)
+    //{
+    //  base.AppendNextLevel(fe);
+    //  var suffix = Kind.ToDescription() + ":" + CalcFactor(GetCurrentLevel() + 1);
+    //  fe.Add(GetNextLevel(suffix));
+    //  fe.Add(GetNextLevelTourLasting());
+    //}
   }
 
   ///////////////////////////////////////////////////////////////////////////
