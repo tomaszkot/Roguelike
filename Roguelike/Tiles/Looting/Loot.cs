@@ -58,7 +58,7 @@ namespace Roguelike.Tiles
     Unset,
     Other, //MagicDust...
     Gold, Potion, Scroll, Equipment, Gem,
-    Recipe, Seal, SealPart, Food, Plant, HunterTrophy
+    Recipe, Seal, SealPart, Food, Plant, HunterTrophy, Book
   }
 
   public enum LootSourceKind { Enemy, PlainChest, GoldChest, DeluxeGoldChest, Barrel }

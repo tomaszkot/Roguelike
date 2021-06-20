@@ -26,7 +26,7 @@ namespace RoguelikeUnitTests
       hero.Stats.SetNominal(Roguelike.Attributes.EntityStatKind.Health, 255);
       var enemy = AllEnemies.First();
       enemy.SetNonPlain(true);
-      Assert.NotNull(enemy.ActiveScroll);
+      Assert.NotNull(enemy.ActiveManaPoweredSpellSource);
       var closeHero = game.Level.GetClosestEmpty(hero);
       game.Level.SetTile(enemy, closeHero.point);
       var enemyMana = enemy.Stats.Mana;

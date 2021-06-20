@@ -119,7 +119,7 @@ namespace Roguelike.LootContainers
 
     //internal void UpdateScrollsLevel(LivingEntity le)
     //{
-    //  var scrolls = Items.Where(i => i is Scroll).Cast<Scroll>().ToList();
+    //  var scrolls = Items.Where(i => i is SpellSource).Cast<Scroll>().ToList();
     //  foreach (var scroll in scrolls)
     //  {
     //    scroll.UpdateLevel(le);

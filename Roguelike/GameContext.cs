@@ -106,11 +106,11 @@ namespace Roguelike
       attackPolicy.Apply(attacker, target);
     }
 
-    public bool CanUseScroll(LivingEntity caster, Scroll scroll, ISpell spell)
+    public bool CanUseScroll(LivingEntity caster, SpellSource spellSource, ISpell spell)
     {
-      if (scroll.Count <= 0)
+      if (spellSource.Count <= 0)
       {
-        logger.LogError("scroll.Count <= 0");
+        logger.LogError("SpellSource.Count <= 0");
         return false;
       }
 

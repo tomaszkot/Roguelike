@@ -73,7 +73,6 @@ namespace RoguelikeUnitTests
     [Test]
     public void StairsTest()
     {
-      Assert.Greater(GenerationInfo.MaxLevelIndex, 0);
       var game = CreateGame();
       game.SetMaxLevelIndex(1);
 

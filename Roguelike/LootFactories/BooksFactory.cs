@@ -1,5 +1,4 @@
-﻿using Dungeons.Core;
-using Roguelike.Tiles;
+﻿using Roguelike.Tiles;
 using Roguelike.Tiles.Looting;
 using SimpleInjector;
 using System;
@@ -8,35 +7,38 @@ using System.Linq;
 
 namespace Roguelike.LootFactories
 {
-  public class ScrollsFactory : AbstractLootFactory
+  public class BooksFactory : AbstractLootFactory
   {
-    protected Dictionary<string, Func<string, Scroll>> factory =
-      new Dictionary<string, Func<string, Scroll>>();
+    protected Dictionary<string, Func<string, Book>> factory =
+      new Dictionary<string, Func<string, Book>>();
 
-    public ScrollsFactory(Container container) : base(container)
+    public BooksFactory(Container container) : base(container)
     {
     }
 
     protected override void Create()
     {
-      Func<string, Scroll> createScroll = (string tag) =>
+      Func<string, Book> createBook = (string tag) =>
       {
-        var scroll = new Scroll();
-        scroll.tag1 = tag;
-        scroll.Kind = Scroll.DiscoverKindFromName(tag);
-        scroll.Count = Enumerable.Range(1, 3).ToList().GetRandomElem();
-        return scroll;
+        var book = new Book();
+        book.tag1 = tag;
+        book.Kind = Scroll.DiscoverKindFromName(tag);
+        //scroll.Count = Enumerable.Range(1, 3).ToList().GetRandomElem();
+        return book;
       };
-      var names = new[] { "fire_ball_scroll" , "ice_ball_scroll", "poison_ball_scroll",
+      var names = new[] { "fire_ball_book", "ice_ball_book", "poison_ball_book",
+        /*
         "identify_scroll", "teleport_scroll", "portal_scroll", "transform_scroll", "mana_shield_scroll",
-        "rage_scroll", "skeleton_scroll"};
+        "rage_scroll", "skeleton_scroll"
+        */
+        };
       foreach (var name in names)
-        factory[name] = createScroll;
+        factory[name] = createBook;
     }
 
     public override Loot GetRandom(int level)
     {
-      return GetRandom<Scroll>(factory);
+      return GetRandom<Book>(factory);
     }
 
     public override Loot GetByName(string name)
@@ -61,6 +63,5 @@ namespace Roguelike.LootFactories
 
       return null;
     }
-
   }
 }

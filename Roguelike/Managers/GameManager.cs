@@ -997,26 +997,26 @@ namespace Roguelike.Managers
       AppendAction(new AllyAction() { Info = le.Name + " has been added", InvolvedTile = ally, AllyActionKind = AllyActionKind.Created });
     }
 
-    public bool CanUseScroll(LivingEntity caster, Scroll scroll)
+    public bool CanUseScroll(LivingEntity caster, SpellSource scroll)
     {
       if (scroll.Count <= 0)
       {
-        logger.LogError("scroll.Count <= 0");
+        logger.LogError("gm SpellSource.Count <= 0");
         return false;
       }
 
       return true;
     }
 
-    public bool UtylizeScroll(LivingEntity caster, Scroll scroll)
+    public bool UtylizeScroll(LivingEntity caster, SpellSource spellSource)
     {
-      if (!CanUseScroll(caster, scroll))
+      if (!CanUseScroll(caster, spellSource))
       {
         return false;
       }
 
-      if (caster is AdvancedLivingEntity advEnt)
-        return advEnt.Inventory.Remove(scroll);
+      if (spellSource is Scroll && caster is AdvancedLivingEntity advEnt)
+        return advEnt.Inventory.Remove(spellSource);
 
       return true;
     }
@@ -1108,7 +1108,9 @@ namespace Roguelike.Managers
       return default(T);
     }
 
-    public bool UtylizeScroll(LivingEntity caster, Scroll scroll, ISpell spell)
+    
+
+    public bool UtylizeScroll(LivingEntity caster, SpellSource spellSource, ISpell spell)
     {
       //scroll was already used why check here?
       //if (!CanUseScroll(caster, scroll, spell))
@@ -1117,7 +1119,7 @@ namespace Roguelike.Managers
       //}
       try
       {
-        if (scroll.Kind == Spells.SpellKind.Skeleton)
+        if (spellSource.Kind == Spells.SpellKind.Skeleton)
         {
           if (GetAlliesCount<AlliedEnemy>() > 0)
           {
@@ -1137,8 +1139,8 @@ namespace Roguelike.Managers
         }
         caster.ReduceMana(spell.ManaCost);
         spell.Utylized = true;
-        if (caster is AdvancedLivingEntity advEnt)
-          return advEnt.Inventory.Remove(scroll);
+        UtylizeScroll(caster, spellSource);
+        
       }
       catch (Exception)
       {

@@ -310,27 +310,31 @@ namespace RoguelikeUnitTests
       return UseScroll(caster, scroll);
     }
 
-    protected bool UseScroll(Hero caster, Scroll scroll)
+    protected bool UseScroll(Hero caster, SpellSource spellSource)
     {
-      caster.Inventory.Add(scroll);
-      return game.GameManager.SpellManager.ApplyPassiveSpell(caster, scroll) != null;
+      caster.Inventory.Add(spellSource);
+      return game.GameManager.SpellManager.ApplyPassiveSpell(caster, spellSource) != null;
     }
 
-    protected bool UseScroll(Hero caster, IDestroyable victim, Scroll scroll)
+    protected bool UseScroll(Hero caster, IDestroyable victim, SpellSource spellSource)
     {
-      caster.Inventory.Add(scroll);
+      caster.Inventory.Add(spellSource);
       if (caster is Hero)
       {
-        game.Hero.ActiveScroll = scroll;
-        return game.GameManager.SpellManager.ApplyAttackPolicy(caster, victim, scroll);
+        game.Hero.ActiveManaPoweredSpellSource = spellSource;
+        return game.GameManager.SpellManager.ApplyAttackPolicy(caster, victim, spellSource);
       }
       return false;
     }
 
-    protected bool UseFireBallScroll(Hero caster, IDestroyable victim)
+    protected bool UseFireBallSpellSource(Hero caster, IDestroyable victim, bool useScroll)
     {
-      var scroll = new Scroll(Roguelike.Spells.SpellKind.FireBall);
-      return UseScroll(caster, victim, scroll);
+      SpellSource src = null;
+      if (useScroll)
+        src = new Scroll(Roguelike.Spells.SpellKind.FireBall);
+      else
+        src = new Book(Roguelike.Spells.SpellKind.FireBall);
+      return UseScroll(caster, victim, src);
 
     }
   }

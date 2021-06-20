@@ -69,6 +69,7 @@
     <Compile Include="Discussions\DiscussionExtensions.cs" />
     <Compile Include="Discussions\DiscussPanel.cs" />
     <Compile Include="History\LivingEntityHistory.cs" />
+    <Compile Include="LootFactories\BooksFactory.cs" />
     <Compile Include="Managers\AnimalsManager.cs" />
     <Compile Include="Managers\PolicyManager.cs" />
     <Compile Include="Managers\SpellManager.cs" />
@@ -164,6 +165,7 @@
     <Compile Include="Tiles\LivingEntities\Animal.cs" />
     <Compile Include="Tiles\LivingEntities\NPC.cs" />
     <Compile Include="Tiles\Looting\Book.cs" />
+    <Compile Include="Tiles\Looting\SpellSource.cs" />
     <Compile Include="Translations\Strings.cs" />
     <Compile Include="Tiles\Abstract\IEquipable.cs" />
     <Compile Include="Effects\LastingEffectsSet.cs" />

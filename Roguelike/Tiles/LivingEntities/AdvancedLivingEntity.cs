@@ -237,7 +237,7 @@ namespace Roguelike.Tiles.LivingEntities
         return;
       }
 
-      coolingDownSpells[kind] = ActiveScroll.CreateSpell(this).CoolingDown;
+      coolingDownSpells[kind] = ActiveManaPoweredSpellSource.CreateSpell(this).CoolingDown;
     }
 
     public void Consume(IConsumable consumable)

@@ -18,17 +18,25 @@ namespace RoguelikeUnitTests
     {
       var game = CreateGame();
       var hero = game.Hero;
-      var fireBallScroll = new Scroll(Roguelike.Spells.SpellKind.FireBall);
-      var spell = fireBallScroll.CreateSpell<OffensiveSpell>(hero);
-      Assert.Greater(spell.Damage, 0);
-
+      {
+        var fireBallScroll = new Scroll(Roguelike.Spells.SpellKind.FireBall);
+        var spell = fireBallScroll.CreateSpell<OffensiveSpell>(hero);
+        Assert.Greater(spell.Damage, 0);
+      }
+      {
+        var fireBallBook = new Book(Roguelike.Spells.SpellKind.FireBall);
+        var spellFromBook = fireBallBook.CreateSpell<OffensiveSpell>(hero);
+        Assert.Greater(spellFromBook.Damage, 0);
+      }
     }
 
-    [Test]
-    public void SimpleScrollTest()
+    [TestCase(true)]
+    [TestCase(false)]
+    public void SimpleSpellSourceTest(bool scroll)
     {
       var game = CreateGame();
       var hero = game.Hero;
+      //SpellSource spellSource = scroll ? new Scroll ? 
 
       var enemy = ActiveEnemies.First();
       var enemyHealth = enemy.Stats.Health;
@@ -36,7 +44,7 @@ namespace RoguelikeUnitTests
 
       Assert.True(game.GameManager.HeroTurn);
 
-      UseFireBallScroll(hero, enemy);
+      UseFireBallSpellSource(hero, enemy, scroll);
 
       Assert.Greater(enemyHealth, enemy.Stats.Health);
       Assert.Greater(mana, hero.Stats.Mana);
@@ -45,8 +53,9 @@ namespace RoguelikeUnitTests
       var diff = enemyHealth - enemy.Stats.Health;
     }
 
-    [Test]
-    public void ScrollPowerVSMeleeTest()
+    [TestCase(true)]
+    [TestCase(false)]
+    public void ScrollPowerVSMeleeTest(bool scroll)
     {
       var game = CreateGame();
       var hero = game.Hero;
@@ -58,7 +67,7 @@ namespace RoguelikeUnitTests
 
       for (int i = 0; i < 10; i++)
       {
-        Assert.True(UseFireBallScroll(hero, enemy));
+        Assert.True(UseFireBallSpellSource(hero, enemy, scroll));
         GotoNextHeroTurn();
       }
 
@@ -109,7 +118,7 @@ namespace RoguelikeUnitTests
 
       var enemy = AllEnemies.Cast<Enemy>().First();
       enemy.PrefferedFightStyle = PrefferedFightStyle.Magic;//use spells
-      enemy.ActiveScroll = new Scroll(SpellKind.FireBall);
+      enemy.ActiveManaPoweredSpellSource = new Scroll(SpellKind.FireBall);
       var heroHealth = hero.Stats.Health;
       var mana = enemy.Stats.Mana;
 

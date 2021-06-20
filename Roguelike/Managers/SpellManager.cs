@@ -20,18 +20,7 @@ namespace Roguelike.Managers
       Container = gm.Container;
     }
 
-    //public bool ApplyActiveSpell(IDestroyable target)
-    //{
-    //  var scroll = gm.Hero.ActiveScroll;
-    //  return ApplyAttackPolicy
-    //  (
-    //    gm.Hero,
-    //    target,
-    //    scroll
-    //  );
-    //}
-
-    public PassiveSpell ApplyPassiveSpell(LivingEntity caster, Scroll scroll, Point? destPoint = null)
+    public PassiveSpell ApplyPassiveSpell(LivingEntity caster, SpellSource scroll, Point? destPoint = null)
     {
       var spell = scroll.CreateSpell(caster);
       if (!gm.Context.CanUseScroll(caster, scroll, spell))
@@ -79,11 +68,11 @@ namespace Roguelike.Managers
       return null;
     }
 
-    public OffensiveSpell ApplySpell(LivingEntity caster, Scroll scroll)
+    public OffensiveSpell ApplySpell(LivingEntity caster, SpellSource spellSource)
     {
-      var spell = scroll.CreateSpell(caster);
+      var spell = spellSource.CreateSpell(caster);
 
-      if (!gm.UtylizeScroll(caster, scroll, spell))
+      if (!gm.UtylizeScroll(caster, spellSource, spell))
         return null;
 
       if (spell is OffensiveSpell ps)
@@ -98,7 +87,7 @@ namespace Roguelike.Managers
         return ps;
       }
       else
-        gm.Logger.LogError("!OffensiveSpell " + scroll);
+        gm.Logger.LogError("!OffensiveSpell " + spellSource);
 
       return null;
     }
@@ -107,20 +96,20 @@ namespace Roguelike.Managers
     (
       LivingEntity caster,//hero, enemy, ally
       Roguelike.Tiles.Abstract.IObstacle target,
-      Scroll scroll,
+      SpellSource spellSource,
       Action<Policy> BeforeApply = null
       , Action<Policy> AfterApply = null
     )
     {
-      var spell = scroll.CreateSpell(caster);
+      var spell = spellSource.CreateSpell(caster);
 
-      if (!gm.UtylizeScroll(caster, scroll, spell))
+      if (!gm.UtylizeScroll(caster, spellSource, spell))
         return false;
 
       var policy = Container.GetInstance<SpellCastPolicy>();
       policy.Target = target;
       policy.ProjectilesFactory = Container.GetInstance<IProjectilesFactory>();
-      policy.Spell = scroll.CreateSpell(caster) as Spell;
+      policy.Spell = spellSource.CreateSpell(caster) as Spell;
       if (BeforeApply != null)
         BeforeApply(policy);
 

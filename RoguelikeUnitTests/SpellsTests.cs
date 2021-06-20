@@ -12,8 +12,9 @@ namespace RoguelikeUnitTests
   {
     public const int BaseFactor = 30;
 
-    [Test]
-    public void HitBarrelTest()
+    [TestCase(true)]
+    [TestCase(false)]
+    public void HitBarrelTest(bool scroll)
     {
       var game = CreateGame();
       var hero = game.Hero;
@@ -23,7 +24,7 @@ namespace RoguelikeUnitTests
       Assert.AreEqual(game.Level.GetTile(barrel.point), barrel);
 
       Assert.AreEqual(game.GameManager.Context.TurnOwner, Roguelike.TurnOwner.Hero);
-      Assert.True(UseFireBallScroll(hero, barrel));
+      Assert.True(UseFireBallSpellSource(hero, barrel, scroll));
       Assert.AreNotEqual(game.Level.GetTile(barrel.point), barrel);
       Assert.AreEqual(game.GameManager.Context.TurnOwner, Roguelike.TurnOwner.Allies);
     }

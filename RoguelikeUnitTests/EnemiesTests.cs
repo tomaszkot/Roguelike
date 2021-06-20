@@ -102,9 +102,9 @@ namespace RoguelikeUnitTests
       float lastDamageFromPlain = 0;
       float lastDamageFromChemp = 0;
       float lastDamageFromBoss = 0;
-      Assert.Greater(Roguelike.Generators.GenerationInfo.MaxLevelIndex, 0);
 
-      for (var levelIndex = 0; levelIndex < Roguelike.Generators.GenerationInfo.MaxLevelIndex; levelIndex++)
+      var gi = new Roguelike.Generators.GenerationInfo();
+      for (var levelIndex = 0; levelIndex < gi.MaxLevelIndex; levelIndex++)
       {
         var enemies = AllEnemies;
         Assert.Greater(enemies.Count, 2);

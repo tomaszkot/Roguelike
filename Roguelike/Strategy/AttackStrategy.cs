@@ -120,7 +120,7 @@ namespace Roguelike
           }
           if (useMagic)
           {
-            GameManager.SpellManager.ApplyAttackPolicy(attacker, target, attacker.ActiveScroll, null, (p) => { OnPolicyApplied(p); });
+            GameManager.SpellManager.ApplyAttackPolicy(attacker, target, attacker.ActiveManaPoweredSpellSource, null, (p) => { OnPolicyApplied(p); });
 
             return true;
           }
@@ -243,7 +243,7 @@ namespace Roguelike
           if (decreaseCoolDown)
             enemy.ActiveScrollCoolDownCounter--;
         }
-        if (enemy.ActiveScroll != null && enemy.ActiveScrollCoolDownCounter == 0)
+        if (enemy.ActiveManaPoweredSpellSource != null && enemy.ActiveScrollCoolDownCounter == 0)
         {
           if (UseMagicAttack(enemy, hero))
           {

@@ -169,13 +169,13 @@ namespace Roguelike.Tiles.LivingEntities
       //ActiveScroll = new Scroll(SpellKind.IceBall);
       if (Name.ToLower() == "druid" || PowerKind == EnemyPowerKind.Boss)
       {
-        ActiveScroll = new Scroll(attackSpells.GetRandomElem());
-        SetResistanceFromScroll(ActiveScroll);
+        ActiveManaPoweredSpellSource = new Scroll(attackSpells.GetRandomElem());
+        SetResistanceFromScroll(ActiveManaPoweredSpellSource);
         Stats.SetNominal(EntityStatKind.Mana, 1000);//TODO
       }
     }
 
-    private void SetResistanceFromScroll(Scroll activeScroll)
+    private void SetResistanceFromScroll(SpellSource activeScroll)
     {
       if (activeScroll == null)
         return;
@@ -290,11 +290,11 @@ namespace Roguelike.Tiles.LivingEntities
       }
     }
 
-    public override Scroll GetAttackingScroll()
+    public override SpellSource GetAttackingScroll()
     {
       if (Name.ToLower().Contains("druid"))
       {
-        return ActiveScroll;
+        return ActiveManaPoweredSpellSource;
       }
       return base.GetAttackingScroll();
     }

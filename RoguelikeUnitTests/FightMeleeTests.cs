@@ -38,7 +38,7 @@ namespace RoguelikeUnitTests
 
         var closeToHero = game.Level.GetClosestEmpty(hero, incDiagonals: false);
         game.Level.SetTile(enemy, closeToHero.point);
-        enemy.ActiveScroll = null;//this causes attack
+        enemy.ActiveManaPoweredSpellSource = null;//this causes attack
 
         //hit enemy to force him to use effect
         enemy.OnPhysicalHitBy(hero);

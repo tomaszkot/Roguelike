@@ -66,14 +66,15 @@ namespace Roguelike.Tiles.LivingEntities
     public bool HasRelocateSkill { get; set; }
     public static readonly EntityStats BaseStats;
     public string OriginMap { get; set; }
-    Scroll activeScroll;
-    public virtual Scroll ActiveScroll
+    SpellSource activeManaPoweredSpellSource;
+
+    public virtual SpellSource ActiveManaPoweredSpellSource
     {
       get
       {
-        return activeScroll;
+        return activeManaPoweredSpellSource;
       }
-      set { activeScroll = value; }
+      set { activeManaPoweredSpellSource = value; }
     }
 
     public Point Position
@@ -965,9 +966,9 @@ namespace Roguelike.Tiles.LivingEntities
       return point;
     }
 
-    public virtual Scroll GetAttackingScroll()
+    public virtual SpellSource GetAttackingScroll()
     {
-      return ActiveScroll;
+      return ActiveManaPoweredSpellSource;
     }
 
     public bool CanBeHitBySpell()

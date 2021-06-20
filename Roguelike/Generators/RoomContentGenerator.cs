@@ -116,6 +116,7 @@ namespace Roguelike.Generators
     {
       var chest = new Chest() { ChestKind = ChestKind.Plain };
       node.SetTileAtRandomPosition(chest);
+      
     }
 
     protected virtual void GenerateLoot()
