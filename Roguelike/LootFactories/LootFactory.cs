@@ -3,6 +3,7 @@ using Roguelike.Managers;
 using Roguelike.Tiles;
 using SimpleInjector;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Roguelike.LootFactories
 {
@@ -73,8 +74,10 @@ namespace Roguelike.LootFactories
 
     public override Loot GetRandom(int level)
     {
-      var index = RandHelper.GetRandomInt(factories.Count);
-      var lootCreator = factories[index];
+      var subFac = factories.Where(i => i != BooksFactory).ToList();
+
+      var index = RandHelper.GetRandomInt(subFac.Count);
+      var lootCreator = subFac[index];
       return lootCreator.GetRandom(level);
     }
 

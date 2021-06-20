@@ -264,6 +264,8 @@ namespace Roguelike.Tiles.Looting
     public string GetExtraStatDescriptionFormatted(LivingEntity caller)
     {
       var statDescCurrent = GetExtraStatDescription(caller, true);
+      if (statDescCurrent == null)
+        return "";
       var str = string.Join("\r\n", statDescCurrent.GetDescription(false));
       var res = "Current Level: " + statDescCurrent.Level + "\r\n" + str;
 
@@ -277,8 +279,10 @@ namespace Roguelike.Tiles.Looting
     public SpellStatsDescription GetExtraStatDescription(LivingEntity caller, bool currentLevel)
     {
       ISpell spell = CreateSpell(caller);
+      if (spell == null)
+        return null;
       var spellStatsDescription = spell.CreateSpellStatsDescription(currentLevel);
-      //SpellStatsDescription(spell.CurrentLevel, spell.ManaCost);
+
       return spellStatsDescription;
     }
   }

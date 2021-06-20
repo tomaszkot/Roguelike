@@ -498,7 +498,7 @@ namespace Roguelike.Generators
       {
         LootKind.Other, 
         //LootKind.Gem, LootKind.Recipe, LootKind.HunterTrophy
-        LootKind.Seal, LootKind.SealPart, LootKind.Unset, skip
+        LootKind.Seal, LootKind.SealPart, LootKind.Unset, skip, LootKind.Book
       });
       var loot = GetRandomLoot(enumVal, level);
       return loot;

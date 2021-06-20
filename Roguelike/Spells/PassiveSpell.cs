@@ -99,7 +99,12 @@ namespace Roguelike.Spells
         desc.TourLasting = TourLasting;
       else
         desc.TourLasting = CalcTourLasting(CurrentLevel+1);
-      desc.StatKind = StatKind;
+
+      if (StatKind != EntityStatKind.Unset && Kind != SpellKind.ManaShield)
+      {
+        desc.StatKind = StatKind;
+        desc.StatKindPercentage = StatKindPercentage;
+      }
       return desc;
     }
 
