@@ -34,7 +34,7 @@ namespace Roguelike.Tiles.LivingEntities
 
   public class AdvancedLivingEntity : LivingEntity, IPersistable, IEquipable, IAdvancedEntity
   {
-    public static int FirstNextLevelExperienceThreshold = 60;
+    
     public RelationToHero RelationToHero { get; set; } = new RelationToHero();
     public bool HasUrgentTopic { get; set; }
     public Discussion Discussion { get; set; } = new Discussion();
@@ -150,7 +150,7 @@ namespace Roguelike.Tiles.LivingEntities
 
     public AdvancedLivingEntity(Container cont, Point point, char symbol) : base(point, symbol)
     {
-      NextLevelExperience = FirstNextLevelExperienceThreshold;
+      NextLevelExperience = GenerationInfo.FirstNextLevelExperienceThreshold;
       RelationToHero.Kind = RelationToHeroKind.Neutral;
       Container = cont;
       Inventory = cont.GetInstance<Inventory>();
@@ -212,7 +212,7 @@ namespace Roguelike.Tiles.LivingEntities
         AbilityPoints += 2;
         NextLevelExperience = (int)(NextLevelExperience + (NextLevelExperience * GenerationInfo.NextExperienceIncrease));
         if (Level == 2 || Level == 3)
-          NextLevelExperience *= 1.15f;
+          NextLevelExperience *= 1.5f;
 
         leveledUp = true;
 
@@ -660,9 +660,9 @@ namespace Roguelike.Tiles.LivingEntities
 
     public static readonly Dictionary<EnemyPowerKind, double> EnemyDamagingTotalExpAward = new Dictionary<EnemyPowerKind, double>()
     {
-      { EnemyPowerKind.Plain, 10 },
-      { EnemyPowerKind.Champion, 50 },
-      { EnemyPowerKind.Boss, 100 },
+      { EnemyPowerKind.Plain, 30 },
+      { EnemyPowerKind.Champion, 150 },
+      { EnemyPowerKind.Boss, 500 },
     };
     /// <summary>
     /// 
@@ -675,7 +675,8 @@ namespace Roguelike.Tiles.LivingEntities
       if (victim is Enemy en)
       {
         var livePercentage = inflicted / en.GetTotalValue(EntityStatKind.Health) * 100;
-        exp = livePercentage * EnemyDamagingTotalExpAward[en.PowerKind] / 100;
+        var award = EnemyDamagingTotalExpAward[en.PowerKind];
+        exp = livePercentage * award/100;
       }
       var inc = (1 * victim.Level * exp);
       this.IncreaseExp(inc);

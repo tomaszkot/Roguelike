@@ -43,7 +43,8 @@ namespace Roguelike.Generators
     public static float ChanceToTurnOnSpecialSkillByEnemy = 0.5f;
 
     public const int LevelUpPoints = 5;
-    public const float NextExperienceIncrease = 1.15f;
+    public const float NextExperienceIncrease = .5f;
+    public const int FirstNextLevelExperienceThreshold = 250;
 
     public bool GenerateEnemies { get; set; } = true && !ForceEmpty;
 

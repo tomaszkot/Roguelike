@@ -46,7 +46,7 @@ namespace Roguelike.Probability
     {
       var chance = lootKindChances[lsk];
       //LootKind.Other
-      var lk = chance.RollDice(LootKind.Unset, new LootKind[] { LootKind.Seal, LootKind.SealPart }, ab.ExtraChanceToAnyLoot);
+      var lk = chance.RollDice(LootKind.Unset, new LootKind[] { LootKind.Seal, LootKind.SealPart, LootKind.Book }, ab.ExtraChanceToAnyLoot);
       if (lk != LootKind.Gold && lk != LootKind.Equipment && lk != LootKind.Unset)
       {
         int k = 0;

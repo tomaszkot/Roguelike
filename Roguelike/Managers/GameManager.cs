@@ -883,7 +883,8 @@ namespace Roguelike.Managers
     {
       merch.Inventory.Items.Clear();
       var lootKinds = Enum.GetValues(typeof(LootKind)).Cast<LootKind>()
-        .Where(i => i != LootKind.Unset && i != LootKind.Other && i != LootKind.Seal && i != LootKind.SealPart && i != LootKind.Gold)
+        .Where(i => i != LootKind.Unset && i != LootKind.Other && i != LootKind.Seal && i != LootKind.SealPart 
+                   && i != LootKind.Gold && i != LootKind.Book)
         .ToList();
 
       AddLootToMerchantInv(merch, lootKinds);
