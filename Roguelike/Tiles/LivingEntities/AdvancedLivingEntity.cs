@@ -198,6 +198,12 @@ namespace Roguelike.Tiles.LivingEntities
     //{
     //  return new AdvancedLivingEntity(new Point(0, 0), '\0');
     //}
+    public double CalcExpScale()
+    {
+      var currExp = Experience - PrevLevelExperience;
+      var scale = currExp /( NextLevelExperience - PrevLevelExperience);
+      return scale;
+    }
 
     public bool IncreaseExp(double factor)
     {
