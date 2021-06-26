@@ -473,7 +473,15 @@ namespace Roguelike.Tiles.LivingEntities
       if (!set)
         return false;
 
+      SetSpellSourceFromWeapon(eq);
+
       return true;
+    }
+
+    private void SetSpellSourceFromWeapon(Equipment eq)
+    {
+      if (eq is Weapon wpn && wpn.SpellSource != null && this.ActiveManaPoweredSpellSource == null)
+        this.ActiveManaPoweredSpellSource = wpn.SpellSource;
     }
 
     private void OnEquipmentChanged(object sender, EquipmentChangedArgs args)//)

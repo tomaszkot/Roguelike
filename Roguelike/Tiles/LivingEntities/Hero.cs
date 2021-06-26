@@ -162,13 +162,18 @@ namespace Roguelike.Tiles.LivingEntities
       return att;
     }
 
-    public override float GetAttackVariation()
+    public Weapon GetActiveWeapon()
     {
       var currentEquipment = GetActiveEquipment();
-      if (currentEquipment[CurrentEquipmentKind.Weapon] != null)
+      return currentEquipment[CurrentEquipmentKind.Weapon] as Weapon;
+    }
+
+    public override float GetAttackVariation()
+    {
+      var currentWpn = GetActiveWeapon();
+      if (currentWpn != null)
       {
-        var wpn = currentEquipment[CurrentEquipmentKind.Weapon] as Weapon;
-        return wpn.GetPrimaryDamageVariation();
+        return currentWpn.GetPrimaryDamageVariation();
       }
 
       return 0;
