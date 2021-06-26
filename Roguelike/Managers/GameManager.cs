@@ -1001,7 +1001,7 @@ namespace Roguelike.Managers
       AppendAction(new AllyAction() { Info = le.Name + " has been added", InvolvedTile = ally, AllyActionKind = AllyActionKind.Created });
     }
 
-    public bool CanUseScroll(LivingEntity caster, SpellSource scroll)
+    public bool CanUseSpellSource(LivingEntity caster, SpellSource scroll)
     {
       if (scroll.Count <= 0)
       {
@@ -1012,15 +1012,18 @@ namespace Roguelike.Managers
       return true;
     }
 
-    public bool UtylizeScroll(LivingEntity caster, SpellSource spellSource)
+    public bool UtylizeSpellSource(LivingEntity caster, SpellSource spellSource)
     {
-      if (!CanUseScroll(caster, spellSource))
+      if (!CanUseSpellSource(caster, spellSource))
       {
         return false;
       }
 
       if (spellSource is Scroll && caster is AdvancedLivingEntity advEnt)
         return advEnt.Inventory.Remove(spellSource);
+
+      if (spellSource is WeaponSpellSource)
+        spellSource.Count--;
 
       return true;
     }
@@ -1135,15 +1138,28 @@ namespace Roguelike.Managers
         if (spell.Utylized)
           throw new Exception("spell.Utylized!");
 
-        if (caster.Stats.Mana < spell.ManaCost)
+        if (spellSource is WeaponSpellSource wss)
         {
-          SoundManager.PlayBeepSound();
-          AppendAction(new GameEvent() { Info = "Not enough mana to cast a spell" });
-          return false;
+          if (wss.Count <= 0)
+          {
+            SoundManager.PlayBeepSound();
+            AppendAction(new GameEvent() { Info = "Not enough charges to cast a spell" });
+            return false;
+          }
         }
-        caster.ReduceMana(spell.ManaCost);
+        else
+        {
+          if (caster.Stats.Mana < spell.ManaCost)
+          {
+            SoundManager.PlayBeepSound();
+            AppendAction(new GameEvent() { Info = "Not enough mana to cast a spell" });
+            return false;
+          }
+          caster.ReduceMana(spell.ManaCost);
+        }
+                
         spell.Utylized = true;
-        UtylizeScroll(caster, spellSource);
+        UtylizeSpellSource(caster, spellSource);
         
       }
       catch (Exception)

@@ -316,9 +316,10 @@ namespace RoguelikeUnitTests
       return game.GameManager.SpellManager.ApplyPassiveSpell(caster, spellSource) != null;
     }
 
-    protected bool UseScroll(Hero caster, IDestroyable victim, SpellSource spellSource)
+    protected bool UseSpellSource(Hero caster, IDestroyable victim, SpellSource spellSource)
     {
-      caster.Inventory.Add(spellSource);
+      if(spellSource is Scroll || spellSource is Book)
+        caster.Inventory.Add(spellSource);
       if (caster is Hero)
       {
         game.Hero.ActiveManaPoweredSpellSource = spellSource;
@@ -334,7 +335,7 @@ namespace RoguelikeUnitTests
         src = new Scroll(Roguelike.Spells.SpellKind.FireBall);
       else
         src = new Book(Roguelike.Spells.SpellKind.FireBall);
-      return UseScroll(caster, victim, src);
+      return UseSpellSource(caster, victim, src);
 
     }
   }

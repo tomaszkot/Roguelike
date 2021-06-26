@@ -11,8 +11,30 @@ using System.Threading.Tasks;
 
 namespace Roguelike.Tiles.Looting
 {
+  public class WeaponSpellSource : SpellSource
+  {
+    //public int ChargesCount { get; set; } = 15;
+
+    //public override bool Enabled
+    //{
+    //  get { return ChargesCount > 0; }
+    //}
+    int initChargesCount = 0;
+
+    public WeaponSpellSource(SpellKind kind, int chargesCount = 15) : base(kind)
+    {
+      Count = chargesCount;
+      initChargesCount = Count;
+    }
+  }
+
   public class SpellSource : StackedLoot
   {
+    public virtual bool Enabled 
+    {
+      get { return Count > 0; }
+    }
+
     public SpellSource(SpellKind kind)
     {
       Symbol = '?';

@@ -83,6 +83,8 @@ namespace RoguelikeUnitTests
       var diff = enemyHealth - enemy.Stats.Health;
     }
 
+    
+
     [TestCase(true)]
     [TestCase(false)]
     public void ScrollPowerVSMeleeTest(bool scroll)

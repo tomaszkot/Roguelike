@@ -10,6 +10,10 @@ namespace RoguelikeUnitTests
   [TestFixture]
   class EquipmentTests : TestBase
   {
+    //
+   
+
+
     [Test]
     public void TestMagicLevel()
     {

@@ -1,5 +1,6 @@
 ﻿using Roguelike.Attributes;
 using Roguelike.LootFactories;
+using Roguelike.Tiles.Looting;
 
 namespace Roguelike.Tiles
 {
@@ -14,6 +15,7 @@ namespace Roguelike.Tiles
 
     public EntityStat SpecialFeature { get; set; }
     public EntityStat SpecialFeatureAux { get; set; }
+    SpellSource spellSource;
 
     public Weapon()
     {
@@ -22,10 +24,13 @@ namespace Roguelike.Tiles
       this.Price = 5;
     }
 
-    public bool IsMagician()
+    public bool IsMagician
     {
-      return Kind == WeaponKind.Scepter || Kind == Weapon.WeaponKind.Wand ||
-        Kind == Weapon.WeaponKind.Staff;
+      get
+      {
+        return Kind == WeaponKind.Scepter || Kind == Weapon.WeaponKind.Wand ||
+                Kind == Weapon.WeaponKind.Staff;
+      }
     }
 
 
@@ -63,6 +68,11 @@ namespace Roguelike.Tiles
             //Symbol = AxeSymbol;
             SpecialFeature = new EntityStat(EntityStatKind.ChanceToCauseTearApart, chanceForEffect);
             //Name = "Axe";
+            break;
+          case WeaponKind.Scepter:
+          case WeaponKind.Staff:
+          case WeaponKind.Wand:
+            spellSource = new WeaponSpellSource(Spells.SpellKind.FireBall);
             break;
           default:
             break;
@@ -112,6 +122,7 @@ namespace Roguelike.Tiles
     }
 
     public bool StableDamage { get; set; } = false;
+    public SpellSource SpellSource { get => spellSource; set => spellSource = value; }
 
     public float GetPrimaryDamageVariation()
     {
