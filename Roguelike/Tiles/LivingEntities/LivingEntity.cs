@@ -77,6 +77,8 @@ namespace Roguelike.Tiles.LivingEntities
       set { activeManaPoweredSpellSource = value; }
     }
 
+    
+
     public Point Position
     {
       get { return point; }

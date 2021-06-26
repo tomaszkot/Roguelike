@@ -473,16 +473,47 @@ namespace Roguelike.Tiles.LivingEntities
       if (!set)
         return false;
 
-      SetSpellSourceFromWeapon(eq);
+      //SetSpellSourceFromWeapon(eq);
 
       return true;
     }
 
-    private void SetSpellSourceFromWeapon(Equipment eq)
+    public Weapon GetActiveWeapon()
     {
-      if (eq is Weapon wpn && wpn.SpellSource != null && this.ActiveManaPoweredSpellSource == null)
-        this.ActiveManaPoweredSpellSource = wpn.SpellSource;
+      var currentEquipment = GetActiveEquipment();
+      return currentEquipment[CurrentEquipmentKind.Weapon] as Weapon;
     }
+
+    public virtual SpellSource ActiveWeaponSpellSource
+    {
+      get
+      {
+        var wpn = GetActiveWeapon();
+        return wpn != null ? wpn.SpellSource : null;
+      }
+
+    }
+
+    public SpellSource ActiveSpellSource
+    {
+      get
+      {
+        var spellSrc = ActiveManaPoweredSpellSource;
+        if (spellSrc != null)
+          return spellSrc;
+        var wpn = GetActiveWeapon();
+        if (wpn != null)
+          return wpn.SpellSource;
+
+        return null;
+      }
+    }
+
+    //private void SetSpellSourceFromWeapon(Equipment eq)
+    //{
+    //  if (eq is Weapon wpn && wpn.SpellSource != null && this.ActiveManaPoweredSpellSource == null)
+    //    this.ActiveManaPoweredSpellSource = wpn.SpellSource;
+    //}
 
     private void OnEquipmentChanged(object sender, EquipmentChangedArgs args)//)
     {

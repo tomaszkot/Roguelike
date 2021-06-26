@@ -162,11 +162,7 @@ namespace Roguelike.Tiles.LivingEntities
       return att;
     }
 
-    public Weapon GetActiveWeapon()
-    {
-      var currentEquipment = GetActiveEquipment();
-      return currentEquipment[CurrentEquipmentKind.Weapon] as Weapon;
-    }
+    
 
     public override float GetAttackVariation()
     {
