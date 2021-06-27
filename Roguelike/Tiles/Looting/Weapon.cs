@@ -33,7 +33,7 @@ namespace Roguelike.Tiles
       }
     }
 
-    public void SetInitChargesCount()
+    public void SetInitChargesCount(int mult)
     {
       if (SpellSource == null)
         return;
@@ -51,12 +51,13 @@ namespace Roguelike.Tiles
         case WeaponKind.Bashing:
           break;
         case WeaponKind.Scepter:
-          wss.InitChargesCount = 25;
+          wss.InitChargesCount = 20*mult;
           break;
         case WeaponKind.Wand:
-          wss.InitChargesCount = 15;
+          wss.InitChargesCount = 10*mult;
           break;
         case WeaponKind.Staff:
+          wss.InitChargesCount = 30* mult;
           break;
         case WeaponKind.Other:
           break;

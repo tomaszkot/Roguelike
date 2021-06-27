@@ -77,7 +77,7 @@ namespace Roguelike.Managers
       if (AttackAlly(enemy))
         return;
 
-      if (enemy.DistanceFrom(Hero) > 10)
+      if (enemy.DistanceFrom(Hero) > 12)
         return;
 
       if (!target.IsTransformed())
