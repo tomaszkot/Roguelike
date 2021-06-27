@@ -5,7 +5,7 @@ namespace Roguelike.Tiles.Looting
   public enum RecipeKind
   {
     Unset, Custom, ThreeGems, OneEq, TransformPotion, TwoEq, TransformGem, Toadstools2Potion, ExplosiveCocktail, Pendant,
-    EnchantEquipment, CraftSpecialPotion
+    EnchantEquipment, CraftSpecialPotion, RechargeMagicalWeapon
   }
 
   public class Recipe : StackedLoot
@@ -176,6 +176,9 @@ namespace Roguelike.Tiles.Looting
             break;
           case RecipeKind.CraftSpecialPotion:
             tag1 += "special_potion";
+            break;
+          case RecipeKind.RechargeMagicalWeapon:
+            tag1 += "recharge_magical_weapon";
             break;
           default:
             break;

@@ -18,7 +18,7 @@ namespace Roguelike.Tiles
 
     public static Dictionary<WeaponKind, EntityStat> RequiredStartStats = new Dictionary<WeaponKind, EntityStat>() 
     {
-      { WeaponKind.Wand, new EntityStat(EntityStatKind.Magic, 11)},
+      { WeaponKind.Wand, new EntityStat(EntityStatKind.Magic, 10)},
       { WeaponKind.Scepter, new EntityStat(EntityStatKind.Magic, 15)},
       { WeaponKind.Staff, new EntityStat(EntityStatKind.Magic, 20)}
     };
@@ -64,7 +64,7 @@ namespace Roguelike.Tiles
           wss.InitChargesCount = 20*mult;
           break;
         case WeaponKind.Wand:
-          wss.InitChargesCount = 10*mult;
+          wss.InitChargesCount = 15*mult;
           break;
         case WeaponKind.Staff:
           wss.InitChargesCount = 30* mult;

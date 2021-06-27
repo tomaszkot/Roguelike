@@ -95,7 +95,21 @@ namespace Roguelike.Crafting
         {
           return HandleCustomRecipe(lootToConvert);
         }
+        else if (recipe.Kind == RecipeKind.RechargeMagicalWeapon)
+        {
+          var equips = lootToConvert.Where(i => i is Weapon wpn0 && wpn0.IsMagician).Cast<Weapon>().ToList();
+          var equipsCount = equips.Count();
+          if(equipsCount != 1)
+            return ReturnCraftingError("One charge emitting weapon is needed by the Recipe");
 
+          var wpn = equips[0];
+          //foreach (var wpn in equips)
+          {
+            (wpn.SpellSource as WeaponSpellSource).Restore();
+            wpn.UpdateMagicWeaponDesc();
+          }
+          return ReturnCraftedLoot(wpn, false);
+        }
         else if (recipe.Kind == RecipeKind.Pendant)
         {
           var cords = lootToConvert.Where(i => i is Cord).Count();

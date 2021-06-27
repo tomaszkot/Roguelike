@@ -13,12 +13,6 @@ namespace Roguelike.Tiles.Looting
 {
   public class WeaponSpellSource : SpellSource
   {
-    //public int ChargesCount { get; set; } = 15;
-
-    //public override bool Enabled
-    //{
-    //  get { return ChargesCount > 0; }
-    //}
     int initChargesCount = 0;
     public int RestoresCount { get; set; }
 
@@ -31,6 +25,7 @@ namespace Roguelike.Tiles.Looting
     {
       RestoresCount++;
       RestoredChargesCount = initChargesCount - 2 * RestoresCount;
+      Count = RestoredChargesCount;
     }
 
     public int InitChargesCount 

@@ -427,7 +427,7 @@ namespace Roguelike.Tiles
 
     protected void SetRequiredStat(int li, EntityStatKind esk)
     {
-      var es = new EntityStat(esk, LivingEntities.LivingEntity.BaseStats[esk].Nominal + li);
+      var es = new EntityStat(esk, LivingEntities.LivingEntity.BaseStats[esk].Nominal + li-1);
       this.RequiredStats.SetStat(es.Kind, es);
     }
 

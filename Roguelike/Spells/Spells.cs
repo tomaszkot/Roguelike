@@ -173,6 +173,9 @@ namespace Roguelike.Spells
       var level = CurrentLevel;
       Ally = caller.Container.GetInstance<AlliedEnemy>();
       Ally.InitSpawned(EnemySymbols.SkeletonSymbol, level);
+      Ally.Stats.SetNominal(EntityStatKind.Strength, AdvancedLivingEntity.BaseStrength.Value.Nominal+5);//same as hero
+      Ally.Stats.SetNominal(EntityStatKind.Dexterity, AdvancedLivingEntity.BaseDexterity.Value.Nominal + 5);
+      Ally.RecalculateStatFactors(false);
       Ally.Name = "Skeleton";
       //Ally.Stats[EntityStatKind.Attack].Nominal = Damage;
       //var health = CalcHealth(level);
@@ -196,19 +199,6 @@ namespace Roguelike.Spells
       baseD += (float)(baseD * 25.0 / 100f);
       return baseD;
     }
-
-    //protected override void AppendPrivateFeatures(List<string> fe)
-    //{
-    //  fe.Add("Health: " + Ally.Stats.GetNominal(EntityStatKind.Health));
-    //  fe.Add("Attack: " + Ally.Stats.GetNominal(EntityStatKind.Attack));
-    //}
-
-    //protected override void AppendNextLevel(List<string> fe)
-    //{
-    //  base.AppendNextLevel(fe);
-    //  fe.Add(GetNextLevel("Health " + CalcHealth(GetCurrentLevel() + 1)));
-    //  fe.Add(GetNextLevel("Attack " + CalcDamage(GetCurrentLevel() + 1)));
-    //}
   }
 
   public class TransformSpell : PassiveSpell

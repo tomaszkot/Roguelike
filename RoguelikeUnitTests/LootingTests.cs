@@ -367,7 +367,7 @@ namespace RoguelikeUnitTests
     [Test]
     public void KilledEnemyForEqipAndGoldMoreEq()
     {
-      var env = CreateTestEnv(numEnemies: 30);
+      var env = CreateTestEnv(numEnemies: 40);
       env.LootGenerator.Probability = new Roguelike.Probability.Looting();
       env.LootGenerator.Probability.SetLootingChance(LootSourceKind.Enemy, LootKind.Equipment, .75f);
       env.LootGenerator.Probability.SetLootingChance(LootSourceKind.Enemy, LootKind.Gold, .25f);

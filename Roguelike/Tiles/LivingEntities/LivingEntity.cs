@@ -33,6 +33,7 @@ namespace Roguelike.Tiles.LivingEntities
     public static readonly EntityStat BaseStrength = new EntityStat(EntityStatKind.Strength, 10);
     public static readonly EntityStat BaseHealth = new EntityStat(EntityStatKind.Health, 12);
     public static readonly EntityStat BaseDefence = new EntityStat(EntityStatKind.Defense, 7);
+    public static readonly EntityStat BaseDexterity = new EntityStat(EntityStatKind.Dexterity, 10);
     public static readonly EntityStat BaseMana = new EntityStat(EntityStatKind.Mana, 10);
     public static readonly EntityStat BaseMagic = new EntityStat(EntityStatKind.Magic, 10);
 
@@ -125,6 +126,7 @@ namespace Roguelike.Tiles.LivingEntities
       BaseStats.SetStat(EntityStatKind.Health, BaseHealth);
       BaseStats.SetStat(EntityStatKind.Mana, BaseMana);
       BaseStats.SetStat(EntityStatKind.Magic, BaseMagic);
+      BaseStats.SetStat(EntityStatKind.Dexterity, BaseDexterity);
     }
 
     public LivingEntity() : this(new Point(-1, -1), '\0')
