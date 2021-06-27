@@ -1023,7 +1023,12 @@ namespace Roguelike.Managers
         return advEnt.Inventory.Remove(spellSource);
 
       if (spellSource is WeaponSpellSource)
+      {
         spellSource.Count--;
+        var ave = caster as AdvancedLivingEntity;
+        var wpn = ave.GetActiveWeapon();
+        wpn.UpdateMagicWeaponDesc();
+      }
 
       return true;
     }

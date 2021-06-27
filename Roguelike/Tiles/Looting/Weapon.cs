@@ -1,17 +1,27 @@
 ﻿using Roguelike.Attributes;
 using Roguelike.LootFactories;
 using Roguelike.Tiles.Looting;
+using System.Collections.Generic;
 
 namespace Roguelike.Tiles
 {
   public class Weapon : Equipment
   {
+    //int MagicianInitRequiredMagic
+
     public enum WeaponKind
     {
       Unset, Dagger, Sword, Axe, Bashing, Scepter, Wand, Staff,
       Other
       //,Bow
     }
+
+    public static Dictionary<WeaponKind, EntityStat> RequiredStartStats = new Dictionary<WeaponKind, EntityStat>() 
+    {
+      { WeaponKind.Wand, new EntityStat(EntityStatKind.Magic, 11)},
+      { WeaponKind.Scepter, new EntityStat(EntityStatKind.Magic, 15)},
+      { WeaponKind.Staff, new EntityStat(EntityStatKind.Magic, 20)}
+    };
 
     public EntityStat SpecialFeature { get; set; }
     public EntityStat SpecialFeatureAux { get; set; }
@@ -64,6 +74,55 @@ namespace Roguelike.Tiles
         default:
           break;
       }
+    }
+
+    public override void SetLevelIndex(int li)
+    {
+      base.SetLevelIndex(li);
+      if (IsMagician)
+      {
+        SetRequiredStat(li, EntityStatKind.Magic);
+      }
+      else
+      {
+        EntityStatKind esk = EntityStatKind.Unset;
+        switch (Kind)
+        {
+          case WeaponKind.Unset:
+            break;
+          case WeaponKind.Dagger:
+            esk = EntityStatKind.Dexterity;
+            break;
+          case WeaponKind.Sword:
+          case WeaponKind.Axe:
+            esk = EntityStatKind.Strength;
+            break;
+          case WeaponKind.Bashing:
+            esk = EntityStatKind.Strength;
+            break;
+          case WeaponKind.Scepter:
+            break;
+          case WeaponKind.Wand:
+            break;
+          case WeaponKind.Staff:
+            break;
+          case WeaponKind.Other:
+            break;
+          default:
+            break;
+        }
+        if(esk != EntityStatKind.Unset)
+          SetRequiredStat(li, esk);
+
+        if(Kind == WeaponKind.Sword)
+          SetRequiredStat(li, EntityStatKind.Dexterity);
+      }
+    }
+
+    public void UpdateMagicWeaponDesc()
+    {
+      var wss = (SpellSource as WeaponSpellSource);
+      PrimaryStatDescription = "Emits " + SpellSource.Kind + " charges\r\n(" + wss.Count + "/" + wss.RestoredChargesCount + " charges available)";
     }
 
     public WeaponKind kind;

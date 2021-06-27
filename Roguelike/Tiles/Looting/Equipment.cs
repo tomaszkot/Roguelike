@@ -425,10 +425,26 @@ namespace Roguelike.Tiles
     //setter needed from serialize
     public int EnchantSlots { get => enchantSlots; set { enchantSlots = value; } }
 
+    protected void SetRequiredStat(int li, EntityStatKind esk)
+    {
+      var es = new EntityStat(esk, LivingEntities.LivingEntity.BaseStats[esk].Nominal + li);
+      this.RequiredStats.SetStat(es.Kind, es);
+    }
+
     public List<EntityStat> GetEffectiveRequiredStats()
     {
       //TODO too heavy?
       return RequiredStats.GetStats().Where(i => GetReqStatValue(i.Value) > 0).Select(i => i.Value).ToList();
+    }
+
+    public EntityStat GetReqStat(EntityStatKind esk)
+    {
+      return RequiredStats.GetStats()[esk];
+    }
+
+    public float GetReqStatValue(EntityStatKind esk)
+    {
+      return GetReqStatValue(GetReqStat(esk));
     }
 
     public float GetReqStatValue(EntityStat es)
@@ -588,7 +604,7 @@ namespace Roguelike.Tiles
     public EntityStats UnidentifiedStats { get => unidentifiedStats; set => unidentifiedStats = value; }
     public int MaxEnchants { get => maxEnchants; set => maxEnchants = value; }
 
-    public void SetLevelIndex(int li)
+    public virtual void SetLevelIndex(int li)
     {
       if (li <= 0)
         throw new Exception("Eq SetLevelIndex = 0!");

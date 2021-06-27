@@ -20,14 +20,30 @@ namespace Roguelike.Tiles.Looting
     //  get { return ChargesCount > 0; }
     //}
     int initChargesCount = 0;
+    public int RestoresCount { get; set; }
 
     public WeaponSpellSource(SpellKind kind, int chargesCount = 15) : base(kind)
     {
-      Count = chargesCount;
-      initChargesCount = Count;
+      InitChargesCount = chargesCount;
     }
 
-    public int InitChargesCount { get => initChargesCount; set => initChargesCount = value; }
+    public void Restore()
+    {
+      RestoresCount++;
+      RestoredChargesCount = initChargesCount - 2 * RestoresCount;
+    }
+
+    public int InitChargesCount 
+    { 
+      get => initChargesCount; 
+      set
+      {
+        initChargesCount = value;
+        Count = value;
+        RestoredChargesCount = Count;
+      }
+    }
+    public int RestoredChargesCount { get; set; }
   }
 
   public class SpellSource : StackedLoot

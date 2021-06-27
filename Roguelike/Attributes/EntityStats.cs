@@ -196,6 +196,14 @@ namespace Roguelike.Attributes
       }
     }
 
+    public float Magic
+    {
+      get
+      {
+        return this[EntityStatKind.Magic].CurrentValue;
+      }
+    }
+
     public EntityStat GetStat(EntityStatKind esk)
     {
       Ensure(esk);

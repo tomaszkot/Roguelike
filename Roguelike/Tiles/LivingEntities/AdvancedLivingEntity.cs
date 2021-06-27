@@ -408,9 +408,9 @@ namespace Roguelike.Tiles.LivingEntities
 
       if (Level < eq.RequiredLevel)
         return false;
-      foreach (var rs in eq.RequiredStats.Stats)
+      foreach (var rs in eq.GetEffectiveRequiredStats())
       { 
-        if(rs.Value.Value.Nominal > Stats.GetNominal(rs.Key))
+        if(rs.Value.Nominal > Stats.GetNominal(rs.Kind))
           return false;
       }
             

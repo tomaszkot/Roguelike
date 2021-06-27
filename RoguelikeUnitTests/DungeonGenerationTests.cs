@@ -236,8 +236,9 @@ namespace RoguelikeUnitTests
 
       var en = level.GetTiles().Where(i => i is Enemy).ToList();
 
-      Assert.Greater(en.Where(i => i.DungeonNodeIndex == level.Nodes[0].NodeIndex).Count(), 0);
-      Assert.Greater(en.Where(i => i.DungeonNodeIndex == island.NodeIndex).Count(), 0);
+      var normalRoomEnemiesCount = en.Where(i => i.DungeonNodeIndex == level.Nodes[0].NodeIndex).Count();
+      var islandRoomEnemiesCount = en.Where(i => i.DungeonNodeIndex == island.NodeIndex).Count();
+      Assert.True(normalRoomEnemiesCount > 0 && islandRoomEnemiesCount > 0);
     }
 
     [Test]
