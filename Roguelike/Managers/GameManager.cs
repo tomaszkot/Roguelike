@@ -1117,13 +1117,8 @@ namespace Roguelike.Managers
 
     
 
-    public bool UtylizeScroll(LivingEntity caster, SpellSource spellSource, ISpell spell)
+    public bool UtylizeSpellSource(LivingEntity caster, SpellSource spellSource, ISpell spell)
     {
-      //scroll was already used why check here?
-      //if (!CanUseScroll(caster, scroll, spell))
-      //{
-      //  return false;
-      //}
       try
       {
         if (spellSource.Kind == Spells.SpellKind.Skeleton)
@@ -1146,6 +1141,7 @@ namespace Roguelike.Managers
             AppendAction(new GameEvent() { Info = "Not enough charges to cast a spell" });
             return false;
           }
+
         }
         else
         {

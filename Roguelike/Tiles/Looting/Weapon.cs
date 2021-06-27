@@ -33,7 +33,37 @@ namespace Roguelike.Tiles
       }
     }
 
-
+    public void SetInitChargesCount()
+    {
+      if (SpellSource == null)
+        return;
+      var wss = (SpellSource as WeaponSpellSource);
+      switch (Kind)
+      {
+        case WeaponKind.Unset:
+          break;
+        case WeaponKind.Dagger:
+          break;
+        case WeaponKind.Sword:
+          break;
+        case WeaponKind.Axe:
+          break;
+        case WeaponKind.Bashing:
+          break;
+        case WeaponKind.Scepter:
+          wss.InitChargesCount = 25;
+          break;
+        case WeaponKind.Wand:
+          wss.InitChargesCount = 15;
+          break;
+        case WeaponKind.Staff:
+          break;
+        case WeaponKind.Other:
+          break;
+        default:
+          break;
+      }
+    }
 
     public WeaponKind kind;
     public WeaponKind Kind

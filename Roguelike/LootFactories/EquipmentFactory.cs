@@ -17,11 +17,6 @@ namespace Roguelike.LootFactories
     public const int BronzeSwordBaseDamage = 2;
     public const int BronzeDaggerBaseDamage = 2;
     public const int BronzeAxeBaseDamage = 2;
-    //public readonly Dictionary<Roguelike.Tiles.EquipmentKind, int> BronzeArmorBaseDefence = new Dictionary<Roguelike.Tiles.EquipmentKind, int>()
-    //{
-    //  {EquipmentKind.Armor, 12} //ironed_leather_armor has 10
-    //  //{Roguelike.Tiles.EquipmentKind.Shield, 0 }
-    //};
 
     public const int BronzeToIronMult = 2;
     public const int BronzeToSteelMult = 3;

@@ -53,7 +53,7 @@ namespace Roguelike.Managers
         else
           caster.ApplyPassiveSpell(ps);
 
-        gm.UtylizeScroll(caster, scroll, spell);
+        gm.UtylizeSpellSource(caster, scroll, spell);
         gm.AppendAction<LivingEntityAction>((LivingEntityAction ac) =>
         { ac.Kind = LivingEntityActionKind.Teleported; ac.Info = gm.Hero.Name + " used " + scroll.Kind.ToDescription() + " scroll"; ac.InvolvedEntity = caster; });
 
@@ -72,7 +72,7 @@ namespace Roguelike.Managers
     {
       var spell = spellSource.CreateSpell(caster);
 
-      if (!gm.UtylizeScroll(caster, spellSource, spell))
+      if (!gm.UtylizeSpellSource(caster, spellSource, spell))
         return null;
 
       if (spell is OffensiveSpell ps)
@@ -103,7 +103,7 @@ namespace Roguelike.Managers
     {
       var spell = spellSource.CreateSpell(caster);
 
-      if (!gm.UtylizeScroll(caster, spellSource, spell))
+      if (!gm.UtylizeSpellSource(caster, spellSource, spell))
         return false;
 
       var policy = Container.GetInstance<SpellCastPolicy>();

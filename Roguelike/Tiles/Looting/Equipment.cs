@@ -371,8 +371,7 @@ namespace Roguelike.Tiles
         return false;
       if (this is Weapon wpn)
       {
-        return wpn.Kind == Weapon.WeaponKind.Axe || wpn.Kind == Weapon.WeaponKind.Sword || wpn.Kind == Weapon.WeaponKind.Dagger ||
-          wpn.Kind == Weapon.WeaponKind.Scepter;
+        return wpn.Kind == Weapon.WeaponKind.Axe || wpn.Kind == Weapon.WeaponKind.Sword || wpn.Kind == Weapon.WeaponKind.Dagger;
       }
 
       return false;
@@ -593,6 +592,12 @@ namespace Roguelike.Tiles
     {
       if (li <= 0)
         throw new Exception("Eq SetLevelIndex = 0!");
+      if (li > 15)
+      {
+        int k = 0;
+        k++;
+      }
+      
       levelIndex = li;
       if (RequiredLevel < li)
         RequiredLevel = li;

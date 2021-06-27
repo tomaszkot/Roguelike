@@ -405,7 +405,16 @@ namespace Roguelike.Tiles.LivingEntities
     {
       if (!eq.IsIdentified)
         return false;
-      return Level >= eq.RequiredLevel;
+
+      if (Level < eq.RequiredLevel)
+        return false;
+      foreach (var rs in eq.RequiredStats.Stats)
+      { 
+        if(rs.Value.Value.Nominal > Stats.GetNominal(rs.Key))
+          return false;
+      }
+            
+      return true;
     }
 
     public bool MoveEquipmentInv2Current(Equipment eq,

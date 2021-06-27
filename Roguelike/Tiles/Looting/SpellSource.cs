@@ -26,6 +26,8 @@ namespace Roguelike.Tiles.Looting
       Count = chargesCount;
       initChargesCount = Count;
     }
+
+    public int InitChargesCount { get => initChargesCount; set => initChargesCount = value; }
   }
 
   public class SpellSource : StackedLoot

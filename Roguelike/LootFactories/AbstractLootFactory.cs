@@ -128,7 +128,13 @@ namespace Roguelike.LootFactories
       if (!eqsAtLevel.Any())//TODO!
       {
         var maxLevel = plains.Max(i => i.LevelIndex);
-        eqsAtLevel = plains.Where(i => i.LevelIndex == maxLevel).ToList();
+        for (int i = level + 1; i <= maxLevel; i++)
+        {
+          eqsAtLevel = plains.Where(j => j.LevelIndex == i).ToList();
+          if (eqsAtLevel.Any())
+            break;
+        }
+        //eqsAtLevel = plains.Where(i => i.LevelIndex == maxLevel).ToList();
       }
       var eq = RandHelper.GetRandomElem<Equipment>(eqsAtLevel);
       if (eq != null)
