@@ -80,7 +80,7 @@ namespace Roguelike.Generators
           var val = .25f;
           var mult = 1f;
 
-          if (lootSource == LootSourceKind.PlainChest || lootSource == LootSourceKind.Barrel)
+          //if (lootSource == LootSourceKind.PlainChest || lootSource == LootSourceKind.Barrel)
           {
             if (lk == LootKind.Gem || lk == LootKind.HunterTrophy)
               mult /= 3f;

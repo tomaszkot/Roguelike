@@ -85,6 +85,9 @@ namespace Roguelike.Tiles.Looting
         case RecipeKind.CraftSpecialPotion:
           desc = "Turns potion plus boletus into a special potion";
           break;
+        case RecipeKind.RechargeMagicalWeapon:
+          desc = "Recharges magical weapon";
+          break;
         default:
           break;
       }

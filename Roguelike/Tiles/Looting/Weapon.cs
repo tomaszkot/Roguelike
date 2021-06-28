@@ -61,13 +61,13 @@ namespace Roguelike.Tiles
         case WeaponKind.Bashing:
           break;
         case WeaponKind.Scepter:
-          wss.InitChargesCount = 20*mult;
+          wss.InitChargesCount = 30*mult;
           break;
         case WeaponKind.Wand:
-          wss.InitChargesCount = 15*mult;
+          wss.InitChargesCount = 20*mult;
           break;
         case WeaponKind.Staff:
-          wss.InitChargesCount = 30* mult;
+          wss.InitChargesCount = 40*mult;
           break;
         case WeaponKind.Other:
           break;
