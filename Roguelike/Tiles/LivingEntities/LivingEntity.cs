@@ -356,73 +356,31 @@ namespace Roguelike.Tiles.LivingEntities
     {
       return GetCurrentValue(EntityStatKind.Attack);
     }
-
-    public virtual float OnPhysicalHitBy(LivingEntity attacker)
+        
+    private void ReduceHealth(LivingEntity attacker, string sound, string damageDesc, string damageSource, ref float inflicted)
     {
-      float defense = GetDefense();
-      if (defense == 0)
-      {
-        AppendAction(new GameStateAction() { Type = GameStateAction.ActionType.Assert, Info = "Stats.Defence == 0!!!" });
-        return 0;
-      }
-      if (!Alive)
-      {
-        //hitting a dead man ?
-        AppendAction(new GameStateAction() { Type = GameStateAction.ActionType.Assert, Info = "!Alive" });
-        return 0;
-      }
-
-      lastHitBySpell = false;
-      var attack = attacker.GetHitAttackValue(true);
-      if (defense <= 0)
-        defense = 1;//HACK, TODO
-      var inflicted = attack / defense;
-
       var manaShieldEffect = LastingEffectsSet.GetByType(EffectType.ManaShield);
-      if (manaShieldEffect != null && this.Stats.Mana > inflicted)
-        ReduceMana(inflicted);
-      else
-        ReduceHealth(inflicted);
-
-      var desc = Name.ToString() + " received damage: " + inflicted.Formatted();
-
-      var npds = attacker.GetNonPhysicalDamages();
-      foreach (var stat in npds)
+      var manaReduce = inflicted;
+      if (manaShieldEffect != null && this.Stats.Mana > 0)
       {
-        var npd = CalculateNonPhysicalDamage(stat.Key, stat.Value);
-        if (npd != 0)
-          desc += " " + GetAttackDesc(stat.Key) + ": " + npd.Formatted();
-        inflicted += npd;
-        LastingEffectsSet.TryAddLastingEffectOnHit(npd, attacker, stat.Key);
-      }
+        if (inflicted > this.Stats.Mana)
+          manaReduce = inflicted - this.Stats.Mana;
 
+        //inflicted = this.Stats.Mana - inflicted;
+        ReduceMana(manaReduce);
+        inflicted -= manaReduce;
+        damageDesc = null;//TODO
+      }
+      
+      ReduceHealth(inflicted);
       attacker.OnDamageCaused(inflicted, this);
 
       var ga = new LivingEntityAction(LivingEntityActionKind.GainedDamage) { InvolvedValue = inflicted, InvolvedEntity = this };
-      ga.Info = desc;
+      var desc = damageDesc ?? "received damage: " + inflicted.Formatted() + " " + damageSource;
+      ga.Info = Name.ToString() + " " + desc;
 
       AppendAction(ga);
-
-      PlaySound("punch");
-
-      if (!this.EverHitBy.Contains(attacker))
-        this.EverHitBy.Add(attacker);
-      //if (this is Enemy || this is Hero)// || this is CrackedStone)
-      //{
-      //  PlayPunchSound();
-      //}
-      var dead = DieIfShould(EffectType.Unset);
-      if (!dead)
-      {
-        if (IsWounded)
-        {
-          if (attacker.CanCauseBleeding())
-            lastingEffectsSet.EnsureEffect(EffectType.Bleeding, inflicted / 3, attacker);
-        }
-        attacker.EnsurePhysicalHitEffect(inflicted, this, null);
-      }
-
-      return inflicted;
+      PlaySound(sound);
     }
 
     protected virtual void OnDamageCaused(float inflicted, LivingEntity victim)
@@ -485,6 +443,61 @@ namespace Roguelike.Tiles.LivingEntities
         AppendAction(new SoundRequestAction() { SoundName = sound });
     }
 
+    public virtual float OnPhysicalHitBy(LivingEntity attacker)
+    {
+      float defense = GetDefense();
+      if (defense == 0)
+      {
+        AppendAction(new GameStateAction() { Type = GameStateAction.ActionType.Assert, Info = "Stats.Defence == 0!!!" });
+        return 0;
+      }
+      if (!Alive)
+      {
+        //hitting a dead man ?
+        AppendAction(new GameStateAction() { Type = GameStateAction.ActionType.Assert, Info = "!Alive" });
+        return 0;
+      }
+
+      lastHitBySpell = false;
+      var attack = attacker.GetHitAttackValue(true);
+      if (defense <= 0)
+        defense = 1;//HACK, TODO
+      var inflicted = attack / defense;
+
+      var desc = Name.ToString() + " received damage: " + inflicted.Formatted();
+
+      var npds = attacker.GetNonPhysicalDamages();
+      foreach (var stat in npds)
+      {
+        var npd = CalculateNonPhysicalDamage(stat.Key, stat.Value);
+        if (npd != 0)
+          desc += " " + GetAttackDesc(stat.Key) + ": " + npd.Formatted();
+        inflicted += npd;
+        LastingEffectsSet.TryAddLastingEffectOnHit(npd, attacker, stat.Key);
+      }
+
+      ReduceHealth(attacker, "punch", desc, "", ref inflicted);
+
+      if (!this.EverHitBy.Contains(attacker))
+        this.EverHitBy.Add(attacker);
+      //if (this is Enemy || this is Hero)// || this is CrackedStone)
+      //{
+      //  PlayPunchSound();
+      //}
+      var dead = DieIfShould(EffectType.Unset);
+      if (!dead)
+      {
+        if (IsWounded)
+        {
+          if (attacker.CanCauseBleeding())
+            lastingEffectsSet.EnsureEffect(EffectType.Bleeding, inflicted / 3, attacker);
+        }
+        attacker.EnsurePhysicalHitEffect(inflicted, this, null);
+      }
+
+      return inflicted;
+    }
+
     protected virtual void OnHitBy
     (
       float amount,
@@ -509,18 +522,15 @@ namespace Roguelike.Tiles.LivingEntities
         src = " from " + spell.Kind.ToDescription();
         if (spell.Kind == SpellKind.StonedBall)
           amount /= Stats.Defense;
+        else
+        {
+        }
         
         sound = spell.GetHitSound();
 
         lastHitBySpell = true;
       }
-      ReduceHealth(amount);
-      var ga = new LivingEntityAction(LivingEntityActionKind.GainedDamage) { InvolvedValue = amount, InvolvedEntity = this };
-      var desc = damageDesc ?? "received damage: " + amount.Formatted() + " " + src;
-      ga.Info = Name.ToString() + " " + desc;
-
-      AppendAction(ga);
-      PlaySound(sound);
+      ReduceHealth(attacker, sound, damageDesc, src, ref amount);
 
       var frighten = this.GetFirstLastingEffect(EffectType.Frighten);
       if (frighten != null)

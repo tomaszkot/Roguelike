@@ -196,7 +196,7 @@ namespace Roguelike.Spells
     public virtual SpellStatsDescription CreateSpellStatsDescription(bool currentMagicLevel) 
     {
       int level = currentMagicLevel ? CurrentLevel : CurrentLevel + 1;
-      var desc = new SpellStatsDescription(level, CalcManaCost(level), NextLevelMagicNeeded);
+      var desc = new SpellStatsDescription(level, CalcManaCost(level), NextLevelMagicNeeded, Kind);
       return desc;
     }
   }

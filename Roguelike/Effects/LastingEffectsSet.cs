@@ -182,7 +182,8 @@ namespace Roguelike.Effects
       if (le.StatKind != EntityStatKind.Unset)
       {
         livingEntity.Stats.ChangeStatDynamicValue(le.StatKind, add ? value : -value);
-        AppendEffectAction(le, !add);
+        if(le.Type != EffectType.ManaShield)
+          AppendEffectAction(le, !add);
       }
     }
 

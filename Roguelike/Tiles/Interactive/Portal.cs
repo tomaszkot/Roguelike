@@ -1,5 +1,6 @@
 ﻿using Roguelike.Abstract.Spells;
 using Roguelike.Attributes;
+using Roguelike.Spells;
 using Roguelike.Tiles.LivingEntities;
 
 namespace Roguelike.Tiles.Interactive
@@ -46,6 +47,12 @@ namespace Roguelike.Tiles.Interactive
     public int ManaCost => 5;
 
     public bool Utylized { get; set; }
-    public SpellStatsDescription CreateSpellStatsDescription(bool currentLevel) { return new SpellStatsDescription(1, ManaCost, 10); }
+
+    SpellKind ISpell.Kind => SpellKind.Portal;
+
+    public SpellStatsDescription CreateSpellStatsDescription(bool currentLevel) 
+    { 
+      return new SpellStatsDescription(1, ManaCost, 10, ((ISpell)this).Kind); 
+    }
   }
 }

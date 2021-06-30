@@ -1,5 +1,6 @@
 ﻿using Roguelike.Attributes;
 using Roguelike.Factors;
+using Roguelike.Spells;
 using Roguelike.Tiles.LivingEntities;
 using System.Collections.Generic;
 
@@ -21,12 +22,15 @@ namespace Roguelike.Abstract.Spells
     public EntityStatKind? StatKind { get; set; }
     public PercentageFactor StatKindPercentage { get; set; }
     List<string> extraStatDescription = new List<string>();
-        
-    public SpellStatsDescription(int level, int manaCost, int magicRequired)
+    SpellKind Kind { get; set; }
+
+
+    public SpellStatsDescription(int level, int manaCost, int magicRequired, SpellKind kind)
     {
       Level = level;
       ManaCost = manaCost;
       MagicRequired = magicRequired;
+      Kind = kind;
     }
 
     public void AddString(string str, bool addIndent = true)
@@ -44,7 +48,7 @@ namespace Roguelike.Abstract.Spells
         AddString("Level: " + Level);
       AddString("Mana Cost: " + ManaCost);
       if(Damage!=null)
-        AddString("Damage: " + Damage);
+        AddString(Kind+" Damage: " + Damage);
       if (TourLasting != null)
         AddString("TourLasting: " + TourLasting);
       if (StatKind != null)
@@ -61,6 +65,7 @@ namespace Roguelike.Abstract.Spells
     int ManaCost { get; }
     bool Utylized { get; set; }
     int CurrentLevel { get; }
+    SpellKind Kind { get;}
 
     SpellStatsDescription CreateSpellStatsDescription(bool currentLevel);
   }
