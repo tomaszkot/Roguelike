@@ -33,7 +33,8 @@ namespace RoguelikeUnitTests
     public void TestDescriptions()
     {
       var game = CreateGame();
-      var spell = Scroll.CreateSpell(SpellKind.IronSkin, game.Hero);
+      var scroll = new Scroll(SpellKind.IronSkin);
+      var spell = scroll.CreateSpell(game.Hero);
       var castedSpell = spell as PassiveSpell;
       var features = castedSpell.CreateSpellStatsDescription(true);
       Assert.NotNull(features);
@@ -48,7 +49,8 @@ namespace RoguelikeUnitTests
     public void TourLastingTest()
     {
       var game = CreateGame();
-      var spell = Scroll.CreateSpell(SpellKind.ManaShield, game.Hero) as ManaShieldSpell;
+      var scroll = new Scroll(SpellKind.ManaShield);
+      var spell = scroll.CreateSpell(game.Hero) as ManaShieldSpell;
       Assert.AreEqual(spell.TourLasting, 5);
     }
 

@@ -248,7 +248,6 @@ namespace Roguelike.Tiles.LivingEntities
     public void ReduceMana(float amount)
     {
       var stat = Stats.GetStat(EntityStatKind.Mana);
-      //if(stat.Value.CurrentValue >= amount)
       stat.Subtract(amount);
     }
 
@@ -345,9 +344,8 @@ namespace Roguelike.Tiles.LivingEntities
       var avoidCh = target.GetCurrentValue(esk);
       var randValCh = (float)RandHelper.Random.NextDouble();
       if (randValCh * 100 <= avoidCh)
-      {
         return true;
-      }
+
       return false;
 
     }
@@ -376,27 +374,38 @@ namespace Roguelike.Tiles.LivingEntities
       attacker.OnDamageCaused(inflicted, this);
 
       var ga = new LivingEntityAction(LivingEntityActionKind.GainedDamage) { InvolvedValue = inflicted, InvolvedEntity = this };
-      var desc = damageDesc ?? "received damage: " + inflicted.Formatted() + " " + damageSource;
-      ga.Info = Name.ToString() + " " + desc;
+      var desc = damageDesc ?? Name + " received damage: " + inflicted.Formatted() + " " + damageSource;
+      ga.Info = desc;
 
       AppendAction(ga);
       PlaySound(sound);
+
+      var frighten = this.GetFirstLastingEffect(EffectType.Frighten);
+      if (frighten != null)
+        RemoveLastingEffect(frighten);
+            
+      if (attacker.IsTransformed())
+      {
+        var transf = attacker.GetFirstLastingEffect(EffectType.Transform);
+        if (transf != null)
+          attacker.RemoveLastingEffect(transf);
+      }
+
+      if (!this.EverHitBy.Contains(attacker))
+        this.EverHitBy.Add(attacker);
     }
 
-    protected virtual void OnDamageCaused(float inflicted, LivingEntity victim)
-    {
+    protected virtual void OnDamageCaused(float inflicted, LivingEntity victim){}
 
+    List<EffectType> everCausedEffect = new List<EffectType>();
+    internal bool EverCausedEffect(EffectType type)
+    {
+      return everCausedEffect.Contains(type);
     }
 
-    List<EffectType> everCausedHero = new List<EffectType>();
-    internal bool EverCausedHero(EffectType type)
+    internal void SetEverCaused(EffectType type)
     {
-      return everCausedHero.Contains(type);
-    }
-
-    internal void SetEverCausedHero(EffectType type)
-    {
-      everCausedHero.Add(type);
+      everCausedEffect.Add(type);
     }
 
     public virtual bool CanCauseBleeding()
@@ -425,7 +434,6 @@ namespace Roguelike.Tiles.LivingEntities
 
     public Dictionary<EntityStatKind, float> GetNonPhysicalDamages()
     {
-      //Dictionary<EntityStatKind, float> effective = new Dictionary<EntityStatKind, float>();
       nonPhysicalDamageStats.Clear();
       foreach (var stat in Loot.AttackingNonPhysicalStats)
       {
@@ -478,8 +486,8 @@ namespace Roguelike.Tiles.LivingEntities
 
       ReduceHealth(attacker, "punch", desc, "", ref inflicted);
 
-      if (!this.EverHitBy.Contains(attacker))
-        this.EverHitBy.Add(attacker);
+      if (inflicted > 0)
+        StealStatIfApplicable(inflicted, attacker);
       //if (this is Enemy || this is Hero)// || this is CrackedStone)
       //{
       //  PlayPunchSound();
@@ -498,61 +506,83 @@ namespace Roguelike.Tiles.LivingEntities
       return inflicted;
     }
 
+    public bool OnHitBy(Dungeons.Tiles.Abstract.ISpell ispell)
+    {
+      var md = ispell as ISpell;
+      if (md is Spell spell)
+      {
+        if (ShouldEvade(this, EntityStatKind.ChanceToEvadeMagicAttack, spell))
+        {
+          //GameManager.Instance.AppendDiagnosticsUnityLog("ChanceToEvadeMagicAttack worked!");
+          var ga = new GameEvent() { Info = Name + " evaded " + spell.Kind, Level = ActionLevel.Important };
+          AppendAction(ga);
+          return false;
+        }
+        var dmg = CalcNonPhysicalDamageFromSpell(spell);
+        OnHitBy(dmg /*, spell.FightItem*/, spell);
+      }
+
+      //else if (md is FightItem)
+      //{
+      //  float damage = 0;
+      //  FightItem fi = md as FightItem;
+      //  if (md is ExplosiveCocktail)
+      //  {
+      //    lastHitBySpell = true;//to put on enemy resist
+      //    var spell = new FireBallSpell(this);
+      //    spell.Caller = md.Caller;
+      //    spell.SourceOfDamage = false;//dmg is fixed !
+      //    var expl = md as ExplosiveCocktail;
+      //    spell.FightItem = fi;
+      //    damage = CalculateNonPhysicalDamage(EntityStatKind.FireAttack, expl.GetDamage());
+      //    OnHitBy(damage, fi, null, spell);
+      //  }
+      //  else if (md is ThrowingKnife)
+      //  {
+      //    damage = fi.GetDamage() / GetDefence();
+      //    OnHitBy(damage, fi, fi.Caller, null);
+      //  }
+      //  else
+      //  {
+      //    GameManager.Instance.AppendDiagnosticsUnityLogError(new Exception("OnHitBy!"));
+      //  }
+      //}
+      //else
+      //{
+      //  GameManager.Instance.AppendDiagnosticsUnityLogError(new Exception("OnHitBy - not supported"));
+      //}
+      return true;
+    }
+
     protected virtual void OnHitBy
     (
       float amount,
       //FightItem fightItem, 
-      LivingEntity attacker = null,
       Spell spell = null,
       string damageDesc = null
     )
     {
       if (!Alive)
         return;
-      //if (LevelGenerationInfo.HeroGodMode && this is Hero)
-      //  return;
+
       //if (attacker is Hero && this is Enemy && (this as Enemy).HeroAlly)
-      //{
-      //  amount /= 10;
-      //}
+        //  amount /= 10;
       var sound = "";
-      var src = "";
+      var srcName = "";
       if (spell != null)
       {
-        src = " from " + spell.Kind.ToDescription();
+        srcName = " from " + spell.Kind.ToDescription();
         if (spell.Kind == SpellKind.StonedBall)
           amount /= Stats.Defense;
-        else
-        {
-        }
-        
+                
         sound = spell.GetHitSound();
 
         lastHitBySpell = true;
       }
-      ReduceHealth(attacker, sound, damageDesc, src, ref amount);
-
-      var frighten = this.GetFirstLastingEffect(EffectType.Frighten);
-      if (frighten != null)
-        RemoveLastingEffect(frighten);
-
-      if (attacker != null || (spell.Caller != null && spell.Caller.LastingEffects.Any(i => i.Type == EffectType.Transform)))
-      {
-        var removeTr = attacker ?? spell.Caller;
-        var transf = this.GetFirstLastingEffect(EffectType.Transform);
-        if (transf != null)
-          removeTr.RemoveLastingEffect(transf);
-      }
-      if (attacker != null && spell == null && amount > 0)
-        StealStatIfApplicable(amount, attacker);
-
+      var attacker = spell.Caller;
+      ReduceHealth(attacker, sound, damageDesc, srcName, ref amount);
+      
       lastingEffectsSet.TryAddLastingEffectOnHit(amount, attacker, spell);
-      var attackedInst = attacker ?? spell.Caller;
-      if (attackedInst != null)
-      {
-        if (!EverHitBy.Contains(attackedInst))
-          EverHitBy.Add(attackedInst);
-      }
     }
 
     //static LastingEffectCalcInfo heBase = new LastingEffectCalcInfo(EffectType.Unset, 0, new EffectiveFactor(0), new PercentageFactor(0));
@@ -771,55 +801,6 @@ namespace Roguelike.Tiles.LivingEntities
         return EntityStatKind.ResistLighting;
 
       return EntityStatKind.Unset;
-    }
-
-    public bool OnHitBy(Dungeons.Tiles.Abstract.ISpell ispell)
-    {
-      ISpell md = ispell as ISpell;
-      if (md is Spell)
-      {
-        var spell = md as Spell;
-        //if (ShouldEvade(this, EntityStatKind.ChanceToEvadeMagicAttack, spell))
-        //{
-        //  //GameManager.Instance.AppendDiagnosticsUnityLog("ChanceToEvadeMagicAttack worked!");
-        //  AppendMissedAction(spell.Caller, GameManager.Instance, false);
-        //  return false;
-        //}
-        //lastHitBySpell = true;
-        var dmg = CalcNonPhysicalDamageFromSpell(spell);
-        OnHitBy(dmg /*, spell.FightItem*/, spell.Caller, spell);
-      }
-
-      //else if (md is FightItem)
-      //{
-      //  float damage = 0;
-      //  FightItem fi = md as FightItem;
-      //  if (md is ExplosiveCocktail)
-      //  {
-      //    lastHitBySpell = true;//to put on enemy resist
-      //    var spell = new FireBallSpell(this);
-      //    spell.Caller = md.Caller;
-      //    spell.SourceOfDamage = false;//dmg is fixed !
-      //    var expl = md as ExplosiveCocktail;
-      //    spell.FightItem = fi;
-      //    damage = CalculateNonPhysicalDamage(EntityStatKind.FireAttack, expl.GetDamage());
-      //    OnHitBy(damage, fi, null, spell);
-      //  }
-      //  else if (md is ThrowingKnife)
-      //  {
-      //    damage = fi.GetDamage() / GetDefence();
-      //    OnHitBy(damage, fi, fi.Caller, null);
-      //  }
-      //  else
-      //  {
-      //    GameManager.Instance.AppendDiagnosticsUnityLogError(new Exception("OnHitBy!"));
-      //  }
-      //}
-      //else
-      //{
-      //  GameManager.Instance.AppendDiagnosticsUnityLogError(new Exception("OnHitBy - not supported"));
-      //}
-      return true;
     }
 
     public event EventHandler Wounded;

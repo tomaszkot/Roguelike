@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
 using Roguelike.Abstract.Spells;
 using Roguelike.Attributes;
+using Roguelike.Tiles;
 using Roguelike.Tiles.LivingEntities;
 using Roguelike.Tiles.Looting;
 using System.Collections.Generic;
@@ -51,12 +52,14 @@ namespace Roguelike.Spells
       }
     }
 
-    public Spell() : this(LivingEntity.CreateDummy())
-    {
-    }
+    //public Spell() : this(LivingEntity.CreateDummy())
+    //{
+    //}
+    protected Weapon weaponSpellSource;
 
-    public Spell(LivingEntity caller)
+    public Spell(LivingEntity caller, Weapon weaponSpellSource)
     {
+      this.weaponSpellSource = weaponSpellSource;
       this.Caller = caller;
       manaCost = BaseManaCost;
       levelToMagic[1] = 10;
@@ -110,20 +113,6 @@ namespace Roguelike.Spells
     public virtual string GetLifetimeSound() { return ""; }
     public virtual string GetHitSound() { return ""; }
 
-    //public string[] GetFeatures(bool currentLevel)
-    //{
-    //  var fe = new List<string>();
-    //  AppendBasePart(fe);
-    //  AppendPrivateFeatures(fe);
-    //  //AppendNextLevel(fe);
-    //  return fe.ToArray();
-    //}
-
-    //protected static string GetNextLevel(string suffix)
-    //{
-    //  return "Next Level: " + suffix;
-    //}
-
     public int CurrentLevel
     {
       get
@@ -133,70 +122,13 @@ namespace Roguelike.Spells
       }
     }
 
-    //protected virtual void AppendPrivateFeatures(List<string> fe)
-    //{
-    //}
-
-    //protected virtual void AppendNextLevel(List<string> fe)
-    //{
-    //  fe.Add("Magic: " + GetNextLevelMagicNeeded());
-    //}
-
-    //protected void AppendBasePart(List<string> fe)
-    //{
-    //  fe.Add("Mana Cost: " + ManaCost);
-    //}
-
-    //string[] extraStatDescription = new string[0];
-
-    //public string[] GetLevelDescription(bool currentLevel)
-    //{
-    //  //string currentLevelDesc = "Current Level: " + GetCurrentLevel();
-    //  //string manaCost = "Mana Cost: " + ManaCost;
-    //  ////string damage = "Damage: "
-    //  //extraStatDescription = new string[2];
-    //  //extraStatDescription[0] = currentLevelDesc;
-    //  //extraStatDescription[1] = manaCost;
-    //  return extraStatDescription;
-    //}
-
-    //public Tuple<LivingEntity.EffectType, int> GetEffectType()
-    //{
-    //  var et = new Tuple<LivingEntity.EffectType, int>(LivingEntity.EffectType.None, 0);
-
-    //  switch (Kind)
-    //  {
-    //    case SpellKind.FireBall:
-    //    case SpellKind.NESWFireBall:
-    //      et = new Tuple<LivingEntity.EffectType, int>(LivingEntity.EffectType.Firing, 3);
-    //      break;
-    //    case SpellKind.CrackedStone:
-    //      break;
-    //    case SpellKind.Skeleton:
-    //      break;
-    //    case SpellKind.Trap:
-    //      break;
-    //    case SpellKind.IceBall:
-    //      et = new Tuple<LivingEntity.EffectType, int>(LivingEntity.EffectType.Frozen, 3);
-    //      break;
-    //    case SpellKind.PoisonBall:
-    //      et = new Tuple<LivingEntity.EffectType, int>(LivingEntity.EffectType.Poisoned, 3);
-    //      break;
-    //    //case SpellKind.StonedBall:
-    //    //  et = new Tuple<LivingEntity.EffectType, int>(LivingEntity.EffectType.Poisoned, 3);
-    //    //  break;
-    //    case SpellKind.Transform:
-    //      break;
-    //    default:
-    //      break;
-    //  }
-    //  return et;
-    //}
-
     public virtual SpellStatsDescription CreateSpellStatsDescription(bool currentMagicLevel) 
     {
       int level = currentMagicLevel ? CurrentLevel : CurrentLevel + 1;
-      var desc = new SpellStatsDescription(level, CalcManaCost(level), NextLevelMagicNeeded, Kind);
+      int? mana = null;
+      if (weaponSpellSource == null)
+        mana = CalcManaCost(level);
+      var desc = new SpellStatsDescription(level, mana, NextLevelMagicNeeded, Kind);
       return desc;
     }
   }

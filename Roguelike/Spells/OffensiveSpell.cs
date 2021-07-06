@@ -1,4 +1,6 @@
-﻿using Roguelike.Abstract.Spells;
+﻿using Dungeons.Core;
+using Roguelike.Abstract.Spells;
+using Roguelike.Tiles;
 using Roguelike.Tiles.LivingEntities;
 using System.Collections.Generic;
 
@@ -6,11 +8,14 @@ namespace Roguelike.Spells
 {
   public class OffensiveSpell : Spell, IDamagingSpell
   {
-   
-    public OffensiveSpell() { }
+    float calcedDamage;
 
-    public OffensiveSpell(LivingEntity caller) : base(caller)
+    public OffensiveSpell(LivingEntity caller, Weapon weaponSpellSource) : base(caller, weaponSpellSource)
     {
+      if (weaponSpellSource != null)
+      {
+        calcedDamage = CalcDamage(weaponSpellSource.LevelIndex);
+      }
     }
 
     protected virtual float CalcDamage(int magicLevel)
@@ -18,6 +23,16 @@ namespace Roguelike.Spells
       //TODO
       //var dmg = damage + (damage * ((magicLevel - 1) * (damageMultiplicator + magicLevel * magicLevel / 2) / 100.0f));
       //return (float)Math.Ceiling(dmg);
+      if (weaponSpellSource != null)
+      {
+        int add = 2;
+        var val = RandHelper.GetRandomDouble();
+        if (val > 0.66f)
+          add += 1;
+        else if(val < 0.33f)
+          add -= -1;
+        return weaponSpellSource.LevelIndex + add;
+      }
       return magicLevel + 3;
     }
 
@@ -28,6 +43,10 @@ namespace Roguelike.Spells
     {
       get
       {
+        if (weaponSpellSource != null)
+        {
+          return calcedDamage;
+        }
         var level = CurrentLevel;
         var dmg = CalcDamage(level);
         return dmg;
@@ -43,18 +62,6 @@ namespace Roguelike.Spells
         desc.Damage = CalcDamage(CurrentLevel+1);
       return desc;
     }
-
-    //protected override void AppendNextLevel(List<string> fe)
-    //{
-    //  base.AppendNextLevel(fe);
-    //  fe.Add(GetNextLevel("Damage " + CalcDamage(CurrentLevel + 1)));
-    //}
-
-    //protected override void AppendPrivateFeatures(List<string> fe)
-    //{
-    //  fe.Add("Damage: " + Damage);
-    //}
-    //float damageMultiplicator = 45.0f;//%
   }
 
   public class ProjectiveSpell : OffensiveSpell
@@ -62,7 +69,7 @@ namespace Roguelike.Spells
     public const int BaseDamage = 4;
     public bool SourceOfDamage = true;
 
-    public ProjectiveSpell(LivingEntity caller) : base(caller)
+    public ProjectiveSpell(LivingEntity caller, Weapon weapon) : base(caller, weapon)
     {
       EntityRequired = true;
       EnemyRequired = true;

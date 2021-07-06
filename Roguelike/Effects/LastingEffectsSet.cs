@@ -226,7 +226,8 @@ namespace Roguelike.Effects
 
     public LastingEffect AddLastingEffectFromSpell(SpellKind spellKind, EffectType effectType)
     {
-      var spell = Scroll.CreateSpell(spellKind, this.livingEntity);
+      var scroll = new Scroll(spellKind);
+      var spell = scroll.CreateSpell(this.livingEntity);
       var spellLasting = spell as ILastingEffectSrc;
       if (spellLasting != null)
       {
@@ -264,16 +265,18 @@ namespace Roguelike.Effects
         var rand = RandHelper.Random.NextDouble();
         var chance = livingEntity.GetChanceToExperienceEffect(effectInfo.Type);
         var add = rand * 100 <= chance;
+
+        //TODO
         if (!add && attacker is Enemy enemy)
         {
           if (enemy.PowerKind != EnemyPowerKind.Plain)
           {
             float threshold = 0.65f;
-            if (attacker.EverCausedHero(effectInfo.Type))
+            if (attacker.EverCausedEffect(effectInfo.Type))
               threshold = 0.85f;
             add = rand > threshold && GetByType(effectInfo.Type) == null;
             if (add)
-              attacker.SetEverCausedHero(effectInfo.Type);
+              attacker.SetEverCaused(effectInfo.Type);
           }
         }
         //if (fightItem != null)

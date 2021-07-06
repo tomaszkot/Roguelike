@@ -20,7 +20,7 @@ namespace Roguelike.Spells
     public PercentageFactor StatKindPercentage { get; set; }
     public EffectiveFactor StatKindEffective { get; set; }
 
-    public PassiveSpell(LivingEntity caller, EntityStatKind statKind, int baseFactor = 30) : base(caller)
+    public PassiveSpell(LivingEntity caller, EntityStatKind statKind, int baseFactor = 30) : base(caller, null)
     {
       BaseFactor = baseFactor;
       manaCost = (float)(BaseManaCost * 2);

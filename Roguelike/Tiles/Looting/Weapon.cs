@@ -43,6 +43,10 @@ namespace Roguelike.Tiles
       }
     }
 
+    public const int WandChargesCount = 20;
+    public const int ScepterChargesCount = 30;
+    public const int StaffChargesCount = 40;
+
     public void SetInitChargesCount(int mult)
     {
       if (SpellSource == null)
@@ -114,8 +118,8 @@ namespace Roguelike.Tiles
         if(esk != EntityStatKind.Unset)
           SetRequiredStat(li, esk);
 
-        if(Kind == WeaponKind.Sword)
-          SetRequiredStat(li, EntityStatKind.Dexterity);
+        //if(Kind == WeaponKind.Sword)//TODO show it in UI of descriptor
+          //SetRequiredStat(li, EntityStatKind.Dexterity);
       }
     }
 
@@ -162,7 +166,7 @@ namespace Roguelike.Tiles
           case WeaponKind.Scepter:
           case WeaponKind.Staff:
           case WeaponKind.Wand:
-            spellSource = new WeaponSpellSource(Spells.SpellKind.FireBall);
+            spellSource = new WeaponSpellSource(this, Spells.SpellKind.FireBall);
             break;
           default:
             break;

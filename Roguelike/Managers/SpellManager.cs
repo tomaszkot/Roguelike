@@ -20,10 +20,10 @@ namespace Roguelike.Managers
       Container = gm.Container;
     }
 
-    public PassiveSpell ApplyPassiveSpell(LivingEntity caster, SpellSource scroll, Point? destPoint = null)
+    public PassiveSpell ApplyPassiveSpell(LivingEntity caster, SpellSource spellSource, Point? destPoint = null)
     {
-      var spell = scroll.CreateSpell(caster);
-      if (!gm.Context.CanUseScroll(caster, scroll, spell))
+      var spell = spellSource.CreateSpell(caster);
+      if (!gm.Context.CanUseScroll(caster, spellSource, spell))
         return null;
 
       if (spell is PassiveSpell ps)
@@ -53,9 +53,9 @@ namespace Roguelike.Managers
         else
           caster.ApplyPassiveSpell(ps);
 
-        gm.UtylizeSpellSource(caster, scroll, spell);
+        gm.UtylizeSpellSource(caster, spellSource, spell);
         gm.AppendAction<LivingEntityAction>((LivingEntityAction ac) =>
-        { ac.Kind = LivingEntityActionKind.Teleported; ac.Info = gm.Hero.Name + " used " + scroll.Kind.ToDescription() + " scroll"; ac.InvolvedEntity = caster; });
+        { ac.Kind = LivingEntityActionKind.Teleported; ac.Info = gm.Hero.Name + " used " + spellSource.Kind.ToDescription() + " scroll"; ac.InvolvedEntity = caster; });
 
         if (caster is Hero)
           HandleHeroActionDone();
@@ -63,7 +63,7 @@ namespace Roguelike.Managers
         return ps;
       }
       else
-        gm.Logger.LogError("!PassiveSpell " + scroll);
+        gm.Logger.LogError("!PassiveSpell " + spellSource);
 
       return null;
     }
@@ -95,10 +95,10 @@ namespace Roguelike.Managers
     public bool ApplyAttackPolicy
     (
       LivingEntity caster,//hero, enemy, ally
-      Roguelike.Tiles.Abstract.IObstacle target,
+      Tiles.Abstract.IObstacle target,
       SpellSource spellSource,
-      Action<Policy> BeforeApply = null
-      , Action<Policy> AfterApply = null
+      Action<Policy> BeforeApply = null,
+      Action<Policy> AfterApply = null
     )
     {
       var spell = spellSource.CreateSpell(caster);

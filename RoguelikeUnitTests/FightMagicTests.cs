@@ -35,11 +35,6 @@ namespace RoguelikeUnitTests
         Assert.Greater(extraDesc.ManaCost, 0);
         Assert.Greater(extraDesc.Damage, 0);
       }
-      {
-        //var fireBallBook = new Book(Roguelike.Spells.SpellKind.FireBall);
-        //var spellFromBook = fireBallBook.CreateSpell<OffensiveSpell>(hero);
-        //Assert.Greater(spellFromBook.Damage, 0);
-      }
     }
 
 

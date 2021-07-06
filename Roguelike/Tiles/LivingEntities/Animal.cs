@@ -20,9 +20,9 @@ namespace Roguelike.Tiles.LivingEntities
       return res;
     }
 
-    protected override void OnHitBy(float amount, LivingEntity attacker = null, Spell spell = null, string damageDesc = null)
+    protected override void OnHitBy(float amount, Spell spell, string damageDesc = null)
     {
-      base.OnHitBy(amount, attacker, spell, damageDesc);
+      base.OnHitBy(amount, spell, damageDesc);
     }
 
     public override float OnPhysicalHitBy(LivingEntity attacker)

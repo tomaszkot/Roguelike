@@ -382,7 +382,6 @@ namespace Roguelike.Abilities
       //if (fightItemKind != FightItemKind.None)
       //{
       //  fi = GameManager.Instance.Hero.Abilities.GetFightItem(fightItemKind);
-      //  desc.AddRange(fi.GetExtraStatDescription(true, Level));
       //}
       if (currentLevel)
       {
@@ -407,7 +406,7 @@ namespace Roguelike.Abilities
 
           //if (fightItemKind != FightItemKind.None)
           //{
-          //  desc.AddRange(fi.GetExtraStatDescription(true, Level + 1));
+
           //}
           //else
           {
@@ -446,7 +445,6 @@ namespace Roguelike.Abilities
       {
         //if (fightItemKind != FightItemKind.None)
         //{
-        //  desc.AddRange(fi.GetExtraStatDescription(true, Level + 1));
         //}
         //else
         {

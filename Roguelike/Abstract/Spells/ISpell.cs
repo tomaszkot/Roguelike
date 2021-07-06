@@ -14,7 +14,7 @@ namespace Roguelike.Abstract.Spells
   public class SpellStatsDescription
   {
     public int Level { get; set; }
-    public int ManaCost { get; set; }
+    public int? ManaCost { get; set; }
     public int MagicRequired { get; set; }
 
     public float? Damage { get; set; }
@@ -25,7 +25,7 @@ namespace Roguelike.Abstract.Spells
     SpellKind Kind { get; set; }
 
 
-    public SpellStatsDescription(int level, int manaCost, int magicRequired, SpellKind kind)
+    public SpellStatsDescription(int level, int? manaCost, int magicRequired, SpellKind kind)
     {
       Level = level;
       ManaCost = manaCost;
@@ -45,14 +45,16 @@ namespace Roguelike.Abstract.Spells
       extraStatDescription.Clear();
 
       if (includeLevel)
-        AddString("Level: " + Level);
-      AddString("Mana Cost: " + ManaCost);
+        AddString("Level: " + Level, addIndent);
+
+      if(ManaCost!=null)
+        AddString("Mana Cost: " + ManaCost, addIndent);
       if(Damage!=null)
-        AddString(Kind+" Damage: " + Damage);
+        AddString(Kind+" Damage: " + Damage, addIndent);
       if (TourLasting != null)
         AddString("TourLasting: " + TourLasting);
       if (StatKind != null)
-        AddString("Stat: " + StatKind + " "+ StatKindPercentage.ToString());
+        AddString(StatKind + " "+ StatKindPercentage.ToString(), addIndent);
       return extraStatDescription.ToArray();
     }
 
