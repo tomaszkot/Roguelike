@@ -1,7 +1,9 @@
 ﻿using Dungeons.Core;
 using Dungeons.TileContainers;
+using Dungeons.Tiles;
 using SimpleInjector;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 
@@ -94,8 +96,15 @@ namespace Dungeons
       var width = max.Item1 + 1;
       var height = max.Item2 + 1;
       level.Create(width, height);
+
+      var doors = localLevel.GetTiles<IDoor>();
+      //var doors1 = localLevel.Doors;
+      var secret = doors.Any(i => i.Secret);
+      Debug.Assert(secret);
       level.AppendMaze(localLevel, new Point(0, 0), new Point(width, height));
       level.DeleteWrongDoors();
+      var secretAppended = level.GetTiles<IDoor>().Any(i => i.Secret);
+      Debug.Assert(secretAppended);
 
       level.SecretRoomIndex = -1;
       var sn = nodes.Where(i => i.Secret).FirstOrDefault();
@@ -145,7 +154,7 @@ namespace Dungeons
             if (currentNode.Secret)
             {
               if (currentNode.NodeIndex == 0)
-                (doors[0]).DungeonNodeIndex = 1;
+                (doors[0]).DungeonNodeIndex = 1;//to make them revealed ?
             }
 
             if (nextMaze.Secret && mazeNodes.Count > currentNodeIndex + 2)
@@ -164,6 +173,7 @@ namespace Dungeons
           if (currentNodeIndex > 0)
             entranceSideToSkip = info.side == EntranceSide.Bottom ? EntranceSide.Top : EntranceSide.Left;
         }
+
         level.AppendMaze
         (
           currentNode,

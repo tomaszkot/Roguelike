@@ -135,6 +135,8 @@ namespace Dungeons
         else
           secretRoomIndex = RandHelper.GetRandomInt(gi.NumberOfRooms);
       }
+      container.GetInstance<ILogger>().LogInfo("secretRoomIndex: " + secretRoomIndex);
+
       for (int i = 0; i < gi.NumberOfRooms; i++)
       {
         if (i > 0)

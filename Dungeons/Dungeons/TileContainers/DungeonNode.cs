@@ -245,12 +245,24 @@ namespace Dungeons
         {
           var count = sides[side].Count;
           var diff = GenerationInfo.MaxRoomSideSize - GenerationInfo.MinRoomSideSize;
-          var index = Enumerable.Range(1, count - diff).ToList().GetRandomElem();
-          var door = CreateDoor(wall[index]) as IDoor;
-          door.Secret = true;
-          res.Add(door);
-          //if (nextNodeIndex > 0)
-          // door.DungeonNodeIndex = nextNodeIndex;
+          int counter = 0;
+          bool added = false;
+          while (counter < 100)
+          {
+            counter++;
+            var index = Enumerable.Range(diff, (count - diff*2)-2).ToList().GetRandomElem();
+            //var allowed = AreDoorAllowedToPutOn(wall[index]);
+            //if (!allowed)
+            //{
+            //  continue;
+            //}
+            var door = CreateDoor(wall[index]) as IDoor;
+            door.Secret = true;
+            res.Add(door);
+            added = true;
+            break;
+          }
+          Debug.Assert(added);
           return res;
         }
 
@@ -827,6 +839,13 @@ namespace Dungeons
       public bool ContentGenerated { get => contentGenerated; set => contentGenerated = value; }
       public bool Secret { get => secret; set => secret = value; }
 
+      bool AreDoorAllowedToPutOn(Tile tile)
+      {
+        var neibs = GetNeighborTiles(tile);
+        var forbid = neibs.Where(i => i is Wall).Count() >= 3 || neibs.Where(i => i == null).Any();
+        return !forbid;
+      }
+
       /// <summary>
       /// Delete unreachable doors 
       /// </summary>
@@ -835,12 +854,19 @@ namespace Dungeons
         List<Tile> toDel = new List<Tile>();
         foreach (Tile tile in Tiles)
         {
-          if (tile is IDoor)
+          if (tile is IDoor door)
           {
-            var neibs = GetNeighborTiles(tile);
-            if (neibs.Where(i => i is Wall).Count() >= 3 ||
-               neibs.Where(i => i == null).Any())
+            if(!AreDoorAllowedToPutOn(tile))
+            {
+              var secret = door.Secret;
+              //Debug.Assert(!secret);
+              if (secret)
+              {
+                Log("deleting secret door at: " + tile, true);
+                continue;
+              }
               toDel.Add(tile);
+            }
           }
         }
         if (toDel.Any())
