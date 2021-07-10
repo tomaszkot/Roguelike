@@ -481,7 +481,9 @@ namespace Roguelike.Tiles.LivingEntities
         if (npd != 0)
           desc += " " + GetAttackDesc(stat.Key) + ": " + npd.Formatted();
         inflicted += npd;
-        LastingEffectsSet.TryAddLastingEffectOnHit(npd, attacker, stat.Key);
+        var manaShieldEffect = LastingEffectsSet.GetByType(EffectType.ManaShield);
+        if(manaShieldEffect==null)
+          LastingEffectsSet.TryAddLastingEffectOnHit(npd, attacker, stat.Key);
       }
 
       ReduceHealth(attacker, "punch", desc, "", ref inflicted);

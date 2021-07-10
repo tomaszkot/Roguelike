@@ -19,10 +19,9 @@ namespace Dungeons
     protected List<DungeonNode> nodes;
     private Container container;
     public Func<int, GenerationInfo, DungeonNode> CustomNodeCreator;
-
     public Container Container { get => container; }
-
     public event EventHandler<DungeonNode> NodeCreated;
+    GenerationInfo info;
 
     static DungeonGenerator()
     {
@@ -126,22 +125,22 @@ namespace Dungeons
     public virtual List<DungeonNode> CreateDungeonNodes(GenerationInfo info = null)
     {
       nodes = new List<DungeonNode>();
-      var gi = info ?? this.CreateLevelGenerationInfo();
+      this.info = info ?? this.CreateLevelGenerationInfo();
 
-      if (!gi.PreventSecretRoomGeneration)
+      if (!this.info.PreventSecretRoomGeneration)
       {
-        if (gi.SecretRoomIndex >= 0)
-          secretRoomIndex = gi.SecretRoomIndex;
+        if (this.info.SecretRoomIndex >= 0)
+          secretRoomIndex = this.info.SecretRoomIndex;
         else
-          secretRoomIndex = RandHelper.GetRandomInt(gi.NumberOfRooms);
+          secretRoomIndex = RandHelper.GetRandomInt(this.info.NumberOfRooms);
       }
       container.GetInstance<ILogger>().LogInfo("secretRoomIndex: " + secretRoomIndex);
 
-      for (int i = 0; i < gi.NumberOfRooms; i++)
+      for (int i = 0; i < this.info.NumberOfRooms; i++)
       {
         if (i > 0)
-          gi.RevealTiles = false;
-        var node = CreateNode(i, gi);
+          this.info.RevealTiles = false;
+        var node = CreateNode(i, this.info);
         nodes.Add(node);
 
       }

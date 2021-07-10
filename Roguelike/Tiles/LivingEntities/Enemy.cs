@@ -230,7 +230,7 @@ namespace Roguelike.Tiles.LivingEntities
       }
     }
 
-    private void SetSpecialAttackStat()
+    public void SetSpecialAttackStat()
     {
       if (Symbol == EnemySymbols.SnakeSymbol ||
          Symbol == EnemySymbols.SpiderSymbol

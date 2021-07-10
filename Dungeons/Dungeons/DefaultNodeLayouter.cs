@@ -97,14 +97,17 @@ namespace Dungeons
       var height = max.Item2 + 1;
       level.Create(width, height);
 
-      var doors = localLevel.GetTiles<IDoor>();
-      //var doors1 = localLevel.Doors;
-      var secret = doors.Any(i => i.Secret);
-      Debug.Assert(secret);
+      //var doors = localLevel.GetTiles<IDoor>();
+      //var secret = doors.Any(i => i.Secret);
+      //if(!info.PreventSecretRoomGeneration)
+      //  Debug.Assert(secret);
       level.AppendMaze(localLevel, new Point(0, 0), new Point(width, height));
       level.DeleteWrongDoors();
-      var secretAppended = level.GetTiles<IDoor>().Any(i => i.Secret);
-      Debug.Assert(secretAppended);
+      //if (secret)
+      //{
+      //  var secretAppended = level.GetTiles<IDoor>().Any(i => i.Secret);
+      //  Debug.Assert(secretAppended);
+      //}
 
       level.SecretRoomIndex = -1;
       var sn = nodes.Where(i => i.Secret).FirstOrDefault();

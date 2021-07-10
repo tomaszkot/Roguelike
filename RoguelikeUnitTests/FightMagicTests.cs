@@ -1,4 +1,6 @@
 ﻿using NUnit.Framework;
+using Roguelike;
+using Roguelike.Attributes;
 using Roguelike.Spells;
 using Roguelike.Tiles;
 using Roguelike.Tiles.Interactive;
@@ -211,13 +213,15 @@ namespace RoguelikeUnitTests
       var hero = game.Hero;
 
       var enemy = AllEnemies.First();
-
+      enemy.Symbol = EnemySymbols.SnakeSymbol;
+      enemy.SetSpecialAttackStat();
+      
       var scroll = PrepareScroll(hero, SpellKind.ManaShield, enemy);
       var spell = game.GameManager.SpellManager.ApplyPassiveSpell(hero, scroll);
       Assert.NotNull(spell);
 
       var heroHealth = game.Hero.Stats.Health;
-      game.Hero.OnPhysicalHitBy(enemy);
+      game.Hero.OnPhysicalHitBy(enemy);//PoisonBallSpell work on mana shields!
       Assert.AreEqual(game.Hero.Stats.Health, heroHealth);//mana shield
 
       GotoSpellEffectEnd(spell);
