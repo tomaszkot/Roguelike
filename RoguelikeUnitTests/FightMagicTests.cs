@@ -110,7 +110,7 @@ namespace RoguelikeUnitTests
         //GotoNextHeroTurn();
       }
       var diffMelee = enemyHealth - enemy.Stats.Health;
-      Assert.Greater(diffMelee, 45);
+      Assert.Greater(diffMelee, 40);
       Assert.Less(Math.Abs(diffMelee - diffScroll), 30);//TODO %
     }
 

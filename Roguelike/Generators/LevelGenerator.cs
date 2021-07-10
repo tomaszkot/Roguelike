@@ -79,6 +79,7 @@ namespace Roguelike.Generators
       }
       {
         var roomGen = Container.GetInstance<RoomContentGenerator>();
+        roomGen.LevelIndex = LevelIndex;
         foreach (var en in extraEnemies)
         {
           var maze = mazeNodes.GetRandomElem();

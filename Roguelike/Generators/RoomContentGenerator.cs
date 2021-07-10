@@ -13,7 +13,7 @@ namespace Roguelike.Generators
 {
   public class RoomContentGenerator
   {
-    protected int levelIndex = 0;
+    private int levelIndex = 0;
     protected int enemiesStartLevel = 0;
     protected ILogger logger;
     protected TileContainers.DungeonNode node;
@@ -21,6 +21,7 @@ namespace Roguelike.Generators
     protected Container container;
     protected LootGenerator lootGen;
     public string LevelBossName { get; set; }
+    public int LevelIndex { get => levelIndex; set => levelIndex = value; }
 
     public RoomContentGenerator(Container container)
     {
@@ -98,7 +99,7 @@ namespace Roguelike.Generators
       var tilePH = node.GetRandomEmptyTile();
       if (tilePH != null)
       {
-        var en = CreateEnemyInstance("druid");
+        var en = CreateEnemyInstance(enemy);
         node.SetTile(en, tilePH.point);
       }
     }
@@ -241,7 +242,7 @@ namespace Roguelike.Generators
         CreateEnemiesPack(packIndex, enemyName);
       }
 
-      logger.LogInfo("room totsl enemies: " + node.GetTiles<Enemy>().Count);
+      //logger.LogInfo("room totsl enemies: " + node.GetTiles<Enemy>().Count);
     }
 
     //protected void CreateEnemiesPack(string enemyName)

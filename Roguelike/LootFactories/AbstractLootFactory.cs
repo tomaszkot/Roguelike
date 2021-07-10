@@ -105,7 +105,7 @@ namespace Roguelike.LootFactories
       if (level > MaterialProps.SteelDropLootSrcLevel)
       {
         mat = EquipmentMaterial.Iron;
-        //if (RandHelper.GetRandomDouble() > 0.5f) //what for ?
+        if (RandHelper.GetRandomDouble() > 0.33f)//make it more unpredictable 
         {
           mat = EquipmentMaterial.Steel;
           upgMaterial = true;
@@ -113,7 +113,7 @@ namespace Roguelike.LootFactories
       }
       else if (level > MaterialProps.IronDropLootSrcLevel)
       {
-        //if (RandHelper.GetRandomDouble() > 0.5f) //what for ?
+        if (RandHelper.GetRandomDouble() > 0.33f)
         {
           mat = EquipmentMaterial.Iron;
           upgMaterial = true;
