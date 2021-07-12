@@ -7,14 +7,16 @@ namespace Roguelike.Tiles
 {
   public class Weapon : Equipment
   {
-    //int MagicianInitRequiredMagic
-
     public enum WeaponKind
     {
       Unset, Dagger, Sword, Axe, Bashing, Scepter, Wand, Staff,
       Other
       //,Bow
     }
+
+    public const int WandChargesCount = 20;
+    public const int ScepterChargesCount = 30;
+    public const int StaffChargesCount = 40;
 
     public static Dictionary<WeaponKind, EntityStat> RequiredStartStats = new Dictionary<WeaponKind, EntityStat>() 
     {
@@ -42,11 +44,7 @@ namespace Roguelike.Tiles
                 Kind == Weapon.WeaponKind.Staff;
       }
     }
-
-    public const int WandChargesCount = 20;
-    public const int ScepterChargesCount = 30;
-    public const int StaffChargesCount = 40;
-
+        
     public void SetInitChargesCount(int mult)
     {
       if (SpellSource == null)
@@ -216,7 +214,16 @@ namespace Roguelike.Tiles
     }
 
     public bool StableDamage { get; set; } = false;
-    public SpellSource SpellSource { get => spellSource; set => spellSource = value; }
+    public SpellSource SpellSource 
+    { 
+      get => spellSource;
+      set
+      {
+        spellSource = value;
+        if (spellSource is WeaponSpellSource wss)
+          wss.Weapon = this;
+      }
+    }
 
     public float GetPrimaryDamageVariation()
     {

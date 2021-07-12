@@ -17,11 +17,17 @@ namespace Roguelike.Abstract.Spells
     public int? ManaCost { get; set; }
     public int MagicRequired { get; set; }
 
-    public float? Damage { get; set; }
+    public float? Damage
+    {
+      get => damage;
+      set => damage = value;
+    }
     public int? TourLasting { get; set; }
     public EntityStatKind? StatKind { get; set; }
     public PercentageFactor StatKindPercentage { get; set; }
     List<string> extraStatDescription = new List<string>();
+    private float? damage;
+
     SpellKind Kind { get; set; }
 
 
@@ -47,14 +53,14 @@ namespace Roguelike.Abstract.Spells
       if (includeLevel)
         AddString("Level: " + Level, addIndent);
 
-      if(ManaCost!=null)
+      if (ManaCost != null)
         AddString("Mana Cost: " + ManaCost, addIndent);
-      if(Damage!=null)
-        AddString(Kind+" Damage: " + Damage, addIndent);
+      if (Damage != null)
+        AddString(Kind + " Damage: " + Damage, addIndent);
       if (TourLasting != null)
         AddString("TourLasting: " + TourLasting);
       if (StatKind != null)
-        AddString(StatKind + " "+ StatKindPercentage.ToString(), addIndent);
+        AddString(StatKind + " " + StatKindPercentage.ToString(), addIndent);
       return extraStatDescription.ToArray();
     }
 

@@ -9,7 +9,7 @@ namespace Roguelike.Spells
   ///////////////////////////////////////////////////////////////////////////
   public class FireBallSpell : ProjectiveSpell
   {
-    public FireBallSpell(LivingEntity caller, Weapon weapon) : base(caller, weapon)
+    public FireBallSpell(LivingEntity caller, Weapon weapon = null) : base(caller, weapon)
     {
       manaCost = BaseManaCost * 2;
       Kind = SpellKind.FireBall;
@@ -23,7 +23,7 @@ namespace Roguelike.Spells
   {
     public LightingBallSpell() : this(new LivingEntity(), null)
     { }
-    public LightingBallSpell(LivingEntity caller, Weapon weapon) : base(caller, weapon)
+    public LightingBallSpell(LivingEntity caller, Weapon weapon = null) : base(caller, weapon)
     {
       manaCost = BaseManaCost * 2;
       Kind = SpellKind.LightingBall;
@@ -53,7 +53,7 @@ namespace Roguelike.Spells
   {
     public IceBallSpell() : this(new LivingEntity(), null)
     { }
-    public IceBallSpell(LivingEntity caller, Weapon weapon) : base(caller, weapon)
+    public IceBallSpell(LivingEntity caller, Weapon weapon = null) : base(caller, weapon)
     {
       manaCost = (BaseManaCost * 2) + 1;
       Kind = SpellKind.IceBall;
@@ -68,7 +68,7 @@ namespace Roguelike.Spells
   {
     public PoisonBallSpell() : this(new LivingEntity(), null)
     { }
-    public PoisonBallSpell(LivingEntity caller, Weapon weapon) : base(caller, weapon)
+    public PoisonBallSpell(LivingEntity caller, Weapon weapon = null) : base(caller, weapon)
     {
       manaCost = BaseManaCost * 2;
       Kind = SpellKind.PoisonBall;

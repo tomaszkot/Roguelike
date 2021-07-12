@@ -113,6 +113,23 @@ namespace RoguelikeUnitTests
       }
     }
 
+    [Test]
+    public void WeaponStateTest()
+    {
+      var game = CreateGame(true);
+      var hero = game.Hero;
+      var wpn = game.GameManager.LootGenerator.GetRandomEquipment(EquipmentKind.Weapon, 1);
+      var li = wpn.LevelIndex;
+      Assert.GreaterOrEqual(wpn.LevelIndex, 0);
+      hero.SetEquipment(wpn, CurrentEquipmentKind.Weapon);
+      game.GameManager.Save();
+      game.GameManager.Load(hero.Name);
+      var loadedHero = game.GameManager.Hero;
+      Assert.AreEqual(loadedHero.GetActiveWeapon().tag1, wpn.tag1);
+      Assert.AreEqual(loadedHero.GetActiveWeapon().LevelIndex, wpn.LevelIndex);
+
+    }
+
     void LootPropsTest(FoodKind kind, string desc)
     {
       var game = CreateGame(true);

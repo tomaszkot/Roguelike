@@ -599,6 +599,7 @@ namespace Roguelike.Tiles
     public int LevelIndex
     {
       get { return levelIndex; }
+      set { levelIndex = value; }//for serializ
     }
 
     public EntityStats UnidentifiedStats { get => unidentifiedStats; set => unidentifiedStats = value; }

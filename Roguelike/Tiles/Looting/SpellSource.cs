@@ -1,4 +1,5 @@
-﻿using Roguelike.Abstract.Spells;
+﻿using Newtonsoft.Json;
+using Roguelike.Abstract.Spells;
 using Roguelike.Spells;
 using Roguelike.Tiles.Interactive;
 using Roguelike.Tiles.LivingEntities;
@@ -9,7 +10,15 @@ namespace Roguelike.Tiles.Looting
 {
   public class WeaponSpellSource : SpellSource
   {
-    public int Level { get { return this.Weapon.LevelIndex; } }
+    public Weapon Weapon { get; set; }
+
+    public int Level 
+    { 
+      get 
+      { 
+        return this.Weapon.LevelIndex; 
+      } 
+    }
     int initChargesCount = 0;
     public int RestoresCount { get; set; }
 
@@ -37,13 +46,38 @@ namespace Roguelike.Tiles.Looting
       }
     }
     public int RestoredChargesCount { get; set; }
-    
+
+    public override string GetExtraStatDescriptionFormatted(LivingEntity caller)
+    {
+      var statDescCurrent = GetExtraStatDescription(caller, true);
+      if (statDescCurrent == null)
+        return "";
+      var res = "Level: " + statDescCurrent.Level + "\r\n";
+      var str = string.Join("\r\n", statDescCurrent.GetDescription(false));
+      res += str;
+
+      return res;
+    }
+
+    public override ISpell CreateSpell(LivingEntity caller)
+    {
+      var weapon = Weapon;
+      switch (this.Kind)
+      {
+        case SpellKind.FireBall:
+          return new FireBallSpell(caller, weapon);
+        case SpellKind.PoisonBall:
+          return new PoisonBallSpell(caller, weapon);
+        case SpellKind.IceBall:
+          return new IceBallSpell(caller, weapon);
+      }
+      return base.CreateSpell(caller);
+    }
+
   }
 
   public class SpellSource : StackedLoot
   {
-    protected Weapon Weapon { get; set; }
-
     public virtual bool Enabled 
     {
       get { return Count > 0; }
@@ -189,11 +223,6 @@ namespace Roguelike.Tiles.Looting
       return res + " " + base.ToString();
     }
 
-    //public ISpell CreateSpell(LivingEntity caller, Weapon weapon = null)
-    //{
-    //  return CreateSpell(Kind, caller, weapon);
-    //}
-
     public T CreateSpell<T>(LivingEntity caller) where T : class, ISpell
     {
       var ispell = CreateSpell( caller);
@@ -205,17 +234,16 @@ namespace Roguelike.Tiles.Looting
       return base.GetId() + "_" + Kind;
     }
         
-    public ISpell CreateSpell(LivingEntity caller)
+    public virtual ISpell CreateSpell(LivingEntity caller)
     {
-      var weapon = Weapon;
       switch (this.Kind)
       {
         case SpellKind.FireBall:
-          return new FireBallSpell(caller, weapon);
+          return new FireBallSpell(caller);
         case SpellKind.PoisonBall:
-          return new PoisonBallSpell(caller, weapon);
+          return new PoisonBallSpell(caller);
         case SpellKind.IceBall:
-          return new IceBallSpell(caller, weapon);
+          return new IceBallSpell(caller);
         case SpellKind.Skeleton:
           return new SkeletonSpell(caller);
         case SpellKind.Transform:
@@ -249,7 +277,7 @@ namespace Roguelike.Tiles.Looting
       return base.GetExtraStatDescription();
     }
 
-    public string GetExtraStatDescriptionFormatted(LivingEntity caller)
+    public virtual string GetExtraStatDescriptionFormatted(LivingEntity caller)
     {
       var statDescCurrent = GetExtraStatDescription(caller, true);
       if (statDescCurrent == null)
