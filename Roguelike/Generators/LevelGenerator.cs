@@ -96,24 +96,28 @@ namespace Roguelike.Generators
         if (indexWithStairsDown < 0)
           indexWithStairsDown = 0;
 
-        var stairs = new Stairs() { StairsKind = StairsKind.LevelDown, Symbol = '>' };
         var maze = mazeNodes[indexWithStairsDown];
 
-        var tile = maze.GetRandomEmptyTile();
-        if (tile != null)
-        {
-          maze.SetTile(stairs, tile.point);
-          if (stairs.IsFromChildIsland())
-          {
-            Logger.LogInfo("stairs.IsFromChildIsland! ");
-          }
-        }
-        else
-          Logger.LogError("no room for stairs, maze: " + maze);
-
-
+        GenerateStairsDown(maze);
         //node.SetTile(stairs, new System.Drawing.Point(3, 1));
       }
+    }
+
+    protected virtual void GenerateStairsDown(DungeonNode maze)
+    {
+      var stairs = new Stairs() { StairsKind = StairsKind.LevelDown, Symbol = '>' };
+      //
+      var tile = maze.GetRandomEmptyTile();
+      if (tile != null)
+      {
+        maze.SetTile(stairs, tile.point);
+        if (stairs.IsFromChildIsland())
+        {
+          Logger.LogInfo("stairs.IsFromChildIsland! ");
+        }
+      }
+      else
+        Logger.LogError("no room for stairs, maze: " + maze);
     }
 
     protected override void OnChildIslandCreated(ChildIslandCreationInfo e)

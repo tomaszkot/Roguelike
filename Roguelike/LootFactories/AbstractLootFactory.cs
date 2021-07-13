@@ -1,5 +1,6 @@
 ﻿using Dungeons.Core;
 using Roguelike.Tiles;
+using Roguelike.Tiles.Looting;
 using SimpleInjector;
 using System;
 using System.Collections.Generic;
@@ -90,6 +91,12 @@ namespace Roguelike.LootFactories
           var eqDone = eqCreator(eq.Item1);
           if (eq.Item2 != EquipmentMaterial.Unset)
             EnsureMaterialFromLootSource(eqDone, eq.Item2);
+
+          if (eqDone is Weapon wpn && wpn.IsMagician && wpn.Class != EquipmentClass.Unique)
+          {
+            wpn.LevelIndex = level;
+            //(wpn.SpellSource as WeaponSpellSource).Level;
+          }
           return eqDone;
         }
         Debug.Assert(false);

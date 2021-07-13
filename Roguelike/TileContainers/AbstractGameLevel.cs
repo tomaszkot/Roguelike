@@ -427,7 +427,7 @@ namespace Roguelike.TileContainers
       toUse.Revealed = true;
       if (SetTile(toUse, point))
       {
-        Logger.LogInfo("SetTile done for " + toUse);
+        //Logger.LogInfo("SetTile done for " + toUse);
         if (replacer is Loot)
         {
           var tile = new Tile(point);//reset old one, as loot is not hold in Tiles table

@@ -31,7 +31,7 @@ namespace Dungeons
     public DungeonGenerator(Container container)
     {
       this.container = container;
-      container.GetInstance<ILogger>().LogInfo("DungeonGenerator ctor [container]: " + Container.GetHashCode());
+      //container.GetInstance<ILogger>().LogInfo("DungeonGenerator ctor [container]: " + Container.GetHashCode());
     }
 
     Tile GetPossibleDoorTile(List<Tile> listOne, List<Tile> listTwo)
