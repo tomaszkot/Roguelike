@@ -2,7 +2,7 @@
 
 namespace Roguelike.Tiles
 {
-  public enum SurfaceKind { Unset, Empty, ShallowWater, DeepWater, Lava }
+  public enum SurfaceKind { Unset, Empty, ShallowWater, DeepWater, Lava/*, SwampShallowWater, SwampDeepWater*/ }
 
   public class Surface : Tile
   {

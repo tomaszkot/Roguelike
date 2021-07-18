@@ -627,10 +627,16 @@ namespace Roguelike.Managers
           Hero.HandleEquipmentFound(eq);
           PrintHeroStats("loot On");
         }
+        OnLootCollected(lootTile);
         Context.MoveToNextTurnOwner();
         return true;
       }
       return false;
+    }
+
+    protected virtual void OnLootCollected(Loot lootTile)
+    {
+      
     }
 
     public bool CollectLootOnHeroPosition()

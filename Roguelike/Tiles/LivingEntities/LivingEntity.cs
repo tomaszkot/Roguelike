@@ -21,7 +21,7 @@ using System.Linq;
 
 namespace Roguelike.Tiles.LivingEntities
 {
-  public enum EntityState { Idle, Moving, Attacking, CastingSpell }
+  public enum EntityState { Idle, Moving, Attacking, CastingSpell, Sleeping }
   public enum EntityMoveKind { Freestyle, FollowingHero, ReturningHome }
 
   /// <summary>
@@ -977,5 +977,11 @@ namespace Roguelike.Tiles.LivingEntities
     {
       return true;
     }
+
+    public bool IsSleeping
+    {
+      get{ return state == EntityState.Sleeping; }
+    }
+        
   }
 }

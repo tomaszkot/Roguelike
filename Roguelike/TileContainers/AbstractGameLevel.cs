@@ -574,11 +574,25 @@ namespace Roguelike.TileContainers
       return GetSurfaceKindUnderPoint(tile.point);
     }
 
+    public Surface GetSurfaceUnderTile(Tile tile)
+    {
+      return GetSurfaceUnderPoint(tile.point);
+    }
+
+    public Surface GetSurfaceUnderPoint(Point point)
+    {
+      if (Surfaces.Any(i => i.Key == point))
+        return Surfaces.First(i => i.Key == point).Value;
+
+      return null;
+    }
+
     public SurfaceKind GetSurfaceKindUnderPoint(Point point)
     {
       SurfaceKind kind = SurfaceKind.Empty;
-      if (Surfaces.Any(i => i.Key == point))
-        return Surfaces.First(i => i.Key == point).Value.Kind;
+      var sur = GetSurfaceUnderPoint(point);
+      if (sur != null)
+        return sur.Kind;
 
       return kind;
     }

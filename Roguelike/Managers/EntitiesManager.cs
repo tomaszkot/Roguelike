@@ -57,7 +57,7 @@ namespace Roguelike.Managers
     {
       if (Context.TurnOwner == turnOwner)
       {
-        var busyOnes = entities.Where(i => i.State != EntityState.Idle).ToList();
+        var busyOnes = entities.Where(i => i.State != EntityState.Idle && i.State != EntityState.Sleeping).ToList();
         if (!busyOnes.Any())
         {
           OnPolicyAppliedAllIdle();
@@ -108,6 +108,11 @@ namespace Roguelike.Managers
           entity.ApplyLastingEffects();
           if (!entity.Alive)
             continue;
+
+          if (entity.IsSleeping)
+          {
+            continue;
+          }
 
           if (entity.LastingEffects.Where(i => i.Type == Effects.EffectType.Stunned).Any())
             continue;

@@ -202,7 +202,9 @@ namespace Roguelike.Tiles.LivingEntities
       if (!WereStatsIncreased(IncreaseStatsKind.Name))
       {
         if (tag1.ToLower().Contains("bear") ||
-            tag1.ToLower().Contains("demon"))
+            tag1.ToLower().Contains("demon") ||
+            tag1.ToLower().Contains("tree_monster")
+            )
         {
           IncreaseStats(1.5f, IncreaseStatsKind.Name);
         }
@@ -274,18 +276,22 @@ namespace Roguelike.Tiles.LivingEntities
       set
       {
         base.Name = value;
-        if (Name.ToLower().Contains("drowned"))
+        var name = Name.ToLower();
+        if (
+          name.Contains("drowned")||
+          name.Contains("otter")
+          )
         {
           SetSurfaceSkillLevel(SurfaceKind.ShallowWater, 1);
           SetSurfaceSkillLevel(SurfaceKind.DeepWater, 1);
         }
-        if (Name.ToLower().Contains("druid"))
+        if (name.Contains("druid"))
         {
           PrefferedFightStyle = PrefferedFightStyle.Magic;
           this.Stats.SetNominal(EntityStatKind.Mana, BaseMana.Value.TotalValue * 100);
           this.color = ConsoleColor.Magenta;
         }
-        if (Name.ToLower().Contains("hornet"))
+        if (name.Contains("hornet"))
           SetStat(EntityStatKind.PoisonAttack);
       }
     }
