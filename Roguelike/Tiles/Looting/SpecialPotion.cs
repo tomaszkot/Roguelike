@@ -88,7 +88,7 @@ namespace Roguelike.Tiles.Looting
 
       return value;
     }
-
+        
     public override EffectiveFactor StatKindEffective
     {
       get { return new EffectiveFactor(GetEnhValue()); }
