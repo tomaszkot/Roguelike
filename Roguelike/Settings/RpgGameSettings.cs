@@ -13,7 +13,15 @@ namespace Roguelike.Settings
     TouchTwoButtons
   };
 
-  public class CoreInfo
+  public class SettingsBase
+  {
+    public T DoClone<T>()
+    {
+      return (T)MemberwiseClone();
+    }
+  }
+
+  public class CoreInfo : SettingsBase
   {
     public Difficulty Difficulty { get; set; }
     public string GameVersion { get; set; }
@@ -32,7 +40,7 @@ namespace Roguelike.Settings
     }
   };
 
-  public class SoundMusic
+  public class SoundMusic : SettingsBase
   {
     public bool SoundOn { get; set; } = true;
     public bool MusicOn { get; set; } = true;
@@ -51,7 +59,7 @@ namespace Roguelike.Settings
     } = 1f;
   };
 
-  public class Mechanics
+  public class Mechanics : SettingsBase
   {
     public bool TurnOffSpellAfterUseOnTouchMode { get; set; }
     public bool AutoPutOnBetterEquipment { get; set; } = true;
@@ -59,7 +67,7 @@ namespace Roguelike.Settings
     public bool PlaceLootToShortcutBar { get; set; } = true;
   }
 
-  public class Input
+  public class Input : SettingsBase
   {
     GameControllingMode gameControllingMode = GameControllingMode.MouseAndKeyboard;
     public GameControllingMode GameControllingMode
@@ -76,14 +84,14 @@ namespace Roguelike.Settings
     }
   }
 
-  public class View
+  public class View : SettingsBase
   {
     public bool HintsOn { get; set; } = true;
     public bool ShowShortcuts { get; set; } = true;
   }
 
   //[Serializable]
-  public class RpgGameSettings
+  public class RpgGameSettings : SettingsBase
   {
     public CoreInfo CoreInfo { get; set; } = new CoreInfo();
     public SoundMusic SoundMusic { get; set; } = new SoundMusic();
@@ -98,6 +106,17 @@ namespace Roguelike.Settings
     public override string ToString()
     {
       return CoreInfo.ToString() + base.ToString();
+    }
+
+    public RpgGameSettings Clone()
+    {
+      RpgGameSettings clone = DoClone<RpgGameSettings>();
+      clone.CoreInfo = clone.CoreInfo.DoClone<CoreInfo>();
+      clone.SoundMusic = clone.SoundMusic.DoClone<SoundMusic>();
+      clone.Mechanics = clone.Mechanics.DoClone<Mechanics>();
+      clone.Input = clone.Input.DoClone<Input>();
+      clone.View = clone.View.DoClone<View>();
+      return clone;
     }
 
     //void Save()
