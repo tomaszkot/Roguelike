@@ -42,21 +42,21 @@ namespace Roguelike.Settings
 
   public class SoundMusic : SettingsBase
   {
-    public bool SoundOn { get; set; } = true;
-    public bool MusicOn { get; set; } = true;
+    //public bool SoundOn { get; set; } = true;
+    //public bool MusicOn { get; set; } = true;
     public bool GodsVoiceOn { get; set; } = true;
 
-    public float DefaultMusicVolume
-    {
-      get;
-      set;
-    } = .25f;
+    //public float DefaultMusicVolume
+    //{
+    //  get;
+    //  set;
+    //} = .25f;
 
-    public float DefaultSoundVolume
-    {
-      get;
-      set;
-    } = 1f;
+    //public float DefaultSoundVolume
+    //{
+    //  get;
+    //  set;
+    //} = 1f;
   };
 
   public class Mechanics : SettingsBase
