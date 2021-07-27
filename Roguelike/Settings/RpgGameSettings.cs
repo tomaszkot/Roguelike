@@ -5,7 +5,13 @@ using System.Linq;
 
 namespace Roguelike.Settings
 {
-  public enum GameKey { Unset, MoveLeft, MoveRight, MoveUp, MoveDown, Grab, SkipTurn, HighlightLoot }
+  public enum GameKey
+  { 
+    Unset, 
+    MoveLeft, MoveRight, MoveUp, MoveDown, Grab, SkipTurn, HighlightLoot,
+
+    UICharacter, UIHeroInventory, UIAbilities, UIMap, UICrafting, UIQuests, UIAlly
+  }
 
   /// <summary>
   /// These values shall not be renamed cause old saves will not work anymore!
@@ -101,7 +107,8 @@ namespace Roguelike.Settings
     public Mechanics Mechanics { get; set; } = new Mechanics();
     public Input Input { get; set; } = new Input();
     public View View { get; set; } = new View();
-    public Dictionary<GameKey, int> GameKeysMapping { get; set; } = new Dictionary<GameKey, int>();
+    public Dictionary<GameKey, int> GameKeyMappingsGamePlay { get; set; } = new Dictionary<GameKey, int>();
+    public Dictionary<GameKey, int> GameKeyMappingsUI { get; set; } = new Dictionary<GameKey, int>();
 
     public static Options Instance { get => instance; }
 
@@ -119,7 +126,8 @@ namespace Roguelike.Settings
       Mechanics = clone.Mechanics;
       Input = clone.Input;
       View = clone.View;
-      GameKeysMapping = clone.GameKeysMapping;
+      GameKeyMappingsGamePlay = clone.GameKeyMappingsGamePlay;
+      GameKeyMappingsUI = clone.GameKeyMappingsUI;
     }
 
     public Options Clone()
@@ -129,7 +137,8 @@ namespace Roguelike.Settings
       clone.Mechanics = clone.Mechanics.DoClone<Mechanics>();
       clone.Input = clone.Input.DoClone<Input>();
       clone.View = clone.View.DoClone<View>();
-      clone.GameKeysMapping = clone.GameKeysMapping.ToDictionary(pair => pair.Key, pair => pair.Value);
+      clone.GameKeyMappingsGamePlay = clone.GameKeyMappingsGamePlay.ToDictionary(pair => pair.Key, pair => pair.Value);
+      clone.GameKeyMappingsUI = clone.GameKeyMappingsUI.ToDictionary(pair => pair.Key, pair => pair.Value);
       return clone;
     }
 
