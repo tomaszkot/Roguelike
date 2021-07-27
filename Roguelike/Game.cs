@@ -46,7 +46,7 @@ namespace Roguelike
         for (var i = 0; i <= maxLevel; i++)
         {
           GameLevel nextLvl = null;
-          if (gs.Settings.CoreInfo.RegenerateLevelsOnLoad)
+          if (GameManager.GameSettings.Mechanics.RegenerateLevelsOnLoad)
           {
             nextLvl = GenerateLevel(i, null, false);
           }

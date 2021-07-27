@@ -12,6 +12,7 @@ using Roguelike.History;
 using Roguelike.LootContainers;
 using Roguelike.Policies;
 using Roguelike.Serialization;
+using Roguelike.Settings;
 using Roguelike.State;
 using Roguelike.Strategy;
 using Roguelike.TileContainers;
@@ -235,11 +236,13 @@ namespace Roguelike.Managers
       (node as TileContainers.GameLevel).OnLoadDone();
     }
 
+    public Options GameSettings { get => Options.Instance; }
+
     protected virtual void InitNode(AbstractGameLevel node, GameState gs, GameContextSwitchKind context)
     {
       node.GetTiles<LivingEntity>().ForEach(i => i.Container = this.Container);
       node.Logger = this.Logger;
-      if (context == GameContextSwitchKind.GameLoaded && !gs.Settings.CoreInfo.RegenerateLevelsOnLoad)
+      if (context == GameContextSwitchKind.GameLoaded && !GameSettings.Mechanics.RegenerateLevelsOnLoad)
         InitNodeOnLoad(node);
 
       node.Inited = true;
@@ -551,7 +554,7 @@ namespace Roguelike.Managers
     public virtual void Load(string heroName)
     {
       persistancyWorker.Load(heroName, this, WorldLoader);
-      if (gameState.Settings.CoreInfo.RestoreHeroToSafePointAfterLoad)
+      if (GameSettings.Mechanics.RestoreHeroToSafePointAfterLoad)
       {
 
       }
@@ -591,7 +594,7 @@ namespace Roguelike.Managers
 
     public virtual GameState PrepareGameStateForSave()
     {
-      gameState.Settings.CoreInfo.LastSaved = DateTime.Now;
+      gameState.CoreInfo.LastSaved = DateTime.Now;
       gameState.HeroPath.Pit = "";
 
       if (CurrentNode is TileContainers.GameLevel)

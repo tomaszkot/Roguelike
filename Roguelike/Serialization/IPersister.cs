@@ -1,4 +1,5 @@
-﻿using Roguelike.State;
+﻿using Roguelike.Settings;
+using Roguelike.State;
 using Roguelike.TileContainers;
 using Roguelike.Tiles.LivingEntities;
 
@@ -17,5 +18,9 @@ namespace Roguelike.Serialization
 
     void SaveLevel(string heroName, GameLevel level);
     GameLevel LoadLevel(string heroName, int index);
+
+    void SaveOptions(Options opt);
+
+    Options LoadOptions();
   }
 }

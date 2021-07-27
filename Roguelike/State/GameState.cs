@@ -23,7 +23,7 @@ namespace Roguelike.State
   {
     public GameState()
     {
-      Settings.CoreInfo.GameVersion = Game.Version;
+      CoreInfo.GameVersion = Game.Version;
       HeroPath = CreateHeroPath();
     }
 
@@ -32,17 +32,17 @@ namespace Roguelike.State
       return new HeroPath();
     }
 
-    public RpgGameSettings Settings { get; set; } = new RpgGameSettings();
+    public CoreInfo CoreInfo { get; set; } = new CoreInfo();
     public HeroPath HeroPath { get; set; }
     public Point HeroInitGamePosition { get; set; } = new Point().Invalid();
     public HistoryContent History { get; set; } = new HistoryContent();
-
+    //public Options Settings { get { return Options.Instance; } }
     //[JsonIgnore]
     //public bool Dirty { get; set; } = true;
 
     public override string ToString()
     {
-      return Settings.ToString() + ";" + HeroPath.ToString();
+      return CoreInfo.ToString() + ";" + HeroPath.ToString();
     }
 
   }
