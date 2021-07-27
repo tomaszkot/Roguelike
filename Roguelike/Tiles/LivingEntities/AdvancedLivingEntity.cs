@@ -9,6 +9,7 @@ using Roguelike.Extensions;
 using Roguelike.Generators;
 using Roguelike.LootContainers;
 using Roguelike.Serialization;
+using Roguelike.Settings;
 using Roguelike.Spells;
 using Roguelike.Tiles.Abstract;
 using Roguelike.Tiles.Looting;
@@ -387,7 +388,7 @@ namespace Roguelike.Tiles.LivingEntities
         }
       }
 
-      if (CanUseEquipment(eq) && (currentEq == null || eq.IsBetter(currentEq)))
+      if (CanUseEquipment(eq) && (currentEq == null || (eq.IsBetter(currentEq)) && Options.Instance.Mechanics.AutoPutOnBetterEquipment))
       {
         if (currentEq != null)
         {

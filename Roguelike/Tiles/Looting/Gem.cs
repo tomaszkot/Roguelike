@@ -1,6 +1,7 @@
 ﻿using Dungeons.Core;
 using Roguelike.Attributes;
 using Roguelike.Extensions;
+using Roguelike.Settings;
 using Roguelike.Tiles.LivingEntities;
 using System;
 using System.Collections.Generic;
@@ -47,7 +48,7 @@ namespace Roguelike.Tiles.Looting
         SetProps();
 
       string desc = "Enchants equipment. ";
-      var allowInPlaceInventoryCrafting = true;
+      var allowInPlaceInventoryCrafting = Options.Instance.Mechanics.AllowEnchantOnDragDrop;
       if (allowInPlaceInventoryCrafting)
         desc += Strings.DropOnEnchantable;
       else

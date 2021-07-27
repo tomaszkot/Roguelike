@@ -69,9 +69,9 @@ namespace Roguelike.Settings
 
   public class Mechanics : SettingsBase
   {
-    public bool TurnOffSpellAfterUseOnTouchMode { get; set; }
+    //public bool TurnOffSpellAfterUseOnTouchMode { get; set; }
     public bool AutoPutOnBetterEquipment { get; set; } = true;
-    public bool AllowInPlaceInventoryCrafting { get; set; } = true;
+    public bool AllowEnchantOnDragDrop { get; set; } = true;
     public bool PlaceLootToShortcutBar { get; set; } = true;
     public bool RestoreHeroToSafePointAfterLoad { get; set; } = true;
     public bool RestoreHeroToDungeon { get; set; } = false;////TODO this way loading predefinied levels did not worked in Unity
@@ -113,11 +113,6 @@ namespace Roguelike.Settings
     public static Options Instance { get => instance; }
 
     static Options instance = new Options();
-
-    //private Options()
-    //{ 
-    
-    //}
 
     public void SetData(Options options)
     {
