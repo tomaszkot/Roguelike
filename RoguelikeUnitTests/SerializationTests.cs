@@ -24,12 +24,17 @@ namespace RoguelikeUnitTests
       Assert.AreNotEqual(game.GameManager.Hero, hero);
       var persister = game.GameManager.Container.GetInstance<IPersister>();
       persister.DeleteGame(hero.Name);
+      AssertLoadFailed(hero, persister);
+    }
+
+    private static void AssertLoadFailed(Hero hero, IPersister persister)
+    {
       bool loadFailed = false;
       try
       {
         persister.LoadHero(hero.Name);
       }
-      catch (Exception )
+      catch (Exception)
       {
         loadFailed = true;
       }
@@ -46,17 +51,8 @@ namespace RoguelikeUnitTests
        game.GameManager.Load(hero.Name);
 
       var persister = game.GameManager.Container.GetInstance<IPersister>();
-      bool loadFailed = false;
-      try
-      {
-        persister.LoadHero(hero.Name);
-      }
-      catch (Exception)
-      {
-        loadFailed = true;
-      }
-      Assert.True(loadFailed);
-      
+      AssertLoadFailed(hero, persister);
+
     }
 
     [Test]
