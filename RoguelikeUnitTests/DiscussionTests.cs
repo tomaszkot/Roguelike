@@ -8,8 +8,7 @@ namespace RoguelikeUnitTests
     [Test]
     public void TestCustomInteriorGen()
     {
-      var game = CreateGame();
-      //Assert.AreEqual(game.Level, null);
+      //var game = CreateGame();
     }
   }
 }
