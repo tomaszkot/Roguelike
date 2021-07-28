@@ -168,6 +168,8 @@ namespace Roguelike.TileContainers
     {
       if (dt is Hero && revealed.IsEmpty)
         return;//TODO
+      if (dt is Merchant && revealed.IsEmpty)
+        return;//TODO
       Logger.LogError(this + " dt.Symbol != revealed.Symbol [" + dt.Symbol + "," + revealed.Symbol + "] " + revealed.point + " ");
     }
 
