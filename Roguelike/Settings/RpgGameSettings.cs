@@ -8,7 +8,7 @@ namespace Roguelike.Settings
   public enum GameKey
   { 
     Unset, 
-    MoveLeft, MoveRight, MoveUp, MoveDown, Grab, SkipTurn, HighlightLoot,
+    MoveLeft, MoveRight, MoveUp, MoveDown, Grab, DistanceCollect, SkipTurn, HighlightLoot,
 
     UICharacter, UIHeroInventory, UIAbilities, UIMap, UICrafting, UIQuests, UIAlly
   }
@@ -99,6 +99,7 @@ namespace Roguelike.Settings
   {
     public bool HintsOn { get; set; } = true;
     public bool ShowShortcuts { get; set; } = true;
+    public bool ShowMiniMap { get; set; } = true;
   }
 
   public class Options : SettingsBase, IPersistable
@@ -108,6 +109,7 @@ namespace Roguelike.Settings
     public Input Input { get; set; } = new Input();
     public View View { get; set; } = new View();
     public Dictionary<GameKey, int> GameKeyMappingsGamePlay { get; set; } = new Dictionary<GameKey, int>();
+    public Dictionary<GameKey, int> GameKeyMappingsGamePlayAlt { get; set; } = new Dictionary<GameKey, int>();
     public Dictionary<GameKey, int> GameKeyMappingsUI { get; set; } = new Dictionary<GameKey, int>();
 
     public static Options Instance { get => instance; }
@@ -122,6 +124,7 @@ namespace Roguelike.Settings
       Input = clone.Input;
       View = clone.View;
       GameKeyMappingsGamePlay = clone.GameKeyMappingsGamePlay;
+      GameKeyMappingsGamePlayAlt = clone.GameKeyMappingsGamePlayAlt;
       GameKeyMappingsUI = clone.GameKeyMappingsUI;
     }
 
@@ -133,6 +136,7 @@ namespace Roguelike.Settings
       clone.Input = clone.Input.DoClone<Input>();
       clone.View = clone.View.DoClone<View>();
       clone.GameKeyMappingsGamePlay = clone.GameKeyMappingsGamePlay.ToDictionary(pair => pair.Key, pair => pair.Value);
+      clone.GameKeyMappingsGamePlayAlt = clone.GameKeyMappingsGamePlayAlt.ToDictionary(pair => pair.Key, pair => pair.Value);
       clone.GameKeyMappingsUI = clone.GameKeyMappingsUI.ToDictionary(pair => pair.Key, pair => pair.Value);
       return clone;
     }
