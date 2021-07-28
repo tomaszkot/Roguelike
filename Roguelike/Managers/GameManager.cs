@@ -214,6 +214,8 @@ namespace Roguelike.Managers
         }
       }
 
+      var persister = Container.GetInstance<IPersister>();
+
       PrintHeroStats("SetContext " + kind);
     }
 
@@ -557,6 +559,11 @@ namespace Roguelike.Managers
       if (GameSettings.Mechanics.RestoreHeroToSafePointAfterLoad)
       {
 
+      }
+      if (GameState.CoreInfo.PermanentDeath)
+      {
+        var persister = Container.GetInstance<IPersister>();
+        persister.DeleteGame(heroName);
       }
       //Hero.RestoreState(gameState);
 

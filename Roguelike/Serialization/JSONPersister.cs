@@ -10,6 +10,7 @@ using Roguelike.Tiles.LivingEntities;
 using SimpleInjector;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 
@@ -185,6 +186,14 @@ namespace Roguelike.Serialization
     {
       var fileName = GetFullFilePath(FileKind.Hero, heroName);
       return Load<Hero>(fileName, container);
+    }
+
+    public virtual void DeleteGame(string heroName)
+    {
+      var srcFilePath = GetFullFilePath(FileKind.Hero, heroName);
+      var tmpPath = Path.GetTempPath();
+      var destPath = Path.Combine(tmpPath, heroName + "_" + DateTime.Now.ToString("YYMMDDhhmmss") + ".json");
+      File.Move(srcFilePath, destPath);
     }
 
     public void SaveLevel(string heroName, GameLevel level)

@@ -46,15 +46,8 @@ namespace Roguelike.Tiles.Looting
         SetRandomKindAndLevelSize(gameLevel, kind == GemKind.Unset);
       else
         SetProps();
-
-      string desc = "Enchants equipment. ";
-      var allowInPlaceInventoryCrafting = Options.Instance.Mechanics.AllowEnchantOnDragDrop;
-      if (allowInPlaceInventoryCrafting)
-        desc += Strings.DropOnEnchantable;
-      else
-        desc += "Use it with the Enchant Equipment recipe on the Crafting Panel.";
-
-      PrimaryStatDescription = desc;
+            
+      //PrimaryStatDescription = desc;
     }
 
     public void EnchantSrcFromGemKind()

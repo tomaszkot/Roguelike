@@ -1,4 +1,5 @@
 ﻿using Roguelike.Attributes;
+using Roguelike.Settings;
 using System.Collections.Generic;
 
 namespace Roguelike.Tiles.Looting
@@ -95,6 +96,24 @@ namespace Roguelike.Tiles.Looting
     protected void SetName(string typeName)
     {
       Name = EnchanterSize + " " + typeName;
+    }
+
+    public override string PrimaryStatDescription 
+    { 
+      get
+      {
+        string desc = "Enchants equipment. ";
+        var allowInPlaceInventoryCrafting = Options.Instance.Mechanics.AllowEnchantOnDragDrop;
+        if (allowInPlaceInventoryCrafting)
+          desc += Strings.DropOnEnchantable;
+        else
+          desc += "Use it with the Enchant Equipment recipe on the Crafting Panel.";
+
+        return desc;
+      }
+      set 
+      {
+      }
     }
   }
 }

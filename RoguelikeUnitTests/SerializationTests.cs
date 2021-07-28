@@ -1,6 +1,7 @@
 ﻿using NUnit.Framework;
 using Roguelike;
 using Roguelike.History;
+using Roguelike.Serialization;
 using Roguelike.TileContainers;
 using Roguelike.Tiles;
 using Roguelike.Tiles.LivingEntities;
@@ -12,6 +13,52 @@ namespace RoguelikeUnitTests
   [TestFixture]
   class SerializationTests : TestBase
   {
+    [Test]
+    public void DeleteGameTest()
+    {
+      var game = CreateGame(true);
+      var hero = game.Hero;
+      game.GameManager.Save();
+      game.GameManager.Load(hero.Name);
+      Assert.NotNull(game.GameManager.Hero);
+      Assert.AreNotEqual(game.GameManager.Hero, hero);
+      var persister = game.GameManager.Container.GetInstance<IPersister>();
+      persister.DeleteGame(hero.Name);
+      bool loadFailed = false;
+      try
+      {
+        persister.LoadHero(hero.Name);
+      }
+      catch (Exception )
+      {
+        loadFailed = true;
+      }
+      Assert.True(loadFailed);
+    }
+
+    [Test]
+    public void PermaDeathTest()
+    {
+       var game = CreateGame(true);
+       game.GameManager.GameState.CoreInfo.PermanentDeath = true;
+       var hero = game.Hero;
+       game.GameManager.Save();
+       game.GameManager.Load(hero.Name);
+
+      var persister = game.GameManager.Container.GetInstance<IPersister>();
+      bool loadFailed = false;
+      try
+      {
+        persister.LoadHero(hero.Name);
+      }
+      catch (Exception)
+      {
+        loadFailed = true;
+      }
+      Assert.True(loadFailed);
+      
+    }
+
     [Test]
     public void NewGameTest()
     {

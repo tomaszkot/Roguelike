@@ -9,6 +9,7 @@ namespace Roguelike.Serialization
   {
     void SaveHero(Hero hero);
     Hero LoadHero(string heroName);
+    void DeleteGame(string heroName);
 
     AlliesStore LoadAllies();
     void SaveAllies(AlliesStore allies);

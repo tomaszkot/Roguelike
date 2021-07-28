@@ -216,7 +216,7 @@ namespace Roguelike.Tiles
       return this.GetType() == other.GetType();
     }
 
-    public string PrimaryStatDescription
+    public virtual string PrimaryStatDescription
     {
       get;
       set;
