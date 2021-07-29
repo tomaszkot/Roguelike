@@ -1187,5 +1187,10 @@ namespace Roguelike.Managers
 
       return true;
     }
+
+    public void SaveGameOptions()
+    {
+      Persister.SaveOptions(Options.Instance);
+    }
   }
 }
