@@ -63,6 +63,7 @@ namespace Roguelike.Generators
     public static int MaxMerchantMagicDust = 4;
     public static float ChangeToGetEnchantableItem = 0.2f;
     public static float MaxMagicAttackDistance = 8;
+    public static Difficulty Difficulty = Difficulty.Normal;
 
     public override void MakeEmpty()
     {

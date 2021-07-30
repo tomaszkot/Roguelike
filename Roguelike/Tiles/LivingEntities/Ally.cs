@@ -30,23 +30,23 @@ namespace Roguelike.Tiles.LivingEntities
 
     public bool TakeLevelFromCaster { get; protected set; }
 
-    public override bool SetLevel(int level)
+    public override bool SetLevel(int level, Difficulty? diff = null)
     {
-      return base.SetLevel(level);
+      return base.SetLevel(level, diff);
     }
 
-    public static Ally Spawn<T>(Container cont, char symbol, int level) where T : Ally, new()
+    public static Ally Spawn<T>(Container cont, char symbol, int level, Difficulty diff) where T : Ally, new()
     {
       var ally = cont.GetInstance<T>();
-      ally.InitSpawned(symbol, level);
+      ally.InitSpawned(symbol, level, diff);
 
       return ally;
     }
 
-    public void InitSpawned(char symbol, int level) //where T : Ally, new()
+    public void InitSpawned(char symbol, int level, Difficulty? diff = null) //where T : Ally, new()
     {
       Symbol = symbol;
-      SetLevel(level);
+      SetLevel(level, diff);
       SetTag();
       Revealed = true;
       Active = true;

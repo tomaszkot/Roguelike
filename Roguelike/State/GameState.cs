@@ -24,7 +24,9 @@ namespace Roguelike.State
     public GameState()
     {
       CoreInfo.GameVersion = Game.Version;
+      CoreInfo.Difficulty = Generators.GenerationInfo.Difficulty;
       HeroPath = CreateHeroPath();
+
     }
 
     public virtual HeroPath CreateHeroPath()

@@ -162,17 +162,17 @@ namespace Roguelike.Spells
 
     public Ally Ally { get => enemy; set => enemy = value; }
 
-    public SkeletonSpell() : this(new LivingEntity())
+    public SkeletonSpell() : this(new LivingEntity(), Difficulty.Normal)
     { }
 
-    public SkeletonSpell(LivingEntity caller) : base(caller, null)
+    public SkeletonSpell(LivingEntity caller, Difficulty? diff = null) : base(caller, null)
     {
       Kind = SpellKind.Skeleton;
       //damage = ProjectiveSpell.BaseDamage + 1;
 
       var level = CurrentLevel;
       Ally = caller.Container.GetInstance<AlliedEnemy>();
-      Ally.InitSpawned(EnemySymbols.SkeletonSymbol, level);
+      Ally.InitSpawned(EnemySymbols.SkeletonSymbol, level, diff);
       Ally.Stats.SetNominal(EntityStatKind.Strength, AdvancedLivingEntity.BaseStrength.Value.Nominal+5);//same as hero
       Ally.Stats.SetNominal(EntityStatKind.Dexterity, AdvancedLivingEntity.BaseDexterity.Value.Nominal + 5);
       Ally.RecalculateStatFactors(false);

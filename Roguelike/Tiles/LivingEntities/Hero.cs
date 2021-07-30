@@ -206,7 +206,7 @@ namespace Roguelike.Tiles.LivingEntities
       return getGold;
     }
 
-    public override bool SetLevel(int level)
+    public override bool SetLevel(int level, Difficulty? diff = null)
     {
       Level = level;
       return true;

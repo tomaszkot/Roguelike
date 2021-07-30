@@ -5,8 +5,9 @@ namespace Roguelike.Tiles
 {
   public interface ILootSource
   {
+    //Difficulty difficulty { get; }
     int Level { get; }
-    bool SetLevel(int level);
+    bool SetLevel(int level, Difficulty? diff = null);
     Point GetPoint();
     string OriginMap { get; set; }
   }
@@ -81,7 +82,7 @@ namespace Roguelike.Tiles.Interactive
         SetColor();
       }
     }
-    public bool SetLevel(int level)
+    public bool SetLevel(int level, Difficulty? diff = null)
     {
       Level = level;
       return true;

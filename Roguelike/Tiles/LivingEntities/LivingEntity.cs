@@ -934,8 +934,14 @@ namespace Roguelike.Tiles.LivingEntities
 
     public virtual void PlayAllySpawnedSound() { }
 
-    public virtual bool SetLevel(int level)
+    Difficulty difficulty;
+    public virtual bool SetLevel(int level, Difficulty? diff = null)
     {
+      difficulty = Difficulty.Normal;
+      if (diff == null)
+        diff = GenerationInfo.Difficulty;
+      if (diff != null)
+        difficulty = diff.Value;
       Assert(level >= 1);
       if (!CanIncreaseLevel())
       {
@@ -944,9 +950,18 @@ namespace Roguelike.Tiles.LivingEntities
       this.Level = level;
       InitStatsFromName();
       var hard = false;// GameManager.Instance.GameSettings.DifficultyLevel == Commons.GameSettings.Difficulty.Hard;
+      float inc = 1;
+      if (diff == Difficulty.Normal)
+        inc = 1.1f;
+      else if (diff == Difficulty.Hard)
+        inc = 1.3f;
+      
+      if(inc > 1)
+        IncreaseStats(inc, IncreaseStatsKind.Difficulty);
+
       if (level > 1)
       {
-        var inc = GetIncrease(hard ? level + 1 : level);
+        inc = GetIncrease(hard ? level + 1 : level);
         IncreaseStats(inc, IncreaseStatsKind.Level);
       }
       InitResistance();

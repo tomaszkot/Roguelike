@@ -1,4 +1,6 @@
 ﻿using NUnit.Framework;
+using Roguelike;
+using Roguelike.Generators;
 using Roguelike.Tiles.Interactive;
 using System.Linq;
 
@@ -7,6 +9,34 @@ namespace RoguelikeUnitTests
   [TestFixture]
   class LevelGenerationTests : TestBase
   {
+    [Test]
+    public void TestDifficulty()
+    {
+      GenerationInfo.Difficulty = Difficulty.Easy;
+      var gameEasy = CreateGame(true);
+      Assert.AreEqual(gameEasy.GameManager.GameState.CoreInfo.Difficulty, Difficulty.Easy);
+      
+      var plainEasy = PlainEnemies.First();
+      var chempEasy = ChampionEnemies.First();
+      
+      GenerationInfo.Difficulty = Difficulty.Normal;
+      var gameNormal = CreateGame(true);
+      Assert.AreEqual(gameNormal.GameManager.GameState.CoreInfo.Difficulty, Difficulty.Normal);
+      var plainNormal = PlainEnemies.First();
+      var chempNormal = ChampionEnemies.First();
+
+      GenerationInfo.Difficulty = Difficulty.Hard;
+      var gameHard = CreateGame(true);
+      Assert.AreEqual(gameHard.GameManager.GameState.CoreInfo.Difficulty, Difficulty.Hard);
+      var plainHard = PlainEnemies.First();
+      var chempHard = ChampionEnemies.First();
+
+
+      Assert.Greater(plainNormal.Stats.Defense, plainEasy.Stats.Defense);
+      Assert.Greater(chempNormal.Stats.Defense, chempEasy.Stats.Defense);
+      Assert.Greater(chempHard.Stats.Defense, chempNormal.Stats.Defense);
+    }
+    
     [Test]
     public void TestOneRoom()
     {

@@ -1006,7 +1006,7 @@ namespace Roguelike.Managers
         var lvl = Hero.Level / 2;
         if (lvl == 0)
           lvl = 1;
-        ally.SetLevel(lvl);
+        ally.SetLevel(lvl, GameState.CoreInfo.Difficulty);
       }
       AlliesManager.AddEntity(le);
 

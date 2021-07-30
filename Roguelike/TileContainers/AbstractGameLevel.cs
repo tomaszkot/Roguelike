@@ -170,8 +170,11 @@ namespace Roguelike.TileContainers
       return GetClosestEmpty(baseTile, emptyTiles);
     }
 
-    public override bool SetTile(Tile tile, Point point, bool resetOldTile = true, bool revealReseted = true,
-      bool autoSetTileDungeonIndex = true, bool reportError = true)
+    public override bool SetTile
+    (
+      Tile tile, Point point, bool resetOldTile = true, bool revealReseted = true,
+      bool autoSetTileDungeonIndex = true, bool reportError = true
+    )
     {
       if (tile is IApproachableByHero)
       {
@@ -185,7 +188,8 @@ namespace Roguelike.TileContainers
         var ls = tile as ILootSource;
         if (ls.Level <= 0)
         {
-          ls.SetLevel(Index + 1);//some UT needed it
+          //some UT needed it
+          ls.SetLevel(Index + 1, Difficulty.Normal);//TODO Normal
         }
       }
 
@@ -486,9 +490,9 @@ namespace Roguelike.TileContainers
       return SpawnEnemy(lootSource.Level);
     }
 
-    public Enemy SpawnEnemy(int level)
+    public Enemy SpawnEnemy(int level, Difficulty? difficulty = null)
     {
-      var enemy = Enemy.Spawn(EnemySymbols.SkeletonSymbol, level, Container);
+      var enemy = Enemy.Spawn(EnemySymbols.SkeletonSymbol, level, Container, difficulty);
       enemy.Container = Container;
       return enemy;
     }

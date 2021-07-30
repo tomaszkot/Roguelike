@@ -245,7 +245,7 @@ namespace Roguelike.Tiles.Looting
         case SpellKind.IceBall:
           return new IceBallSpell(caller);
         case SpellKind.Skeleton:
-          return new SkeletonSpell(caller);
+          return new SkeletonSpell(caller, Roguelike.Generators.GenerationInfo.Difficulty);
         case SpellKind.Transform:
           return new TransformSpell(caller);
         case SpellKind.ManaShield:

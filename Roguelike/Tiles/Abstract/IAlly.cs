@@ -10,7 +10,7 @@ namespace Roguelike.Abstract.Tiles
     AllyKind Kind { get; }
     bool IncreaseExp(double factor);
     Point Point { get; set; }
-    bool SetLevel(int level);
+    bool SetLevel(int level, Difficulty? diff = null);
     bool TakeLevelFromCaster { get; }
 
     event EventHandler LeveledUp;

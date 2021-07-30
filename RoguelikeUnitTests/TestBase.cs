@@ -119,6 +119,16 @@ namespace RoguelikeUnitTests
       get { return game.GameManager.EnemiesManager.AllEntities.Cast<Enemy>().Where(i => i.PowerKind == EnemyPowerKind.Plain).ToList(); }
     }
 
+    protected List<Roguelike.Tiles.LivingEntities.Enemy> ChampionEnemies
+    {
+      get { return game.GameManager.EnemiesManager.AllEntities.Cast<Enemy>().Where(i => i.PowerKind == EnemyPowerKind.Champion).ToList(); }
+    }
+
+    protected List<Roguelike.Tiles.LivingEntities.Enemy> BossEnemies
+    {
+      get { return game.GameManager.EnemiesManager.AllEntities.Cast<Enemy>().Where(i => i.PowerKind == EnemyPowerKind.Boss).ToList(); }
+    }
+
     public List<Enemy> GetLimitedEnemies()
     {
       return game.GameManager.CurrentNode.GetTiles<Enemy>().Take(numEnemies).ToList();
@@ -128,6 +138,8 @@ namespace RoguelikeUnitTests
     int numEnemies = 0;
     public virtual RoguelikeGame CreateGame(bool autoLoadLevel = true, int numEnemies = 10, int numberOfRooms = 5, GenerationInfo gi = null)
     {
+      //if(gi!=null)
+
       if (createTestEnvCounter > 0)
       {
         OnInit();

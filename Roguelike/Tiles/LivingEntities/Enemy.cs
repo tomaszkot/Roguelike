@@ -15,7 +15,7 @@ namespace Roguelike.Tiles.LivingEntities
   public enum RoomKind { Unset, PuzzleRoom, Island }
   public enum EnemyPowerKind { Unset, Plain, Champion, Boss };
   public enum PrefferedFightStyle { Physical, Magic, Distance }
-  public enum IncreaseStatsKind { Level, PowerKind, Name }
+  public enum IncreaseStatsKind { Level, PowerKind, Name, Difficulty }
 
   public class Enemy : LivingEntity
   {
@@ -147,9 +147,9 @@ namespace Roguelike.Tiles.LivingEntities
       StatsIncreased[kind] = true;
     }
 
-    public override bool SetLevel(int level)
+    public override bool SetLevel(int level, Difficulty? diff = null)
     {
-      var set = base.SetLevel(level);
+      var set = base.SetLevel(level, diff);
       LevelSet = set;
       return set;
     }
@@ -259,11 +259,11 @@ namespace Roguelike.Tiles.LivingEntities
       return "";
     }
 
-    public static Enemy Spawn(char symbol, int level, Container cont)
+    public static Enemy Spawn(char symbol, int level, Container cont, Difficulty? difficulty = null)
     {
       var enemy = new Enemy(symbol);
       enemy.Container = cont;
-      enemy.SetLevel(level);
+      enemy.SetLevel(level, difficulty);
       enemy.tag1 = EnemySymbols.EnemiesToSymbols.Where(i => i.Value == symbol).Single().Key;
       enemy.Revealed = true;
 

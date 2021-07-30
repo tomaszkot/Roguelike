@@ -45,7 +45,7 @@ namespace Roguelike.Tiles.Interactive
 
     public Point GetPoint() { return point; }
 
-    public bool SetLevel(int level)
+    public bool SetLevel(int level, Difficulty? diff = null)
     {
       Level = level;
       return true;

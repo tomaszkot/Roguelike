@@ -22,6 +22,7 @@ namespace Roguelike.Generators
     protected LootGenerator lootGen;
     public string LevelBossName { get; set; }
     public int LevelIndex { get => levelIndex; set => levelIndex = value; }
+    Difficulty difficulty;
 
     public RoomContentGenerator(Container container)
     {
@@ -33,6 +34,7 @@ namespace Roguelike.Generators
       Dungeons.TileContainers.DungeonNode node, int levelIndex, int nodeIndex, int enemiesStartLevel, GenerationInfo gi
     )
     {
+      this.difficulty = Roguelike.Generators.GenerationInfo.Difficulty;
       this.enemiesStartLevel = enemiesStartLevel;
       this.node = node as TileContainers.DungeonNode;
       this.levelIndex = levelIndex;
@@ -286,7 +288,7 @@ namespace Roguelike.Generators
 
       //esl = 0;
 
-      src.SetLevel(esl + levelIndex + 1);
+      src.SetLevel(esl + levelIndex + 1, difficulty);
     }
 
     bool placeEnemiesPackClosely = true;

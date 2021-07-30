@@ -24,6 +24,7 @@ namespace Roguelike.Generators
     public EventHandler<DungeonNode> CustomInteriorDecorator;
     public bool StairsUpOnLevel0 { get; set; }
     protected List<string> extraEnemies = new List<string>();
+    Difficulty diff;
 
     public LevelGenerator(Container container) : base(container)
     {
@@ -33,9 +34,13 @@ namespace Roguelike.Generators
 
     public override DungeonLevel Generate(int levelIndex, Dungeons.GenerationInfo info = null, LayouterOptions opt = null)
     {
+      
       var revealAllNodes = info != null ? info.RevealAllNodes : false;
-      if(info is Roguelike.Generators.GenerationInfo rgi && MaxLevelIndex == 0)
+      if (info is Roguelike.Generators.GenerationInfo rgi && MaxLevelIndex == 0)
+      {
         MaxLevelIndex = rgi.MaxLevelIndex;
+      }
+      this.diff = Roguelike.Generators.GenerationInfo.Difficulty;
       var options = opt ?? new LayouterOptions() { RevealAllNodes = revealAllNodes };
       LevelIndex = levelIndex;
       //generate level
