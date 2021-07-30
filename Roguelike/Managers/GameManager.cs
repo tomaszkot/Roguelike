@@ -132,6 +132,11 @@ namespace Roguelike.Managers
       SpellManager = new SpellManager(this);
     }
 
+    public void DisconnectEvents()
+    {
+      EventsManager.ActionAppended -= EventsManager_ActionAppended;
+    }
+
     protected virtual void CreateInputManager()
     {
       inputManager = new InputManager(this);
