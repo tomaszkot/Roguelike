@@ -92,7 +92,13 @@ namespace Roguelike.Tiles.LivingEntities
     public EntityState State
     {
       get { return state; }
-      set { state = value; }
+      set 
+      {
+        var oldState = state;
+        state = value;
+        if (oldState != state)
+          AppendAction(new LivingEntityStateChangedEvent(oldState, state, this)) ;
+      }
     }
     List<Algorithms.PathFinderNode> pathToTarget;
     protected LastingEffectsSet lastingEffectsSet;
@@ -703,6 +709,7 @@ namespace Roguelike.Tiles.LivingEntities
     {
       var info = Name + " Died";
       if (DiedOfEffect != EffectType.Unset)
+        info += ", killing effect: " + DiedOfEffect.ToDescription();
         info += ", killing effect: " + DiedOfEffect.ToDescription();
 
       return new LivingEntityAction(LivingEntityActionKind.Died) { InvolvedEntity = this, Level = ActionLevel.Important, Info = info };

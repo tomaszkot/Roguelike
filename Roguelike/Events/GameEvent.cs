@@ -1,6 +1,7 @@
 ﻿using Dungeons.Tiles;
 using Roguelike.Abstract.Tiles;
 using Roguelike.Effects;
+using Roguelike.Extensions;
 using Roguelike.LootContainers;
 using Roguelike.Managers;
 using Roguelike.Policies;
@@ -200,12 +201,28 @@ namespace Roguelike.Events
   public enum LivingEntityActionKind
   {
     LeveledUp, Moved, Died, GainedDamage, ExperiencedEffect, EffectFinished, Trapped, Interacted, Missed, UsedSpell,
-    FailedToCastSpell, GodsTurn, GodsPowerReleased, StrikedBack, BulkAttack, UsedPortal, Teleported, AppendedToLevel
+    FailedToCastSpell, GodsTurn, GodsPowerReleased, StrikedBack, BulkAttack, UsedPortal, Teleported, AppendedToLevel,
+    StateChanged
   }
 
   public class PolicyAppliedAction : GameEvent
   {
     public Policy Policy { get; set; }
+  }
+
+  public class LivingEntityStateChangedEvent : LivingEntityAction
+  {
+    public EntityState Old { get; set; }
+    public EntityState New { get; set; }
+
+    public LivingEntityStateChangedEvent(EntityState oldState, EntityState newState, LivingEntity involvedEntity)
+    {
+      Old = oldState;
+      New = newState;
+      this.Kind = LivingEntityActionKind.StateChanged;
+      this.InvolvedEntity = involvedEntity;
+      Info = InvolvedEntity.Name + " state changed to "+New.ToDescription();
+    }
   }
 
   public class LivingEntityAction : GameEvent
