@@ -37,6 +37,8 @@ namespace Roguelike.InfoScreens
       {
         if (leac.Kind == LivingEntityActionKind.Moved)
           return;
+        if (leac.Kind == LivingEntityActionKind.StateChanged)
+          return;
       }
 
       if (ac is InventoryAction ia && ia.Kind == InventoryActionKind.DragDropDone)
