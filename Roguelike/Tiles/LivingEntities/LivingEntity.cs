@@ -399,6 +399,9 @@ namespace Roguelike.Tiles.LivingEntities
 
       if (!this.EverHitBy.Contains(attacker))
         this.EverHitBy.Add(attacker);
+
+      if (State == EntityState.Sleeping)
+        State = EntityState.Idle;
     }
 
     protected virtual void OnDamageCaused(float inflicted, LivingEntity victim){}

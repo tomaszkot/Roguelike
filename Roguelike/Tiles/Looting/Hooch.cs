@@ -1,6 +1,9 @@
 ﻿using Roguelike.Attributes;
+using Roguelike.Extensions;
 using Roguelike.Factors;
+using Roguelike.Tiles.LivingEntities;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Roguelike.Tiles.Looting
 {
@@ -14,6 +17,7 @@ namespace Roguelike.Tiles.Looting
 
     public Hooch()
     {
+      TourLastingProperty = true;
       Symbol = '&';
       collectedSound = "bottle1";
       consumedSound = "drink";
@@ -27,6 +31,22 @@ namespace Roguelike.Tiles.Looting
       StatKind = EntityStatKind.Strength;
       SecondStatKind = EntityStatKind.ChanceToHit;
       TourLasting = 7;
+    }
+
+    public override List<LootStatInfo> GetLootStatInfo(LivingEntity caller)
+    {
+      var add = m_lootStatInfo == null;
+      var res = base.GetLootStatInfo(caller);
+      if (add)
+        res.Add(
+          new LootStatInfo()
+          {
+            EntityStatKind = EntityStatKind.ChanceToHit,
+            Kind = LootStatKind.Unset,
+            Desc = SecondStatKind.ToDescription() + ": " + GetSecondPercentageStatIncrease()
+          });
+      
+      return res;
     }
 
     public override PercentageFactor GetPercentageStatIncrease()

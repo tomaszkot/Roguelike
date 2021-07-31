@@ -5,6 +5,7 @@ using Roguelike.Attributes;
 using Roguelike.Tiles.Abstract;
 using Roguelike.Tiles.LivingEntities;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace Roguelike.Tiles
@@ -229,8 +230,8 @@ namespace Roguelike.Tiles
       return extraStatDescription;
     }
 
-    protected LootStatInfo[] m_lootStatInfo;
-    public virtual LootStatInfo[] GetLootStatInfo(LivingEntity caller)
+    protected List<LootStatInfo> m_lootStatInfo;
+    public virtual List<LootStatInfo> GetLootStatInfo(LivingEntity caller)
     {
       return m_lootStatInfo;
     }

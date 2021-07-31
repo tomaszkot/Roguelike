@@ -262,7 +262,7 @@ namespace Roguelike.Tiles.Looting
       return lootStatInfo;
     }
 
-    public override LootStatInfo[] GetLootStatInfo(LivingEntity caller)
+    public override List<LootStatInfo> GetLootStatInfo(LivingEntity caller)
     {
       if (m_lootStatInfo == null)
       {
@@ -279,7 +279,7 @@ namespace Roguelike.Tiles.Looting
         lootStatInfo = GetLootStatInfo(LootStatKind.Jewellery, EquipmentKind.Ring, gemKindInfo);
         lootStatsInfo.Add(lootStatInfo);
 
-        m_lootStatInfo = lootStatsInfo.ToArray();
+        m_lootStatInfo = lootStatsInfo;
 
       }
       return m_lootStatInfo;

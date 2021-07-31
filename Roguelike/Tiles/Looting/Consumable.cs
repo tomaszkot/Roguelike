@@ -4,6 +4,7 @@ using Roguelike.Extensions;
 using Roguelike.Factors;
 using Roguelike.Tiles.Abstract;
 using Roguelike.Tiles.LivingEntities;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace Roguelike.Tiles.Looting
@@ -67,17 +68,19 @@ namespace Roguelike.Tiles.Looting
       return desc;
     }
 
-    public override LootStatInfo[] GetLootStatInfo(LivingEntity caller)
+    public bool TourLastingProperty { get; set; }
+
+    public override List<LootStatInfo> GetLootStatInfo(LivingEntity caller)
     {
       if (m_lootStatInfo == null)
       {
-        m_lootStatInfo = new LootStatInfo[1];
+        m_lootStatInfo = new List<LootStatInfo>();
         var lsi = new LootStatInfo();
         lsi.Desc = statKind.ToDescription() + ": ";
         if (PercentageStatIncrease)
         {
           lsi.Desc += GetPercentageStatIncrease();
-          if (TourLasting > 1)
+          if (TourLasting > 1 && !TourLastingProperty)
             lsi.Desc += " (x" + TourLasting + " turns)";
         }
         else
@@ -85,7 +88,7 @@ namespace Roguelike.Tiles.Looting
 
         lsi.EntityStatKind = StatKind;
 
-        m_lootStatInfo[0] = lsi;
+        m_lootStatInfo.Add(lsi);
       }
 
       return m_lootStatInfo;

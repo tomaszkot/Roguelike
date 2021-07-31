@@ -83,7 +83,7 @@ namespace Roguelike.Tiles.Looting
     }
 
 
-    public override LootStatInfo[] GetLootStatInfo(LivingEntity caller)
+    public override List<LootStatInfo> GetLootStatInfo(LivingEntity caller)
     {
       if (m_lootStatInfo == null)
       {
@@ -105,7 +105,7 @@ namespace Roguelike.Tiles.Looting
         lootStatInfo.Kind = LootStatKind.Jewellery;
         lootStatInfos.Add(lootStatInfo);
 
-        m_lootStatInfo = lootStatInfos.ToArray();
+        m_lootStatInfo = lootStatInfos;
       }
       return base.GetLootStatInfo(caller);
     }

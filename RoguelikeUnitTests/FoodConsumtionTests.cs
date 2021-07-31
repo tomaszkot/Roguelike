@@ -77,6 +77,7 @@ namespace RoguelikeUnitTests
       var chanceToHit = Hero.Stats[EntityStatKind.ChanceToHit].CurrentValue;
 
       var hooch = new Hooch();
+      //Assert.AreEqual(hooch.PrimaryStatDescription, "");
       var added = Hero.Inventory.Add(hooch);
 
       Hero.Consume(hooch);
