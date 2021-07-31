@@ -922,10 +922,15 @@ namespace Roguelike.Managers
         merch.Inventory.Items.Add(loot);
       }
 
+      {
+        var loot = new Hooch();
+        loot.Revealed = true;
+        loot.Count = Generators.GenerationInfo.MaxMerchantHooch;
+        merch.Inventory.Items.Add(loot);
+      }
+
       if(!merch.Inventory.Items.Any(i=>i is Book))
         merch.Inventory.Items.Add(lootGenerator.GetRandomLoot(LootKind.Book, 1));
-
-      //merch.Inventory.Add(new Hooch() { Revealed = true });
 
       //int maxPotions = 4;
       //for (int numOfLootPerKind = 0; numOfLootPerKind < maxPotions; numOfLootPerKind++)

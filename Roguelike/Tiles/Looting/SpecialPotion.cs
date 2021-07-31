@@ -109,8 +109,8 @@ namespace Roguelike.Tiles.Looting
         //if (GameManager.Instance.GameSettings.GameControllingMode == GameControllingMode.MouseAndKeyboard)
         //  desc += "Press X in the inventory\r\nto consume";
         //else
-        desc += "Double Tap it in the inventory\r\nto consume";
-        extraStatDescription = new string[1];
+        //desc += "Double Tap it in the inventory\r\nto consume";
+        //extraStatDescription = new string[1];
         extraStatDescription[0] = desc;
       }
       return extraStatDescription;

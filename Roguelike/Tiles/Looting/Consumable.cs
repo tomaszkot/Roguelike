@@ -39,7 +39,7 @@ namespace Roguelike.Tiles.Looting
 
     public virtual EffectiveFactor StatKindEffective => new EffectiveFactor(0);
 
-    EffectiveFactor GetEffectiveStatIncrease() { return new EffectiveFactor(0); }
+    //EffectiveFactor GetEffectiveStatIncrease() { return new EffectiveFactor(0); }
     public bool NegativeFactor { get; set; }
     public string ConsumedSound { get => consumedSound; protected set => consumedSound = value; }
 

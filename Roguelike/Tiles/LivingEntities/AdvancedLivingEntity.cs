@@ -284,10 +284,17 @@ namespace Roguelike.Tiles.LivingEntities
           }
           else
           {
-            EffectType et = EffectType.ConsumedRawFood;
-            if (consumable.Roasted)
-              et = EffectType.ConsumedRoastedFood;
-            LastingEffectsSet.AddPercentageLastingEffect(et, consumable, consumable.Loot);
+            if (consumable is Hooch hooch)
+            {
+              LastingEffectsSet.AddPercentageLastingEffect(EffectType.Hooch, consumable, consumable.Loot);
+            }
+            else
+            {
+              EffectType et = EffectType.ConsumedRawFood;
+              if (consumable.Roasted)
+                et = EffectType.ConsumedRoastedFood;
+              LastingEffectsSet.AddPercentageLastingEffect(et, consumable, consumable.Loot);
+            }
           }
         }
 

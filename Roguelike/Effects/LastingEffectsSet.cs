@@ -50,7 +50,11 @@ namespace Roguelike.Effects
       {
         ApplyLastingEffect(le, true);
         if (le.Application != EffectApplication.EachTurn)
+        {
           HandleStatSubtraction(le, true);
+          if(le.Sibling!=null && le.Sibling.Application != EffectApplication.EachTurn)
+            HandleStatSubtraction(le.Sibling, true);
+        }
       }
 
       //let observers know it happened
@@ -88,13 +92,20 @@ namespace Roguelike.Effects
       var le = GetByType(eff);
       if (le == null || !CanBeProlonged(le))
       {
-        le = new LastingEffect(eff, livingEntity, calcEffectValue.Turns, origin, calcEffectValue.EffectiveFactor, calcEffectValue.PercentageFactor);
-        le.Source = source;
-        le.PendingTurns = calcEffectValue.Turns;
-        le.StatKind = esk;
+        le = CreateLE(calcEffectValue, origin, source, esk, eff);
 
-        if (eff == EffectType.TornApart)//this is basically a death
-          le.EffectiveFactor = new EffectiveFactor(this.livingEntity.Stats.Health);
+        if (eff == EffectType.Hooch)
+        {
+          var hooch = source as Hooch;
+          var percentValue = hooch.GetSecondPercentageStatIncrease().Value;
+          var effectiveFactor = this.livingEntity.CalcEffectiveFactor(hooch.SecondStatKind, percentValue);
+          var leci = CreateLastingEffectCalcInfo(eff, effectiveFactor.Value, percentValue, hooch.TourLasting);
+          var leSibling = CreateLE(leci, origin, source, hooch.SecondStatKind, eff);
+          //var leSibling = new LastingEffect(eff, livingEntity, calcEffectValue.Turns, origin,
+          //  leci.EffectiveFactor, leci.PercentageFactor);
+          le.Sibling = leSibling;
+        }
+
         AddLastingEffect(le);
       }
       else
@@ -102,6 +113,18 @@ namespace Roguelike.Effects
         ProlongEffect(Math.Abs(calcEffectValue.EffectiveFactor.Value), le, calcEffectValue.Turns);
       }
 
+      return le;
+    }
+
+    private LastingEffect CreateLE(LastingEffectCalcInfo calcEffectValue, EffectOrigin origin, Tile source, EntityStatKind esk, EffectType eff)
+    {
+      LastingEffect le = new LastingEffect(eff, livingEntity, calcEffectValue.Turns, origin, calcEffectValue.EffectiveFactor, calcEffectValue.PercentageFactor);
+      le.Source = source;
+      le.PendingTurns = calcEffectValue.Turns;
+      le.StatKind = esk;
+
+      if (eff == EffectType.TornApart)//this is basically a death
+        le.EffectiveFactor = new EffectiveFactor(this.livingEntity.Stats.Health);
       return le;
     }
 
@@ -164,6 +187,11 @@ namespace Roguelike.Effects
       LastingEffectApplied?.Invoke(this, le);
 
       livingEntity.DieIfShould(le.Type);
+      if (this.livingEntity.Alive)
+      {
+        if (le.Sibling != null)
+          ApplyLastingEffect(le.Sibling, newOne);
+      }
     }
 
     private void HandleStatSubtraction(LastingEffect le, bool add)
@@ -214,7 +242,11 @@ namespace Roguelike.Effects
 
         //HandleStatSubtraction(le, true);
         if (le.Application != EffectApplication.EachTurn)
+        {
           HandleStatSubtraction(le, false);
+          if(le.Sibling != null && le.Sibling.Application != EffectApplication.EachTurn)
+            HandleStatSubtraction(le.Sibling, false);
+        }
 
         if (LastingEffectDone != null)
           LastingEffectDone(this, le);
@@ -338,7 +370,7 @@ namespace Roguelike.Effects
       var calcEffectValue = CalcLastingEffectInfo(eff, src);
 
       var origin = EffectOrigin.Unset;
-      if (eff == EffectType.Rage || eff == EffectType.IronSkin)
+      if (eff == EffectType.Rage || eff == EffectType.IronSkin || eff == EffectType.Hooch)
       {
         origin = EffectOrigin.SelfCasted;
       }

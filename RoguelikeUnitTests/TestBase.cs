@@ -254,6 +254,12 @@ namespace RoguelikeUnitTests
       GotoNextHeroTurn(game);
     }
 
+    protected void SkipTurns(int number)
+    {
+      for(int i=0;i<number;i++)
+        GotoNextHeroTurn();
+    }
+
     protected void GotoNextHeroTurn(Roguelike.RoguelikeGame game = null)
     {
       if (game == null)

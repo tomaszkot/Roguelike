@@ -419,7 +419,11 @@ namespace Roguelike.Generators
       }
       else if (kind == LootKind.Other)
       {
-        res = new MagicDust();
+        var rand = RandHelper.GetRandomDouble();
+        if(rand > 0.5f)
+          res = new MagicDust();
+        else
+          res = new Hooch();
       }
       else
         Debug.Assert(false);

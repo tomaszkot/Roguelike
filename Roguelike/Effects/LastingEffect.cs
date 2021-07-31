@@ -111,6 +111,8 @@ namespace Roguelike.Effects
       }
     }
 
+    public LastingEffect Sibling { get; set; }
+
     public static string CalcUniqueId(EffectType type, Tile source)
     {
       var id = type.ToString();
@@ -157,7 +159,8 @@ namespace Roguelike.Effects
          type == EffectType.Firing ||
          type == EffectType.ConsumedRawFood ||
          type == EffectType.ConsumedRoastedFood ||
-         type == EffectType.BushTrap)
+         type == EffectType.BushTrap //||
+         )
       {
         Application = EffectApplication.EachTurn;
       }

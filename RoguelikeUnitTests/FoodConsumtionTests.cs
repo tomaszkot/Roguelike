@@ -1,5 +1,8 @@
 ﻿using NUnit.Framework;
+using Roguelike.Attributes;
 using Roguelike.Tiles;
+using Roguelike.Tiles.Looting;
+using System;
 using System.Linq;
 
 namespace RoguelikeUnitTests
@@ -65,40 +68,105 @@ namespace RoguelikeUnitTests
       Assert.AreEqual(diff, expectedHealthRestore);
     }
 
-    //[Test]
-    //public void TestHooch()
-    //{
-    //  var attack = Hero.Stats.Stats[EntityStatKind.Strength].CurrentValue;
-    //  var chanceToHit = Hero.Stats.Stats[EntityStatKind.ChanceToHit].CurrentValue;
+    [Test]
+    public void TestHooch()
+    {
+      var game = CreateGame();
+      var Hero = game.Hero;
+      var attack = Hero.Stats[EntityStatKind.Strength].CurrentValue;
+      var chanceToHit = Hero.Stats[EntityStatKind.ChanceToHit].CurrentValue;
 
-    //  var hooch = new Hooch();
-    //  var added = Hero.Inventory.Add(hooch);
+      var hooch = new Hooch();
+      var added = Hero.Inventory.Add(hooch);
 
-    //  Hero.Consume(hooch);
-    //  Assert.IsTrue(Hero.LastingEffects.Any());
-    //  Assert.IsTrue(Hero.LastingEffects.Where(i => i.Type == Roguelike.Tiles.LivingEntities.LivingEntity.EffectType.Hooch).Any());
+      Hero.Consume(hooch);
+      Assert.IsTrue(Hero.LastingEffects.Any());
+      var le = Hero.LastingEffects.Where(i => i.Type == Roguelike.Effects.EffectType.Hooch);
+      Assert.IsTrue(le.Any());
 
-    //  var hoochAttack = Hero.Stats.Stats[EntityStatKind.Strength];
-    //  var hoochChanceToHit = Hero.Stats.Stats[EntityStatKind.ChanceToHit];
-    //  AssertGreater(hoochAttack.CurrentValue, attack);
-    //  AssertLess(hoochChanceToHit.CurrentValue, chanceToHit);
+      Action assertGreater = () =>
+      {
+        var hoochAttack = Hero.Stats[EntityStatKind.Strength];
+        var hoochChanceToHit = Hero.Stats[EntityStatKind.ChanceToHit];
+        Assert.Greater(hoochAttack.CurrentValue, attack);
+        Assert.Less(hoochChanceToHit.CurrentValue, chanceToHit);
+      };
 
-    //  SkipTurns(1);
+      assertGreater();
 
-    //  //still on
-    //  hoochAttack = Hero.Stats.Stats[EntityStatKind.Strength];
-    //  hoochChanceToHit = Hero.Stats.Stats[EntityStatKind.ChanceToHit];
-    //  AssertGreater(hoochAttack.CurrentValue, attack);
-    //  AssertLess(hoochChanceToHit.CurrentValue, chanceToHit);
+      SkipTurns(1);
 
-    //  SkipTurns(6);
+      //still on
+      assertGreater();
 
-    //  //now shall be off
-    //  Assert.IsFalse(Hero.LastingEffects.Where(i => i.Type == Roguelike.Tiles.LivingEntities.LivingEntity.EffectType.Hooch).Any());
-    //  hoochAttack = Hero.Stats.Stats[EntityStatKind.Strength];
-    //  hoochChanceToHit = Hero.Stats.Stats[EntityStatKind.ChanceToHit];
-    //  Assert.AreEqual(hoochAttack.CurrentValue, attack);
-    //  Assert.AreEqual(hoochChanceToHit.CurrentValue, chanceToHit);
-    //}
+      SkipTurns(6);
+
+      //now shall be off
+      Assert.IsFalse(le.Any());
+      var hoochAttackAfter = Hero.Stats[EntityStatKind.Strength];
+      var hoochChanceToHitAfter = Hero.Stats[EntityStatKind.ChanceToHit];
+      Assert.AreEqual(hoochAttackAfter.CurrentValue, attack);
+      Assert.AreEqual(hoochChanceToHitAfter.CurrentValue, chanceToHit);
+    }
+
+    [Test]
+    public void TestHoochDrunkTwice()
+    {
+      var game = CreateGame();
+      var Hero = game.Hero;
+      var attack = Hero.Stats[EntityStatKind.Strength].CurrentValue;
+      var chanceToHit = Hero.Stats[EntityStatKind.ChanceToHit].CurrentValue;
+
+      var hooch = new Hooch();
+      var added = Hero.Inventory.Add(hooch);
+
+      Hero.Consume(hooch);
+      Assert.IsTrue(Hero.LastingEffects.Any());
+      var le = Hero.LastingEffects.Where(i => i.Type == Roguelike.Effects.EffectType.Hooch);
+      Assert.IsTrue(le.Any());
+      float strengthWithLE = 0;
+      float chanceToHitWithLE = 0;
+
+      Action assertGreater = () =>
+      {
+        var hoochAttack = Hero.Stats[EntityStatKind.Strength];
+        var hoochChanceToHit = Hero.Stats[EntityStatKind.ChanceToHit];
+        Assert.Greater(hoochAttack.CurrentValue, attack);
+        Assert.Less(hoochChanceToHit.CurrentValue, chanceToHit);
+        if (strengthWithLE == 0)
+        {
+          strengthWithLE = hoochAttack.CurrentValue;
+          chanceToHitWithLE = hoochChanceToHit.CurrentValue;
+        }
+      };
+
+      assertGreater();
+            
+      SkipTurns(1);
+
+      //still on
+      assertGreater();
+
+      hooch = new Hooch();
+      added = Hero.Inventory.Add(hooch);
+      Hero.Consume(hooch);
+
+      //shall be same
+      var str = Hero.Stats[EntityStatKind.Strength].CurrentValue;
+      Assert.AreEqual(str, strengthWithLE);
+      Assert.AreEqual(Hero.Stats[EntityStatKind.ChanceToHit].CurrentValue, chanceToHitWithLE);
+
+      SkipTurns(6);
+
+      //now shall be on - prolonged
+      Assert.IsTrue(le.Any());
+      SkipTurns(1);
+      //now shall be off
+      Assert.IsFalse(le.Any());
+      var hoochAttackAfter = Hero.Stats[EntityStatKind.Strength];
+      var hoochChanceToHitAfter = Hero.Stats[EntityStatKind.ChanceToHit];
+      Assert.AreEqual(hoochAttackAfter.CurrentValue, attack);
+      Assert.AreEqual(hoochChanceToHitAfter.CurrentValue, chanceToHit);
+    }
   }
 }
