@@ -85,7 +85,7 @@ namespace Roguelike.Tiles.Looting
 
     public override List<LootStatInfo> GetLootStatInfo(LivingEntity caller)
     {
-      if (m_lootStatInfo == null)
+      if (m_lootStatInfo == null || !m_lootStatInfo.Any())
       {
         var lootStatInfos = new List<LootStatInfo>();
         var props = enhancmentProps[this.TinyTrophyKind];

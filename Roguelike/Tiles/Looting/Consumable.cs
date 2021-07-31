@@ -72,7 +72,7 @@ namespace Roguelike.Tiles.Looting
 
     public override List<LootStatInfo> GetLootStatInfo(LivingEntity caller)
     {
-      if (m_lootStatInfo == null)
+      if (m_lootStatInfo == null || !m_lootStatInfo.Any())
       {
         m_lootStatInfo = new List<LootStatInfo>();
         var lsi = new LootStatInfo();

@@ -230,7 +230,7 @@ namespace Roguelike.Tiles
       return extraStatDescription;
     }
 
-    protected List<LootStatInfo> m_lootStatInfo;
+    protected List<LootStatInfo> m_lootStatInfo = new List<LootStatInfo>();
     public virtual List<LootStatInfo> GetLootStatInfo(LivingEntity caller)
     {
       return m_lootStatInfo;

@@ -35,7 +35,7 @@ namespace Roguelike.Tiles.Looting
 
     public override List<LootStatInfo> GetLootStatInfo(LivingEntity caller)
     {
-      var add = m_lootStatInfo == null;
+      var add = m_lootStatInfo == null || !m_lootStatInfo.Any();
       var res = base.GetLootStatInfo(caller);
       if (add)
         res.Add(
