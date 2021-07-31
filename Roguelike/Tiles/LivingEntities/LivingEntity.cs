@@ -31,7 +31,7 @@ namespace Roguelike.Tiles.LivingEntities
   {
     protected int StartStrength = 10;
     public static readonly EntityStat BaseStrength = new EntityStat(EntityStatKind.Strength, 10);
-    public static readonly EntityStat BaseHealth = new EntityStat(EntityStatKind.Health, 12);
+    public static readonly EntityStat BaseHealth = new EntityStat(EntityStatKind.Health, 10);
     public static readonly EntityStat BaseDefence = new EntityStat(EntityStatKind.Defense, 7);
     public static readonly EntityStat BaseDexterity = new EntityStat(EntityStatKind.Dexterity, 10);
     public static readonly EntityStat BaseMana = new EntityStat(EntityStatKind.Mana, 10);

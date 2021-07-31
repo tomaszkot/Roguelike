@@ -96,9 +96,11 @@ namespace Roguelike.Managers
     public SoundManager SoundManager { get; set; }
     public LevelGenerator LevelGenerator { get => levelGenerator; set => levelGenerator = value; }
     public LootManager LootManager { get => lootManager; protected set => lootManager = value; }
+    static GameManager _debugCurrentInstance;
 
     public GameManager(Container container)
     {
+      _debugCurrentInstance = this;
       Container = container;
 
       gameState = container.GetInstance<GameState>();
@@ -134,7 +136,7 @@ namespace Roguelike.Managers
 
     public void DisconnectEvents()
     {
-      EventsManager.ActionAppended -= EventsManager_ActionAppended;
+      //EventsManager.ActionAppended -= EventsManager_ActionAppended;
     }
 
     protected virtual void CreateInputManager()
@@ -275,6 +277,8 @@ namespace Roguelike.Managers
 
     protected virtual void OnActionAppended(GameEvent e)
     {
+      if (this != _debugCurrentInstance)
+        throw new Exception("this != _debugCurrentInstance");
       //var pac = e as PolicyAppliedAction;
       //if (pac!=null)
       //{
