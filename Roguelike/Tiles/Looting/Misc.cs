@@ -57,9 +57,9 @@
       //LootKind = LootKind.Other;
     }
 
-    public override string GetUniqueName()
+    public override string GetId()
     {
-      return Kind + "_" + base.GetUniqueName();
+      return Kind + "_" + base.GetId();
     }
   }
 }

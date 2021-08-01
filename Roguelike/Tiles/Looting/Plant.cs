@@ -63,9 +63,9 @@ namespace Roguelike.Tiles
       PrimaryStatDescription = desc;
     }
 
-    public override string GetUniqueName()
+    public override string GetId()
     {
-      return base.GetUniqueName() + "_" + Kind;
+      return base.GetId() + "_" + Kind;
     }
 
     //public override float GetStatIncrease(LivingEntity caller)

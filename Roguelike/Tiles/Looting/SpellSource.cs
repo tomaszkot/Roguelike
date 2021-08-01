@@ -229,9 +229,9 @@ namespace Roguelike.Tiles.Looting
       return ispell as T;
     }
 
-    public override string GetUniqueName()
+    public override string GetId()
     {
-      return base.GetUniqueName() + "_" + Kind;
+      return base.GetId() + "_" + Kind;
     }
         
     public virtual ISpell CreateSpell(LivingEntity caller)

@@ -58,9 +58,9 @@ namespace Roguelike.Tiles.Looting
         throw new Exception("kind == PotionKind.Unset");
     }
 
-    public override string GetUniqueName()
+    public override string GetId()
     {
-      return base.GetUniqueName() + "_" + Kind.ToString();
+      return base.GetId() + "_" + Kind.ToString();
     }
 
     public override string ToString()

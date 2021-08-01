@@ -141,7 +141,6 @@ namespace Roguelike.LootContainers
       var stackedItem = GetStackedItem(loot);
       if (stackedItem == null)
       {
-        loot.OwnerId = this.Owner.Id;
         Items.Add(loot);
         stackedItem = loot;
       }
@@ -157,20 +156,15 @@ namespace Roguelike.LootContainers
       return 0;
     }
 
-    IEnumerable<StackedLoot> GetStackedLoot()
-    {
-      return Items.Where(i => i is StackedLoot).Cast<StackedLoot>();
-    }
-
     public StackedLoot GetStackedLoot(string lootName)
     {
-      return GetStackedLoot().Where(i => i.Name == lootName).FirstOrDefault() as StackedLoot;
+      return Items.Where(i => i is StackedLoot).Where(i => i.Name == lootName).FirstOrDefault() as StackedLoot;
     }
 
     public int GetStackedCount(string lootName)
     {
-      var stacked = GetStackedLoot(lootName);
-      return stacked!=null ? stacked.Count : 0;
+      var stacked = Items.Where(i => i is StackedLoot sl).Where(i => i.Name == lootName).FirstOrDefault();
+      return stacked != null ? GetStackedCount(stacked as StackedLoot) : 0;
     }
 
     public List<T> GetStacked<T>() where T : StackedLoot
@@ -178,9 +172,9 @@ namespace Roguelike.LootContainers
       return Items.Where(i => i.GetType() == typeof(T)).Cast<T>().ToList();
     }
 
-    public StackedLoot GetStackedItem(Loot item)
+    protected StackedLoot GetStackedItem(Loot loot)
     {
-      return GetStackedLoot(item.Name);
+      return Items.FirstOrDefault(i => i == loot) as StackedLoot;
     }
 
     public virtual bool Add
@@ -284,7 +278,7 @@ namespace Roguelike.LootContainers
             stackedItemCount -= arg.StackedCount;
             SetStackCount(stackedItem, stackedItemCount);
             if (stackedItemCount <= 0)
-              itemToRemove = stackedItem;
+              itemToRemove = item;
 
             sendSignal = true;
             res = true;
@@ -298,7 +292,7 @@ namespace Roguelike.LootContainers
 
       if (itemToRemove != null)
       {
-        res = Items.Remove(itemToRemove);
+        res = Items.Remove(item);
         if (!res)
         {
           Assert(false);
@@ -316,9 +310,6 @@ namespace Roguelike.LootContainers
 
     public bool Contains(Loot item)
     {
-      var stacked = item as StackedLoot;
-      if (stacked!=null)
-        return GetStackedItem(stacked)!=null;
       return Items.Contains(item);
     }
 

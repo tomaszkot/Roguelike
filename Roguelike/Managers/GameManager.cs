@@ -814,7 +814,7 @@ namespace Roguelike.Managers
       Loot sold = loot;
       if (loot.StackedInInventory)
       {
-        sold = (loot as StackedLoot).Clone(removeItemArg.StackedCount, destInv.Owner.Id);
+        sold = (loot as StackedLoot).Clone(removeItemArg.StackedCount);
       }
 
       bool added = destInv.Add(sold, addItemArg);

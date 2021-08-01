@@ -25,7 +25,7 @@ namespace RoguelikeUnitTests
       Assert.True(hp1 == hp1);
 #pragma warning restore 
       Assert.True(hp1.Equals(hp1));
-      //Assert.True(hp1.Equals(hp2));
+      Assert.True(hp1.Equals(hp2));
 
       var mp1 = new Potion();
       mp1.SetKind(PotionKind.Mana);
@@ -58,13 +58,6 @@ namespace RoguelikeUnitTests
       game.Hero.Inventory.Add(hp3);
 
       Assert.AreEqual(game.Hero.Inventory.ItemsCount, 2);
-
-      var hp4 = new Potion();
-      var merch = game.GameManager.CurrentNode.GetTiles<Merchant>().First();
-      var hp41 = hp4.Clone(1, merch.Id);
-      
-      Assert.False(hp4.Equals(hp41));
-      Assert.False(hp4 == hp41);
     }
 
     [Test]

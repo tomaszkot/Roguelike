@@ -125,7 +125,7 @@ namespace RoguelikeUnitTests
       try
       {
         var lootInfo = new LootInfo(game, null);
-        ILootSource lootSrc = ActiveEnemies.First();
+        ILootSource lootSrc = ActiveEnemies.First();//env.Game.Hero
         for (int i = 0; i < 10; i++)
         {
           var pot = env.LootGenerator.GetRandomLoot(LootKind.Potion, 1);

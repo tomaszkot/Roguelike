@@ -133,9 +133,9 @@ namespace Roguelike.Tiles.Looting
       set { }
     }
 
-    public override string GetUniqueName()
+    public override string GetId()
     {
-      return base.GetUniqueName() + "_" + Kind;
+      return base.GetId() + "_" + Kind;
     }
 
   }

@@ -75,9 +75,9 @@ namespace Roguelike.Tiles.Looting
       }
     }
 
-    public override string GetUniqueName()
+    public override string GetId()
     {
-      return base.GetUniqueName() + "_" + GemKind + "_" + EnchanterSize;
+      return base.GetId() + "_" + GemKind + "_" + EnchanterSize;
     }
 
     static Gem()
