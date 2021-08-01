@@ -112,9 +112,9 @@ namespace Roguelike.Tiles.Looting
       return MemberwiseClone() as Recipe;
     }
 
-    public override string GetId()
+    public override string GetUniqueName()
     {
-      return base.GetId() + Kind;
+      return base.GetUniqueName() + Kind;
     }
 
     public RecipeKind Kind

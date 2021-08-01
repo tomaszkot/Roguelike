@@ -154,12 +154,8 @@ namespace Roguelike.Tiles
       var other = obj as Loot;
       if (other == null)
         return false;
-      if (this.StackedInInventory != other.StackedInInventory)
-        return false;
-      if (!this.StackedInInventory)
-        return this.GetHashCode() == other.GetHashCode();
-
-      return (this as Looting.StackedLoot).GetId() == (other as Looting.StackedLoot).GetId();
+      
+      return this.Id == other.Id;
     }
 
     public virtual bool IsConsumable()

@@ -2,6 +2,8 @@
 using Dungeons.Tiles;
 using Roguelike.Tiles.Interactive;
 using SimpleInjector;
+using System;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 
@@ -57,9 +59,9 @@ namespace Roguelike.Generators.TileContainers
       return reveal;
     }
 
-    public override Tile SetTileAtRandomPosition(Tile tile, bool matchNodeIndex = true)
+    public override Tile SetTileAtRandomPosition(Tile tile, Func<Dungeons.Tiles.Tile, bool> filter = null, bool matchNodeIndex = true)
     {
-      var tileSet = base.SetTileAtRandomPosition(tile, matchNodeIndex);
+      var tileSet = base.SetTileAtRandomPosition(tile, filter, matchNodeIndex);
       if (tileSet != null)
       {
         var doors = GetNeighborTiles<Door>(tileSet);
@@ -75,13 +77,13 @@ namespace Roguelike.Generators.TileContainers
       return tileSet;
     }
 
-    public T SetTileAtRandomPosition<T>(int levelIndex, bool matchNodeIndex = true) where T : Tile, new()
+    public T SetTileAtRandomPosition<T>(int levelIndex, Func<Dungeons.Tiles.Tile, bool> filter = null, bool matchNodeIndex = true) where T : Tile, new()
     {
       var tile = new T();
       var inter = tile as Roguelike.Tiles.Interactive.InteractiveTile;
       if (inter != null)
         inter.Level = levelIndex;
-      return SetTileAtRandomPosition(tile, matchNodeIndex) as T;
+      return SetTileAtRandomPosition(tile, filter, matchNodeIndex) as T;
     }
   }
 }

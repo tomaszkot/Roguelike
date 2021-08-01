@@ -37,9 +37,9 @@ namespace Roguelike.Tiles.Looting
       enhancmentProps[HunterTrophyKind.Claw] = enhancmentPropsClaw;
     }
 
-    public override string GetId()
+    public override string GetUniqueName()
     {
-      return base.GetId() + TinyTrophyKind + " " + EnchanterSize;
+      return base.GetUniqueName() + TinyTrophyKind + " " + EnchanterSize;
     }
 
     public HunterTrophy(HunterTrophyKind kind)

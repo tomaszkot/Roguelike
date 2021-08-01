@@ -177,11 +177,12 @@ namespace RoguelikeUnitTests
       var merch = game.GameManager.CurrentNode.GetTiles<Merchant>().First();
 
       var merchGold = merch.Gold;
-      Assert.NotNull(game.GameManager.SellItem(loot, hero, merch));
-      Assert.True(merch.Inventory.Contains(loot));
+      Loot sold = game.GameManager.SellItem(loot, hero, merch);
+      Assert.NotNull(sold);
+      Assert.True(merch.Inventory.Contains(sold));
       Assert.Less(merch.Gold, merchGold);
 
-      var priceInMerchInv = merch.GetPrice(loot);
+      var priceInMerchInv = merch.GetPrice(sold);
       Assert.Greater(priceInMerchInv, priceInHeroInv);
     }
 

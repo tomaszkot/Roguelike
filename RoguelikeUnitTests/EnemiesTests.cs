@@ -30,9 +30,17 @@ namespace RoguelikeUnitTests
 
       var enemy1 = SpawnEnemy();
       enemy1.Symbol = EnemySymbols.SpiderSymbol;
+
+      ResetStatsIncreased(enemy1);
       Assert.True(enemy1.SetLevel(2));
       Assert.AreEqual(enemy1.Level, 2);
       Assert.Greater(enemy1.GetNonPhysicalDamages()[EntityStatKind.PoisonAttack], poisonVal);
+    }
+
+    void ResetStatsIncreased(Enemy en)
+    {
+      en.StatsIncreased[IncreaseStatsKind.Level] = false;
+      en.StatsIncreased[IncreaseStatsKind.Difficulty] = false;
     }
 
     [Test]
@@ -73,6 +81,7 @@ namespace RoguelikeUnitTests
       Assert.Greater(GetHitAttackValue(chemp), enemyHitValue);
       Assert.Greater(GetHitAttackValue(boss), GetHitAttackValue(chemp));
 
+      ResetStatsIncreased(enemy);
       SetEnemyLevel(enemy, enemy.Level + 1);
       var newLevelEnemyHitValue = GetHitAttackValue(enemy);
       Assert.Greater(newLevelEnemyHitValue, enemyHitValue);

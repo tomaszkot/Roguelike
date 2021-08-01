@@ -152,9 +152,9 @@ namespace Roguelike.Tiles
       PrimaryStatDescription = desc;
     }
 
-    public override string GetId()
+    public override string GetUniqueName()
     {
-      return base.GetId() + "_" + Kind + "_" + Roasted;
+      return base.GetUniqueName() + "_" + Kind + "_" + Roasted;
     }
   }
 }

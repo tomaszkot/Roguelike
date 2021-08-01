@@ -27,13 +27,13 @@ namespace Roguelike.TileContainers
     {
     }
 
-    internal T SetTileAtRandomPosition<T>(int levelIndex, bool matchNodeIndex = true) where T : Tile, new()
+    internal T SetTileAtRandomPosition<T>(int levelIndex, Func<Tile, bool> filter, bool matchNodeIndex = true) where T : Tile, new()
     {
       var tile = new T();
       var inter = tile as Roguelike.Tiles.Interactive.InteractiveTile;
       if (inter != null)
         inter.Level = levelIndex;
-      return SetTileAtRandomPosition(tile, matchNodeIndex) as T;
+      return SetTileAtRandomPosition(tile, filter, matchNodeIndex) as T;
     }
 
     public override void OnHeroPlaced(Hero hero)

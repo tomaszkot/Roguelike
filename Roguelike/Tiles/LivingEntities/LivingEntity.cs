@@ -69,6 +69,21 @@ namespace Roguelike.Tiles.LivingEntities
     public string OriginMap { get; set; }
     SpellSource activeManaPoweredSpellSource;
 
+    public Guid Id
+    {
+      get
+      {
+        return id;
+      }
+
+      set
+      {
+        id = value;
+      }
+    }
+
+    Guid id = Guid.NewGuid();
+
     public virtual SpellSource ActiveManaPoweredSpellSource
     {
       get

@@ -23,9 +23,9 @@ namespace Roguelike.Tiles
       Price = 15;
     }
 
-    public override string GetId()
+    public override string GetUniqueName()
     {
-      return base.GetId() + "_" + MushroomKind.ToString();
+      return base.GetUniqueName() + "_" + MushroomKind.ToString();
     }
 
     public void SetMushroomKind(MushroomKind kind)

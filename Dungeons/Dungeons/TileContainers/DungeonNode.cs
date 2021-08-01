@@ -403,7 +403,8 @@ namespace Dungeons
       (
         GenerationConstraints constraints = null,
         bool canBeNextToDoors = true,
-        bool nodeIndexMustMatch = false//allows skipping childIsland tiles
+        bool nodeIndexMustMatch = false,//allows skipping childIsland tiles,
+        Func<Tile, bool> filter = null
       )
       {
         var tt = new TimeTracker();
@@ -416,11 +417,14 @@ namespace Dungeons
           )
           {
             var tile = tiles[row, col];
-            if (!nodeIndexMustMatch || tile.dungeonNodeIndex == NodeIndex)
+            if (filter == null || !filter(tile))
             {
-              var pt = new Point(col, row);
-              if (constraints == null || (constraints.IsInside(pt)))
-                emptyTiles.Add(tile);
+              if (!nodeIndexMustMatch || tile.dungeonNodeIndex == NodeIndex)
+              {
+                var pt = new Point(col, row);
+                if (constraints == null || (constraints.IsInside(pt)))
+                  emptyTiles.Add(tile);
+              }
             }
           }
         });
@@ -436,9 +440,10 @@ namespace Dungeons
         return emptyTiles;
       }
 
-      public Tile GetRandomEmptyTile(GenerationConstraints constraints = null, bool canBeNextToDoors = true, int? nodeIndex = null)
+      public Tile GetRandomEmptyTile(Func<Tile, bool> filter = null, //TODO tk
+        GenerationConstraints constraints = null, bool canBeNextToDoors = true, int? nodeIndex = null)
       {
-        var emptyTiles = GetEmptyTiles(constraints, canBeNextToDoors);
+        var emptyTiles = GetEmptyTiles(constraints, canBeNextToDoors, filter : filter);
 
         return GetRandomEmptyTile(emptyTiles, nodeIndex);
       }
@@ -1012,16 +1017,20 @@ namespace Dungeons
         return pt.X >= 0 && pt.Y >= 0 && pt.X < this.Width && pt.Y < this.Height;
       }
 
-      public virtual Tile GetClosestEmpty(Tile baseTile, bool sameNodeId = false, List<Tile> skip = null, bool incDiagonals = true)
+      public virtual Tile GetClosestEmpty(Tile baseTile, bool sameNodeId = false, List<Tile> skip = null, bool incDiagonals = true,
+                          Func<Tile, bool> filter = null)
       {
         var fastVersionResult = GetEmptyNeighborhoodPoint(baseTile);
         if (fastVersionResult != null)
         {
           var tile = GetTile(fastVersionResult.Item1);
-          if (skip == null || !skip.Contains(tile))
+          if (filter == null || !filter(tile))
           {
-            if (tile != null && (!sameNodeId || tile.DungeonNodeIndex == baseTile.DungeonNodeIndex))
-              return tile;
+            if (skip == null || !skip.Contains(tile))
+            {
+              if (tile != null && (!sameNodeId || tile.DungeonNodeIndex == baseTile.DungeonNodeIndex))
+                return tile;
+            }
           }
         }
 
@@ -1029,6 +1038,8 @@ namespace Dungeons
         var emptyTiles = GetEmptyTiles();
         if (skip != null)
           emptyTiles.RemoveAll(i => skip.Contains(i));
+        if(filter !=null)
+          emptyTiles.RemoveAll(i => filter(i));
         if (sameNodeId)
           emptyTiles = emptyTiles.Where(i => i.DungeonNodeIndex == baseTile.DungeonNodeIndex).ToList();
         return GetClosestEmpty(baseTile, emptyTiles);
@@ -1060,10 +1071,10 @@ namespace Dungeons
         return GetTiles<Tile>();
       }
 
-      public virtual Tile SetTileAtRandomPosition(Tile tile, bool matchNodeIndex = true)
+      public virtual Tile SetTileAtRandomPosition(Tile tile, Func<Dungeons.Tiles.Tile, bool> filter =null, bool matchNodeIndex = true)
       {
         var node = matchNodeIndex == true ? (int?)NodeIndex : null;
-        var empty = this.GetRandomEmptyTile(nodeIndex: node);
+        var empty = this.GetRandomEmptyTile(filter, nodeIndex: node);
         if (empty == null)
           return null;
 
@@ -1072,10 +1083,10 @@ namespace Dungeons
         return set ? tile : null;
       }
 
-      internal T SetTileAtRandomPosition<T>(bool matchNodeIndex = true) where T : Tile, new()
+      internal T SetTileAtRandomPosition<T>(Func<Dungeons.Tiles.Tile, bool> filter, bool matchNodeIndex = true) where T : Tile, new()
       {
         var tile = new T();
-        return SetTileAtRandomPosition(tile, matchNodeIndex) as T;
+        return SetTileAtRandomPosition(tile, filter, matchNodeIndex) as T;
       }
     }
   }

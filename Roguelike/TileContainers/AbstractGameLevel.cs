@@ -126,12 +126,15 @@ namespace Roguelike.TileContainers
       return GetEmptyNeighborhoodTiles(baseTile, true);
     }
 
-    public override Tile GetClosestEmpty(Tile baseTile, bool sameNodeId = false, List<Tile> skip = null, bool incDiagonals = true)
+    public override Tile GetClosestEmpty(Tile baseTile, bool sameNodeId = false, List<Tile> skip = null, bool incDiagonals = true,
+      Func<Tile, bool> filter = null)
     {
-      return base.GetClosestEmpty(baseTile, sameNodeId, skip);
+      //if (filter == null)
+      //  filter = GetLootFilter();
+      return base.GetClosestEmpty(baseTile, sameNodeId, skip, filter:filter);
     }
 
-    bool IsLootTile(Tile tile)
+    public bool IsLootTile(Tile tile)
     {
       return Loot.Any(j => j.Value.point == tile.point);
     }
@@ -249,6 +252,14 @@ namespace Roguelike.TileContainers
     public virtual void OnGenerationDone()
     {
 
+    }
+
+    public Func<Dungeons.Tiles.Tile, bool> GetLootFilter()
+    {
+      return (Dungeons.Tiles.Tile t) =>
+      {
+        return IsLootTile(t);
+      };
     }
 
     public bool RemoveLoot(Point point)
@@ -599,6 +610,11 @@ namespace Roguelike.TileContainers
         return sur.Kind;
 
       return kind;
+    }
+
+    public Tile GetRandomEmptyTile(GenerationConstraints constraints = null, bool canBeNextToDoors = true, int? nodeIndex = null)
+    {
+      return GetRandomEmptyTile(GetLootFilter(), constraints, canBeNextToDoors, nodeIndex);
     }
   }
 }
