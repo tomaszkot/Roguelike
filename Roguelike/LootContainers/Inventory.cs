@@ -24,11 +24,7 @@ namespace Roguelike.LootContainers
 
     }
   }
-
-  //public class CurrentEquipmentRemoveItemArg : AddItemArg
-  //{
-  //}
-
+    
   public class AddItemArg
   {
     public bool notifyObservers = true;
