@@ -130,7 +130,7 @@ namespace Roguelike.Managers
             lootItems.Add(lootEx1);
           GameManager.AddLootReward(lootEx1, lootSource, true);
 
-          if (chest.ChestKind == ChestKind.GoldDeluxe)
+          if (chest.ChestKind == ChestKind.GoldDeluxe || RandHelper.GetRandomDouble() > 0.33f)
           {
             var lootEx2 = GetExtraLoot(lootSource, true, loot.LootKind);
             if (lootEx2 != null)

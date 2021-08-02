@@ -592,8 +592,9 @@ namespace Roguelike.Tiles.LivingEntities
       }
       var attacker = spell.Caller;
       ReduceHealth(attacker, sound, damageDesc, srcName, ref amount);
-      
-      lastingEffectsSet.TryAddLastingEffectOnHit(amount, attacker, spell);
+
+      LastingEffectsSet.TryAddLastingEffectOnHit(amount, attacker, spell);
+      //lastingEffectsSet.TryAddLastingEffectOnHit(amount, attacker, spell);
     }
 
     //static LastingEffectCalcInfo heBase = new LastingEffectCalcInfo(EffectType.Unset, 0, new EffectiveFactor(0), new PercentageFactor(0));

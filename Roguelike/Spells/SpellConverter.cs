@@ -11,7 +11,8 @@ namespace Roguelike.Spells
         case SpellKind.Unset:
           break;
         case SpellKind.FireBall:
-          break;
+          return EffectType.Firing;
+          
         case SpellKind.CrackedStone:
           break;
         case SpellKind.Skeleton:
@@ -19,9 +20,10 @@ namespace Roguelike.Spells
         case SpellKind.Trap:
           break;
         case SpellKind.IceBall:
-          break;
+          return EffectType.Frozen;
+          
         case SpellKind.PoisonBall:
-          break;
+          return EffectType.Poisoned;
         case SpellKind.Transform:
           return EffectType.Transform;
         case SpellKind.Frighten:

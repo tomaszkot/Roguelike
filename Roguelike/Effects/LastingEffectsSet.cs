@@ -285,7 +285,8 @@ namespace Roguelike.Effects
 
     public LastingEffect TryAddLastingEffectOnHit(float hitAmount, LivingEntity attacker, Spell spell)
     {
-      var effectInfo = CalcLastingEffDamage(EffectType.Unset, hitAmount, spell, null);
+      var et = SpellConverter.EffectTypeFromSpellKind(spell.Kind);
+      var effectInfo = CalcLastingEffDamage(et, hitAmount, spell, null);
       return TryAddLastingEffect(effectInfo);
     }
 
