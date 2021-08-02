@@ -29,6 +29,7 @@ namespace Roguelike.Tiles.LivingEntities
   /// </summary>
   public class LivingEntity : Tile, ILastingEffectOwner, IDestroyable
   {
+    public bool d_immortal = false;
     protected int StartStrength = 10;
     public static readonly EntityStat BaseStrength = new EntityStat(EntityStatKind.Strength, 10);
     public static readonly EntityStat BaseHealth = new EntityStat(EntityStatKind.Health, 10);
@@ -363,6 +364,8 @@ namespace Roguelike.Tiles.LivingEntities
         
     private void ReduceHealth(LivingEntity attacker, string sound, string damageDesc, string damageSource, ref float inflicted)
     {
+      if (d_immortal)
+        return;
       var manaShieldEffect = LastingEffectsSet.GetByType(EffectType.ManaShield);
       var manaReduce = inflicted;
       if (manaShieldEffect != null && this.Stats.Mana > 0)
