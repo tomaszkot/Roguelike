@@ -5,7 +5,16 @@ using System.Collections.Generic;
 
 namespace Roguelike.Tiles.Looting
 {
-  public abstract class FightItem : StackedLoot
+  public enum FightItemKind
+  {
+    Unset,
+    ExplodePotion,
+    Knife,
+    Trap,
+    Stone
+  }
+
+  public class FightItem : StackedLoot
   {
     private FightItemKind kind;
     public float baseDamage = 2.0f;
@@ -14,11 +23,28 @@ namespace Roguelike.Tiles.Looting
     protected string primaryFactorName = "Damage";
     protected string auxFactorName = "";
 
-    public FightItem()
+    public FightItem() : this(FightItemKind.Unset)
     {
     }
 
-    public FightItemKind Kind { get => kind; set => kind = value; }
+    public FightItem(FightItemKind kind)
+    {
+      this.kind = kind;
+      Name = "Stone";
+      PrimaryStatDescription = "Stone, can make a harm if thrown by a skilled man.";
+    }
+
+    public FightItemKind Kind
+    {
+      get { return kind; }
+      set
+      {
+        kind = value;
+        if (kind == FightItemKind.Stone)
+          tag1 = "stone";
+      }
+    }
+
     public bool RequiresEnemyOnCast
     {
       get
@@ -119,19 +145,15 @@ namespace Roguelike.Tiles.Looting
       return desc.ToArray();
     }
 
-    //public override string[] GetExtraStatDescription()
+    //[JsonIgnore]
+    //public LivingEntity Caller//req. by interface
     //{
-    //  return GetExtraStatDescription(false, GetAbility().Level);
+    //  get
+    //  { 
+    //    return null; 
+    //  }
+    //  set { }
     //}
-
-    [JsonIgnore]
-    public LivingEntity Caller//req. by interface
-    {
-      //get { return GameManager.Instance.Hero; }
-      get
-      { return null; }
-      set { }
-    }
 
     public override string GetId()
     {

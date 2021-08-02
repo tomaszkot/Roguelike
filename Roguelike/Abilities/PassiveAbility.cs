@@ -489,7 +489,7 @@ namespace Roguelike.Abilities
           break;
       }
 
-      return FightItemKind.None;
+      return FightItemKind.Unset;
     }
 
     protected List<string> customExtraStatDescription = new List<string>();

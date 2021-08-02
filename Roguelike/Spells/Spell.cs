@@ -9,13 +9,7 @@ using System.Linq;
 
 namespace Roguelike.Tiles.Looting
 {
-  public enum FightItemKind
-  {
-    None,
-    ExplodePotion = 1,
-    Knife = 2,
-    Trap = 3
-  }
+  
 }
 
 namespace Roguelike.Spells
