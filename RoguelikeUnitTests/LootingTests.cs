@@ -436,7 +436,7 @@ namespace RoguelikeUnitTests
       int mult = 1;
       var env = CreateTestEnv();
       int tilesToCreateCount = 100 * mult;
-      int maxExpectedLootCount = 200;//chest gives 2 items
+      int maxExpectedLootCount = 300;//chest gives 2-3 items
 
       var lootInfo = env.TestInteractive<Chest>(
          (InteractiveTile chest) =>

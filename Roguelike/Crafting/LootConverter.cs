@@ -95,11 +95,29 @@ namespace Roguelike.Crafting
         {
           return HandleCustomRecipe(lootToConvert);
         }
+        else if (recipe.Kind == RecipeKind.CraftSpecialPotion && lootToConvert.Count == 2)
+        {
+          var healthPotion = lootToConvert.Where(i => i.IsPotion(PotionKind.Health));
+          var manaPotion = lootToConvert.Where(i => i.IsPotion(PotionKind.Mana));
+          if (healthPotion != null || manaPotion != null)
+          {
+            var toad = lootToConvert.Where(i => i.IsToadstool());
+            if (toad != null)
+            {
+              Potion pot = null;
+              if (healthPotion != null)
+                pot = new SpecialPotion(SpecialPotionKind.Strength, SpecialPotionSize.Small);
+              else
+                pot = new SpecialPotion(SpecialPotionKind.Magic, SpecialPotionSize.Small);
+              return ReturnCraftedLoot(pot);
+            }
+          }
+        }
         else if (recipe.Kind == RecipeKind.RechargeMagicalWeapon)
         {
           var equips = lootToConvert.Where(i => i is Weapon wpn0 && wpn0.IsMagician).Cast<Weapon>().ToList();
           var equipsCount = equips.Count();
-          if(equipsCount != 1)
+          if (equipsCount != 1)
             return ReturnCraftingError("One charge emitting weapon is needed by the Recipe");
 
           var wpn = equips[0];

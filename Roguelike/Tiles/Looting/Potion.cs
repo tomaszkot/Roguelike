@@ -12,8 +12,7 @@ namespace Roguelike.Tiles.Looting
 
     public Potion() : this(PotionKind.Health)
     {
-      collectedSound = "bottle1";
-      consumedSound = "drink";
+      
     }
 
     public Potion(PotionKind kind)
@@ -22,6 +21,8 @@ namespace Roguelike.Tiles.Looting
       Symbol = PotionSymbol;
       LootKind = LootKind.Potion;
       SetKind(kind);
+      collectedSound = "bottle1";
+      consumedSound = "drink";
     }
 
     public override PercentageFactor GetPercentageStatIncrease()
