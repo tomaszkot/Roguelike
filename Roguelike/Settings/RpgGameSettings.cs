@@ -39,7 +39,7 @@ namespace Roguelike.Settings
     public bool IsPlayerPermanentlyDead { get; set; }
     public bool PermanentDeath { get; set; }
     public DateTime LastSaved { get; set; }
-    public static bool Demo { get; set; } = true;
+    public static bool Demo { get; set; } = false;
     //public GameSession Session = new GameSession();
 
     public override string ToString()
