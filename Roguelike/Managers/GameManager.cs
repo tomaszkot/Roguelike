@@ -1217,15 +1217,17 @@ namespace Roguelike.Managers
       Action<Policy> AfterApply = null
     )
     {
-      //var spell = fi;// spellSource.CreateSpell(caster);
-
-      //if (!gm.UtylizeSpellSource(caster, spellSource, spell))
-      //  return false;
+      if (fi.Count <= 0)
+      {
+        logger.LogError("gm fi.Count <= 0");
+        return false;
+      }
+      (caster as AdvancedLivingEntity).Inventory.Remove(fi);
 
       var policy = Container.GetInstance<ProjectileCastPolicy>();
       policy.Target = target;
       policy.ProjectilesFactory = Container.GetInstance<IProjectilesFactory>();
-      policy.Projectile = fi;// spellSource.CreateSpell(caster) as Spell; TODO
+      policy.Projectile = fi;
       if (BeforeApply != null)
         BeforeApply(policy);
 

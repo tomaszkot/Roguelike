@@ -10,6 +10,12 @@ namespace Dungeons.Core
   {
     static Point InvalidPoint = GenerationConstraints.InvalidPoint;
 
+    public static double DistanceFrom(this Point point, Point other)
+    {
+      var dPowered = (Math.Pow(point.X - other.X, 2) + Math.Pow(point.Y - other.Y, 2));
+      return Math.Sqrt(dPowered);
+    }
+
     public static string ToUpperFirstLetter(this string source)
     {
       if (string.IsNullOrEmpty(source))

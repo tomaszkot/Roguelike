@@ -19,6 +19,7 @@ namespace Roguelike.Spells
     {
       EntityRequired = true;
       EnemyRequired = true;
+      this.Caller = caller;
     }
   }
 }

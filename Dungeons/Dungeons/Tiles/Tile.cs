@@ -233,8 +233,9 @@ namespace Dungeons.Tiles
 
     public double DistanceFrom(Point other)
     {
-      var dPowered = (Math.Pow(point.X - other.X, 2) + Math.Pow(point.Y - other.Y, 2));
-      return Math.Sqrt(dPowered);
+      //var dPowered =   (Math.Pow(point.X - other.X, 2) + Math.Pow(point.Y - other.Y, 2));
+      //return Math.Sqrt(dPowered);
+      return point.DistanceFrom(other);
     }
   }
 }

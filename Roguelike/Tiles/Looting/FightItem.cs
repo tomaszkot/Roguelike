@@ -19,7 +19,7 @@ namespace Roguelike.Tiles.Looting
   public class FightItem : StackedLoot
   {
     private FightItemKind kind;
-    public float baseDamage = 2.0f;
+    public float baseDamage = 3.0f;
 
     protected PassiveAbilityKind abilityKind;
     protected string primaryFactorName = "Damage";
