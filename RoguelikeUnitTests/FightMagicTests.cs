@@ -108,7 +108,7 @@ namespace RoguelikeUnitTests
       game.Hero.SetEquipment(wpn, CurrentEquipmentKind.Weapon);
       for (int i = 0; i < 10; i++)
       {
-        enemy.OnPhysicalHitBy(game.Hero);
+        enemy.OnMelleeHitBy(game.Hero);
         //GotoNextHeroTurn();
       }
       var diffMelee = enemyHealth - enemy.Stats.Health;
@@ -130,7 +130,7 @@ namespace RoguelikeUnitTests
       while (enemy.Alive)
       {
         //UseFireBallScroll(hero, enemy);
-        enemy.OnPhysicalHitBy(hero);
+        enemy.OnMelleeHitBy(hero);
         GotoNextHeroTurn(game);
       }
 
@@ -221,13 +221,13 @@ namespace RoguelikeUnitTests
       Assert.NotNull(spell);
 
       var heroHealth = game.Hero.Stats.Health;
-      game.Hero.OnPhysicalHitBy(enemy);//PoisonBallSpell work on mana shields!
+      game.Hero.OnMelleeHitBy(enemy);//PoisonBallSpell work on mana shields!
       Assert.AreEqual(game.Hero.Stats.Health, heroHealth);//mana shield
 
       GotoSpellEffectEnd(spell);
 
       heroHealth = game.Hero.Stats.Health;
-      game.Hero.OnPhysicalHitBy(enemy);
+      game.Hero.OnMelleeHitBy(enemy);
       Assert.Less(game.Hero.Stats.Health, heroHealth);//mana shield gone
 
     }

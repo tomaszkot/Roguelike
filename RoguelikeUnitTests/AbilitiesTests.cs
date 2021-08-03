@@ -364,7 +364,7 @@ namespace RoguelikeUnitTests
       {
         var en = GetPlainEnemies().First();
         var health = Hero.Stats.Health;
-        while (Hero.OnPhysicalHitBy(en) == 0)
+        while (Hero.OnMelleeHitBy(en) == 0)
           ;
         var health1 = Hero.Stats.Health;
         Assert.Less(health1, health);
@@ -511,7 +511,7 @@ namespace RoguelikeUnitTests
       Func<float> hitEnemy = () =>
       {
         var health = en.Stats.Health;
-        en.OnPhysicalHitBy(Hero);
+        en.OnMelleeHitBy(Hero);
         var health1 = en.Stats.Health;
         return health - health1;
       };

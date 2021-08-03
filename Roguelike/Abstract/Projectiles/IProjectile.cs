@@ -1,7 +1,7 @@
 ﻿namespace Roguelike.Abstract.Projectiles
 {
-  public interface IProjectile
+  public interface IProjectile : Dungeons.Tiles.Abstract.IProjectile
   {
-    Dungeons.Tiles.IObstacle Target { get; set; }
+    //Dungeons.Tiles.IObstacle Target { get; set; }
   }
 }

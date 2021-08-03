@@ -41,7 +41,7 @@ namespace RoguelikeUnitTests
         enemy.ActiveManaPoweredSpellSource = null;//this causes attack
 
         //hit enemy to force him to use effect
-        enemy.OnPhysicalHitBy(hero);
+        enemy.OnMelleeHitBy(hero);
 
         game.GameManager.Context.TurnOwner = TurnOwner.Allies;
         game.GameManager.Context.PendingTurnOwnerApply = true;
@@ -67,12 +67,12 @@ namespace RoguelikeUnitTests
       Assert.Greater(ActiveEnemies.Count, 0);
       var enemy = ActiveEnemies.First();
       var enemyHealth = enemy.Stats.Health;
-      enemy.OnPhysicalHitBy(hero);
+      enemy.OnMelleeHitBy(hero);
       Assert.Greater(enemyHealth, enemy.Stats.Health);
       enemyHealth = enemy.Stats.Health;
 
       var wpn = GenerateRandomEqOnLevelAndCollectIt<Weapon>();
-      enemy.OnPhysicalHitBy(hero);
+      enemy.OnMelleeHitBy(hero);
 
       Assert.Greater(enemyHealth, enemy.Stats.Health);
     }
@@ -91,7 +91,7 @@ namespace RoguelikeUnitTests
       Assert.AreEqual(ccs, 100);
 
       var enemy = ActiveEnemies.First();
-      enemy.OnPhysicalHitBy(hero);
+      enemy.OnMelleeHitBy(hero);
       Assert.True(enemy.LastingEffects.Any());
       Assert.AreEqual(enemy.LastingEffects[0].Type, EffectType.Stunned);
       Assert.AreEqual(enemy.LastingEffects[0].Description, "Stunned");
@@ -144,7 +144,7 @@ namespace RoguelikeUnitTests
       var damages = new List<float>();
       for (int i = 0; i < 10; i++)
       {
-        var damage = en.OnPhysicalHitBy(game.Hero);
+        var damage = en.OnMelleeHitBy(game.Hero);
         if (damage > 0)
           damages.Add(damage);
       }
@@ -163,7 +163,7 @@ namespace RoguelikeUnitTests
       Func<float> hitEnemy = () =>
       {
         var enemyHealth = enemy.Stats.Health;
-        enemy.OnPhysicalHitBy(game.Hero);
+        enemy.OnMelleeHitBy(game.Hero);
         var lastEnemyHealthDiff = enemyHealth - enemy.Stats.Health;
         return lastEnemyHealthDiff;
       };

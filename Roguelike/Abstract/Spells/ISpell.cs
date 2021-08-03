@@ -77,4 +77,8 @@ namespace Roguelike.Abstract.Spells
 
     SpellStatsDescription CreateSpellStatsDescription(bool currentLevel);
   }
+
+  public interface IProjectileSpell : Dungeons.Tiles.Abstract.ISpell, Roguelike.Abstract.Projectiles.IProjectile
+  { 
+  }
 }

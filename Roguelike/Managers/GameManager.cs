@@ -3,6 +3,7 @@ using Dungeons.Core;
 using Dungeons.Tiles;
 using Newtonsoft.Json;
 using Roguelike.Abstract.Inventory;
+using Roguelike.Abstract.Projectiles;
 using Roguelike.Abstract.Spells;
 using Roguelike.Abstract.Tiles;
 using Roguelike.Events;
@@ -1205,6 +1206,45 @@ namespace Roguelike.Managers
     public void SaveGameOptions()
     {
       Persister.SaveOptions(Options.Instance);
+    }
+
+    public bool ApplyAttackPolicy
+    (
+      LivingEntity caster,//hero, enemy, ally
+      Tiles.Abstract.IObstacle target,
+      ProjectileFightItem fi,
+      Action<Policy> BeforeApply = null,
+      Action<Policy> AfterApply = null
+    )
+    {
+      //var spell = fi;// spellSource.CreateSpell(caster);
+
+      //if (!gm.UtylizeSpellSource(caster, spellSource, spell))
+      //  return false;
+
+      var policy = Container.GetInstance<ProjectileCastPolicy>();
+      policy.Target = target;
+      policy.ProjectilesFactory = Container.GetInstance<IProjectilesFactory>();
+      policy.Projectile = fi;// spellSource.CreateSpell(caster) as Spell; TODO
+      if (BeforeApply != null)
+        BeforeApply(policy);
+
+      policy.OnApplied += (s, e) =>
+      {
+        var le = policy.Target is LivingEntity;
+        if (!le)//le is handled specially
+        {
+          this.LootManager.TryAddForLootSource(policy.Target as ILootSource);
+        }
+        if (caster is Hero)
+          OnHeroPolicyApplied(policy);
+
+        if (AfterApply != null)
+          AfterApply(policy);
+      };
+
+      policy.Apply(caster);
+      return true;
     }
   }
 }

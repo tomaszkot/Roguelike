@@ -64,20 +64,5 @@ namespace Roguelike.Spells
     }
   }
 
-  public class ProjectiveSpell : OffensiveSpell
-  {
-    public const int BaseDamage = 4;
-    public bool SourceOfDamage = true;
-
-    public ProjectiveSpell(LivingEntity caller, Weapon weapon) : base(caller, weapon)
-    {
-      EntityRequired = true;
-      EnemyRequired = true;
-      //damage = (caller is Enemy) ? BaseDamage - 1 : BaseDamage;
-    }
-
-    
-
-
-  }
+  
 }

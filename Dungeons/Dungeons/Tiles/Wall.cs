@@ -16,7 +16,7 @@ namespace Dungeons.Tiles
 
     public Wall() : this(new Point().Invalid()) { }
 
-    public bool OnHitBy(ISpell md)
+    public bool OnHitBy(IProjectile md)
     {
       return false;
     }

@@ -32,7 +32,7 @@ namespace RoguelikeUnitTests
       //Assert.Greater(ActiveEnemies.Count, 0);//enemies on level can be poisonous, failing this test, so let's use skeleton
       var heroHealth = hero.Stats.Health;
       while (hero.Stats.Health > 5)
-        hero.OnPhysicalHitBy(enemy);
+        hero.OnMelleeHitBy(enemy);
 
       Assert.Greater(heroHealth, hero.Stats.Health);
       heroHealth = hero.Stats.Health;

@@ -1,39 +1,39 @@
 ﻿using Dungeons.Tiles;
+//using Dungeons.Tiles.Abstract;
 using Roguelike.Abstract.Projectiles;
 using Roguelike.Spells;
 using Roguelike.Tiles.LivingEntities;
 
 namespace Roguelike.Policies
 {
-  public class SpellCastPolicy : Policy
+  public class ProjectileCastPolicy : Policy
   {
     LivingEntity caster;
     IObstacle target;
-    Spell spell;
 
-    public SpellCastPolicy()
+    public ProjectileCastPolicy()
     {
       this.Kind = PolicyKind.SpellCast;
     }
 
     public IObstacle Target { get => target; set => target = value; }
-    public Spell Spell { get => spell; set => spell = value; }
+    public IProjectile Projectile { get; set; }
     public LivingEntity Caster { get => caster; set => caster = value; }
     public IProjectilesFactory ProjectilesFactory { get; set; }
 
     public void Apply(LivingEntity caster)
     {
-      Apply(this.Spell, caster, this.Target, this.ProjectilesFactory);
+      Apply(this.Projectile, caster, this.Target, this.ProjectilesFactory);
     }
 
-    public void Apply(Spell spell, LivingEntity caster, IObstacle target, IProjectilesFactory projectilesFactory)
+    public void Apply(IProjectile projectile, LivingEntity caster, IObstacle target, IProjectilesFactory projectilesFactory)
     {
-      this.spell = spell;
+      this.Projectile = projectile;
       this.caster = caster;
       this.target = target;
       this.ProjectilesFactory = projectilesFactory;
 
-      caster.State = EntityState.CastingSpell;
+      caster.State = EntityState.CastingProjectile;
       DoApply(caster);
       ReportApplied(caster);
     }
@@ -41,7 +41,7 @@ namespace Roguelike.Policies
     protected virtual void DoApply(LivingEntity caster)
     {
       //var spell = Scroll.CreateSpell(Caster);
-      Target.OnHitBy(spell);
+      Target.OnHitBy(Projectile);
     }
   }
 }

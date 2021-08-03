@@ -28,7 +28,7 @@ namespace Roguelike.Spells
 
     float manaCostMultiplicator = 20;
     public bool SendByGod { get; set; }
-    public FightItem FightItem { get; internal set; }
+    //public FightItem FightItem { get; internal set; }
 
     public SpellKind Kind { get; set; }
     public bool EnemyRequired = false;

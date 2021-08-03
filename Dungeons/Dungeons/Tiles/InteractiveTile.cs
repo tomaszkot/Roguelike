@@ -17,7 +17,7 @@ namespace Dungeons.Tiles
 
     }
 
-    public bool OnHitBy(ISpell md)
+    public bool OnHitBy(IProjectile md)
     {
       return true;
     }

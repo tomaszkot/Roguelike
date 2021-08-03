@@ -1,4 +1,5 @@
 ﻿using Roguelike.Abstract.Projectiles;
+using Roguelike.Abstract.Spells;
 using Roguelike.Events;
 using Roguelike.Extensions;
 using Roguelike.Policies;
@@ -101,15 +102,15 @@ namespace Roguelike.Managers
       Action<Policy> AfterApply = null
     )
     {
-      var spell = spellSource.CreateSpell(caster);
+      var spell = spellSource.CreateSpell(caster) as IProjectileSpell;
 
-      if (!gm.UtylizeSpellSource(caster, spellSource, spell))
-        return false;
+      //if (!gm.UtylizeSpellSource(caster, spellSource, spell))
+      //  return false;
 
-      var policy = Container.GetInstance<SpellCastPolicy>();
+      var policy = Container.GetInstance<ProjectileCastPolicy>();
       policy.Target = target;
       policy.ProjectilesFactory = Container.GetInstance<IProjectilesFactory>();
-      policy.Spell = spellSource.CreateSpell(caster) as Spell;
+      policy.Projectile = spellSource.CreateSpell(caster) as IProjectileSpell;
       if (BeforeApply != null)
         BeforeApply(policy);
 

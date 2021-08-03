@@ -73,6 +73,7 @@
     <Compile Include="Managers\AnimalsManager.cs" />
     <Compile Include="Managers\PolicyManager.cs" />
     <Compile Include="Managers\SpellManager.cs" />
+    <Compile Include="Spells\ProjectiveSpell.cs" />
     <Compile Include="Tiles\Abstract\IAdvancedEntity.cs" />
     <Compile Include="Tiles\Abstract\IAlly.cs" />
     <Compile Include="Abstract\IDescriptable.cs" />
@@ -138,7 +139,7 @@
     <Compile Include="Policies\AttackPolicy.cs" />
     <Compile Include="Policies\MovePolicy.cs" />
     <Compile Include="Policies\Policy.cs" />
-    <Compile Include="Policies\SpellCastPolicy.cs" />
+    <Compile Include="Policies\ProjectileCastPolicy.cs" />
     <Compile Include="Probability\Chances.cs" />
     <Compile Include="Probability\Looting.cs" />
     <Compile Include="Settings\RpgGameSettings.cs" />

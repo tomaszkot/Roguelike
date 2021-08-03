@@ -1,5 +1,7 @@
-﻿using Newtonsoft.Json;
+﻿using Dungeons.Tiles;
+using Newtonsoft.Json;
 using Roguelike.Abilities;
+using Roguelike.Abstract.Projectiles;
 using Roguelike.Tiles.LivingEntities;
 using System.Collections.Generic;
 
@@ -82,7 +84,10 @@ namespace Roguelike.Tiles.Looting
 
     public float GetFactor(bool primary)
     {
-      return GetFactor(primary, GetAbility().Level);
+      var ab = GetAbility();
+      if (ab == null)
+        return 1;
+      return GetFactor(primary, ab.Level);
     }
 
     public float GetFactor(bool primary, int abilityLevel = -1)
@@ -101,11 +106,14 @@ namespace Roguelike.Tiles.Looting
       return AlwaysCausesEffect ? 100 : fac;
     }
 
-    public float GetDamage()
+    public float Damage
     {
-      var damage = baseDamage;
-      damage += GetFactor(true);
-      return damage;
+      get
+      {
+        var damage = baseDamage;
+        damage += GetFactor(true);
+        return damage;
+      }
     }
 
     public virtual float GetAuxValue(int abilityLevel)
@@ -123,7 +131,7 @@ namespace Roguelike.Tiles.Looting
           name += " %";
       }
       else
-        name += primary ? GetDamage().ToString() : GetAuxValue(abilityLevel) + (IsPercentage(primary) ? " %" : "");
+        name += primary ? Damage.ToString() : GetAuxValue(abilityLevel) + (IsPercentage(primary) ? " %" : "");
 
       return name;
     }
@@ -144,21 +152,33 @@ namespace Roguelike.Tiles.Looting
         desc.Add(GetStatDesc(false, forAbility, abilityLevel));
       return desc.ToArray();
     }
-
-    //[JsonIgnore]
-    //public LivingEntity Caller//req. by interface
-    //{
-    //  get
-    //  { 
-    //    return null; 
-    //  }
-    //  set { }
-    //}
+        
 
     public override string GetId()
     {
       return base.GetId() + "_" + Kind;
     }
 
+  }
+
+  public class ProjectileFightItem : FightItem, IProjectile
+  {
+    public ProjectileFightItem() : this(FightItemKind.Unset, null)
+    {
+    }
+
+    public ProjectileFightItem(FightItemKind kind, LivingEntity caller) : base(kind)
+    {
+      Caller = caller;
+    }
+
+    public IObstacle Target { get; set; }
+
+    [JsonIgnore]
+    public LivingEntity Caller//req. by interface
+    {
+      get;
+      set;
+    }
   }
 }

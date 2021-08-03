@@ -42,7 +42,7 @@ namespace Roguelike
       container.Register<Enemy, Enemy>();
       container.Register<RoomContentGenerator, RoomContentGenerator>();
       container.Register<AbstractLootFactory, LootFactory>();
-      container.Register<SpellCastPolicy, SpellCastPolicy>();
+      container.Register<ProjectileCastPolicy, ProjectileCastPolicy>();
 
       container.Register<LootCrafterBase, LootCrafter>();
       container.Register<GameState, GameState>();

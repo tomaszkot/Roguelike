@@ -21,7 +21,7 @@ using System.Linq;
 
 namespace Roguelike.Tiles.LivingEntities
 {
-  public enum EntityState { Idle, Moving, Attacking, CastingSpell, Sleeping }
+  public enum EntityState { Idle, Moving, Attacking, CastingProjectile, Sleeping }
   public enum EntityMoveKind { Freestyle, FollowingHero, ReturningHome }
 
   /// <summary>
@@ -463,7 +463,7 @@ namespace Roguelike.Tiles.LivingEntities
         AppendAction(new SoundRequestAction() { SoundName = sound });
     }
 
-    public virtual float OnPhysicalHitBy(LivingEntity attacker)
+    public virtual float OnMelleeHitBy(LivingEntity attacker)
     {
       float defense = GetDefense();
       if (defense == 0)
@@ -520,10 +520,9 @@ namespace Roguelike.Tiles.LivingEntities
       return inflicted;
     }
 
-    public bool OnHitBy(Dungeons.Tiles.Abstract.ISpell ispell)
+    public bool OnHitBy(Dungeons.Tiles.Abstract.IProjectile projectile)
     {
-      var md = ispell as ISpell;
-      if (md is Spell spell)
+      if (projectile is Spell spell)
       {
         if (ShouldEvade(this, EntityStatKind.ChanceToEvadeMagicAttack, spell))
         {
@@ -536,42 +535,46 @@ namespace Roguelike.Tiles.LivingEntities
         OnHitBy(dmg /*, spell.FightItem*/, spell);
       }
 
-      //else if (md is FightItem)
-      //{
-      //  float damage = 0;
-      //  FightItem fi = md as FightItem;
-      //  if (md is ExplosiveCocktail)
-      //  {
-      //    lastHitBySpell = true;//to put on enemy resist
-      //    var spell = new FireBallSpell(this);
-      //    spell.Caller = md.Caller;
-      //    spell.SourceOfDamage = false;//dmg is fixed !
-      //    var expl = md as ExplosiveCocktail;
-      //    spell.FightItem = fi;
-      //    damage = CalculateNonPhysicalDamage(EntityStatKind.FireAttack, expl.GetDamage());
-      //    OnHitBy(damage, fi, null, spell);
-      //  }
-      //  else if (md is ThrowingKnife)
-      //  {
-      //    damage = fi.GetDamage() / GetDefence();
-      //    OnHitBy(damage, fi, fi.Caller, null);
-      //  }
-      //  else
-      //  {
-      //    GameManager.Instance.AppendDiagnosticsUnityLogError(new Exception("OnHitBy!"));
-      //  }
-      //}
-      //else
-      //{
-      //  GameManager.Instance.AppendDiagnosticsUnityLogError(new Exception("OnHitBy - not supported"));
-      //}
+      else if (projectile is FightItem fi)
+      {
+        if (fi is ProjectileFightItem pfi)
+        {
+          var amount = pfi.Damage;
+          amount /= Stats.Defense;
+          var sound = "";
+          var damageDesc = "";
+          var srcName = fi.Kind.ToDescription();
+          var attacker = pfi.Caller;
+          ReduceHealth(attacker, sound, damageDesc, srcName, ref amount);
+        }
+        //if (md is ExplosiveCocktail)
+        //{
+        //  //lastHitBySpell = true;//to put on enemy resist
+        //  //var spell = new FireBallSpell(this);
+        //  //spell.Caller = md.Caller;
+        //  //spell.SourceOfDamage = false;//dmg is fixed !
+        //  //var expl = md as ExplosiveCocktail;
+        //  //spell.FightItem = fi;
+        //  //damage = CalculateNonPhysicalDamage(EntityStatKind.FireAttack, expl.GetDamage());
+        //  //OnHitBy(damage, fi, null, spell);
+        //}
+        //else if (md.Kind == FightItemKind.Knife)// ThrowingKnife)
+        //{
+        //  damage = fi.GetDamage() / GetDefence();
+        //  OnHitBy(damage, fi, fi.Caller, null);
+        //}
+        else
+          Assert(false, "OnHitBy!" + projectile);
+      }
+      else
+        Assert(false, "OnHitBy - not supported" + projectile);
+
       return true;
     }
 
     protected virtual void OnHitBy
     (
       float amount,
-      //FightItem fightItem, 
       Spell spell = null,
       string damageDesc = null
     )
@@ -597,7 +600,6 @@ namespace Roguelike.Tiles.LivingEntities
       ReduceHealth(attacker, sound, damageDesc, srcName, ref amount);
 
       LastingEffectsSet.TryAddLastingEffectOnHit(amount, attacker, spell);
-      //lastingEffectsSet.TryAddLastingEffectOnHit(amount, attacker, spell);
     }
 
     //static LastingEffectCalcInfo heBase = new LastingEffectCalcInfo(EffectType.Unset, 0, new EffectiveFactor(0), new PercentageFactor(0));
@@ -740,7 +742,7 @@ namespace Roguelike.Tiles.LivingEntities
 
     internal void ApplyPhysicalDamage(LivingEntity victim)
     {
-      victim.OnPhysicalHitBy(this);
+      victim.OnMelleeHitBy(this);
     }
 
     public float GetCurrentValue(EntityStatKind kind)
