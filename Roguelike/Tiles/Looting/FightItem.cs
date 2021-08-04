@@ -2,8 +2,10 @@
 using Newtonsoft.Json;
 using Roguelike.Abilities;
 using Roguelike.Abstract.Projectiles;
+using Roguelike.Attributes;
 using Roguelike.Tiles.LivingEntities;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Roguelike.Tiles.Looting
 {
@@ -19,7 +21,7 @@ namespace Roguelike.Tiles.Looting
   public class FightItem : StackedLoot
   {
     private FightItemKind kind;
-    public float baseDamage = 3.0f;
+    public float baseDamage = 5.0f;
 
     protected PassiveAbilityKind abilityKind;
     protected string primaryFactorName = "Damage";
@@ -159,6 +161,26 @@ namespace Roguelike.Tiles.Looting
       return base.GetId() + "_" + Kind;
     }
 
+    public override List<LootStatInfo> GetLootStatInfo(LivingEntity caller)
+    {
+      var add = m_lootStatInfo == null || !m_lootStatInfo.Any();
+      var res = base.GetLootStatInfo(caller);
+      if (add)
+      {
+        if (Kind == FightItemKind.Stone)
+        {
+          var lsi = new LootStatInfo()
+          {
+            EntityStatKind = EntityStatKind.Unset,
+            Kind = LootStatKind.Weapon,
+            Desc = "Damage: "+Damage
+          };
+
+          res.Add(lsi);
+        }
+      }
+      return res;
+    }
   }
 
   public class ProjectileFightItem : FightItem, IProjectile

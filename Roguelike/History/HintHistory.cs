@@ -37,6 +37,7 @@ namespace Roguelike
           Hints.Add(new HintItem() { Info = "Recipe has been collected. Press 'R' to open Crafting Panel and see it's description.", Kind = HintKind.ShowCraftingPanel });
           Hints.Add(new HintItem() { Info = Messages[HintKind.HeroLevelTooLow], Kind = HintKind.HeroLevelTooLow });
           Hints.Add(new HintItem() { Info = Messages[HintKind.CanNotPutOnUnidentified], Kind = HintKind.CanNotPutOnUnidentified });
+          Hints.Add(new HintItem() { Info = "TODO", Kind = HintKind.UseProjectile });
         }
 
         public List<int> GetKeyCodes()
