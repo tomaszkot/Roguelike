@@ -33,7 +33,6 @@ namespace RoguelikeUnitTests
     private bool UseFightItem(Roguelike.Tiles.LivingEntities.Hero hero, Roguelike.Tiles.LivingEntities.Enemy enemy, ProjectileFightItem fi)
     {
       hero.Inventory.Add(fi);
-      //game.Hero.ActiveManaPoweredSpellSource = spellSource;
       return game.GameManager.ApplyAttackPolicy(hero, enemy, fi);
     }
   }

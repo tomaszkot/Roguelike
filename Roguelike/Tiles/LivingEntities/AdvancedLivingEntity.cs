@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
 using Roguelike.Abilities;
 using Roguelike.Abstract.Inventory;
+using Roguelike.Abstract.Projectiles;
 using Roguelike.Attributes;
 using Roguelike.Discussions;
 using Roguelike.Effects;
@@ -511,6 +512,19 @@ namespace Roguelike.Tiles.LivingEntities
 
     }
 
+    //public IProjectile ActiveProjectile
+    //{
+    //  get 
+    //  {
+    //    if (ActiveSpellSource != null)
+    //      return ActiveSpellSource.;
+    //    if (ActiveFightItem != null)
+    //      return ActiveFightItem;
+
+    //    return null;
+    //  }
+    //}
+
     public SpellSource ActiveSpellSource
     {
       get
@@ -518,6 +532,11 @@ namespace Roguelike.Tiles.LivingEntities
         var spellSrc = ActiveManaPoweredSpellSource;
         if (spellSrc != null)
           return spellSrc;
+
+        var fi = ActiveFightItem;
+        if (fi != null)
+          return null;
+
         var wpn = GetActiveWeapon();
         if (wpn != null)
           return wpn.SpellSource;
@@ -525,12 +544,6 @@ namespace Roguelike.Tiles.LivingEntities
         return null;
       }
     }
-
-    //private void SetSpellSourceFromWeapon(Equipment eq)
-    //{
-    //  if (eq is Weapon wpn && wpn.SpellSource != null && this.ActiveManaPoweredSpellSource == null)
-    //    this.ActiveManaPoweredSpellSource = wpn.SpellSource;
-    //}
 
     private void OnEquipmentChanged(object sender, EquipmentChangedArgs args)//)
     {

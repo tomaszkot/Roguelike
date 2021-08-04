@@ -1,7 +1,9 @@
-﻿namespace Roguelike.Abstract.Projectiles
+﻿using Roguelike.Tiles.LivingEntities;
+
+namespace Roguelike.Abstract.Projectiles
 {
   public interface IProjectile : Dungeons.Tiles.Abstract.IProjectile
   {
-    //Dungeons.Tiles.IObstacle Target { get; set; }
+    LivingEntity Caller { get; set; }
   }
 }
