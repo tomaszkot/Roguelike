@@ -476,7 +476,7 @@ namespace Roguelike.Abilities
 
       {
         case PassiveAbilityKind.ExplosiveMastering:
-          return FightItemKind.ExplodePotion;
+          return FightItemKind.ExplosiveCocktail;
         case PassiveAbilityKind.LootingMastering:
           break;
         case PassiveAbilityKind.ThrowingWeaponsMastering:

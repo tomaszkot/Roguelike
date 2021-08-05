@@ -13,7 +13,7 @@ namespace Roguelike.Tiles.Looting
   public enum FightItemKind
   {
     Unset,
-    ExplodePotion,
+    ExplosiveCocktail, //ExplodePotion,
     ThrowingKnife,
     Trap,
     Stone
@@ -53,11 +53,14 @@ namespace Roguelike.Tiles.Looting
         }
         else if (fightItemKind == FightItemKind.ThrowingKnife)
         {
-          Name = "Throwing knife";
           PrimaryStatDescription = Name+", very sharp, likely to cause bleeding";
           baseDamage += 2;
         }
-
+        else if (fightItemKind == FightItemKind.ExplosiveCocktail)
+        {
+          PrimaryStatDescription = Name + ", puts target on fire";
+          //baseDamage += 2;
+        }
       }
     }
 
@@ -65,7 +68,9 @@ namespace Roguelike.Tiles.Looting
     {
       get
       {
-        return fightItemKind == FightItemKind.ThrowingKnife || fightItemKind == FightItemKind.ExplodePotion;
+        return fightItemKind == FightItemKind.ThrowingKnife || 
+               fightItemKind == FightItemKind.ExplosiveCocktail ||
+               fightItemKind == FightItemKind.Stone;
       }
     }
 
