@@ -3,6 +3,7 @@ using Newtonsoft.Json;
 using Roguelike.Abilities;
 using Roguelike.Abstract.Projectiles;
 using Roguelike.Attributes;
+using Roguelike.Extensions;
 using Roguelike.Tiles.LivingEntities;
 using System.Collections.Generic;
 using System.Linq;
@@ -33,9 +34,8 @@ namespace Roguelike.Tiles.Looting
 
     public FightItem(FightItemKind kind)
     {
-      this.kind = kind;
-      Name = "Stone";
-      PrimaryStatDescription = "Stone, can make a harm if thrown by a skilled man.";
+      this.Kind = kind;
+      
     }
 
     public FightItemKind Kind
@@ -44,8 +44,20 @@ namespace Roguelike.Tiles.Looting
       set
       {
         kind = value;
+        Name = kind.ToDescription();
         if (kind == FightItemKind.Stone)
+        {
           tag1 = "stone";
+          PrimaryStatDescription = "Stone, can make a harm if thrown by a skilled man.";
+        }
+        else if (kind == FightItemKind.Knife)
+        {
+          Name = "Throwing knife";
+          tag1 = "throwing_knife";
+          PrimaryStatDescription = Name+", very sharp, likely to cause bleeding";
+          baseDamage += 2;
+        }
+
       }
     }
 
@@ -167,7 +179,7 @@ namespace Roguelike.Tiles.Looting
       var res = base.GetLootStatInfo(caller);
       if (add)
       {
-        if (Kind == FightItemKind.Stone)
+        if (Kind == FightItemKind.Stone || Kind == FightItemKind.Knife)
         {
           var lsi = new LootStatInfo()
           {
