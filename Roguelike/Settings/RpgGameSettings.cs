@@ -72,7 +72,7 @@ namespace Roguelike.Settings
     //public bool TurnOffSpellAfterUseOnTouchMode { get; set; }
     public bool AutoPutOnBetterEquipment { get; set; } = true;
     public bool AllowEnchantOnDragDrop { get; set; } = true;
-    public bool PlaceLootToShortcutBar { get; set; } = true;
+    
     public bool RestoreHeroToSafePointAfterLoad { get; set; } = true;
     public bool RestoreHeroToDungeon { get; set; } = false;////TODO this way loading predefinied levels did not worked in Unity
     public bool RegenerateLevelsOnLoad { get; set; } = true;
@@ -100,6 +100,8 @@ namespace Roguelike.Settings
     public bool HintsOn { get; set; } = true;
     public bool ShowShortcuts { get; set; } = true;
     public bool ShowMiniMap { get; set; } = true;
+    public bool AnimateHero { get; set; } = true;
+    public bool PlaceLootToShortcutBar { get; set; } = true;
   }
 
   public class Options : SettingsBase, IPersistable
