@@ -7,6 +7,7 @@ using Roguelike.Policies;
 using Roguelike.Spells;
 using Roguelike.TileContainers;
 using Roguelike.Tiles.LivingEntities;
+using Roguelike.Tiles.Looting;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -60,6 +61,9 @@ namespace Roguelike
 
           if (TryUseMagicAttack(attacker, target))
             return true;
+          
+          if (TryUseProjectileAttack(attacker, target))
+            return true;
         }
 
         var victim = GetPhysicalAttackVictim(attacker, target);
@@ -88,36 +92,42 @@ namespace Roguelike
 
         return false;
       }
-      
+
+      bool IsClearPath(LivingEntity attacker, LivingEntity target)
+      {
+        var isClearPath = false;
+        //is target next to attacker
+        isClearPath = context.CurrentNode.GetNeighborTiles(attacker, true).Contains(target);
+        if (!isClearPath)
+        {
+          if (TilesAtPathProvider != null)
+          {
+            var tiles = TilesAtPathProvider.GetTilesAtPath(attacker.point, target.point);
+            if (!tiles.Any(i => i is Dungeons.Tiles.IObstacle))
+              isClearPath = true;
+          }
+          else
+          {
+            var pathToTarget = FindPathForEnemy(attacker, target, 1, true);
+            if (pathToTarget != null)
+            {
+              var obstacles = pathToTarget.Where(i => context.CurrentNode.GetTile(new System.Drawing.Point(i.Y, i.X)) is Dungeons.Tiles.IObstacle).ToList();
+              if (!obstacles.Any())
+              {
+                isClearPath = true;
+              }
+            }
+          }
+        }
+
+        return isClearPath;
+      }
+            
       private bool UseMagicAttack(LivingEntity attacker, LivingEntity target)
       {
         if (attacker.DistanceFrom(target) < attacker.MaxMagicAttackDistance)
         {
-          var useMagic = false;
-          //is target next to attacker
-          useMagic = context.CurrentNode.GetNeighborTiles(attacker, true).Contains(target);
-          if (!useMagic)
-          {
-            //no...
-            if (TilesAtPathProvider != null)
-            {
-              var tiles = TilesAtPathProvider.GetTilesAtPath(attacker.point, target.point);
-              if (!tiles.Any(i => i is Dungeons.Tiles.IObstacle))
-                useMagic = true;
-            }
-            else
-            {
-              var pathToTarget = FindPathForEnemy(attacker, target, 1, true);
-              if (pathToTarget != null)
-              {
-                var obstacles = pathToTarget.Where(i => context.CurrentNode.GetTile(new System.Drawing.Point(i.Y, i.X)) is Dungeons.Tiles.IObstacle).ToList();
-                if (!obstacles.Any())
-                {
-                  useMagic = true;
-                }
-              }
-            }
-          }
+          var useMagic = IsClearPath(attacker, target);
           if (useMagic)
           {
             GameManager.SpellManager.ApplyAttackPolicy(attacker, target, attacker.ActiveManaPoweredSpellSource, null, (p) => { OnPolicyApplied(p); });
@@ -231,12 +241,30 @@ namespace Roguelike
         return false;
       }
 
-      bool TryUseMagicAttack(LivingEntity enemy, LivingEntity hero)
+      private bool TryUseProjectileAttack(LivingEntity attacker, LivingEntity target)
       {
+        var enemy = attacker as Enemy;
+        var fi = enemy.GetFightItem(enemy.FightItemKind);
+        if (fi != null)
+        {
+          var useProjectile = IsClearPath(attacker, target);
+          if (useProjectile)
+          {
+            if (GameManager.ApplyAttackPolicy(enemy, target, fi as ProjectileFightItem))
+              enemy.RemoveFightItem(fi);
+            else
+              GameManager.Assert(false);
+          }
+        }
+
+        return false;
+      }
+
+      bool TryUseMagicAttack(LivingEntity enemy, LivingEntity victim)
+      {
+        var en = enemy as Enemy;
         if (enemy.ActiveScrollCoolDownCounter > 0)
         {
-          var en = enemy as Enemy;
-
           bool decreaseCoolDown = RandHelper.Random.NextDouble() > .3f;
           if (en.PowerKind == EnemyPowerKind.Boss)
             decreaseCoolDown = RandHelper.Random.NextDouble() > .5f;
@@ -245,7 +273,7 @@ namespace Roguelike
         }
         if (enemy.ActiveManaPoweredSpellSource != null && enemy.ActiveScrollCoolDownCounter == 0)
         {
-          if (UseMagicAttack(enemy, hero))
+          if (UseMagicAttack(enemy, victim))
           {
             enemy.ActiveScrollCoolDownCounter = GetCoolDown(enemy as Enemy);
             return true;

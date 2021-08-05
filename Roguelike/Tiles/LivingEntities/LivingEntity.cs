@@ -543,7 +543,7 @@ namespace Roguelike.Tiles.LivingEntities
           amount /= Stats.Defense;
           var sound = "";
           var damageDesc = "";
-          var srcName = fi.Kind.ToDescription();
+          var srcName = fi.FightItemKind.ToDescription();
           var attacker = pfi.Caller;
           ReduceHealth(attacker, sound, damageDesc, srcName, ref amount);
         }
@@ -1013,6 +1013,10 @@ namespace Roguelike.Tiles.LivingEntities
     {
       get{ return state == EntityState.Sleeping; }
     }
-        
+
+    public virtual void RemoveFightItem(FightItem fi)
+    { 
+
+    }
   }
 }

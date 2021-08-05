@@ -856,6 +856,10 @@ namespace Roguelike.Managers
             loot.Revealed = true;
             //TODO use Items to avoid sound
             merch.Inventory.Items.Add(loot);
+            if (loot is FightItem fi)
+            {
+              fi.Count = RandHelper.GetRandomInt(3) + 1;
+            }
           }
         }
       }
@@ -1222,7 +1226,8 @@ namespace Roguelike.Managers
         logger.LogError("gm fi.Count <= 0");
         return false;
       }
-      (caster as AdvancedLivingEntity).Inventory.Remove(fi);
+      
+      caster.RemoveFightItem(fi);
 
       var policy = Container.GetInstance<ProjectileCastPolicy>();
       policy.Target = target;

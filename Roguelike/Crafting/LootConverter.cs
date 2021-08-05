@@ -88,7 +88,7 @@ namespace Roguelike.Crafting
 
       if (lootToConvert.Any())
       {
-        var sulfCount = lootToConvert.Where(i => i is Sulfur).Count();
+        var sulfCount = lootToConvert.Where(i => i is StackedLoot && i.Name == "Sulfur").Count();
         var hoochCount = lootToConvert.Where(i => i is Hooch).Count();
 
         if (lootToConvert.Count == 2 && recipe.Kind == RecipeKind.Custom)

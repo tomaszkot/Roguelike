@@ -14,14 +14,14 @@ namespace Roguelike.Tiles.Looting
   {
     Unset,
     ExplodePotion,
-    Knife,
+    ThrowingKnife,
     Trap,
     Stone
   }
 
   public class FightItem : StackedLoot
   {
-    private FightItemKind kind;
+    private FightItemKind fightItemKind;
     public float baseDamage = 5.0f;
 
     protected PassiveAbilityKind abilityKind;
@@ -34,26 +34,26 @@ namespace Roguelike.Tiles.Looting
 
     public FightItem(FightItemKind kind)
     {
-      this.Kind = kind;
+      this.FightItemKind = kind;
+      this.LootKind = LootKind.FightItem;
       
     }
 
-    public FightItemKind Kind
+    public FightItemKind FightItemKind
     {
-      get { return kind; }
+      get { return fightItemKind; }
       set
       {
-        kind = value;
-        Name = kind.ToDescription();
-        if (kind == FightItemKind.Stone)
+        fightItemKind = value;
+        Name = fightItemKind.ToDescription();
+        tag1 = fightItemKind.ToString();
+        if (fightItemKind == FightItemKind.Stone)
         {
-          tag1 = "stone";
           PrimaryStatDescription = "Stone, can make a harm if thrown by a skilled man.";
         }
-        else if (kind == FightItemKind.Knife)
+        else if (fightItemKind == FightItemKind.ThrowingKnife)
         {
           Name = "Throwing knife";
-          tag1 = "throwing_knife";
           PrimaryStatDescription = Name+", very sharp, likely to cause bleeding";
           baseDamage += 2;
         }
@@ -65,7 +65,7 @@ namespace Roguelike.Tiles.Looting
     {
       get
       {
-        return kind == FightItemKind.Knife || kind == FightItemKind.ExplodePotion;
+        return fightItemKind == FightItemKind.ThrowingKnife || fightItemKind == FightItemKind.ExplodePotion;
       }
     }
 
@@ -73,7 +73,7 @@ namespace Roguelike.Tiles.Looting
     {
       get
       {
-        return kind == FightItemKind.Trap;
+        return fightItemKind == FightItemKind.Trap;
       }
     }
 
@@ -170,7 +170,7 @@ namespace Roguelike.Tiles.Looting
 
     public override string GetId()
     {
-      return base.GetId() + "_" + Kind;
+      return base.GetId() + "_" + FightItemKind;
     }
 
     public override List<LootStatInfo> GetLootStatInfo(LivingEntity caller)
@@ -179,7 +179,7 @@ namespace Roguelike.Tiles.Looting
       var res = base.GetLootStatInfo(caller);
       if (add)
       {
-        if (Kind == FightItemKind.Stone || Kind == FightItemKind.Knife)
+        if (FightItemKind == FightItemKind.Stone || FightItemKind == FightItemKind.ThrowingKnife)
         {
           var lsi = new LootStatInfo()
           {

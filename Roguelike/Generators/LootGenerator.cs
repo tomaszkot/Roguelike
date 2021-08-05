@@ -401,7 +401,7 @@ namespace Roguelike.Generators
       }
       else if (kind == LootKind.Book)
       {
-        res =  LootFactory.BooksFactory.GetRandom(level) as Book;
+        res = LootFactory.BooksFactory.GetRandom(level) as Book;
       }
       else if (kind == LootKind.Gem)
       {
@@ -417,16 +417,23 @@ namespace Roguelike.Generators
       {
         res = GetRandRecipe();
       }
+      else if (kind == LootKind.FightItem)
+      {
+        res = LootFactory.MiscLootFactory.GetRandomFightItem(level);
+      }
       else if (kind == LootKind.Other)
       {
         var rand = RandHelper.GetRandomDouble();
-        if(rand > 0.5f)
+        if (rand > 0.5f)
           res = new MagicDust();
         else
           res = new Hooch();
       }
       else
+      {
+        //LootFactory.GetRandom()
         Debug.Assert(false);
+      }
 
       //if(res is Equipment)
       //        EnasureLevelIndex(res as Equipment);

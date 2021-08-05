@@ -30,8 +30,9 @@ namespace Roguelike.Tiles.LivingEntities
 
     public Dictionary<IncreaseStatsKind, bool> StatsIncreased { get; set; } = new Dictionary<IncreaseStatsKind, bool>();
     public Loot DeathLoot { get; set; }
-
     public bool ShoutedAtHero { get; set; }
+    public Dictionary<FightItemKind, FightItem> fightItems = new Dictionary<FightItemKind, FightItem>();
+    FightItemKind fightItemKind = FightItemKind.Stone;
 
     public Enemy() : this(new Point().Invalid(), 'e')
     {
@@ -55,12 +56,37 @@ namespace Roguelike.Tiles.LivingEntities
 
       if (string.IsNullOrEmpty(Name) && symbol != EnemySymbols.CommonEnemySymbol)
         Name = NameFromSymbol(symbol);
-      //Stats.Experience = 1;
-      //kind = PowerKind.Plain;
-      //Name = "Enemy";
+
+      fightItems[FightItemKind.Stone] = new ProjectileFightItem(FightItemKind.Stone, this) { Count = RandHelper.GetRandomInt(3)+1 };
+      fightItems[FightItemKind.ThrowingKnife] = new ProjectileFightItem(FightItemKind.ThrowingKnife, this) { Count = RandHelper.GetRandomInt(3)+1 };
+
+      fightItemKind = RandHelper.GetRandomEnumValue<FightItemKind>();
     }
 
-    
+    //internal void RemoveFightItem(FightItemKind kind)
+    //{
+    //  fightItems[kind].Count--;
+    //}
+
+    public override void RemoveFightItem(FightItem fi)
+    {
+      fightItems[fi.FightItemKind].Count--;
+    }
+
+    //public FightItemKind GetAvaiableFightItemKind()
+    //{
+    //  //fightItems.Where(i=>i.Value.Count > 0).
+    //  //RandHelper.GEt
+    //}
+
+    public FightItem GetFightItem(FightItemKind kind)
+    {
+      if (fightItems.ContainsKey(kind) && fightItems[kind].Count > 0)
+        return fightItems[kind];
+
+      return null;
+    }
+
     protected bool WereStatsIncreased(IncreaseStatsKind kind)
     {
       if (StatsIncreased.ContainsKey(kind))
@@ -296,6 +322,8 @@ namespace Roguelike.Tiles.LivingEntities
       }
     }
 
+    public FightItemKind FightItemKind { get => fightItemKind; set => fightItemKind = value; }
+
     public override SpellSource GetAttackingScroll()
     {
       if (Name.ToLower().Contains("druid"))
@@ -304,5 +332,6 @@ namespace Roguelike.Tiles.LivingEntities
       }
       return base.GetAttackingScroll();
     }
+
   }
 }

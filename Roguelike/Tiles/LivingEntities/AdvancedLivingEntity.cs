@@ -761,5 +761,10 @@ namespace Roguelike.Tiles.LivingEntities
     {
       return (int)Experience + "/" + (int)NextLevelExperience;
     }
+
+    public override void RemoveFightItem(FightItem fi)
+    {
+      Inventory.Remove(fi);
+    }
   }
 }

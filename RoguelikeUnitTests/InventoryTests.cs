@@ -23,20 +23,20 @@ namespace RoguelikeUnitTests
     //  //Assert.AreEqual(hero.Stats.Attack, hero.Stats.Strength);
     //}
 
-    [Test]
-    public void TransferSulfur()
-    {
-      var game = CreateGame();
-      var hero = game.Hero;
-      var sulf = new Sulfur();
-      hero.Inventory.Add(sulf);
-      Assert.AreEqual(hero.Inventory.Items.Count, 1);
+    //[Test]
+    //public void TransferSulfur()
+    //{
+    //  var game = CreateGame();
+    //  var hero = game.Hero;
+    //  var sulf = new Sulfur();
+    //  hero.Inventory.Add(sulf);
+    //  Assert.AreEqual(hero.Inventory.Items.Count, 1);
 
-      sulf = new Sulfur();
-      hero.Inventory.Add(sulf);
-      Assert.AreEqual(hero.Inventory.Items.Count, 1);
-      Assert.AreEqual(hero.Inventory.GetStackedCount(sulf), 2);
-    }
+    //  sulf = new Sulfur();
+    //  hero.Inventory.Add(sulf);
+    //  Assert.AreEqual(hero.Inventory.Items.Count, 1);
+    //  Assert.AreEqual(hero.Inventory.GetStackedCount(sulf), 2);
+    //}
 
     [Test]
     public void TransferStacked()

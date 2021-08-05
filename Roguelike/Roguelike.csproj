@@ -199,7 +199,6 @@
     <Compile Include="Tiles\Looting\Scroll.cs" />
     <Compile Include="Tiles\Looting\SpecialPotion.cs" />
     <Compile Include="Tiles\Looting\StackedLoot.cs" />
-    <Compile Include="Tiles\Looting\Sulfur.cs" />
     <Compile Include="Tiles\Looting\HunterTrophy.cs" />
     <Compile Include="Tiles\Looting\Trophy.cs" />
     <Compile Include="Tiles\LivingEntities\Merchant.cs" />

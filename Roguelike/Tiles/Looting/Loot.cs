@@ -10,7 +10,7 @@ using System.Linq;
 
 namespace Roguelike.Tiles
 {
-  class Strings
+  public class Strings
   {
     public const string PartOfCraftingRecipe = "Part of the crafting recipe.";
     public const string ConsumeDescPart = "";// Press Right Mouse Button to consume.";
@@ -59,7 +59,7 @@ namespace Roguelike.Tiles
     Unset,
     Other, //MagicDust...
     Gold, Potion, Scroll, Equipment, Gem,
-    Recipe, Seal, SealPart, Food, Plant, HunterTrophy, Book
+    Recipe, Seal, SealPart, Food, Plant, HunterTrophy, Book, FightItem
   }
 
   public enum LootSourceKind { Enemy, PlainChest, GoldChest, DeluxeGoldChest, Barrel }

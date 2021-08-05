@@ -1,4 +1,5 @@
-﻿using Roguelike.Tiles;
+﻿using Dungeons.Core;
+using Roguelike.Tiles;
 using Roguelike.Tiles.Looting;
 using SimpleInjector;
 using System;
@@ -10,8 +11,9 @@ namespace Roguelike.LootFactories
 {
   public class MiscLootFactory : AbstractLootFactory
   {
-    protected Dictionary<string, Func<string, Loot>> factory =
-     new Dictionary<string, Func<string, Loot>>();
+    protected Dictionary<string, Func<string, Loot>> factory = new Dictionary<string, Func<string, Loot>>();
+    protected Dictionary<string, Func<string, FightItem>> factoryFightItem = new Dictionary<string, Func<string, FightItem>>();
+
     List<Recipe> recipesPrototypes = new List<Recipe>();
 
     public MiscLootFactory(Container container) : base(container)
@@ -118,6 +120,20 @@ namespace Roguelike.LootFactories
         return new Gold();
       };
 
+      var fis = GetEnumValues<FightItemKind>();
+      foreach(var fik in fis)
+      {
+        factory[fik.ToString()] = (string tag) =>
+        {
+          return new ProjectileFightItem(fik, null) {  };
+        };
+
+        factoryFightItem[fik.ToString()] = (string tag) =>
+        {
+          return new ProjectileFightItem(fik, null) { };
+        };
+      }
+
       var tinyTrophies = HunterTrophy.TinyTrophiesTags;
       foreach (var tt in tinyTrophies)
       {
@@ -186,7 +202,7 @@ namespace Roguelike.LootFactories
         return loot;
       };
 
-      var kinds = Enum.GetValues(typeof(RecipeKind)).Cast<RecipeKind>().Where(i => i != RecipeKind.Unset).ToList();
+      var kinds = GetEnumValues<RecipeKind>();
       foreach (var kind in kinds)
       {
         recipesPrototypes.Add(createRecipeFromKind(kind));
@@ -202,6 +218,11 @@ namespace Roguelike.LootFactories
       {
         factory[proto.tag1] = createRecipe;
       }
+    }
+
+    private static List<T> GetEnumValues<T>() where T : IConvertible
+    {
+      return RandHelper.GetEnumValues<T>(true);
     }
 
     public override Loot GetByName(string name)
@@ -221,6 +242,11 @@ namespace Roguelike.LootFactories
     public override Loot GetRandom(int level)//TODO level
     {
       return GetRandom<Loot>(factory);
+    }
+
+    public FightItem GetRandomFightItem(int level)//TODO level
+    {
+      return GetRandom<FightItem>(factoryFightItem);
     }
   }
 }

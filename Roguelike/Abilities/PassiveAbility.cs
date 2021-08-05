@@ -480,7 +480,7 @@ namespace Roguelike.Abilities
         case PassiveAbilityKind.LootingMastering:
           break;
         case PassiveAbilityKind.ThrowingWeaponsMastering:
-          return FightItemKind.Knife;
+          return FightItemKind.ThrowingKnife;
 
         //case AbilityKind.HuntingMastering:
         //  return FightItemKind.Trap;
