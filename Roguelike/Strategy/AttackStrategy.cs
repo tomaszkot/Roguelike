@@ -243,6 +243,8 @@ namespace Roguelike
 
       private bool TryUseProjectileAttack(LivingEntity attacker, LivingEntity target)
       {
+        if (RandHelper.GetRandomDouble() < 0.5)
+          return false;
         var enemy = attacker as Enemy;
         var fi = enemy.GetFightItem(enemy.FightItemKind);
         if (fi != null)

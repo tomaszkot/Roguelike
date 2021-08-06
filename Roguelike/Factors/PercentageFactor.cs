@@ -1,4 +1,6 @@
-﻿namespace Roguelike.Factors
+﻿using Roguelike.Utils;
+
+namespace Roguelike.Factors
 {
   public class Factor
   {
@@ -12,7 +14,7 @@
     public override string ToString()
     {
       var sign = value >= 0 ? "+" : "";
-      return sign + value.ToString();
+      return sign + value.Formatted().ToString();
     }
   }
 

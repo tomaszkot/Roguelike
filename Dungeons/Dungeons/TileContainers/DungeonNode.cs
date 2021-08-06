@@ -416,7 +416,7 @@ namespace Dungeons
           )
           {
             var tile = tiles[row, col];
-            if (!nodeIndexMustMatch || tile.dungeonNodeIndex == NodeIndex)
+            if (!nodeIndexMustMatch || tile.DungeonNodeIndex == NodeIndex)
             {
               var pt = new Point(col, row);
               if (constraints == null || (constraints.IsInside(pt)))
@@ -446,7 +446,7 @@ namespace Dungeons
       public Tile GetRandomEmptyTile(List<Tile> emptyTiles, int? nodeIndex = null)
       {
         if (nodeIndex != null)
-          emptyTiles = emptyTiles.Where(i => i.dungeonNodeIndex == nodeIndex.Value).ToList();
+          emptyTiles = emptyTiles.Where(i => i.DungeonNodeIndex == nodeIndex.Value).ToList();
 
         if (emptyTiles.Any())
         {
@@ -876,7 +876,7 @@ namespace Dungeons
             var wall = CreateWall();
             if (this.SetTile(wall, toDel[i].point))
             {
-              wall.dungeonNodeIndex = toDel[i].DungeonNodeIndex;
+              wall.DungeonNodeIndex = toDel[i].DungeonNodeIndex;
               wall.Revealed = toDel[i].Revealed;
             }
           }

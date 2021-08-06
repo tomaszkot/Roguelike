@@ -27,6 +27,7 @@ namespace Roguelike.Tiles.Looting
     protected PassiveAbilityKind abilityKind;
     protected string primaryFactorName = "Damage";
     protected string auxFactorName = "";
+    public string HitTargetSound;
 
     public FightItem() : this(FightItemKind.Unset)
     {
@@ -50,15 +51,18 @@ namespace Roguelike.Tiles.Looting
         if (fightItemKind == FightItemKind.Stone)
         {
           PrimaryStatDescription = "Stone, can make a harm if thrown by a skilled man.";
+          HitTargetSound = "punch";
         }
         else if (fightItemKind == FightItemKind.ThrowingKnife)
         {
           PrimaryStatDescription = Name+", very sharp, likely to cause bleeding";
           baseDamage += 2;
+          HitTargetSound = "arrow_hit_body";
         }
         else if (fightItemKind == FightItemKind.ExplosiveCocktail)
         {
           PrimaryStatDescription = Name + ", puts target on fire";
+          HitTargetSound = "SHATTER_Glass1";
           //baseDamage += 2;
         }
       }

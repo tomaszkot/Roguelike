@@ -6,6 +6,7 @@ using Roguelike.Extensions;
 using Roguelike.Factors;
 using Roguelike.Spells;
 using Roguelike.Tiles.LivingEntities;
+using Roguelike.Utils;
 using System;
 using System.Linq;
 using System.Xml.Serialization;
@@ -189,7 +190,6 @@ namespace Roguelike.Effects
 
       var middle = "";
       var end = "";
-      //var sign = EffectiveFactor.EffectiveFactor.Value >= 0 ? "+" : "-";
 
       if (Type == EffectType.Bleeding)
       {
@@ -221,9 +221,9 @@ namespace Roguelike.Effects
       //  res += sign;
 
       if (EffectiveFactor.Value != 0)
-        res += EffectiveFactor;
+        res += EffectiveFactor.Value.Formatted();
       else
-        res += PercentageFactor;
+        res += PercentageFactor.Value.Formatted();
 
       if (end.Any())
         res += end;

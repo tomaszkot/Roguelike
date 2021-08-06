@@ -518,7 +518,7 @@ namespace Roguelike.TileContainers
       var secret = Nodes.Where(i => i.Secret).FirstOrDefault();
       if (secret != null)
       {
-        empOnes = empOnes.Where(i => i.dungeonNodeIndex != secret.NodeIndex).ToList();
+        empOnes = empOnes.Where(i => i.DungeonNodeIndex != secret.NodeIndex).ToList();
       }
       var emp = empOnes.FirstOrDefault();
       if (emp == null)
@@ -563,7 +563,7 @@ namespace Roguelike.TileContainers
       if (heroStartTile == null)
         heroStartTile = GetHeroStartTile();
 
-      heroStartTile.DungeonNodeIndex = heroStartTile.DungeonNodeIndex;
+      //heroStartTile.DungeonNodeIndex = heroStartTile.DungeonNodeIndex;
       res.Tile = heroStartTile;
       PlaceHeroAtTile(context, hero, heroStartTile);
     }

@@ -146,7 +146,7 @@ namespace Roguelike.TileContainers
                 OnNodeRevealedTileSymbolMismatch(revealedTile, dt);
               }
             }
-            if (!dt.Revealed && revealedTile.Revealed && dt.dungeonNodeIndex == revealedTile.dungeonNodeIndex)
+            if (!dt.Revealed && revealedTile.Revealed && dt.DungeonNodeIndex == revealedTile.DungeonNodeIndex)
               dt.Revealed = true;
           }
         }

@@ -1,9 +1,11 @@
-﻿using Dungeons.Core;
+﻿//#define DEBUG_PROPS
+using Dungeons.Core;
 using Dungeons.TileContainers;
 using Newtonsoft.Json;
 using System;
 using System.Drawing;
 using System.Linq;
+
 
 namespace Dungeons.Tiles
 {
@@ -31,6 +33,21 @@ namespace Dungeons.Tiles
     private char symbol = Constants.SymbolBackground;
     public string name;
     private string displayedName;
+
+#if DEBUG_PROPS
+    public string _tag1;
+    public string tag1
+    {
+      get { return _tag1; }
+      set
+      {
+        _tag1 = value;
+        if (_tag1 == "xxx")
+        {
+        }
+      }
+    } //custom purpose field
+#endif
     public string tag1 = "";//custom purpose field
     public string tag2 = "";//custom purpose field
     public ConsoleColor color = ConsoleColor.White;
@@ -48,7 +65,7 @@ namespace Dungeons.Tiles
     /// <summary>
     /// If false the tile is not visible. The revealed flag shall be typically set to true when a door leading to room are opened.
     /// </summary>
-    bool revealed = GenerationInfo.DefaultRevealedValue;
+    public bool Revealed = GenerationInfo.DefaultRevealedValue;
 
     [JsonIgnore]
     public string DestroySound { get; set; }
@@ -80,8 +97,16 @@ namespace Dungeons.Tiles
       Name = GetNameFromTag1();
     }
 
-    public int dungeonNodeIndex = DungeonNode.DefaultNodeIndex;
+    //some classes might need a prop
+    public int CustomDungeonNodeIndex
+    {
+      get { return DungeonNodeIndex; }
+      set { DungeonNodeIndex = value; }
+    }
 
+    public int DungeonNodeIndex = DungeonNode.DefaultNodeIndex;
+
+#if DEBUG_PROPS
     [JsonIgnore]
     public int DungeonNodeIndex
     {
@@ -107,7 +132,9 @@ namespace Dungeons.Tiles
         dungeonNodeIndex = value;
       }
     }
-
+#endif
+    
+#if DEBUG_PROPS
     public bool Revealed
     {
       get { return revealed; }
@@ -122,21 +149,12 @@ namespace Dungeons.Tiles
             //  int k = 0;
             //  k++;
             //}
-            //if (DungeonNodeIndex > 0 && DungeonNodeIndex < 999)
-            //{
-            //  int k = 0;
-            //  k++;
-            //}
-            //if (DungeonNodeIndex == 0)
-            //{
-            //  int k = 0;
-            //  k++;
-            //}
           }
           revealed = value;
         }
       }
     }
+#endif
 
     [JsonIgnore]
     public bool IsAtValidPoint

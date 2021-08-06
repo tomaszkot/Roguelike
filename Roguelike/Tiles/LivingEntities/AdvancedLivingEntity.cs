@@ -705,15 +705,15 @@ namespace Roguelike.Tiles.LivingEntities
       return wpn.Kind == Weapon.WeaponKind.Bashing;
     }
 
-    protected override LastingEffect EnsurePhysicalHitEffect(float inflicted, LivingEntity victim, FightItem fi = null)
+    protected override LastingEffect EnsurePhysicalHitEffect(float inflicted, LivingEntity victim)
     {
       LastingEffect lastingEffectCalcInfo = null;
       var wpn = this.GetCurrentEquipment(EquipmentKind.Weapon) as Weapon;
       if (wpn != null)
       {
-        if (CalculateIfStatChanceApplied(EntityStatKind.ChanceToCauseBleeding, victim, fi))
-          lastingEffectCalcInfo = victim.LastingEffectsSet.EnsureEffect(EffectType.Bleeding, 20 / 3, this);
-        if (fi == null)//throwing knife will not cause stunning or tear apart
+        if (CalculateIfStatChanceApplied(EntityStatKind.ChanceToCauseBleeding, victim))
+          lastingEffectCalcInfo = victim.LastingEffectsSet.EnsureEffect(EffectType.Bleeding, inflicted / 3, this);
+        //if (fi == null)//throwing knife will not cause stunning or tear apart
         {
           if (CurrentWeaponCausesStunning() && CalculateIfStatChanceApplied(EntityStatKind.ChanceToCauseStunning))
             lastingEffectCalcInfo = victim.LastingEffectsSet.EnsureEffect(EffectType.Stunned, 0, this);

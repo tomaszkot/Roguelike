@@ -320,15 +320,11 @@ namespace Roguelike.Tiles.LivingEntities
       return hitWillHappen;
     }
 
-    internal bool CalculateIfStatChanceApplied(EntityStatKind esk, LivingEntity target = null, FightItem fi = null)
+    internal bool CalculateIfStatChanceApplied(EntityStatKind esk, LivingEntity target = null)
     {
       //Container.GetInstance<ILogger>().LogInfo(this + " CalculateIfStatChanceApplied...");
       var randVal = (float)RandHelper.Random.NextDouble();
       var chance = GetEffectChance(esk);
-      //if (fi != null && fi is ThrowingKnife)
-      //{
-      //  chance = fi.GetFactor(false);
-      //}
       if (target != null)
       {
         if (esk == EntityStatKind.ChanceToHit)
@@ -373,7 +369,6 @@ namespace Roguelike.Tiles.LivingEntities
         if (inflicted > this.Stats.Mana)
           manaReduce = inflicted - this.Stats.Mana;
 
-        //inflicted = this.Stats.Mana - inflicted;
         ReduceMana(manaReduce);
         inflicted -= manaReduce;
         damageDesc = null;//TODO
@@ -463,7 +458,17 @@ namespace Roguelike.Tiles.LivingEntities
         AppendAction(new SoundRequestAction() { SoundName = sound });
     }
 
-    public virtual float OnMelleeHitBy(LivingEntity attacker)
+    float AppendNonPhysicalDamage(EntityStatKind esk, float npdAttack, ref float inflicted, ref string inflictedDesc)
+    {
+      var npd = CalculateNonPhysicalDamage(esk, npdAttack);
+      if (npd != 0)
+        inflictedDesc += " " + GetAttackDesc(esk) + ": " + npd.Formatted();
+      inflicted += npd;
+
+      return npd;
+    }
+
+    float CalcMeleeDamage(float attackerPower, ref string desc)
     {
       float defense = GetDefense();
       if (defense == 0)
@@ -479,21 +484,24 @@ namespace Roguelike.Tiles.LivingEntities
       }
 
       lastHitBySpell = false;
-      var attack = attacker.GetHitAttackValue(true);
       if (defense <= 0)
         defense = 1;//HACK, TODO
-      var inflicted = attack / defense;
+      var inflicted = attackerPower / defense;
+      desc = Name.ToString() + " received melee damage: " + inflicted.Formatted();
+      return inflicted;
+    }
 
-      var desc = Name.ToString() + " received damage: " + inflicted.Formatted();
+    public virtual float OnMelleeHitBy(LivingEntity attacker)
+    {
+      string desc = "";
+      var inflicted = CalcMeleeDamage(attacker.GetHitAttackValue(true), ref desc);
 
       var npds = attacker.GetNonPhysicalDamages();
       foreach (var stat in npds)
       {
-        var npd = CalculateNonPhysicalDamage(stat.Key, stat.Value);
-        if (npd != 0)
-          desc += " " + GetAttackDesc(stat.Key) + ": " + npd.Formatted();
-        inflicted += npd;
-        var manaShieldEffect = LastingEffectsSet.GetByType(EffectType.ManaShield);
+        var npd = AppendNonPhysicalDamage(stat.Key, stat.Value, ref inflicted, ref desc);
+
+        var manaShieldEffect = LastingEffectsSet.GetByType(EffectType.ManaShield);//TODO ?
         if(manaShieldEffect==null)
           LastingEffectsSet.TryAddLastingEffectOnHit(npd, attacker, stat.Key);
       }
@@ -512,9 +520,9 @@ namespace Roguelike.Tiles.LivingEntities
         if (IsWounded)
         {
           if (attacker.CanCauseBleeding())
-            lastingEffectsSet.EnsureEffect(EffectType.Bleeding, inflicted / 3, attacker);
+            StartBleeding(inflicted, attacker);
         }
-        attacker.EnsurePhysicalHitEffect(inflicted, this, null);
+        attacker.EnsurePhysicalHitEffect(inflicted, this);
       }
 
       return inflicted;
@@ -532,37 +540,31 @@ namespace Roguelike.Tiles.LivingEntities
           return false;
         }
         var dmg = CalcNonPhysicalDamageFromSpell(spell);
-        OnHitBy(dmg /*, spell.FightItem*/, spell);
+        OnHitBy(dmg, spell);
       }
 
       else if (projectile is FightItem fi)
       {
         if (fi is ProjectileFightItem pfi)
         {
-          var amount = pfi.Damage;
-          amount /= Stats.Defense;
-          var sound = "";
           var damageDesc = "";
+          var inflicted = CalcMeleeDamage(pfi.Damage, ref damageDesc);
+          var sound = pfi.HitTargetSound;// "punch";
           var srcName = fi.FightItemKind.ToDescription();
           var attacker = pfi.Caller;
-          ReduceHealth(attacker, sound, damageDesc, srcName, ref amount);
+          
+          if (fi.FightItemKind == FightItemKind.ExplosiveCocktail)
+          {
+            AppendNonPhysicalDamage(EntityStatKind.FireAttack, fi.Damage, ref inflicted, ref damageDesc);
+            lastingEffectsSet.EnsureEffect(EffectType.Firing, inflicted / 3, attacker);
+          }
+          if (fi.FightItemKind == FightItemKind.ThrowingKnife)
+          {
+            if (RandHelper.GetRandomDouble() > 0.75)
+              StartBleeding(inflicted, attacker);
+          }
+          ReduceHealth(attacker, sound, damageDesc, srcName, ref inflicted);
         }
-        //if (md is ExplosiveCocktail)
-        //{
-        //  //lastHitBySpell = true;//to put on enemy resist
-        //  //var spell = new FireBallSpell(this);
-        //  //spell.Caller = md.Caller;
-        //  //spell.SourceOfDamage = false;//dmg is fixed !
-        //  //var expl = md as ExplosiveCocktail;
-        //  //spell.FightItem = fi;
-        //  //damage = CalculateNonPhysicalDamage(EntityStatKind.FireAttack, expl.GetDamage());
-        //  //OnHitBy(damage, fi, null, spell);
-        //}
-        //else if (md.Kind == FightItemKind.Knife)// ThrowingKnife)
-        //{
-        //  damage = fi.GetDamage() / GetDefence();
-        //  OnHitBy(damage, fi, fi.Caller, null);
-        //}
         else
           Assert(false, "OnHitBy!" + projectile);
       }
@@ -570,6 +572,11 @@ namespace Roguelike.Tiles.LivingEntities
         Assert(false, "OnHitBy - not supported" + projectile);
 
       return true;
+    }
+
+    private void StartBleeding(float inflicted, LivingEntity attacker)
+    {
+      lastingEffectsSet.EnsureEffect(EffectType.Bleeding, inflicted / 3, attacker);
     }
 
     protected virtual void OnHitBy
@@ -602,8 +609,7 @@ namespace Roguelike.Tiles.LivingEntities
       LastingEffectsSet.TryAddLastingEffectOnHit(amount, attacker, spell);
     }
 
-    //static LastingEffectCalcInfo heBase = new LastingEffectCalcInfo(EffectType.Unset, 0, new EffectiveFactor(0), new PercentageFactor(0));
-    protected virtual LastingEffect EnsurePhysicalHitEffect(float inflicted, LivingEntity victim, FightItem fi = null)
+    protected virtual LastingEffect EnsurePhysicalHitEffect(float inflicted, LivingEntity victim)
     {
       return null;
     }
@@ -718,7 +724,6 @@ namespace Roguelike.Tiles.LivingEntities
     {
       var info = Name + " Died";
       if (DiedOfEffect != EffectType.Unset)
-        info += ", killing effect: " + DiedOfEffect.ToDescription();
         info += ", killing effect: " + DiedOfEffect.ToDescription();
 
       return new LivingEntityAction(LivingEntityActionKind.Died) { InvolvedEntity = this, Level = ActionLevel.Important, Info = info };

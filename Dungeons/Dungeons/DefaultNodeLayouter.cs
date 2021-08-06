@@ -157,7 +157,7 @@ namespace Dungeons
             if (currentNode.Secret)
             {
               if (currentNode.NodeIndex == 0)
-                (doors[0]).DungeonNodeIndex = 1;//to make them revealed ?
+                (doors[0]).CustomDungeonNodeIndex = 1;//to make them revealed ?
             }
 
             if (nextMaze.Secret && mazeNodes.Count > currentNodeIndex + 2)
