@@ -155,7 +155,7 @@ namespace Roguelike.Tiles.Looting
             break;
           case RecipeKind.TransformPotion:
             tag1 += "transform_potion";
-            //Name = "";
+            Name = "";
             break;
           case RecipeKind.TransformGem:
             tag1 += "transform_gem";

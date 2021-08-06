@@ -185,16 +185,25 @@ namespace Roguelike.Crafting
         }
 
 
-        var allHp = lootToConvert.All(i => i.IsPotion(PotionKind.Health));
-        var allMp = lootToConvert.All(i => i.IsPotion(PotionKind.Mana));
-        if ((recipe.Kind == RecipeKind.Custom || recipe.Kind == RecipeKind.TransformPotion) && (allHp || allMp))
+        var allHp = lootToConvert.Where(i => i.IsPotion(PotionKind.Health));
+        var allMp = lootToConvert.Where(i => i.IsPotion(PotionKind.Mana));
+        var toadstools = lootToConvert.Where(i => i.IsToadstool()).ToList();
+        if ((recipe.Kind == RecipeKind.Custom || recipe.Kind == RecipeKind.TransformPotion) && 
+            (lootToConvert.Count == 3 && toadstools.Count() == 1 && (allHp.Count() == 1 || allMp.Count() == 1)))
         {
-          if ((lootToConvert[0] as Potion).Count == 1)//TODO allow many conv (use many M Dust)
+          //if ((lootToConvert[0] as Potion).Count == 1)//TODO allow many conv (use many M Dust)
+          var potion = lootToConvert.Where(i => i.IsPotion()).Single();
           {
-            if (lootToConvert[0].IsPotion(PotionKind.Mana))
-              return ReturnCraftedLoot(new Potion(PotionKind.Health));
+            if (potion.AsPotion().Kind == PotionKind.Mana)
+            {
+              if (toadstools.Single().AsToadstool().MushroomKind == MushroomKind.RedToadstool)
+                return ReturnCraftedLoot(new Potion(PotionKind.Health));
+            }
             else
-              return ReturnCraftedLoot(new Potion(PotionKind.Mana));
+            {
+              if (toadstools.Single().AsToadstool().MushroomKind == MushroomKind.BlueToadstool)
+                return ReturnCraftedLoot(new Potion(PotionKind.Mana));
+            }
           }
         }
 
