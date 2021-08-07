@@ -101,8 +101,6 @@ namespace Roguelike.Effects
           var effectiveFactor = this.livingEntity.CalcEffectiveFactor(hooch.SecondStatKind, percentValue);
           var leci = CreateLastingEffectCalcInfo(eff, effectiveFactor.Value, percentValue, hooch.TourLasting);
           var leSibling = CreateLE(leci, origin, source, hooch.SecondStatKind, eff);
-          //var leSibling = new LastingEffect(eff, livingEntity, calcEffectValue.Turns, origin,
-          //  leci.EffectiveFactor, leci.PercentageFactor);
           le.Sibling = leSibling;
         }
 
