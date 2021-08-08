@@ -8,11 +8,10 @@ namespace Roguelike.Abilities
 {
   public class AbilitiesSet
   {
-    List<PassiveAbility> abilities = new List<PassiveAbility>();
-    //ExplosiveCocktail explosiveCocktailPropsProvider = new ExplosiveCocktail();
-    //ThrowingKnife throwingKnifePropsProvider = new ThrowingKnife();
-    //Trap trapPropsProvider = new Trap();
-    Dictionary<FightItemKind, FightItem> fightItemsProps = new Dictionary<FightItemKind, FightItem>();
+    List<PassiveAbility> passiveAbilities = new List<PassiveAbility>();
+    List<ActiveAbility> activeAbilities = new List<ActiveAbility>();
+    List<Ability> allItems = new List<Ability>();
+    //Dictionary<FightItemKind, FightItem> fightItemsProps = new Dictionary<FightItemKind, FightItem>();
 
     public AbilitiesSet()
     {
@@ -21,63 +20,91 @@ namespace Roguelike.Abilities
 
     public void EnsureItems()
     {
-
-      var kinds = Enum.GetValues(typeof(PassiveAbilityKind)).Cast<PassiveAbilityKind>().ToList();
-      foreach (var kind in kinds)
       {
-        if (abilities.Any(i => i.Kind == kind) || kind == PassiveAbilityKind.Unset)
+        var kinds = Enum.GetValues(typeof(PassiveAbilityKind)).Cast<PassiveAbilityKind>().ToList();
+        foreach (var kind in kinds)
+        {
+          if (passiveAbilities.Any(i => i.Kind == kind) || kind == PassiveAbilityKind.Unset)
+            continue;
+          if (kind == PassiveAbilityKind.LootingMastering)
+            passiveAbilities.Add(new LootAbility(true) { Kind = PassiveAbilityKind.LootingMastering });
+          else
+            passiveAbilities.Add(new PassiveAbility() { Kind = kind });
+
+          allItems.Add(passiveAbilities.Last());
+        }
+      }
+      var kindsAct = Enum.GetValues(typeof(ActiveAbilityKind)).Cast<ActiveAbilityKind>().ToList();
+      foreach (var kind in kindsAct)
+      {
+        if (activeAbilities.Any(i => i.Kind == kind) || kind == ActiveAbilityKind.Unset)
           continue;
-        if (kind == PassiveAbilityKind.LootingMastering)
-          abilities.Add(new LootAbility(true) { Kind = PassiveAbilityKind.LootingMastering });
-        else
-          abilities.Add(new PassiveAbility() { Kind = kind });
+        activeAbilities.Add(new ActiveAbility() { Kind = kind });
+        allItems.Add(passiveAbilities.Last());
       }
-      EnsureProps();
+      //EnsureProps();
     }
 
-    private void EnsureProps()
-    {
-      if (!fightItemsProps.Any())
-      {
-        //fightItemsProps[FightItemKind.ExplodePotion] = explosiveCocktailPropsProvider;
-        //fightItemsProps[FightItemKind.Knife] = throwingKnifePropsProvider;
-        //fightItemsProps[FightItemKind.Trap] = trapPropsProvider;
-      }
-    }
+    //private void EnsureProps()
+    //{
+    //  if (!fightItemsProps.Any())
+    //  {
+    //    //fightItemsProps[FightItemKind.ExplodePotion] = explosiveCocktailPropsProvider;
+    //    //fightItemsProps[FightItemKind.Knife] = throwingKnifePropsProvider;
+    //    //fightItemsProps[FightItemKind.Trap] = trapPropsProvider;
+    //  }
+    //}
 
-    public FightItem GetFightItem(FightItemKind kind)
-    {
-      EnsureProps();
-      return fightItemsProps[kind];
-    }
+    //public FightItem GetFightItem(FightItemKind kind)
+    //{
+    //  EnsureProps();
+    //  return fightItemsProps[kind];
+    //}
 
-    public List<PassiveAbility> GetItems()
-    {
-      //EnsureAbilities(false);
-      return abilities;
-    }
-
-    public PassiveAbility GetByEntityStatKind(EntityStatKind esk, bool primary)
+    public Ability GetByEntityStatKind(EntityStatKind esk, bool primary)
     {
       if (primary)
-        return Items.Where(i => i.PrimaryStat.Kind == esk).FirstOrDefault();
+        return PassiveItems.Where(i => i.PrimaryStat.Kind == esk).FirstOrDefault();
 
-      return Items.Where(i => i.AuxStat.Kind == esk).FirstOrDefault();
+      return PassiveItems.Where(i => i.AuxStat.Kind == esk).FirstOrDefault();
     }
 
-    public List<PassiveAbility> Items
+    public List<Ability> AllItems
+    {
+      get
+      {
+        //can not called it here - deserialization doubles items!
+        //if (!abilities.Any())
+        return allItems;
+      }
+    }
+
+    public List<PassiveAbility> PassiveItems
     {
       get
       {
         //can not called it here - deserialization doubles items!
         //if (!abilities.Any())
         //  EnsureAbilities();
-        return abilities;
+        return passiveAbilities;
       }
 
       set
       {
-        abilities = value;//for serialization
+        passiveAbilities = value;//for serialization
+      }
+    }
+
+    public List<ActiveAbility> ActiveItems
+    {
+      get
+      {
+        return activeAbilities;
+      }
+
+      set
+      {
+        activeAbilities = value;//for serialization
       }
     }
   }

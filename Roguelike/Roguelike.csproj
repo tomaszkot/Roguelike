@@ -59,6 +59,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Abilities\AbilitiesSet.cs" />
+    <Compile Include="Abilities\Ability.cs" />
+    <Compile Include="Abilities\ActiveAbility.cs" />
     <Compile Include="Abilities\PassiveAbility.cs" />
     <Compile Include="Abilities\LootAbility.cs" />
     <Compile Include="Abstract\Abilities\IAbility.cs" />
@@ -183,7 +185,6 @@
     <Compile Include="Tiles\Looting\Consumable.cs" />
     <Compile Include="Tiles\Looting\Cord.cs" />
     <Compile Include="Tiles\Looting\Enchanter.cs" />
-    <Compile Include="Tiles\Looting\ExplosiveCocktail.cs" />
     <Compile Include="Tiles\Looting\Food.cs" />
     <Compile Include="Tiles\Interactive\InteractiveTile.cs" />
     <Compile Include="Tiles\Interactive\Chest.cs" />

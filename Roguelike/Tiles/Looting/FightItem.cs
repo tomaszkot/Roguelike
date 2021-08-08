@@ -28,6 +28,12 @@ namespace Roguelike.Tiles.Looting
     protected string primaryFactorName = "Damage";
     protected string auxFactorName = "";
     public string HitTargetSound;
+    [JsonIgnore]
+    public LivingEntity Caller//req. by interface
+    {
+      get;
+      set;
+    }
 
     public FightItem() : this(FightItemKind.Unset)
     {
@@ -61,7 +67,7 @@ namespace Roguelike.Tiles.Looting
         }
         else if (fightItemKind == FightItemKind.ExplosiveCocktail)
         {
-          PrimaryStatDescription = Name + ", puts target on fire";
+          PrimaryStatDescription = Name + ", explodes hurting the victim and nearby entities with fire";
           HitTargetSound = "SHATTER_Glass1";
           //baseDamage += 2;
         }
@@ -100,8 +106,9 @@ namespace Roguelike.Tiles.Looting
 
     public PassiveAbility GetAbility()
     {
-      //var hero = Caller as Hero;
-      //return hero.GetAbility(abilityKind);
+      var hero = Caller as Hero;
+      if(hero != null)
+        return hero.GetPassiveAbility(abilityKind);
       return null;
     }
 
@@ -217,11 +224,6 @@ namespace Roguelike.Tiles.Looting
 
     public IObstacle Target { get; set; }
 
-    [JsonIgnore]
-    public LivingEntity Caller//req. by interface
-    {
-      get;
-      set;
-    }
+    
   }
 }

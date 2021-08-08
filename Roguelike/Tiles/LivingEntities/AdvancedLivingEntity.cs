@@ -166,7 +166,18 @@ namespace Roguelike.Tiles.LivingEntities
 
     public bool IncreaseAbility(PassiveAbilityKind kind)
     {
-      var ab = GetAbility(kind);
+      var ab = GetPassiveAbility(kind);
+      return Increase(ab);
+    }
+
+    public bool IncreaseAbility(ActiveAbilityKind kind)
+    {
+      var ab = GetActiveAbility(kind);
+      return Increase(ab);
+    }
+
+    private bool Increase(Ability ab)
+    {
       var increased = ab.IncreaseLevel(this);
       if (increased)
       {
@@ -179,13 +190,17 @@ namespace Roguelike.Tiles.LivingEntities
 
     public LootAbility GetLootAbility()
     {
-      return GetAbility(PassiveAbilityKind.LootingMastering) as LootAbility;
+      return GetPassiveAbility(PassiveAbilityKind.LootingMastering) as LootAbility;
     }
 
-    public PassiveAbility GetAbility(PassiveAbilityKind kind)
+    public PassiveAbility GetPassiveAbility(PassiveAbilityKind kind)
     {
-      //Abilities.EnsureAbilities(false);
-      return Abilities.Items.Where(i => i.Kind == kind).SingleOrDefault();
+      return Abilities.PassiveItems.Where(i => i.Kind == kind).SingleOrDefault();
+    }
+
+    public ActiveAbility GetActiveAbility(ActiveAbilityKind kind)
+    {
+      return Abilities.ActiveItems.Where(i => i.Kind == kind).SingleOrDefault();
     }
 
     public int GetPrice(Loot loot)
@@ -591,7 +606,7 @@ namespace Roguelike.Tiles.LivingEntities
 
       var si = GetStrengthIncrease();
       Stats.AccumulateFactor(EntityStatKind.Attack, si);
-      var abs = Abilities.GetItems();
+      var abs = Abilities.PassiveItems;
       foreach (var ab in abs)
       {
         if (!ab.BeginTurnApply)
@@ -665,7 +680,7 @@ namespace Roguelike.Tiles.LivingEntities
 
     public virtual void ApplyAbilities()
     {
-      var toApply = Abilities.GetItems().Where(i => i.BeginTurnApply && i.Level > 0).ToList();
+      var toApply = Abilities.PassiveItems.Where(i => i.BeginTurnApply && i.Level > 0).ToList();
       foreach (var ab in toApply)
       {
         if (ab.Kind == PassiveAbilityKind.RestoreHealth ||

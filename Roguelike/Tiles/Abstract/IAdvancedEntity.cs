@@ -14,7 +14,7 @@ namespace Roguelike.Tiles.Abstract
     int AbilityPoints { get; set; }
     AbilitiesSet Abilities { get; }
     bool IncreaseAbility(PassiveAbilityKind kind);
-    PassiveAbility GetAbility(PassiveAbilityKind kind);
+    PassiveAbility GetPassiveAbility(PassiveAbilityKind kind);
     string GetExpInfo();
 
     event EventHandler StatsRecalculated;

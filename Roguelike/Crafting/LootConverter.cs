@@ -175,7 +175,7 @@ namespace Roguelike.Crafting
         {
           if (sulfCount != hoochCount)
             return ReturnCraftingError("Number of ingradients must be the same (except for Magic Dust)");
-          return ReturnCraftedLoot(new ExplosiveCocktail());
+          return ReturnCraftedLoot(new ProjectileFightItem(FightItemKind.ExplosiveCocktail, null));
         }
 
         var allGems = lootToConvert.All(i => i is Gem);
