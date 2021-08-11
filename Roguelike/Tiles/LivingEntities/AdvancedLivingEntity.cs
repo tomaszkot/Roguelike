@@ -164,18 +164,12 @@ namespace Roguelike.Tiles.LivingEntities
       return loot.Price >= 0;
     }
 
-    public bool IncreaseAbility(PassiveAbilityKind kind)
+    public bool IncreaseAbility(AbilityKind kind)
     {
-      var ab = GetPassiveAbility(kind);
+      var ab = abilities.GetAbility(kind);
       return Increase(ab);
     }
-
-    public bool IncreaseAbility(ActiveAbilityKind kind)
-    {
-      var ab = GetActiveAbility(kind);
-      return Increase(ab);
-    }
-
+        
     private bool Increase(Ability ab)
     {
       var increased = ab.IncreaseLevel(this);
@@ -190,15 +184,15 @@ namespace Roguelike.Tiles.LivingEntities
 
     public LootAbility GetLootAbility()
     {
-      return GetPassiveAbility(PassiveAbilityKind.LootingMastering) as LootAbility;
+      return GetPassiveAbility(AbilityKind.LootingMastering) as LootAbility;
     }
 
-    public PassiveAbility GetPassiveAbility(PassiveAbilityKind kind)
+    public PassiveAbility GetPassiveAbility(AbilityKind kind)
     {
       return Abilities.PassiveItems.Where(i => i.Kind == kind).SingleOrDefault();
     }
 
-    public ActiveAbility GetActiveAbility(ActiveAbilityKind kind)
+    public ActiveAbility GetActiveAbility(AbilityKind kind)
     {
       return Abilities.ActiveItems.Where(i => i.Kind == kind).SingleOrDefault();
     }
@@ -683,12 +677,12 @@ namespace Roguelike.Tiles.LivingEntities
       var toApply = Abilities.PassiveItems.Where(i => i.BeginTurnApply && i.Level > 0).ToList();
       foreach (var ab in toApply)
       {
-        if (ab.Kind == PassiveAbilityKind.RestoreHealth ||
-          ab.Kind == PassiveAbilityKind.RestoreMana)
+        if (ab.Kind == AbilityKind.RestoreHealth ||
+          ab.Kind == AbilityKind.RestoreMana)
         {
           var entityStatKind = EntityStatKind.Unset;
 
-          if (ab.Kind == PassiveAbilityKind.RestoreHealth)
+          if (ab.Kind == AbilityKind.RestoreHealth)
           {
             entityStatKind = EntityStatKind.Health;
           }

@@ -24,6 +24,7 @@ namespace Roguelike.Abilities
     public const string MessageMaxLevelReached = "Max level reached";
     protected List<string> customExtraStatDescription = new List<string>();
     public string LastIncError { get; set; }
+    protected AbilityKind kind;
 
     public Ability()
     {
@@ -31,7 +32,9 @@ namespace Roguelike.Abilities
       AuxStat = new EntityStat();
       Revealed = true;
     }
-        
+
+    public abstract AbilityKind Kind { get; set; }
+
     protected virtual List<string> GetCustomExtraStatDescription(int level)
     {
       return customExtraStatDescription;

@@ -21,27 +21,42 @@ namespace Roguelike.Abilities
     public void EnsureItems()
     {
       {
-        var kinds = Enum.GetValues(typeof(PassiveAbilityKind)).Cast<PassiveAbilityKind>().ToList();
+        var kinds = Enum.GetValues(typeof(AbilityKind)).Cast<AbilityKind>().ToList();
         foreach (var kind in kinds)
         {
-          if (passiveAbilities.Any(i => i.Kind == kind) || kind == PassiveAbilityKind.Unset)
-            continue;
-          if (kind == PassiveAbilityKind.LootingMastering)
-            passiveAbilities.Add(new LootAbility(true) { Kind = PassiveAbilityKind.LootingMastering });
-          else
-            passiveAbilities.Add(new PassiveAbility() { Kind = kind });
 
-          allItems.Add(passiveAbilities.Last());
+          if (passiveAbilities.Any(i => i.Kind == kind) || kind == AbilityKind.Unset)
+            continue;
+
+          Ability ab = null;
+          if (kind == AbilityKind.ExplosiveMastering ||
+              kind == AbilityKind.StoneThrowingMastering ||
+              kind == AbilityKind.DaggerThrowingMastering
+              )
+          {
+            ab = new ActiveAbility() { Kind = kind };
+            activeAbilities.Add(ab as ActiveAbility);
+          }
+          else
+          {
+            if (kind == AbilityKind.LootingMastering)
+              ab = new LootAbility(true) { Kind = AbilityKind.LootingMastering };
+            else
+              ab = new PassiveAbility() { Kind = kind };
+
+            passiveAbilities.Add(ab as PassiveAbility);
+          }
+          allItems.Add(ab);
         }
       }
-      var kindsAct = Enum.GetValues(typeof(ActiveAbilityKind)).Cast<ActiveAbilityKind>().ToList();
-      foreach (var kind in kindsAct)
-      {
-        if (activeAbilities.Any(i => i.Kind == kind) || kind == ActiveAbilityKind.Unset)
-          continue;
-        activeAbilities.Add(new ActiveAbility() { Kind = kind });
-        allItems.Add(passiveAbilities.Last());
-      }
+      //var kindsAct = Enum.GetValues(typeof(AbilityKind)).Cast<ActiveAbilityKind>().ToList();
+      //foreach (var kind in kindsAct)
+      //{
+      //  if (activeAbilities.Any(i => i.Kind == kind) || kind == ActiveAbilityKind.Unset)
+      //    continue;
+      //  activeAbilities.Add(new ActiveAbility() { Kind = kind });
+      //  allItems.Add(passiveAbilities.Last());
+      //}
       //EnsureProps();
     }
 
@@ -77,6 +92,11 @@ namespace Roguelike.Abilities
         //if (!abilities.Any())
         return allItems;
       }
+    }
+
+    public Ability GetAbility(AbilityKind kind)
+    {
+      return allItems.Where(i => i.Kind == kind).FirstOrDefault();
     }
 
     public List<PassiveAbility> PassiveItems

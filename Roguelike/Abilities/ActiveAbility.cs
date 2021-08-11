@@ -8,21 +8,19 @@ using System.Threading.Tasks;
 
 namespace Roguelike.Abilities
 {
-  public enum ActiveAbilityKind
-  {
-    Unset, ExplosiveMastering, StoneThrowingMastering, DaggerThrowingMastering
+  //public enum AbilityKind
+  //{
+    
 
-  }
+  //}
   /// <summary>
   /// ActiveAbility must be used explicitely by a user
   /// </summary>
   public class ActiveAbility : Ability
   {
-    ActiveAbilityKind kind;
-
     public override bool useCustomStatDescription()
     {
-      return Kind == ActiveAbilityKind.ExplosiveMastering;
+      return Kind == AbilityKind.ExplosiveMastering;
     }
 
 
@@ -33,12 +31,12 @@ namespace Roguelike.Abilities
 
     public override float CalcFactor(bool primary, int level)
     {
-      ActiveAbilityKind kind = Kind;
+      AbilityKind kind = Kind;
 
       float factor = 0;
       switch (kind)
       {
-        case ActiveAbilityKind.ExplosiveMastering:
+        case AbilityKind.ExplosiveMastering:
           float fac = CalcFightItemFactor(level);
           //List<float> facs = new List<float>();
           //for (int i = 0; i < 5; i++)
@@ -51,7 +49,7 @@ namespace Roguelike.Abilities
           {
             //if (kind == AbilityKind.HuntingMastering)
             //  factor = level;
-            if (kind == ActiveAbilityKind.ExplosiveMastering)
+            if (kind == AbilityKind.ExplosiveMastering)
               factor *= 3;
             else
               factor *= 4;
@@ -59,7 +57,7 @@ namespace Roguelike.Abilities
           factor = (int)Math.Ceiling(factor);
           if (primary)
           {
-            if (kind == ActiveAbilityKind.ExplosiveMastering)
+            if (kind == AbilityKind.ExplosiveMastering)
             {
               factor *= 2f;
             }
@@ -82,7 +80,7 @@ namespace Roguelike.Abilities
       var desc = "";
       switch (kind)
       {
-        case ActiveAbilityKind.ExplosiveMastering:
+        case AbilityKind.ExplosiveMastering:
           desc = "Bonus to Explosive Cocktail damage";
           break;
         default:
@@ -96,7 +94,7 @@ namespace Roguelike.Abilities
       return base.ToString() + Kind;
     }
 
-    public ActiveAbilityKind Kind
+    public override AbilityKind Kind
     {
       get { return kind; }
       set
@@ -108,7 +106,7 @@ namespace Roguelike.Abilities
         EntityStatKind ask = EntityStatKind.Unset;
         switch (kind)
         {
-          case ActiveAbilityKind.ExplosiveMastering:
+          case AbilityKind.ExplosiveMastering:
             //case AbilityKind.ThrowingWeaponsMastering:
             //case AbilityKind.HuntingMastering:
             PageIndex = 1;
@@ -122,7 +120,7 @@ namespace Roguelike.Abilities
             //  ask = EntityStatKind.ChanceToCauseBleeding;
             //  Name = "Throwing Mastery";
             //}
-            if (kind == ActiveAbilityKind.ExplosiveMastering)
+            if (kind == AbilityKind.ExplosiveMastering)
             {
               psk = EntityStatKind.ExlosiveCoctailDamage;
               ask = EntityStatKind.ChanceToBurnNeighbour;
@@ -130,10 +128,10 @@ namespace Roguelike.Abilities
             //if(kind == AbilityKind.HuntingMastering)
             //  psk = EntityStatKind.bl
             break;
-          case ActiveAbilityKind.DaggerThrowingMastering:
+          case AbilityKind.DaggerThrowingMastering:
             ///psk = EntityStatKind.;
             break;
-          case ActiveAbilityKind.StoneThrowingMastering:
+          case AbilityKind.StoneThrowingMastering:
             break;
           default:
 

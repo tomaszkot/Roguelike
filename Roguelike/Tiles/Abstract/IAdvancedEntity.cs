@@ -13,10 +13,10 @@ namespace Roguelike.Tiles.Abstract
 
     int AbilityPoints { get; set; }
     AbilitiesSet Abilities { get; }
-    bool IncreaseAbility(PassiveAbilityKind kind);
-    bool IncreaseAbility(ActiveAbilityKind kind);
-    PassiveAbility GetPassiveAbility(PassiveAbilityKind kind);
-    ActiveAbility GetActiveAbility(ActiveAbilityKind kind);
+    bool IncreaseAbility(AbilityKind kind);
+    
+    PassiveAbility GetPassiveAbility(AbilityKind kind);
+    ActiveAbility GetActiveAbility(AbilityKind kind);
     string GetExpInfo();
 
     event EventHandler StatsRecalculated;

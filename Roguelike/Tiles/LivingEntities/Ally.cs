@@ -54,7 +54,7 @@ namespace Roguelike.Tiles.LivingEntities
       var abp = 5;
       AbilityPoints = abp;
       for (int i = 0; i < abp; i++)
-        this.IncreaseAbility(Roguelike.Abilities.PassiveAbilityKind.RestoreHealth);
+        this.IncreaseAbility(Roguelike.Abilities.AbilityKind.RestoreHealth);
 
     }
 

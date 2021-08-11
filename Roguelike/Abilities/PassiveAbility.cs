@@ -9,18 +9,17 @@ using System.Collections.Generic;
 
 namespace Roguelike.Abilities
 {
-  public enum PassiveAbilityKind
+  public enum AbilityKind
   {
     Unset, RestoreHealth, RestoreMana, LootingMastering,
 
     AxesMastering, BashingMastering, DaggersMastering, SwordsMastering,
     StrikeBack, BulkAttack,
-    BowsMastering, CrossBowsMastering
+    BowsMastering, CrossBowsMastering,
 
     //Traps, RemoveClaws, RemoveTusk, Skinning, , ,
     //HuntingMastering /*<-(to del)*/
-
-    //,Scroll//user must invest in each scroll indywidually
+    ExplosiveMastering, StoneThrowingMastering, DaggerThrowingMastering
 
   }
 
@@ -29,7 +28,7 @@ namespace Roguelike.Abilities
   /// </summary>
   public class PassiveAbility : Ability
   {
-    PassiveAbilityKind kind;
+    
     public bool BeginTurnApply;
     
     public override string ToString()
@@ -37,7 +36,7 @@ namespace Roguelike.Abilities
       return base.ToString() + Kind;
     }
         
-    public PassiveAbilityKind Kind
+    public override AbilityKind Kind
     {
       get { return kind; }
       set
@@ -49,41 +48,41 @@ namespace Roguelike.Abilities
         EntityStatKind ask = EntityStatKind.Unset;
         switch (kind)
         {
-          case PassiveAbilityKind.RestoreHealth:
+          case AbilityKind.RestoreHealth:
             psk = EntityStatKind.Health;
             this.BeginTurnApply = true;
             break;
-          case PassiveAbilityKind.RestoreMana:
+          case AbilityKind.RestoreMana:
             this.BeginTurnApply = true;
             psk = EntityStatKind.Mana;
             break;
-          case PassiveAbilityKind.AxesMastering:
+          case AbilityKind.AxesMastering:
             psk = EntityStatKind.ChanceToCauseTearApart;
             ask = EntityStatKind.AxeExtraDamage;
             break;
-          case PassiveAbilityKind.BashingMastering:
+          case AbilityKind.BashingMastering:
             psk = EntityStatKind.ChanceToCauseStunning;
             ask = EntityStatKind.BashingExtraDamage;
             break;
-          case PassiveAbilityKind.DaggersMastering:
+          case AbilityKind.DaggersMastering:
             psk = EntityStatKind.ChanceToCauseBleeding;
             ask = EntityStatKind.DaggerExtraDamage;
             break;
-          case PassiveAbilityKind.SwordsMastering:
+          case AbilityKind.SwordsMastering:
             psk = EntityStatKind.ChanceToHit;
             ask = EntityStatKind.SwordExtraDamage;
             break;
                      
-          case PassiveAbilityKind.LootingMastering:
-          case PassiveAbilityKind.StrikeBack:
-          case PassiveAbilityKind.BulkAttack:
+          case AbilityKind.LootingMastering:
+          case AbilityKind.StrikeBack:
+          case AbilityKind.BulkAttack:
             PageIndex = 1;
-            if (kind == PassiveAbilityKind.StrikeBack)
+            if (kind == AbilityKind.StrikeBack)
             {
               psk = EntityStatKind.ChanceToStrikeBack;
 
             }
-            else if (kind == PassiveAbilityKind.BulkAttack)
+            else if (kind == AbilityKind.BulkAttack)
             {
               psk = EntityStatKind.ChanceToBulkAttack;
 
@@ -114,13 +113,13 @@ namespace Roguelike.Abilities
 
     public override float CalcFactor(bool primary, int level)
     {
-      PassiveAbilityKind kind = Kind;
+      AbilityKind kind = Kind;
 
       float factor = 0;
       switch (kind)
       {
-        case PassiveAbilityKind.RestoreHealth:
-        case PassiveAbilityKind.RestoreMana:
+        case AbilityKind.RestoreHealth:
+        case AbilityKind.RestoreMana:
           try
           {
             var mults = new float[] { 0, .3f, .75f, 1f, 1.5f, 2.5f };
@@ -131,10 +130,10 @@ namespace Roguelike.Abilities
             throw;
           }
           break;
-        case PassiveAbilityKind.AxesMastering:
-        case PassiveAbilityKind.BashingMastering:
-        case PassiveAbilityKind.DaggersMastering:
-        case PassiveAbilityKind.SwordsMastering:
+        case AbilityKind.AxesMastering:
+        case AbilityKind.BashingMastering:
+        case AbilityKind.DaggersMastering:
+        case AbilityKind.SwordsMastering:
 
           if (primary)
             factor = level;
@@ -142,11 +141,11 @@ namespace Roguelike.Abilities
             factor = level * 5;
           break;
 
-        case PassiveAbilityKind.StrikeBack:
+        case AbilityKind.StrikeBack:
           var multsDefSB = new int[] { 0, 2, 4, 7, 10, 15 };
           factor = multsDefSB[level];
           break;
-        case PassiveAbilityKind.BulkAttack:
+        case AbilityKind.BulkAttack:
           var multsDefSB1 = new int[] { 0, 4, 7, 10, 15, 20 };
           factor = multsDefSB1[level];
           break;
@@ -169,32 +168,32 @@ namespace Roguelike.Abilities
       var desc = "";
       switch (kind)
       {
-        case PassiveAbilityKind.RestoreHealth:
+        case AbilityKind.RestoreHealth:
           desc = "Restores health at turn's begining";
           break;
-        case PassiveAbilityKind.RestoreMana:
+        case AbilityKind.RestoreMana:
           desc = "Restores mana at turn's begining";
           break;
-        case PassiveAbilityKind.AxesMastering:
-        case PassiveAbilityKind.BashingMastering:
-        case PassiveAbilityKind.DaggersMastering:
-        case PassiveAbilityKind.SwordsMastering:
+        case AbilityKind.AxesMastering:
+        case AbilityKind.BashingMastering:
+        case AbilityKind.DaggersMastering:
+        case AbilityKind.SwordsMastering:
           desc = "Bonus when using ";
           var wpn = kind.ToString().Replace("Mastering", "");
           if (wpn.EndsWith("s"))
             wpn = wpn.TrimEnd("s".ToCharArray());
           desc += wpn + " weapon";
           break;
-        case PassiveAbilityKind.LootingMastering:
+        case AbilityKind.LootingMastering:
           desc = "Bonus to loot experience";// frequency and quality";
           break;
         //case AbilityKind.HuntingMastering:
         //  desc = "Bonus to Hunting (Traps)";
         //  break;
-        case PassiveAbilityKind.StrikeBack:
+        case AbilityKind.StrikeBack:
           desc = "Chance to strike back when being hit";
           break;
-        case PassiveAbilityKind.BulkAttack:
+        case AbilityKind.BulkAttack:
           desc = "Chance to strike all sourronding enemies in one turn";
           break;
         default:
@@ -205,13 +204,13 @@ namespace Roguelike.Abilities
         
     public override bool useCustomStatDescription()
     {
-      return Kind == PassiveAbilityKind.LootingMastering;
+      return Kind == AbilityKind.LootingMastering;
     }
 
-    public static bool IsPercentageFromKind(PassiveAbilityKind kind)
+    public static bool IsPercentageFromKind(AbilityKind kind)
     {
-      if (kind == PassiveAbilityKind.RestoreHealth ||
-          kind == PassiveAbilityKind.RestoreMana)
+      if (kind == AbilityKind.RestoreHealth ||
+          kind == AbilityKind.RestoreMana)
         return true;
       return false;
     }

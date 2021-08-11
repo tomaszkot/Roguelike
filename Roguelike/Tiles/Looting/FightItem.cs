@@ -24,7 +24,7 @@ namespace Roguelike.Tiles.Looting
     private FightItemKind fightItemKind;
     public float baseDamage = 5.0f;
 
-    protected PassiveAbilityKind abilityKind;
+    protected AbilityKind abilityKind;
     protected string primaryFactorName = "Damage";
     protected string auxFactorName = "";
     public string HitTargetSound;
