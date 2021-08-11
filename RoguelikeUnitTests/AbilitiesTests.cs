@@ -242,7 +242,26 @@ namespace RoguelikeUnitTests
     //}
 
     [Test]
-    public void TestExplosiveMastering()
+    public void TestExplosiveMasteringBurning()
+    {
+      var game = CreateGame();
+      var champion = ChampionEnemies.First();
+      var chempBeginHealth = champion.Stats.Health;
+      var hero = game.GameManager.Hero;
+
+      var explosiveCocktail = new ProjectileFightItem(FightItemKind.ExplosiveCocktail, hero);
+      for (int i = 0; i < 10; i++)
+      {
+        champion.OnHitBy(explosiveCocktail);
+        if (champion.HasLastingEffect(Roguelike.Effects.EffectType.Firing))
+          break;
+      }
+
+      Assert.True(champion.HasLastingEffect(Roguelike.Effects.EffectType.Firing));
+    }
+
+    [Test]
+    public void TestBasicExplosiveMastering()
     {
       var game = CreateGame();
       var champion = ChampionEnemies.First();
@@ -284,67 +303,67 @@ namespace RoguelikeUnitTests
     [Test]
     public void TestFightSkillsVsSpellDamage()
     {
-      //Dictionary<float, float> vals = new Dictionary<float, float>();
-      //var ab = Hero.GetAbility(AbilityKind.ExplosiveMastering);
-      //for (int i = 0; i < 10; i++)
-      //{
-      //  vals[i] = ab.GetExplDamage(i);
-      //}
+      ////Dictionary<float, float> vals = new Dictionary<float, float>();
+      ////var ab = Hero.GetAbility(AbilityKind.ExplosiveMastering);
+      ////for (int i = 0; i < 10; i++)
+      ////{
+      ////  vals[i] = ab.GetExplDamage(i);
+      ////}
 
-      //base.GotoLastLevel();
-      var game = CreateGame();
-      var champion = ChampionEnemies.First();
-      var chempBeginHealth = champion.Stats.Health;
-      var explosiveCocktail = new ProjectileFightItem(FightItemKind.ExplosiveCocktail, game.GameManager.Hero);
-      champion.OnHitBy(explosiveCocktail);
-      var chempAfter1stHitHealth = champion.Stats.Health;
-
-      Assert.Greater(chempBeginHealth, chempAfter1stHitHealth);
-      var firstExplCoctailDamage = chempBeginHealth - chempAfter1stHitHealth;
-
-      //var scroll = new Scroll(SpellKind.FireBall);
-      //HitEnemyWithSpell(scroll, champion);
-      //var chempAfterSpellHitHealth = champion.Stats.Health;
-      //AssertGreater(chempAfter1stHitHealth, chempAfterSpellHitHealth);
-      //var diffSpell = chempAfter1stHitHealth - chempAfterSpellHitHealth;
-
-      ////shall be bigger...
-      //AssertLess(Math.Abs(firstExplCoctailDamage - diffSpell), 0.3f);
-      //AssertGreater(firstExplCoctailDamage * 2, diffSpell);
-
-      //// but not that big...
-      //AssertGreater(diffSpell * 2, firstExplCoctailDamage);
-      //for (int i = 0; i < 15; i++)//hack 15 ?
-      //  UpdateSpellToNextLevel<FireBallSpell>(scroll);
-
-      //HitEnemyWithSpell(scroll, champion);
-
-      //var enHealth3 = champion.Stats.Health;
-      //AssertGreater(chempAfterSpellHitHealth, enHealth3);
-      //var diffSpell1 = chempAfterSpellHitHealth - enHealth3;
-      //AssertGreater(diffSpell1, firstExplCoctailDamage * 10);
-
-      //var ab = Hero.GetAbility(AbilityKind.ExplosiveMastering);
-      //Hero.Character.AbilityPoints = ab.MaxLevel;
-      //Hero.Character.Level = 11;
-      //for (int i = 0; i < ab.MaxLevel; i++)
-      //{
-      //  var inc = Hero.IncreaseAbility(AbilityKind.ExplosiveMastering);
-
-      //  Assert.IsTrue(inc);
-      //}
-
-      //explosiveCocktail = new ExplosiveCocktail();
-      ////explosiveCocktail.SetCaster(Hero);
+      ////base.GotoLastLevel();
+      //var game = CreateGame();
+      //var champion = ChampionEnemies.First();
+      //var chempBeginHealth = champion.Stats.Health;
+      //var explosiveCocktail = new ProjectileFightItem(FightItemKind.ExplosiveCocktail, game.GameManager.Hero);
       //champion.OnHitBy(explosiveCocktail);
-      //var enHealth4 = champion.Stats.Health;
-      //AssertGreater(enHealth3, enHealth4);
-      //var diffExpl2 = enHealth3 - enHealth4;
-      //AssertGreater(diffExpl2, firstExplCoctailDamage * 5);
+      //var chempAfter1stHitHealth = champion.Stats.Health;
 
-      //AssertGreater(diffSpell1, diffExpl2);
-      ////AssertGreater( diffSpell1, diffExpl2 * 2);
-      //AssertLess(diffSpell1, diffExpl2 * 3);
+      //Assert.Greater(chempBeginHealth, chempAfter1stHitHealth);
+      //var firstExplCoctailDamage = chempBeginHealth - chempAfter1stHitHealth;
+
+      ////var scroll = new Scroll(SpellKind.FireBall);
+      ////HitEnemyWithSpell(scroll, champion);
+      ////var chempAfterSpellHitHealth = champion.Stats.Health;
+      ////AssertGreater(chempAfter1stHitHealth, chempAfterSpellHitHealth);
+      ////var diffSpell = chempAfter1stHitHealth - chempAfterSpellHitHealth;
+
+      //////shall be bigger...
+      ////AssertLess(Math.Abs(firstExplCoctailDamage - diffSpell), 0.3f);
+      ////AssertGreater(firstExplCoctailDamage * 2, diffSpell);
+
+      ////// but not that big...
+      ////AssertGreater(diffSpell * 2, firstExplCoctailDamage);
+      ////for (int i = 0; i < 15; i++)//hack 15 ?
+      ////  UpdateSpellToNextLevel<FireBallSpell>(scroll);
+
+      ////HitEnemyWithSpell(scroll, champion);
+
+      ////var enHealth3 = champion.Stats.Health;
+      ////AssertGreater(chempAfterSpellHitHealth, enHealth3);
+      ////var diffSpell1 = chempAfterSpellHitHealth - enHealth3;
+      ////AssertGreater(diffSpell1, firstExplCoctailDamage * 10);
+
+      ////var ab = Hero.GetAbility(AbilityKind.ExplosiveMastering);
+      ////Hero.Character.AbilityPoints = ab.MaxLevel;
+      ////Hero.Character.Level = 11;
+      ////for (int i = 0; i < ab.MaxLevel; i++)
+      ////{
+      ////  var inc = Hero.IncreaseAbility(AbilityKind.ExplosiveMastering);
+
+      ////  Assert.IsTrue(inc);
+      ////}
+
+      ////explosiveCocktail = new ExplosiveCocktail();
+      //////explosiveCocktail.SetCaster(Hero);
+      ////champion.OnHitBy(explosiveCocktail);
+      ////var enHealth4 = champion.Stats.Health;
+      ////AssertGreater(enHealth3, enHealth4);
+      ////var diffExpl2 = enHealth3 - enHealth4;
+      ////AssertGreater(diffExpl2, firstExplCoctailDamage * 5);
+
+      ////AssertGreater(diffSpell1, diffExpl2);
+      //////AssertGreater( diffSpell1, diffExpl2 * 2);
+      ////AssertLess(diffSpell1, diffExpl2 * 3);
     }
 
     //private void HitEnemyWithSpell(Scroll scroll, LivingEntity en)

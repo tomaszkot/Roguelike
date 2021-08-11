@@ -24,7 +24,7 @@ namespace Roguelike.Tiles.Looting
     private FightItemKind fightItemKind;
     public float baseDamage = 5.0f;
 
-    protected AbilityKind abilityKind;
+    
     protected string primaryFactorName = "Damage";
     protected string auxFactorName = "";
     public string HitTargetSound;
@@ -84,6 +84,20 @@ namespace Roguelike.Tiles.Looting
       }
     }
 
+    protected AbilityKind AbilityKind
+    {
+      get
+      {
+        if (fightItemKind == FightItemKind.ThrowingKnife)
+          return AbilityKind.DaggerThrowingMastering;
+        if (fightItemKind == FightItemKind.ExplosiveCocktail)
+          return AbilityKind.ExplosiveMastering;
+        if (fightItemKind == FightItemKind.Stone)
+          return AbilityKind.StoneThrowingMastering;
+        return AbilityKind.Unset;
+      }
+    }
+
     public bool RequiresEmptyCellOnCast
     {
       get
@@ -104,11 +118,11 @@ namespace Roguelike.Tiles.Looting
 
     public bool AlwaysCausesEffect { get; set; }
 
-    public PassiveAbility GetAbility()
+    public ActiveAbility GetAbility()
     {
       var hero = Caller as Hero;
       if(hero != null)
-        return hero.GetPassiveAbility(abilityKind);
+        return hero.GetActiveAbility(AbilityKind);
       return null;
     }
 
