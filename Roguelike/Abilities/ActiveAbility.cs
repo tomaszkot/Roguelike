@@ -8,11 +8,6 @@ using System.Threading.Tasks;
 
 namespace Roguelike.Abilities
 {
-  //public enum AbilityKind
-  //{
-    
-
-  //}
   /// <summary>
   /// ActiveAbility must be used explicitely by a user
   /// </summary>
@@ -37,6 +32,8 @@ namespace Roguelike.Abilities
       switch (kind)
       {
         case AbilityKind.ExplosiveMastering:
+        case AbilityKind.ThrowingStoneMastering:
+        case AbilityKind.ThrowingKnifeMastering:
           float fac = CalcFightItemFactor(level);
           //List<float> facs = new List<float>();
           //for (int i = 0; i < 5; i++)
@@ -123,15 +120,16 @@ namespace Roguelike.Abilities
             if (kind == AbilityKind.ExplosiveMastering)
             {
               psk = EntityStatKind.ExlosiveCoctailDamage;
-              ask = EntityStatKind.ChanceToBurnNeighbour;
+              //ask = EntityStatKind.ChanceToBurnNeighbour; TODO 
             }
             //if(kind == AbilityKind.HuntingMastering)
             //  psk = EntityStatKind.bl
             break;
-          case AbilityKind.DaggerThrowingMastering:
-            ///psk = EntityStatKind.;
+          case AbilityKind.ThrowingKnifeMastering:
+            psk = EntityStatKind.ThrowingKnifeDamage;
             break;
-          case AbilityKind.StoneThrowingMastering:
+          case AbilityKind.ThrowingStoneMastering:
+            psk = EntityStatKind.ThrowingStoneDamage;
             break;
           default:
 

@@ -260,29 +260,31 @@ namespace RoguelikeUnitTests
       Assert.True(champion.HasLastingEffect(Roguelike.Effects.EffectType.Firing));
     }
 
-    [Test]
-    public void TestBasicExplosiveMastering()
+    [TestCase(FightItemKind.ExplosiveCocktail)]
+    [TestCase(FightItemKind.Stone)]
+    [TestCase(FightItemKind.ThrowingKnife)]
+    public void TestBasicExplosiveMastering(FightItemKind kind)
     {
       var game = CreateGame();
       var champion = ChampionEnemies.First();
       var chempBeginHealth = champion.Stats.Health;
       var hero = game.GameManager.Hero;
 
-      var explosiveCocktail = new ProjectileFightItem(FightItemKind.ExplosiveCocktail, hero);
-      var damage1 = explosiveCocktail.Damage;
+      var fi = new ProjectileFightItem(kind, hero);
+      var damage1 = fi.Damage;
       Assert.Greater(damage1, 0);
-      champion.OnHitBy(explosiveCocktail);
+      champion.OnHitBy(fi);
       var chempAfter1HitHealth = champion.Stats.Health;
 
       Assert.Greater(chempBeginHealth, chempAfter1HitHealth);
       var firstExplCoctailDamage = chempBeginHealth - chempAfter1HitHealth;
 
-      IncreaseAbility(hero, AbilityKind.ExplosiveMastering);
+      IncreaseAbility(hero, fi.AbilityKind);
 
-      explosiveCocktail = new ProjectileFightItem(FightItemKind.ExplosiveCocktail, hero);
-      var damage2 = explosiveCocktail.Damage;
+      fi = new ProjectileFightItem(kind, hero);
+      var damage2 = fi.Damage;
       Assert.Greater(damage2, damage1);
-      champion.OnHitBy(explosiveCocktail);
+      champion.OnHitBy(fi);
       var chempAfter2HitHealth = champion.Stats.Health;
       var secExplCoctailDamage = chempAfter1HitHealth - chempAfter2HitHealth;
       Assert.Greater(secExplCoctailDamage, firstExplCoctailDamage);

@@ -30,8 +30,8 @@ namespace Roguelike.Abilities
 
           Ability ab = null;
           if (kind == AbilityKind.ExplosiveMastering ||
-              kind == AbilityKind.StoneThrowingMastering ||
-              kind == AbilityKind.DaggerThrowingMastering
+              kind == AbilityKind.ThrowingStoneMastering ||
+              kind == AbilityKind.ThrowingKnifeMastering
               )
           {
             ab = new ActiveAbility() { Kind = kind };

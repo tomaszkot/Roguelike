@@ -84,16 +84,16 @@ namespace Roguelike.Tiles.Looting
       }
     }
 
-    protected AbilityKind AbilityKind
+    public AbilityKind AbilityKind
     {
       get
       {
         if (fightItemKind == FightItemKind.ThrowingKnife)
-          return AbilityKind.DaggerThrowingMastering;
+          return AbilityKind.ThrowingKnifeMastering;
         if (fightItemKind == FightItemKind.ExplosiveCocktail)
           return AbilityKind.ExplosiveMastering;
         if (fightItemKind == FightItemKind.Stone)
-          return AbilityKind.StoneThrowingMastering;
+          return AbilityKind.ThrowingStoneMastering;
         return AbilityKind.Unset;
       }
     }
