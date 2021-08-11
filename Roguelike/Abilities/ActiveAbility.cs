@@ -91,6 +91,11 @@ namespace Roguelike.Abilities
       primaryStatDescription = desc;
     }
 
+    public override string ToString()
+    {
+      return base.ToString() + Kind;
+    }
+
     public ActiveAbilityKind Kind
     {
       get { return kind; }
@@ -128,7 +133,7 @@ namespace Roguelike.Abilities
           case ActiveAbilityKind.DaggerThrowingMastering:
             ///psk = EntityStatKind.;
             break;
-          case ActiveAbilityKind.DaggerThrowingMastering:
+          case ActiveAbilityKind.StoneThrowingMastering:
             break;
           default:
 

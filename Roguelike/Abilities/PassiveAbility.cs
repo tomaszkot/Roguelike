@@ -32,15 +32,6 @@ namespace Roguelike.Abilities
     PassiveAbilityKind kind;
     public bool BeginTurnApply;
     
-
-
-    public PassiveAbility()
-    {
-      PrimaryStat = new EntityStat();
-      AuxStat = new EntityStat();
-      Revealed = true;
-    }
-
     public override string ToString()
     {
       return base.ToString() + Kind;
@@ -231,39 +222,7 @@ namespace Roguelike.Abilities
         return true;
       return primary ? PrimaryStat.IsPercentage : AuxStat.IsPercentage;
     }
-        
-    public Tuple<EntityStat, EntityStat> GetNextLevelStats()
-    {
-      var primary = new EntityStat(PrimaryStat.Kind, 0);
-      var secondary = new EntityStat(AuxStat.Kind, 0);
-      if (Level < MaxLevel)
-      {
-        //if (fightItemKind != FightItemKind.None)
-        //{
-        //}
-        //else
-        {
-          var fac = CalcFactor(true, Level + 1);
-          if (Kind == PassiveAbilityKind.LootingMastering)
-          {
-            //desc.AddRange(this.GetCustomExtraStatDescription(Level + 1));
-          }
-          else
-          {
-            primary.Factor = fac;
-            //desc.Add(PrimaryStat.Kind + ": " + GetFormattedCurrentValue(esN));
-          }
-          if (AuxStat.Kind != EntityStatKind.Unset)
-          {
-            fac = CalcFactor(false, Level + 1);
-            secondary = new EntityStat(AuxStat.Kind, 0);
-            secondary.Factor = fac;
-            //desc.Add(AuxStat.Kind + ": " + GetFormattedCurrentValue(esN));
-          }
-        }
-      }
-      return new Tuple<EntityStat, EntityStat>(primary, secondary);
-    }
+       
 
     //FightItemKind GetFightItemKind(PassiveAbilityKind abilityKind)
     //{
