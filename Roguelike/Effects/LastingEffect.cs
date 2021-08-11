@@ -217,8 +217,8 @@ namespace Roguelike.Effects
       if (middle.Any())
         res += middle;
 
-      //if(EffectiveFactor.EffectiveFactor.Value >= 0)
-      //  res += sign;
+      if(EffectiveFactor.Value >= 0)
+        res += "+";
 
       if (EffectiveFactor.Value != 0)
         res += EffectiveFactor.Value.Formatted();

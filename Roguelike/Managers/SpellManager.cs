@@ -104,8 +104,8 @@ namespace Roguelike.Managers
     {
       var spell = spellSource.CreateSpell(caster) as IProjectileSpell;
 
-      //if (!gm.UtylizeSpellSource(caster, spellSource, spell))
-      //  return false;
+      if (!gm.UtylizeSpellSource(caster, spellSource, spell))
+        return false;
 
       var policy = Container.GetInstance<ProjectileCastPolicy>();
       policy.Target = target;

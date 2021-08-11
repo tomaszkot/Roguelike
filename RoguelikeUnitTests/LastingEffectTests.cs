@@ -28,7 +28,7 @@ namespace RoguelikeUnitTests
         eff = le1.EffectiveFactor.Value;
         sep = " ";
       }
-      var expectedDesc = le1.Type.ToDescription() + sep + sign + eff;
+      var expectedDesc = le1.Type.ToDescription() + sep + sign + eff.ToString("0.00");
       if (et != EffectType.ResistAll)
         expectedDesc += " to " + le1.StatKind.ToDescription();
       Assert.AreEqual(desc, expectedDesc);
@@ -99,7 +99,7 @@ namespace RoguelikeUnitTests
       var le = game.Hero.LastingEffectsSet.EnsureEffect(EffectType.Bleeding, 10, en);
       Assert.NotNull(le);
 
-      var expectedDesc = le.Type.ToDescription() + ", -10 Health (per turn)";
+      var expectedDesc = le.Type.ToDescription() + ", -10,00 Health (per turn)";
       var desc = le.Description;
       Assert.AreEqual(desc, expectedDesc);
 
@@ -119,7 +119,7 @@ namespace RoguelikeUnitTests
       var le = game.Hero.LastingEffectsSet.EnsureEffect(EffectType.Bleeding, 10, en);
       Assert.NotNull(le);
 
-      var expectedDesc = le.Type.ToDescription() + ", -10 Health (per turn)";///game.Hero.Stats.Defense
+      var expectedDesc = le.Type.ToDescription() + ", -10,00 Health (per turn)";///game.Hero.Stats.Defense
       var desc = le.Description;
       Assert.AreEqual(desc, expectedDesc);
 

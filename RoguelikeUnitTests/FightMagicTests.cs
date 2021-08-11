@@ -148,7 +148,7 @@ namespace RoguelikeUnitTests
       var enemy = AllEnemies.Cast<Enemy>().First();
       enemy.PrefferedFightStyle = PrefferedFightStyle.Magic;//use spells
       enemy.ActiveManaPoweredSpellSource = new Scroll(SpellKind.FireBall);
-      var heroHealth = hero.Stats.Health;
+     
       var mana = enemy.Stats.Mana;
 
       Assert.True(game.GameManager.HeroTurn);
@@ -159,7 +159,8 @@ namespace RoguelikeUnitTests
       Assert.True(set);
 
       GotoNextHeroTurn(game);
-      if (heroHealth == hero.Stats.Health)
+      var heroHealth = hero.Stats.Health;
+      //if (heroHealth == hero.Stats.Health)
       {
         for (int i = 0; i < 10; i++)
         {

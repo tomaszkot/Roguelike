@@ -64,7 +64,7 @@ namespace Roguelike.Events
     public int QuestID { get; set; }
   }
 
-  public enum ShorcutsBarActionKind { ShorcutsBarChanged }
+  public enum ShorcutsBarActionKind { ShorcutsBarChanged, ActiveItemDigitChanged }
   public class ShorcutsBarAction : GameEvent
   {
     public int Digit { get; set; } = -1;
