@@ -82,7 +82,7 @@ namespace Roguelike.Tiles.Looting
     public abstract bool ApplyTo(Equipment eq, out string error);
 
     const int baseEnchPrice = 15;
-    protected void SetPrice()
+    protected virtual void SetPrice()
     {
       var price = baseEnchPrice;
       if (EnchanterSize == EnchanterSize.Medium)
@@ -91,6 +91,8 @@ namespace Roguelike.Tiles.Looting
         price *= 4;
 
       Price = price;
+
+      
     }
 
     protected void SetName(string typeName)

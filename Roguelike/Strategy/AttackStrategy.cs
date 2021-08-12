@@ -243,6 +243,11 @@ namespace Roguelike
 
       private bool TryUseProjectileAttack(LivingEntity attacker, LivingEntity target)
       {
+        var allow = attacker.Name.Contains("Bandit") || attacker.Name.Contains("Skeleton") || attacker.Name.Contains("Druid") ||
+          attacker.Name.Contains("Drowned");
+        if (!allow)
+          return false;
+
         if (RandHelper.GetRandomDouble() < 0.5)
           return false;
         var enemy = attacker as Enemy;

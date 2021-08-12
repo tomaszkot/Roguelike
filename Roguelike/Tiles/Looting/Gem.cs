@@ -39,6 +39,7 @@ namespace Roguelike.Tiles.Looting
       Symbol = '*';
       Name = "Gem";
       GemKind = kind;
+      
       EnchanterSize = EnchanterSize.Small;
       EnchantSrcFromGemKind();
 
@@ -307,6 +308,13 @@ namespace Roguelike.Tiles.Looting
         extraStatDescription = destItems.ToArray();
       }
       return extraStatDescription;
+    }
+
+    protected override void SetPrice()
+    {
+      base.SetPrice();
+      if (GemKind == GemKind.Amber)
+        Price *= 2;
     }
   }
 }

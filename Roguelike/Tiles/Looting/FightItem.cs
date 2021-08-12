@@ -15,7 +15,7 @@ namespace Roguelike.Tiles.Looting
     Unset,
     ExplosiveCocktail, //ExplodePotion,
     ThrowingKnife,
-    Trap,
+    //Trap,
     Stone
   }
 
@@ -63,10 +63,12 @@ namespace Roguelike.Tiles.Looting
         {
           PrimaryStatDescription = Name+", very sharp, likely to cause bleeding";
           baseDamage += 2;
+          Price *= 2;
           HitTargetSound = "arrow_hit_body";
         }
         else if (fightItemKind == FightItemKind.ExplosiveCocktail)
         {
+          Price *= 3;
           PrimaryStatDescription = Name + ", explodes hurting the victim and nearby entities with fire";
           HitTargetSound = "SHATTER_Glass1";
           //baseDamage += 2;
@@ -102,7 +104,7 @@ namespace Roguelike.Tiles.Looting
     {
       get
       {
-        return fightItemKind == FightItemKind.Trap;
+        return false;// fightItemKind == FightItemKind.Trap;
       }
     }
 
