@@ -231,7 +231,7 @@ namespace Roguelike.Tiles.Looting
     {
     }
 
-    public ProjectileFightItem(FightItemKind kind, LivingEntity caller) : base(kind)
+    public ProjectileFightItem(FightItemKind kind, LivingEntity caller = null) : base(kind)
     {
       Caller = caller;
     }

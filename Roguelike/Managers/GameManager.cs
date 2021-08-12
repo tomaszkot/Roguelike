@@ -914,10 +914,13 @@ namespace Roguelike.Managers
       merch.Inventory.Items.Clear();
       var lootKinds = Enum.GetValues(typeof(LootKind)).Cast<LootKind>()
         .Where(i => i != LootKind.Unset && i != LootKind.Other && i != LootKind.Seal && i != LootKind.SealPart 
-                   && i != LootKind.Gold && i != LootKind.Book)
+                   && i != LootKind.Gold && i != LootKind.Book && i != LootKind.FightItem)
         .ToList();
 
       AddLootToMerchantInv(merch, lootKinds);
+
+      merch.Inventory.Items.Add(new ProjectileFightItem(FightItemKind.Stone) { Count = 4 });
+      merch.Inventory.Items.Add(new ProjectileFightItem(FightItemKind.ThrowingKnife) { Count = 4 });
 
       //for (int i = 0; i < 4; i++)
       {
@@ -1129,9 +1132,9 @@ namespace Roguelike.Managers
           ReplaceTile(new Tile(), ls.GetPoint());
           return;
         }
-        var tr = new TimeTracker();
+        //var tr = new TimeTracker();
         this.LootManager.TryAddForLootSource(ls);
-        Logger.LogInfo("TimeTracker TryAddForLootSource: " + tr.TotalSeconds);
+        //Logger.LogInfo("TimeTracker TryAddForLootSource: " + tr.TotalSeconds);
       }
     }
 

@@ -144,6 +144,9 @@ namespace Roguelike.Generators
 
       if (node.Secret)
         node.SetTileAtRandomPosition(new Chest() { ChestKind = ChestKind.Gold });
+
+      node.SetTileAtRandomPosition(new ProjectileFightItem(FightItemKind.Stone));
+      node.SetTileAtRandomPosition(new ProjectileFightItem(FightItemKind.ThrowingKnife));
     }
 
     public virtual Enemy CreateEnemyInstance(string enemyName)
