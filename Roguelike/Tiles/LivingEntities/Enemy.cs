@@ -319,6 +319,7 @@ namespace Roguelike.Tiles.LivingEntities
         }
         if (name.Contains("hornet"))
           SetStat(EntityStatKind.PoisonAttack);
+                
       }
     }
 
