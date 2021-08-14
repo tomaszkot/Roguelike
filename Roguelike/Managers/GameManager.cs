@@ -1231,11 +1231,12 @@ namespace Roguelike.Managers
       }
       
       caster.RemoveFightItem(fi);
-
+      fi.Caller = caster;
       var policy = Container.GetInstance<ProjectileCastPolicy>();
       policy.Target = target;
       policy.ProjectilesFactory = Container.GetInstance<IProjectilesFactory>();
       policy.Projectile = fi;
+      policy.Caster = caster;
       if (BeforeApply != null)
         BeforeApply(policy);
 

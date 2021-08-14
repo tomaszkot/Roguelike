@@ -241,9 +241,16 @@ namespace Roguelike.Effects
         //HandleStatSubtraction(le, true);
         if (le.Application != EffectApplication.EachTurn)
         {
-          HandleStatSubtraction(le, false);
-          if(le.Sibling != null && le.Sibling.Application != EffectApplication.EachTurn)
-            HandleStatSubtraction(le.Sibling, false);
+          try
+          {
+            HandleStatSubtraction(le, false);
+            if (le.Sibling != null && le.Sibling.Application != EffectApplication.EachTurn)
+              HandleStatSubtraction(le.Sibling, false);
+          }
+          catch (Exception ex)
+          {
+            Assert(false, ex.Message);
+          }
         }
 
         if (LastingEffectDone != null)

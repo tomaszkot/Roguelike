@@ -260,8 +260,11 @@ namespace Roguelike
             var useProjectile = IsClearPath(attacker, target);
             if (useProjectile)
             {
-              if (GameManager.ApplyAttackPolicy(enemy, target, pfi))
+              if (GameManager.ApplyAttackPolicy(enemy, target, pfi, null, (p) => { OnPolicyApplied(p); }))
+              {
                 enemy.RemoveFightItem(fi);
+                return true;
+              }
               else
                 GameManager.Assert(false);
             }

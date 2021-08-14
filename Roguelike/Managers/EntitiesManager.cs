@@ -25,6 +25,8 @@ namespace Roguelike.Managers
     public GameContext Context { get => context; set => context = value; }
     public List<LivingEntity> AllEntities { get => entities; set => entities = value; }
     public IEnumerable<IAlly> AllAllies { get => entities.Cast<IAlly>(); }
+    public bool PendingForAllIdle { get => pendingForAllIdle; set => pendingForAllIdle = value; }
+
     protected GameManager gameManager;
 
     protected EventsManager eventsManager;

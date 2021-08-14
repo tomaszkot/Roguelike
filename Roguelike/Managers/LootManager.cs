@@ -114,7 +114,7 @@ namespace Roguelike.Managers
       {
         bool repl = GameManager.ReplaceTile(loot, lootSource as Tile);
         GameManager.Assert(repl, "ReplaceTileByLoot " + loot);
-        GameManager.Logger.LogInfo("ReplaceTileByLoot " + loot + " " + repl);
+        //GameManager.Logger.LogInfo("ReplaceTileByLoot " + loot + " " + repl);
       }
       else
       {
