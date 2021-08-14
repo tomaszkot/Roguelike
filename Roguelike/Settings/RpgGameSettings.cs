@@ -39,7 +39,7 @@ namespace Roguelike.Settings
     public bool IsPlayerPermanentlyDead { get; set; }
     public bool PermanentDeath { get; set; }
     public DateTime LastSaved { get; set; }
-    public static bool Demo { get; set; } = false;
+    public static bool Demo { get; set; } = true;
     //public GameSession Session = new GameSession();
 
     public override string ToString()
@@ -153,41 +153,4 @@ namespace Roguelike.Settings
 
   }
 
-  //[Serializable]
-  //public class RpgGameSettings : SettingsBase
-  //{
-  //  public CoreInfo CoreInfo { get; set; }  = new CoreInfo();
-  //}
-
-    //  //public Options Options { get { return Options.Instance; } }
-
-    //  public RpgGameSettings()
-    //  {
-    //  }
-
-    //  public override string ToString()
-    //  {
-    //    return CoreInfo.ToString() + base.ToString();
-    //  }
-
-    //  public RpgGameSettings Clone()
-    //  {
-    //    RpgGameSettings clone = DoClone<RpgGameSettings>();
-    //    clone.CoreInfo = clone.CoreInfo.DoClone<CoreInfo>();
-    //    clone.Options = clone.Options.DoClone<Options>();
-    //    return clone;
-    //  }
-
-    //  //void Save()
-    //  //{
-    //  //	PlayerPrefs.SetInt("DifficultyLevel", (int)DifficultyLevel);
-    //  //	PlayerPrefs.SetInt("EverShownToUser", EverShownToUser ? 1 : 0);
-    //  //}
-
-    //  //void Load()
-    //  //{
-    //  //	difficultyLevel = (Difficulty)PlayerPrefs.GetInt("DifficultyLevel", (int)Difficulty.Easy);
-    //  //	everShownToUser = PlayerPrefs.GetInt("EverShownToUser", 1) == 1 ? true : false;
-    //  //}
-    //}
-  }
+}
