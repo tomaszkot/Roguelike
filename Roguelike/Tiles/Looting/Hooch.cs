@@ -31,6 +31,7 @@ namespace Roguelike.Tiles.Looting
       StatKind = EntityStatKind.Strength;
       SecondStatKind = EntityStatKind.ChanceToHit;
       TourLasting = 7;
+      LootKind = LootKind.Other;
     }
 
     public override List<LootStatInfo> GetLootStatInfo(LivingEntity caller)

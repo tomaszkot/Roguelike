@@ -254,13 +254,17 @@ namespace Roguelike
         var fi = enemy.GetFightItem(enemy.FightItemKind);
         if (fi != null)
         {
-          var useProjectile = IsClearPath(attacker, target);
-          if (useProjectile)
+          var pfi = fi as ProjectileFightItem;
+          if (attacker.IsTileInProjectileFightItemReach(pfi, target))
           {
-            if (GameManager.ApplyAttackPolicy(enemy, target, fi as ProjectileFightItem))
-              enemy.RemoveFightItem(fi);
-            else
-              GameManager.Assert(false);
+            var useProjectile = IsClearPath(attacker, target);
+            if (useProjectile)
+            {
+              if (GameManager.ApplyAttackPolicy(enemy, target, pfi))
+                enemy.RemoveFightItem(fi);
+              else
+                GameManager.Assert(false);
+            }
           }
         }
 

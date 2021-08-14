@@ -509,6 +509,10 @@ namespace Roguelike.Generators
     //a cheap loot generated randomly on the level
     public virtual Loot GetRandomLoot(int level, LootKind skip = LootKind.Unset)
     {
+      if (RandHelper.GetRandomDouble() > .9f)//TODO
+      {
+        return new Hooch();
+      }
       var enumVal = RandHelper.GetRandomEnumValue<LootKind>(new[]
       {
         LootKind.Other, 

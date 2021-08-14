@@ -229,6 +229,8 @@ namespace Roguelike.Tiles.Looting
 
   public class ProjectileFightItem : FightItem, IProjectile
   {
+    public const int DefaultMaxDistance = 6;
+
     public ProjectileFightItem() : this(FightItemKind.Unset, null)
     {
     }

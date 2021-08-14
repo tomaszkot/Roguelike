@@ -1023,5 +1023,10 @@ namespace Roguelike.Tiles.LivingEntities
     { 
 
     }
+
+    public bool IsTileInProjectileFightItemReach(ProjectileFightItem fi, Tile tile)
+    {
+      return DistanceFrom(tile) < ProjectileFightItem.DefaultMaxDistance;
+    }
   }
 }
