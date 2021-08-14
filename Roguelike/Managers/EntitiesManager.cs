@@ -75,6 +75,8 @@ namespace Roguelike.Managers
       //SetEntities(Context.CurrentNode.GetTiles<LivingEntity>().Where(i=> !(i is Hero)).ToList());
     }
 
+    protected bool detailedLogs = false;
+
     public virtual void MakeTurn()
     {
       //this.skipInTurn = skipInTurn;
@@ -97,17 +99,27 @@ namespace Roguelike.Managers
         //context.Logger.LogInfo("no one to move...");
         return;
       }
-
+      
       foreach (var entity in activeEntities)
       {
-        //context.Logger.LogInfo("turn of: " + entity);
+        detailedLogs = false;
+        
         try
         {
+          var startPoint = entity.Position;
+          //if (startPoint.X == 75 && startPoint.Y == 10)
+          //  detailedLogs = true;
+          if(detailedLogs)
+            context.Logger.LogInfo("turn of: " + entity + " started");
           if (entity is AdvancedLivingEntity ade)
             ade.ApplyAbilities();
           entity.ApplyLastingEffects();
           if (!entity.Alive)
+          {
+            if(detailedLogs)
+              context.Logger.LogInfo("!entity.Alive");
             continue;
+          }
 
           if (entity.IsSleeping)
           {
@@ -115,7 +127,11 @@ namespace Roguelike.Managers
           }
 
           if (entity.LastingEffects.Where(i => i.Type == Effects.EffectType.Stunned).Any())
+          {
+            if (detailedLogs)
+              context.Logger.LogInfo("!Stunned");
             continue;
+          }
 
           MakeTurn(entity);
 
@@ -124,6 +140,13 @@ namespace Roguelike.Managers
             context.ReportHeroDeath();
             break;
           }
+          var endPoint = entity.Position;
+          if (detailedLogs && entity is Enemy && endPoint == startPoint)
+          {
+            context.Logger.LogError("EnemiesManager  endPoint == startPoint !!! entity: " + entity);
+          }
+          if (detailedLogs)
+            context.Logger.LogInfo("turn of: " + entity + " ended");
         }
         catch (Exception ex)
         {
@@ -146,11 +169,28 @@ namespace Roguelike.Managers
 
     public virtual void MakeRandomMove(LivingEntity entity)
     {
-      var pt = Node.GetEmptyNeighborhoodPoint(entity, null, Node.GetExtraTypesConsideredEmpty());
+      var emptyTypes = Node.GetExtraTypesConsideredEmpty();
+      var pt = Node.GetEmptyNeighborhoodPoint(entity, null, emptyTypes);
       if (pt != null && pt.Item1.IsValid())
       {
+        if (detailedLogs)
+          context.Logger.LogInfo("!MoveEntity " + pt.Item1);
         MoveEntity(entity, pt.Item1, null);
         //logger.WriteLine(entity + " moved to "+ pt);
+      }
+      else if (detailedLogs)
+      {
+        string types = "";
+        foreach (var ty in emptyTypes)
+          types += ty + ", ";
+
+        string neibs = "";
+        foreach (var ty in Node.GetNeighborTiles(entity))
+        {
+          neibs += ty;
+        }
+
+        context.Logger.LogInfo("MakeRandomMove not done pt: " + pt + " empty types: " + types + ", neibs: "+ neibs);
       }
     }
 

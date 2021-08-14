@@ -70,12 +70,18 @@ namespace Roguelike.Managers
 
       if (enemy.LastingEffects.Any(i => i.Type == Effects.EffectType.Frighten))
       {
+        if (detailedLogs)
+          context.Logger.LogInfo("!Frighten");
         MoveAwayFromHero(enemy);
         return;
       }
 
       if (AttackAlly(enemy))
+      {
+        if (detailedLogs)
+          context.Logger.LogInfo("!AttackAlly");
         return;
+      }
 
       if (enemy.DistanceFrom(Hero) > 12)
         return;
@@ -101,11 +107,15 @@ namespace Roguelike.Managers
       if (ShallChaseTarget(enemy, target))
       {
         makeRandMove = !MakeMoveOnPath(enemy, target.point, false);
+        if (detailedLogs)
+          context.Logger.LogInfo("!ShallChaseTarget true, makeRandMove: "+ makeRandMove);
       }
       else
         makeRandMove = true;
       if (makeRandMove)
       {
+        if (detailedLogs)
+          context.Logger.LogInfo("!makeRandMove");
         MakeRandomMove(enemy);
       }
     }
@@ -162,6 +172,8 @@ namespace Roguelike.Managers
           var distFromInitPoint = entity.DistanceFrom(entity.InitialPoint);
           if (distFromInitPoint > 5)
           {
+            if (detailedLogs)
+              context.Logger.LogInfo("!EntityMoveKind.ReturningHome");
             entity.MoveKind = EntityMoveKind.ReturningHome;
           }
         }
@@ -171,8 +183,11 @@ namespace Roguelike.Managers
           if (MakeMoveOnPath(entity, entity.InitialPoint, false))
           {
             if (entity.point == entity.InitialPoint)
+            {
+              if (detailedLogs)
+                context.Logger.LogInfo("!EntityMoveKind.Freestyle");
               entity.MoveKind = EntityMoveKind.Freestyle;
-
+            }
             return;
           }
         }
