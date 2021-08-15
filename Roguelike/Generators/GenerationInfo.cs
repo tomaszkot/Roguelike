@@ -46,7 +46,7 @@ namespace Roguelike.Generators
     public const float NextExperienceIncrease = .5f;
     public const int FirstNextLevelExperienceThreshold = 250;
 
-    public bool GenerateEnemies { get; set; } = true && !ForceEmpty;
+    public bool GenerateEnemies { get; set; } = false && !ForceEmpty;
 
     public bool GenerateLoot { get; set; } = true && !ForceEmpty;
 
