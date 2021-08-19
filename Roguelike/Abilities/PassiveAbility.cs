@@ -19,7 +19,7 @@ namespace Roguelike.Abilities
 
     //Traps, RemoveClaws, RemoveTusk, Skinning, , ,
     //HuntingMastering /*<-(to del)*/
-    ExplosiveMastering, ThrowingStoneMastering, ThrowingKnifeMastering
+    ExplosiveMastering, ThrowingStoneMastering, ThrowingKnifeMastering, HunterTrapMastering
 
   }
 

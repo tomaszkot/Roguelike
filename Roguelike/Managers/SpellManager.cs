@@ -108,7 +108,7 @@ namespace Roguelike.Managers
         return false;
 
       var policy = Container.GetInstance<ProjectileCastPolicy>();
-      policy.Target = target;
+      policy.Target = target as Dungeons.Tiles.Tile;
       policy.ProjectilesFactory = Container.GetInstance<IProjectilesFactory>();
       policy.Projectile = spellSource.CreateSpell(caster) as IProjectileSpell;
       if (BeforeApply != null)
@@ -116,10 +116,10 @@ namespace Roguelike.Managers
 
       policy.OnApplied += (s, e) =>
       {
-        var le = policy.Target is LivingEntity;
+        var le = policy.TargetObstacle is LivingEntity;
         if (!le)//le is handled specially
         {
-          this.gm.LootManager.TryAddForLootSource(policy.Target as ILootSource);
+          this.gm.LootManager.TryAddForLootSource(policy.TargetObstacle as ILootSource);
           //if(policy.Target is IDestroyable dest)
           //dest.Destroyed = true;
         }

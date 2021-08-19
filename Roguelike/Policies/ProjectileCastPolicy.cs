@@ -9,28 +9,29 @@ namespace Roguelike.Policies
   public class ProjectileCastPolicy : Policy
   {
     LivingEntity caster;
-    IObstacle target;
+    Tile target;
 
     public ProjectileCastPolicy()
     {
       this.Kind = PolicyKind.SpellCast;
     }
 
-    public IObstacle Target { get => target; set => target = value; }
+    public IObstacle TargetObstacle { get => target as IObstacle;}
+    public Tile Target { get; set; }
     public IProjectile Projectile { get; set; }
     public LivingEntity Caster { get => caster; set => caster = value; }
     public IProjectilesFactory ProjectilesFactory { get; set; }
 
     public void Apply(LivingEntity caster)
     {
-      Apply(this.Projectile, caster, this.Target, this.ProjectilesFactory);
+      Apply(this.Projectile, caster, this.TargetObstacle, this.ProjectilesFactory);
     }
 
     public void Apply(IProjectile projectile, LivingEntity caster, IObstacle target, IProjectilesFactory projectilesFactory)
     {
       this.Projectile = projectile;
       this.caster = caster;
-      this.target = target;
+      this.target = target as Tile;
       this.ProjectilesFactory = projectilesFactory;
 
       caster.State = EntityState.CastingProjectile;
@@ -40,8 +41,7 @@ namespace Roguelike.Policies
 
     protected virtual void DoApply(LivingEntity caster)
     {
-      //var spell = Scroll.CreateSpell(Caster);
-      Target.OnHitBy(Projectile);
+      TargetObstacle.OnHitBy(Projectile);
     }
   }
 }

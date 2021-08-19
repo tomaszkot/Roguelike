@@ -75,6 +75,7 @@ namespace Roguelike.Abilities
     public void SetPrimaryStatDescription()
     {
       var desc = "";
+      //todo  add map to FightItem AbilityKind/FightItemKind and use here
       switch (kind)
       {
         case AbilityKind.ExplosiveMastering:

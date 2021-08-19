@@ -60,6 +60,7 @@ namespace Roguelike.Tiles.LivingEntities
       fightItems[FightItemKind.Stone] = new ProjectileFightItem(FightItemKind.Stone, this) { Count = RandHelper.GetRandomInt(3)+1 };
       fightItems[FightItemKind.ThrowingKnife] = new ProjectileFightItem(FightItemKind.ThrowingKnife, this) { Count = RandHelper.GetRandomInt(3)+1 };
       fightItems[FightItemKind.ExplosiveCocktail] = new ProjectileFightItem(FightItemKind.ExplosiveCocktail, this) { Count = RandHelper.GetRandomInt(3) + 1 };
+      fightItems[FightItemKind.HunterTrap] = new ProjectileFightItem(FightItemKind.HunterTrap, this) { Count = RandHelper.GetRandomInt(3) + 1 };
 
       fightItemKind = RandHelper.GetRandomEnumValue<FightItemKind>();// (new[] { FightItemKind.Unset, FightItemKind.Trap });
     }

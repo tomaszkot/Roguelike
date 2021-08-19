@@ -563,6 +563,10 @@ namespace Roguelike.Tiles.LivingEntities
             if (RandHelper.GetRandomDouble() > 0.75)
               StartBleeding(inflicted, attacker);
           }
+          //if (fi.FightItemKind == FightItemKind.HunterTrap)
+          //{
+          //  StartBleeding(inflicted, attacker);
+          //}
           ReduceHealth(attacker, sound, damageDesc, srcName, ref inflicted);
         }
         else
@@ -574,9 +578,9 @@ namespace Roguelike.Tiles.LivingEntities
       return true;
     }
 
-    private void StartBleeding(float inflicted, LivingEntity attacker)
+    public LastingEffect StartBleeding(float inflicted, LivingEntity attacker)
     {
-      lastingEffectsSet.EnsureEffect(EffectType.Bleeding, inflicted / 3, attacker);
+      return lastingEffectsSet.EnsureEffect(EffectType.Bleeding, inflicted / 3, attacker);
     }
 
     protected virtual void OnHitBy

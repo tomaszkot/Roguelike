@@ -13,7 +13,7 @@ namespace Roguelike.Spells
   {
     public const int BaseDamage = 4;
     public bool SourceOfDamage = true;
-    public Dungeons.Tiles.IObstacle Target { get; set; }
+    public Dungeons.Tiles.Tile Target { get; set; }
 
     public ProjectiveSpell(LivingEntity caller, Weapon weapon) : base(caller, weapon)
     {

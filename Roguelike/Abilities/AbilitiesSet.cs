@@ -31,8 +31,8 @@ namespace Roguelike.Abilities
           Ability ab = null;
           if (kind == AbilityKind.ExplosiveMastering ||
               kind == AbilityKind.ThrowingStoneMastering ||
-              kind == AbilityKind.ThrowingKnifeMastering
-              )
+              kind == AbilityKind.ThrowingKnifeMastering ||
+              kind == AbilityKind.HunterTrapMastering)
           {
             ab = new ActiveAbility() { Kind = kind };
             activeAbilities.Add(ab as ActiveAbility);
@@ -49,32 +49,8 @@ namespace Roguelike.Abilities
           allItems.Add(ab);
         }
       }
-      //var kindsAct = Enum.GetValues(typeof(AbilityKind)).Cast<ActiveAbilityKind>().ToList();
-      //foreach (var kind in kindsAct)
-      //{
-      //  if (activeAbilities.Any(i => i.Kind == kind) || kind == ActiveAbilityKind.Unset)
-      //    continue;
-      //  activeAbilities.Add(new ActiveAbility() { Kind = kind });
-      //  allItems.Add(passiveAbilities.Last());
-      //}
-      //EnsureProps();
+
     }
-
-    //private void EnsureProps()
-    //{
-    //  if (!fightItemsProps.Any())
-    //  {
-    //    //fightItemsProps[FightItemKind.ExplodePotion] = explosiveCocktailPropsProvider;
-    //    //fightItemsProps[FightItemKind.Knife] = throwingKnifePropsProvider;
-    //    //fightItemsProps[FightItemKind.Trap] = trapPropsProvider;
-    //  }
-    //}
-
-    //public FightItem GetFightItem(FightItemKind kind)
-    //{
-    //  EnsureProps();
-    //  return fightItemsProps[kind];
-    //}
 
     public Ability GetByEntityStatKind(EntityStatKind esk, bool primary)
     {

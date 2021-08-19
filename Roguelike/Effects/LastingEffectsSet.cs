@@ -343,7 +343,7 @@ namespace Roguelike.Effects
       return LastingEffect.DefaultPendingTurns;
     }
 
-    public LastingEffect EnsureEffect(EffectType et, float inflictedDamage, LivingEntity attacker)
+    public LastingEffect EnsureEffect(EffectType et, float inflictedDamage, LivingEntity attacker = null)
     {
       var effectInfo = CalcLastingEffDamage(et, inflictedDamage, null, null);
 

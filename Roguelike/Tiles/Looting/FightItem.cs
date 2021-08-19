@@ -15,7 +15,7 @@ namespace Roguelike.Tiles.Looting
     Unset,
     ExplosiveCocktail, //ExplodePotion,
     ThrowingKnife,
-    //Trap,
+    HunterTrap,
     Stone
   }
 
@@ -28,6 +28,8 @@ namespace Roguelike.Tiles.Looting
     protected string primaryFactorName = "Damage";
     protected string auxFactorName = "";
     public string HitTargetSound;
+    public bool IsOn { get; set; } = true;
+
     [JsonIgnore]
     public LivingEntity Caller//req. by interface
     {
@@ -73,6 +75,15 @@ namespace Roguelike.Tiles.Looting
           HitTargetSound = "SHATTER_Glass1";
           //baseDamage += 2;
         }
+        else if (fightItemKind == FightItemKind.HunterTrap)
+        {
+          baseDamage += 1;
+          Price *= 2;
+          PrimaryStatDescription = Name + ", holds victim and causes bleeding";
+          HitTargetSound = "trap";
+          IsOn = false;
+          //baseDamage += 2;
+        }
       }
     }
 
@@ -96,6 +107,8 @@ namespace Roguelike.Tiles.Looting
           return AbilityKind.ExplosiveMastering;
         if (fightItemKind == FightItemKind.Stone)
           return AbilityKind.ThrowingStoneMastering;
+        if (fightItemKind == FightItemKind.HunterTrap)
+          return AbilityKind.HunterTrapMastering;
         return AbilityKind.Unset;
       }
     }
@@ -104,7 +117,7 @@ namespace Roguelike.Tiles.Looting
     {
       get
       {
-        return false;// fightItemKind == FightItemKind.Trap;
+        return fightItemKind == FightItemKind.HunterTrap;
       }
     }
 
@@ -240,7 +253,7 @@ namespace Roguelike.Tiles.Looting
       Caller = caller;
     }
 
-    public IObstacle Target { get; set; }
+    public Tile Target { get; set; }
 
     
   }

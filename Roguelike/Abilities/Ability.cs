@@ -125,16 +125,11 @@ namespace Roguelike.Abilities
       List<string> desc = new List<string>();
 
       bool usesCustomStatDescription = useCustomStatDescription();
-      //FightItemKind fightItemKind = GetFightItemKind(Kind);
-      //FightItem fi = null;
-      //if (fightItemKind != FightItemKind.None)
-      //{
-      //  fi = GameManager.Instance.Hero.Abilities.GetFightItem(fightItemKind);
-      //}
+      
       if (currentLevel)
       {
-        if (usesCustomStatDescription)//Kind == PassiveAbilityKind.LootingMastering ||
-                                      //Kind == PassiveAbilityKind.ExplosiveMastering)
+        if (usesCustomStatDescription)
+                                      
         {
           desc.AddRange(this.GetCustomExtraStatDescription(Level));
         }

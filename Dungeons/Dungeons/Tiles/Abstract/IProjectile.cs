@@ -8,6 +8,7 @@ namespace Dungeons.Tiles.Abstract
 {
   public interface IProjectile
   {
-    Dungeons.Tiles.IObstacle Target { get; set; }
+    //Dungeons.Tiles.IObstacle TargetObstacle { get; }
+    Dungeons.Tiles.Tile Target { get; set; }
   }
 }

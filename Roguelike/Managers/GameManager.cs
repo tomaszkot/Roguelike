@@ -156,7 +156,19 @@ namespace Roguelike.Managers
         {
           OnApplied(e);
         }
+
       };
+
+      var oldTile = CurrentNode.GetTile(newPos);
+      if (oldTile is FightItem fi)
+      {
+        if (fi.FightItemKind == FightItemKind.HunterTrap && fi.IsOn)
+        {
+          var bleed = entity.StartBleeding(fi.Damage, null);
+          bleed.Source = fi;
+          fi.IsOn = false;
+        }
+      }
 
       if (movePolicy.Apply(CurrentNode, entity, newPos, fullPath))
       {
@@ -481,6 +493,11 @@ namespace Roguelike.Managers
             ac.InvolvedTile = tile as Tiles.Interactive.InteractiveTile;
             ac.InteractiveKind = InteractiveActionKind.AppendedToLevel;
           });
+        }
+        else if(tile is Loot loot)
+        {
+          AppendAction<LootAction>((LootAction ac) => { ac.Loot = loot; ac.Kind = LootActionKind.Generated; ac.GenerationAnimated = false; 
+            ac.Source = null; });
         }
         else
           Assert(false, "AppendTile unknown tile!");
@@ -1218,7 +1235,7 @@ namespace Roguelike.Managers
     public bool ApplyAttackPolicy
     (
       LivingEntity caster,//hero, enemy, ally
-      Tiles.Abstract.IObstacle target,
+      Tile target,
       ProjectileFightItem fi,
       Action<Policy> BeforeApply = null,
       Action<Policy> AfterApply = null
@@ -1242,10 +1259,10 @@ namespace Roguelike.Managers
 
       policy.OnApplied += (s, e) =>
       {
-        var le = policy.Target is LivingEntity;
+        var le = policy.TargetObstacle is LivingEntity;
         if (!le)//le is handled specially
         {
-          this.LootManager.TryAddForLootSource(policy.Target as ILootSource);
+          this.LootManager.TryAddForLootSource(policy.TargetObstacle as ILootSource);
         }
         if (caster is Hero)
           OnHeroPolicyApplied(policy);

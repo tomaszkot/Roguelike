@@ -112,6 +112,15 @@ namespace Roguelike.Effects
       }
     }
 
+    public bool PreventMove 
+    { 
+      get 
+      {
+        var fi = Source as Tiles.Looting.FightItem;
+        return fi != null && fi.FightItemKind == Tiles.Looting.FightItemKind.HunterTrap;
+      }  
+    }
+
     public LastingEffect Sibling { get; set; }
 
     public static string CalcUniqueId(EffectType type, Tile source)
