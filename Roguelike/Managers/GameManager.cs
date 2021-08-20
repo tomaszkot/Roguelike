@@ -496,8 +496,13 @@ namespace Roguelike.Managers
         }
         else if(tile is Loot loot)
         {
-          AppendAction<LootAction>((LootAction ac) => { ac.Loot = loot; ac.Kind = LootActionKind.Generated; ac.GenerationAnimated = false; 
-            ac.Source = null; });
+          AppendAction<LootAction>((LootAction ac) => 
+          { 
+            ac.Loot = loot; 
+            ac.Kind = LootActionKind.Generated; 
+            ac.GenerationAnimated = false; 
+            ac.Source = null; 
+          });
         }
         else
           Assert(false, "AppendTile unknown tile!");

@@ -1032,5 +1032,19 @@ namespace Roguelike.Tiles.LivingEntities
     {
       return DistanceFrom(tile) < ProjectileFightItem.DefaultMaxDistance;
     }
+
+    static Effects.EffectType[] BlockingLEs = new[] { Effects.EffectType.Stunned, Effects.EffectType.Bleeding };
+
+    public bool IsMoveBlockedDueToLastingEffect(out string reason)
+    {
+      reason = "";
+      var le = LastingEffects.Where(i => i.PreventMove).FirstOrDefault();
+      if (le != null)
+      {
+        reason = le.Type.ToDescription();
+      }
+
+      return le != null;
+    }
   }
 }

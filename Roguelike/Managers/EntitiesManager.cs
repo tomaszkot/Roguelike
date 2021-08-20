@@ -128,10 +128,11 @@ namespace Roguelike.Managers
             continue;
           }
 
-          if (entity.LastingEffects.Where(i => i.Type == Effects.EffectType.Stunned).Any())
+          string reason = "";
+          if (entity.IsMoveBlockedDueToLastingEffect(out reason))
           {
             if (detailedLogs)
-              context.Logger.LogInfo("!Stunned");
+              context.Logger.LogInfo("!"+ reason);
             continue;
           }
 

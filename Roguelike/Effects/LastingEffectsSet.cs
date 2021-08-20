@@ -253,8 +253,14 @@ namespace Roguelike.Effects
           }
         }
 
+        if (le.Source is FightItem fi)
+        {
+          fi.SetState(FightItemState.Deactivated);
+        }
+
         if (LastingEffectDone != null)
           LastingEffectDone(this, le);
+
       }
     }
 

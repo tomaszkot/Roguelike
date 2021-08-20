@@ -116,6 +116,8 @@ namespace Roguelike.Effects
     { 
       get 
       {
+        if (Type == EffectType.Stunned || Type == EffectType.Frozen)
+          return true;
         var fi = Source as Tiles.Looting.FightItem;
         return fi != null && fi.FightItemKind == Tiles.Looting.FightItemKind.HunterTrap;
       }  
