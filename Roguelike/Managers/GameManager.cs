@@ -167,6 +167,7 @@ namespace Roguelike.Managers
           var bleed = entity.StartBleeding(fi.Damage, null);
           bleed.Source = fi;
           fi.SetState(FightItemState.Busy);
+          SoundManager.PlaySound("trap");
         }
       }
 
