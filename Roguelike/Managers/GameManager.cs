@@ -162,11 +162,11 @@ namespace Roguelike.Managers
       var oldTile = CurrentNode.GetTile(newPos);
       if (oldTile is FightItem fi)
       {
-        if (fi.FightItemKind == FightItemKind.HunterTrap && fi.IsOn)
+        if (fi.FightItemKind == FightItemKind.HunterTrap && fi.FightItemState == FightItemState.Activated)
         {
           var bleed = entity.StartBleeding(fi.Damage, null);
           bleed.Source = fi;
-          fi.IsOn = false;
+          fi.SetState(FightItemState.Busy);
         }
       }
 

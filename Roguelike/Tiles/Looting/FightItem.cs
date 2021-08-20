@@ -5,6 +5,7 @@ using Roguelike.Abstract.Projectiles;
 using Roguelike.Attributes;
 using Roguelike.Extensions;
 using Roguelike.Tiles.LivingEntities;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -19,16 +20,26 @@ namespace Roguelike.Tiles.Looting
     Stone
   }
 
+  public enum FightItemState
+  {
+    Unset,
+    Moving,
+    Activated,
+    Busy,
+    Deactivated
+  }
+
   public class FightItem : StackedLoot
   {
     private FightItemKind fightItemKind;
+    public FightItemState FightItemState { get; set; }
     public float baseDamage = 5.0f;
 
     
     protected string primaryFactorName = "Damage";
     protected string auxFactorName = "";
     public string HitTargetSound;
-    public bool IsOn { get; set; } = true;
+    public EventHandler<FightItemState> StateChanged { get; set; }
 
     [JsonIgnore]
     public LivingEntity Caller//req. by interface
@@ -47,6 +58,23 @@ namespace Roguelike.Tiles.Looting
       this.LootKind = LootKind.FightItem;
       
     }
+
+    public void SetState(FightItemState state)
+    {
+      FightItemState = state;
+      SendStateChanged();
+    }
+
+    private void SendStateChanged()
+    {
+      StateChanged?.Invoke(this, FightItemState);
+    }
+
+    //public void Deactivate()
+    //{
+    //  FightItemState = FightItemState.Deactivated;
+    //  SendStateChanged();
+    //}
 
     public FightItemKind FightItemKind
     {
@@ -81,8 +109,6 @@ namespace Roguelike.Tiles.Looting
           Price *= 2;
           PrimaryStatDescription = Name + ", holds victim and causes bleeding";
           HitTargetSound = "trap";
-          IsOn = false;
-          //baseDamage += 2;
         }
       }
     }
