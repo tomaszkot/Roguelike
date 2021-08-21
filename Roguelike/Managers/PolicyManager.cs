@@ -4,6 +4,7 @@ using Roguelike.Events;
 using Roguelike.Policies;
 using Roguelike.Tiles.LivingEntities;
 using SimpleInjector;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -43,10 +44,19 @@ namespace Roguelike.Managers
 
       if (ok)
       {
-        HeroBulkAttackTargets = gm.CurrentNode.GetNeighborTiles<Enemy>(hero)
-        .Where(i => i != lastTarget)
-        .ToList();
-
+        if (entityStatKind == EntityStatKind.ChanceToBulkAttack)
+        {
+          HeroBulkAttackTargets = gm.CurrentNode.GetNeighborTiles<Enemy>(hero)
+          .Where(i => i != lastTarget)
+          .ToList();
+        }
+        else 
+        {
+          HeroBulkAttackTargets = gm.EnemiesManager.AllEntities
+          .Where(i => i != lastTarget && i.DistanceFrom(hero) < 7)
+          .Cast<Enemy>()
+          .ToList();
+        }
         if (HeroBulkAttackTargets.Any())
           gm.AppendAction(new LivingEntityAction(LivingEntityActionKind.BulkAttack)
           { Info = hero.Name + " used ability Bulk Attack", Level = ActionLevel.Important, InvolvedEntity = hero });
@@ -76,7 +86,7 @@ namespace Roguelike.Managers
       HandleHeroActionDone();
     }
 
-    protected bool HandleBulk(Enemy en, EntityStatKind esk)
+    protected bool HandleBulk(Enemy en, EntityStatKind esk, Action<Enemy> func = null)
     {
       var bulkOK = false;
       if (HeroBulkAttackTargets == null)
@@ -90,9 +100,18 @@ namespace Roguelike.Managers
           //    repeatOK = false;
           if (bulkOK)
           {
-            var target = HeroBulkAttackTargets.GetRandomElem();
-            HeroBulkAttackTargets.Remove(target);
-            gm.Context.ApplyPhysicalAttackPolicy(gm.Hero, target, (p) => { });
+            while (HeroBulkAttackTargets.Any())
+            {
+              gm.RemoveDead();
+              var target = HeroBulkAttackTargets.GetRandomElem();
+              HeroBulkAttackTargets.Remove(target);
+              if (esk == EntityStatKind.ChanceToBulkAttack)
+                gm.Context.ApplyPhysicalAttackPolicy(gm.Hero, target, (p) => { });
+              if (func != null)
+                func(target);
+            }
+
+            
           }
         }
       }

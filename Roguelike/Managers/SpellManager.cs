@@ -128,7 +128,9 @@ namespace Roguelike.Managers
 
         var bulkOK = false;
         if (target is Enemy en && spellSource is WeaponSpellSource)
-          bulkOK = HandleBulk(en, EntityStatKind.ChanceToElementalBulkAttack);
+          bulkOK = HandleBulk(en, EntityStatKind.ChanceToElementalBulkAttack, (Enemy en1)=> {
+            ApplyAttackPolicy(caster, en1, spellSource, BeforeApply, AfterApply);
+          });
 
         if (!bulkOK)
         {
