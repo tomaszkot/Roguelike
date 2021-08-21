@@ -103,7 +103,10 @@ namespace Roguelike.Managers
             while (HeroBulkAttackTargets.Any())
             {
               gm.RemoveDead();
-              var target = HeroBulkAttackTargets.GetRandomElem();
+              var targets = HeroBulkAttackTargets.Where(i => i.Alive).ToList();
+              var target = targets.GetRandomElem();
+              if (target == null)
+                break;
               HeroBulkAttackTargets.Remove(target);
               if (esk == EntityStatKind.ChanceToBulkAttack)
                 gm.Context.ApplyPhysicalAttackPolicy(gm.Hero, target, (p) => { });

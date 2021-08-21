@@ -102,12 +102,13 @@ namespace Roguelike.Managers
       Tiles.Abstract.IObstacle target,
       SpellSource spellSource,
       Action<Policy> BeforeApply = null,
-      Action<Policy> AfterApply = null
+      Action<Policy> AfterApply = null,
+      bool looped = false
     )
     {
       var spell = spellSource.CreateSpell(caster) as IProjectileSpell;
 
-      if (!gm.UtylizeSpellSource(caster, spellSource, spell))
+      if (!looped && !gm.UtylizeSpellSource(caster, spellSource, spell))
         return false;
 
       var policy = Container.GetInstance<ProjectileCastPolicy>();
@@ -129,9 +130,11 @@ namespace Roguelike.Managers
         var bulkOK = false;
         if (target is Enemy en && spellSource is WeaponSpellSource)
           bulkOK = HandleBulk(en, EntityStatKind.ChanceToElementalBulkAttack, (Enemy en1)=> {
-            ApplyAttackPolicy(caster, en1, spellSource, BeforeApply, AfterApply);
+            ApplyAttackPolicy(caster, en1, spellSource, BeforeApply, AfterApply, true);
           });
 
+        if (looped)
+          return;
         if (!bulkOK)
         {
           var repeatOK = caster.IsStatRandomlyTrue(EntityStatKind.ChanceToRepeatElementalAttack);
