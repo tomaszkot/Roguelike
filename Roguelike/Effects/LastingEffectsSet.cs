@@ -297,8 +297,9 @@ namespace Roguelike.Effects
     public LastingEffect TryAddLastingEffectOnHit(float hitAmount, LivingEntity attacker, Spell spell)
     {
       var et = SpellConverter.EffectTypeFromSpellKind(spell.Kind);
+
       var effectInfo = CalcLastingEffDamage(et, hitAmount, spell, null);
-      return TryAddLastingEffect(effectInfo);
+      return TryAddLastingEffect(effectInfo, spell.Caller);
     }
 
     private LastingEffect TryAddLastingEffect(LastingEffectCalcInfo effectInfo, LivingEntity attacker = null)
@@ -306,9 +307,11 @@ namespace Roguelike.Effects
       LastingEffect le = null;
       if (effectInfo != null && effectInfo.Type != EffectType.Unset && !livingEntity.IsImmuned(effectInfo.Type))
       {
+        var attackerChance = attacker.Stats.GetCurrentValue(EntityStatKind.ChanceToCauseElementalAilment);
         var rand = RandHelper.Random.NextDouble();
-        var chance = livingEntity.GetChanceToExperienceEffect(effectInfo.Type);
-        var add = rand * 100 <= chance;
+        var chanceOfVictim  = livingEntity.GetChanceToExperienceEffect(effectInfo.Type);
+        chanceOfVictim += attackerChance;
+        var add = rand * 100 <= chanceOfVictim;
 
         //TODO
         if (!add && attacker is Enemy enemy)

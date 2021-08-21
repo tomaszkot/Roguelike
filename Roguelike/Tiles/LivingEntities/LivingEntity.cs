@@ -611,6 +611,7 @@ namespace Roguelike.Tiles.LivingEntities
       ReduceHealth(attacker, sound, damageDesc, srcName, ref amount);
 
       LastingEffectsSet.TryAddLastingEffectOnHit(amount, attacker, spell);
+     
     }
 
     protected virtual LastingEffect EnsurePhysicalHitEffect(float inflicted, LivingEntity victim)
@@ -1045,6 +1046,12 @@ namespace Roguelike.Tiles.LivingEntities
       }
 
       return le != null;
+    }
+
+    public bool IsStatRandomlyTrue(EntityStatKind kind)
+    {
+      var statValue = GetCurrentValue(kind);
+      return statValue / 100f > RandHelper.GetRandomDouble();
     }
   }
 }

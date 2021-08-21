@@ -1,5 +1,6 @@
 ﻿using Roguelike.Abstract.Projectiles;
 using Roguelike.Abstract.Spells;
+using Roguelike.Attributes;
 using Roguelike.Events;
 using Roguelike.Extensions;
 using Roguelike.Policies;
@@ -9,7 +10,9 @@ using Roguelike.Tiles.LivingEntities;
 using Roguelike.Tiles.Looting;
 using SimpleInjector;
 using System;
+using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 
 namespace Roguelike.Managers
 {
@@ -116,13 +119,27 @@ namespace Roguelike.Managers
 
       policy.OnApplied += (s, e) =>
       {
-        var le = policy.TargetObstacle is LivingEntity;
+        var le = policy.TargetDestroyable is LivingEntity;
         if (!le)//le is handled specially
         {
-          this.gm.LootManager.TryAddForLootSource(policy.TargetObstacle as ILootSource);
-          //if(policy.Target is IDestroyable dest)
+          this.gm.LootManager.TryAddForLootSource(policy.Target as ILootSource);
           //dest.Destroyed = true;
         }
+
+        var bulkOK = false;
+        if (target is Enemy en && spellSource is WeaponSpellSource)
+          bulkOK = HandleBulk(en, EntityStatKind.ChanceToElementalBulkAttack);
+
+        if (!bulkOK)
+        {
+          var repeatOK = caster.IsStatRandomlyTrue(EntityStatKind.ChanceToRepeatElementalAttack);
+          if (repeatOK)
+          {
+            ApplyAttackPolicy(caster, target, spellSource, BeforeApply, AfterApply);
+            return;
+          }
+        }
+
         if (caster is Hero)
           OnHeroPolicyApplied(policy);
 

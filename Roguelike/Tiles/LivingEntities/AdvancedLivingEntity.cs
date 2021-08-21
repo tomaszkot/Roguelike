@@ -147,7 +147,10 @@ namespace Roguelike.Tiles.LivingEntities
       {Weapon.WeaponKind.Axe,  EntityStatKind.AxeExtraDamage},
       { Weapon.WeaponKind.Sword, EntityStatKind.SwordExtraDamage},
       { Weapon.WeaponKind.Bashing, EntityStatKind.BashingExtraDamage},
-      { Weapon.WeaponKind.Dagger, EntityStatKind.DaggerExtraDamage}
+      { Weapon.WeaponKind.Dagger, EntityStatKind.DaggerExtraDamage},
+      { Weapon.WeaponKind.Staff, EntityStatKind.StaffExtraDamage},
+      { Weapon.WeaponKind.Scepter, EntityStatKind.ScepterExtraDamage},
+      { Weapon.WeaponKind.Wand, EntityStatKind.WandExtraDamage}
     };
 
     public AdvancedLivingEntity(Container cont, Point point, char symbol) : base(point, symbol)
@@ -607,7 +610,8 @@ namespace Roguelike.Tiles.LivingEntities
         {
           if (ab.PrimaryStat.Kind != EntityStatKind.Unset)
           {
-            Stats.AccumulateFactor(ab.PrimaryStat.Kind, ab.PrimaryStat.Factor);
+            if(ab.PrimaryStat.Factor != 0)
+              Stats.AccumulateFactor(ab.PrimaryStat.Kind, ab.PrimaryStat.Factor);
             AddAuxStat(ab);
           }
         }
@@ -621,10 +625,13 @@ namespace Roguelike.Tiles.LivingEntities
 
     private void AddAuxStat(PassiveAbility ab)
     {
-      if (ab.AuxStat.Kind == EntityStatKind.AxeExtraDamage
-                      || ab.AuxStat.Kind == EntityStatKind.SwordExtraDamage
-                      || ab.AuxStat.Kind == EntityStatKind.BashingExtraDamage
-                      || ab.AuxStat.Kind == EntityStatKind.DaggerExtraDamage)
+      //if (ab.Kind == AbilityKind.we.AuxStat.Kind == EntityStatKind.AxeExtraDamage
+      //    || ab.AuxStat.Kind == EntityStatKind.SwordExtraDamage
+      //    || ab.AuxStat.Kind == EntityStatKind.BashingExtraDamage
+      //    || ab.AuxStat.Kind == EntityStatKind.DaggerExtraDamage
+                      
+      //                )
+      if(ab.AuxStat.Factor != 0)
       {
         Stats.AccumulateFactor(ab.AuxStat.Kind, ab.AuxStat.Factor);
       }

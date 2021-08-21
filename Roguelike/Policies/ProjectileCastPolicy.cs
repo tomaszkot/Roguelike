@@ -2,6 +2,7 @@
 //using Dungeons.Tiles.Abstract;
 using Roguelike.Abstract.Projectiles;
 using Roguelike.Spells;
+using Roguelike.Tiles.Abstract;
 using Roguelike.Tiles.LivingEntities;
 
 namespace Roguelike.Policies
@@ -9,14 +10,15 @@ namespace Roguelike.Policies
   public class ProjectileCastPolicy : Policy
   {
     LivingEntity caster;
-    Tile target;
+    //Tile target;
 
     public ProjectileCastPolicy()
     {
       this.Kind = PolicyKind.SpellCast;
     }
 
-    public IObstacle TargetObstacle { get => target as IObstacle;}
+    //public IObstacle TargetObstacle { get => target as IObstacle;}
+    public IDestroyable TargetDestroyable { get => Target as IDestroyable; }
     public Tile Target { get; set; }
     public IProjectile Projectile { get; set; }
     public LivingEntity Caster { get => caster; set => caster = value; }
@@ -24,14 +26,14 @@ namespace Roguelike.Policies
 
     public void Apply(LivingEntity caster)
     {
-      Apply(this.Projectile, caster, this.TargetObstacle, this.ProjectilesFactory);
+      Apply(this.Projectile, caster, this.TargetDestroyable, this.ProjectilesFactory);
     }
 
-    public void Apply(IProjectile projectile, LivingEntity caster, IObstacle target, IProjectilesFactory projectilesFactory)
+    public void Apply(IProjectile projectile, LivingEntity caster, IDestroyable target, IProjectilesFactory projectilesFactory)
     {
       this.Projectile = projectile;
       this.caster = caster;
-      this.target = target as Tile;
+      this.Target = target as Tile;
       this.ProjectilesFactory = projectilesFactory;
 
       caster.State = EntityState.CastingProjectile;
@@ -41,7 +43,7 @@ namespace Roguelike.Policies
 
     protected virtual void DoApply(LivingEntity caster)
     {
-      TargetObstacle.OnHitBy(Projectile);
+      TargetDestroyable.OnHitBy(Projectile);
     }
   }
 }

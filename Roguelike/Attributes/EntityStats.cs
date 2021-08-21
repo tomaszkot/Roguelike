@@ -19,7 +19,10 @@ namespace Roguelike.Attributes
     ChanceToCauseBleeding, ChanceToCauseStunning, ChanceToCauseTearApart, ChanceToEvadeMeleeAttack, ChanceToEvadeMagicAttack,
     AxeExtraDamage, SwordExtraDamage, BashingExtraDamage, DaggerExtraDamage,
     LightingAttack, ResistLighting, ChanceToStrikeBack, ChanceToBulkAttack, ChanceToBurnNeighbour, ExlosiveCoctailDamage,
-    ThrowingKnifeDamage, ThrowingStoneDamage
+    ThrowingKnifeDamage, ThrowingStoneDamage, ChanceToRepeatMelleeAttack, ChanceToRepeatElementalAttack,
+    //    ExtraElementalDamage,
+    ChanceToCauseElementalAilment, /*ExtraElementalDamage,*/ChanceToElementalBulkAttack,
+    StaffExtraDamage, ScepterExtraDamage, WandExtraDamage
 
   };
 
@@ -75,24 +78,6 @@ namespace Roguelike.Attributes
         myStat.Value.MakeNegative();
       }
     }
-
-    //public bool CanAdvanceInExp
-    //{
-    //  get
-    //  {
-    //    return canAdvanceInExp;
-    //  }
-
-    //  set
-    //  {
-    //    canAdvanceInExp = value;
-    //  }
-    //}
-
-    //public List<EntityStat> GetBasicStats()
-    //{
-    //  return stats.Where(i => EntityStat.BasicStats.Contains(i.Key)).ToList().Select(i => i.Value).ToList();
-    //}
 
     public float GetTotalValue(EntityStatKind esk)
     {
@@ -237,19 +222,6 @@ namespace Roguelike.Attributes
       }
     }
 
-    //public int Level
-    //{
-    //  get
-    //  {
-    //    return level;
-    //  }
-
-    //  set
-    //  {
-    //    level = value;
-    //  }
-    //}
-
     public void SetNominal(EntityStatKind kind, float value)
     {
       if (kind == EntityStatKind.Health)
@@ -374,7 +346,5 @@ namespace Roguelike.Attributes
     }
   }
 
-  public class EntityStatsTotal : EntityStats
-  {
-  }
+  
 }

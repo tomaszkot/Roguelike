@@ -1265,10 +1265,10 @@ namespace Roguelike.Managers
 
       policy.OnApplied += (s, e) =>
       {
-        var le = policy.TargetObstacle is LivingEntity;
+        var le = policy.TargetDestroyable is LivingEntity;
         if (!le)//le is handled specially
         {
-          this.LootManager.TryAddForLootSource(policy.TargetObstacle as ILootSource);
+          this.LootManager.TryAddForLootSource(policy.Target as ILootSource);
         }
         if (caster is Hero)
           OnHeroPolicyApplied(policy);

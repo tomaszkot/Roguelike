@@ -35,28 +35,21 @@ namespace Roguelike.Managers
     }
 
 
-
-
-
-    void FindBulkAttackTargets(Enemy lastTarget)
+    void FindBulkAttackTargets(Enemy lastTarget, EntityStatKind entityStatKind)
     {
       HeroBulkAttackTargets = new List<Enemy>();
       var hero = gm.Hero;
-      var sb = hero.GetTotalValue(EntityStatKind.ChanceToBulkAttack);
-      //sb = 100.0f;
-      if (sb > 0)
-      {
-        var fac = sb;// sb.GetFactor(true);
-        if (fac / 100f > RandHelper.GetRandomDouble())
-        {
-          HeroBulkAttackTargets = gm.CurrentNode.GetNeighborTiles<Enemy>(hero)
-          .Where(i => i != lastTarget)
-          .ToList();
+      var ok = hero.IsStatRandomlyTrue(entityStatKind);
 
-          if (HeroBulkAttackTargets.Any())
-            gm.AppendAction(new LivingEntityAction(LivingEntityActionKind.BulkAttack)
-            { Info = hero.Name + " used ability Bulk Attack", Level = ActionLevel.Important, InvolvedEntity = hero });
-        }
+      if (ok)
+      {
+        HeroBulkAttackTargets = gm.CurrentNode.GetNeighborTiles<Enemy>(hero)
+        .Where(i => i != lastTarget)
+        .ToList();
+
+        if (HeroBulkAttackTargets.Any())
+          gm.AppendAction(new LivingEntityAction(LivingEntityActionKind.BulkAttack)
+          { Info = hero.Name + " used ability Bulk Attack", Level = ActionLevel.Important, InvolvedEntity = hero });
       }
     }
 
@@ -69,24 +62,42 @@ namespace Roguelike.Managers
       else if (policy.Kind == PolicyKind.Attack)
       {
         HandlePolicyApplied(policy);
-        if (HeroBulkAttackTargets == null)
+        var ap = policy as AttackPolicy;
+        var en = ap.Victim as Enemy;
+        var bulkOK = HandleBulk(en, EntityStatKind.ChanceToBulkAttack);
+        if (!bulkOK)
         {
-          var ap = policy as AttackPolicy;
-          var en = ap.Victim as Enemy;
-          if (en != null)
-          {
-            FindBulkAttackTargets(ap.Victim as Enemy);
-            if (HeroBulkAttackTargets.Any())
-            {
-              var target = HeroBulkAttackTargets.GetRandomElem();
-              HeroBulkAttackTargets.Remove(target);
-              gm.Context.ApplyPhysicalAttackPolicy(gm.Hero, target, (p) => { });
-            }
-          }
+          var repeatOK = gm.Hero.IsStatRandomlyTrue(EntityStatKind.ChanceToRepeatMelleeAttack);
+          if (repeatOK)
+            gm.Context.ApplyPhysicalAttackPolicy(gm.Hero, en, (p) => { });
         }
       }
 
       HandleHeroActionDone();
+    }
+
+    protected bool HandleBulk(Enemy en, EntityStatKind esk)
+    {
+      var bulkOK = false;
+      if (HeroBulkAttackTargets == null)
+      {
+        if (en != null)
+        {
+          FindBulkAttackTargets(en, esk);
+          bulkOK = HeroBulkAttackTargets.Any();
+          //if (bulkOK && repeatOK)
+          //  if (RandHelper.GetRandomDouble() > 0.5)
+          //    repeatOK = false;
+          if (bulkOK)
+          {
+            var target = HeroBulkAttackTargets.GetRandomElem();
+            HeroBulkAttackTargets.Remove(target);
+            gm.Context.ApplyPhysicalAttackPolicy(gm.Hero, target, (p) => { });
+          }
+        }
+      }
+
+      return bulkOK;
     }
 
     protected void HandleHeroActionDone()

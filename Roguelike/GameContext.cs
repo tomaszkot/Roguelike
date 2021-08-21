@@ -86,19 +86,15 @@ namespace Roguelike
           AfterApply(e);
           if (target is LivingEntity le && le.Alive)
           {
-            var sb = le.GetTotalValue(EntityStatKind.ChanceToStrikeBack);
-            if (sb > 0)
+            if (le.IsStatRandomlyTrue(EntityStatKind.ChanceToStrikeBack))
             {
-              if (sb / 100f > RandHelper.GetRandomDouble())
+              EventsManager.AppendAction(new LivingEntityAction(LivingEntityActionKind.StrikedBack)
+              { Info = target.Name + " used ability Strike Back", Level = ActionLevel.Important, InvolvedEntity = target as LivingEntity });
+              ApplyPhysicalAttackPolicy(le, attacker, (p) =>
               {
-                EventsManager.AppendAction(new LivingEntityAction(LivingEntityActionKind.StrikedBack)
-                { Info = target.Name + " used ability Strike Back", Level = ActionLevel.Important, InvolvedEntity = target as LivingEntity });
-                ApplyPhysicalAttackPolicy(le, attacker, (p) =>
-                {
-                  if (AttackPolicyDone != null)
-                    AttackPolicyDone();
-                });
-              }
+                if (AttackPolicyDone != null)
+                  AttackPolicyDone();
+              });
             }
           }
         };

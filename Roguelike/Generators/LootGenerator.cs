@@ -212,6 +212,37 @@ namespace Roguelike.Generators
         return wpn;
       }
 
+      if (loot == null && tileName == "scepter")
+      {
+        var wpn = new Weapon();
+        wpn.tag1 = "scepter";
+        wpn.Damage = 5;
+        wpn.Name = "Scepter";
+        wpn.Price *= 2;
+        wpn.Kind = Weapon.WeaponKind.Scepter;
+        return wpn;
+      }
+      if (loot == null && tileName == "staff")
+      {
+        var wpn = new Weapon();
+        wpn.tag1 = "staff";
+        wpn.Damage = 5;
+        wpn.Name = "Staff";
+        wpn.Price *= 2;
+        wpn.Kind = Weapon.WeaponKind.Staff;
+        return wpn;
+      }
+      if (loot == null && tileName == "wand")
+      {
+        var wpn = new Weapon();
+        wpn.tag1 = "wand";
+        wpn.Damage = 5;
+        wpn.Name = "Wand";
+        wpn.Price *= 2;
+        wpn.Kind = Weapon.WeaponKind.Wand;
+        return wpn;
+      }
+
       return loot;
     }
 

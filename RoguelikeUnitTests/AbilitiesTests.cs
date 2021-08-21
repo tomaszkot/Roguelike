@@ -3,6 +3,7 @@ using NUnit.Framework;
 using Roguelike.Abilities;
 //using Roguelike.Abstract.Abilities;
 using Roguelike.Attributes;
+using Roguelike.Spells;
 using Roguelike.Tiles;
 using Roguelike.Tiles.Interactive;
 using Roguelike.Tiles.LivingEntities;
@@ -465,21 +466,6 @@ namespace RoguelikeUnitTests
       }
     }
 
-    //[Test]
-    //public void BasicDefenceTests()
-    //{
-    //  Dictionary<AbilityKind, float> abs = new Dictionary<AbilityKind, float>()
-    //  {
-    //    {AbilityKind.MeleeDefender, 0 },
-    //    {AbilityKind.MagicDefender, 0 }
-    //  };
-    //  foreach (var abKV in abs)
-    //  {
-    //    var val = TestDefence(abKV.Key);
-    //  }
-    //  Debug.WriteLine("end");
-    //}
-
     //private float TestDefence(AbilityKind kind)
     //{
     //  var abVal = 0.0f;
@@ -535,7 +521,141 @@ namespace RoguelikeUnitTests
     //}
 
     [Test]
-    public void BasicWeaponsMasteryTests()
+    public void TestChanceToRepeatMelleeAttack()
+    {
+      var game = CreateGame();
+      game.Hero.Stats.SetNominal(EntityStatKind.ChanceToHit, 100);
+
+      var en = GetPlainEnemies().First();
+      en.Stats.SetNominal(EntityStatKind.Health, 300);
+      var enHealthBase = en.Stats.Health;
+      en.OnMelleeHitBy(game.Hero);
+      var healthDiffBase = enHealthBase - en.Stats.Health;
+      enHealthBase = en.Stats.Health;
+      Assert.Greater(healthDiffBase, 0);
+      Assert.AreEqual(game.Hero.Stats.GetCurrentValue(EntityStatKind.ChanceToRepeatMelleeAttack), 0);
+      game.Hero.Stats.SetNominal(EntityStatKind.ChanceToRepeatMelleeAttack, 50);
+      bool works = false; 
+      for (int i = 0; i < 20; i++)
+      {
+        game.GameManager.InteractHeroWith(en);
+        GotoNextHeroTurn();
+        var healthDiff = enHealthBase - en.Stats.Health;
+        if (healthDiff > healthDiffBase)
+        {
+          works = true;
+          break;
+        }
+
+        enHealthBase = en.Stats.Health;
+      }
+      Assert.True(works);
+    }
+    
+    [Test]
+    public void TestScepterMastering()//ChanceToCauseElementalAilment()
+    {
+      var game = CreateGame();
+      float originalStatValue = 0;
+      var destExtraStat = SetWeapon(AbilityKind.ScepterMastering, game.Hero, out originalStatValue);
+      var weapon = game.Hero.GetActiveWeapon();
+      Assert.AreEqual(weapon.SpellSource.Kind, SpellKind.FireBall);
+
+      Assert.Greater(GetPlainEnemies().Count, 5);
+      Assert.AreEqual(game.Hero.Stats.GetCurrentValue(EntityStatKind.ChanceToCauseElementalAilment), 0);
+      game.Hero.Stats.SetNominal(EntityStatKind.ChanceToCauseElementalAilment, 100);
+      foreach (var en in GetPlainEnemies())
+      {
+        var spell = weapon.SpellSource.CreateSpell(game.Hero);
+        Assert.True(game.GameManager.SpellManager.ApplyAttackPolicy(game.Hero, en, weapon.SpellSource));
+        Assert.True(en.HasLastingEffect(Roguelike.Effects.EffectType.Firing));
+        GotoNextHeroTurn();
+      }
+    }
+
+    [Test]
+    public void TestWandMastering()//ChanceToElementalBulkAttack()
+    {
+      var game = CreateGame();
+      float originalStatValue = 0;
+      var destExtraStat = SetWeapon(AbilityKind.WandMastering, game.Hero, out originalStatValue);
+      var weapon = game.Hero.GetActiveWeapon();
+
+      var empOnes = game.GameManager.CurrentNode.GetEmptyNeighborhoodTiles(game.GameManager.Hero, false);
+      Assert.Greater(empOnes.Count, 1);
+      var enemies = AllEnemies.Where(i => i.PowerKind == EnemyPowerKind.Champion).ToList();
+      enemies[0].Stats.GetStat(EntityStatKind.Health).Value.Nominal *= 10;//make sure wont' die
+      float en1Health = enemies[0].Stats.Health;
+      float en2Health = enemies[1].Stats.Health;
+      for (int i = 0; i < 2; i++)
+      {
+        game.GameManager.CurrentNode.SetTile(enemies[i], empOnes[i].point);
+      }
+      var ab = game.GameManager.Hero.GetPassiveAbility(Roguelike.Abilities.AbilityKind.WandMastering);
+      for (int i = 0; i < 5; i++)
+        ab.IncreaseLevel(game.Hero);
+
+      game.Hero.RecalculateStatFactors(false);
+      //var sb = game.Hero.GetTotalValue(EntityStatKind.ChanceToBulkAttack);
+
+      for (int i = 0; i < 20; i++)
+      {
+        weapon.SpellSource.Count = 20;
+        //hit only 1st enemy
+        var spell = weapon.SpellSource.CreateSpell(game.Hero);
+        Assert.True(game.GameManager.SpellManager.ApplyAttackPolicy(game.Hero, enemies[0], weapon.SpellSource));
+        GotoNextHeroTurn();
+      }
+
+      Assert.Greater(en1Health, enemies[0].Stats.Health);
+
+      //2nd shall be hit by an ability
+      Assert.Greater(en2Health, enemies[1].Stats.Health);
+
+    }
+
+    [Test]
+    public void TestStaffMastering()
+    {
+      var game = CreateGame();
+      float originalStatValue = 0;
+      var destExtraStat = SetWeapon(AbilityKind.ScepterMastering, game.Hero, out originalStatValue);
+      var weapon = game.Hero.GetActiveWeapon();
+
+      var en = GetPlainEnemies().First();
+      en.Stats.SetNominal(EntityStatKind.Health, 300);
+      var enHealthBase = en.Stats.Health;
+
+      var spell = weapon.SpellSource.CreateSpell(game.Hero);
+      Assert.True(game.GameManager.SpellManager.ApplyAttackPolicy(game.Hero, en, weapon.SpellSource));
+      GotoNextHeroTurn();
+            
+      var healthDiffBase = enHealthBase - en.Stats.Health;
+      enHealthBase = en.Stats.Health;
+      Assert.Greater(healthDiffBase, 0);
+      Assert.AreEqual(game.Hero.Stats.GetCurrentValue(EntityStatKind.ChanceToRepeatElementalAttack), 0);
+      game.Hero.Stats.SetNominal(EntityStatKind.ChanceToRepeatElementalAttack, 50);
+      bool works = false;
+      for (int i = 0; i < 10; i++)
+      {
+        spell = weapon.SpellSource.CreateSpell(game.Hero);
+        Assert.True(game.GameManager.SpellManager.ApplyAttackPolicy(game.Hero, en, weapon.SpellSource));
+        GotoNextHeroTurn();
+        var healthDiff = enHealthBase - en.Stats.Health;
+        if (healthDiff > healthDiffBase)
+        {
+          works = true;
+          break;
+        }
+
+        enHealthBase = en.Stats.Health;
+      }
+      Assert.True(works);
+    }
+
+
+    [Test]
+    public void BasicWeaponsMasteryTests()//test if mellee damage is increased
     {
       var game = CreateGame();
       Dictionary<Roguelike.Abilities.AbilityKind, float> abs = new Dictionary<Roguelike.Abilities.AbilityKind, float>()
@@ -543,19 +663,16 @@ namespace RoguelikeUnitTests
         { Roguelike.Abilities.AbilityKind.AxesMastering, 0 },
         { Roguelike.Abilities.AbilityKind.BashingMastering, 0 },
         { Roguelike.Abilities.AbilityKind.DaggersMastering, 0 },
-        { Roguelike.Abilities.AbilityKind.SwordsMastering, 0 }
+        { Roguelike.Abilities.AbilityKind.SwordsMastering, 0 },
+        { Roguelike.Abilities.AbilityKind.StaffMastering, 0 },
+        { Roguelike.Abilities.AbilityKind.WandMastering, 0 },
+        { Roguelike.Abilities.AbilityKind.ScepterMastering, 0 }
       };
-      Dictionary<Roguelike.Abilities.AbilityKind, float> absR = new Dictionary<Roguelike.Abilities.AbilityKind, float>()
-      {
-        { Roguelike.Abilities.AbilityKind.AxesMastering, 0 },
-        { Roguelike.Abilities.AbilityKind.BashingMastering, 0 },
-        { Roguelike.Abilities.AbilityKind.DaggersMastering, 0 },
-        { Roguelike.Abilities.AbilityKind.SwordsMastering, 0 }
-      };
+     
       foreach (var abKV in abs)
       {
         var val = TestWeaponKindMastering(abKV.Key);
-        absR[abKV.Key] = val;
+        //absR[abKV.Key] = val;
       }
       //Debug.WriteLine("end");
     }
@@ -609,7 +726,7 @@ namespace RoguelikeUnitTests
       return abVal;
     }
 
-    private EntityStatKind SetWeapon(Roguelike.Abilities.AbilityKind kind, Hero Hero, out float statValue)
+    private EntityStatKind SetWeapon(Roguelike.Abilities.AbilityKind kind, Hero Hero, out float originalStatValue)
     {
       var destStat = EntityStatKind.Unset;
       Weapon wpn = null;
@@ -633,12 +750,23 @@ namespace RoguelikeUnitTests
           destStat = EntityStatKind.ChanceToHit;
           break;
 
+        case Roguelike.Abilities.AbilityKind.ScepterMastering:
+          wpnName = "scepter";
+          destStat = EntityStatKind.ChanceToCauseElementalAilment;
+          break;
+        case Roguelike.Abilities.AbilityKind.StaffMastering:
+          wpnName = "staff";
+          destStat = EntityStatKind.ChanceToRepeatElementalAttack;
+          break;
+        case Roguelike.Abilities.AbilityKind.WandMastering:
+          wpnName = "wand";
+          destStat = EntityStatKind.ChanceToRepeatElementalAttack;
+          break;
         default:
           break;
       }
 
-      statValue = Hero.Stats.GetCurrentValue(destStat);
-      //wpn = game.LootDescriptionManager.GetEquipment(LootKind.Weapon, wpnName) as Weapon;
+      originalStatValue = Hero.Stats.GetCurrentValue(destStat);
       wpn = game.GameManager.LootGenerator.GetLootByAsset(wpnName) as Weapon;
       Assert.NotNull(wpn);
       Hero.SetEquipment(wpn, CurrentEquipmentKind.Weapon);

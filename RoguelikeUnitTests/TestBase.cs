@@ -184,22 +184,19 @@ namespace RoguelikeUnitTests
         }
 
         var level = game.GenerateLevel(0, gi);
-
-        //if (numEnemies < 10)
+                
+        var enemies = level.GetTiles<Enemy>();
+        if (enemies.Count > numEnemies)
         {
-          var enemies = level.GetTiles<Enemy>();
-          if (enemies.Count > numEnemies)
+          var aboveThreshold = enemies.Skip(numEnemies).ToList();
+          foreach (var en in aboveThreshold)
           {
-            var aboveThreshold = enemies.Skip(numEnemies).ToList();
-            foreach (var en in aboveThreshold)
-            {
-              level.SetEmptyTile(en.point);
-              GameManager.EnemiesManager.AllEntities.Remove(en);
-            }
+            level.SetEmptyTile(en.point);
+            GameManager.EnemiesManager.AllEntities.Remove(en);
           }
-          enemies = level.GetTiles<Enemy>();
-          Assert.LessOrEqual(enemies.Count, numEnemies);
         }
+        enemies = level.GetTiles<Enemy>();
+        Assert.LessOrEqual(enemies.Count, numEnemies);
 
         Assert.GreaterOrEqual(AllEnemies.Count, numEnemies);//some are auto generated
         Assert.Less(ActiveEnemies.Count, numEnemies * 4);

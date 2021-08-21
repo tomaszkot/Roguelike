@@ -21,6 +21,9 @@ namespace Roguelike.Abilities
     //HuntingMastering /*<-(to del)*/
     ExplosiveMastering, ThrowingStoneMastering, ThrowingKnifeMastering, HunterTrapMastering
 
+
+    , StaffMastering, ScepterMastering, WandMastering
+
   }
 
   /// <summary>
@@ -72,7 +75,19 @@ namespace Roguelike.Abilities
             psk = EntityStatKind.ChanceToHit;
             ask = EntityStatKind.SwordExtraDamage;
             break;
-                     
+          
+          case AbilityKind.StaffMastering:
+            psk = EntityStatKind.ChanceToRepeatElementalAttack;
+            ask = EntityStatKind.StaffExtraDamage;
+            break;
+          case AbilityKind.ScepterMastering:
+            psk = EntityStatKind.ChanceToCauseElementalAilment;
+            ask = EntityStatKind.ScepterExtraDamage;
+            break;
+          case AbilityKind.WandMastering:
+            psk = EntityStatKind.ChanceToElementalBulkAttack;
+            ask = EntityStatKind.WandExtraDamage;
+            break;
           case AbilityKind.LootingMastering:
           case AbilityKind.StrikeBack:
           case AbilityKind.BulkAttack:
@@ -134,11 +149,22 @@ namespace Roguelike.Abilities
         case AbilityKind.BashingMastering:
         case AbilityKind.DaggersMastering:
         case AbilityKind.SwordsMastering:
+        case AbilityKind.WandMastering:
+        case AbilityKind.ScepterMastering:
+        case AbilityKind.StaffMastering:
 
           if (primary)
             factor = level;
           else
+          {
             factor = level * 5;
+
+            if (kind == AbilityKind.WandMastering)
+            {
+              var multsDef = new int[] { 0, 4, 7, 10, 15, 20 };
+              factor = multsDef[level];
+            }
+          }
           break;
 
         case AbilityKind.StrikeBack:
@@ -178,6 +204,9 @@ namespace Roguelike.Abilities
         case AbilityKind.BashingMastering:
         case AbilityKind.DaggersMastering:
         case AbilityKind.SwordsMastering:
+        case AbilityKind.StaffMastering:
+        case AbilityKind.ScepterMastering:
+        case AbilityKind.WandMastering:
           desc = "Bonus when using ";
           var wpn = kind.ToString().Replace("Mastering", "");
           if (wpn.EndsWith("s"))
