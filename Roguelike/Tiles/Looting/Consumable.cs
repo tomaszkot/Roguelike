@@ -31,7 +31,7 @@ namespace Roguelike.Tiles.Looting
 
     public EffectType EffectType { get; set; }
     public bool PercentageStatIncrease { get; set; }
-    public int TourLasting { get => ConsumptionSteps; set => ConsumptionSteps = value; }
+    public int TurnLasting { get => ConsumptionSteps; set => ConsumptionSteps = value; }
     //public EntityStatKind StatKind { get => EnhancedStat; set => EnhancedStat = value; }
     public PercentageFactor StatKindPercentage
     {
@@ -80,8 +80,8 @@ namespace Roguelike.Tiles.Looting
         if (PercentageStatIncrease)
         {
           lsi.Desc += GetPercentageStatIncrease();
-          if (TourLasting > 1 && !TourLastingProperty)
-            lsi.Desc += " (x" + TourLasting + " turns)";
+          if (TurnLasting > 1 && !TourLastingProperty)
+            lsi.Desc += FormatTurns(TurnLasting);
         }
         else
           lsi.Desc += " +"+StatKindEffective.Value;

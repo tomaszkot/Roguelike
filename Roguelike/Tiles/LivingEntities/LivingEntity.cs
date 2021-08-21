@@ -520,7 +520,7 @@ namespace Roguelike.Tiles.LivingEntities
         if (IsWounded)
         {
           if (attacker.CanCauseBleeding())
-            StartBleeding(inflicted, attacker);
+            StartBleeding(inflicted/3, attacker, -1);
         }
         attacker.EnsurePhysicalHitEffect(inflicted, this);
       }
@@ -548,25 +548,33 @@ namespace Roguelike.Tiles.LivingEntities
         if (fi is ProjectileFightItem pfi)
         {
           var damageDesc = "";
-          var inflicted = CalcMeleeDamage(pfi.Damage, ref damageDesc);
+          var inflictedMellee = CalcMeleeDamage(pfi.Damage, ref damageDesc);
+          var inflicted = inflictedMellee;
           var sound = pfi.HitTargetSound;// "punch";
           var srcName = fi.FightItemKind.ToDescription();
           var attacker = pfi.Caller;
-          
+
           if (fi.FightItemKind == FightItemKind.ExplosiveCocktail)
           {
-            AppendNonPhysicalDamage(EntityStatKind.FireAttack, fi.Damage, ref inflicted, ref damageDesc);
-            lastingEffectsSet.EnsureEffect(EffectType.Firing, inflicted / 3, attacker);
+            //AppendNonPhysicalDamage(EntityStatKind.FireAttack, fi.Damage, ref inflicted, ref damageDesc);
+            var npd = CalculateNonPhysicalDamage(EntityStatKind.FireAttack, fi.Damage);
+            lastingEffectsSet.EnsureEffect(EffectType.Firing, npd, attacker, fi.TurnLasting);
+            return true;
           }
-          if (fi.FightItemKind == FightItemKind.ThrowingKnife)
+          else if (fi.FightItemKind == FightItemKind.ThrowingKnife)
           {
             if (RandHelper.GetRandomDouble() > 0.75)
-              StartBleeding(inflicted, attacker);
+              StartBleeding(inflictedMellee / 3, attacker, -1);
           }
-          //if (fi.FightItemKind == FightItemKind.HunterTrap)
-          //{
-          //  StartBleeding(inflicted, attacker);
-          //}
+          else if (fi.FightItemKind == FightItemKind.HunterTrap)
+          {
+            var bleed = StartBleeding(inflictedMellee, null, fi.TurnLasting);
+            bleed.Source = fi;
+
+            fi.SetState(FightItemState.Busy);
+            sound = "trap";
+          }
+
           ReduceHealth(attacker, sound, damageDesc, srcName, ref inflicted);
         }
         else
@@ -578,9 +586,9 @@ namespace Roguelike.Tiles.LivingEntities
       return true;
     }
 
-    public LastingEffect StartBleeding(float inflicted, LivingEntity attacker)
+    public LastingEffect StartBleeding(float damageEachTurn, LivingEntity attacker, int turnLasting)
     {
-      return lastingEffectsSet.EnsureEffect(EffectType.Bleeding, inflicted / 3, attacker);
+      return lastingEffectsSet.EnsureEffect(EffectType.Bleeding, damageEachTurn, attacker, turnLasting);
     }
 
     protected virtual void OnHitBy

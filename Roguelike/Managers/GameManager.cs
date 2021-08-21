@@ -164,10 +164,12 @@ namespace Roguelike.Managers
       {
         if (fi.FightItemKind == FightItemKind.HunterTrap && fi.FightItemState == FightItemState.Activated)
         {
-          var bleed = entity.StartBleeding(fi.Damage, null);
-          bleed.Source = fi;
-          fi.SetState(FightItemState.Busy);
-          SoundManager.PlaySound("trap");
+          entity.OnHitBy(fi as ProjectileFightItem);
+          //var bleed = entity.StartBleeding(fi.Damage, null, fi.TurnLasting);
+          //bleed.Source = fi;
+
+          //fi.SetState(FightItemState.Busy);
+          //SoundManager.PlaySound("trap");
         }
       }
 

@@ -48,7 +48,7 @@ namespace Roguelike.Effects
   {
     public EffectOrigin Origin { get; set; }
     public EffectType Type { get; set; }
-    public int Turns { get; }
+    public int Turns { get; set; }
 
     //absolute value deducted/added to a stat
     public EffectiveFactor EffectiveFactor { get; set; }

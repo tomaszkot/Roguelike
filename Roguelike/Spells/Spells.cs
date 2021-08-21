@@ -412,8 +412,6 @@ namespace Roguelike.Spells
     public ManaShieldSpell(LivingEntity caller) : base(caller, EntityStatKind.Mana)
     {
       Kind = SpellKind.ManaShield;
-      //TourLasting = GetHealthFromLevel(GetCurrentLevel()) / 3;
-      //manaCost = BaseManaCost * 2;
     }
 
     //protected override void AppendPrivateFeatures(List<string> fe)

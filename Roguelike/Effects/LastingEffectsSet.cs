@@ -99,7 +99,7 @@ namespace Roguelike.Effects
           var hooch = source as Hooch;
           var percentValue = hooch.GetSecondPercentageStatIncrease().Value;
           var effectiveFactor = this.livingEntity.CalcEffectiveFactor(hooch.SecondStatKind, percentValue);
-          var leci = CreateLastingEffectCalcInfo(eff, effectiveFactor.Value, percentValue, hooch.TourLasting);
+          var leci = CreateLastingEffectCalcInfo(eff, effectiveFactor.Value, percentValue, hooch.TurnLasting);
           var leSibling = CreateLE(leci, origin, source, hooch.SecondStatKind, eff);
           le.Sibling = leSibling;
         }
@@ -352,10 +352,11 @@ namespace Roguelike.Effects
       return LastingEffect.DefaultPendingTurns;
     }
 
-    public LastingEffect EnsureEffect(EffectType et, float inflictedDamage, LivingEntity attacker = null)
+    public LastingEffect EnsureEffect(EffectType et, float inflictedDamage, LivingEntity attacker = null, int turnLasting = -1)
     {
       var effectInfo = CalcLastingEffDamage(et, inflictedDamage, null, null);
-
+      if(turnLasting > 0)
+        effectInfo.Turns = turnLasting;
       var currentEffect = this.AddLastingEffect(effectInfo, EffectOrigin.External, null, EffectTypeConverter.Convert(et), true);
       return currentEffect;
     }
@@ -377,7 +378,7 @@ namespace Roguelike.Effects
     {
       Assert(src.StatKindEffective.Value != 0 || src.StatKindPercentage.Value != 0);
       var factor = src.StatKindEffective.Value != 0 ? src.StatKindEffective : this.livingEntity.CalcEffectiveFactor(src.StatKind, src.StatKindPercentage.Value);
-      return CreateLastingEffectCalcInfo(eff, factor.Value, src.StatKindPercentage.Value, src.TourLasting);
+      return CreateLastingEffectCalcInfo(eff, factor.Value, src.StatKindPercentage.Value, src.TurnLasting);
     }
 
     public virtual LastingEffect AddPercentageLastingEffect(EffectType eff, ILastingEffectSrc src, Tile effectSrc)

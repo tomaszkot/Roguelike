@@ -13,7 +13,7 @@ namespace Roguelike.Spells
   public class PassiveSpell : Spell, ILastingSpell
   {
     protected Tile tile;
-    public int TourLasting { get; set; }
+    public int TurnLasting { get; set; }
     public readonly int BaseFactor = 30;
 
     public EntityStatKind StatKind { get; set; }
@@ -28,7 +28,7 @@ namespace Roguelike.Spells
 
       StatKindPercentage = CalcFactor(CurrentLevel);
       StatKindEffective = caller.CalcEffectiveFactor(StatKind, StatKindPercentage.Value);
-      TourLasting = CalcTourLasting();
+      TurnLasting = CalcTourLasting();
     }
 
     protected virtual PercentageFactor CalcFactor()
@@ -96,7 +96,7 @@ namespace Roguelike.Spells
     {
       var desc = base.CreateSpellStatsDescription(currentMagicLevel);
       if(currentMagicLevel)
-        desc.TourLasting = TourLasting;
+        desc.TourLasting = TurnLasting;
       else
         desc.TourLasting = CalcTourLasting(CurrentLevel+1);
 

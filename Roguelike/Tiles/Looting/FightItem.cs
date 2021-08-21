@@ -34,8 +34,8 @@ namespace Roguelike.Tiles.Looting
     private FightItemKind fightItemKind;
     public FightItemState FightItemState { get; set; }
     public float baseDamage = 5.0f;
+    public int TurnLasting { get; set; }
 
-    
     protected string primaryFactorName = "Damage";
     protected string auxFactorName = "";
     public string HitTargetSound;
@@ -92,23 +92,26 @@ namespace Roguelike.Tiles.Looting
         else if (fightItemKind == FightItemKind.ThrowingKnife)
         {
           PrimaryStatDescription = Name+", very sharp, likely to cause bleeding";
-          baseDamage += 2;
+          baseDamage += 3;
           Price *= 2;
           HitTargetSound = "arrow_hit_body";
         }
         else if (fightItemKind == FightItemKind.ExplosiveCocktail)
         {
+          baseDamage -= 1;
           Price *= 3;
           PrimaryStatDescription = Name + ", explodes hurting the victim and nearby entities with fire";
           HitTargetSound = "SHATTER_Glass1";
+          TurnLasting = 3;
           //baseDamage += 2;
         }
         else if (fightItemKind == FightItemKind.HunterTrap)
         {
           baseDamage += 1;
           Price *= 2;
-          PrimaryStatDescription = Name + ", holds victim and causes bleeding";
+          PrimaryStatDescription = Name + ", clinch victim and causes bleeding";
           HitTargetSound = "trap";
+          TurnLasting = 3;
         }
       }
     }
@@ -246,17 +249,33 @@ namespace Roguelike.Tiles.Looting
 
     public override List<LootStatInfo> GetLootStatInfo(LivingEntity caller)
     {
-      var add = m_lootStatInfo == null || !m_lootStatInfo.Any();
+      Caller = caller;//Damage needs it!
       var res = base.GetLootStatInfo(caller);
+      var add = true;//buggy :  m_lootStatInfo == null || !m_lootStatInfo.Any();
+      res.Clear();
       if (add)
       {
-        if (FightItemKind == FightItemKind.Stone || FightItemKind == FightItemKind.ThrowingKnife)
+        //if (
+        //  //FightItemKind == FightItemKind.Stone || 
+        //  // FightItemKind == FightItemKind.ThrowingKnife ||
+        //  // FightItemKind == FightItemKind.HunterTrap ||
+        //  // FightItemKind == FightItemKind.ex
+        //   )
         {
+          var esk = EntityStatKind.Unset;
+          var lsk = LootStatKind.Weapon;
+          var preffix = "";
+          if (FightItemKind == FightItemKind.ExplosiveCocktail)
+          {
+            esk = EntityStatKind.FireAttack;
+            lsk = LootStatKind.Unset;
+            preffix = "Fire ";
+          }
           var lsi = new LootStatInfo()
           {
-            EntityStatKind = EntityStatKind.Unset,
-            Kind = LootStatKind.Weapon,
-            Desc = "Damage: "+Damage
+            EntityStatKind = esk,
+            Kind = lsk,
+            Desc = preffix +"Damage: " + Damage + " " + FormatTurns(this.TurnLasting) 
           };
 
           res.Add(lsi);

@@ -280,5 +280,14 @@ namespace Roguelike.Tiles
         source = value;
       }
     }
+
+    public static string FormatTurns(int turns)
+    {
+      if (turns > 1)
+        return " (x" + turns + " turns)";
+      return "";
+    }
+
+
   }
 }

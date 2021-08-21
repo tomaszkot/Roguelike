@@ -166,7 +166,7 @@ namespace Roguelike.Abilities
             }
           }
           break;
-
+        
         case AbilityKind.StrikeBack:
           var multsDefSB = new int[] { 0, 2, 4, 7, 10, 15 };
           factor = multsDefSB[level];
@@ -175,7 +175,7 @@ namespace Roguelike.Abilities
           var multsDefSB1 = new int[] { 0, 4, 7, 10, 15, 20 };
           factor = multsDefSB1[level];
           break;
-       
+        
         default:
           break;
       }
@@ -225,6 +225,7 @@ namespace Roguelike.Abilities
         case AbilityKind.BulkAttack:
           desc = "Chance to strike all sourronding enemies in one turn";
           break;
+       
         default:
           break;
       }

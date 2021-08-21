@@ -51,7 +51,7 @@ namespace RoguelikeUnitTests
       var game = CreateGame();
       var scroll = new Scroll(SpellKind.ManaShield);
       var spell = scroll.CreateSpell(game.Hero) as ManaShieldSpell;
-      Assert.AreEqual(spell.TourLasting, 5);
+      Assert.AreEqual(spell.TurnLasting, 5);
     }
 
     //[Test]

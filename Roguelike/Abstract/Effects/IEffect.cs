@@ -8,7 +8,7 @@ namespace Roguelike.Abstract.Effects
   /// </summary>
   public interface ILastingEffectSrc
   {
-    int TourLasting { get; set; }
+    int TurnLasting { get; set; }
     EntityStatKind StatKind { get; set; }
 
     PercentageFactor StatKindPercentage { get; }

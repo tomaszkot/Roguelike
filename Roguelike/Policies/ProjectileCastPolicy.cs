@@ -26,10 +26,10 @@ namespace Roguelike.Policies
 
     public void Apply(LivingEntity caster)
     {
-      Apply(this.Projectile, caster, this.TargetDestroyable, this.ProjectilesFactory);
+      Apply(this.Projectile, caster, this.Target, this.ProjectilesFactory);
     }
 
-    public void Apply(IProjectile projectile, LivingEntity caster, IDestroyable target, IProjectilesFactory projectilesFactory)
+    public void Apply(IProjectile projectile, LivingEntity caster, Tile target, IProjectilesFactory projectilesFactory)
     {
       this.Projectile = projectile;
       this.caster = caster;

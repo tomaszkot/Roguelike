@@ -29,16 +29,16 @@ namespace Roguelike.Tiles
 
     public override bool IsConsumable()
     {
-      return TourLasting > 0;
+      return TurnLasting > 0;
     }
 
     public void SetKind(PlantKind kind)
     {
       Kind = kind;
       if (Kind == PlantKind.Sorrel)
-        TourLasting = 5;
+        TurnLasting = 5;
       else
-        TourLasting = 0;
+        TurnLasting = 0;
       Name = kind.ToString();
 
 

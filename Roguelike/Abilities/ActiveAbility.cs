@@ -66,6 +66,12 @@ namespace Roguelike.Abilities
             //  factor *= 18f;
           }
           break;
+        
+        case AbilityKind.HunterTrapMastering:
+          var multsHunt = new int[] { 0, 10, 20, 30, 40, 50 };
+          factor = multsHunt[level];
+          break;
+
         default:
           break;
       }
@@ -80,6 +86,15 @@ namespace Roguelike.Abilities
       {
         case AbilityKind.ExplosiveMastering:
           desc = "Bonus to Explosive Cocktail damage";
+          break;
+        case AbilityKind.ThrowingStoneMastering:
+          desc = "Bonus to throwing stones";
+          break;
+        case AbilityKind.ThrowingKnifeMastering:
+          desc = "Bonus to throwing knife";
+          break;
+        case AbilityKind.HunterTrapMastering:
+          desc = "Bonus to hunter trap";
           break;
         default:
           break;
@@ -107,18 +122,18 @@ namespace Roguelike.Abilities
           case AbilityKind.ExplosiveMastering:
             //case AbilityKind.ThrowingWeaponsMastering:
             //case AbilityKind.HuntingMastering:
-            PageIndex = 1;
-            abilityLevelToPlayerLevel.Add(1, 0);
-            abilityLevelToPlayerLevel.Add(2, 2);
-            abilityLevelToPlayerLevel.Add(3, 5);
-            abilityLevelToPlayerLevel.Add(4, 7);
-            abilityLevelToPlayerLevel.Add(5, 11);//max level is about 13
+            //PageIndex = 1;
+            //abilityLevelToPlayerLevel.Add(1, 0);
+            //abilityLevelToPlayerLevel.Add(2, 2);
+            //abilityLevelToPlayerLevel.Add(3, 5);
+            //abilityLevelToPlayerLevel.Add(4, 7);
+            //abilityLevelToPlayerLevel.Add(5, 11);//max level is about 13
             //if (kind == AbilityKind.ThrowingWeaponsMastering)
             //{
             //  ask = EntityStatKind.ChanceToCauseBleeding;
             //  Name = "Throwing Mastery";
             //}
-            if (kind == AbilityKind.ExplosiveMastering)
+            //if (kind == AbilityKind.ExplosiveMastering)
             {
               psk = EntityStatKind.ExlosiveCoctailDamage;
               //ask = EntityStatKind.ChanceToBurnNeighbour; TODO 
@@ -132,12 +147,15 @@ namespace Roguelike.Abilities
           case AbilityKind.ThrowingStoneMastering:
             psk = EntityStatKind.ThrowingStoneDamage;
             break;
+          case AbilityKind.HunterTrapMastering:
+            psk = EntityStatKind.HunterTrapExtraDamage;
+            break;
           default:
 
             break;
         }
-        if (PrimaryStat == null)
-          return;
+        //if (PrimaryStat == null)
+        //  return;
         PrimaryStat.SetKind(psk);
         AuxStat.SetKind(ask);
       }
