@@ -113,8 +113,6 @@ namespace Roguelike.Managers
               if (func != null)
                 func(target);
             }
-
-            
           }
         }
       }
