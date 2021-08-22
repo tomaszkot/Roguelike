@@ -154,7 +154,18 @@ namespace Roguelike.Abilities
         case AbilityKind.StaffMastering:
 
           if (primary)
+          {
             factor = level;
+            
+            if (kind == AbilityKind.WandMastering //ChanceToElementalBulkAttack
+              || kind == AbilityKind.ScepterMastering//ChanceToCauseElementalAilment
+              || kind == AbilityKind.StaffMastering//ChanceToRepeatElementalAttack
+              )
+            {
+              var multsDef = new int[] { 0, 4, 7, 10, 15, 20 };
+              factor = multsDef[level];
+            }
+          }
           else
           {
             factor = level * 5;

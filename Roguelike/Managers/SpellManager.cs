@@ -96,6 +96,8 @@ namespace Roguelike.Managers
       return null;
     }
 
+
+    bool applyingBulk = false;
     public bool ApplyAttackPolicy
     (
       LivingEntity caster,//hero, enemy, ally
@@ -106,6 +108,8 @@ namespace Roguelike.Managers
       bool looped = false
     )
     {
+      if(!looped)
+        applyingBulk = false;
       var spell = spellSource.CreateSpell(caster) as IProjectileSpell;
 
       if (!looped && !gm.UtylizeSpellSource(caster, spellSource, spell))
@@ -127,21 +131,15 @@ namespace Roguelike.Managers
           //dest.Destroyed = true;
         }
 
-        var bulkOK = false;
-        if (target is Enemy en && spellSource is WeaponSpellSource)
-          bulkOK = HandleBulk(en, EntityStatKind.ChanceToElementalBulkAttack, (Enemy en1)=> {
-            ApplyAttackPolicy(caster, en1, spellSource, BeforeApply, AfterApply, true);
-          });
-
+        
         if (looped)
           return;
-        if (!bulkOK)
+        if (!applyingBulk)
         {
           var repeatOK = caster.IsStatRandomlyTrue(EntityStatKind.ChanceToRepeatElementalAttack);
           if (repeatOK)
           {
-            ApplyAttackPolicy(caster, target, spellSource, BeforeApply, AfterApply);
-            return;
+            ApplyAttackPolicy(caster, target, spellSource, BeforeApply, AfterApply, true);
           }
         }
 
@@ -153,6 +151,14 @@ namespace Roguelike.Managers
       };
 
       policy.Apply(caster);
+
+      var bulkOK = false;
+      if (target is Enemy en && spellSource is WeaponSpellSource)
+        bulkOK = HandleBulk(en, EntityStatKind.ChanceToElementalBulkAttack, (Enemy en1) => {
+          applyingBulk = true;
+          ApplyAttackPolicy(caster, en1, spellSource, BeforeApply, AfterApply, true);
+        });
+
       return true;
     }
 
