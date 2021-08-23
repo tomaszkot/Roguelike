@@ -264,29 +264,33 @@ namespace RoguelikeUnitTests
     [TestCase(FightItemKind.ExplosiveCocktail)]
     [TestCase(FightItemKind.Stone)]
     [TestCase(FightItemKind.ThrowingKnife)]
-    public void TestBasicExplosiveMastering(FightItemKind kind)
+    public void TestBasicFightItem(FightItemKind kind)
     {
       var game = CreateGame();
-      var champion = ChampionEnemies.First();
-      var chempBeginHealth = champion.Stats.Health;
+      
+      //take one which is active to make sure will have it's turn
+      var enemy =  game.GameManager.EnemiesManager.GetActiveEntities().Cast<Enemy>().Where(i=> i.PowerKind == EnemyPowerKind.Champion).First();
+      enemy.Stats.SetNominal(EntityStatKind.Health, 100);
+      var enemyBeginHealth = enemy.Stats.Health;
       var hero = game.GameManager.Hero;
 
       var fi = new ProjectileFightItem(kind, hero);
       var damage1 = fi.Damage;
       Assert.Greater(damage1, 0);
-      champion.OnHitBy(fi);
-      var chempAfter1HitHealth = champion.Stats.Health;
+      enemy.OnHitBy(fi);
+      var chempAfter1HitHealth = enemy.Stats.Health;
 
-      Assert.Greater(chempBeginHealth, chempAfter1HitHealth);
-      var firstExplCoctailDamage = chempBeginHealth - chempAfter1HitHealth;
+      Assert.Greater(enemyBeginHealth, chempAfter1HitHealth);
+      var firstExplCoctailDamage = enemyBeginHealth - chempAfter1HitHealth;
 
       IncreaseAbility(hero, fi.AbilityKind);
 
       fi = new ProjectileFightItem(kind, hero);
       var damage2 = fi.Damage;
       Assert.Greater(damage2, damage1);
-      champion.OnHitBy(fi);
-      var chempAfter2HitHealth = champion.Stats.Health;
+      enemy.OnHitBy(fi);
+      GotoNextHeroTurn();//effect prolonged - make turn to see effect
+      var chempAfter2HitHealth = enemy.Stats.Health;
       var secExplCoctailDamage = chempAfter1HitHealth - chempAfter2HitHealth;
       Assert.Greater(secExplCoctailDamage, firstExplCoctailDamage);
     }
@@ -654,24 +658,30 @@ namespace RoguelikeUnitTests
     }
 
 
-    [Test]
-    public void BasicWeaponsMasteryTests()//test if mellee damage is increased
+    [TestCase(Roguelike.Abilities.AbilityKind.AxesMastering)]
+    [TestCase(Roguelike.Abilities.AbilityKind.BashingMastering)]
+    [TestCase(Roguelike.Abilities.AbilityKind.DaggersMastering)]
+    [TestCase(Roguelike.Abilities.AbilityKind.SwordsMastering)]
+    [TestCase(Roguelike.Abilities.AbilityKind.StaffMastering)]
+    [TestCase(Roguelike.Abilities.AbilityKind.WandMastering)]
+    [TestCase(Roguelike.Abilities.AbilityKind.ScepterMastering)]
+    public void BasicWeaponsMasteryTests(Roguelike.Abilities.AbilityKind ab)//test if mellee damage is increased
     {
       var game = CreateGame();
-      Dictionary<Roguelike.Abilities.AbilityKind, float> abs = new Dictionary<Roguelike.Abilities.AbilityKind, float>()
-      {
-        { Roguelike.Abilities.AbilityKind.AxesMastering, 0 },
-        { Roguelike.Abilities.AbilityKind.BashingMastering, 0 },
-        { Roguelike.Abilities.AbilityKind.DaggersMastering, 0 },
-        { Roguelike.Abilities.AbilityKind.SwordsMastering, 0 },
-        { Roguelike.Abilities.AbilityKind.StaffMastering, 0 },
-        { Roguelike.Abilities.AbilityKind.WandMastering, 0 },
-        { Roguelike.Abilities.AbilityKind.ScepterMastering, 0 }
-      };
+      //Dictionary<Roguelike.Abilities.AbilityKind, float> abs = new Dictionary<Roguelike.Abilities.AbilityKind, float>()
+      //{
+      //  //{ Roguelike.Abilities.AbilityKind.AxesMastering, 0 },
+      //  //{ Roguelike.Abilities.AbilityKind.BashingMastering, 0 },
+      //  //{ Roguelike.Abilities.AbilityKind.DaggersMastering, 0 },
+      //  //{ Roguelike.Abilities.AbilityKind.SwordsMastering, 0 },
+      //  //{ Roguelike.Abilities.AbilityKind.StaffMastering, 0 },
+      //  //{ Roguelike.Abilities.AbilityKind.WandMastering, 0 },
+      //  //{ Roguelike.Abilities.AbilityKind.ScepterMastering, 0 }
+      //};
      
-      foreach (var abKV in abs)
+      //foreach (var abKV in abs)
       {
-        var val = TestWeaponKindMastering(abKV.Key);
+        var val = TestWeaponKindMastering(ab);
         //absR[abKV.Key] = val;
       }
       //Debug.WriteLine("end");
@@ -709,7 +719,7 @@ namespace RoguelikeUnitTests
 
         abVal = GetFactor(ab, true);
         abValAux = GetFactor(ab, false);
-        Assert.Less(abVal, 9);
+        Assert.Less(abVal, 21);
         Assert.Less(abValAux, 26);
 
         abVal = ab.PrimaryStat.Factor;
@@ -722,6 +732,11 @@ namespace RoguelikeUnitTests
       Assert.Greater(heroAttackWithAbility, heroAttack);
       var damageWithAbility = hitEnemy();
 
+      if (damageWithAbility < damage)
+      {
+        int k = 0;
+        k++;
+      }
       Assert.Greater(damageWithAbility, damage);
       return abVal;
     }
