@@ -104,7 +104,7 @@ namespace Roguelike.Managers
         return lootItems;
       }
 
-      var loot = GameManager.TryGetRandomLootByDiceRoll(lsk, inter.Level);
+      var loot = GameManager.TryGetRandomLootByDiceRoll(lsk, lootSource);
       if (loot != null)
       {
         loot.Source = lootSource;
@@ -155,7 +155,7 @@ namespace Roguelike.Managers
         addConsumableOrOtherReward = true;
       }
       else
-        loot = GameManager.TryGetRandomLootByDiceRoll(LootSourceKind.Enemy, enemy.Level);
+        loot = GameManager.TryGetRandomLootByDiceRoll(LootSourceKind.Enemy, enemy);
 
       if (loot != null)
         GameManager.AddLootReward(loot, enemy, false);

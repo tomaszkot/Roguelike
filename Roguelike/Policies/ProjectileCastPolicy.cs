@@ -10,15 +10,14 @@ namespace Roguelike.Policies
   public class ProjectileCastPolicy : Policy
   {
     LivingEntity caster;
-    //Tile target;
-
+    
     public ProjectileCastPolicy()
     {
       this.Kind = PolicyKind.SpellCast;
     }
 
-    //public IObstacle TargetObstacle { get => target as IObstacle;}
     public IDestroyable TargetDestroyable { get => Target as IDestroyable; }
+    
     public Tile Target { get; set; }
     public IProjectile Projectile { get; set; }
     public LivingEntity Caster { get => caster; set => caster = value; }

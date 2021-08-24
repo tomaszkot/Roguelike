@@ -435,9 +435,9 @@ namespace Roguelike.Managers
       return InteractionResult.Blocked;
     }
 
-    public virtual Loot TryGetRandomLootByDiceRoll(LootSourceKind lsk, int level)
+    public virtual Loot TryGetRandomLootByDiceRoll(LootSourceKind lsk, ILootSource ls)
     {
-      var loot = LootGenerator.TryGetRandomLootByDiceRoll(lsk, level, Hero.GetLootAbility());
+      var loot = LootGenerator.TryGetRandomLootByDiceRoll(lsk, ls.Level, Hero.GetLootAbility());
       //if (loot is Equipment eq)
       //{
       //  EnsureMaterialFromLootSource(eq);

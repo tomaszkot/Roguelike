@@ -775,7 +775,7 @@ namespace RoguelikeUnitTests
           break;
         case Roguelike.Abilities.AbilityKind.WandMastering:
           wpnName = "wand";
-          destStat = EntityStatKind.ChanceToRepeatElementalAttack;
+          destStat = EntityStatKind.ChanceToElementalBulkAttack;
           break;
         default:
           break;

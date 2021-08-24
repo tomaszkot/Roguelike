@@ -46,6 +46,19 @@ namespace Roguelike.Serialization
         //settings.TypeNameAssemblyFormatHandling = TypeNameAssemblyFormatHandling.Full;
         settings.Converters.Add(new Newtonsoft.Json.Converters.StringEnumConverter());
         settings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
+        settings.Error += delegate (object sender, Newtonsoft.Json.Serialization.ErrorEventArgs args)
+        {
+          // only log an error once
+          if (args.CurrentObject == args.ErrorContext.OriginalObject)
+          {
+            this.container.GetInstance<ILogger>().LogError(args.ErrorContext.Error.Message);
+            throw new Exception(args.ErrorContext.Error.Message);
+          }
+        };
+        //JsonSerializer serializer = new JsonSerializer();
+        //serializer.Serialize()
+
+
         var json = JsonConvert.SerializeObject(entity, settings);
         File.WriteAllText(filePath, json);
 

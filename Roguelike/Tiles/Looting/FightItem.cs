@@ -39,6 +39,8 @@ namespace Roguelike.Tiles.Looting
     protected string primaryFactorName = "Damage";
     protected string auxFactorName = "";
     public string HitTargetSound;
+
+    [JsonIgnore]
     public EventHandler<FightItemState> StateChanged { get; set; }
 
     [JsonIgnore]
@@ -298,6 +300,7 @@ namespace Roguelike.Tiles.Looting
       Caller = caller;
     }
 
+    [JsonIgnore]
     public Tile Target { get; set; }
 
     

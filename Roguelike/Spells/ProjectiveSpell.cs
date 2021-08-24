@@ -1,4 +1,5 @@
-﻿using Roguelike.Abstract.Spells;
+﻿using Newtonsoft.Json;
+using Roguelike.Abstract.Spells;
 using Roguelike.Tiles;
 using Roguelike.Tiles.LivingEntities;
 using System;
@@ -13,6 +14,8 @@ namespace Roguelike.Spells
   {
     public const int BaseDamage = 4;
     public bool SourceOfDamage = true;
+
+    [JsonIgnore]
     public Dungeons.Tiles.Tile Target { get; set; }
 
     public ProjectiveSpell(LivingEntity caller, Weapon weapon) : base(caller, weapon)
