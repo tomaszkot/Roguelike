@@ -294,7 +294,7 @@ namespace Roguelike.Tiles.Looting
     public ProjectileFightItem() : this(FightItemKind.Unset, null)
     {
     }
-
+    
     public ProjectileFightItem(FightItemKind kind, LivingEntity caller = null) : base(kind)
     {
       Caller = caller;
@@ -303,6 +303,17 @@ namespace Roguelike.Tiles.Looting
     [JsonIgnore]
     public Tile Target { get; set; }
 
-    
+    public override bool IsCollectable
+    {
+      get 
+      { 
+        if(this.FightItemKind != FightItemKind.HunterTrap)
+          return true;
+
+        return FightItemState == FightItemState.Deactivated ||
+               FightItemState == FightItemState.Unset;
+      }
+    }
+
   }
 }

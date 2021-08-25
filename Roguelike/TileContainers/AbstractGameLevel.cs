@@ -341,7 +341,10 @@ namespace Roguelike.TileContainers
     public List<Tiles.Loot> GetLootTilesNearby(Tile tile)
     {
       List<Tiles.Loot> res = Loot.Values
-        .Where(i => i.Revealed && i.DistanceFrom(tile.point) < 3
+        .Where(
+        i => i.Revealed 
+        && i.DistanceFrom(tile.point) < 3
+        && i.IsCollectable
         ).ToList();
       return res;
     }

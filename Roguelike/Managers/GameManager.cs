@@ -1254,8 +1254,15 @@ namespace Roguelike.Managers
         logger.LogError("gm fi.Count <= 0");
         return false;
       }
-      
+
       caster.RemoveFightItem(fi);
+      var destFi = fi.Clone(1) as ProjectileFightItem;
+
+      return DoApply(caster, target, destFi, BeforeApply, AfterApply);
+    }
+
+    private bool DoApply(LivingEntity caster, Tile target, ProjectileFightItem fi, Action<Policy> BeforeApply, Action<Policy> AfterApply)
+    {
       fi.Caller = caster;
       var policy = Container.GetInstance<ProjectileCastPolicy>();
       policy.Target = target;

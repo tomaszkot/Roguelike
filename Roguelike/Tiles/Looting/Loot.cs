@@ -288,6 +288,10 @@ namespace Roguelike.Tiles
       return "";
     }
 
+    public virtual bool IsCollectable
+    {
+      get { return true; }
+    }
 
   }
 }

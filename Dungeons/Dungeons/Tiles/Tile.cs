@@ -217,6 +217,7 @@ namespace Dungeons.Tiles
     [JsonIgnore]
     public ConsoleColor Color { get => color; set => color = value; }
 
+    //[JsonIgnore]
     public virtual string DisplayedName
     {
       get
