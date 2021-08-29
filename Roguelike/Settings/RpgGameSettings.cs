@@ -12,16 +12,12 @@ namespace Roguelike.Settings
 
     UICharacter, UIHeroInventory, UIAbilities, UIMap, UICrafting, UIQuests, UIAlly
   }
-
-  /// <summary>
-  /// These values shall not be renamed cause old saves will not work anymore!
-  /// </summary>
+    
   public enum GameControllingMode
   {
-    TwoButtons,//deprecated the same as MouseAndKeyboard
     MouseAndKeyboard,
+    TouchTwoButtons,
     TouchNoButtons,
-    TouchTwoButtons
   };
 
   public class SettingsBase
@@ -40,6 +36,7 @@ namespace Roguelike.Settings
     public bool PermanentDeath { get; set; }
     public DateTime LastSaved { get; set; }
     public static bool Demo { get; set; } = true;
+    
     //public GameSession Session = new GameSession();
 
     public override string ToString()
@@ -76,6 +73,7 @@ namespace Roguelike.Settings
     public bool RestoreHeroToSafePointAfterLoad { get; set; } = true;
     public bool RestoreHeroToDungeon { get; set; } = false;////TODO this way loading predefinied levels did not worked in Unity
     public bool RegenerateLevelsOnLoad { get; set; } = true;
+    public bool CollectLootOnEntering { get; set; }
   }
 
   public class Input : SettingsBase
@@ -102,6 +100,7 @@ namespace Roguelike.Settings
     public bool ShowMiniMap { get; set; } = true;
     public bool AnimateHero { get; set; } = true;
     public bool PlaceLootToShortcutBar { get; set; } = true;
+    public bool UseTouchInterface { get; set; }
   }
 
   public class Options : SettingsBase, IPersistable

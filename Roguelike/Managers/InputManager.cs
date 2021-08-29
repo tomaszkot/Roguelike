@@ -4,6 +4,7 @@ using Dungeons.TileContainers;
 using Dungeons.Tiles;
 using Roguelike.Abstract.Tiles;
 using Roguelike.Events;
+using Roguelike.Tiles;
 using Roguelike.Tiles.Interactive;
 using Roguelike.Tiles.LivingEntities;
 using System;
@@ -104,6 +105,16 @@ namespace Roguelike.Managers
         Logger.LogError("tile == null!!!");
         return InteractionResult.None;
       }
+
+      if (tile is Loot loot)
+      {
+        if (gm.GameSettings.Mechanics.CollectLootOnEntering)
+        {
+          gm.CollectLoot(loot, true);
+          return InteractionResult.Handled;
+        }
+      }
+
       bool tileIsDoor = tile is Tiles.Interactive.Door;
       bool tileIsDoorBySumbol = tile.Symbol == Constants.SymbolDoor;
 
