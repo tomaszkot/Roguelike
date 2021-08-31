@@ -36,7 +36,7 @@ namespace Roguelike.Serialization
           if (!set)
             gm.Logger.LogError("failed to reset ally on save " + ally);
         }
-        gm.Persister.SaveAllies(alliesStore);
+        gm.Persister.SaveAllies(gm.Hero.Name, alliesStore);
       }
 
       worldSaver();
@@ -56,7 +56,7 @@ namespace Roguelike.Serialization
       gm.Context.CurrentNode = null;
 
       var hero = gm.Persister.LoadHero(heroName);
-      var allies = gm.Persister.LoadAllies();
+      var allies = gm.Persister.LoadAllies(heroName);
       gm.AlliesManager.SetEntities(allies.Allies);
 
       var gs = gm.Persister.LoadGameState(heroName);

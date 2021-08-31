@@ -11,8 +11,8 @@ namespace Roguelike.Serialization
     Hero LoadHero(string heroName);
     void DeleteGame(string heroName);
 
-    AlliesStore LoadAllies();
-    void SaveAllies(AlliesStore allies);
+    AlliesStore LoadAllies(string heroName);
+    void SaveAllies(string heroName, AlliesStore allies);
 
     void SaveGameState(string heroName, GameState gameState);
     GameState LoadGameState(string heroName);

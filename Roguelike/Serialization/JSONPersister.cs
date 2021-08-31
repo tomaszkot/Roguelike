@@ -177,9 +177,9 @@ namespace Roguelike.Serialization
 
     //protected virtual string GameFolder { get { return GameName; } }
 
-    public void SaveAllies(AlliesStore allies)
+    public void SaveAllies(string hero, AlliesStore allies)
     {
-      var fileName = GetFullFilePath(FileKind.GameLevel, "Allies");
+      var fileName = GetFullFilePath(FileKind.Allies, hero);
       Save<AlliesStore>(allies, fileName);
     }
 
@@ -189,9 +189,9 @@ namespace Roguelike.Serialization
       Save<Hero>(hero, fileName);
     }
 
-    public AlliesStore LoadAllies()
+    public AlliesStore LoadAllies(string hero)
     {
-      var fileName = GetFullFilePath(FileKind.GameLevel, "Allies");
+      var fileName = GetFullFilePath(FileKind.Allies, hero);
       return Load<AlliesStore>(fileName, container);
     }
 
