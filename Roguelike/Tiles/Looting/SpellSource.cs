@@ -125,21 +125,26 @@ namespace Roguelike.Tiles.Looting
       {
         case SpellKind.FireBall:
           desc = "Inflicts fire damage, can be decreased by a related resist";
+          TargetRequired = true;
           break;
         case SpellKind.CrackedStone:
           desc = "Can use to block the path has limited durability";
+          TargetRequired = true;
           break;
         case SpellKind.Skeleton:
           desc = "Creates a skeleton which fights as hero ally";
           break;
         case SpellKind.Trap:
           desc = "Inflicts physical damage blocks victim for a few turns";
+          TargetRequired = true;
           break;
         case SpellKind.IceBall:
           desc = "Inflicts cold damage, can be decreased by a related resist";
+          TargetRequired = true;
           break;
         case SpellKind.PoisonBall:
           desc = "Inflicts poison damage, can be decreased by a related resist";
+          TargetRequired = true;
           break;
         case SpellKind.Transform:
           desc = "Turns hero into a bat invisible for monsters";
@@ -155,39 +160,47 @@ namespace Roguelike.Tiles.Looting
           break;
         case SpellKind.Telekinesis:
           desc = "Allows to interact with entities from a distance";
+          TargetRequired = true;
           break;
         case SpellKind.StonedBall:
           desc = "";
+          TargetRequired = true;
           break;
         case SpellKind.LightingBall:
           desc = "Inflicts lighting damage, can be decreased by a related resist";
+          TargetRequired = true;
           break;
         case SpellKind.Mana:
           desc = "Restores some mana by sacrificing some health";
           break;
         case SpellKind.BushTrap:
           desc = "";
+          TargetRequired = true;
           break;
         case SpellKind.Rage:
           desc = "Increases the Damage statistic of the caster";
           break;
         case SpellKind.Weaken:
           desc = "Reduces the Defense statistic of the victim";
+          TargetRequired = true;
           break;
         case SpellKind.NESWFireBall:
           desc = "Inflicts fire damage at Cardinal Directions";
           break;
         case SpellKind.Teleport:
           desc = "Teleports hero to a chosen point";
+          TargetRequired = true;
           break;
         case SpellKind.IronSkin:
           desc = "Increases the Defense statistic of the caster";
           break;
         case SpellKind.ResistAll:
           desc = "";
+
           break;
         case SpellKind.Inaccuracy:
           desc = "Reduces the Chance to Hit statistic of the victim";
+          TargetRequired = true;
           break;
         //case SpellKind.CallMerchant:
         //  desc = "Teleports a merchant near to the hero";
@@ -197,9 +210,11 @@ namespace Roguelike.Tiles.Looting
         //  break;
         case SpellKind.Identify:
           desc = "Reveals attributes of a magic/unique item";
+          TargetRequired = true;
           break;
         case SpellKind.Portal:
           desc = "Allows to teleport to a known point of the world";
+          TargetRequired = true;
           break;
         default:
           break;
@@ -233,7 +248,13 @@ namespace Roguelike.Tiles.Looting
     {
       return base.GetId() + "_" + Kind;
     }
-        
+
+    public bool TargetRequired
+    {
+      get;
+      set;
+    }
+
     public virtual ISpell CreateSpell(LivingEntity caller)
     {
       switch (this.Kind)

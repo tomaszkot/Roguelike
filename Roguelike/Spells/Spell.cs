@@ -16,10 +16,11 @@ namespace Roguelike.Spells
 {
   public enum SpellKind
   {
-    Unset, FireBall, CrackedStone, Skeleton, Trap, IceBall, PoisonBall, Transform,
-    Frighten, Healing, ManaShield, Telekinesis, StonedBall, LightingBall
+    Unset = 0, FireBall = 1, CrackedStone = 2, Skeleton = 3, Trap = 4, IceBall = 5, PoisonBall = 6, Transform = 7,
+    Frighten = 8, Healing = 9, ManaShield = 10, Telekinesis = 11, StonedBall = 12, LightingBall = 13
         //,MindControl
-        , Mana, BushTrap, Rage, Weaken, NESWFireBall, Teleport, IronSkin, ResistAll, Inaccuracy, /*CallMerchant, CallGod,*/ Identify, Portal
+        , Mana = 14, BushTrap = 15, Rage = 16, Weaken = 17, NESWFireBall = 18, Teleport = 19, IronSkin = 20, ResistAll = 25, 
+    Inaccuracy = 29, /*CallMerchant, CallGod,*/ Identify = 30, Portal = 33
   }
 
   public class Spell : ISpell
