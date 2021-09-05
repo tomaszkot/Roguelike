@@ -468,6 +468,7 @@ namespace Dungeons
         return tiles[point.Y, point.X];
       }
 
+      public bool RestoreBkg { get; set; }
       public bool NullTilesAllowed { get; set; }
 
       public virtual bool SetTile(Tile tile, Point point,
@@ -507,7 +508,7 @@ namespace Dungeons
             if(!tile.IsFromChildIsland())
               tile.DungeonNodeIndex = prev.DungeonNodeIndex;
 
-            if (!tile.tag2.Any())
+            if (RestoreBkg && !tile.tag2.Any())
               tile.tag2 = prev.tag2;
           }
         }
