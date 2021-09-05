@@ -214,6 +214,9 @@ namespace Roguelike.TileContainers
         }
         //Logger.LogInfo("Adding Loot "+ tile + " at "+ point + " Loot.Count:"+ Loot.Count);
         tile.point = point;
+        var baseTile = base.GetTile(point);
+        if (baseTile != null)
+          loot.tag2 = baseTile.tag2;
         Loot[point] = loot;
 
         return true;

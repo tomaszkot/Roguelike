@@ -502,8 +502,14 @@ namespace Dungeons
         {
           //caused ChildIsland to be revealed at once.
           var prev = tiles[point.Y, point.X];
-          if (tile != null && !tile.IsFromChildIsland())
-            tile.DungeonNodeIndex = prev.DungeonNodeIndex;
+          if (tile != null)
+          {
+            if(!tile.IsFromChildIsland())
+              tile.DungeonNodeIndex = prev.DungeonNodeIndex;
+
+            if (!tile.tag2.Any())
+              tile.tag2 = prev.tag2;
+          }
         }
 
         tiles[point.Y, point.X] = tile;
@@ -532,6 +538,7 @@ namespace Dungeons
           }
 
           tile.point = point;
+         
           return true;
           //if (OnTileRevealed != null)
           //  OnTileRevealed(this, new GenericEventArgs<Tile>(tile));
@@ -838,6 +845,7 @@ namespace Dungeons
       public bool Created { get => created; set => created = value; }
       public bool ContentGenerated { get => contentGenerated; set => contentGenerated = value; }
       public bool Secret { get => secret; set => secret = value; }
+      public Dictionary<string, Dictionary<Point, Tile>> SpecialTiles { get => specialTiles; set => specialTiles = value; }
 
       bool AreDoorAllowedToPutOn(Tile tile)
       {
@@ -1076,6 +1084,26 @@ namespace Dungeons
       {
         var tile = new T();
         return SetTileAtRandomPosition(tile, matchNodeIndex) as T;
+      }
+
+      Dictionary<string, Dictionary<Point, Tile>> specialTiles = new Dictionary<string, Dictionary<Point, Tile>>();
+
+      public void AddSpecialTile(string map, Tile tile)
+      {
+        if (!specialTiles.ContainsKey(map))
+          specialTiles[map] = new Dictionary<Point, Tile>();
+
+        specialTiles[map][tile.point] = tile;
+      }
+
+      public Tile GetSpecialAt(string map, Point pt)
+      {
+        if(!specialTiles.ContainsKey(map))
+          return null;
+        if (specialTiles[map].ContainsKey(pt))
+          return specialTiles[map][pt];
+
+        return null;
       }
     }
   }

@@ -18,6 +18,8 @@ namespace Roguelike.Generators.TileContainers
     {
     }
 
+    
+
     public override bool SetTile(Tile tile, Point point, bool resetOldTile = true,
       bool revealReseted = true, bool autoSetTileDungeonIndex = true, bool reportError = true)
     {
