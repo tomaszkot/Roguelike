@@ -50,8 +50,8 @@ namespace Roguelike.Generators
       }
 
       GenerateLoot();
-      GenerateInteractive();
-      GenerateEnemies();
+      //GenerateInteractive();
+      //GenerateEnemies();
       node.ContentGenerated = true;
     }
 
