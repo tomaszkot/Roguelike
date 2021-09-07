@@ -151,17 +151,27 @@ namespace Dungeons
         }
       }
 
+      
       foreach (var side in dungeonNode.Sides.Values)
       {
+        int sideCounter = 0;
         foreach (var si in side)
         {
           if (si == null)
             continue;
           var wall = (si as Wall);
           if (wall != null)
+          {
             wall.IsSide = true;
+            sideCounter++;
+          }
           else
             dungeonNode.Container.GetInstance<ILogger>().LogError("if (wall != null) , si=" + si);
+        }
+
+        if (sideCounter < 3)
+        {
+          dungeonNode.Container.GetInstance<ILogger>().LogError("sideCounter < 3");
         }
       }
     }

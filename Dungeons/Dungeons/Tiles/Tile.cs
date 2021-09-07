@@ -35,7 +35,7 @@ namespace Dungeons.Tiles
     private string displayedName;
 
 #if DEBUG_PROPS
-    public string _tag1;
+    public string _tag1 = "";
     public string tag1
     {
       get { return _tag1; }
@@ -47,8 +47,10 @@ namespace Dungeons.Tiles
         }
       }
     } //custom purpose field
+#else
+   public string tag1 = "";//custom purpose field
 #endif
-    public string tag1 = "";//custom purpose field
+
     public string tag2 = "";//custom purpose field
     public ConsoleColor color = ConsoleColor.White;
 
@@ -62,10 +64,49 @@ namespace Dungeons.Tiles
     /// </summary>
     public TileCorner? corner;
 
+#if DEBUG_PROPS
+  bool revealed;
+  public bool Revealed 
+  { 
+    get
+    {
+        return revealed;
+    }
+    set
+    {
+      if (this.DungeonNodeIndex == DungeonNode.ChildIslandNodeIndex)
+      {
+          if (this is Wall)
+          {
+            int k = 0;
+            k++;  
+          }
+          if (this is IDoor)
+          {
+            int k = 0;
+            k++;
+          }
+        }
+      if(value == true)
+      {
+        int k = 0;
+        k++;
+        if (this is IDoor)
+        {
+          int kk = 0;
+          kk++;
+        }
+      }
+      revealed  = value;
+    } 
+  }
+#else
     /// <summary>
     /// If false the tile is not visible. The revealed flag shall be typically set to true when a door leading to room are opened.
     /// </summary>
     public bool Revealed = GenerationInfo.DefaultRevealedValue;
+#endif
+
 
     [JsonIgnore]
     public string DestroySound { get; set; }
@@ -103,10 +144,9 @@ namespace Dungeons.Tiles
       get { return DungeonNodeIndex; }
       set { DungeonNodeIndex = value; }
     }
-
-    public int DungeonNodeIndex = DungeonNode.DefaultNodeIndex;
-
+        
 #if DEBUG_PROPS
+    int dungeonNodeIndex = DungeonNode.DefaultNodeIndex;
     [JsonIgnore]
     public int DungeonNodeIndex
     {
@@ -132,28 +172,8 @@ namespace Dungeons.Tiles
         dungeonNodeIndex = value;
       }
     }
-#endif
-    
-#if DEBUG_PROPS
-    public bool Revealed
-    {
-      get { return revealed; }
-      set
-      {
-        if (revealed != value)
-        {
-          if (value)
-          {
-            //if (this.GetType().Name.Contains("Enemy"))
-            //{
-            //  int k = 0;
-            //  k++;
-            //}
-          }
-          revealed = value;
-        }
-      }
-    }
+#else
+    public int DungeonNodeIndex = DungeonNode.DefaultNodeIndex;
 #endif
 
     [JsonIgnore]

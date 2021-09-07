@@ -49,9 +49,13 @@ namespace Roguelike.Generators
         return;
       }
 
-      GenerateLoot();
-      //GenerateInteractive();
-      //GenerateEnemies();
+      int repeat = CalcNumberOfDynamicOnes(1);
+      for (int i = 0; i < repeat; i++)
+      {
+        GenerateLoot();
+        GenerateInteractive();
+        //GenerateEnemies();
+      }
       node.ContentGenerated = true;
     }
 
@@ -64,32 +68,56 @@ namespace Roguelike.Generators
       return enemy;
     }
 
+    int CalcNumberOfDynamicOnes(int startNum)
+    {
+      float mult = (float)this.node.Width/ (float)Dungeons.GenerationInfo.MaxRoomSideSize;
+      if (mult < 1)
+        mult = 1;
+
+      var fac = (int)System.Math.Ceiling(mult);
+      int num = startNum * fac;
+      return num;
+    }
+
     protected virtual void GenerateInteractive()
     {
       if (this.gi != null && !gi.GenerateInteractiveTiles)
         return;
 
-      int barrelsNumber = RandHelper.GetRandomInt(gi.MaxBarrelsPerRoom);
+      int barrelsNumber = RandHelper.GetRandomInt(gi.MaxBarrelsPerRoom) + 1;
+      int chestsNumber = 1;
+      
       if (node.IsChildIsland)
       {
         barrelsNumber = 2;
-        AddPlainChestAtRandomLoc();
-        node.SetTileAtRandomPosition<Barrel>(levelIndex);
+        chestsNumber = 1;
+        //AddPlainChestAtRandomLoc();
+        //node.SetTileAtRandomPosition<Barrel>(levelIndex);
       }
-      barrelsNumber++;//at least one
+
       if (RandHelper.GetRandomDouble() < 0.5)
+      {
         barrelsNumber++;
+      }
+      if (RandHelper.GetRandomDouble() < 0.5)
+      { 
+        chestsNumber++;
+      }
 
       if (node.Width > 15 || node.Height > 15)
       {
         barrelsNumber += 2;
         if (!node.IsChildIsland)
-          AddPlainChestAtRandomLoc();
+          chestsNumber++;
       }
       for (int i = 0; i < barrelsNumber; i++)
       {
         var barrel = node.SetTileAtRandomPosition<Barrel>(levelIndex);
         SetBarrelKind(barrel);
+      }
+      for (int i = 0; i < chestsNumber; i++)
+      {
+        AddPlainChestAtRandomLoc();
       }
 
       node.GetTiles<Barrel>().ForEach(i => SetILootSourceLevel(i));
@@ -124,6 +152,7 @@ namespace Roguelike.Generators
 
     protected virtual void GenerateLoot()
     {
+      
       if (this.gi != null && !gi.GenerateLoot)
         return;
 
