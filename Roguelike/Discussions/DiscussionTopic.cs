@@ -1,4 +1,5 @@
 ﻿using Roguelike.Extensions;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Xml.Serialization;
@@ -133,6 +134,8 @@ namespace Roguelike.Discussions
 
     public void InsertTopic(DiscussionTopic subItem, bool atBegining = true)
     {
+      if (subItem == this)
+        throw new Exception("subItem == this!"+this);
       subItem.parent = this;
       if (!subItem.HasBack())
       {

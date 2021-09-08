@@ -54,7 +54,7 @@ namespace Roguelike.Generators
       {
         GenerateLoot();
         GenerateInteractive();
-        //GenerateEnemies();
+        GenerateEnemies();
       }
       node.ContentGenerated = true;
     }
@@ -91,8 +91,6 @@ namespace Roguelike.Generators
       {
         barrelsNumber = 2;
         chestsNumber = 1;
-        //AddPlainChestAtRandomLoc();
-        //node.SetTileAtRandomPosition<Barrel>(levelIndex);
       }
 
       if (RandHelper.GetRandomDouble() < 0.5)
