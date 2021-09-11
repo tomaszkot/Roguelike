@@ -281,11 +281,6 @@ namespace Roguelike.Generators
       //logger.LogInfo("room totsl enemies: " + node.GetTiles<Enemy>().Count);
     }
 
-    //protected void CreateEnemiesPack(string enemyName)
-    //{
-    //  CreateEnemiesPack(-1, enemyName);
-    //}
-
     protected void CreateEnemiesPack(int packIndex, string enemyName, bool addBoss = false)
     {
       var packEnemies = CreateEnemiesPack(enemyName);
