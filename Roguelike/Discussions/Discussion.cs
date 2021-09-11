@@ -29,8 +29,7 @@ namespace Roguelike.Discussions
     {
       item.AddTopic(KnownSentenceKind.LetsTrade);
       if (allowBuyHound)
-        item.AddTopic(KnownSentenceKind.SellHound, " (" + Merchant.HoundPrice + " gold)");
-      //item.AddTopic("Sell me a hound (" + Merchant.HoundPrice + " gold)", KnownSentenceKind.SellHound);
+        item.AddTopic(KnownSentenceKind.SellHound, " (" + Merchant.HoundPrice + " gold)", "I'm afraid you can not afford it.");
     }
 
     public void SetMainItem(DiscussionTopic topic) 

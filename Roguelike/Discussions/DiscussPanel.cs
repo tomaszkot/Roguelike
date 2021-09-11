@@ -87,7 +87,7 @@ namespace Roguelike.Discussions
       boundTopics.Clear();
       foreach (var topic in parentTopic.Topics)
       {
-        boundTopics.Add(new GenericListItemModel<DiscussionTopic>(topic, topic.Right.Id, topic.Right.Body));
+        boundTopics.Add(new GenericListItemModel<DiscussionTopic>(topic, topic.Right.Id, topic.Right.Body+ topic.RightSuffix));
       }
 
       return boundTopics;

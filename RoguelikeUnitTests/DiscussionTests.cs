@@ -2,13 +2,13 @@
 
 namespace RoguelikeUnitTests
 {
-  [TestFixture]
-  class DiscussionTests : TestBase
-  {
-    [Test]
-    public void TestCustomInteriorGen()
-    {
-      //var game = CreateGame();
-    }
-  }
+  //[TestFixture]
+  //class DiscussionTests : TestBase
+  //{
+  //  //[Test]
+  //  //public void TestCustomInteriorGen()
+  //  //{
+  //  //  //var game = CreateGame();
+  //  //}
+  //}
 }
