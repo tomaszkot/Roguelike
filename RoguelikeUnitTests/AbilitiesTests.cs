@@ -269,7 +269,7 @@ namespace RoguelikeUnitTests
       var game = CreateGame();
       
       //take one which is active to make sure will have it's turn
-      var enemy =  game.GameManager.EnemiesManager.GetActiveEntities().Cast<Enemy>().Where(i=> i.PowerKind == EnemyPowerKind.Champion).First();
+      var enemy = ChampionEnemies.Where(i=> i.PowerKind == EnemyPowerKind.Champion).First();
       enemy.Stats.SetNominal(EntityStatKind.Health, 100);
       var enemyBeginHealth = enemy.Stats.Health;
       var hero = game.GameManager.Hero;
@@ -372,14 +372,7 @@ namespace RoguelikeUnitTests
       //////AssertGreater( diffSpell1, diffExpl2 * 2);
       ////AssertLess(diffSpell1, diffExpl2 * 3);
     }
-
-    //private void HitEnemyWithSpell(Scroll scroll, LivingEntity en)
-    //{
-    //  Hero.ScrollsPanel.Add(scroll);
-    //  Hero.ActiveScroll = scroll;
-    //  var spell = Hero.CreateActiveSpell<FireBallSpell>();
-    //  en.OnHitBy(spell);
-    //}
+        
 
     [Test]
     public void BasicManaAndHealthTests()
@@ -390,12 +383,7 @@ namespace RoguelikeUnitTests
       //TestRestoreFactorChange(true);
       TestRestoreFactorChange(false);
     }
-
-    List<Enemy> GetPlainEnemies()
-    {
-      return AllEnemies.Where(i => i.PowerKind == EnemyPowerKind.Plain).ToList();
-    }
-
+        
     private void TestRestoreFactorChange(bool forMana)
     {
       var Hero = game.Hero;
@@ -412,7 +400,7 @@ namespace RoguelikeUnitTests
       }
       if (forMana)
       {
-        var en = GetPlainEnemies().First();
+        var en = PlainEnemies.First();
         var mana = Hero.Stats.Mana;
         var fireBallScroll = new Scroll(Roguelike.Spells.SpellKind.FireBall);
         UseScroll(Hero, fireBallScroll);
@@ -430,7 +418,7 @@ namespace RoguelikeUnitTests
       }
       else
       {
-        var en = GetPlainEnemies().First();
+        var en = PlainEnemies.First();
         var health = Hero.Stats.Health;
         while (Hero.OnMelleeHitBy(en) == 0)
           ;
@@ -474,7 +462,7 @@ namespace RoguelikeUnitTests
     //{
     //  var abVal = 0.0f;
     //  var abValAux = 0.0f;
-    //  var en = GetPlainEnemies().First();
+    //  var en = PlainEnemies.First();
     //  float health = Hero.Character.Health;
     //  float mana = Hero.Character.Mana;
     //  float health1 = 0;
@@ -530,7 +518,7 @@ namespace RoguelikeUnitTests
       var game = CreateGame();
       game.Hero.Stats.SetNominal(EntityStatKind.ChanceToHit, 100);
 
-      var en = GetPlainEnemies().First();
+      var en = PlainEnemies.First();
       en.Stats.SetNominal(EntityStatKind.Health, 300);
       var enHealthBase = en.Stats.Health;
       en.OnMelleeHitBy(game.Hero);
@@ -565,10 +553,10 @@ namespace RoguelikeUnitTests
       var weapon = game.Hero.GetActiveWeapon();
       Assert.AreEqual(weapon.SpellSource.Kind, SpellKind.FireBall);
 
-      Assert.Greater(GetPlainEnemies().Count, 5);
+      Assert.Greater(PlainEnemies.Count, 5);
       Assert.AreEqual(game.Hero.Stats.GetCurrentValue(EntityStatKind.ChanceToCauseElementalAilment), 0);
       game.Hero.Stats.SetNominal(EntityStatKind.ChanceToCauseElementalAilment, 100);
-      foreach (var en in GetPlainEnemies())
+      foreach (var en in PlainEnemies)
       {
         var spell = weapon.SpellSource.CreateSpell(game.Hero);
         Assert.True(game.GameManager.SpellManager.ApplyAttackPolicy(game.Hero, en, weapon.SpellSource));
@@ -626,7 +614,7 @@ namespace RoguelikeUnitTests
       var destExtraStat = SetWeapon(AbilityKind.ScepterMastering, game.Hero, out originalStatValue);
       var weapon = game.Hero.GetActiveWeapon();
 
-      var en = GetPlainEnemies().First();
+      var en = PlainEnemies.First();
       en.Stats.SetNominal(EntityStatKind.Health, 300);
       var enHealthBase = en.Stats.Health;
 
@@ -695,7 +683,7 @@ namespace RoguelikeUnitTests
 
       float statValue;
       var destStat = SetWeapon(kind, Hero, out statValue);
-      var en = GetPlainEnemies().First();
+      var en = PlainEnemies.First();
       en.Stats.SetNominal(EntityStatKind.Health, 100);
 
       Func<float> hitEnemy = () =>

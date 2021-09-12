@@ -6,6 +6,7 @@ using Roguelike.Tiles;
 using Roguelike.Tiles.Interactive;
 using Roguelike.Tiles.LivingEntities;
 using SimpleInjector;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 
@@ -212,10 +213,17 @@ namespace RoguelikeUnitTests
       return level;
     }
 
+    void Log(string log)
+    {
+      Debug.WriteLine(log);
+    }
+
     [Test]
+    [Repeat(5)]
     public void TestLootRevealFlagBasic()
     {
-      var info = new Roguelike.Generators.GenerationInfo();
+      Log("TestLootRevealFlagBasic start");
+       var info = new Roguelike.Generators.GenerationInfo();
       info.NumberOfRooms = 1;
       info.MinNodeSize = new Size(15, 15);
       info.MaxNodeSize = new Size(30, 30);
@@ -227,18 +235,24 @@ namespace RoguelikeUnitTests
       Assert.GreaterOrEqual(level.Width, info.MinNodeSize.Width);
       Assert.GreaterOrEqual(level.Height, info.MinNodeSize.Height);
       Assert.AreEqual(level.Nodes.Count, 1);
-      Assert.AreEqual(level.Nodes[0].ChildIslands.Count, 1);
+      var normalRoom = level.Nodes[0];
+      Assert.AreEqual(normalRoom.ChildIslands.Count, 1);
 
-      Assert.True(level.Nodes[0].Revealed);
-      var island = level.Nodes[0].ChildIslands[0];
+      Assert.True(normalRoom.Revealed);
+      var island = normalRoom.ChildIslands[0];
       Assert.False(island.Revealed);
       Assert.Greater(level.GetTiles().Where(i => i.DungeonNodeIndex == island.NodeIndex).Count(), 0);
 
       var en = level.GetTiles().Where(i => i is Enemy).ToList();
+      //var enNormal = normalRoom.GetTiles<Enemy>();
+      //var enIsland = normalRoom.GetTiles<Enemy>();
+      //Assert.AreEqual(en.Count, enNormal.Count + enIsland.Count);
 
-      var normalRoomEnemiesCount = en.Where(i => i.DungeonNodeIndex == level.Nodes[0].NodeIndex).Count();
-      var islandRoomEnemiesCount = en.Where(i => i.DungeonNodeIndex == island.NodeIndex).Count();
-      Assert.True(normalRoomEnemiesCount > 0 && islandRoomEnemiesCount > 0);
+      var normalRoomEnemies = en.Where(i => i.DungeonNodeIndex == normalRoom.NodeIndex).ToList();
+      var islandRoomEnemies = en.Where(i => i.DungeonNodeIndex == island.NodeIndex).ToList();
+      Assert.AreEqual(en.Count, normalRoomEnemies.Count + islandRoomEnemies.Count);
+      Assert.True(normalRoomEnemies.Count > 0 && islandRoomEnemies.Count > 0);
+      Log("TestLootRevealFlagBasic end");
     }
 
     [Test]

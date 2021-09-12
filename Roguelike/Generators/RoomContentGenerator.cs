@@ -6,6 +6,7 @@ using Roguelike.Tiles.LivingEntities;
 using Roguelike.Tiles.Looting;
 using SimpleInjector;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 
@@ -281,8 +282,14 @@ namespace Roguelike.Generators
       //logger.LogInfo("room totsl enemies: " + node.GetTiles<Enemy>().Count);
     }
 
+    void Log(string log)
+    {
+      Debug.WriteLine(log);
+    }
+
     protected void CreateEnemiesPack(int packIndex, string enemyName, bool addBoss = false)
     {
+      Log("CreateEnemiesPack packIndex: " + packIndex + ", ChildIsland: " + gi.ChildIsland + ", NodeIndex:  " + node.NodeIndex);
       var packEnemies = CreateEnemiesPack(enemyName);
 
       if (packEnemies.Any() && ShallGenerateChampion(enemyName, packIndex))
@@ -307,6 +314,14 @@ namespace Roguelike.Generators
       //SetPowerFromLevel(packEnemies);
 
       PlaceEnemiesPack(packEnemies);
+      foreach (var en in packEnemies)
+      {
+        Log("enemy: "+en);
+        if (en.DungeonNodeIndex != node.NodeIndex)
+        {
+          Log("en.DungeonNodeIndex != node.NodeIndex!");
+        }
+      }
     }
 
     void SetILootSourceLevel(ILootSource src)
@@ -336,7 +351,7 @@ namespace Roguelike.Generators
 
       if (placeEnemiesPackClosely)
       {
-        var emptyCells = node.GetEmptyTiles();
+        var emptyCells = node.GetEmptyTiles().Where(i=>i.DungeonNodeIndex == node.NodeIndex).ToList();
         Point? enemyPoint = null;
         if (node.NodeIndex == 0 && levelIndex == 0)
         {
