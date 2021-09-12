@@ -100,7 +100,12 @@ namespace Roguelike.Settings
     public bool ShowMiniMap { get; set; } = true;
     public bool AnimateHero { get; set; } = true;
     public bool PlaceLootToShortcutBar { get; set; } = true;
-    public bool UseTouchInterface { get; set; }
+    bool useTouchInterface;
+    public bool UseTouchInterface 
+    {
+      get { return useTouchInterface; }
+      set { useTouchInterface = value; }
+    }
   }
 
   public class Options : SettingsBase, IPersistable

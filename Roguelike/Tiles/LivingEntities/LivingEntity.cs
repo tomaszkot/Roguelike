@@ -559,6 +559,7 @@ namespace Roguelike.Tiles.LivingEntities
             //AppendNonPhysicalDamage(EntityStatKind.FireAttack, fi.Damage, ref inflicted, ref damageDesc);
             var npd = CalculateNonPhysicalDamage(EntityStatKind.FireAttack, fi.Damage);
             lastingEffectsSet.EnsureEffect(EffectType.Firing, npd, attacker, fi.TurnLasting);
+            PlaySound(sound);//TODO
             return true;
           }
           else if (fi.FightItemKind == FightItemKind.ThrowingKnife)
