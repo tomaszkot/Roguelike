@@ -28,12 +28,20 @@ namespace Roguelike.Tiles.Interactive
         switch (kind)
         {
           case StairsKind.PitDown:
+            Symbol = '<';
+            tag1 = "pit_down_big";
+            break;
           case StairsKind.LevelDown:
             Symbol = '<';
+            tag1 = "level_down";
             break;
           case StairsKind.PitUp:
+            Symbol = '>';
+            tag1 = "level_up";
+            break;
           case StairsKind.LevelUp:
             Symbol = '>';
+            tag1 = "level_up";
             break;
 
           default:

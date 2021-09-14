@@ -19,14 +19,14 @@ namespace RoguelikeUnitTests.Helpers
     {
     }
 
-    public List<LootKind> AssertLootKindFromEnemies(LootKind[] expectedKinds)
+    public List<LootKind> AssertLootKindFromEnemies(LootKind[] expectedKinds, bool lootKindMustMach = true)
     {
-      var res = AssertLootFromEnemies(expectedKinds);
+      var res = AssertLootFromEnemies(expectedKinds, lootKindMustMach);
 
       return res.Select(i => i.LootKind).ToList();
     }
 
-    public List<Loot> AssertLootFromEnemies(LootKind[] expectedKinds)
+    public List<Loot> AssertLootFromEnemies(LootKind[] expectedKinds, bool lootKindMustMach = true)
     {
       var res = new List<Loot>();
       var enemies = game.GameManager.EnemiesManager.AllEntities;
@@ -36,23 +36,23 @@ namespace RoguelikeUnitTests.Helpers
 
       var lootItems = li.GetDiff();
       int expectedKindsCounter = 0;
+      
+      foreach (var loot in lootItems)
       {
-        foreach (var loot in lootItems)
+        var exp = expectedKinds.Contains(loot.LootKind);
+        //Assert.True(exp || loot is Equipment);//Bosses and Chemp throws Equipment -> fixed by ForEach(i => i.PowerKind = EnemyPowerKind.Plain)
+        if (exp)
         {
-          var exp = expectedKinds.Contains(loot.LootKind);
-          //Assert.True(exp || loot is Equipment);//Bosses and Chemp throws Equipment -> fixed by ForEach(i => i.PowerKind = EnemyPowerKind.Plain)
-          if (exp)
-          {
-            expectedKindsCounter++;
-            res.Add(loot);
-          }
-          else
-          {
-            Assert.True((loot.Source as Enemy).PowerKind != EnemyPowerKind.Plain);
-          }
-          Assert.True(!string.IsNullOrEmpty(loot.tag1));
+          expectedKindsCounter++;
+          res.Add(loot);
         }
+        else if(lootKindMustMach)
+        {
+          Assert.True((loot.Source as Enemy).PowerKind != EnemyPowerKind.Plain);
+        }
+        Assert.True(!string.IsNullOrEmpty(loot.tag1));
       }
+      
       Assert.Greater(expectedKindsCounter, 0);
 
       return res;

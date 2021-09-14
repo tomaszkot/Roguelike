@@ -284,7 +284,7 @@ namespace Roguelike.Generators
 
     void Log(string log)
     {
-      Debug.WriteLine(log);
+      //Debug.WriteLine(log);
     }
 
     protected void CreateEnemiesPack(int packIndex, string enemyName, bool addBoss = false)

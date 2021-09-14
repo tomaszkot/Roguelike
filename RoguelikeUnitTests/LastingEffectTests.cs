@@ -104,7 +104,7 @@ namespace RoguelikeUnitTests
       Assert.AreEqual(desc, expectedDesc);
 
       CheckActionDesc(EffectType.IronSkin, EntityStatKind.Defense, '+', game.Hero);
-      CheckActionDesc(EffectType.Rage, EntityStatKind.Attack, '+', game.Hero);
+      //CheckActionDesc(EffectType.Rage, EntityStatKind.Attack, '+', game.Hero);
       CheckActionDesc(EffectType.Inaccuracy, EntityStatKind.ChanceToHit, '-', game.Hero);
       CheckActionDesc(EffectType.Weaken, EntityStatKind.Defense, '-', game.Hero);
       CheckActionDesc(EffectType.ResistAll, EntityStatKind.Unset, '+', game.Hero);
@@ -124,7 +124,7 @@ namespace RoguelikeUnitTests
       Assert.AreEqual(desc, expectedDesc);
 
       CheckDesc(EffectType.IronSkin, EntityStatKind.Defense, '+');
-      CheckDesc(EffectType.Rage, EntityStatKind.Attack, '+');
+      //CheckDesc(EffectType.Rage, EntityStatKind.Attack, '+');
       CheckDesc(EffectType.Inaccuracy, EntityStatKind.ChanceToHit, '-');
       CheckDesc(EffectType.Weaken, EntityStatKind.Defense, '-');
       CheckDesc(EffectType.ResistAll, EntityStatKind.Unset, '+');

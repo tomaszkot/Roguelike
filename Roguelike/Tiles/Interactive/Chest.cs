@@ -32,6 +32,20 @@ namespace Roguelike.Tiles.Interactive
     public string KeyName { get; set; }//key for unlocking
     public string UnhidingMapName { get; set; }
 
+    /// <summary>
+    /// ctor!
+    /// </summary>
+    public Chest() : base(ChestSymbol)
+    {
+      tag1 = "chest_plain1";
+      Symbol = ChestSymbol;
+      Name = "Chest";
+
+      Kind = InteractiveTileKind.TreasureChest;
+
+      InteractSound = "chest_open";
+    }
+
     public ChestVisualKind ChestVisualKind
     {
       get => chestVisualKind;
@@ -88,15 +102,7 @@ namespace Roguelike.Tiles.Interactive
       return true;
     }
 
-    public Chest() : base(ChestSymbol)
-    {
-      Symbol = ChestSymbol;
-      Name = "Chest";
-
-      Kind = InteractiveTileKind.TreasureChest;
-
-      InteractSound = "chest_open";
-    }
+    
 
     public bool Open(string keyName = "")
     {

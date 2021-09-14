@@ -15,18 +15,24 @@ namespace Roguelike.Effects
 {
   public enum EffectType
   {
-    Unset,
+    Unset = 0,
 
     //these are applied each turn:
-    Bleeding, Poisoned, Frozen, Firing, ConsumedRawFood, ConsumedRoastedFood, BushTrap,
+    Bleeding = 5, Poisoned = 10, Frozen = 15, Firing = 20, ConsumedRawFood = 25, ConsumedRoastedFood = 30, BushTrap = 35,
 
     //these are applied at start of effect, then removed at the end:
-    Transform,
-    TornApart,
-    Frighten,
-    Stunned,
-    ManaShield, Rage, Weaken, IronSkin, ResistAll, Inaccuracy, Hooch,
-    Ally
+    Transform = 40,
+    TornApart = 45,
+    Frighten = 50,
+    Stunned = 55,
+    ManaShield = 60, 
+    //Rage = 65,
+    Weaken = 70, 
+    IronSkin = 80, 
+    ResistAll = 85, 
+    Inaccuracy = 90, 
+    Hooch = 95,
+    Ally = 100
   }
 
   public interface ILastingEffectOwner

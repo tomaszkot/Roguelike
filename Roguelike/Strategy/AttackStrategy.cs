@@ -226,11 +226,11 @@ namespace Roguelike
       bool HasSpecialEffectOn(Enemy enemy, out int specialEffCounter)
       {
         specialEffCounter = 0;
-        var rage = enemy.LastingEffects.Any(i => i.Type == EffectType.Rage);
+        //var rage = enemy.LastingEffects.Any(i => i.Type == EffectType.Rage);
         var ironSkin = enemy.LastingEffects.Any(i => i.Type == EffectType.IronSkin);
         var resistAll = enemy.LastingEffects.Any(i => i.Type == EffectType.ResistAll);
-        if (rage)
-          specialEffCounter++;
+        //if (rage)
+        //  specialEffCounter++;
         if (ironSkin)
           specialEffCounter++;
         if (resistAll)

@@ -386,7 +386,7 @@ namespace Roguelike.Effects
       var calcEffectValue = CalcLastingEffectInfo(eff, src);
 
       var origin = EffectOrigin.Unset;
-      if (eff == EffectType.Rage || eff == EffectType.IronSkin || eff == EffectType.Hooch)
+      if (eff == EffectType.IronSkin || eff == EffectType.Hooch)
       {
         origin = EffectOrigin.SelfCasted;
       }

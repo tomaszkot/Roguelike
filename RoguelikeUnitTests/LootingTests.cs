@@ -197,6 +197,14 @@ namespace RoguelikeUnitTests
     }
 
     [Test]
+    public void KilledEnemyForEquipmentFromTimeToTime()
+    {
+      var env = CreateTestEnv(numEnemies: 25);
+      var eqs = env.AssertLootFromEnemies(new[] { LootKind.Equipment }, false);
+      Assert.Greater(eqs.Count, 0);
+    }
+
+    [Test]
     public void KilledEnemyForPotion()
     {
       var env = CreateTestEnv(numEnemies: 25);
@@ -453,6 +461,10 @@ namespace RoguelikeUnitTests
       var mushes = lootInfo.Get<Mushroom>();
       Assert.Greater(mushes.Count, 1);
       Assert.Less(mushes.Count, 20);
+
+      var eqs = lootInfo.Get<Equipment>();
+      Assert.Greater(eqs.Count, 1);
+      Assert.Less(eqs.Count, 20);
 
       //scrolls
       var scrolls = lootInfo.Get<Scroll>();

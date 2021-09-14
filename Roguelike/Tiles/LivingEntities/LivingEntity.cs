@@ -121,7 +121,7 @@ namespace Roguelike.Tiles.LivingEntities
     public bool IsWounded { get; protected set; }
     protected Dictionary<EffectType, int> effectsToUse = new Dictionary<EffectType, int>();
     public static readonly EffectType[] PossibleEffectsToUse = new EffectType[] {
-    EffectType.Weaken, EffectType.Rage, EffectType.IronSkin, EffectType.ResistAll, EffectType.Inaccuracy
+    EffectType.Weaken, EffectType.IronSkin, EffectType.ResistAll, EffectType.Inaccuracy
     };
 
     static LivingEntity()
@@ -172,7 +172,7 @@ namespace Roguelike.Tiles.LivingEntities
       //  Stats.SetNominal(res, 10);
 
       effectsToUse[EffectType.Weaken] = GenerationInfo.DefaultEnemyWeakenUsageCount;
-      effectsToUse[EffectType.Rage] = GenerationInfo.DefaultEnemyRageUsageCount;
+      //effectsToUse[EffectType.Rage] = GenerationInfo.DefaultEnemyRageUsageCount;
       effectsToUse[EffectType.IronSkin] = GenerationInfo.DefaultEnemyIronSkinUsageCount;
       effectsToUse[EffectType.ResistAll] = GenerationInfo.DefaultEnemyResistAllUsageCount;
       effectsToUse[EffectType.Inaccuracy] = GenerationInfo.DefaultEnemyResistAllUsageCount;

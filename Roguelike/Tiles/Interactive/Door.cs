@@ -8,6 +8,17 @@ namespace Roguelike.Tiles.Interactive
 {
   public class Door : InteractiveTile, Dungeons.Tiles.IDoor
   {
+    public Door(Point point) : base(Dungeons.Tiles.Constants.SymbolDoor)
+    {
+      base.point = point;
+      Color = ConsoleColor.Yellow;
+    }
+
+    public Door() : this(GenerationConstraints.InvalidPoint)
+    {
+      tag1 = "doors_closed";
+    }
+
     public string KeyName { get; set; } = "";
 
     public bool Opened
@@ -41,18 +52,7 @@ namespace Roguelike.Tiles.Interactive
         Color = ConsoleColor.Red;
       }
     }
-
-    public Door(Point point) : base(Dungeons.Tiles.Constants.SymbolDoor)
-    {
-      base.point = point;
-      Color = ConsoleColor.Yellow;
-    }
-
-    public Door() : this(GenerationConstraints.InvalidPoint)
-    {
-
-    }
-
+        
     public bool IsBigGate() 
     {
       return tag1.Contains("gate");
