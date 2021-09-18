@@ -10,6 +10,7 @@ namespace Roguelike.Tiles.Interactive
 {
   public class DeadBody : InteractiveTile, ILootSource
   {
+    
     public DeadBody(Point point) : base('~')
     {
       Name = "Dead body";
@@ -19,10 +20,10 @@ namespace Roguelike.Tiles.Interactive
 
     public DeadBody() : this(new Point().Invalid())
     {
-      
+
     }
 
-    public bool IsLooted { get; set; }
+    
     public string OriginMap { get; set; }
 
     public bool SetLevel(int level, Difficulty? diff = null)

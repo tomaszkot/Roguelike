@@ -22,11 +22,11 @@ namespace Roguelike.Tiles.Interactive
   {
     public const char ChestSymbol = '~';
     private ChestKind chestKind = ChestKind.Plain;
-    private bool closed = true;
+    
     private ChestVisualKind chestVisualKind = ChestVisualKind.Chest;
 
     public string OriginMap { get; set; }
-    public event EventHandler Opened;
+    
     public event EventHandler RequiredKey;
     public bool Locked { get; set; } = false;
     public string KeyName { get; set; }//key for unlocking
@@ -89,10 +89,10 @@ namespace Roguelike.Tiles.Interactive
 
     public bool Closed
     {
-      get => closed;
+      get => !IsLooted;
       set
       {
-        closed = value;
+        IsLooted = value;
         SetColor();
       }
     }
@@ -102,17 +102,15 @@ namespace Roguelike.Tiles.Interactive
       return true;
     }
 
-    
-
     public bool Open(string keyName = "")
     {
       if (Closed)
       {
         if (!Locked || keyName == KeyName)
         {
-          Closed = false;
-          if (Opened != null)
-            Opened(this, EventArgs.Empty);
+          SetLooted(true);
+          //if (Opened != null)
+          //  Opened(this, EventArgs.Empty);
           return true;
         }
         else if (RequiredKey != null)

@@ -44,6 +44,29 @@ namespace Roguelike.Tiles.Interactive
     {
     }
 
+    private bool isLooted;
+
+    public event EventHandler Looted;
+
+    public bool IsLooted
+    {
+      get => isLooted;
+      set
+      {
+        if (!isLooted)
+        {
+          isLooted = value;
+        }
+      }
+    }
+
+    public virtual bool SetLooted(bool looted)
+    {
+      IsLooted = looted;
+      Looted?.Invoke(this, EventArgs.Empty);
+      return true;
+    }
+
     public InteractiveTileKind Kind
     {
       get => _kind;
