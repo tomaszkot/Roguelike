@@ -24,9 +24,20 @@ namespace Roguelike.Tiles.Interactive
       set
       {
         barrelKind = value;
-
-        DestroySound = (barrelKind == BarrelKind.Barrel) ? "barrel_broken" : "bones_fall";
+        SetSound();
       }
+    }
+
+    private string SetSound()
+    {
+      var snd = (barrelKind == BarrelKind.Barrel) ? "barrel_broken" : "bones_fall"; ;
+      
+      return snd;
+    }
+
+    public bool CanGenerateEnemy 
+    {
+      get { return true; }
     }
 
     public Barrel(Point point) : base(BarrelSymbol)
@@ -48,6 +59,7 @@ namespace Roguelike.Tiles.Interactive
     public bool SetLevel(int level, Difficulty? diff = null)
     {
       Level = level;
+      
       return true;
     }
 

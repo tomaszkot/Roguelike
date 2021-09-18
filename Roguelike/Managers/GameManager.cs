@@ -1149,7 +1149,7 @@ namespace Roguelike.Managers
 
       if (hitBlocker)
         AppendAction<HeroAction>((HeroAction ac) => { ac.Kind = HeroActionKind.HitWall; ac.Info = info; });
-      if (tile is Barrel || tile is Chest)
+      if (tile is Barrel || tile is Chest || tile is DeadBody)
       {
         var ls = tile as ILootSource;
         if (!GeneratesLoot(ls))

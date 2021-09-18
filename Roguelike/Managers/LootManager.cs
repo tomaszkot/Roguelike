@@ -86,8 +86,11 @@ namespace Roguelike.Managers
       }
 
       var enFromChest = (lootSource is Chest ch && ch.ChestVisualKind == ChestVisualKind.Grave && RandHelper.GetRandomDouble() < GenerationInfo.ChanceToGenerateEnemyFromGrave);
-      if (lootSource is Barrel && RandHelper.GetRandomDouble() < GenerationInfo.ChanceToGenerateEnemyFromBarrel ||
-          enFromChest)
+      if (lootSource is Barrel barrel &&
+          !(lootSource is DeadBody) &&
+          RandHelper.GetRandomDouble() < GenerationInfo.ChanceToGenerateEnemyFromBarrel ||
+          enFromChest 
+          )
       {
         if (enFromChest)
           GameManager.RegisterDelayedEnemy(lootSource);
@@ -115,6 +118,16 @@ namespace Roguelike.Managers
         bool repl = GameManager.ReplaceTile(loot, lootSource as Tile);
         GameManager.Assert(repl, "ReplaceTileByLoot " + loot);
         //GameManager.Logger.LogInfo("ReplaceTileByLoot " + loot + " " + repl);
+      }
+      else if (lootSource is DeadBody db)
+      {
+        if (!db.IsLooted)
+        {
+          GameManager.AddLootReward(loot, lootSource, true);//add loot at closest empty
+          GameManager.AppendAction<InteractiveTileAction>((InteractiveTileAction ac) => { ac.InvolvedTile = db; 
+            ac.InteractiveKind = InteractiveActionKind.DeadBodyLooted; });
+          db.IsLooted = true;
+        }
       }
       else
       {

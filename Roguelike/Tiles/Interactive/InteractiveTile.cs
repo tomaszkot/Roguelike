@@ -8,7 +8,7 @@ namespace Roguelike.Tiles.Interactive
   public enum InteractiveTileKind
   {
     Unset, Stairs, Doors, Barrel, TreasureChest,
-    Trap, Lever
+    Trap, Lever, DeadBody
   }
 
   public interface IApproachableByHero

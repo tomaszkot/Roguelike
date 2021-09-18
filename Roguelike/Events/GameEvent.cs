@@ -118,7 +118,7 @@ namespace Roguelike.Events
   public enum InteractiveActionKind
   {
     Unset, DoorOpened, DoorClosed, DoorUnlocked, DoorLocked, Destroyed, ChestOpened, AppendedToLevel,
-    HitPortal, HitGroundPortal, GroundPortalApproached, HitClosedStairs
+    HitPortal, HitGroundPortal, GroundPortalApproached, HitClosedStairs, DeadBodyLooted
   }
   public class InteractiveTileAction : GameEvent
   {
