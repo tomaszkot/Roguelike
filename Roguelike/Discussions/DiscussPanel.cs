@@ -8,12 +8,16 @@ namespace Roguelike.Discussions
 {
   public class DiscussPanel : Roguelike.Abstract.Discussions.IDiscussPanel
   {
-    protected Roguelike.Tiles.LivingEntities.AdvancedLivingEntity ale;
+    protected Roguelike.Tiles.LivingEntities.INPC npc;
     GenericListModel<DiscussionTopic> boundTopics = new GenericListModel<DiscussionTopic>();
 
     public GenericListModel<DiscussionTopic> BoundTopics { get => boundTopics; set => boundTopics = value; }
 
     public event EventHandler<DiscussionTopic> DiscussionOptionChosen;
+    protected Roguelike.Tiles.LivingEntities.AdvancedLivingEntity AdvancedLivingEntity
+    {
+      get{ return npc as Roguelike.Tiles.LivingEntities.AdvancedLivingEntity;  } 
+    }
 
     public DiscussPanel()
     {
@@ -24,10 +28,10 @@ namespace Roguelike.Discussions
       var knownSentenceKind = topic.RightKnownSentenceKind;
       if (knownSentenceKind == KnownSentenceKind.Back)
       {
-        BindTopics(topic.Parent, ale);
+        BindTopics(topic.Parent, npc);
       }
       else if (knownSentenceKind == KnownSentenceKind.Bye || knownSentenceKind == KnownSentenceKind.LetsTrade ||
-        knownSentenceKind == KnownSentenceKind.QuestAccepted)
+        knownSentenceKind == KnownSentenceKind.QuestAccepted || knownSentenceKind == KnownSentenceKind.AllyAccepted)
       {
         Hide();
       }
@@ -36,7 +40,6 @@ namespace Roguelike.Discussions
       }
       else
       {
-        //var merch = ale as Merchant;
         var itemToBind = topic;
 
         if (knownSentenceKind == KnownSentenceKind.WorkingOnQuest||
@@ -49,12 +52,12 @@ namespace Roguelike.Discussions
               knownSentenceKind == KnownSentenceKind.AwaitingRewardAfterRewardDeny ||
               knownSentenceKind == KnownSentenceKind.RewardSkipped)
           {
-            RewardHero(ale as INPC, topic);
+            RewardHero(npc as INPC, topic);
           }
           else if (knownSentenceKind == KnownSentenceKind.Cheating)
           {
-            ale.Discussion.EmitCheating(topic);
-            if (ale.RelationToHero.CheatingCounter >= 2)
+            npc.Discussion.EmitCheating(topic);
+            if (AdvancedLivingEntity.RelationToHero.CheatingCounter >= 2)
             {
               Hide();
               //RelationChanged.Raise(this, merch.RelationToHero.Kind);
@@ -64,7 +67,7 @@ namespace Roguelike.Discussions
           itemToBind = itemToBind.Parent.Parent;
         }
 
-        BindTopics(itemToBind, ale);
+        BindTopics(itemToBind, npc);
       }
 
       DiscussionOptionChosen.Raise(this, topic);
@@ -76,14 +79,14 @@ namespace Roguelike.Discussions
 
     }
 
-    public void Bind(AdvancedLivingEntity leftEntity, AdvancedLivingEntity rightEntity, GenericListModel<DiscussionTopic> options = null)
+    public void Bind(INPC leftEntity, AdvancedLivingEntity rightEntity, GenericListModel<DiscussionTopic> options = null)
     {
       throw new NotImplementedException();
     }
 
-    public virtual GenericListModel<DiscussionTopic> BindTopics(DiscussionTopic parentTopic, Roguelike.Tiles.LivingEntities.AdvancedLivingEntity npc)
+    public virtual GenericListModel<DiscussionTopic> BindTopics(DiscussionTopic parentTopic, Roguelike.Tiles.LivingEntities.INPC npc)
     {
-      this.ale = npc;
+      this.npc = npc;
       boundTopics.Clear();
       foreach (var topic in parentTopic.Topics)
       {

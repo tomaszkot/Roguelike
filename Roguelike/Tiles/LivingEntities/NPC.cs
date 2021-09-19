@@ -1,16 +1,20 @@
 ﻿using Dungeons.Core;
 using Roguelike.Discussions;
 using SimpleInjector;
+using System;
 using System.Drawing;
 
 namespace Roguelike.Tiles.LivingEntities
 {
   public interface INPC
   {
-    //string Name { get; }
+    string Name { get; }
     TrainedHound TrainedHound { get; set; }
-    AdvancedLivingEntity AdvancedLivingEntity { get;}
-    Discussion Discussion { get; set; } 
+    LivingEntity LivingEntity { get;}
+    Discussion Discussion { get; set; }
+    void SetHasUrgentTopic(bool ut);
+    bool HasUrgentTopic { get; set; }
+    event EventHandler<bool> UrgentTopicChanged;
   }
 
   public class NPC : AdvancedLivingEntity, INPC
@@ -21,6 +25,6 @@ namespace Roguelike.Tiles.LivingEntities
     {
     }
 
-    public AdvancedLivingEntity AdvancedLivingEntity => this;
+    public LivingEntity LivingEntity => this;
   }
 }

@@ -23,7 +23,7 @@ using System.Linq;
 
 namespace Roguelike.Tiles.LivingEntities
 {
-  public enum AllyKind { Unset, Hound, Enemy, Merchant }
+  public enum AllyKind { Unset, Hound, Enemy, Merchant, Paladin }
   public enum EntityProffesionKind { Unset, King, Prince, Knight, Priest, Mercenary, Merchant, Peasant, Bandit, Adventurer, Slave }
   public enum EntityGender { Unset, Male, Female }
   public enum RelationToHeroKind { Unset, Neutral, Like, Dislike, Hate };

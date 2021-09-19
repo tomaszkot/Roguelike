@@ -1057,11 +1057,14 @@ namespace Roguelike.Managers
       }
       AlliesManager.AddEntity(le);
 
-      var empty = CurrentNode.GetClosestEmpty(Hero, true, false);
-      ReplaceTile<LivingEntity>(le, empty);
-      le.PlayAllySpawnedSound();
+      if (ally.Kind != AllyKind.Paladin)
+      {
+        var empty = CurrentNode.GetClosestEmpty(Hero, true, false);
+        ReplaceTile<LivingEntity>(le, empty);
+        le.PlayAllySpawnedSound();
 
-      AppendAction(new AllyAction() { Info = le.Name + " has been added", InvolvedTile = ally, AllyActionKind = AllyActionKind.Created });
+        AppendAction(new AllyAction() { Info = le.Name + " has been added", InvolvedTile = ally, AllyActionKind = AllyActionKind.Created });
+      }
     }
 
     public bool CanUseSpellSource(LivingEntity caster, SpellSource scroll)

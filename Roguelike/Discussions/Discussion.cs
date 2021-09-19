@@ -6,7 +6,7 @@ using System.Diagnostics;
 namespace Roguelike.Discussions
 {
   public enum KnownSentenceKind { Unset, WhatsUp, LetsTrade, Bye, SellHound, Back, QuestAccepted, QuestProgress, WorkingOnQuest, AwaitingReward, 
-    Cheating, DidIt , RewardDeny, AwaitingRewardAfterRewardDeny, RewardSkipped
+    Cheating, DidIt , RewardDeny, AwaitingRewardAfterRewardDeny, RewardSkipped, AllyAccepted, AllyRejected
   }
 
 
