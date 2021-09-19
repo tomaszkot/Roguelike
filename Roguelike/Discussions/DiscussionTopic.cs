@@ -8,6 +8,7 @@ namespace Roguelike.Discussions
 {
   public class DiscussionTopic
   {
+    public bool SkipReward { get; set; }
     public DiscussionSentence Right { get; set; } = new DiscussionSentence();
     public DiscussionSentence Left { get; set; } = new DiscussionSentence();
     public KnownSentenceKind RightKnownSentenceKind 

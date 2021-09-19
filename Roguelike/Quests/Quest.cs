@@ -23,6 +23,7 @@ namespace Roguelike.Quests
     public QuestRequirement QuestRequirement { get; set; } = new QuestRequirement();
     public LootKind RewardLootKind { get; set; }
     public string RewardLootName { get; set; }
+    public bool SkipReward { get; set; }
   }
 
 
