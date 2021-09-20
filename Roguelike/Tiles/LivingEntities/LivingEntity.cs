@@ -136,12 +136,19 @@ namespace Roguelike.Tiles.LivingEntities
       BaseStats.SetStat(EntityStatKind.Dexterity, BaseDexterity);
     }
 
-    public LivingEntity() : this(new Point(-1, -1), '\0')
+    public LivingEntity() : this(new Point(-1, -1), '\0', null)
+    {
+
+    }
+
+    public LivingEntity(Container cont) : this(new Point(-1, -1), '\0', cont)
     {
     }
 
-    public LivingEntity(Point point, char symbol) : base(point, symbol)
+    public LivingEntity(Point point, char symbol, Container cont = null) : base(point, symbol)
     {
+      lastingEffectsSet = new LastingEffectsSet(this, null);
+      this.Container = cont;
       foreach (var basicStat in BaseStats.GetStats())
       {
         var nv = basicStat.Value.Value.Nominal;
@@ -149,8 +156,7 @@ namespace Roguelike.Tiles.LivingEntities
           Stats.SetNominal(basicStat.Key, nv);
       }
       Stats.SetNominal(EntityStatKind.Attack, BaseStrength.Value.Nominal);//attack is same as str for a simple entity
-
-      lastingEffectsSet = new LastingEffectsSet(this, null);
+            
       Alive = true;
       Name = "";
       Stats.SetNominal(EntityStatKind.ChanceToHit, 75);

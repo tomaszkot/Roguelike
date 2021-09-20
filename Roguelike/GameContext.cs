@@ -170,10 +170,12 @@ namespace Roguelike
           var notFar = empties.Where(i => i.DistanceFrom(Hero) > 1).ToList();
           if (notFar.Any())
             pt = notFar.First().point;
-          CurrentNode.SetTile(ally, pt);
+          var set = CurrentNode.SetTile(ally, pt);
+          if(!set)
+            Logger.LogError("!failed to set "+ally);
           var dist = ally.DistanceFrom(Hero);
-          var info = "dist=" + dist + " ally: " + ally + " hero: " + Hero.point;
-          //Debug.WriteLine(info);
+          var info = "dist=" + dist + " ally: " + ally + " hero: " + Hero.point + " set : "+ set + " node: "+ CurrentNode;
+          Debug.WriteLine(info);
           Logger.LogInfo(info);
         }
       }

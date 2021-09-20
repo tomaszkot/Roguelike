@@ -12,6 +12,7 @@ namespace Roguelike.Abstract.Tiles
     Point Point { get; set; }
     bool SetLevel(int level, Difficulty? diff = null);
     bool TakeLevelFromCaster { get; }
+    string Name { get; }
 
     event EventHandler LeveledUp;
   }

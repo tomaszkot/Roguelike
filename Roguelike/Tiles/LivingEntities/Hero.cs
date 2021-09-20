@@ -196,7 +196,7 @@ namespace Roguelike.Tiles.LivingEntities
     public override bool GetGoldWhenSellingTo(IInventoryOwner dest)
     {
       var getGold = base.GetGoldWhenSellingTo(dest);
-      if (dest is Ally)
+      if (dest is Roguelike.Abstract.Tiles.IAlly)
         getGold = false;
 
       if (dest.Inventory.InvBasketKind == InvBasketKind.CraftingInvItems || dest.Inventory.InvBasketKind == InvBasketKind.CraftingRecipe)

@@ -29,19 +29,23 @@ namespace Roguelike.Tiles.Interactive
         {
           case StairsKind.PitDown:
             Symbol = '<';
-            tag1 = "pit_down_big";
+            if(string.IsNullOrEmpty(tag1))
+              tag1 = "pit_down_big";
             break;
           case StairsKind.LevelDown:
             Symbol = '<';
-            tag1 = "level_down";
+            if (string.IsNullOrEmpty(tag1))
+              tag1 = "level_down";
             break;
           case StairsKind.PitUp:
             Symbol = '>';
-            tag1 = "level_up";
+            if (string.IsNullOrEmpty(tag1))
+              tag1 = "level_up";
             break;
           case StairsKind.LevelUp:
             Symbol = '>';
-            tag1 = "level_up";
+            if (string.IsNullOrEmpty(tag1))
+              tag1 = "level_up";
             break;
 
           default:
