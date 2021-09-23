@@ -51,7 +51,7 @@ namespace Roguelike.Tiles.Interactive
 
     public Barrel() : this(new Point().Invalid())
     {
-      tag1 = "Barrel1";
+      tag1 = "barrel1";
     }
 
     public Point GetPoint() { return point; }
