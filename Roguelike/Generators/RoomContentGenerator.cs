@@ -137,7 +137,7 @@ namespace Roguelike.Generators
     protected virtual void SetBarrelKind(Barrel barrel)
     {
       var kind = BarrelKind.Barrel;
-      if (allowSkullPiles && RandHelper.GetRandomDouble() > 0.75)
+      if (allowSkullPiles && RandHelper.GetRandomDouble() > 0.5)
         kind = BarrelKind.PileOfSkulls;
       barrel.BarrelKind = kind;
     }

@@ -25,14 +25,15 @@ namespace Roguelike.Tiles.Interactive
       {
         barrelKind = value;
         SetSound();
+        if(barrelKind == BarrelKind.PileOfSkulls)
+          tag1 = "pile_skulls";
       }
     }
 
-    private string SetSound()
+    private void SetSound()
     {
       var snd = (barrelKind == BarrelKind.Barrel) ? "barrel_broken" : "bones_fall"; ;
-      
-      return snd;
+      DestroySound = snd;
     }
 
     public bool CanGenerateEnemy 
@@ -45,13 +46,13 @@ namespace Roguelike.Tiles.Interactive
       Kind = InteractiveTileKind.Barrel;
       BarrelKind = BarrelKind.Barrel;
       Name = Kind.ToString();
-
+      tag1 = "barrel1";
       //BarrelKind = RandHelper.GetRandomDouble() < 0.5 ? BarrelKind.Barrel : BarrelKind.PileOfSkulls;
     }
 
     public Barrel() : this(new Point().Invalid())
     {
-      tag1 = "barrel1";
+      
     }
 
     public Point GetPoint() { return point; }
