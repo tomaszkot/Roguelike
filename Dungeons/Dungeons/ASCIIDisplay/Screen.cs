@@ -57,7 +57,7 @@ namespace Dungeons.ASCIIDisplay
     protected virtual void CreateLists()
     {
       Lists = new Dictionary<string, ListPresenter>();
-      var usage = new ListPresenter(UsageListName, OriginX, OriginY, 30);
+      var usage = new ListPresenter(UsageListName, OriginX+55, OriginY, 30);
       var list = new List<ListItem>();
       list.Add(new ListItem("R - reload"));
       list.Add(new ListItem("D - toggle node_indexes/symbols"));
@@ -69,9 +69,9 @@ namespace Dungeons.ASCIIDisplay
     public virtual void CreateUI()
     {
       CreateLists();
-      DungeonY = Lists[UsageListName].TotalHeight;// 1 - Dungeon.Description, 2 - spacing
+      DungeonY = 0;// Lists[UsageListName].TotalHeight;// 1 - Dungeon.Description, 2 - spacing
 
-      DungeonDesc = new Label(OriginX, OriginY + Lists[UsageListName].TotalHeight, Dungeon.Description);
+      DungeonDesc = new Label(OriginX, OriginY /*+ Lists[UsageListName].TotalHeight*/, Dungeon.Description);
       ASCIIItems.Add(DungeonDesc);
 
       DungeonY += DungeonDesc.TotalHeight;

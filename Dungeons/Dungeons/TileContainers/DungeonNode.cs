@@ -289,7 +289,8 @@ namespace Dungeons
         if (BeforeInteriorGenerated != null)
           BeforeInteriorGenerated(this, this);
 
-        interiorGenerator.GenerateRandomInterior(CustomInteriorDecorator);
+        if(generationInfo.GenerateRandomInterior)
+          interiorGenerator.GenerateRandomInterior(CustomInteriorDecorator);
 
         if (CustomInteriorDecorator != null)
           CustomInteriorDecorator(this, this);

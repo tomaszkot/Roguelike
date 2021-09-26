@@ -5,6 +5,13 @@ using System.Linq;
 
 namespace Roguelike.Settings
 {
+  public enum GameMode
+  { 
+    Unset,
+    Adventure,
+    Roguelike
+  }
+
   public enum GameKey
   { 
     Unset, 
@@ -28,23 +35,7 @@ namespace Roguelike.Settings
     }
   }
 
-  public class CoreInfo : SettingsBase
-  {
-    public Difficulty Difficulty { get; set; }
-    public string GameVersion { get; set; }
-    public bool IsPlayerPermanentlyDead { get; set; }
-    public bool PermanentDeath { get; set; }
-    public DateTime LastSaved { get; set; }
-    public static bool Demo { get; set; } = false;
-    
-    //public GameSession Session = new GameSession();
-
-    public override string ToString()
-    {
-      return Difficulty + ", " + PermanentDeath;
-    }
-  };
-
+  
   public class SoundMusic : SettingsBase
   {
     //public bool SoundOn { get; set; } = true;

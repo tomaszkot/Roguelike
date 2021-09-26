@@ -87,5 +87,10 @@ namespace Roguelike.Tiles.Interactive
     }
 
     public string ActivationSound { get; set; } = "";
+
+    public override string ToString()
+    {
+      return base.ToString() + ", pit: "+PitName;
+    }
   }
 }
