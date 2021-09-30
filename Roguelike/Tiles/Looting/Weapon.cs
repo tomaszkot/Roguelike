@@ -9,8 +9,16 @@ namespace Roguelike.Tiles
   {
     public enum WeaponKind
     {
-      Unset, Dagger, Sword, Axe, Bashing, Scepter, Wand, Staff,
-      Other
+      Unset = 0, 
+      Dagger = 1, 
+      Sword =2, 
+      Axe = 3, 
+      Bashing = 4, 
+      Scepter = 5, 
+      Wand = 6, 
+      Staff = 7,
+      Crossbow = 8,
+      Other = 50
       //,Bow
     }
 
