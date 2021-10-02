@@ -11,6 +11,13 @@ using System.Linq;
 
 namespace Roguelike.Tiles.Looting
 {
+  public enum RangedWeaponAmmoKind
+  {
+    Unset = 0,
+    PlainArrow = 1,
+    PlainBolt = 10
+  }
+
   public enum FightItemKind
   {
     Unset,
