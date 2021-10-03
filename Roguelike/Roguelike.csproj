@@ -169,6 +169,7 @@
     <Compile Include="Tiles\LivingEntities\Animal.cs" />
     <Compile Include="Tiles\LivingEntities\NPC.cs" />
     <Compile Include="Tiles\Looting\Book.cs" />
+    <Compile Include="Tiles\Looting\ProjectileFightItem.cs" />
     <Compile Include="Tiles\Looting\SpellSource.cs" />
     <Compile Include="Translations\Strings.cs" />
     <Compile Include="Tiles\Abstract\IEquipable.cs" />

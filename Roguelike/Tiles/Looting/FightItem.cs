@@ -11,20 +11,23 @@ using System.Linq;
 
 namespace Roguelike.Tiles.Looting
 {
-  public enum RangedWeaponAmmoKind
-  {
-    Unset = 0,
-    PlainArrow = 1,
-    PlainBolt = 10
-  }
+  //public enum RangedWeaponAmmoKind
+  //{
+  //  Unset = 0,
+  //  PlainArrow = 1,
+  //  PlainBolt = 10
+  //}
 
   public enum FightItemKind
   {
-    Unset,
-    ExplosiveCocktail, //ExplodePotion,
-    ThrowingKnife,
-    HunterTrap,
-    Stone
+    Unset = 0,
+    ExplosiveCocktail = 5, //ExplodePotion,
+    ThrowingKnife = 10,
+    HunterTrap = 15,
+    Stone = 20,
+
+    PlainArrow = 50,
+    PlainBolt = 55
   }
 
   public enum FightItemState
@@ -122,6 +125,20 @@ namespace Roguelike.Tiles.Looting
           HitTargetSound = "trap";
           TurnLasting = 3;
         }
+        else if (fightItemKind == FightItemKind.PlainBolt)
+        {
+          baseDamage += 1;
+          Price *= 2;
+          PrimaryStatDescription = Name + ", basic ammo for a crossbow";
+          HitTargetSound = "arrow_hit_body";
+        }
+        else if (fightItemKind == FightItemKind.PlainArrow)
+        {
+          baseDamage += 1;
+          Price *= 2;
+          PrimaryStatDescription = Name + ", basic ammo for a bow";
+          HitTargetSound = "arrow_hit_body";
+        }
       }
     }
 
@@ -131,7 +148,9 @@ namespace Roguelike.Tiles.Looting
       {
         return fightItemKind == FightItemKind.ThrowingKnife || 
                fightItemKind == FightItemKind.ExplosiveCocktail ||
-               fightItemKind == FightItemKind.Stone;
+               fightItemKind == FightItemKind.Stone ||
+               fightItemKind == FightItemKind.PlainArrow ||
+               fightItemKind == FightItemKind.PlainBolt;
       }
     }
 
@@ -294,33 +313,5 @@ namespace Roguelike.Tiles.Looting
     }
   }
 
-  public class ProjectileFightItem : FightItem, IProjectile
-  {
-    public const int DefaultMaxDistance = 6;
-
-    public ProjectileFightItem() : this(FightItemKind.Unset, null)
-    {
-    }
-    
-    public ProjectileFightItem(FightItemKind kind, LivingEntity caller = null) : base(kind)
-    {
-      Caller = caller;
-    }
-
-    [JsonIgnore]
-    public Tile Target { get; set; }
-
-    public override bool IsCollectable
-    {
-      get 
-      { 
-        if(this.FightItemKind != FightItemKind.HunterTrap)
-          return true;
-
-        return FightItemState == FightItemState.Deactivated ||
-               FightItemState == FightItemState.Unset;
-      }
-    }
-
-  }
+  
 }

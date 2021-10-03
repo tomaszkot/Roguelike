@@ -12,7 +12,7 @@ namespace RoguelikeUnitTests
   class FightItemTests : TestBase
   {
     [Test]
-    public void SpellPropertiesTest()
+    public void FightItemPropertiesTest()
     {
       var game = CreateGame();
       var hero = game.Hero;

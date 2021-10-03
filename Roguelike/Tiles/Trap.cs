@@ -8,7 +8,7 @@ using System.Drawing;
 
 namespace Roguelike.Tiles
 {
-  public class Trap : Tile//: FightItem, ILastingEffectOwner
+  public class Trap : Tile
   {
     TrapSpell spell;
     LivingEntity victim;
@@ -16,7 +16,6 @@ namespace Roguelike.Tiles
     public const char TrapSymbol = '^';
     public bool SetUp { get; set; }
     public const string Guid = "53E344A0-45A7-41BB-BF6B-7969709FDE5B";
-    //float radious = 1;
 
     public TrapSpell Spell
     {
@@ -54,7 +53,7 @@ namespace Roguelike.Tiles
       }
     }
 
-    public Trap(Point point, bool setup) //: base(point, TrapSymbol)
+    public Trap(Point point, bool setup) 
     {
       SetUp = setup;
       this.point = point;
@@ -62,14 +61,6 @@ namespace Roguelike.Tiles
       Name = "Trap";
 
       tag1 = "trap_animated";
-
-      //Price = 10;
-      //StackedInventoryId = new Guid(Guid);
-      //abilityKind = AbilityKind.HuntingMastering;
-      //Kind = FightItemKind.Trap;
-      //baseDamage = 12;
-      //auxFactorName = "Radius";
-      //AlwaysCausesEffect = true;
     }
 
     public Trap() : this(new Point().Invalid(), false)
@@ -99,21 +90,5 @@ namespace Roguelike.Tiles
       //return radius;
       return 0;
     }
-
-    //public override float GetAuxValue(int abilityLevel)
-    //{
-    //  //return this.radious + base.GetAuxValue(GetAbility().Level);
-    //  return 0;
-    //}
-
-    //public override bool IsPercentage(bool primary)
-    //{
-    //  return primary ? false : false;
-    //}
-
-    //public override string GetPrimaryStatDescription()
-    //{
-    //  return "Classic hunter's trap, causes bleeding";
-    //}
   }
 }
