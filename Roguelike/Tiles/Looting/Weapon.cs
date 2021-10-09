@@ -18,6 +18,7 @@ namespace Roguelike.Tiles
       Wand = 6, 
       Staff = 7,
       Crossbow = 8,
+      Bow = 9,
       Other = 50
       //,Bow
     }
