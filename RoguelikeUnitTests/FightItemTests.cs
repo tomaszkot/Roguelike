@@ -12,7 +12,27 @@ namespace RoguelikeUnitTests
   class FightItemTests : TestBase
   {
     [Test]
-    public void FightItemPropertiesTest()
+    public void ArrowFightItemTest()
+    {
+      var game = CreateGame();
+      var hero = game.Hero;
+
+      var fi = new ProjectileFightItem(FightItemKind.PlainArrow, hero);
+      var enemy = ActiveEnemies.First();
+      var enemyHealth = enemy.Stats.Health;
+      enemy.Stats.SetNominal(Roguelike.Attributes.EntityStatKind.Defense, 10);
+      var mana = hero.Stats.Mana;
+
+      Assert.True(game.GameManager.HeroTurn);
+      UseFightItem(hero, enemy, fi);
+
+      Assert.Greater(enemyHealth, enemy.Stats.Health);
+      Assert.AreEqual(mana, hero.Stats.Mana);
+      Assert.False(game.GameManager.HeroTurn);
+    }
+
+    [Test]
+    public void StoneFightItemTest()
     {
       var game = CreateGame();
       var hero = game.Hero;

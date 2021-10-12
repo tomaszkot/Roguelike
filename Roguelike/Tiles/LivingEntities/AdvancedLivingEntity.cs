@@ -150,7 +150,11 @@ namespace Roguelike.Tiles.LivingEntities
       { Weapon.WeaponKind.Dagger, EntityStatKind.DaggerExtraDamage},
       { Weapon.WeaponKind.Staff, EntityStatKind.StaffExtraDamage},
       { Weapon.WeaponKind.Scepter, EntityStatKind.ScepterExtraDamage},
-      { Weapon.WeaponKind.Wand, EntityStatKind.WandExtraDamage}
+      { Weapon.WeaponKind.Wand, EntityStatKind.WandExtraDamage},
+
+      //these two shall add to ranged damage
+      //{ Weapon.WeaponKind.Bow, EntityStatKind.BowExtraDamage},
+      //{ Weapon.WeaponKind.Crossbow, EntityStatKind.CrossbowExtraDamage}
     };
 
     public AdvancedLivingEntity(Container cont, Point point, char symbol) : base(point, symbol)
@@ -612,7 +616,8 @@ namespace Roguelike.Tiles.LivingEntities
           {
             if(ab.PrimaryStat.Factor != 0)
               Stats.AccumulateFactor(ab.PrimaryStat.Kind, ab.PrimaryStat.Factor);
-            AddAuxStat(ab);
+            if (ab.AuxStat.Factor != 0)
+              AddAuxStat(ab);
           }
         }
       }

@@ -127,6 +127,7 @@ namespace Roguelike.LootFactories
         case EquipmentKind.Shield:
           eq = GetRandomShield();
           break;
+        
         case EquipmentKind.Ring:
           eq = GetRandomJewellery(EntityStatKind.Attack, EquipmentKind.Ring);
           break;

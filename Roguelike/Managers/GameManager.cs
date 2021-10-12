@@ -883,7 +883,13 @@ namespace Roguelike.Managers
             merch.Inventory.Items.Add(loot);
             if (loot is FightItem fi)
             {
-              fi.Count = RandHelper.GetRandomInt(3) + 1;
+              if (fi.FightItemKind == FightItemKind.PlainBolt ||
+                fi.FightItemKind == FightItemKind.PlainArrow)
+              {
+                fi.Count = RandHelper.GetRandomInt(50) + 25;
+              }
+              else
+                fi.Count = RandHelper.GetRandomInt(3) + 1;
             }
           }
         }
@@ -946,6 +952,9 @@ namespace Roguelike.Managers
 
       merch.Inventory.Items.Add(new ProjectileFightItem(FightItemKind.Stone) { Count = 4 });
       merch.Inventory.Items.Add(new ProjectileFightItem(FightItemKind.ThrowingKnife) { Count = 4 });
+
+      merch.Inventory.Items.Add(new ProjectileFightItem(FightItemKind.PlainArrow) { Count = RandHelper.GetRandomInt(50) + 25 });
+      merch.Inventory.Items.Add(new ProjectileFightItem(FightItemKind.PlainBolt) { Count = RandHelper.GetRandomInt(50) + 25 });
 
       //for (int i = 0; i < 4; i++)
       {

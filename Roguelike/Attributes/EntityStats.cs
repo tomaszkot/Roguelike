@@ -22,7 +22,7 @@ namespace Roguelike.Attributes
     ThrowingKnifeDamage, ThrowingStoneDamage, ChanceToRepeatMelleeAttack, ChanceToRepeatElementalAttack,
     //    ExtraElementalDamage,
     ChanceToCauseElementalAilment, /*ExtraElementalDamage,*/ChanceToElementalBulkAttack,
-    StaffExtraDamage, ScepterExtraDamage, WandExtraDamage, HunterTrapExtraDamage
+    StaffExtraDamage, ScepterExtraDamage, WandExtraDamage, HunterTrapExtraDamage, CrossbowExtraDamage, BowExtraDamage
 
   };
 

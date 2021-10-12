@@ -243,6 +243,28 @@ namespace Roguelike.Generators
         return wpn;
       }
 
+      if (loot == null && tileName == "bow")
+      {
+        var wpn = new Weapon();
+        wpn.tag1 = "bow";
+        wpn.Damage = 5;
+        wpn.Name = "Bow";
+        wpn.Price *= 2;
+        wpn.Kind = Weapon.WeaponKind.Bow;
+        return wpn;
+      }
+
+      if (loot == null && tileName == "crossbow")
+      {
+        var wpn = new Weapon();
+        wpn.tag1 = "crossbow";
+        wpn.Damage = 5;
+        wpn.Name = "Bow";
+        wpn.Price *= 2;
+        wpn.Kind = Weapon.WeaponKind.Crossbow;
+        return wpn;
+      }
+
       return loot;
     }
 

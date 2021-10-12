@@ -21,9 +21,7 @@ namespace Roguelike.Abilities
     //HuntingMastering /*<-(to del)*/
     ExplosiveMastering, ThrowingStoneMastering, ThrowingKnifeMastering, HunterTrapMastering
 
-
-    , StaffMastering, ScepterMastering, WandMastering
-
+    ,StaffsMastering, SceptersMastering, WandsMastering
   }
 
   /// <summary>
@@ -76,17 +74,25 @@ namespace Roguelike.Abilities
             ask = EntityStatKind.SwordExtraDamage;
             break;
           
-          case AbilityKind.StaffMastering:
+          case AbilityKind.StaffsMastering:
             psk = EntityStatKind.ChanceToRepeatElementalAttack;
             ask = EntityStatKind.StaffExtraDamage;
             break;
-          case AbilityKind.ScepterMastering:
+          case AbilityKind.SceptersMastering:
             psk = EntityStatKind.ChanceToCauseElementalAilment;
             ask = EntityStatKind.ScepterExtraDamage;
             break;
-          case AbilityKind.WandMastering:
+          case AbilityKind.WandsMastering:
             psk = EntityStatKind.ChanceToElementalBulkAttack;
             ask = EntityStatKind.WandExtraDamage;
+            break;
+          case AbilityKind.CrossBowsMastering:
+            psk = EntityStatKind.ChanceToCauseBleeding;
+            ask = EntityStatKind.CrossbowExtraDamage;
+            break;
+          case AbilityKind.BowsMastering:
+            psk = EntityStatKind.ChanceToHit;
+            ask = EntityStatKind.BowExtraDamage;
             break;
           case AbilityKind.LootingMastering:
           case AbilityKind.StrikeBack:
@@ -149,17 +155,19 @@ namespace Roguelike.Abilities
         case AbilityKind.BashingMastering:
         case AbilityKind.DaggersMastering:
         case AbilityKind.SwordsMastering:
-        case AbilityKind.WandMastering:
-        case AbilityKind.ScepterMastering:
-        case AbilityKind.StaffMastering:
+        case AbilityKind.WandsMastering:
+        case AbilityKind.SceptersMastering:
+        case AbilityKind.StaffsMastering:
+        case AbilityKind.BowsMastering:
+        case AbilityKind.CrossBowsMastering:
 
           if (primary)
           {
             factor = level;
             
-            if (kind == AbilityKind.WandMastering //ChanceToElementalBulkAttack
-              || kind == AbilityKind.ScepterMastering//ChanceToCauseElementalAilment
-              || kind == AbilityKind.StaffMastering//ChanceToRepeatElementalAttack
+            if (kind == AbilityKind.WandsMastering //ChanceToElementalBulkAttack
+              || kind == AbilityKind.SceptersMastering//ChanceToCauseElementalAilment
+              || kind == AbilityKind.StaffsMastering//ChanceToRepeatElementalAttack
               )
             {
               var multsDef = new int[] { 0, 4, 7, 10, 15, 20 };
@@ -170,7 +178,7 @@ namespace Roguelike.Abilities
           {
             factor = level * 5;
 
-            if (kind == AbilityKind.WandMastering)
+            if (kind == AbilityKind.WandsMastering)
             {
               var multsDef = new int[] { 0, 4, 7, 10, 15, 20 };
               factor = multsDef[level];
@@ -215,9 +223,9 @@ namespace Roguelike.Abilities
         case AbilityKind.BashingMastering:
         case AbilityKind.DaggersMastering:
         case AbilityKind.SwordsMastering:
-        case AbilityKind.StaffMastering:
-        case AbilityKind.ScepterMastering:
-        case AbilityKind.WandMastering:
+        case AbilityKind.StaffsMastering:
+        case AbilityKind.SceptersMastering:
+        case AbilityKind.WandsMastering:
           desc = "Bonus when using ";
           var wpn = kind.ToString().Replace("Mastering", "");
           if (wpn.EndsWith("s"))

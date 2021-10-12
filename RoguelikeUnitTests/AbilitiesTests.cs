@@ -458,60 +458,6 @@ namespace RoguelikeUnitTests
       }
     }
 
-    //private float TestDefence(AbilityKind kind)
-    //{
-    //  var abVal = 0.0f;
-    //  var abValAux = 0.0f;
-    //  var en = PlainEnemies.First();
-    //  float health = Hero.Character.Health;
-    //  float mana = Hero.Character.Mana;
-    //  float health1 = 0;
-    //  float healthDiff = 0;
-
-    //  gm.HeroTurn = false;
-    //  if (kind == AbilityKind.MeleeDefender)
-    //  {
-    //    while (Hero.OnPhysicalHit(en) == 0)
-    //      ;
-    //  }
-    //  else
-    //  {
-    //    en.ActiveScroll = new Scroll(SpellKind.FireBall);
-    //    en.DamageApplier.ApplySpellDamage(en, Hero, en.ActiveScroll.CreateSpell(en) as AttackingSpell);
-    //  }
-    //  health1 = Hero.Character.Health;
-    //  healthDiff = health - health1;
-    //  AssertGreater(healthDiff, 0);
-    //  for (int i = 0; i < MaxAbilityInc + 1; i++)
-    //  {
-    //    Hero.IncreaseAbility(kind);
-    //    var ab = Hero.GetAbility(kind);
-    //    AssertNextValue(i, ab, abVal, abValAux);
-
-    //    abVal = GetFactor(ab, true);
-    //    abValAux = GetFactor(ab, false);
-    //    AssertLess(abVal, 15);
-    //    AssertLess(abValAux, 26);
-
-    //    Debug.WriteLine(kind + " Level: " + ab.Level + ", value :" + ab.PrimaryStat.Factor);
-    //  }
-    //  gm.HeroTurn = false;
-    //  if (kind == AbilityKind.MeleeDefender)
-    //  {
-    //    while (Hero.OnPhysicalHit(en) == 0)
-    //      ;
-
-    //  }
-    //  else
-    //  {
-    //    en.DamageApplier.ApplySpellDamage(en, Hero, en.ActiveScroll.CreateSpell(en) as AttackingSpell);
-    //  }
-    //  var health2 = Hero.Character.Health;
-    //  var healthDiff1 = health1 - health2;
-    //  AssertGreater(healthDiff, healthDiff1);
-    //  return abVal;
-    //}
-
     [Test]
     public void TestChanceToRepeatMelleeAttack()
     {
@@ -549,7 +495,7 @@ namespace RoguelikeUnitTests
     {
       var game = CreateGame();
       float originalStatValue = 0;
-      var destExtraStat = SetWeapon(AbilityKind.ScepterMastering, game.Hero, out originalStatValue);
+      var destExtraStat = SetWeapon(AbilityKind.SceptersMastering, game.Hero, out originalStatValue);
       var weapon = game.Hero.GetActiveWeapon();
       Assert.AreEqual(weapon.SpellSource.Kind, SpellKind.FireBall);
 
@@ -570,7 +516,7 @@ namespace RoguelikeUnitTests
     {
       var game = CreateGame();
       float originalStatValue = 0;
-      var destExtraStat = SetWeapon(AbilityKind.WandMastering, game.Hero, out originalStatValue);
+      var destExtraStat = SetWeapon(AbilityKind.WandsMastering, game.Hero, out originalStatValue);
       var weapon = game.Hero.GetActiveWeapon();
 
       var empOnes = game.GameManager.CurrentNode.GetEmptyNeighborhoodTiles(game.GameManager.Hero, false);
@@ -583,7 +529,7 @@ namespace RoguelikeUnitTests
       {
         game.GameManager.CurrentNode.SetTile(enemies[i], empOnes[i].point);
       }
-      var ab = game.GameManager.Hero.GetPassiveAbility(Roguelike.Abilities.AbilityKind.WandMastering);
+      var ab = game.GameManager.Hero.GetPassiveAbility(Roguelike.Abilities.AbilityKind.WandsMastering);
       for (int i = 0; i < 5; i++)
         ab.IncreaseLevel(game.Hero);
 
@@ -611,7 +557,7 @@ namespace RoguelikeUnitTests
     {
       var game = CreateGame();
       float originalStatValue = 0;
-      var destExtraStat = SetWeapon(AbilityKind.ScepterMastering, game.Hero, out originalStatValue);
+      var destExtraStat = SetWeapon(AbilityKind.SceptersMastering, game.Hero, out originalStatValue);
       var weapon = game.Hero.GetActiveWeapon();
 
       var en = PlainEnemies.First();
@@ -646,13 +592,15 @@ namespace RoguelikeUnitTests
     }
 
 
-    [TestCase(Roguelike.Abilities.AbilityKind.AxesMastering)]
-    [TestCase(Roguelike.Abilities.AbilityKind.BashingMastering)]
-    [TestCase(Roguelike.Abilities.AbilityKind.DaggersMastering)]
-    [TestCase(Roguelike.Abilities.AbilityKind.SwordsMastering)]
-    [TestCase(Roguelike.Abilities.AbilityKind.StaffMastering)]
-    [TestCase(Roguelike.Abilities.AbilityKind.WandMastering)]
-    [TestCase(Roguelike.Abilities.AbilityKind.ScepterMastering)]
+    //[TestCase(Roguelike.Abilities.AbilityKind.AxesMastering)]
+    //[TestCase(Roguelike.Abilities.AbilityKind.BashingMastering)]
+    //[TestCase(Roguelike.Abilities.AbilityKind.DaggersMastering)]
+    //[TestCase(Roguelike.Abilities.AbilityKind.SwordsMastering)]
+    [TestCase(Roguelike.Abilities.AbilityKind.StaffsMastering)]
+    //[TestCase(Roguelike.Abilities.AbilityKind.WandsMastering)]
+    //[TestCase(Roguelike.Abilities.AbilityKind.SceptersMastering)]
+    [TestCase(Roguelike.Abilities.AbilityKind.BowsMastering)]
+    [TestCase(Roguelike.Abilities.AbilityKind.CrossBowsMastering)]
     public void BasicWeaponsMasteryTests(Roguelike.Abilities.AbilityKind ab)//test if mellee damage is increased
     {
       var game = CreateGame();
@@ -753,17 +701,25 @@ namespace RoguelikeUnitTests
           destStat = EntityStatKind.ChanceToHit;
           break;
 
-        case Roguelike.Abilities.AbilityKind.ScepterMastering:
+        case Roguelike.Abilities.AbilityKind.SceptersMastering:
           wpnName = "scepter";
           destStat = EntityStatKind.ChanceToCauseElementalAilment;
           break;
-        case Roguelike.Abilities.AbilityKind.StaffMastering:
+        case Roguelike.Abilities.AbilityKind.StaffsMastering:
           wpnName = "staff";
           destStat = EntityStatKind.ChanceToRepeatElementalAttack;
           break;
-        case Roguelike.Abilities.AbilityKind.WandMastering:
+        case Roguelike.Abilities.AbilityKind.WandsMastering:
           wpnName = "wand";
           destStat = EntityStatKind.ChanceToElementalBulkAttack;
+          break;
+        case Roguelike.Abilities.AbilityKind.CrossBowsMastering:
+          wpnName = "crossbow";
+          destStat = EntityStatKind.ChanceToCauseBleeding;
+          break;
+        case Roguelike.Abilities.AbilityKind.BowsMastering:
+          wpnName = "bow";
+          destStat = EntityStatKind.ChanceToHit;
           break;
         default:
           break;
