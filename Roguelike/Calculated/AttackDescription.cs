@@ -26,9 +26,9 @@ namespace Roguelike.Calculated
         var wpn = ale.GetActiveEquipment()[CurrentEquipmentKind.Weapon] as Weapon;
         if (wpn != null)
         {
-          if (AdvancedLivingEntity.Weapons2Esk.ContainsKey(wpn.Kind))
+          if (AdvancedLivingEntity.MalleeWeapons2Esk.ContainsKey(wpn.Kind))
           {
-            var extraPercentage = ent.Stats.GetCurrentValue(AdvancedLivingEntity.Weapons2Esk[wpn.Kind]);
+            var extraPercentage = ent.Stats.GetCurrentValue(AdvancedLivingEntity.MalleeWeapons2Esk[wpn.Kind]);
             CurrentPhysical = FactorCalculator.CalcFactor(CurrentPhysical, extraPercentage);
           }
           //if (AdvancedLivingEntity.Weapons2Esk.ContainsKey(wpn.Kind))

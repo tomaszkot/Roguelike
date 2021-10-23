@@ -596,7 +596,7 @@ namespace RoguelikeUnitTests
     //[TestCase(Roguelike.Abilities.AbilityKind.BashingMastering)]
     //[TestCase(Roguelike.Abilities.AbilityKind.DaggersMastering)]
     //[TestCase(Roguelike.Abilities.AbilityKind.SwordsMastering)]
-    [TestCase(Roguelike.Abilities.AbilityKind.StaffsMastering)]
+    //[TestCase(Roguelike.Abilities.AbilityKind.StaffsMastering)]
     //[TestCase(Roguelike.Abilities.AbilityKind.WandsMastering)]
     //[TestCase(Roguelike.Abilities.AbilityKind.SceptersMastering)]
     [TestCase(Roguelike.Abilities.AbilityKind.BowsMastering)]
@@ -627,29 +627,50 @@ namespace RoguelikeUnitTests
     {
       var abVal = 0.0f;
       var abValAux = 0.0f;
-      var Hero = game.Hero;
+      var hero = game.Hero;
 
-      float statValue;
-      var destStat = SetWeapon(kind, Hero, out statValue);
+      float auxStatValue;
+      var destStat = SetWeapon(kind, hero, out auxStatValue);
       var en = PlainEnemies.First();
       en.Stats.SetNominal(EntityStatKind.Health, 100);
+      var wpn = hero.GetActiveWeapon();
 
       Func<float> hitEnemy = () =>
       {
         var health = en.Stats.Health;
-        en.OnMelleeHitBy(Hero);
+        if(!wpn.IsBowLike)
+          en.OnMelleeHitBy(hero);
+        else
+          en.OnHitBy(hero.ActiveFightItem as ProjectileFightItem);
         var health1 = en.Stats.Health;
         return health - health1;
       };
+            
+      if (wpn.IsBowLike)
+      {
+        ProjectileFightItem pfi = null;
+        if (wpn.Kind == Weapon.WeaponKind.Bow)
+        {
+          pfi = new ProjectileFightItem(FightItemKind.PlainArrow) { Count = 2};
+        }
+        else if (wpn.Kind == Weapon.WeaponKind.Crossbow)
+        {
+          pfi = new ProjectileFightItem(FightItemKind.PlainBolt) { Count = 2 };
+        }
+        pfi.Caller = hero;
+        hero.Inventory.Add(pfi);
+        hero.ActiveFightItem = pfi;
+      }
       var damage = hitEnemy();
 
       Assert.Greater(damage, 0);
-      var heroAttack = Hero.GetHitAttackValue(false);
+
+      var heroAttack = GetHeroAttack(hero, wpn);
 
       for (int i = 0; i < MaxAbilityInc + 1; i++)
       {
-        Hero.IncreaseAbility(kind);
-        var ab = Hero.GetPassiveAbility(kind);
+        hero.IncreaseAbility(kind);
+        var ab = hero.GetPassiveAbility(kind);
         Assert.AreNotEqual(ab.PrimaryStat.Kind, EntityStatKind.Unset);
         AssertNextValue(i, ab, abVal, abValAux);
 
@@ -661,10 +682,10 @@ namespace RoguelikeUnitTests
         abVal = ab.PrimaryStat.Factor;
         //Debug.WriteLine(kind + " Level: " + ab.Level + ", value :" + ab.PrimaryStat.Factor);
       }
-      var statValueWithAbility = Hero.Stats.GetCurrentValue(destStat);
-      Assert.Greater(statValueWithAbility, statValue);
+      var statValueWithAbility = hero.Stats.GetCurrentValue(destStat);
+      Assert.Greater(statValueWithAbility, auxStatValue);
 
-      var heroAttackWithAbility = Hero.GetHitAttackValue(false);
+      var heroAttackWithAbility = GetHeroAttack(hero, wpn); 
       Assert.Greater(heroAttackWithAbility, heroAttack);
       var damageWithAbility = hitEnemy();
 
@@ -677,59 +698,64 @@ namespace RoguelikeUnitTests
       return abVal;
     }
 
+    private static float GetHeroAttack(Hero hero, Weapon wpn)
+    {
+      return wpn.IsBowLike ? hero.CalcDamageFromProjectileWeapon() : hero.GetMelleeHitAttackValue(false);
+    }
+
     private EntityStatKind SetWeapon(Roguelike.Abilities.AbilityKind kind, Hero Hero, out float originalStatValue)
     {
-      var destStat = EntityStatKind.Unset;
+      var auxStat = EntityStatKind.Unset;
       Weapon wpn = null;
       string wpnName = "";
       switch (kind)
       {
         case Roguelike.Abilities.AbilityKind.AxesMastering:
           wpnName = "axe";
-          destStat = EntityStatKind.ChanceToCauseTearApart;
+          auxStat = EntityStatKind.ChanceToCauseTearApart;
           break;
         case Roguelike.Abilities.AbilityKind.BashingMastering:
           wpnName = "hammer";
-          destStat = EntityStatKind.ChanceToCauseStunning;
+          auxStat = EntityStatKind.ChanceToCauseStunning;
           break;
         case Roguelike.Abilities.AbilityKind.DaggersMastering:
           wpnName = "war_dagger";
-          destStat = EntityStatKind.ChanceToCauseBleeding;
+          auxStat = EntityStatKind.ChanceToCauseBleeding;
           break;
         case Roguelike.Abilities.AbilityKind.SwordsMastering:
           wpnName = "rusty_sword";
-          destStat = EntityStatKind.ChanceToHit;
+          auxStat = EntityStatKind.ChanceToHit;
           break;
 
         case Roguelike.Abilities.AbilityKind.SceptersMastering:
           wpnName = "scepter";
-          destStat = EntityStatKind.ChanceToCauseElementalAilment;
+          auxStat = EntityStatKind.ChanceToCauseElementalAilment;
           break;
         case Roguelike.Abilities.AbilityKind.StaffsMastering:
           wpnName = "staff";
-          destStat = EntityStatKind.ChanceToRepeatElementalAttack;
+          auxStat = EntityStatKind.ChanceToRepeatElementalAttack;
           break;
         case Roguelike.Abilities.AbilityKind.WandsMastering:
           wpnName = "wand";
-          destStat = EntityStatKind.ChanceToElementalBulkAttack;
+          auxStat = EntityStatKind.ChanceToElementalBulkAttack;
           break;
         case Roguelike.Abilities.AbilityKind.CrossBowsMastering:
           wpnName = "crossbow";
-          destStat = EntityStatKind.ChanceToCauseBleeding;
+          auxStat = EntityStatKind.ChanceToCauseBleeding;
           break;
         case Roguelike.Abilities.AbilityKind.BowsMastering:
           wpnName = "bow";
-          destStat = EntityStatKind.ChanceToHit;
+          auxStat = EntityStatKind.ChanceToHit;
           break;
         default:
           break;
       }
 
-      originalStatValue = Hero.Stats.GetCurrentValue(destStat);
+      originalStatValue = Hero.Stats.GetCurrentValue(auxStat);
       wpn = game.GameManager.LootGenerator.GetLootByAsset(wpnName) as Weapon;
       Assert.NotNull(wpn);
       Hero.SetEquipment(wpn, CurrentEquipmentKind.Weapon);
-      return destStat;
+      return auxStat;
     }
   }
 }

@@ -226,6 +226,8 @@ namespace Roguelike.Abilities
         case AbilityKind.StaffsMastering:
         case AbilityKind.SceptersMastering:
         case AbilityKind.WandsMastering:
+        case AbilityKind.BowsMastering:
+        case AbilityKind.CrossBowsMastering:
           desc = "Bonus when using ";
           var wpn = kind.ToString().Replace("Mastering", "");
           if (wpn.EndsWith("s"))

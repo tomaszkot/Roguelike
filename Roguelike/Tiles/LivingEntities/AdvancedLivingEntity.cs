@@ -3,6 +3,7 @@ using Roguelike.Abilities;
 using Roguelike.Abstract.Inventory;
 using Roguelike.Abstract.Projectiles;
 using Roguelike.Attributes;
+using Roguelike.Calculated;
 using Roguelike.Discussions;
 using Roguelike.Effects;
 using Roguelike.Events;
@@ -142,7 +143,7 @@ namespace Roguelike.Tiles.LivingEntities
       }
     }
 
-    public static Dictionary<Weapon.WeaponKind, EntityStatKind> Weapons2Esk = new Dictionary<Weapon.WeaponKind, EntityStatKind>()
+    public static Dictionary<Weapon.WeaponKind, EntityStatKind> MalleeWeapons2Esk = new Dictionary<Weapon.WeaponKind, EntityStatKind>()
     {
       {Weapon.WeaponKind.Axe,  EntityStatKind.AxeExtraDamage},
       { Weapon.WeaponKind.Sword, EntityStatKind.SwordExtraDamage},
@@ -155,6 +156,12 @@ namespace Roguelike.Tiles.LivingEntities
       //these two shall add to ranged damage
       //{ Weapon.WeaponKind.Bow, EntityStatKind.BowExtraDamage},
       //{ Weapon.WeaponKind.Crossbow, EntityStatKind.CrossbowExtraDamage}
+    };
+
+    public static Dictionary<Weapon.WeaponKind, EntityStatKind> ProjectileWeapons2Esk = new Dictionary<Weapon.WeaponKind, EntityStatKind>()
+    {
+      { Weapon.WeaponKind.Bow, EntityStatKind.BowExtraDamage},
+      { Weapon.WeaponKind.Crossbow, EntityStatKind.CrossbowExtraDamage}
     };
 
     public AdvancedLivingEntity(Container cont, Point point, char symbol) : base(point, symbol)
@@ -810,6 +817,22 @@ namespace Roguelike.Tiles.LivingEntities
     public override void RemoveFightItem(FightItem fi)
     {
       Inventory.Remove(fi);
+    }
+
+    protected override float CalcDamage(ProjectileFightItem pfi)
+    {
+      var damage = base.CalcDamage(pfi);
+      //TODO move to AttackDescription
+      var wpn = GetCurrentEquipment(EquipmentKind.Weapon) as Weapon;
+      if (wpn != null)
+      {
+        if (AdvancedLivingEntity.ProjectileWeapons2Esk.ContainsKey(wpn.Kind))
+        {
+          var extraPercentage = Stats.GetCurrentValue(AdvancedLivingEntity.ProjectileWeapons2Esk[wpn.Kind]);
+          damage = FactorCalculator.CalcFactor(damage, extraPercentage);
+        }
+      }
+      return damage;
     }
   }
 }

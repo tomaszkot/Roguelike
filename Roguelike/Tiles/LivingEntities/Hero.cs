@@ -95,7 +95,7 @@ namespace Roguelike.Tiles.LivingEntities
     public Tuple<int, int> GetTotalAttackValues()
     {
       Tuple<int, int> res;
-      var attack = GetHitAttackValue(false);
+      var attack = GetMelleeHitAttackValue(false);
 
       var nonPhysicals = GetNonPhysicalDamages();
       foreach (var stat in nonPhysicals)
@@ -148,7 +148,7 @@ namespace Roguelike.Tiles.LivingEntities
       Inventory.Remove(loot);
     }
 
-    public override float GetHitAttackValue(bool withVariation)
+    public override float GetMelleeHitAttackValue(bool withVariation)
     {
       var ad = new AttackDescription(this);
       var att = ad.CurrentPhysical;
@@ -219,7 +219,7 @@ namespace Roguelike.Tiles.LivingEntities
       {
         var wpn = GetActiveWeapon();
         if(wpn != null)
-          return GetHitAttackValue(false);
+          return GetMelleeHitAttackValue(false);
       }
       return base.GetDamageAddition(pfi);
     }

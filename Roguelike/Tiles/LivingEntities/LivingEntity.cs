@@ -79,7 +79,11 @@ namespace Roguelike.Tiles.LivingEntities
       set { activeManaPoweredSpellSource = value; }
     }
 
-    public virtual FightItem ActiveFightItem { get; }
+    public virtual FightItem ActiveFightItem 
+    { 
+      get;
+      set;
+    }
 
     public Point Position
     {
@@ -359,7 +363,7 @@ namespace Roguelike.Tiles.LivingEntities
 
     }
 
-    public virtual float GetHitAttackValue(bool withVariation)
+    public virtual float GetMelleeHitAttackValue(bool withVariation)
     {
       return GetCurrentValue(EntityStatKind.Attack);
     }
@@ -500,7 +504,7 @@ namespace Roguelike.Tiles.LivingEntities
     public virtual float OnMelleeHitBy(LivingEntity attacker)
     {
       string desc = "";
-      var inflicted = CalcMeleeDamage(attacker.GetHitAttackValue(true), ref desc);
+      var inflicted = CalcMeleeDamage(attacker.GetMelleeHitAttackValue(true), ref desc);
 
       var npds = attacker.GetNonPhysicalDamages();
       foreach (var stat in npds)
@@ -541,6 +545,22 @@ namespace Roguelike.Tiles.LivingEntities
       return fightItemHitsCounter.ContainsKey(kind) ? fightItemHitsCounter[kind] : 0;
     }
 
+    public virtual float CalcDamageFromProjectileWeapon()
+    {
+      if (ActiveFightItem is ProjectileFightItem pfi)
+      {
+        return CalcDamage(pfi);
+      }
+      return 0;
+    }
+
+    protected virtual float CalcDamage(ProjectileFightItem pfi)
+    {
+      var damage = pfi.Damage;
+      damage += GetDamageAddition(pfi);// pfi.Caller.GetHitAttackValue(false);
+      return damage;
+    }
+
     public bool OnHitBy(Dungeons.Tiles.Abstract.IProjectile projectile)
     {
       if (projectile is Spell spell)
@@ -562,9 +582,7 @@ namespace Roguelike.Tiles.LivingEntities
         {
           var damageDesc = "";
 
-          var damage = pfi.Damage;
-
-          damage += pfi.Caller.GetDamageAddition(pfi);// pfi.Caller.GetHitAttackValue(false);
+          var damage = pfi.Caller.CalcDamage(pfi);
           var inflictedMellee = CalcMeleeDamage(damage, ref damageDesc);
           var inflicted = inflictedMellee;
           var sound = pfi.HitTargetSound;// "punch";

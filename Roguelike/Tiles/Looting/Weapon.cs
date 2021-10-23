@@ -136,6 +136,11 @@ namespace Roguelike.Tiles
       PrimaryStatDescription = "Emits " + SpellSource.Kind + " charges\r\n(" + wss.Count + "/" + wss.RestoredChargesCount + " charges available)";
     }
 
+    public bool IsBowLike
+    {
+      get { return Kind == WeaponKind.Bow || Kind == WeaponKind.Crossbow; }
+    }
+
     public WeaponKind kind;
     public WeaponKind Kind
     {
