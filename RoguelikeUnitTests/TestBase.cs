@@ -353,5 +353,15 @@ namespace RoguelikeUnitTests
       return UseSpellSource(caster, victim, src);
 
     }
+
+    public T GenerateEquipment<T>(string name) where T : Equipment
+    {
+      return game.GameManager.LootGenerator.GetLootByTileName<T>(name);
+    }
+
+    public Dungeons.TileContainers.DungeonLevel CurrentNode
+    {
+      get { return game.GameManager.CurrentNode; }
+    }
   }
 }

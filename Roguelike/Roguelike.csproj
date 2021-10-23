@@ -70,6 +70,7 @@
     <Compile Include="Abstract\Spells\ISpell.cs" />
     <Compile Include="Discussions\DiscussionExtensions.cs" />
     <Compile Include="Discussions\DiscussPanel.cs" />
+    <Compile Include="Extensions\SystemExtensions.cs" />
     <Compile Include="History\LivingEntityHistory.cs" />
     <Compile Include="LootFactories\BooksFactory.cs" />
     <Compile Include="Managers\AnimalsManager.cs" />

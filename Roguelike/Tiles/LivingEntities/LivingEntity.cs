@@ -534,6 +534,13 @@ namespace Roguelike.Tiles.LivingEntities
       return inflicted;
     }
 
+    Dictionary<FightItemKind, int> fightItemHitsCounter = new Dictionary<FightItemKind, int>();
+
+    public int GetFightItemKindHitCounter(FightItemKind kind)
+    {
+      return fightItemHitsCounter.ContainsKey(kind) ? fightItemHitsCounter[kind] : 0;
+    }
+
     public bool OnHitBy(Dungeons.Tiles.Abstract.IProjectile projectile)
     {
       if (projectile is Spell spell)
@@ -554,11 +561,16 @@ namespace Roguelike.Tiles.LivingEntities
         if (fi is ProjectileFightItem pfi)
         {
           var damageDesc = "";
-          var inflictedMellee = CalcMeleeDamage(pfi.Damage, ref damageDesc);
+
+          var damage = pfi.Damage;
+
+          damage += pfi.Caller.GetDamageAddition(pfi);// pfi.Caller.GetHitAttackValue(false);
+          var inflictedMellee = CalcMeleeDamage(damage, ref damageDesc);
           var inflicted = inflictedMellee;
           var sound = pfi.HitTargetSound;// "punch";
           var srcName = fi.FightItemKind.ToDescription();
           var attacker = pfi.Caller;
+          fightItemHitsCounter.Increment(fi.FightItemKind);
 
           if (fi.FightItemKind == FightItemKind.ExplosiveCocktail)
           {
@@ -591,6 +603,11 @@ namespace Roguelike.Tiles.LivingEntities
         Assert(false, "OnHitBy - not supported" + projectile);
 
       return true;
+    }
+
+    protected virtual float GetDamageAddition(ProjectileFightItem pfi)
+    {
+      return 0;
     }
 
     public LastingEffect StartBleeding(float damageEachTurn, LivingEntity attacker, int turnLasting)

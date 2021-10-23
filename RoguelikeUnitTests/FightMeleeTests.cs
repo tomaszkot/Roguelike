@@ -24,7 +24,7 @@ namespace RoguelikeUnitTests
         var game = CreateGame(numEnemies: 1, numberOfRooms: 1);
         var hero = game.Hero;
 
-        var enemies = game.GameManager.CurrentNode.GetTiles<Enemy>();
+        var enemies = CurrentNode.GetTiles<Enemy>();
         Assert.AreEqual(enemies.Count, 1);
         var enemy = enemies.Where(i => i.PowerKind != EnemyPowerKind.Plain).FirstOrDefault();
         if (enemy == null)
@@ -83,7 +83,7 @@ namespace RoguelikeUnitTests
       var game = CreateGame();
       var hero = game.Hero;
       hero.Stats.SetNominal(Roguelike.Attributes.EntityStatKind.ChanceToHit, 100);
-      var wpn = game.GameManager.LootGenerator.GetLootByTileName<Weapon>("hammer");
+      var wpn = GenerateEquipment<Weapon>("hammer");
       wpn.MakeMagic(EntityStatKind.ChanceToCauseStunning, 100);
       wpn.Identify();
       hero.SetEquipment(wpn);
@@ -112,14 +112,14 @@ namespace RoguelikeUnitTests
       var enemies = game.GameManager.EnemiesManager.AllEntities;
       var initEnemyCount = enemies.Count;
       Assert.Greater(initEnemyCount, 0);
-      Assert.AreEqual(initEnemyCount, game.GameManager.CurrentNode.GetTiles<Enemy>().Count);
+      Assert.AreEqual(initEnemyCount, CurrentNode.GetTiles<Enemy>().Count);
 
       var enemy = ActiveEnemies.First();
       while (enemy.Alive)
         InteractHeroWith(enemy as Enemy);
       var finalEnemyCount = enemies.Count;
       Assert.AreEqual(finalEnemyCount, initEnemyCount - 1);
-      Assert.AreEqual(finalEnemyCount, game.GameManager.CurrentNode.GetTiles<Enemy>().Count);
+      Assert.AreEqual(finalEnemyCount, CurrentNode.GetTiles<Enemy>().Count);
     }
 
     [Test]
@@ -130,7 +130,7 @@ namespace RoguelikeUnitTests
 
       var attack = game.Hero.GetCurrentValue(Roguelike.Attributes.EntityStatKind.Attack);
 
-      var wpn = game.GameManager.LootGenerator.GetLootByTileName<Weapon>("rusty_sword");
+      var wpn = GenerateEquipment<Weapon>("rusty_sword");
       Assert.AreEqual(wpn.PrimaryStatValue, 2);
       Assert.AreEqual(wpn.PrimaryStatDescription, "Attack: 1-3");
 
@@ -169,8 +169,8 @@ namespace RoguelikeUnitTests
       };
       var healthDiff = hitEnemy();
 
-      var emp = game.GameManager.CurrentNode.GetClosestEmpty(hero);
-      game.GameManager.CurrentNode.SetTile(enemy, emp.point);
+      var emp = CurrentNode.GetClosestEmpty(hero);
+      CurrentNode.SetTile(enemy, emp.point);
 
       var scroll = new Scroll(SpellKind.Rage);
       hero.Inventory.Add(scroll);

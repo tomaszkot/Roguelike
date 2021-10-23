@@ -98,7 +98,7 @@ namespace Roguelike.Tiles.Looting
         tag1 = fightItemKind.ToString();
         if (fightItemKind == FightItemKind.Stone)
         {
-          PrimaryStatDescription = "Stone, can make a harm if thrown by a skilled man.";
+          PrimaryStatDescription = "Stone, can cause harm if thrown by a skilled man.";
           HitTargetSound = "punch";
         }
         else if (fightItemKind == FightItemKind.ThrowingKnife)

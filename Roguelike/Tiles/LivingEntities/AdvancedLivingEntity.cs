@@ -386,9 +386,7 @@ namespace Roguelike.Tiles.LivingEntities
     public bool HandleEquipmentFound(Equipment eq)
     {
       if (!eq.IsIdentified)
-      {
         return false;
-      }
 
       var activeSet = GetActiveEquipment();//primary or secondary 
       var cep = CurrentEquipmentPosition.Unset;
@@ -412,7 +410,10 @@ namespace Roguelike.Tiles.LivingEntities
         }
       }
 
-      if (CanUseEquipment(eq) && (currentEq == null || (eq.IsBetter(currentEq)) && Options.Instance.Mechanics.AutoPutOnBetterEquipment))
+      if(
+          CanUseEquipment(eq) && 
+          (currentEq == null || (eq.IsBetter(currentEq)) && Options.Instance.Mechanics.AutoPutOnBetterEquipment)
+        )
       {
         if (currentEq != null)
         {
@@ -438,7 +439,30 @@ namespace Roguelike.Tiles.LivingEntities
         if(rs.Value.Nominal > Stats.GetNominal(rs.Kind))
           return false;
       }
-            
+
+      if(eq.EquipmentKind == EquipmentKind.Weapon || eq.EquipmentKind == EquipmentKind.Shield)
+      {
+        var wpn = GetActiveEquipment()[CurrentEquipmentKind.Weapon] as Weapon;
+        var shield = GetActiveEquipment()[CurrentEquipmentKind.Shield];
+        if
+        (
+          eq.EquipmentKind == EquipmentKind.Weapon && shield != null || 
+          eq.EquipmentKind == EquipmentKind.Shield && wpn != null
+        )
+        {
+          if(eq.EquipmentKind == EquipmentKind.Shield && 
+            (wpn.Kind == Weapon.WeaponKind.Bow || wpn.Kind == Weapon.WeaponKind.Crossbow)
+            )
+            return false;
+
+          if (eq is Weapon wpnToUSe && 
+              (wpnToUSe.Kind == Weapon.WeaponKind.Bow || wpnToUSe.Kind == Weapon.WeaponKind.Crossbow) &&
+              shield !=null
+            )
+            return false;
+        }
+      }
+
       return true;
     }
 

@@ -1,4 +1,5 @@
 ﻿using NUnit.Framework;
+using Roguelike.Tiles;
 using Roguelike.Tiles.Looting;
 using System;
 using System.Collections.Generic;
@@ -24,6 +25,9 @@ namespace RoguelikeUnitTests
       var mana = hero.Stats.Mana;
 
       Assert.True(game.GameManager.HeroTurn);
+      var bow = GenerateEquipment<Weapon>("Bow");
+      Assert.True(hero.SetEquipment(bow));
+
       UseFightItem(hero, enemy, fi);
 
       Assert.Greater(enemyHealth, enemy.Stats.Health);
@@ -53,7 +57,10 @@ namespace RoguelikeUnitTests
     private bool UseFightItem(Roguelike.Tiles.LivingEntities.Hero hero, Roguelike.Tiles.LivingEntities.Enemy enemy, ProjectileFightItem fi)
     {
       hero.Inventory.Add(fi);
-      return game.GameManager.ApplyAttackPolicy(hero, enemy, fi);
+      if (fi.FightItemKind == FightItemKind.Stone)
+        return game.GameManager.ApplyAttackPolicy(hero, enemy, fi);
+      
+      return game.GameManager.TryApplyAttackPolicy(fi, enemy);
     }
   }
 }

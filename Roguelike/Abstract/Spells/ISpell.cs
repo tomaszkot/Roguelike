@@ -58,7 +58,7 @@ namespace Roguelike.Abstract.Spells
       if (Damage != null)
         AddString(Kind + " Damage: " + Damage, addIndent);
       if (TourLasting != null)
-        AddString("TourLasting: " + TourLasting);
+        AddString("Duration: " + TourLasting);
       if (StatKind != null)
         AddString(StatKind + " " + StatKindPercentage.ToString(), addIndent);
       return extraStatDescription.ToArray();

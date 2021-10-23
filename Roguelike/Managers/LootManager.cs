@@ -276,6 +276,19 @@ namespace Roguelike.Managers
           extraLoot.Add(loot);
       }
 
+      if (lootSource is Enemy en)
+      {
+        var fis = new FightItemKind[] { FightItemKind .PlainArrow, FightItemKind.PlainBolt, FightItemKind.ThrowingKnife};
+        foreach (var fi in fis)
+        {
+          var co = en.GetFightItemKindHitCounter(fi);
+          if (co > 0)
+          {
+            extraLoot.Add(new ProjectileFightItem(fi) { Count = co });
+          }
+        }
+      }
+
       return extraLoot;
     }
   }

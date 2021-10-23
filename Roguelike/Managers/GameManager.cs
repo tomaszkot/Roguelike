@@ -952,7 +952,7 @@ namespace Roguelike.Managers
 
       merch.Inventory.Items.Add(new ProjectileFightItem(FightItemKind.Stone) { Count = 4 });
       merch.Inventory.Items.Add(new ProjectileFightItem(FightItemKind.ThrowingKnife) { Count = 4 });
-
+      
       merch.Inventory.Items.Add(new ProjectileFightItem(FightItemKind.PlainArrow) { Count = RandHelper.GetRandomInt(50) + 25 });
       merch.Inventory.Items.Add(new ProjectileFightItem(FightItemKind.PlainBolt) { Count = RandHelper.GetRandomInt(50) + 25 });
 
@@ -1250,6 +1250,47 @@ namespace Roguelike.Managers
     public void SaveGameOptions()
     {
       Persister.SaveOptions(Options.Instance);
+    }
+
+    public bool TryApplyAttackPolicy(ProjectileFightItem fi, Tile pointedTile, Action<Tile> beforAttackHandler = null)
+    {
+      if (!CanHeroDoAction())
+        return false;
+
+      var hero = this.Hero;
+      fi.Caller = this.Hero;
+
+      if (fi.FightItemKind == FightItemKind.PlainBolt ||
+          fi.FightItemKind == FightItemKind.PlainArrow)
+      {
+        var wpn = hero.GetActiveWeapon();
+        if (wpn == null 
+           || (wpn.Kind != Roguelike.Tiles.Weapon.WeaponKind.Crossbow && 
+               wpn.Kind != Roguelike.Tiles.Weapon.WeaponKind.Bow))
+        {
+          AppendAction(new Roguelike.Events.GameEvent() { Info = "Proper weapon not equipped" });
+          return false;
+        }
+      }
+
+      var target = pointedTile;/// CurrentGameGrid.GetTileAt(pointedTile);
+      var inReach = hero.IsTileInProjectileFightItemReach(fi, target);
+      if (!inReach)
+      {
+        this.SoundManager.PlayBeepSound();
+        AppendAction(new GameEvent() { Info = "Target out of range" });
+      }
+
+      var destroyable = target;// as Roguelike.Tiles.Abstract.IDestroyable;
+      if (destroyable != null)
+      {
+        if(beforAttackHandler!=null)
+          beforAttackHandler(target);
+        return ApplyAttackPolicy(hero, destroyable, fi);
+      }
+      
+      SoundManager.PlayBeepSound();
+      return false;
     }
 
     public bool ApplyAttackPolicy

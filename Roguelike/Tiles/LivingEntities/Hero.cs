@@ -211,5 +211,17 @@ namespace Roguelike.Tiles.LivingEntities
       Level = level;
       return true;
     }
+
+    protected override float GetDamageAddition(ProjectileFightItem pfi)
+    {
+      if (pfi.FightItemKind == FightItemKind.PlainArrow ||
+        pfi.FightItemKind == FightItemKind.PlainBolt)
+      {
+        var wpn = GetActiveWeapon();
+        if(wpn != null)
+          return GetHitAttackValue(false);
+      }
+      return base.GetDamageAddition(pfi);
+    }
   }
 }

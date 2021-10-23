@@ -104,7 +104,7 @@ namespace RoguelikeUnitTests
       var diffScroll = enemyHealth - enemy.Stats.Health;
 
       //melee
-      var wpn = game.GameManager.LootGenerator.GetLootByTileName<Weapon>("rusty_sword");
+      var wpn = GenerateEquipment<Weapon>("rusty_sword");
       game.Hero.SetEquipment(wpn, CurrentEquipmentKind.Weapon);
       for (int i = 0; i < 10; i++)
       {
