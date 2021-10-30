@@ -7,5 +7,7 @@ namespace Roguelike.Abstract.Projectiles
   {
     [JsonIgnore]
     LivingEntity Caller { get; set; }
+
+    bool DiesOnHit { get; set; }
   }
 }

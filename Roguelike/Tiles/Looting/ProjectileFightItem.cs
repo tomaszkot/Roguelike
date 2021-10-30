@@ -21,6 +21,7 @@ namespace Roguelike.Tiles.Looting
     public ProjectileFightItem(FightItemKind kind, LivingEntity caller = null) : base(kind)
     {
       Caller = caller;
+      DiesOnHit = false;
     }
 
     [JsonIgnore]
@@ -38,5 +39,10 @@ namespace Roguelike.Tiles.Looting
       }
     }
 
+    public bool DiesOnHit 
+    {
+      get; 
+      set; 
+    }
   }
 }

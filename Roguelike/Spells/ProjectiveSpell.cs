@@ -24,5 +24,8 @@ namespace Roguelike.Spells
       EnemyRequired = true;
       this.Caller = caller;
     }
+
+    [JsonIgnore]
+    public bool DiesOnHit { get; set; } = true;
   }
 }

@@ -218,8 +218,8 @@ namespace Roguelike.Tiles.LivingEntities
         pfi.FightItemKind == FightItemKind.PlainBolt)
       {
         var wpn = GetActiveWeapon();
-        if(wpn != null)
-          return GetMelleeHitAttackValue(false);
+        if (wpn != null && wpn.IsBowLike)
+          return wpn.Damage; //GetMelleeHitAttackValue(false);
       }
       return base.GetDamageAddition(pfi);
     }
