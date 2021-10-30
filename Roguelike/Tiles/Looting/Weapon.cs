@@ -41,7 +41,7 @@ namespace Roguelike.Tiles
     public Weapon()
     {
       this.EquipmentKind = EquipmentKind.Weapon;
-      this.PrimaryStatKind = EntityStatKind.Attack;
+      this.PrimaryStatKind = EntityStatKind.MeleeAttack;
       this.Price = 5;
     }
 
@@ -163,11 +163,11 @@ namespace Roguelike.Tiles
             SpecialFeature = new EntityStat(EntityStatKind.ChanceToCauseBleeding, chanceForEffect);
             break;
           case WeaponKind.Sword:
-            SpecialFeature = new EntityStat(EntityStatKind.ChanceToHit, chanceForEffect);
+            SpecialFeature = new EntityStat(EntityStatKind.ChanceToMeleeHit, chanceForEffect);
             break;
           case WeaponKind.Bashing:
             SpecialFeature = new EntityStat(EntityStatKind.ChanceToCauseStunning, chanceForEffect);
-            SpecialFeatureAux = new EntityStat(EntityStatKind.ChanceToHit, -chanceForEffect);
+            SpecialFeatureAux = new EntityStat(EntityStatKind.ChanceToMeleeHit, -chanceForEffect);
 
             break;
           case WeaponKind.Axe:

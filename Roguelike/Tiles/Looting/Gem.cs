@@ -85,7 +85,7 @@ namespace Roguelike.Tiles.Looting
     {
       PopulateProps(enhancmentPropsRuby, EntityStatKind.ResistFire, EntityStatKind.FireAttack, EntityStatKind.Health);
       PopulateProps(enhancmentPropsEmer, EntityStatKind.ResistPoison, EntityStatKind.PoisonAttack, EntityStatKind.Mana);
-      PopulateProps(enhancmentPropsDiam, EntityStatKind.ResistCold, EntityStatKind.ColdAttack, EntityStatKind.ChanceToHit);
+      PopulateProps(enhancmentPropsDiam, EntityStatKind.ResistCold, EntityStatKind.ColdAttack, EntityStatKind.ChanceToMeleeHit);
 
       enhancmentProps[GemKind.Ruby] = enhancmentPropsRuby;
       enhancmentProps[GemKind.Emerald] = enhancmentPropsEmer;

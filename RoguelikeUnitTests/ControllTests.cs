@@ -131,7 +131,7 @@ namespace RoguelikeUnitTests
 
       var level = game.GenerateLevel(0, gi);
       game.GameManager.Context.AutoTurnManagement = false;
-      game.Hero.Stats.SetNominal(Roguelike.Attributes.EntityStatKind.ChanceToHit, 100);
+      game.Hero.Stats.SetNominal(Roguelike.Attributes.EntityStatKind.ChanceToMeleeHit, 100);
 
       Assert.AreEqual(game.GameManager.Context.TurnOwner, TurnOwner.Hero);
       var heroPos = game.Hero.point;
@@ -181,7 +181,7 @@ namespace RoguelikeUnitTests
         gi.MakeEmpty();
 
         var level = game.GenerateLevel(0, gi);
-        game.Hero.Stats.SetNominal(Roguelike.Attributes.EntityStatKind.ChanceToHit, 100);
+        game.Hero.Stats.SetNominal(Roguelike.Attributes.EntityStatKind.ChanceToMeleeHit, 100);
         var heroPos = game.Hero.point;
         Assert.AreEqual(game.GameManager.Context.TurnOwner, TurnOwner.Hero);
 

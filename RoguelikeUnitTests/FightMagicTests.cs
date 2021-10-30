@@ -88,7 +88,7 @@ namespace RoguelikeUnitTests
     {
       var game = CreateGame();
       var hero = game.Hero;
-      Assert.Less(hero.Stats.Attack, 20);
+      Assert.Less(hero.Stats.MeleeAttack, 20);
       var enemy = AllEnemies.First();
       enemy.Stats.SetNominal(Roguelike.Attributes.EntityStatKind.Health, 350);
       hero.Stats.SetNominal(Roguelike.Attributes.EntityStatKind.Mana, 250);

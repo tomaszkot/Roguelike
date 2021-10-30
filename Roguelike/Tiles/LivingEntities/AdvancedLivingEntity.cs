@@ -149,19 +149,16 @@ namespace Roguelike.Tiles.LivingEntities
       { Weapon.WeaponKind.Sword, EntityStatKind.SwordExtraDamage},
       { Weapon.WeaponKind.Bashing, EntityStatKind.BashingExtraDamage},
       { Weapon.WeaponKind.Dagger, EntityStatKind.DaggerExtraDamage},
-      { Weapon.WeaponKind.Staff, EntityStatKind.StaffExtraDamage},
-      { Weapon.WeaponKind.Scepter, EntityStatKind.ScepterExtraDamage},
-      { Weapon.WeaponKind.Wand, EntityStatKind.WandExtraDamage},
-
-      //these two shall add to ranged damage
-      //{ Weapon.WeaponKind.Bow, EntityStatKind.BowExtraDamage},
-      //{ Weapon.WeaponKind.Crossbow, EntityStatKind.CrossbowExtraDamage}
+            
     };
 
     public static Dictionary<Weapon.WeaponKind, EntityStatKind> ProjectileWeapons2Esk = new Dictionary<Weapon.WeaponKind, EntityStatKind>()
     {
       { Weapon.WeaponKind.Bow, EntityStatKind.BowExtraDamage},
-      { Weapon.WeaponKind.Crossbow, EntityStatKind.CrossbowExtraDamage}
+      { Weapon.WeaponKind.Crossbow, EntityStatKind.CrossbowExtraDamage},
+      { Weapon.WeaponKind.Staff, EntityStatKind.StaffExtraElementalProjectileDamage},
+      { Weapon.WeaponKind.Scepter, EntityStatKind.ScepterExtraElementalProjectileDamage},
+      { Weapon.WeaponKind.Wand, EntityStatKind.WandExtraElementalProjectileDamage},
     };
 
     public AdvancedLivingEntity(Container cont, Point point, char symbol) : base(point, symbol)
@@ -628,16 +625,18 @@ namespace Roguelike.Tiles.LivingEntities
       Stats.ResetStatFactors();
       if (fromLoad)//this shall not be affected by any after load
       {
-        Stats.GetStat(EntityStatKind.ChanceToHit).SetSubtraction(0);
-        Stats.GetStat(EntityStatKind.Defense).SetSubtraction(0);
-        Stats.GetStat(EntityStatKind.Attack).SetSubtraction(0);
+        //Stats.GetStat(EntityStatKind.ChanceToMeleeHit).SetSubtraction(0);
+        //Stats.GetStat(EntityStatKind.ChanceToPhysicalProjectileHit).SetSubtraction(0);
+        //Stats.GetStat(EntityStatKind.ChanceToElementalProjectile).SetSubtraction(0);
+        //Stats.GetStat(EntityStatKind.Defense).SetSubtraction(0);
+        //Stats.GetStat(EntityStatKind.Attack).SetSubtraction(0);
       }
 
       //accumulate positive factors
       AccumulateEqFactors(true);
 
       var si = GetStrengthIncrease();
-      Stats.AccumulateFactor(EntityStatKind.Attack, si);
+      //Stats.AccumulateFactor(EntityStatKind.Attack, si);//TODO es
       var abs = Abilities.PassiveItems;
       foreach (var ab in abs)
       {

@@ -74,7 +74,7 @@ namespace RoguelikeUnitTests
       var game = CreateGame();
       var Hero = game.Hero;
       var attack = Hero.Stats[EntityStatKind.Strength].CurrentValue;
-      var chanceToHit = Hero.Stats[EntityStatKind.ChanceToHit].CurrentValue;
+      var chanceToHit = Hero.Stats[EntityStatKind.ChanceToMeleeHit].CurrentValue;
 
       var hooch = new Hooch();
       //Assert.AreEqual(hooch.PrimaryStatDescription, "");
@@ -88,7 +88,7 @@ namespace RoguelikeUnitTests
       Action assertGreater = () =>
       {
         var hoochAttack = Hero.Stats[EntityStatKind.Strength];
-        var hoochChanceToHit = Hero.Stats[EntityStatKind.ChanceToHit];
+        var hoochChanceToHit = Hero.Stats[EntityStatKind.ChanceToMeleeHit];
         Assert.Greater(hoochAttack.CurrentValue, attack);
         Assert.Less(hoochChanceToHit.CurrentValue, chanceToHit);
       };
@@ -105,7 +105,7 @@ namespace RoguelikeUnitTests
       //now shall be off
       Assert.IsFalse(le.Any());
       var hoochAttackAfter = Hero.Stats[EntityStatKind.Strength];
-      var hoochChanceToHitAfter = Hero.Stats[EntityStatKind.ChanceToHit];
+      var hoochChanceToHitAfter = Hero.Stats[EntityStatKind.ChanceToMeleeHit];
       Assert.AreEqual(hoochAttackAfter.CurrentValue, attack);
       Assert.AreEqual(hoochChanceToHitAfter.CurrentValue, chanceToHit);
     }
@@ -116,7 +116,7 @@ namespace RoguelikeUnitTests
       var game = CreateGame();
       var Hero = game.Hero;
       var attack = Hero.Stats[EntityStatKind.Strength].CurrentValue;
-      var chanceToHit = Hero.Stats[EntityStatKind.ChanceToHit].CurrentValue;
+      var chanceToHit = Hero.Stats[EntityStatKind.ChanceToMeleeHit].CurrentValue;
 
       var hooch = new Hooch();
       var added = Hero.Inventory.Add(hooch);
@@ -131,7 +131,7 @@ namespace RoguelikeUnitTests
       Action assertGreater = () =>
       {
         var hoochAttack = Hero.Stats[EntityStatKind.Strength];
-        var hoochChanceToHit = Hero.Stats[EntityStatKind.ChanceToHit];
+        var hoochChanceToHit = Hero.Stats[EntityStatKind.ChanceToMeleeHit];
         Assert.Greater(hoochAttack.CurrentValue, attack);
         Assert.Less(hoochChanceToHit.CurrentValue, chanceToHit);
         if (strengthWithLE == 0)
@@ -155,7 +155,7 @@ namespace RoguelikeUnitTests
       //shall be same
       var str = Hero.Stats[EntityStatKind.Strength].CurrentValue;
       Assert.AreEqual(str, strengthWithLE);
-      Assert.AreEqual(Hero.Stats[EntityStatKind.ChanceToHit].CurrentValue, chanceToHitWithLE);
+      Assert.AreEqual(Hero.Stats[EntityStatKind.ChanceToMeleeHit].CurrentValue, chanceToHitWithLE);
 
       SkipTurns(6);
 
@@ -165,7 +165,7 @@ namespace RoguelikeUnitTests
       //now shall be off
       Assert.IsFalse(le.Any());
       var hoochAttackAfter = Hero.Stats[EntityStatKind.Strength];
-      var hoochChanceToHitAfter = Hero.Stats[EntityStatKind.ChanceToHit];
+      var hoochChanceToHitAfter = Hero.Stats[EntityStatKind.ChanceToMeleeHit];
       Assert.AreEqual(hoochAttackAfter.CurrentValue, attack);
       Assert.AreEqual(hoochChanceToHitAfter.CurrentValue, chanceToHit);
     }

@@ -454,7 +454,7 @@ namespace Roguelike.Spells
     {
     }
 
-    public RageSpell(LivingEntity caller) : base(caller, EntityStatKind.Attack)
+    public RageSpell(LivingEntity caller) : base(caller, EntityStatKind.MeleeAttack)
     {
       Kind = SpellKind.Rage;
     }
@@ -510,7 +510,8 @@ namespace Roguelike.Spells
     {
     }
 
-    public InaccuracySpell(LivingEntity caller) : base(caller, EntityStatKind.ChanceToHit, 15)
+    //TODO EntityStatKind.ChanceToPhysicalProjectileHit es
+    public InaccuracySpell(LivingEntity caller) : base(caller, EntityStatKind.ChanceToMeleeHit, 15)
     {
       Kind = SpellKind.Weaken;
       //TourLasting = (CalcTourLasting() * 2) / 3;

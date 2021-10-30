@@ -26,13 +26,13 @@ namespace Roguelike.Effects
           break;
         case EntityStatKind.ResistPoison:
           break;
-        case EntityStatKind.ChanceToHit:
+        case EntityStatKind.ChanceToMeleeHit:
           break;
         case EntityStatKind.ChanceToCastSpell:
           break;
         case EntityStatKind.Mana:
           break;
-        case EntityStatKind.Attack:
+        case EntityStatKind.MeleeAttack:
           break;
         case EntityStatKind.FireAttack:
           return EffectType.Firing;
@@ -54,7 +54,7 @@ namespace Roguelike.Effects
           break;
         case EntityStatKind.ChanceToEvadeMeleeAttack:
           break;
-        case EntityStatKind.ChanceToEvadeMagicAttack:
+        case EntityStatKind.ChanceToEvadeElementalProjectileAttack:
           break;
         case EntityStatKind.AxeExtraDamage:
           break;
@@ -86,7 +86,7 @@ namespace Roguelike.Effects
         esk = EntityStatKind.Health;
 
       else if (et == EffectType.Inaccuracy)
-        esk = EntityStatKind.ChanceToHit;
+        esk = EntityStatKind.ChanceToMeleeHit;//TODO es Bow?
       else if (et == EffectType.Poisoned || et == EffectType.Frozen || et == EffectType.Firing)
         esk = EntityStatKind.Health;
 

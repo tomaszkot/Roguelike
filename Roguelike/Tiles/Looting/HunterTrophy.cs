@@ -30,7 +30,7 @@ namespace Roguelike.Tiles.Looting
     {
       PopulateProps(enhancmentPropsFang, EntityStatKind.Defense, EntityStatKind.ChanceToBulkAttack, EntityStatKind.ChanceToEvadeMeleeAttack);
       PopulateProps(enhancmentPropsTusk, EntityStatKind.Health, EntityStatKind.ChanceToCauseBleeding, EntityStatKind.Strength);
-      PopulateProps(enhancmentPropsClaw, EntityStatKind.ChanceToHit, EntityStatKind.ChanceToStrikeBack, EntityStatKind.Dexterity);
+      PopulateProps(enhancmentPropsClaw, EntityStatKind.ChanceToMeleeHit, EntityStatKind.ChanceToStrikeBack, EntityStatKind.Dexterity);
 
       enhancmentProps[HunterTrophyKind.Fang] = enhancmentPropsFang;
       enhancmentProps[HunterTrophyKind.Tusk] = enhancmentPropsTusk;

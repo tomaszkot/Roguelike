@@ -6,24 +6,55 @@ using System.Text;
 
 namespace Roguelike.Attributes
 {
+  //Would be nice to generate dynamically these enums
   public enum EntityStatKind
   {
-    Unset,
+    Unset = 0,
 
-    Strength, Health, Magic, Defense, Dexterity,
+    Strength = 1, Health = 2, Magic = 3, Defense = 4, Dexterity = 5,
 
-    ResistFire, ResistCold, ResistPoison, ChanceToHit, ChanceToCastSpell, Mana, Attack,
-    FireAttack, ColdAttack, PoisonAttack, LightPower, LifeStealing, ManaStealing,
+    Mana = 10,
+    
+    ResistFire = 30, ResistCold = 32, ResistPoison = 34, ResistLighting = 36,
 
-    //Would be nice to generate dynamically these enums
-    ChanceToCauseBleeding, ChanceToCauseStunning, ChanceToCauseTearApart, ChanceToEvadeMeleeAttack, ChanceToEvadeMagicAttack,
-    AxeExtraDamage, SwordExtraDamage, BashingExtraDamage, DaggerExtraDamage,
-    LightingAttack, ResistLighting, ChanceToStrikeBack, ChanceToBulkAttack, ChanceToBurnNeighbour, ExlosiveCoctailDamage,
-    ThrowingKnifeDamage, ThrowingStoneDamage, ChanceToRepeatMelleeAttack, ChanceToRepeatElementalAttack,
+
+    ChanceToMeleeHit = 50, 
+    ChanceToCastSpell = 54,
+    ChanceToPhysicalProjectileHit = 56,
+
+    ChanceToEvadeMeleeAttack = 70,
+    ChanceToEvadeElementalProjectileAttack = 74,
+    ChanceToEvadePhysicalProjectileAttack = 76,
+    
+    ChanceToCauseBleeding = 80, ChanceToCauseStunning = 82, ChanceToCauseTearApart = 84, 
+
+    ChanceToStrikeBack = 90, ChanceToBulkAttack = 92, ChanceToBurnNeighbour = 94, 
+    ChanceToRepeatMelleeAttack = 100, ChanceToRepeatElementalProjectileAttack = 102, ChanceToRepeatPhysicalProjectileAttack = 104,
+    ChanceToCauseElementalAilment,
+    ChanceToElementalProjectileBulkAttack = 110,
+
+    FireAttack = 120,
+    ColdAttack = 124,
+    PoisonAttack = 126,
+    LightingAttack = 128,
+
+    LightPower = 132, 
+    LifeStealing = 134, 
+    ManaStealing = 136,
+    
+    AxeExtraDamage = 140, SwordExtraDamage = 142, BashingExtraDamage = 144, DaggerExtraDamage = 146,
+    ExlosiveCoctailExtraDamage = 148,
+    ThrowingKnifeExtraDamage = 150, ThrowingStoneExtraDamage = 152,
     //    ExtraElementalDamage,
-    ChanceToCauseElementalAilment, /*ExtraElementalDamage,*/ChanceToElementalBulkAttack,
-    StaffExtraDamage, ScepterExtraDamage, WandExtraDamage, HunterTrapExtraDamage, CrossbowExtraDamage, BowExtraDamage
+    StaffExtraElementalProjectileDamage = 160, ScepterExtraElementalProjectileDamage = 162, WandExtraElementalProjectileDamage = 164, 
+    HunterTrapExtraDamage = 170, CrossbowExtraDamage = 172, BowExtraDamage = 174, 
+    PhysicalProjectilesRange = 180, ElementalProjectilesRange = 182,
 
+    //CalculatedEntityStatKind
+    MeleeAttack = 1000,
+    PhysicalProjectilesAttack = 1010,
+    ElementalSpellProjectilesAttack = 1020,//elementals from scroll, book
+    ElementalWeaponProjectilesAttack = 1030//elementals from wand, staff
   };
 
   public class EntityStats
@@ -128,11 +159,11 @@ namespace Roguelike.Attributes
       this[kind].Nominal = nominalValue;
     }
 
-    public float Attack
+    public float MeleeAttack
     {
       get
       {
-        return this[EntityStatKind.Attack].TotalValue;
+        return this[EntityStatKind.MeleeAttack].TotalValue;
       }
     }
 
@@ -166,11 +197,11 @@ namespace Roguelike.Attributes
       return Health < this[EntityStatKind.Health].Nominal * factor;
     }
 
-    public float ChanceToHit
+    public float ChanceToMeleeHit
     {
       get
       {
-        return this[EntityStatKind.ChanceToHit].TotalValue;
+        return this[EntityStatKind.ChanceToMeleeHit].TotalValue;
       }
     }
 

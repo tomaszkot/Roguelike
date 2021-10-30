@@ -65,7 +65,7 @@ namespace Roguelike.Tiles
       switch (EquipmentKind)
       {
         case EquipmentKind.Weapon:
-          eskToEnhance = EntityStatKind.Attack;
+          eskToEnhance = EntityStatKind.MeleeAttack;
           break;
         //case EquipmentKind.Armor:
         //case EquipmentKind.Helmet:
@@ -303,8 +303,14 @@ namespace Roguelike.Tiles
       return Price > currentEq.Price;
     }
 
-    public static List<EntityStatKind> possibleChoicesWeapon = new List<EntityStatKind>() { EntityStatKind.Attack, EntityStatKind.ChanceToHit, EntityStatKind.ColdAttack,
-      EntityStatKind.FireAttack,  EntityStatKind.PoisonAttack};
+    public static List<EntityStatKind> possibleChoicesWeapon = new List<EntityStatKind>() 
+    { 
+      //EntityStatKind.Attack, TODO es
+      //EntityStatKind.ChanceToHit, TODO es
+      EntityStatKind.ColdAttack,
+      EntityStatKind.FireAttack, 
+      EntityStatKind.PoisonAttack
+    };
 
     public static List<EntityStatKind> possibleChoicesWeaponMagician = new List<EntityStatKind>()
     {
@@ -313,9 +319,14 @@ namespace Roguelike.Tiles
       ,EntityStatKind.ChanceToEvadeMeleeAttack, EntityStatKind.ChanceToEvadeMeleeAttack
     };
 
-    public static List<EntityStatKind> possibleChoicesArmor = new List<EntityStatKind>() { EntityStatKind.Defense, EntityStatKind.ChanceToHit, EntityStatKind.Health,
+    public static List<EntityStatKind> possibleChoicesArmor = new List<EntityStatKind>() 
+    {
+      EntityStatKind.Defense, 
+      //EntityStatKind.ChanceToHit, TODO es
+      EntityStatKind.Health,
       EntityStatKind.Magic, EntityStatKind.Mana, EntityStatKind.ResistCold, EntityStatKind.ResistFire,
-      EntityStatKind.ResistPoison, EntityStatKind.LightPower, EntityStatKind.ChanceToCastSpell};
+      EntityStatKind.ResistPoison, EntityStatKind.LightPower, EntityStatKind.ChanceToCastSpell
+    };
 
     public static List<EntityStatKind> possibleChoicesJewelery = new List<EntityStatKind>() { EntityStatKind.Mana, EntityStatKind.Magic, EntityStatKind.Health,
     EntityStatKind.ResistCold, EntityStatKind.ResistFire, EntityStatKind.ResistPoison, EntityStatKind.ChanceToCastSpell};

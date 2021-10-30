@@ -17,7 +17,7 @@ namespace Roguelike.Calculated
 
     public AttackDescription(LivingEntity ent)
     {
-      Current = ent.GetCurrentValue(EntityStatKind.Attack);
+      Current = ent.GetCurrentValue(EntityStatKind.MeleeAttack);
 
       CurrentPhysical = Current;
 
@@ -50,7 +50,7 @@ namespace Roguelike.Calculated
       foreach (var npd in NonPhysical)
         CurrentTotal += npd.Value;
 
-      Nominal = ent.Stats.GetStat(EntityStatKind.Attack).Value.Nominal;
+      Nominal = ent.Stats.GetStat(EntityStatKind.MeleeAttack).Value.Nominal;
 
       Display = Nominal + "/" + CurrentTotal;
     }

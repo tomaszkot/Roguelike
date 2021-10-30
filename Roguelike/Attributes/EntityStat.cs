@@ -41,12 +41,14 @@ namespace Roguelike.Attributes
         && sk != EntityStatKind.Health
         && sk != EntityStatKind.Magic
         && sk != EntityStatKind.Mana
-        && sk != EntityStatKind.Attack
+        //&& sk != EntityStatKind.Attack
         && sk != EntityStatKind.Defense
         && sk != EntityStatKind.Dexterity
         && sk != EntityStatKind.FireAttack
         && sk != EntityStatKind.ColdAttack
         && sk != EntityStatKind.PoisonAttack
+        && sk != EntityStatKind.PhysicalProjectilesRange
+        && sk != EntityStatKind.ElementalProjectilesRange
         )
       {
         IsPercentage = true;

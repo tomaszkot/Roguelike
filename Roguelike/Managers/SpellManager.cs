@@ -136,7 +136,7 @@ namespace Roguelike.Managers
           return;
         if (!applyingBulk)
         {
-          var repeatOK = caster.IsStatRandomlyTrue(EntityStatKind.ChanceToRepeatElementalAttack);
+          var repeatOK = caster.IsStatRandomlyTrue(EntityStatKind.ChanceToRepeatElementalProjectileAttack);
           if (repeatOK)
           {
             ApplyAttackPolicy(caster, target, spellSource, BeforeApply, AfterApply, true);
@@ -154,7 +154,7 @@ namespace Roguelike.Managers
 
       var bulkOK = false;
       if (target is Enemy en && spellSource is WeaponSpellSource)
-        bulkOK = HandleBulk(en, EntityStatKind.ChanceToElementalBulkAttack, (Enemy en1) => {
+        bulkOK = HandleBulk(en, EntityStatKind.ChanceToElementalProjectileBulkAttack, (Enemy en1) => {
           applyingBulk = true;
           ApplyAttackPolicy(caster, en1, spellSource, BeforeApply, AfterApply, true);
         });

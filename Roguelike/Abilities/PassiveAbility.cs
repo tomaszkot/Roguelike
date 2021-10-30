@@ -70,28 +70,28 @@ namespace Roguelike.Abilities
             ask = EntityStatKind.DaggerExtraDamage;
             break;
           case AbilityKind.SwordsMastering:
-            psk = EntityStatKind.ChanceToHit;
+            psk = EntityStatKind.ChanceToMeleeHit;
             ask = EntityStatKind.SwordExtraDamage;
             break;
           
           case AbilityKind.StaffsMastering:
-            psk = EntityStatKind.ChanceToRepeatElementalAttack;
-            ask = EntityStatKind.StaffExtraDamage;
+            psk = EntityStatKind.ChanceToRepeatElementalProjectileAttack;
+            ask = EntityStatKind.StaffExtraElementalProjectileDamage;
             break;
           case AbilityKind.SceptersMastering:
             psk = EntityStatKind.ChanceToCauseElementalAilment;
-            ask = EntityStatKind.ScepterExtraDamage;
+            ask = EntityStatKind.ScepterExtraElementalProjectileDamage;
             break;
           case AbilityKind.WandsMastering:
-            psk = EntityStatKind.ChanceToElementalBulkAttack;
-            ask = EntityStatKind.WandExtraDamage;
+            psk = EntityStatKind.ChanceToElementalProjectileBulkAttack;
+            ask = EntityStatKind.WandExtraElementalProjectileDamage;
             break;
           case AbilityKind.CrossBowsMastering:
             psk = EntityStatKind.ChanceToCauseBleeding;
             ask = EntityStatKind.CrossbowExtraDamage;
             break;
           case AbilityKind.BowsMastering:
-            psk = EntityStatKind.ChanceToHit;
+            psk = EntityStatKind.ChanceToPhysicalProjectileHit;
             ask = EntityStatKind.BowExtraDamage;
             break;
           case AbilityKind.LootingMastering:

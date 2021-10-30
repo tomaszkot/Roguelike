@@ -45,7 +45,7 @@ namespace Roguelike.Tiles.Looting
         case TrophyKind.BatHead:
           tag1 = "bat_boss_trophy";
           Name = "Head of Bat's Boss";
-          st = new EntityStat(EntityStatKind.Attack, 0);
+          st = new EntityStat(EntityStatKind.MeleeAttack, 0);
           st.Factor = 3;
           SetMagicStat(st.Kind, st);
 
@@ -87,7 +87,7 @@ namespace Roguelike.Tiles.Looting
         case TrophyKind.SkeletonHead://skeleton_king 3rd level
           tag1 = "sk_boss_head";
           Name = "Head of Skeleton's Boss";
-          st = new EntityStat(EntityStatKind.ChanceToHit, 0);
+          st = new EntityStat(EntityStatKind.ChanceToMeleeHit, 0);
           st.Factor = 5;
           SetMagicStat(st.Kind, st);
 
@@ -99,7 +99,7 @@ namespace Roguelike.Tiles.Looting
           //st.Factor = 5;
           //SetMagicStat(st.Kind, st);
 
-          st = new EntityStat(EntityStatKind.ChanceToEvadeMagicAttack, 0);
+          st = new EntityStat(EntityStatKind.ChanceToEvadeElementalProjectileAttack, 0);
           st.Factor = 10;
           SetMagicStat(st.Kind, st);
 
@@ -169,11 +169,11 @@ namespace Roguelike.Tiles.Looting
           //st.Factor = 15;
           //SetMagicStat(st.Kind, st);
 
-          st = new EntityStat(EntityStatKind.ChanceToHit, 0);
+          st = new EntityStat(EntityStatKind.ChanceToMeleeHit, 0);
           st.Factor = 10;
           SetMagicStat(st.Kind, st);
 
-          st = new EntityStat(EntityStatKind.ChanceToEvadeMagicAttack, 0);
+          st = new EntityStat(EntityStatKind.ChanceToEvadeElementalProjectileAttack, 0);
           st.Factor = 15;
           SetMagicStat(st.Kind, st);
           break;
@@ -185,7 +185,7 @@ namespace Roguelike.Tiles.Looting
           st.Factor = 5;
           SetMagicStat(st.Kind, st);
 
-          st = new EntityStat(EntityStatKind.ChanceToHit, 0);
+          st = new EntityStat(EntityStatKind.ChanceToMeleeHit, 0);
           st.Factor = 10;
           SetMagicStat(st.Kind, st);
 
@@ -234,7 +234,7 @@ namespace Roguelike.Tiles.Looting
           st.Factor = 15;
           SetMagicStat(st.Kind, st);
 
-          st = new EntityStat(EntityStatKind.ChanceToEvadeMagicAttack, 0);
+          st = new EntityStat(EntityStatKind.ChanceToEvadeElementalProjectileAttack, 0);
           st.Factor = 15;
           SetMagicStat(st.Kind, st);
 
@@ -255,7 +255,7 @@ namespace Roguelike.Tiles.Looting
           //st.Factor = 15;
           //SetMagicStat(st.Kind, st);
 
-          st = new EntityStat(EntityStatKind.ChanceToEvadeMagicAttack, 0);
+          st = new EntityStat(EntityStatKind.ChanceToEvadeElementalProjectileAttack , 0);
           st.Factor = 15;
           SetMagicStat(st.Kind, st);
 

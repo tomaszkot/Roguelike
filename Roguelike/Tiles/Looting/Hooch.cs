@@ -29,7 +29,7 @@ namespace Roguelike.Tiles.Looting
       //#endif
       PrimaryStatDescription = "Powerful liquid, can be drunk or used as a part of a recipe.";
       StatKind = EntityStatKind.Strength;
-      SecondStatKind = EntityStatKind.ChanceToHit;
+      SecondStatKind = EntityStatKind.ChanceToMeleeHit;
       TurnLasting = 7;
       LootKind = LootKind.Other;
     }
@@ -42,7 +42,7 @@ namespace Roguelike.Tiles.Looting
         res.Add(
           new LootStatInfo()
           {
-            EntityStatKind = EntityStatKind.ChanceToHit,
+            EntityStatKind = EntityStatKind.ChanceToMeleeHit,
             Kind = LootStatKind.Unset,
             Desc = SecondStatKind.ToDescription() + ": " + GetSecondPercentageStatIncrease()
           });

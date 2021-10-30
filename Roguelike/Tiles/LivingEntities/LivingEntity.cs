@@ -159,11 +159,14 @@ namespace Roguelike.Tiles.LivingEntities
         if (nv > 0)
           Stats.SetNominal(basicStat.Key, nv);
       }
-      Stats.SetNominal(EntityStatKind.Attack, BaseStrength.Value.Nominal);//attack is same as str for a simple entity
+      
+      //TODO es
+      //Stats.SetNominal(EntityStatKind.Attack, BaseStrength.Value.Nominal);//attack is same as str for a simple entity
             
       Alive = true;
       Name = "";
-      Stats.SetNominal(EntityStatKind.ChanceToHit, 75);
+      Stats.SetNominal(EntityStatKind.ChanceToMeleeHit, 75);
+      Stats.SetNominal(EntityStatKind.ChanceToPhysicalProjectileHit, 75);
       Stats.SetNominal(EntityStatKind.ChanceToCastSpell, 75);
 
       var effectTypes = Enum.GetValues(typeof(EffectType)).Cast<EffectType>().ToList();
@@ -323,11 +326,15 @@ namespace Roguelike.Tiles.LivingEntities
       get { return Container.GetInstance<EventsManager>(); }
     }
 
-    internal bool CalculateIfHitWillHappen(LivingEntity target)
+    internal bool CalculateIfHitWillHappen(LivingEntity target, bool melee)//melee/projectile
     {
-      //var randVal = RandHelper.Random.NextDouble();
-      var hitWillHappen = CalculateIfStatChanceApplied(EntityStatKind.ChanceToHit, target);
-      return hitWillHappen;
+      var esk = melee ? EntityStatKind.ChanceToMeleeHit : EntityStatKind.ChanceToPhysicalProjectileHit;
+      {       //var randVal = RandHelper.Random.NextDouble();
+        var hitWillHappen = CalculateIfStatChanceApplied(esk, target);
+        return hitWillHappen;
+      }
+      //AssertFalse("CalculateIfHitWillHappen "+esk + "!");
+      //return false;
     }
 
     internal bool CalculateIfStatChanceApplied(EntityStatKind esk, LivingEntity target = null)
@@ -337,17 +344,25 @@ namespace Roguelike.Tiles.LivingEntities
       var chance = GetEffectChance(esk);
       if (target != null)
       {
-        if (esk == EntityStatKind.ChanceToHit)
+        if (esk == EntityStatKind.ChanceToMeleeHit)
         {
           if (ShouldEvade(target, EntityStatKind.ChanceToEvadeMeleeAttack, null))
           {
             EventsManager.AppendAction(new LivingEntityAction(LivingEntityActionKind.Missed) { InvolvedEntity = this, Info = Name + " missed " + target.Name });
             return false;
           }
-
           //Logger.LogInfo(this + " CalculateIfStatChanceApplied true");
-          return true;
         }
+        if (esk == EntityStatKind.ChanceToPhysicalProjectileHit)
+        {
+          if (ShouldEvade(target, EntityStatKind.ChanceToEvadePhysicalProjectileAttack, null))
+          {
+            EventsManager.AppendAction(new LivingEntityAction(LivingEntityActionKind.Missed) { InvolvedEntity = this, Info = Name + " missed " + target.Name });
+            return false;
+          }
+          //Logger.LogInfo(this + " CalculateIfStatChanceApplied true");
+        }
+        return true;
       }
       return randVal > 0 && (randVal * 100 <= chance);
     }
@@ -365,7 +380,7 @@ namespace Roguelike.Tiles.LivingEntities
 
     public virtual float GetMelleeHitAttackValue(bool withVariation)
     {
-      return GetCurrentValue(EntityStatKind.Attack);
+      return GetCurrentValue(EntityStatKind.MeleeAttack);
     }
         
     private void ReduceHealth(LivingEntity attacker, string sound, string damageDesc, string damageSource, ref float inflicted)
@@ -565,7 +580,7 @@ namespace Roguelike.Tiles.LivingEntities
     {
       if (projectile is Spell spell)
       {
-        if (ShouldEvade(this, EntityStatKind.ChanceToEvadeMagicAttack, spell))
+        if (ShouldEvade(this, EntityStatKind.ChanceToEvadeElementalProjectileAttack, spell))
         {
           //GameManager.Instance.AppendDiagnosticsUnityLog("ChanceToEvadeMagicAttack worked!");
           var ga = new GameEvent() { Info = Name + " evaded " + spell.Kind, Level = ActionLevel.Important };
@@ -598,10 +613,11 @@ namespace Roguelike.Tiles.LivingEntities
             PlaySound(sound);//TODO
             return true;
           }
-          else if (fi.FightItemKind == FightItemKind.ThrowingKnife)
+          else if (fi.FightItemKind == FightItemKind.ThrowingKnife ||
+            fi.FightItemKind == FightItemKind.PlainArrow || fi.FightItemKind == FightItemKind.PlainBolt)
           {
             if (RandHelper.GetRandomDouble() > 0.75)
-              StartBleeding(inflictedMellee / 3, attacker, -1);
+              StartBleeding(inflictedMellee / 3, attacker, 3);
           }
           else if (fi.FightItemKind == FightItemKind.HunterTrap)
           {
@@ -611,7 +627,7 @@ namespace Roguelike.Tiles.LivingEntities
             fi.SetState(FightItemState.Busy);
             sound = "trap";
           }
-
+          
           ReduceHealth(attacker, sound, damageDesc, srcName, ref inflicted);
         }
         else
@@ -901,9 +917,9 @@ namespace Roguelike.Tiles.LivingEntities
         def.Subtract(-def.Value.TotalValue / 2);
     }
 
-    public virtual float GetChanceToHit()
+    public virtual float GetChanceToHit(bool melee)
     {
-      return GetEffectChance(EntityStatKind.ChanceToHit);
+      return melee ? GetEffectChance(EntityStatKind.ChanceToMeleeHit) : GetEffectChance(EntityStatKind.ChanceToPhysicalProjectileHit);
     }
 
     public virtual float GetEffectChance(EntityStatKind esk)

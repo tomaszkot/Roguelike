@@ -462,7 +462,7 @@ namespace RoguelikeUnitTests
     public void TestChanceToRepeatMelleeAttack()
     {
       var game = CreateGame();
-      game.Hero.Stats.SetNominal(EntityStatKind.ChanceToHit, 100);
+      game.Hero.Stats.SetNominal(EntityStatKind.ChanceToMeleeHit, 100);
 
       var en = PlainEnemies.First();
       en.Stats.SetNominal(EntityStatKind.Health, 300);
@@ -571,8 +571,8 @@ namespace RoguelikeUnitTests
       var healthDiffBase = enHealthBase - en.Stats.Health;
       enHealthBase = en.Stats.Health;
       Assert.Greater(healthDiffBase, 0);
-      Assert.AreEqual(game.Hero.Stats.GetCurrentValue(EntityStatKind.ChanceToRepeatElementalAttack), 0);
-      game.Hero.Stats.SetNominal(EntityStatKind.ChanceToRepeatElementalAttack, 50);
+      Assert.AreEqual(game.Hero.Stats.GetCurrentValue(EntityStatKind.ChanceToRepeatElementalProjectileAttack), 0);
+      game.Hero.Stats.SetNominal(EntityStatKind.ChanceToRepeatElementalProjectileAttack, 50);
       bool works = false;
       for (int i = 0; i < 10; i++)
       {
@@ -724,7 +724,7 @@ namespace RoguelikeUnitTests
           break;
         case Roguelike.Abilities.AbilityKind.SwordsMastering:
           wpnName = "rusty_sword";
-          auxStat = EntityStatKind.ChanceToHit;
+          auxStat = EntityStatKind.ChanceToMeleeHit;
           break;
 
         case Roguelike.Abilities.AbilityKind.SceptersMastering:
@@ -733,11 +733,11 @@ namespace RoguelikeUnitTests
           break;
         case Roguelike.Abilities.AbilityKind.StaffsMastering:
           wpnName = "staff";
-          auxStat = EntityStatKind.ChanceToRepeatElementalAttack;
+          auxStat = EntityStatKind.ChanceToRepeatElementalProjectileAttack;
           break;
         case Roguelike.Abilities.AbilityKind.WandsMastering:
           wpnName = "wand";
-          auxStat = EntityStatKind.ChanceToElementalBulkAttack;
+          auxStat = EntityStatKind.ChanceToElementalProjectileBulkAttack;
           break;
         case Roguelike.Abilities.AbilityKind.CrossBowsMastering:
           wpnName = "crossbow";
@@ -745,7 +745,7 @@ namespace RoguelikeUnitTests
           break;
         case Roguelike.Abilities.AbilityKind.BowsMastering:
           wpnName = "bow";
-          auxStat = EntityStatKind.ChanceToHit;
+          auxStat = EntityStatKind.ChanceToPhysicalProjectileHit;
           break;
         default:
           break;

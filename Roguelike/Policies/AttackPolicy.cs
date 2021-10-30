@@ -30,7 +30,7 @@ namespace Roguelike.Policies
       var le = victim as LivingEntity;
       if (le != null)
       {
-        if (attacker.CalculateIfHitWillHappen(le))
+        if (attacker.CalculateIfHitWillHappen(le, true))
           attacker.ApplyPhysicalDamage(le);
         else
         {

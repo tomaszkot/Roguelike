@@ -135,17 +135,17 @@ namespace Roguelike.Abilities
             //}
             //if (kind == AbilityKind.ExplosiveMastering)
             {
-              psk = EntityStatKind.ExlosiveCoctailDamage;
+              psk = EntityStatKind.ExlosiveCoctailExtraDamage;
               //ask = EntityStatKind.ChanceToBurnNeighbour; TODO 
             }
             //if(kind == AbilityKind.HuntingMastering)
             //  psk = EntityStatKind.bl
             break;
           case AbilityKind.ThrowingKnifeMastering:
-            psk = EntityStatKind.ThrowingKnifeDamage;
+            psk = EntityStatKind.ThrowingKnifeExtraDamage;
             break;
           case AbilityKind.ThrowingStoneMastering:
-            psk = EntityStatKind.ThrowingStoneDamage;
+            psk = EntityStatKind.ThrowingStoneExtraDamage;
             break;
           case AbilityKind.HunterTrapMastering:
             psk = EntityStatKind.HunterTrapExtraDamage;

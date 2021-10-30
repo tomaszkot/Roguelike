@@ -21,7 +21,7 @@ namespace Roguelike.Tiles.LivingEntities
       // Character.Mana = 40;
       var str = 15;
       Stats.SetNominal(EntityStatKind.Strength, str);//15
-      Stats.SetNominal(EntityStatKind.Attack, str);
+      Stats.SetNominal(EntityStatKind.MeleeAttack, str);
       Stats.SetNominal(EntityStatKind.Magic, 10);
       Stats.SetNominal(EntityStatKind.Mana, 40);
       Stats.SetNominal(EntityStatKind.Defense, 10);

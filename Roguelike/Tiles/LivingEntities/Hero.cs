@@ -33,7 +33,7 @@ namespace Roguelike.Tiles.LivingEntities
       // Character.Mana = 40;
       StartStrength += 5;
       Stats.SetNominal(EntityStatKind.Strength, StartStrength);
-      Stats.SetNominal(EntityStatKind.Attack, StartStrength);
+      Stats.SetNominal(EntityStatKind.MeleeAttack, StartStrength);
       Stats.SetNominal(EntityStatKind.Magic, 10);
       Stats.SetNominal(EntityStatKind.Mana, 40);
       Stats.SetNominal(EntityStatKind.Defense, 10);
@@ -136,7 +136,7 @@ namespace Roguelike.Tiles.LivingEntities
     public override string GetFormattedStatValue(EntityStatKind kind, bool round)
     {
       var value = base.GetFormattedStatValue(kind, round);
-      if (kind == EntityStatKind.Attack)
+      if (kind == EntityStatKind.MeleeAttack)
       {
         value = GetTotalAttackValue();
       }

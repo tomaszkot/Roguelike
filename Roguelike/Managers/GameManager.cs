@@ -1279,6 +1279,7 @@ namespace Roguelike.Managers
       {
         this.SoundManager.PlayBeepSound();
         AppendAction(new GameEvent() { Info = "Target out of range" });
+        return false;
       }
 
       var destroyable = target;// as Roguelike.Tiles.Abstract.IDestroyable;

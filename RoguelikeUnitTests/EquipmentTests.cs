@@ -43,7 +43,7 @@ namespace RoguelikeUnitTests
     {
       var game = CreateGame();
       var hero = game.Hero;
-      Assert.AreEqual(hero.Stats.Attack, hero.Stats.Strength);
+      Assert.AreEqual(hero.Stats.MeleeAttack, hero.Stats.Strength);
     }
 
     [Test]
@@ -148,13 +148,13 @@ namespace RoguelikeUnitTests
       var wpn = game.GameManager.GenerateRandomEquipment(EquipmentKind.Weapon);
       Assert.Greater(wpn.PrimaryStatValue, 0);
       hero.Inventory.Add(wpn);
-      var attackBase = hero.GetCurrentValue(EntityStatKind.Attack);
+      var attackBase = hero.GetCurrentValue(EntityStatKind.MeleeAttack);
       hero.MoveEquipmentInv2Current(wpn, CurrentEquipmentKind.Weapon);
-      var attackWithWpn = hero.GetCurrentValue(EntityStatKind.Attack);
+      var attackWithWpn = hero.GetCurrentValue(EntityStatKind.MeleeAttack);
       Assert.Greater(attackWithWpn, attackBase);
       hero.MoveEquipmentCurrent2Inv(wpn, CurrentEquipmentPosition.Unset);
 
-      Assert.AreEqual(attackBase, hero.GetCurrentValue(EntityStatKind.Attack));
+      Assert.AreEqual(attackBase, hero.GetCurrentValue(EntityStatKind.MeleeAttack));
     }
 
     [Test]
@@ -168,9 +168,9 @@ namespace RoguelikeUnitTests
       var price = wpn.Price;
       Assert.Greater(price, 0);
 
-      wpn.MakeMagic(EntityStatKind.Attack, 4);
+      wpn.MakeMagic(EntityStatKind.MeleeAttack, 4);
       wpn.Identify();
-      Assert.AreEqual(att + 4, wpn.GetStats().GetTotalValue(EntityStatKind.Attack));
+      Assert.AreEqual(att + 4, wpn.GetStats().GetTotalValue(EntityStatKind.MeleeAttack));
       Assert.Greater(wpn.Price, price);
     }
 
@@ -191,8 +191,8 @@ namespace RoguelikeUnitTests
 
           if (kind == EquipmentKind.Weapon)
           {
-            Assert.AreEqual(eq.PrimaryStatKind, EntityStatKind.Attack);
-            Assert.AreEqual(stats.Attack, eq.PrimaryStatValue);
+            Assert.AreEqual(eq.PrimaryStatKind, EntityStatKind.MeleeAttack);
+            Assert.AreEqual(stats.MeleeAttack, eq.PrimaryStatValue);
           }
           else if (kind == EquipmentKind.Armor || kind == EquipmentKind.Glove || kind == EquipmentKind.Helmet)
           {
@@ -223,7 +223,7 @@ namespace RoguelikeUnitTests
 
       var eq2 = lg.GetRandomEquipment(EquipmentKind.Weapon, 1);
       var wpnStatBefore = eq2.GetStats().GetTotalValue(eq2.PrimaryStatKind);
-      eq2.MakeMagic(EntityStatKind.Attack, 5);
+      eq2.MakeMagic(EntityStatKind.MeleeAttack, 5);
       eq2.Identify();
       Assert.AreEqual(eq2.GetStats().GetTotalValue(eq2.PrimaryStatKind), wpnStatBefore + 5);
 
@@ -246,9 +246,9 @@ namespace RoguelikeUnitTests
       var heroStats = hero.Stats;
 
       //Attack
-      var heroAttack = heroStats.Attack;
+      var heroAttack = heroStats.MeleeAttack;
       Assert.AreEqual(heroStats.Strength, heroAttack);
-      var attack1 = hero.GetCurrentValue(EntityStatKind.Attack);
+      var attack1 = hero.GetCurrentValue(EntityStatKind.MeleeAttack);
       Assert.AreEqual(attack1, heroAttack);
 
       var lg = game.GameManager.LootGenerator;

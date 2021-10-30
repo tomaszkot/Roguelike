@@ -167,23 +167,23 @@ namespace RoguelikeUnitTests
       var wpn = env.LootGenerator.GetLootByTileName<Weapon>("rusty_sword");
       Assert.AreEqual(wpn.Class, EquipmentClass.Plain);
       var price = wpn.Price;
-      var damage = wpn.GetStats().GetTotalValue(EntityStatKind.Attack);
+      var damage = wpn.GetStats().GetTotalValue(EntityStatKind.MeleeAttack);
 
       Assert.Greater(price, 0);
       Assert.Greater(damage, 0);
       Assert.AreEqual(wpn.IsIdentified, true);
 
       int extraAttack = 2;
-      wpn.MakeMagic(EntityStatKind.Attack, extraAttack);
+      wpn.MakeMagic(EntityStatKind.MeleeAttack, extraAttack);
       Assert.AreEqual(wpn.IsIdentified, false);
       Assert.AreEqual(wpn.Class, EquipmentClass.Magic);
-      Assert.AreEqual(wpn.GetStats().GetTotalValue(EntityStatKind.Attack), damage);
+      Assert.AreEqual(wpn.GetStats().GetTotalValue(EntityStatKind.MeleeAttack), damage);
       Assert.Greater(wpn.Price, price);//shall be bit bigger
       price = wpn.Price;
 
       wpn.Identify();
       Assert.AreEqual(wpn.IsIdentified, true);
-      Assert.AreEqual(wpn.GetStats().GetTotalValue(EntityStatKind.Attack), damage + extraAttack);
+      Assert.AreEqual(wpn.GetStats().GetTotalValue(EntityStatKind.MeleeAttack), damage + extraAttack);
       Assert.Greater(wpn.Price, price);//shall be bit bigger
     }
 

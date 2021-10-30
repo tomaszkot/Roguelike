@@ -82,7 +82,7 @@ namespace RoguelikeUnitTests
     {
       var game = CreateGame();
       var hero = game.Hero;
-      hero.Stats.SetNominal(Roguelike.Attributes.EntityStatKind.ChanceToHit, 100);
+      hero.Stats.SetNominal(Roguelike.Attributes.EntityStatKind.ChanceToMeleeHit, 100);
       var wpn = GenerateEquipment<Weapon>("hammer");
       wpn.MakeMagic(EntityStatKind.ChanceToCauseStunning, 100);
       wpn.Identify();
@@ -128,17 +128,17 @@ namespace RoguelikeUnitTests
       var game = CreateGame();
       var en = game.GameManager.EnemiesManager.GetEnemies().Where(i => i.PowerKind == EnemyPowerKind.Champion).First();
 
-      var attack = game.Hero.GetCurrentValue(Roguelike.Attributes.EntityStatKind.Attack);
+      var attack = game.Hero.GetCurrentValue(Roguelike.Attributes.EntityStatKind.MeleeAttack);
 
       var wpn = GenerateEquipment<Weapon>("rusty_sword");
       Assert.AreEqual(wpn.PrimaryStatValue, 2);
       Assert.AreEqual(wpn.PrimaryStatDescription, "Attack: 1-3");
 
       game.Hero.SetEquipment(wpn);
-      var attackWithWpn = game.Hero.GetCurrentValue(Roguelike.Attributes.EntityStatKind.Attack);
+      var attackWithWpn = game.Hero.GetCurrentValue(Roguelike.Attributes.EntityStatKind.MeleeAttack);
       Assert.Greater(attackWithWpn, attack);
 
-      var attackFormatted = game.Hero.GetFormattedStatValue(Roguelike.Attributes.EntityStatKind.Attack, false);
+      var attackFormatted = game.Hero.GetFormattedStatValue(Roguelike.Attributes.EntityStatKind.MeleeAttack, false);
       Assert.AreEqual(attackFormatted, "16-18");
 
       var damages = new List<float>();
@@ -174,16 +174,16 @@ namespace RoguelikeUnitTests
 
       var scroll = new Scroll(SpellKind.Rage);
       hero.Inventory.Add(scroll);
-      var attackPrev = hero.GetCurrentValue(EntityStatKind.Attack);
+      var attackPrev = hero.GetCurrentValue(EntityStatKind.MeleeAttack);
       var spell = game.GameManager.SpellManager.ApplyPassiveSpell(hero, scroll);
       Assert.NotNull(spell);
-      Assert.Greater(hero.GetCurrentValue(EntityStatKind.Attack), attackPrev);
+      Assert.Greater(hero.GetCurrentValue(EntityStatKind.MeleeAttack), attackPrev);
 
       var healthDiffRage = hitEnemy();
       Assert.Greater(healthDiffRage, healthDiff);//rage in work
 
       GotoSpellEffectEnd(spell);
-      Assert.AreEqual(hero.GetCurrentValue(EntityStatKind.Attack), attackPrev);
+      Assert.AreEqual(hero.GetCurrentValue(EntityStatKind.MeleeAttack), attackPrev);
       var healthDiffAfterRage = hitEnemy();
       var delta = Math.Abs(healthDiffAfterRage - healthDiff);
       Assert.Less(delta, 0.001);//rage was over

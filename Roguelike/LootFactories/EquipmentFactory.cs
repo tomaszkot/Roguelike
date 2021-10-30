@@ -129,10 +129,10 @@ namespace Roguelike.LootFactories
           break;
         
         case EquipmentKind.Ring:
-          eq = GetRandomJewellery(EntityStatKind.Attack, EquipmentKind.Ring);
+          eq = GetRandomJewellery(EntityStatKind.MeleeAttack, EquipmentKind.Ring);
           break;
         case EquipmentKind.Amulet:
-          eq = GetRandomJewellery(EntityStatKind.Attack, EquipmentKind.Amulet);
+          eq = GetRandomJewellery(EntityStatKind.MeleeAttack, EquipmentKind.Amulet);
           break;
         case EquipmentKind.Trophy:
           break;
@@ -184,7 +184,7 @@ namespace Roguelike.LootFactories
       item.tag1 = "Sword";
       item.Kind = Weapon.WeaponKind.Sword;
 
-      item.PrimaryStatKind = EntityStatKind.Attack;
+      item.PrimaryStatKind = EntityStatKind.MeleeAttack;
       item.PrimaryStatValue = 5;
       return item;
     }

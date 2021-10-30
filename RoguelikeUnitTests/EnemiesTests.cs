@@ -55,7 +55,7 @@ namespace RoguelikeUnitTests
 
     float GetHitAttackValue(Enemy en)
     {
-      return en.GetCurrentValue(Roguelike.Attributes.EntityStatKind.Attack);
+      return en.GetCurrentValue(Roguelike.Attributes.EntityStatKind.MeleeAttack);
     }
 
     [Test]
@@ -98,7 +98,7 @@ namespace RoguelikeUnitTests
       Enemy lastBoss = null;
       var hero = game.Level.GetTiles<Hero>().SingleOrDefault();
 
-      EntityStatKind[] statKinds = new[] { EntityStatKind.Attack, EntityStatKind.Defense, EntityStatKind.Magic };
+      EntityStatKind[] statKinds = new[] { EntityStatKind.MeleeAttack, EntityStatKind.Defense, EntityStatKind.Magic };
       float lastDamageFromPlain = 0;
       float lastDamageFromChemp = 0;
       float lastDamageFromBoss = 0;
