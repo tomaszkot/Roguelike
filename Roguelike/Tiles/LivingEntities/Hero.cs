@@ -150,7 +150,7 @@ namespace Roguelike.Tiles.LivingEntities
 
     public override float GetMelleeHitAttackValue(bool withVariation)
     {
-      var ad = new AttackDescription(this);
+      var ad = new AttackDescription(this, AttackKind.Melee);
       var att = ad.CurrentPhysical;
       if (withVariation)//GUI is not meant to have it changed on character panel
       {

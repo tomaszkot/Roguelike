@@ -1,4 +1,5 @@
 ﻿using Roguelike.Attributes;
+using Roguelike.Extensions;
 using Roguelike.LootFactories;
 using Roguelike.Tiles.Looting;
 using System.Collections.Generic;
@@ -180,6 +181,10 @@ namespace Roguelike.Tiles
           case WeaponKind.Wand:
             spellSource = new WeaponSpellSource(this, Spells.SpellKind.FireBall);
             break;
+          case WeaponKind.Bow:
+          case WeaponKind.Crossbow:
+            this.PrimaryStatKind = EntityStatKind.PhysicalProjectilesAttack;
+            break;
           default:
             break;
         }
@@ -262,7 +267,7 @@ namespace Roguelike.Tiles
 
     protected override void SetPrimaryStatDesc()
     {
-      PrimaryStatDescription = PrimaryStatKind.ToString() + ": " + GetDamageDescription();
+      PrimaryStatDescription = PrimaryStatKind.ToDescription() + ": " + GetDamageDescription();
     }
   }
 }

@@ -12,7 +12,7 @@ namespace Roguelike.Spells
 {
   public class ProjectiveSpell : OffensiveSpell, IProjectileSpell
   {
-    public const int BaseDamage = 4;
+    
     public bool SourceOfDamage = true;
 
     [JsonIgnore]

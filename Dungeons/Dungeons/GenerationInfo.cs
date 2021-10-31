@@ -28,7 +28,7 @@ namespace Dungeons
 
 
     public bool GenerateOuterWalls = true && !ForceEmpty;
-    public bool GenerateRandomInterior = true && !ForceEmpty;
+    private bool generateRandomInterior = true && !ForceEmpty;
     public bool GenerateRandomStonesBlocks = true && !ForceEmpty;
     public bool GenerateDoors = true && !ForceEmpty;
     internal bool GenerateEmptyTiles = true;
@@ -50,6 +50,11 @@ namespace Dungeons
 
     public bool RevealTiles { get; set; } = false;
     public bool RevealAllNodes { get; set; } = false;
+    public bool GenerateRandomInterior 
+    { 
+      get => generateRandomInterior; 
+      set => generateRandomInterior = value; 
+    }
 
     public GenerationInfo()
     {

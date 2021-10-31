@@ -187,8 +187,9 @@ namespace Roguelike.Tiles
       {
         foreach (var stat in unidentifiedStats.GetStats())
         {
-          if (stat.Value.Factor > 0)
-            Price += GetPriceForFactor(stat.Key, (int)stat.Value.Factor);
+          var sign = stat.Value.Factor > 0 ? 1 : -1;
+          var pf = sign*GetPriceForFactor(stat.Key, (int)stat.Value.Factor);
+          Price += pf;
         }
 
         ExtendedInfo.Stats.Accumulate(unidentifiedStats);
@@ -200,6 +201,12 @@ namespace Roguelike.Tiles
       Debug.Assert(false);
       return false;
     }
+
+    //public virtual List<KeyValuePair> GetAffectingStats()
+    //{
+    //  var stats = GetStats();
+    //  //return stats.GetStats().Where(i => i.Value.Factor != 0).ToList();
+    //}
 
     public virtual EntityStats GetStats()
     {
@@ -259,7 +266,7 @@ namespace Roguelike.Tiles
 
     protected virtual void SetPrimaryStatDesc()
     {
-      PrimaryStatDescription = primaryStat.Kind.ToString() + ": " + PrimaryStatValue;
+      PrimaryStatDescription = primaryStat.Kind.ToDescription() + ": " + PrimaryStatValue;
     }
 
     public float PrimaryStatValue
@@ -280,7 +287,7 @@ namespace Roguelike.Tiles
     {
       this.primaryStat = new EntityStat(primaryStat, 0);
       PrimaryStatValue = value;
-      this.Name += " of " + primaryStat.ToString();
+      this.Name += " of " + primaryStat.ToDescription();
     }
 
     public List<KeyValuePair<EntityStatKind, EntityStat>> GetPossibleMagicStats()
@@ -290,7 +297,7 @@ namespace Roguelike.Tiles
 
     public List<KeyValuePair<EntityStatKind, EntityStat>> GetMagicStats()
     {
-      return ExtendedInfo.Stats.GetStats().Where(i => i.Value.Factor > 0).ToList();
+      return ExtendedInfo.Stats.GetStats().Where(i => i.Value.Factor != 0).ToList();
     }
 
     public void SetMagicStat(EntityStatKind statKind, EntityStat stat)
@@ -391,6 +398,11 @@ namespace Roguelike.Tiles
     public void MakeMagic(EntityStatKind stat, int statValue, AddMagicStatReason reason = AddMagicStatReason.Unset)
     {
       AddMagicStat(stat, IsSecondMagicLevel, statValue, false, reason);
+    }
+
+    public bool HasMagicStat(EntityStatKind esk)
+    {
+      return GetMagicStats().Any(i => i.Key == esk);
     }
 
     public void MakeMagic(bool magicOfSecondLevel = false)

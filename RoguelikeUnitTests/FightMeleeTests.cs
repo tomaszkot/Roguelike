@@ -132,7 +132,7 @@ namespace RoguelikeUnitTests
 
       var wpn = GenerateEquipment<Weapon>("rusty_sword");
       Assert.AreEqual(wpn.PrimaryStatValue, 2);
-      Assert.AreEqual(wpn.PrimaryStatDescription, "Attack: 1-3");
+      Assert.AreEqual(wpn.PrimaryStatDescription, "Melee Attack: 1-3");
 
       game.Hero.SetEquipment(wpn);
       var attackWithWpn = game.Hero.GetCurrentValue(Roguelike.Attributes.EntityStatKind.MeleeAttack);

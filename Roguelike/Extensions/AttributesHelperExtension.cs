@@ -1,4 +1,5 @@
-﻿using Roguelike.Discussions;
+﻿using Roguelike.Attributes;
+using Roguelike.Discussions;
 using System;
 
 namespace Roguelike.Extensions
@@ -8,6 +9,12 @@ namespace Roguelike.Extensions
     public static string ToDescription(this Enum enumValue)
     {
       var valueString = enumValue.ToString();
+
+      //if (valueString == EntityStatKind.MeleeAttack.ToString())
+      //{
+      //  return "Attack";
+      //}
+
       if (valueString == KnownSentenceKind.WhatsUp.ToString())
         return "What's up?";
       else if (valueString == KnownSentenceKind.SellHound.ToString())

@@ -37,7 +37,6 @@ namespace Roguelike.Tiles.LivingEntities
 
   public class AdvancedLivingEntity : LivingEntity, IPersistable, IEquipable, IAdvancedEntity
   {
-    
     public RelationToHero RelationToHero { get; set; } = new RelationToHero();
     public bool HasUrgentTopic { get; set; }
     public Discussion Discussion { get; set; } = new Discussion();
@@ -636,7 +635,7 @@ namespace Roguelike.Tiles.LivingEntities
       AccumulateEqFactors(true);
 
       var si = GetStrengthIncrease();
-      //Stats.AccumulateFactor(EntityStatKind.Attack, si);//TODO es
+      Stats.AccumulateFactor(EntityStatKind.MeleeAttack, si);
       var abs = Abilities.PassiveItems;
       foreach (var ab in abs)
       {
@@ -756,13 +755,19 @@ namespace Roguelike.Tiles.LivingEntities
       return wpn.Kind == Weapon.WeaponKind.Bashing;
     }
 
+    private bool CurrentWeaponCausesBleeding()
+    {
+      var wpn = GetCurrentEquipment(EquipmentKind.Weapon) as Weapon;
+      return wpn.Kind == Weapon.WeaponKind.Axe || wpn.Kind == Weapon.WeaponKind.Dagger || wpn.Kind == Weapon.WeaponKind.Sword;
+    }
+
     protected override LastingEffect EnsurePhysicalHitEffect(float inflicted, LivingEntity victim)
     {
       LastingEffect lastingEffectCalcInfo = null;
       var wpn = this.GetCurrentEquipment(EquipmentKind.Weapon) as Weapon;
       if (wpn != null)
       {
-        if (CalculateIfStatChanceApplied(EntityStatKind.ChanceToCauseBleeding, victim))
+        if (CurrentWeaponCausesBleeding() && CalculateIfStatChanceApplied(EntityStatKind.ChanceToCauseBleeding, victim))
           lastingEffectCalcInfo = victim.LastingEffectsSet.EnsureEffect(EffectType.Bleeding, inflicted / 3, this);
         //if (fi == null)//throwing knife will not cause stunning or tear apart
         {
@@ -828,7 +833,7 @@ namespace Roguelike.Tiles.LivingEntities
         if (AdvancedLivingEntity.ProjectileWeapons2Esk.ContainsKey(wpn.Kind))
         {
           var extraPercentage = Stats.GetCurrentValue(AdvancedLivingEntity.ProjectileWeapons2Esk[wpn.Kind]);
-          damage = FactorCalculator.CalcFactor(damage, extraPercentage);
+          damage = FactorCalculator.AddFactor(damage, extraPercentage);
         }
       }
       return damage;

@@ -28,7 +28,10 @@ namespace RoguelikeUnitTests
       var bow = GenerateEquipment<Weapon>("Bow");
       Assert.True(hero.SetEquipment(bow));
 
-      UseFightItem(hero, enemy, fi);
+      var tile = game.GameManager.CurrentNode.GetClosestEmpty(hero);
+      game.GameManager.CurrentNode.SetTile(enemy, tile.point);
+
+      Assert.True(UseFightItem(hero, enemy, fi));
 
       Assert.Greater(enemyHealth, enemy.Stats.Health);
       Assert.AreEqual(mana, hero.Stats.Mana);

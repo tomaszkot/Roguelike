@@ -9,6 +9,7 @@ namespace Roguelike.Spells
   public class OffensiveSpell : Spell, IDamagingSpell
   {
     float calcedDamage;
+    public const int BaseDamage = 2;
 
     public OffensiveSpell(LivingEntity caller, Weapon weaponSpellSource) : base(caller, weaponSpellSource)
     {
@@ -26,14 +27,17 @@ namespace Roguelike.Spells
       if (weaponSpellSource != null)
       {
         int add = 2;
-        var val = RandHelper.GetRandomDouble();
-        if (val > 0.66f)
-          add += 1;
-        else if(val < 0.33f)
-          add -= -1;
-        return weaponSpellSource.LevelIndex + add;
+        if (!weaponSpellSource.StableDamage)
+        {
+          var val = RandHelper.GetRandomDouble();
+          if (val > 0.66f)
+            add += 1;
+          else if (val < 0.33f)
+            add -= -1;
+        }
+        return weaponSpellSource.LevelIndex + BaseDamage;
       }
-      return magicLevel + 3;
+      return magicLevel + BaseDamage;
     }
 
     //Returns damage based on Spell level.

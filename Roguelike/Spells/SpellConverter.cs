@@ -1,9 +1,53 @@
-﻿using Roguelike.Effects;
+﻿using Roguelike.Attributes;
+using Roguelike.Effects;
+using Roguelike.Spells;
+
+namespace Roguelike
+{
+  public static class Converters
+  {
+    public static EntityStatKind ToEntityStatKind(this SpellKind spellKind)
+    {
+      return EntityStatKindFromSpellKind(spellKind);
+    }
+
+    public static EntityStatKind EntityStatKindFromSpellKind(SpellKind spellKind)
+    {
+      EntityStatKind esk = EntityStatKind.Unset;
+      switch (spellKind)
+      {
+        case SpellKind.FireBall:
+        case SpellKind.NESWFireBall:
+          esk = EntityStatKind.FireAttack;
+          break;
+
+        case SpellKind.IceBall:
+          esk = EntityStatKind.ColdAttack;
+          break;
+        case SpellKind.PoisonBall:
+          esk = EntityStatKind.PoisonAttack;
+          break;
+        case SpellKind.LightingBall:
+          esk = EntityStatKind.LightingAttack;
+          break;
+
+        default:
+          break;
+      }
+
+      return esk;
+    }
+  }
+}
+
 
 namespace Roguelike.Spells
 {
   public class SpellConverter
   {
+    
+  
+
     public static EffectType EffectTypeFromSpellKind(SpellKind sk)
     {
       switch (sk)

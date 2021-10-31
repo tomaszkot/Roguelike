@@ -6,6 +6,15 @@ using System.Text;
 
 namespace Roguelike.Attributes
 {
+  public enum AttackKind
+  {
+    Unset,
+    Melee,//sword, axe
+    PhysicalProjectile,//from bow, hand
+    WeaponElementalProjectile,//from wand, staff
+    SpellElementalProjectile,//from scroll, book
+  }
+
   //Would be nice to generate dynamically these enums
   public enum EntityStatKind
   {
@@ -63,11 +72,11 @@ namespace Roguelike.Attributes
 
     public EntityStats()
     {
-      var statKinds = Enum.GetValues(typeof(EntityStatKind));
-      foreach (EntityStatKind sk in statKinds)
-      {
-        //Ensure(sk);
-      }
+      //var statKinds = Enum.GetValues(typeof(EntityStatKind));
+      //foreach (EntityStatKind sk in statKinds)
+      //{
+      //  //Ensure(sk);
+      //}
     }
 
     public void Ensure(EntityStatKind kind)
@@ -332,8 +341,11 @@ namespace Roguelike.Attributes
     {
       foreach (var otherStat in otherStats.Stats)
       {
-        Ensure(otherStat.Key);
-        AccumulateFactor(otherStat.Key, otherStat.Value.Factor);
+        if (otherStat.Value.Factor != 0)
+        {
+          Ensure(otherStat.Key);
+          AccumulateFactor(otherStat.Key, otherStat.Value.Factor);
+        }
       }
     }
 

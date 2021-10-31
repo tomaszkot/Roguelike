@@ -12,7 +12,7 @@
 
       int prev = CalcFromLevel(lvl - 1, baseFactor);
 
-      return CalcFactor(prev, increase);
+      return AddFactor(prev, increase);
     }
 
     public static int CalcFromLevel1(int lvl, float increase, float levelMult = 1)
@@ -30,7 +30,7 @@
       {
         inc += levelMult * lvl;
       }
-      return CalcFactor(prev, inc);
+      return AddFactor(prev, inc);
     }
 
     public static int CalcFromLevel2(int lvl, float divider = 1)
@@ -38,12 +38,12 @@
       return (int)((lvl * lvl) / divider);
     }
 
-    public static int CalcFactor(int prevValue, float incPercentage)
+    public static int AddFactor(int prevValue, float incPercentage)
     {
       return prevValue + (int)(prevValue * incPercentage / 100f);
     }
 
-    public static float CalcFactor(float prevValue, float incPercentage)
+    public static float AddFactor(float prevValue, float incPercentage)
     {
       return prevValue + (float)(prevValue * incPercentage / 100f);
     }

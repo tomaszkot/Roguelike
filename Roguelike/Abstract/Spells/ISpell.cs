@@ -11,7 +11,7 @@ namespace Roguelike.Abstract.Spells
     float Damage { get; }
   }
 
-  public class SpellStatsDescription
+  public sealed class SpellStatsDescription
   {
     public int Level { get; set; }
     public int? ManaCost { get; set; }

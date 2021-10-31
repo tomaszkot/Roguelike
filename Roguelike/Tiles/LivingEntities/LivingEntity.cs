@@ -160,8 +160,7 @@ namespace Roguelike.Tiles.LivingEntities
           Stats.SetNominal(basicStat.Key, nv);
       }
       
-      //TODO es
-      //Stats.SetNominal(EntityStatKind.Attack, BaseStrength.Value.Nominal);//attack is same as str for a simple entity
+      Stats.SetNominal(EntityStatKind.MeleeAttack, BaseStrength.Value.Nominal);//attack is same as str for a simple entity
             
       Alive = true;
       Name = "";
@@ -361,8 +360,9 @@ namespace Roguelike.Tiles.LivingEntities
             return false;
           }
           //Logger.LogInfo(this + " CalculateIfStatChanceApplied true");
+
         }
-        return true;
+        
       }
       return randVal > 0 && (randVal * 100 <= chance);
     }
@@ -840,27 +840,7 @@ namespace Roguelike.Tiles.LivingEntities
 
     public float CalcNonPhysicalDamageFromSpell(Spell spell)
     {
-      EntityStatKind attackingStat = EntityStatKind.Unset;
-      switch (spell.Kind)
-      {
-        case SpellKind.FireBall:
-        case SpellKind.NESWFireBall:
-          attackingStat = EntityStatKind.FireAttack;
-          break;
-
-        case SpellKind.IceBall:
-          attackingStat = EntityStatKind.ColdAttack;
-          break;
-        case SpellKind.PoisonBall:
-          attackingStat = EntityStatKind.PoisonAttack;
-          break;
-        case SpellKind.LightingBall:
-          attackingStat = EntityStatKind.LightingAttack;
-          break;
-
-        default:
-          break;
-      }
+      EntityStatKind attackingStat = spell.Kind.ToEntityStatKind();
       var offSpell = spell as OffensiveSpell;
       var npd = CalculateNonPhysicalDamage(attackingStat, offSpell.Damage);
       return npd;

@@ -275,6 +275,7 @@ namespace RoguelikeUnitTests
       var hero = game.GameManager.Hero;
 
       var fi = new ProjectileFightItem(kind, hero);
+      fi.Count = 3;
       var damage1 = fi.Damage;
       Assert.Greater(damage1, 0);
       enemy.OnHitBy(fi);
