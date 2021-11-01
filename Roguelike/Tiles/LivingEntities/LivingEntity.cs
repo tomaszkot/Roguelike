@@ -3,6 +3,7 @@ using Dungeons.Tiles;
 using Newtonsoft.Json;
 using Roguelike.Abstract.Spells;
 using Roguelike.Attributes;
+using Roguelike.Calculated;
 using Roguelike.Effects;
 using Roguelike.Events;
 using Roguelike.Extensions;
@@ -382,7 +383,7 @@ namespace Roguelike.Tiles.LivingEntities
     {
       return GetCurrentValue(EntityStatKind.MeleeAttack);
     }
-        
+
     private void ReduceHealth(LivingEntity attacker, string sound, string damageDesc, string damageSource, ref float inflicted)
     {
       if (d_immortal)
@@ -587,7 +588,11 @@ namespace Roguelike.Tiles.LivingEntities
           AppendAction(ga);
           return false;
         }
-        var dmg = CalcNonPhysicalDamageFromSpell(spell);
+        var attackingStat = spell.Kind.ToEntityStatKind();
+        //var offSpell = spell as OffensiveSpell;
+        //var dmg = CalculateNonPhysicalDamage(attackingStat, offSpell.Damage);
+        var ad = new AttackDescription(spell.Caller, spell.IsFromMagicalWeapon ? AttackKind.WeaponElementalProjectile : AttackKind.SpellElementalProjectile);
+        var dmg = CalculateNonPhysicalDamage(attackingStat, ad.CurrentTotal);
         OnHitBy(dmg, spell);
       }
 
@@ -596,10 +601,9 @@ namespace Roguelike.Tiles.LivingEntities
         if (fi is ProjectileFightItem pfi)
         {
           var damageDesc = "";
-
-          var damage = pfi.Caller.CalcDamage(pfi);
-          var inflictedMellee = CalcMeleeDamage(damage, ref damageDesc);
-          var inflicted = inflictedMellee;
+                    
+          var ad = new AttackDescription(fi.Caller, AttackKind.PhysicalProjectile);
+          var inflicted = CalcMeleeDamage(ad.CurrentPhysical, ref damageDesc);//TODO what about NonPhysical?
           var sound = pfi.HitTargetSound;// "punch";
           var srcName = fi.FightItemKind.ToDescription();
           var attacker = pfi.Caller;
@@ -617,17 +621,22 @@ namespace Roguelike.Tiles.LivingEntities
             fi.FightItemKind == FightItemKind.PlainArrow || fi.FightItemKind == FightItemKind.PlainBolt)
           {
             if (RandHelper.GetRandomDouble() > 0.75)
-              StartBleeding(inflictedMellee / 3, attacker, 3);
+              StartBleeding(inflicted / 3, attacker, 3);
           }
           else if (fi.FightItemKind == FightItemKind.HunterTrap)
           {
-            var bleed = StartBleeding(inflictedMellee, null, fi.TurnLasting);
+            var bleed = StartBleeding(inflicted, null, fi.TurnLasting);
             bleed.Source = fi;
 
             fi.SetState(FightItemState.Busy);
             sound = "trap";
           }
-          
+
+          foreach (var kv in ad.NonPhysical)
+          {
+            inflicted += CalculateNonPhysicalDamage(kv.Key, kv.Value);
+          }
+
           ReduceHealth(attacker, sound, damageDesc, srcName, ref inflicted);
         }
         else
@@ -836,14 +845,6 @@ namespace Roguelike.Tiles.LivingEntities
     public float GetTotalValue(EntityStatKind esk)
     {
       return Stats.GetTotalValue(esk);
-    }
-
-    public float CalcNonPhysicalDamageFromSpell(Spell spell)
-    {
-      EntityStatKind attackingStat = spell.Kind.ToEntityStatKind();
-      var offSpell = spell as OffensiveSpell;
-      var npd = CalculateNonPhysicalDamage(attackingStat, offSpell.Damage);
-      return npd;
     }
 
     float CalculateNonPhysicalDamage(EntityStatKind attackingStat, float damageAmount)

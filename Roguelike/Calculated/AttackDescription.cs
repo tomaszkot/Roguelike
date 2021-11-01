@@ -12,7 +12,7 @@ namespace Roguelike.Calculated
     public float Nominal { get; set; }//strength
     float Current { get; set; }//strength + weapon melee damage
     public float CurrentPhysical { get; set; }//Current + Extra form abilities
-    Dictionary<EntityStatKind, float> NonPhysical { get; set; }//weapon  ice, fire... damages
+    public Dictionary<EntityStatKind, float> NonPhysical { get; private set; }//weapon  ice, fire... damages
     public float CurrentTotal { get; set; }//Current + NonPhysical
 
     public string Display { get; set; }
@@ -112,8 +112,8 @@ namespace Roguelike.Calculated
       }
 
       CurrentTotal = CurrentPhysical;
-      NonPhysical = ent.GetNonPhysicalDamages();
-      foreach (var npd in NonPhysical)
+      var nonPhysical = ent.GetNonPhysicalDamages();
+      foreach (var npd in nonPhysical)
       {
         bool add = true;
         if (wpn.IsMagician && attackKind == AttackKind.WeaponElementalProjectile)
@@ -123,7 +123,10 @@ namespace Roguelike.Calculated
         if (wpn.IsBowLike && attackKind == AttackKind.Melee)
           add = false;
         if (add)
+        {
           CurrentTotal += npd.Value;
+          NonPhysical[npd.Key] = npd.Value;
+        }
       }
       Nominal = ent.Stats.GetStat(attackStat).Value.Nominal;
 
