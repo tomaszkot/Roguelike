@@ -18,7 +18,8 @@ namespace RoguelikeUnitTests
       var game = CreateGame();
       var hero = game.Hero;
 
-      var fi = new ProjectileFightItem(FightItemKind.PlainArrow, hero);
+      var fi = AddFightItemToHero(FightItemKind.PlainArrow, hero);
+
       var enemy = ActiveEnemies.First();
       var enemyHealth = enemy.Stats.Health;
       enemy.Stats.SetNominal(Roguelike.Attributes.EntityStatKind.Defense, 10);
@@ -44,7 +45,7 @@ namespace RoguelikeUnitTests
       var game = CreateGame();
       var hero = game.Hero;
 
-      var fi = new ProjectileFightItem(FightItemKind.Stone, hero);
+      var fi = AddFightItemToHero(FightItemKind.Stone, hero);
       var enemy = ActiveEnemies.First();
       var enemyHealth = enemy.Stats.Health;
       var mana = hero.Stats.Mana;

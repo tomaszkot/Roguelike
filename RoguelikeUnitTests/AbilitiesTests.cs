@@ -1,7 +1,7 @@
-﻿using Dungeons.Tiles;
+﻿using Dungeons.Fight;
+using Dungeons.Tiles;
 using NUnit.Framework;
 using Roguelike.Abilities;
-//using Roguelike.Abstract.Abilities;
 using Roguelike.Attributes;
 using Roguelike.Spells;
 using Roguelike.Tiles;
@@ -33,6 +33,7 @@ namespace RoguelikeUnitTests
       }
       var ab = game.GameManager.Hero.GetPassiveAbility(Roguelike.Abilities.AbilityKind.BulkAttack);
       ab.PrimaryStat.Value.Factor = 100;
+      game.Hero.AlwaysHit[AttackKind.Melee] = true;
       game.Hero.RecalculateStatFactors(false);
       game.GameManager.InteractHeroWith(AllEnemies[0]);
 
@@ -260,7 +261,7 @@ namespace RoguelikeUnitTests
 
       Assert.True(champion.HasLastingEffect(Roguelike.Effects.EffectType.Firing));
     }
-
+        
     [TestCase(FightItemKind.ExplosiveCocktail)]
     [TestCase(FightItemKind.Stone)]
     [TestCase(FightItemKind.ThrowingKnife)]
@@ -274,11 +275,11 @@ namespace RoguelikeUnitTests
       var enemyBeginHealth = enemy.Stats.Health;
       var hero = game.GameManager.Hero;
 
-      var fi = new ProjectileFightItem(kind, hero);
-      fi.Count = 3;
+      var fi = AddFightItemToHero(kind, hero);
+      
       var damage1 = fi.Damage;
       Assert.Greater(damage1, 0);
-      enemy.OnHitBy(fi);
+      Assert.AreEqual(enemy.OnHitBy(fi), HitResult.Hit);
       var chempAfter1HitHealth = enemy.Stats.Health;
 
       Assert.Greater(enemyBeginHealth, chempAfter1HitHealth);
@@ -286,7 +287,7 @@ namespace RoguelikeUnitTests
 
       IncreaseAbility(hero, fi.AbilityKind);
 
-      fi = new ProjectileFightItem(kind, hero);
+      fi = AddFightItemToHero(kind, hero);
       var damage2 = fi.Damage;
       Assert.Greater(damage2, damage1);
       enemy.OnHitBy(fi);
@@ -666,7 +667,7 @@ namespace RoguelikeUnitTests
 
       Assert.Greater(damage, 0);
 
-      var heroAttack = GetHeroAttack(hero, wpn);
+      var heroAttack = hero.GetAttackValue().CurrentTotal;//, wpn);
 
       for (int i = 0; i < MaxAbilityInc + 1; i++)
       {
@@ -686,7 +687,7 @@ namespace RoguelikeUnitTests
       var statValueWithAbility = hero.Stats.GetCurrentValue(destStat);
       Assert.Greater(statValueWithAbility, auxStatValue);
 
-      var heroAttackWithAbility = GetHeroAttack(hero, wpn); 
+      var heroAttackWithAbility = hero.GetAttackValue().CurrentTotal;// GetHeroAttack(hero, wpn); 
       Assert.Greater(heroAttackWithAbility, heroAttack);
       var damageWithAbility = hitEnemy();
 
@@ -697,11 +698,6 @@ namespace RoguelikeUnitTests
       }
       Assert.Greater(damageWithAbility, damage);
       return abVal;
-    }
-
-    private static float GetHeroAttack(Hero hero, Weapon wpn)
-    {
-      return wpn.IsBowLike ? hero.CalcDamageFromProjectileWeapon() : hero.GetMelleeHitAttackValue(false);
     }
 
     private EntityStatKind SetWeapon(Roguelike.Abilities.AbilityKind kind, Hero Hero, out float originalStatValue)

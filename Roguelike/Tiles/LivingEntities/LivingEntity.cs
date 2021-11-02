@@ -1,4 +1,5 @@
 ﻿using Dungeons.Core;
+using Dungeons.Fight;
 using Dungeons.Tiles;
 using Newtonsoft.Json;
 using Roguelike.Abstract.Spells;
@@ -128,6 +129,9 @@ namespace Roguelike.Tiles.LivingEntities
     public static readonly EffectType[] PossibleEffectsToUse = new EffectType[] {
     EffectType.Weaken, EffectType.IronSkin, EffectType.ResistAll, EffectType.Inaccuracy
     };
+
+    [JsonIgnore]
+    public Dictionary<AttackKind, bool> AlwaysHit = new Dictionary<AttackKind, bool>();
 
     static LivingEntity()
     {
@@ -326,15 +330,21 @@ namespace Roguelike.Tiles.LivingEntities
       get { return Container.GetInstance<EventsManager>(); }
     }
 
-    internal bool CalculateIfHitWillHappen(LivingEntity target, bool melee)//melee/projectile
+    internal bool CalculateIfHitWillHappen(LivingEntity target, AttackKind kind)
     {
-      var esk = melee ? EntityStatKind.ChanceToMeleeHit : EntityStatKind.ChanceToPhysicalProjectileHit;
-      {       //var randVal = RandHelper.Random.NextDouble();
-        var hitWillHappen = CalculateIfStatChanceApplied(esk, target);
-        return hitWillHappen;
-      }
-      //AssertFalse("CalculateIfHitWillHappen "+esk + "!");
-      //return false;
+      if (AlwaysHit.ContainsKey(kind) && AlwaysHit[kind])
+        return true;
+
+      var esk = EntityStatKind.Unset;
+      if (kind == AttackKind.Melee)
+        esk = EntityStatKind.ChanceToMeleeHit;
+      else if (kind == AttackKind.PhysicalProjectile)
+        esk = EntityStatKind.ChanceToPhysicalProjectileHit;
+      else if (kind == AttackKind.SpellElementalProjectile)
+        esk = EntityStatKind.ChanceToCastSpell;
+
+      var hitWillHappen = CalculateIfStatChanceApplied(esk, target);
+      return hitWillHappen;
     }
 
     internal bool CalculateIfStatChanceApplied(EntityStatKind esk, LivingEntity target = null)
@@ -378,10 +388,10 @@ namespace Roguelike.Tiles.LivingEntities
       return false;
 
     }
-
-    public virtual float GetMelleeHitAttackValue(bool withVariation)
+        
+    public virtual AttackDescription GetAttackValue(AttackKind attackKind = AttackKind.Unset)
     {
-      return GetCurrentValue(EntityStatKind.MeleeAttack);
+      return new AttackDescription(this, attackKind);
     }
 
     private void ReduceHealth(LivingEntity attacker, string sound, string damageDesc, string damageSource, ref float inflicted)
@@ -453,14 +463,11 @@ namespace Roguelike.Tiles.LivingEntities
 
     string GetAttackDesc(EntityStatKind esk)
     {
-      if (esk == EntityStatKind.FireAttack)
-        return "fire";
-      else if (esk == EntityStatKind.PoisonAttack)
-        return "poison";
-      else if (esk == EntityStatKind.ColdAttack)
-        return "cold";
-      else if (esk == EntityStatKind.LightingAttack)
-        return "lighting";
+      if (esk == EntityStatKind.FireAttack ||
+         esk == EntityStatKind.PoisonAttack ||
+         esk == EntityStatKind.ColdAttack ||
+         esk == EntityStatKind.LightingAttack)
+        return esk.ToString().Replace("Attack", "").ToLower();
 
       return esk.ToString();
     }
@@ -520,7 +527,7 @@ namespace Roguelike.Tiles.LivingEntities
     public virtual float OnMelleeHitBy(LivingEntity attacker)
     {
       string desc = "";
-      var inflicted = CalcMeleeDamage(attacker.GetMelleeHitAttackValue(true), ref desc);
+      var inflicted = CalcMeleeDamage(attacker.GetAttackValue().CurrentPhysicalVariated, ref desc);
 
       var npds = attacker.GetNonPhysicalDamages();
       foreach (var stat in npds)
@@ -561,23 +568,14 @@ namespace Roguelike.Tiles.LivingEntities
       return fightItemHitsCounter.ContainsKey(kind) ? fightItemHitsCounter[kind] : 0;
     }
 
-    public virtual float CalcDamageFromProjectileWeapon()
-    {
-      if (ActiveFightItem is ProjectileFightItem pfi)
-      {
-        return CalcDamage(pfi);
-      }
-      return 0;
-    }
-
-    protected virtual float CalcDamage(ProjectileFightItem pfi)
-    {
-      var damage = pfi.Damage;
-      damage += GetDamageAddition(pfi);// pfi.Caller.GetHitAttackValue(false);
-      return damage;
-    }
-
-    public bool OnHitBy(Dungeons.Tiles.Abstract.IProjectile projectile)
+    //protected virtual float CalcDamage(ProjectileFightItem pfi)
+    //{
+    //  var damage = pfi.Damage;
+    //  damage += GetDamageAddition(pfi);
+    //  return damage;
+    //}
+    
+    public HitResult OnHitBy(Dungeons.Tiles.Abstract.IProjectile projectile)
     {
       if (projectile is Spell spell)
       {
@@ -586,14 +584,15 @@ namespace Roguelike.Tiles.LivingEntities
           //GameManager.Instance.AppendDiagnosticsUnityLog("ChanceToEvadeMagicAttack worked!");
           var ga = new GameEvent() { Info = Name + " evaded " + spell.Kind, Level = ActionLevel.Important };
           AppendAction(ga);
-          return false;
+          return HitResult.Evaded;
         }
         var attackingStat = spell.Kind.ToEntityStatKind();
-        //var offSpell = spell as OffensiveSpell;
-        //var dmg = CalculateNonPhysicalDamage(attackingStat, offSpell.Damage);
-        var ad = new AttackDescription(spell.Caller, spell.IsFromMagicalWeapon ? AttackKind.WeaponElementalProjectile : AttackKind.SpellElementalProjectile);
+        var ad = new AttackDescription(spell.Caller,
+          spell.IsFromMagicalWeapon ? AttackKind.WeaponElementalProjectile : AttackKind.SpellElementalProjectile,
+          spell as OffensiveSpell);
         var dmg = CalculateNonPhysicalDamage(attackingStat, ad.CurrentTotal);
         OnHitBy(dmg, spell);
+        return HitResult.Hit;
       }
 
       else if (projectile is FightItem fi)
@@ -601,7 +600,7 @@ namespace Roguelike.Tiles.LivingEntities
         if (fi is ProjectileFightItem pfi)
         {
           var damageDesc = "";
-                    
+
           var ad = new AttackDescription(fi.Caller, AttackKind.PhysicalProjectile);
           var inflicted = CalcMeleeDamage(ad.CurrentPhysical, ref damageDesc);//TODO what about NonPhysical?
           var sound = pfi.HitTargetSound;// "punch";
@@ -615,7 +614,7 @@ namespace Roguelike.Tiles.LivingEntities
             var npd = CalculateNonPhysicalDamage(EntityStatKind.FireAttack, fi.Damage);
             lastingEffectsSet.EnsureEffect(EffectType.Firing, npd, attacker, fi.TurnLasting);
             PlaySound(sound);//TODO
-            return true;
+            return HitResult.Hit;
           }
           else if (fi.FightItemKind == FightItemKind.ThrowingKnife ||
             fi.FightItemKind == FightItemKind.PlainArrow || fi.FightItemKind == FightItemKind.PlainBolt)
@@ -638,14 +637,17 @@ namespace Roguelike.Tiles.LivingEntities
           }
 
           ReduceHealth(attacker, sound, damageDesc, srcName, ref inflicted);
+          return HitResult.Hit;
         }
         else
           Assert(false, "OnHitBy!" + projectile);
       }
       else
+      {
         Assert(false, "OnHitBy - not supported" + projectile);
+      }
 
-      return true;
+      return HitResult.Unset; 
     }
 
     protected virtual float GetDamageAddition(ProjectileFightItem pfi)
@@ -658,12 +660,7 @@ namespace Roguelike.Tiles.LivingEntities
       return lastingEffectsSet.EnsureEffect(EffectType.Bleeding, damageEachTurn, attacker, turnLasting);
     }
 
-    protected virtual void OnHitBy
-    (
-      float amount,
-      Spell spell = null,
-      string damageDesc = null
-    )
+    protected virtual void OnHitBy(float amount,Spell spell = null,string damageDesc = null)
     {
       if (!Alive)
         return;
@@ -1081,7 +1078,7 @@ namespace Roguelike.Tiles.LivingEntities
       return DistanceFrom(tile) < ProjectileFightItem.DefaultMaxDistance;
     }
 
-    static Effects.EffectType[] BlockingLEs = new[] { Effects.EffectType.Stunned, Effects.EffectType.Bleeding };
+    //static EffectType[] BlockingLEs = new[] { EffectType.Stunned, Effects.EffectType.Bleeding };
 
     public bool IsMoveBlockedDueToLastingEffect(out string reason)
     {

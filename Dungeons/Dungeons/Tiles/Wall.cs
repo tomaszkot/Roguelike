@@ -1,4 +1,5 @@
 ﻿using Dungeons.Core;
+using Dungeons.Fight;
 using Dungeons.Tiles.Abstract;
 using System.Drawing;
 
@@ -16,9 +17,9 @@ namespace Dungeons.Tiles
 
     public Wall() : this(new Point().Invalid()) { }
 
-    public bool OnHitBy(IProjectile md)
+    public HitResult OnHitBy(IProjectile md)
     {
-      return false;
+      return HitResult.Hit;
     }
   }
 }

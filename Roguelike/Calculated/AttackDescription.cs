@@ -1,9 +1,9 @@
-﻿using Roguelike.Attributes;
+﻿using Dungeons.Core;
+using Roguelike.Attributes;
 using Roguelike.Spells;
 using Roguelike.Tiles;
 using Roguelike.Tiles.LivingEntities;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace Roguelike.Calculated
 {
@@ -12,13 +12,21 @@ namespace Roguelike.Calculated
     public float Nominal { get; set; }//strength
     float Current { get; set; }//strength + weapon melee damage
     public float CurrentPhysical { get; set; }//Current + Extra form abilities
+    public float CurrentPhysicalVariated { get; set; }
     public Dictionary<EntityStatKind, float> NonPhysical { get; private set; }//weapon  ice, fire... damages
     public float CurrentTotal { get; set; }//Current + NonPhysical
 
     public string Display { get; set; }
+    LivingEntity ent = null;
+    OffensiveSpell spell;
 
-    public AttackDescription(LivingEntity ent, AttackKind attackKind = AttackKind.Unset)//if uset it will be based on current weapon/active fi
+    public AttackDescription(LivingEntity ent, 
+      AttackKind attackKind = AttackKind.Unset,//if uset it will be based on current weapon/active fi
+      OffensiveSpell spell = null)
     {
+      this.spell = spell;
+      NonPhysical = new Dictionary<EntityStatKind, float>();
+      this.ent = ent;
       var aent = ent as AdvancedLivingEntity;
       Weapon wpn = null;
       if (aent != null)//TODO add GetActiveWeapon in LivingEntity?
@@ -72,7 +80,7 @@ namespace Roguelike.Calculated
       EntityStatKind attackStat, AttackKind attackKind)
     {
       Current = ent.GetCurrentValue(attackStat);
-      OffensiveSpell offensiveSpell = null;
+      OffensiveSpell offensiveSpell = spell;
       if (wpn !=null)
       {
         if (wpn.IsBowLike && attackKind == AttackKind.PhysicalProjectile)
@@ -83,10 +91,6 @@ namespace Roguelike.Calculated
         else if (wpn.IsMagician && attackKind == AttackKind.WeaponElementalProjectile)
         {
           offensiveSpell = wpn.SpellSource.CreateSpell(ent) as OffensiveSpell;
-          if (offensiveSpell != null)
-          {
-            Current += offensiveSpell.Damage;
-          }
         }
       }
 
@@ -101,6 +105,14 @@ namespace Roguelike.Calculated
       }
 
       CurrentPhysical = Current;
+      CurrentPhysicalVariated = CurrentPhysical;
+      //if (withVariation)//GUI is not meant to have it changed on character panel
+      {
+        var variation = ent.GetAttackVariation();
+        var sign = RandHelper.Random.NextDouble() > .5f ? -1 : 1;
+
+        CurrentPhysicalVariated += sign * variation * (float)RandHelper.Random.NextDouble();
+      }
 
       if (wpn != null && weapons2Esk !=null)
       {
@@ -113,19 +125,31 @@ namespace Roguelike.Calculated
 
       CurrentTotal = CurrentPhysical;
       var nonPhysical = ent.GetNonPhysicalDamages();
+
+      if (offensiveSpell != null)
+      {
+        NonPhysical[offensiveSpell.Kind.ToEntityStatKind()] = offensiveSpell.Damage;
+        CurrentTotal += offensiveSpell.Damage;
+      }
+
       foreach (var npd in nonPhysical)
       {
         bool add = true;
-        if (wpn.IsMagician && attackKind == AttackKind.WeaponElementalProjectile)
+        if (wpn != null)
         {
-          add = offensiveSpell.Kind.ToEntityStatKind() == npd.Key;
+          if (wpn.IsMagician && attackKind == AttackKind.WeaponElementalProjectile)
+          {
+            add = offensiveSpell.Kind.ToEntityStatKind() == npd.Key;
+          }
+          if (wpn.IsBowLike && attackKind == AttackKind.Melee)
+            add = false;
         }
-        if (wpn.IsBowLike && attackKind == AttackKind.Melee)
-          add = false;
         if (add)
         {
           CurrentTotal += npd.Value;
-          NonPhysical[npd.Key] = npd.Value;
+          if (!NonPhysical.ContainsKey(npd.Key))
+            NonPhysical[npd.Key] = 0;  
+          NonPhysical[npd.Key] += npd.Value;
         }
       }
       Nominal = ent.Stats.GetStat(attackStat).Value.Nominal;

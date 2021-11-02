@@ -823,20 +823,20 @@ namespace Roguelike.Tiles.LivingEntities
       Inventory.Remove(fi);
     }
 
-    protected override float CalcDamage(ProjectileFightItem pfi)
-    {
-      var damage = base.CalcDamage(pfi);
-      //TODO move to AttackDescription
-      var wpn = GetCurrentEquipment(EquipmentKind.Weapon) as Weapon;
-      if (wpn != null)
-      {
-        if (AdvancedLivingEntity.ProjectileWeapons2Esk.ContainsKey(wpn.Kind))
-        {
-          var extraPercentage = Stats.GetCurrentValue(AdvancedLivingEntity.ProjectileWeapons2Esk[wpn.Kind]);
-          damage = FactorCalculator.AddFactor(damage, extraPercentage);
-        }
-      }
-      return damage;
-    }
+    //protected override float CalcDamage(ProjectileFightItem pfi)
+    //{
+    //  var damage = base.CalcDamage(pfi);
+    //  //TODO move to AttackDescription
+    //  var wpn = GetCurrentEquipment(EquipmentKind.Weapon) as Weapon;
+    //  if (wpn != null)
+    //  {
+    //    if (AdvancedLivingEntity.ProjectileWeapons2Esk.ContainsKey(wpn.Kind))
+    //    {
+    //      var extraPercentage = Stats.GetCurrentValue(AdvancedLivingEntity.ProjectileWeapons2Esk[wpn.Kind]);
+    //      damage = FactorCalculator.AddFactor(damage, extraPercentage);
+    //    }
+    //  }
+    //  return damage;
+    //}
   }
 }

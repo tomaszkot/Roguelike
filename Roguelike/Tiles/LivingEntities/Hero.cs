@@ -95,13 +95,7 @@ namespace Roguelike.Tiles.LivingEntities
     public Tuple<int, int> GetTotalAttackValues()
     {
       Tuple<int, int> res;
-      var attack = GetMelleeHitAttackValue(false);
-
-      var nonPhysicals = GetNonPhysicalDamages();
-      foreach (var stat in nonPhysicals)
-        attack += stat.Value;
-
-      var intAttack = (int)attack;
+      var intAttack = (int)GetAttackValue(AttackKind.Melee).CurrentTotal;
       var variation = (int)GetAttackVariation();
       if (variation != 0)
         res = new Tuple<int, int>(intAttack - variation, intAttack + variation);
@@ -147,22 +141,6 @@ namespace Roguelike.Tiles.LivingEntities
     {
       Inventory.Remove(loot);
     }
-
-    public override float GetMelleeHitAttackValue(bool withVariation)
-    {
-      var ad = new AttackDescription(this, AttackKind.Melee);
-      var att = ad.CurrentPhysical;
-      if (withVariation)//GUI is not meant to have it changed on character panel
-      {
-        var variation = GetAttackVariation();
-        var sign = RandHelper.Random.NextDouble() > .5f ? -1 : 1;
-
-        att += sign * variation * (float)RandHelper.Random.NextDouble();
-      }
-      return att;
-    }
-
-    
 
     public override float GetAttackVariation()
     {
@@ -219,7 +197,7 @@ namespace Roguelike.Tiles.LivingEntities
       {
         var wpn = GetActiveWeapon();
         if (wpn != null && wpn.IsBowLike)
-          return wpn.Damage; //GetMelleeHitAttackValue(false);
+          return wpn.Damage; 
       }
       return base.GetDamageAddition(pfi);
     }

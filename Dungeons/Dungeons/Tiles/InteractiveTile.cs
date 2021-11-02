@@ -1,4 +1,5 @@
-﻿using Dungeons.Tiles.Abstract;
+﻿using Dungeons.Fight;
+using Dungeons.Tiles.Abstract;
 using System.Drawing;
 
 namespace Dungeons.Tiles
@@ -17,9 +18,9 @@ namespace Dungeons.Tiles
 
     }
 
-    public bool OnHitBy(IProjectile md)
+    public HitResult OnHitBy(IProjectile md)
     {
-      return true;
+      return HitResult.Hit;
     }
   }
 }

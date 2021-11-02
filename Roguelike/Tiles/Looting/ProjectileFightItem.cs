@@ -44,5 +44,6 @@ namespace Roguelike.Tiles.Looting
       get; 
       set; 
     }
+    public bool AlwaysHit { get; set; }
   }
 }
