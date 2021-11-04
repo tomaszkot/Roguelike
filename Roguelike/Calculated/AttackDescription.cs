@@ -81,7 +81,7 @@ namespace Roguelike.Calculated
     {
       Current = ent.GetCurrentValue(attackStat);
       OffensiveSpell offensiveSpell = spell;
-      if (wpn !=null)
+      if (wpn != null)
       {
         if (wpn.IsBowLike && attackKind == AttackKind.PhysicalProjectile)
         {
@@ -94,7 +94,7 @@ namespace Roguelike.Calculated
         }
       }
 
-      if (attackKind == AttackKind.PhysicalProjectile && ent.ActiveFightItem !=null)
+      if (attackKind == AttackKind.PhysicalProjectile && ent.ActiveFightItem != null)
       {
         if (ent.ActiveFightItem.FightItemKind == Tiles.Looting.FightItemKind.Stone ||
            ent.ActiveFightItem.FightItemKind == Tiles.Looting.FightItemKind.ThrowingKnife)
@@ -114,22 +114,22 @@ namespace Roguelike.Calculated
         CurrentPhysicalVariated += sign * variation * (float)RandHelper.Random.NextDouble();
       }
 
-      if (wpn != null && weapons2Esk !=null)
-      {
-        if (weapons2Esk.ContainsKey(wpn.Kind))//AxeExtraDamage, SwordExtraDamage...
-        {
-          var extraPercentage = ent.Stats.GetCurrentValue(weapons2Esk[wpn.Kind]);
-          CurrentPhysical = FactorCalculator.AddFactor(CurrentPhysical, extraPercentage);
-        }
-      }
+      var val = CurrentPhysical;
+      AddExtraDamage(ent, wpn, weapons2Esk, ref val);
+      CurrentPhysical = val;
 
       CurrentTotal = CurrentPhysical;
       var nonPhysical = ent.GetNonPhysicalDamages();
 
       if (offensiveSpell != null)
       {
-        NonPhysical[offensiveSpell.Kind.ToEntityStatKind()] = offensiveSpell.Damage;
-        CurrentTotal += offensiveSpell.Damage;
+        var dmg = offensiveSpell.Damage;
+        if (wpn != null && attackKind == AttackKind.WeaponElementalProjectile)
+        {
+          AddExtraDamage(ent, wpn, weapons2Esk, ref dmg);
+        }
+        NonPhysical[offensiveSpell.Kind.ToEntityStatKind()] = dmg;
+        CurrentTotal += dmg;
       }
 
       foreach (var npd in nonPhysical)
@@ -146,15 +146,31 @@ namespace Roguelike.Calculated
         }
         if (add)
         {
-          CurrentTotal += npd.Value;
+          var addition = npd.Value;
+          AddExtraDamage(ent, wpn, weapons2Esk, ref addition);
+          CurrentTotal += addition;
+
+
           if (!NonPhysical.ContainsKey(npd.Key))
-            NonPhysical[npd.Key] = 0;  
-          NonPhysical[npd.Key] += npd.Value;
+            NonPhysical[npd.Key] = 0;
+          NonPhysical[npd.Key] += addition;
         }
       }
-      Nominal = ent.Stats.GetStat(attackStat).Value.Nominal;
 
+      Nominal = ent.Stats.GetStat(attackStat).Value.Nominal;
       Display = Nominal + "/" + CurrentTotal;
+    }
+
+    private void AddExtraDamage(LivingEntity ent, Weapon wpn, Dictionary<Weapon.WeaponKind, EntityStatKind> weapons2Esk, ref float currentDamage)
+    {
+      if (wpn != null && weapons2Esk != null)
+      {
+        if (weapons2Esk.ContainsKey(wpn.Kind))//AxeExtraDamage, SwordExtraDamage...
+        {
+          var extraPercentage = ent.Stats.GetCurrentValue(weapons2Esk[wpn.Kind]);
+          currentDamage = FactorCalculator.AddFactor(currentDamage, extraPercentage);
+        }
+      }
     }
   }
 }

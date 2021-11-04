@@ -222,6 +222,11 @@ namespace Roguelike
       else
       {
         var heroStartTile = node.GetHeroStartTile();
+        if (heroStartTile.point.X != 1 || heroStartTile.point.Y != 1)
+        {
+          int k = 0;
+          k++;
+        }
         node.PlaceHeroAtTile(GameContextSwitchKind.GameLoaded, Hero, heroStartTile);
       }
 

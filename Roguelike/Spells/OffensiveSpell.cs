@@ -21,23 +21,28 @@ namespace Roguelike.Spells
 
     protected virtual float CalcDamage(int magicLevel)
     {
-      //TODO
-      //var dmg = damage + (damage * ((magicLevel - 1) * (damageMultiplicator + magicLevel * magicLevel / 2) / 100.0f));
-      //return (float)Math.Ceiling(dmg);
+      var damage = BaseDamage;
       if (weaponSpellSource != null)
+        damage += weaponSpellSource.LevelIndex;
+      else
+        damage += magicLevel;//TODO variation
+
+      int add = 2;
+      if (weaponSpellSource != null && !weaponSpellSource.StableDamage)
       {
-        int add = 2;
-        if (!weaponSpellSource.StableDamage)
-        {
-          var val = RandHelper.GetRandomDouble();
-          if (val > 0.66f)
-            add += 1;
-          else if (val < 0.33f)
-            add -= -1;
-        }
-        return weaponSpellSource.LevelIndex + BaseDamage;
+        var val = RandHelper.GetRandomDouble();
+        if (val > 0.66f)
+          add += 1;
+        else if (val < 0.33f)
+          add -= -1;
+
+        if (damage > 10)
+          add *= 2;
+
+        damage += add;
       }
-      return magicLevel + BaseDamage;
+
+      return damage;
     }
 
     //Returns damage based on Spell level.

@@ -574,7 +574,7 @@ namespace Roguelike.Tiles.LivingEntities
     //  damage += GetDamageAddition(pfi);
     //  return damage;
     //}
-    
+        
     public HitResult OnHitBy(Dungeons.Tiles.Abstract.IProjectile projectile)
     {
       if (projectile is Spell spell)
@@ -713,6 +713,11 @@ namespace Roguelike.Tiles.LivingEntities
       if (this is CrackedStone)
         return true;
       return immunedEffects.Contains(effect) || chanceToExperienceEffect[effect] == 0;
+    }
+
+    public void AddImmunity(EffectType effect)
+    {
+      immunedEffects.Add(effect);
     }
 
     public virtual void ApplyLastingEffects()

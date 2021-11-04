@@ -225,22 +225,26 @@ namespace Roguelike.Tiles.LivingEntities
       }
     }
 
+    public bool IsStrongerThanAve
+    {
+      get 
+      {
+        return tag1.ToLower().Contains("bear") ||
+              tag1.ToLower().Contains("demon") ||
+              tag1.ToLower().Contains("tree_monster");
+            
+      }
+    }
+
     protected override void InitStatsFromName()
     {
       if (!WereStatsIncreased(IncreaseStatsKind.Name))
       {
-        if (tag1.ToLower().Contains("bear") ||
-            tag1.ToLower().Contains("demon") ||
-            tag1.ToLower().Contains("tree_monster")
-            )
+        if (IsStrongerThanAve)
         {
           IncreaseStats(1.5f, IncreaseStatsKind.Name);
         }
       }
-      //else if (tag1.ToLower().Contains("bear"))
-      //{
-      //  IncreaseStats(1.5f, IncreaseStatsKind.Name);
-      //}
     }
 
     public override string ToString()

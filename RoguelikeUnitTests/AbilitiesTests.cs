@@ -268,9 +268,11 @@ namespace RoguelikeUnitTests
     public void TestBasicFightItem(FightItemKind kind)
     {
       var game = CreateGame();
-      
+
       //take one which is active to make sure will have it's turn
+      RevealAllEnemies(game);
       var enemy = ChampionEnemies.Where(i=> i.PowerKind == EnemyPowerKind.Champion).First();
+      Assert.True(enemy.Revealed && enemy.Alive);
       enemy.Stats.SetNominal(EntityStatKind.Health, 100);
       var enemyBeginHealth = enemy.Stats.Health;
       var hero = game.GameManager.Hero;
@@ -295,6 +297,11 @@ namespace RoguelikeUnitTests
       var chempAfter2HitHealth = enemy.Stats.Health;
       var secExplCoctailDamage = chempAfter1HitHealth - chempAfter2HitHealth;
       Assert.Greater(secExplCoctailDamage, firstExplCoctailDamage);
+    }
+
+    private void RevealAllEnemies(Roguelike.RoguelikeGame game)
+    {
+      AllEnemies.ForEach(i => i.Revealed = true);
     }
 
     private static void IncreaseAbility(Hero hero, AbilityKind kind)
@@ -635,6 +642,7 @@ namespace RoguelikeUnitTests
       var destStat = SetWeapon(kind, hero, out auxStatValue);
       var en = PlainEnemies.First();
       en.Stats.SetNominal(EntityStatKind.Health, 100);
+      en.AddImmunity(Roguelike.Effects.EffectType.Bleeding);//not to mix test results
       var wpn = hero.GetActiveWeapon();
 
       Func<float> hitEnemy = () =>
