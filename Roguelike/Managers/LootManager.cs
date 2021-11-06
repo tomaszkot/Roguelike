@@ -284,7 +284,9 @@ namespace Roguelike.Managers
           var co = en.GetFightItemKindHitCounter(fi);
           if (co > 0)
           {
-            extraLoot.Add(new ProjectileFightItem(fi) { Count = co });
+            if (co > 1)
+              co--;//one is lost in action
+            extraLoot.Add(new ProjectileFightItem(fi) { Count = co }); 
           }
         }
       }

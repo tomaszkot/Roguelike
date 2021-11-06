@@ -1,8 +1,23 @@
-﻿using Roguelike.Tiles;
+﻿using Roguelike.Attributes;
+using Roguelike.Tiles;
 using Roguelike.Tiles.Looting;
 
 namespace Roguelike.Extensions
 {
+  public static class StatsExtensions
+  {
+    public static bool IsAttackStat(this EntityStatKind esk)
+    {
+      return esk == EntityStatKind.MeleeAttack || esk == EntityStatKind.PhysicalProjectilesAttack ||
+             esk == EntityStatKind.ElementalSpellProjectilesAttack || esk == EntityStatKind.ElementalWeaponProjectilesAttack;
+    }
+
+    public static bool IsChanceToHitStat(this EntityStatKind esk)
+    {
+      return esk == EntityStatKind.ChanceToMeleeHit || esk == EntityStatKind.ChanceToPhysicalProjectileHit;
+    }
+  }
+
   public static class EquipmentExtensions
   {
     public static CurrentEquipmentKind GetCurrentEquipmentKind(this EquipmentKind ek, CurrentEquipmentPosition pos)

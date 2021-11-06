@@ -41,7 +41,10 @@ namespace Roguelike.Attributes
         && sk != EntityStatKind.Health
         && sk != EntityStatKind.Magic
         && sk != EntityStatKind.Mana
-        //&& sk != EntityStatKind.Attack
+        && sk != EntityStatKind.MeleeAttack
+        && sk != EntityStatKind.PhysicalProjectilesAttack
+        && sk != EntityStatKind.ElementalSpellProjectilesAttack
+        && sk != EntityStatKind.ElementalWeaponProjectilesAttack
         && sk != EntityStatKind.Defense
         && sk != EntityStatKind.Dexterity
         && sk != EntityStatKind.FireAttack

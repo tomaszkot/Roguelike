@@ -21,6 +21,14 @@ namespace Roguelike.Extensions
         return "Sell me a hound";
       else if (valueString == KnownSentenceKind.LetsTrade.ToString())
         return "Let's trade";
+      //else if (valueString == EntityStatKind.ChanceToRepeatElementalProjectileAttack.ToString())
+      //{
+      //  return "Chance To Repeat Projectile Attack";
+      //}
+      //else if (valueString == EntityStatKind.ChanceToEvadeElementalProjectileAttack.ToString())
+      //{
+      //  return "Chance To Evade ElementalProjectileAttack";
+      //}
 
       var res = "";
 

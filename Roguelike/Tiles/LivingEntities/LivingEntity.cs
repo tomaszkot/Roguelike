@@ -391,7 +391,7 @@ namespace Roguelike.Tiles.LivingEntities
         
     public virtual AttackDescription GetAttackValue(AttackKind attackKind = AttackKind.Unset)
     {
-      return new AttackDescription(this, attackKind);
+      return new AttackDescription(this, true, attackKind);
     }
 
     private void ReduceHealth(LivingEntity attacker, string sound, string damageDesc, string damageSource, ref float inflicted)
@@ -588,6 +588,7 @@ namespace Roguelike.Tiles.LivingEntities
         }
         var attackingStat = spell.Kind.ToEntityStatKind();
         var ad = new AttackDescription(spell.Caller,
+          true,
           spell.IsFromMagicalWeapon ? AttackKind.WeaponElementalProjectile : AttackKind.SpellElementalProjectile,
           spell as OffensiveSpell);
         var dmg = CalculateNonPhysicalDamage(attackingStat, ad.CurrentTotal);
@@ -601,7 +602,7 @@ namespace Roguelike.Tiles.LivingEntities
         {
           var damageDesc = "";
 
-          var ad = new AttackDescription(fi.Caller, AttackKind.PhysicalProjectile);
+          var ad = new AttackDescription(fi.Caller, true, AttackKind.PhysicalProjectile);
           var inflicted = CalcMeleeDamage(ad.CurrentPhysical, ref damageDesc);//TODO what about NonPhysical?
           var sound = pfi.HitTargetSound;// "punch";
           var srcName = fi.FightItemKind.ToDescription();

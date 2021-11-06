@@ -19,11 +19,14 @@ namespace Roguelike.Calculated
     public string Display { get; set; }
     LivingEntity ent = null;
     OffensiveSpell spell;
+    bool withVariation;
 
-    public AttackDescription(LivingEntity ent, 
+    public AttackDescription(LivingEntity ent,
+      bool withVariation = true,
       AttackKind attackKind = AttackKind.Unset,//if uset it will be based on current weapon/active fi
       OffensiveSpell spell = null)
     {
+      this.withVariation = withVariation;
       this.spell = spell;
       NonPhysical = new Dictionary<EntityStatKind, float>();
       this.ent = ent;
@@ -32,17 +35,7 @@ namespace Roguelike.Calculated
       if (aent != null)//TODO add GetActiveWeapon in LivingEntity?
         wpn = aent.GetActiveWeapon();
 
-      if (attackKind == AttackKind.Unset)
-      {
-        attackKind = AttackKind.Melee;
-        if (wpn != null)
-        {
-          if (wpn.IsBowLike)
-            attackKind = AttackKind.PhysicalProjectile;
-          else if (wpn.IsMagician)
-            attackKind = AttackKind.WeaponElementalProjectile;
-        }
-      }
+      attackKind = DiscoverAttackKind(attackKind, wpn);
 
       if (attackKind == AttackKind.PhysicalProjectile)
       {
@@ -76,8 +69,31 @@ namespace Roguelike.Calculated
 
     }
 
-    private void CalcMembers(LivingEntity ent, Weapon wpn, Dictionary<Weapon.WeaponKind, EntityStatKind> weapons2Esk, 
-      EntityStatKind attackStat, AttackKind attackKind)
+    public static AttackKind DiscoverAttackKind(AttackKind attackKind, Weapon wpn)
+    {
+      if (attackKind == AttackKind.Unset)
+      {
+        attackKind = AttackKind.Melee;
+        if (wpn != null)
+        {
+          if (wpn.IsBowLike)
+            attackKind = AttackKind.PhysicalProjectile;
+          else if (wpn.IsMagician)
+            attackKind = AttackKind.WeaponElementalProjectile;
+        }
+      }
+
+      return attackKind;
+    }
+
+    private void CalcMembers
+    (
+      LivingEntity ent, 
+      Weapon wpn, 
+      Dictionary<Weapon.WeaponKind, EntityStatKind> weapons2Esk, 
+      EntityStatKind attackStat, 
+      AttackKind attackKind
+    )
     {
       Current = ent.GetCurrentValue(attackStat);
       OffensiveSpell offensiveSpell = spell;
@@ -106,7 +122,7 @@ namespace Roguelike.Calculated
 
       CurrentPhysical = Current;
       CurrentPhysicalVariated = CurrentPhysical;
-      //if (withVariation)//GUI is not meant to have it changed on character panel
+      if (withVariation)//GUI is not meant to have it changed on character panel
       {
         var variation = ent.GetAttackVariation();
         var sign = RandHelper.Random.NextDouble() > .5f ? -1 : 1;
