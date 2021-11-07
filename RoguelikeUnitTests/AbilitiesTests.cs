@@ -632,7 +632,7 @@ namespace RoguelikeUnitTests
       //Debug.WriteLine("end");
     }
 
-    private float TestWeaponKindMastering(Roguelike.Abilities.AbilityKind kind)
+    private float TestWeaponKindMastering(AbilityKind kind)
     {
       var abVal = 0.0f;
       var abValAux = 0.0f;
@@ -675,7 +675,7 @@ namespace RoguelikeUnitTests
 
       Assert.Greater(damage, 0);
 
-      var heroAttack = hero.GetAttackValue().CurrentTotal;//, wpn);
+      var heroAttack = hero.GetAttackValue(AttackKind.Unset).CurrentTotal;
 
       for (int i = 0; i < MaxAbilityInc + 1; i++)
       {
@@ -695,7 +695,7 @@ namespace RoguelikeUnitTests
       var statValueWithAbility = hero.Stats.GetCurrentValue(destStat);
       Assert.Greater(statValueWithAbility, auxStatValue);
 
-      var heroAttackWithAbility = hero.GetAttackValue().CurrentTotal;// GetHeroAttack(hero, wpn); 
+      var heroAttackWithAbility = hero.GetAttackValue(AttackKind.Unset).CurrentTotal;
       Assert.Greater(heroAttackWithAbility, heroAttack);
       var damageWithAbility = hitEnemy();
 

@@ -10,38 +10,43 @@ namespace Roguelike.Spells
   {
     float calcedDamage;
     public const int BaseDamage = 2;
+    public int NominalDamage { get; set; }
+    bool withVariation;
 
-    public OffensiveSpell(LivingEntity caller, Weapon weaponSpellSource) : base(caller, weaponSpellSource)
+    public OffensiveSpell(LivingEntity caller, Weapon weaponSpellSource, bool withVariation = true) : base(caller, weaponSpellSource)
     {
+      this.withVariation = withVariation;
       if (weaponSpellSource != null)
       {
-        calcedDamage = CalcDamage(weaponSpellSource.LevelIndex);
+        calcedDamage = CalcDamage(weaponSpellSource.LevelIndex, withVariation);
       }
     }
 
-    protected virtual float CalcDamage(int magicLevel)
+    protected virtual float CalcDamage(int magicLevel, bool withVariation)
     {
       var damage = BaseDamage;
       if (weaponSpellSource != null)
         damage += weaponSpellSource.LevelIndex;
       else
         damage += magicLevel;//TODO variation
-
-      int add = 2;
-      if (weaponSpellSource != null && !weaponSpellSource.StableDamage)
+            
+      int addNominal = 2;
+      NominalDamage = damage + addNominal;
+      if (withVariation)
       {
-        var val = RandHelper.GetRandomDouble();
-        if (val > 0.66f)
-          add += 1;
-        else if (val < 0.33f)
-          add -= -1;
+        if (weaponSpellSource != null && !weaponSpellSource.StableDamage)
+        {
+          var val = RandHelper.GetRandomDouble();
+          if (val > 0.66f)
+            addNominal += 1;
+          else if (val < 0.33f)
+            addNominal -= -1;
 
-        if (damage > 10)
-          add *= 2;
-
-        damage += add;
+          if (damage > 10)
+            addNominal *= 2;
+        }
       }
-
+      damage += addNominal;
       return damage;
     }
 
@@ -57,7 +62,7 @@ namespace Roguelike.Spells
           return calcedDamage;
         }
         var level = CurrentLevel;
-        var dmg = CalcDamage(level);
+        var dmg = CalcDamage(level, withVariation);
         return dmg;
       }
     }
@@ -68,7 +73,7 @@ namespace Roguelike.Spells
       if(currentMagicLevel)
         desc.Damage = Damage;
       else
-        desc.Damage = CalcDamage(CurrentLevel+1);
+        desc.Damage = CalcDamage(CurrentLevel+1, withVariation);
       return desc;
     }
   }

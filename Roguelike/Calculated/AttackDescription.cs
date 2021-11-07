@@ -26,47 +26,73 @@ namespace Roguelike.Calculated
       AttackKind attackKind = AttackKind.Unset,//if uset it will be based on current weapon/active fi
       OffensiveSpell spell = null)
     {
-      this.withVariation = withVariation;
-      this.spell = spell;
-      NonPhysical = new Dictionary<EntityStatKind, float>();
-      this.ent = ent;
-      var aent = ent as AdvancedLivingEntity;
-      Weapon wpn = null;
-      if (aent != null)//TODO add GetActiveWeapon in LivingEntity?
-        wpn = aent.GetActiveWeapon();
+      Calc(ent, withVariation, ref attackKind, spell);
+    }
 
-      attackKind = DiscoverAttackKind(attackKind, wpn);
-
-      if (attackKind == AttackKind.PhysicalProjectile)
+    private void Calc(LivingEntity ent, bool withVariation, ref AttackKind attackKind, OffensiveSpell spell)
+    {
+      try
       {
-        if (ent.ActiveFightItem == null)
-          return;
-      }
+        this.withVariation = withVariation;
+        this.spell = spell;
+        NonPhysical = new Dictionary<EntityStatKind, float>();
+        this.ent = ent;
+        var aent = ent as AdvancedLivingEntity;
+        Weapon wpn = null;
+        if (aent != null)//TODO add GetActiveWeapon in LivingEntity?
+          wpn = aent.GetActiveWeapon();
 
-      Dictionary<Weapon.WeaponKind, EntityStatKind> weapons2Esk = null;
-      EntityStatKind attackStat = EntityStatKind.Unset;
-      if (attackKind == AttackKind.Melee)
-      {
-        attackStat = EntityStatKind.MeleeAttack;
+        attackKind = DiscoverAttackKind(attackKind, wpn);
 
-        weapons2Esk = AdvancedLivingEntity.MalleeWeapons2Esk;
-        if (wpn != null && wpn.IsMagician)
-          weapons2Esk = AdvancedLivingEntity.ProjectileWeapons2Esk;
-
-      }
-      else if (attackKind == AttackKind.PhysicalProjectile ||
-        attackKind == AttackKind.WeaponElementalProjectile)
-      {
-        attackStat = EntityStatKind.Unset;
         if (attackKind == AttackKind.PhysicalProjectile)
-          attackStat = EntityStatKind.PhysicalProjectilesAttack;
-        else
-          attackStat = EntityStatKind.ElementalWeaponProjectilesAttack;
-        weapons2Esk = AdvancedLivingEntity.ProjectileWeapons2Esk;
+        {
+          if (ent.ActiveFightItem == null)
+            return;
+        }
+        if (attackKind == AttackKind.WeaponElementalProjectile)
+        {
+          if (wpn != null)
+          {
+            if (wpn.SpellSource.Count == 0)
+              return;
+          }
+        }
+
+        Dictionary<Weapon.WeaponKind, EntityStatKind> weapons2Esk = null;
+        EntityStatKind attackStat = EntityStatKind.Unset;
+        if (attackKind == AttackKind.Melee)
+        {
+          attackStat = EntityStatKind.MeleeAttack;
+
+          weapons2Esk = AdvancedLivingEntity.MalleeWeapons2Esk;
+          if (wpn != null && wpn.IsMagician)
+            weapons2Esk = AdvancedLivingEntity.ProjectileWeapons2Esk;
+
+        }
+        else if (attackKind == AttackKind.PhysicalProjectile ||
+          attackKind == AttackKind.WeaponElementalProjectile)
+        {
+          attackStat = EntityStatKind.Unset;
+          if (attackKind == AttackKind.PhysicalProjectile)
+            attackStat = EntityStatKind.PhysicalProjectilesAttack;
+          else
+            attackStat = EntityStatKind.ElementalWeaponProjectilesAttack;
+          weapons2Esk = AdvancedLivingEntity.ProjectileWeapons2Esk;
+        }
+        CalcMembers(ent, wpn, weapons2Esk, attackStat, attackKind);
       }
-
-      CalcMembers(ent, wpn, weapons2Esk, attackStat, attackKind);
-
+      catch (System.Exception ex)
+      {
+        throw ex;
+      }
+      finally
+      {
+        if (CurrentTotal == 0 && attackKind != AttackKind.Melee)
+        {
+          AttackKind attackKindAlt = AttackKind.Melee;
+          Calc(ent, withVariation, ref attackKindAlt, spell);
+        }
+      }
     }
 
     public static AttackKind DiscoverAttackKind(AttackKind attackKind, Weapon wpn)
@@ -139,7 +165,7 @@ namespace Roguelike.Calculated
 
       if (offensiveSpell != null)
       {
-        var dmg = offensiveSpell.Damage;
+        var dmg = withVariation ? offensiveSpell.Damage : offensiveSpell.NominalDamage;
         if (wpn != null && attackKind == AttackKind.WeaponElementalProjectile)
         {
           AddExtraDamage(ent, wpn, weapons2Esk, ref dmg);

@@ -18,7 +18,7 @@ namespace Roguelike.Spells
     [JsonIgnore]
     public Dungeons.Tiles.Tile Target { get; set; }
 
-    public ProjectiveSpell(LivingEntity caller, Weapon weapon) : base(caller, weapon)
+    public ProjectiveSpell(LivingEntity caller, Weapon weapon, bool withVariation = true) : base(caller, weapon, withVariation)
     {
       EntityRequired = true;
       EnemyRequired = true;

@@ -389,7 +389,7 @@ namespace Roguelike.Tiles.LivingEntities
 
     }
         
-    public virtual AttackDescription GetAttackValue(AttackKind attackKind = AttackKind.Unset)
+    public virtual AttackDescription GetAttackValue(AttackKind attackKind)
     {
       return new AttackDescription(this, true, attackKind);
     }
@@ -527,7 +527,7 @@ namespace Roguelike.Tiles.LivingEntities
     public virtual float OnMelleeHitBy(LivingEntity attacker)
     {
       string desc = "";
-      var inflicted = CalcMeleeDamage(attacker.GetAttackValue().CurrentPhysicalVariated, ref desc);
+      var inflicted = CalcMeleeDamage(attacker.GetAttackValue(AttackKind.Melee).CurrentPhysicalVariated, ref desc);
 
       var npds = attacker.GetNonPhysicalDamages();
       foreach (var stat in npds)
@@ -568,13 +568,6 @@ namespace Roguelike.Tiles.LivingEntities
       return fightItemHitsCounter.ContainsKey(kind) ? fightItemHitsCounter[kind] : 0;
     }
 
-    //protected virtual float CalcDamage(ProjectileFightItem pfi)
-    //{
-    //  var damage = pfi.Damage;
-    //  damage += GetDamageAddition(pfi);
-    //  return damage;
-    //}
-        
     public HitResult OnHitBy(Dungeons.Tiles.Abstract.IProjectile projectile)
     {
       if (projectile is Spell spell)

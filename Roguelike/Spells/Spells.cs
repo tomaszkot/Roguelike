@@ -193,9 +193,9 @@ namespace Roguelike.Spells
       return (int)(val + inc);
     }
 
-    protected override float CalcDamage(int magicLevel)
+    protected override float CalcDamage(int magicLevel, bool withVariation)
     {
-      var baseD = base.CalcDamage(magicLevel);
+      var baseD = base.CalcDamage(magicLevel, withVariation);
       baseD += (float)(baseD * 25.0 / 100f);
       return baseD;
     }
