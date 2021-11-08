@@ -380,6 +380,9 @@ namespace Roguelike.Tiles.LivingEntities
 
     virtual protected bool ShouldEvade(LivingEntity target, EntityStatKind esk, Spell spell)
     {
+      if (spell !=null && spell is OffensiveSpell os && os.AlwaysHit)
+        return false;
+
       var avoidCh = target.GetCurrentValue(esk);
       var randValCh = (float)RandHelper.Random.NextDouble();
       if (randValCh * 100 <= avoidCh)
@@ -654,7 +657,7 @@ namespace Roguelike.Tiles.LivingEntities
       return lastingEffectsSet.EnsureEffect(EffectType.Bleeding, damageEachTurn, attacker, turnLasting);
     }
 
-    protected virtual void OnHitBy(float amount,Spell spell = null,string damageDesc = null)
+    protected virtual void OnHitBy(float amount, Spell spell, string damageDesc = null)
     {
       if (!Alive)
         return;
@@ -674,6 +677,12 @@ namespace Roguelike.Tiles.LivingEntities
         lastHitBySpell = true;
       }
       var attacker = spell.Caller;
+      //Debug
+      //if(damageDesc == null)
+      //  damageDesc = "";
+      //damageDesc += "_D " + spell.GetHashCode();
+
+      //Debug
       ReduceHealth(attacker, sound, damageDesc, srcName, ref amount);
 
       LastingEffectsSet.TryAddLastingEffectOnHit(amount, attacker, spell);

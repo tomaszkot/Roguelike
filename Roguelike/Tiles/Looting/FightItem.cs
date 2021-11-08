@@ -43,7 +43,7 @@ namespace Roguelike.Tiles.Looting
   {
     private FightItemKind fightItemKind;
     public FightItemState FightItemState { get; set; }
-    public float baseDamage = 5.0f;
+    public float baseDamage = Roguelike.LootFactories.Props.FightItemBaseDamage;
     public int TurnLasting { get; set; }
 
     protected string primaryFactorName = "Damage";
@@ -96,6 +96,8 @@ namespace Roguelike.Tiles.Looting
         fightItemKind = value;
         Name = fightItemKind.ToDescription();
         tag1 = fightItemKind.ToString();
+
+
         if (fightItemKind == FightItemKind.Stone)
         {
           PrimaryStatDescription = "Stone, can cause harm if thrown by a skilled man.";
@@ -103,33 +105,9 @@ namespace Roguelike.Tiles.Looting
         }
         else if (fightItemKind == FightItemKind.ThrowingKnife)
         {
-          PrimaryStatDescription = Name+", very sharp, likely to cause bleeding";
-          baseDamage += 3;
+          PrimaryStatDescription = Name + ", very sharp, likely to cause bleeding";
+          baseDamage += 2;//total damage will be lower than from bow as bows adds to damage 
           Price *= 2;
-          HitTargetSound = "arrow_hit_body";
-        }
-        else if (fightItemKind == FightItemKind.ExplosiveCocktail)
-        {
-          baseDamage -= 1;
-          Price *= 3;
-          PrimaryStatDescription = Name + ", explodes hurting the victim and nearby entities with fire";
-          HitTargetSound = "SHATTER_Glass1";
-          TurnLasting = 3;
-          //baseDamage += 2;
-        }
-        else if (fightItemKind == FightItemKind.HunterTrap)
-        {
-          baseDamage += 1;
-          Price *= 2;
-          PrimaryStatDescription = Name + ", clinch victim and causes bleeding";
-          HitTargetSound = "trap";
-          TurnLasting = 3;
-        }
-        else if (fightItemKind == FightItemKind.PlainBolt)
-        {
-          baseDamage += 1;
-          Price *= 2;
-          PrimaryStatDescription = Name + ", basic ammo for a crossbow";
           HitTargetSound = "arrow_hit_body";
         }
         else if (fightItemKind == FightItemKind.PlainArrow)
@@ -139,6 +117,31 @@ namespace Roguelike.Tiles.Looting
           PrimaryStatDescription = Name + ", basic ammo for a bow";
           HitTargetSound = "arrow_hit_body";
         }
+        else if (fightItemKind == FightItemKind.PlainBolt)
+        {
+          baseDamage += 2;
+          Price *= 2;
+          PrimaryStatDescription = Name + ", basic ammo for a crossbow";
+          HitTargetSound = "arrow_hit_body";
+        }
+        else if (fightItemKind == FightItemKind.HunterTrap)
+        {
+          baseDamage += 4;
+          Price *= 3;
+          PrimaryStatDescription = Name + ", clinch victim and causes bleeding";
+          HitTargetSound = "trap";
+          TurnLasting = 3;
+        }
+        else if (fightItemKind == FightItemKind.ExplosiveCocktail)
+        {
+          baseDamage += 3;
+          Price *= 3;
+          PrimaryStatDescription = Name + ", explodes hurting the victim and nearby entities with fire";
+          HitTargetSound = "SHATTER_Glass1";
+          TurnLasting = 3;
+          //baseDamage += 2;
+        }
+        
       }
     }
 
@@ -202,7 +205,7 @@ namespace Roguelike.Tiles.Looting
     {
       var ab = GetAbility();
       if (ab == null)
-        return 1;
+        return 0;
       return GetFactor(primary, ab.Level);
     }
 

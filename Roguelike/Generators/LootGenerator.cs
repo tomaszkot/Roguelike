@@ -164,10 +164,11 @@ namespace Roguelike.Generators
       if (loot == null && tileName == "rusty_sword")
       {
         var wpn = new Weapon();
+        wpn.Kind = Weapon.WeaponKind.Sword;
         wpn.tag1 = "rusty_sword";
         wpn.Damage = 2;
         wpn.Name = "Rusty sword";
-        wpn.Kind = Weapon.WeaponKind.Sword;
+        
         return wpn;
       }
 
@@ -248,22 +249,24 @@ namespace Roguelike.Generators
       if (loot == null && tileName == "bow")
       {
         var wpn = new Weapon();
+        wpn.Kind = Weapon.WeaponKind.Bow;
         wpn.tag1 = "bow";
-        wpn.Damage = 5;
+        wpn.Damage = Props.BowBaseDamage;
         wpn.Name = "Bow";
         wpn.Price *= 2;
-        wpn.Kind = Weapon.WeaponKind.Bow;
+        
         return wpn;
       }
 
       if (loot == null && tileName == "crossbow")
       {
         var wpn = new Weapon();
+        wpn.Kind = Weapon.WeaponKind.Crossbow;
         wpn.tag1 = "crossbow";
-        wpn.Damage = 5;
+        wpn.Damage = Props.CrossbowBaseDamage;
         wpn.Name = "Bow";
         wpn.Price *= 2;
-        wpn.Kind = Weapon.WeaponKind.Crossbow;
+        
         return wpn;
       }
 

@@ -6,6 +6,20 @@ namespace Roguelike.Extensions
 {
   public static class StatsExtensions
   {
+    public static AttackKind ToAttackKind(this EntityStatKind esk)
+    {
+      if (esk == EntityStatKind.MeleeAttack)
+        return AttackKind.Melee;
+      else if (esk == EntityStatKind.PhysicalProjectilesAttack)
+        return AttackKind.PhysicalProjectile;
+      else if (esk == EntityStatKind.ElementalWeaponProjectilesAttack)
+        return AttackKind.WeaponElementalProjectile;
+      else if (esk == EntityStatKind.ElementalSpellProjectilesAttack)
+        return AttackKind.SpellElementalProjectile;
+
+      return AttackKind.Unset;
+    }
+
     public static bool IsAttackStat(this EntityStatKind esk)
     {
       return esk == EntityStatKind.MeleeAttack || esk == EntityStatKind.PhysicalProjectilesAttack ||

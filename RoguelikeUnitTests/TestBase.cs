@@ -364,7 +364,7 @@ namespace RoguelikeUnitTests
       get { return game.GameManager.CurrentNode; }
     }
 
-    protected ProjectileFightItem AddFightItemToHero(FightItemKind fik, Hero hero)
+    protected ProjectileFightItem ActivateFightItem(FightItemKind fik, Hero hero)
     {
       var fi = new ProjectileFightItem(fik, hero);
       fi.Count = 3;

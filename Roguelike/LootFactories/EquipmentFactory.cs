@@ -10,8 +10,16 @@ using System.Linq;
 
 namespace Roguelike.LootFactories
 {
+  public class Props
+  {
+    public const int BowBaseDamage = 10;
+    public const int CrossbowBaseDamage = 12;
+    public const int FightItemBaseDamage = 1;
+  }
+
   public class MaterialProps
   {
+
     public const int BashingWeaponBaseDamage = 1;
 
     public const int BronzeSwordBaseDamage = 2;
@@ -23,6 +31,7 @@ namespace Roguelike.LootFactories
 
     public const int IronDropLootSrcLevel = 3;
     public const int SteelDropLootSrcLevel = 4;
+    
   }
 
   public class EquipmentFactory : AbstractLootFactory

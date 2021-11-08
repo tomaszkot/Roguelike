@@ -9,9 +9,11 @@ namespace Roguelike.Spells
   public class OffensiveSpell : Spell, IDamagingSpell
   {
     float calcedDamage;
-    public const int BaseDamage = 2;
+    public const int BaseDamage = 1;
     public int NominalDamage { get; set; }
     bool withVariation;
+    public const int DefaultAddNominal = 1;
+    public bool AlwaysHit { get; set; }
 
     public OffensiveSpell(LivingEntity caller, Weapon weaponSpellSource, bool withVariation = true) : base(caller, weaponSpellSource)
     {
@@ -29,8 +31,8 @@ namespace Roguelike.Spells
         damage += weaponSpellSource.LevelIndex;
       else
         damage += magicLevel;//TODO variation
-            
-      int addNominal = 2;
+
+      var addNominal = DefaultAddNominal;
       NominalDamage = damage + addNominal;
       if (withVariation)
       {

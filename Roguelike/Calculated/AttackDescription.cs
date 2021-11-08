@@ -51,11 +51,11 @@ namespace Roguelike.Calculated
         }
         if (attackKind == AttackKind.WeaponElementalProjectile)
         {
-          if (wpn != null)
-          {
-            if (wpn.SpellSource.Count == 0)
-              return;
-          }
+          //if (wpn != null && )
+          //{
+          //  if (wpn.SpellSource.Count == 0)
+          //    return;
+          //}
         }
 
         Dictionary<Weapon.WeaponKind, EntityStatKind> weapons2Esk = null;
@@ -85,14 +85,14 @@ namespace Roguelike.Calculated
       {
         throw ex;
       }
-      finally
-      {
-        if (CurrentTotal == 0 && attackKind != AttackKind.Melee)
-        {
-          AttackKind attackKindAlt = AttackKind.Melee;
-          Calc(ent, withVariation, ref attackKindAlt, spell);
-        }
-      }
+      //finally
+      //{
+      //  if (CurrentTotal == 0 && attackKind != AttackKind.Melee)
+      //  {
+      //    AttackKind attackKindAlt = AttackKind.Melee;
+      //    Calc(ent, withVariation, ref attackKindAlt, spell);
+      //  }
+      //}
     }
 
     public static AttackKind DiscoverAttackKind(AttackKind attackKind, Weapon wpn)
@@ -142,7 +142,7 @@ namespace Roguelike.Calculated
            ent.ActiveFightItem.FightItemKind == Tiles.Looting.FightItemKind.ThrowingKnife)
         {
           Current += ent.ActiveFightItem.Damage;
-          Current += ent.Stats.Strength;
+          Current += ent.Stats.Strength/2;
         }
       }
 
@@ -155,6 +155,11 @@ namespace Roguelike.Calculated
 
         CurrentPhysicalVariated += sign * variation * (float)RandHelper.Random.NextDouble();
       }
+
+      if (CurrentPhysicalVariated < 0)
+        CurrentPhysicalVariated = 0;
+      if (CurrentPhysical < 0)
+        CurrentPhysical = 0;
 
       var val = CurrentPhysical;
       AddExtraDamage(ent, wpn, weapons2Esk, ref val);

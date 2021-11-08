@@ -158,91 +158,6 @@ namespace RoguelikeUnitTests
       return res;
     }
 
-    //private int GetLootFromBarrels(List<Barrel> barrels, int barrelsCount)
-    //{
-    //  int numOfLoot = 0;
-    //  for (int i = 0; i < barrelsCount; i++)
-    //  {
-    //    var loot = game.GameManager.LootManager.TryAddForLootSource(barrels[i]);
-    //    if (loot.Any())
-    //    {
-    //      numOfLoot++;
-    //      foreach (var l in loot)
-    //      {
-    //        game.Level.RemoveLoot(l.Point);
-    //        game.Level.SetEmptyTile(l.Point);
-    //      }
-    //    }
-    //  }
-
-    //  return numOfLoot;
-    //}
-
-    //[Test]
-    //public void TestFightSkills()
-    //{
-    //  //base.GotoLastLevel();
-    //  var en = Level.Enemies.Where(e => e.Kind == Enemy.PowerKind.Champion).First();
-    //  var enHealth = en.Stats.Health;
-    //  var explosiveCocktail = new ExplosiveCocktail();
-    //  var knife = new ThrowingKnife();
-    //  var trap = new Trap();
-
-    //  FightItem[] fightSkills = new FightItem[] { explosiveCocktail, knife, trap };
-    //  Dictionary<FightItem, List<float>> primaryValues = new Dictionary<FightItem, List<float>>();
-    //  Dictionary<FightItem, List<float>> secValues = new Dictionary<FightItem, List<float>>();
-    //  gm.Hero.Character.AbilityPoints = 100;
-    //  gm.Hero.Character.Level = 30;
-    //  for (int abilityLevel = 0; abilityLevel < MaxAbilityInc; abilityLevel++)
-    //  {
-    //    foreach (var fi in fightSkills)
-    //    {
-    //      if (!primaryValues.ContainsKey(fi))
-    //      {
-    //        primaryValues.Add(fi, new List<float>());
-    //      }
-    //      if (!secValues.ContainsKey(fi))
-    //      {
-    //        secValues.Add(fi, new List<float>());
-    //      }
-    //      var ab = fi.GetAbility();
-
-    //      primaryValues[fi].Add(ab.GetFactor(true));
-    //      secValues[fi].Add(ab.GetFactor(false));
-    //      Assert.IsTrue(ab.Kind != AbilityKind.Unknown);
-
-    //      if (abilityLevel == 0)
-    //      {
-    //        AssertAreEqual(primaryValues[fi][0], 0);
-    //        AssertAreEqual(secValues[fi][0], 0);
-    //      }
-    //      else
-    //      {
-    //        AssertGreater(primaryValues[fi][abilityLevel], primaryValues[fi][abilityLevel - 1]);
-    //        AssertGreater(secValues[fi][abilityLevel], secValues[fi][abilityLevel - 1]);
-    //      }
-    //    }
-    //    foreach (var fi in fightSkills)
-    //    {
-    //      var ab = fi.GetAbility();
-    //      if (ab.IsPercentage(true))
-    //        AssertLess(primaryValues[fi][abilityLevel], 100);
-    //      if (ab.IsPercentage(false))
-    //        AssertLess(secValues[fi][abilityLevel], 100);
-    //      var increased = Hero.IncreaseAbility(ab.Kind);
-    //      Assert.IsTrue(increased);
-
-    //    }
-    //    //if (abilityLevel > 0)
-    //    {
-    //      var ab1 = Hero.GetAbility(AbilityKind.ThrowingWeaponsMastering).PrimaryStat.CurrentValue;
-    //      var ab2 = Hero.GetAbility(AbilityKind.HuntingMastering).PrimaryStat.CurrentValue;
-    //      AssertGreater(ab1, ab2);
-    //      //AssertGreater(primaryValues[knife][abilityLevel], primaryValues[trap][abilityLevel]);//trap has 2 turns so knife shall be stronger
-    //    }
-    //  }
-    //}
-
     [Test]
     public void TestExplosiveMasteringBurning()
     {
@@ -277,7 +192,7 @@ namespace RoguelikeUnitTests
       var enemyBeginHealth = enemy.Stats.Health;
       var hero = game.GameManager.Hero;
 
-      var fi = AddFightItemToHero(kind, hero);
+      var fi = ActivateFightItem(kind, hero);
       
       var damage1 = fi.Damage;
       Assert.Greater(damage1, 0);
@@ -289,7 +204,7 @@ namespace RoguelikeUnitTests
 
       IncreaseAbility(hero, fi.AbilityKind);
 
-      fi = AddFightItemToHero(kind, hero);
+      fi = ActivateFightItem(kind, hero);
       var damage2 = fi.Damage;
       Assert.Greater(damage2, damage1);
       enemy.OnHitBy(fi);
