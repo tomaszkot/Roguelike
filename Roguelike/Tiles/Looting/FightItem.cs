@@ -88,7 +88,7 @@ namespace Roguelike.Tiles.Looting
     //  SendStateChanged();
     //}
 
-    public FightItemKind FightItemKind
+    public virtual FightItemKind FightItemKind
     {
       get { return fightItemKind; }
       set

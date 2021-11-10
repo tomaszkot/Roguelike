@@ -334,7 +334,7 @@ namespace Roguelike
             Hero.ApplyLastingEffects();
           }
         }
-        //logger.LogInfo("to =>" + turnOwner);
+        //logger.LogInfo("TurnOwner to =>" + turnOwner);
       }
     }
     public bool PendingTurnOwnerApply { get => pendingTurnOwnerApply; set => pendingTurnOwnerApply = value; }

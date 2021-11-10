@@ -22,6 +22,8 @@ namespace Roguelike.Tiles.Looting
     {
       Caller = caller;
       DiesOnHit = false;
+      if (kind == FightItemKind.ExplosiveCocktail)
+        DiesOnHit = true;
     }
 
     [JsonIgnore]
@@ -45,5 +47,16 @@ namespace Roguelike.Tiles.Looting
       set; 
     }
     public bool AlwaysHit { get; set; }
+
+    public override FightItemKind FightItemKind 
+    { 
+      get => base.FightItemKind; 
+      set
+      {
+        base.FightItemKind = value;
+        if (value == FightItemKind.ExplosiveCocktail)
+          DiesOnHit = true;
+      }
+    }
   }
 }

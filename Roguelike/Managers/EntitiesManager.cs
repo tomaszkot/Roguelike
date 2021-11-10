@@ -25,7 +25,15 @@ namespace Roguelike.Managers
     public GameContext Context { get => context; set => context = value; }
     public List<LivingEntity> AllEntities { get => entities; set => entities = value; }
     public IEnumerable<IAlly> AllAllies { get => entities.Cast<IAlly>(); }
-    public bool PendingForAllIdle { get => pendingForAllIdle; set => pendingForAllIdle = value; }
+    public bool PendingForAllIdle 
+    { 
+      get => pendingForAllIdle;
+      set
+      {
+        pendingForAllIdle = value;
+        //context.Logger.LogInfo("pendingForAllIdle set to: "+ pendingForAllIdle);
+      }
+    }
 
     protected GameManager gameManager;
 
@@ -59,17 +67,24 @@ namespace Roguelike.Managers
     {
       if (Context.TurnOwner == turnOwner)
       {
-        var busyOnes = entities.Where(i => i.State != EntityState.Idle && i.State != EntityState.Sleeping).ToList();
+        var busyOnes = FindBusyOnes();
         if (!busyOnes.Any())
         {
           OnPolicyAppliedAllIdle();
           return true;
         }
         else if (justEndedLoop)
-          pendingForAllIdle = true;
+        {
+          PendingForAllIdle = true;
+        }
       }
 
       return false;
+    }
+
+    private List<LivingEntity> FindBusyOnes()
+    {
+      return entities.Where(i => i.State != EntityState.Idle && i.State != EntityState.Sleeping).ToList();
     }
 
     private void Context_ContextSwitched(object sender, ContextSwitch e)
@@ -77,39 +92,42 @@ namespace Roguelike.Managers
       //SetEntities(Context.CurrentNode.GetTiles<LivingEntity>().Where(i=> !(i is Hero)).ToList());
     }
 
-    protected bool detailedLogs = false;
+    protected bool detailedLogs = true;
 
     public virtual void MakeTurn()
     {
       //this.skipInTurn = skipInTurn;
       if (pendingForAllIdle)
       {
-        //context.Logger.LogInfo(this + " MakeTurn pendingForAllIdle!, return " );
+        if (detailedLogs)
+        {
+          var busyOnes = FindBusyOnes();
+          context.Logger.LogInfo(this + " MakeTurn pendingForAllIdle!, returning... busy:"+ busyOnes.FirstOrDefault());
+        }
         return;
       }
 
       RemoveDead();
 
       var activeEntities = GetActiveEntities();
-      //context.Logger.LogInfo(this+" MakeTurn start, count: " + activeEntities.Count);
-
-      pendingForAllIdle = false;
+      if(detailedLogs)
+        context.Logger.LogInfo(this+" MakeTurn start, count: " + activeEntities.Count);
 
       if (!activeEntities.Any())
       {
+        if(detailedLogs)
+          context.Logger.LogInfo("no one to move...");
         OnPolicyAppliedAllIdle();
-        //context.Logger.LogInfo("no one to move...");
         return;
       }
       
       foreach (var entity in activeEntities)
       {
-        detailedLogs = false;
+        //detailedLogs = false;
         
         try
         {
           var startPoint = entity.Position;
-          //if (startPoint.X == 75 && startPoint.Y == 10)
           //  detailedLogs = true;
           if(detailedLogs)
             context.Logger.LogInfo("turn of: " + entity + " started");
@@ -144,10 +162,10 @@ namespace Roguelike.Managers
             break;
           }
           var endPoint = entity.Position;
-          if (detailedLogs && entity is Enemy && endPoint == startPoint)
-          {
-            context.Logger.LogError("EnemiesManager  endPoint == startPoint !!! entity: " + entity);
-          }
+          //if (detailedLogs && entity is Enemy && endPoint == startPoint)
+          //{
+          //  context.Logger.LogError("EnemiesManager  endPoint == startPoint !!! entity: " + entity);
+          //}
           if (detailedLogs)
             context.Logger.LogInfo("turn of: " + entity + " ended");
         }
@@ -159,7 +177,8 @@ namespace Roguelike.Managers
 
       RemoveDead();
 
-      //context.Logger.LogInfo("EnemiesManager  MakeTurn ends");
+      if (detailedLogs)
+        context.Logger.LogInfo(this+" MakeTurn ends");
       Debug.Assert(Context.TurnOwner == turnOwner);
 
       ReportAllDone(true);
@@ -176,10 +195,9 @@ namespace Roguelike.Managers
       var pt = Node.GetEmptyNeighborhoodPoint(entity, null, emptyTypes);
       if (pt != null && pt.Item1.IsValid())
       {
-        if (detailedLogs)
-          context.Logger.LogInfo("!MoveEntity " + pt.Item1);
+        //if (detailedLogs)
+        //  context.Logger.LogInfo("!MoveEntity " + pt.Item1);
         MoveEntity(entity, pt.Item1, null);
-        //logger.WriteLine(entity + " moved to "+ pt);
       }
       else if (detailedLogs)
       {
@@ -234,18 +252,21 @@ namespace Roguelike.Managers
       //  return;//in ascii/UT mode this can happend
       if (pendingForAllIdle)
       {
-        //context.Logger.LogInfo("calling  ReportAllDone... Context.TurnOwner: " + Context.TurnOwner);
+        if(detailedLogs)
+          context.Logger.LogInfo("calling  ReportAllDone... Context.TurnOwner: " + Context.TurnOwner);
         ReportAllDone(false);
       }
     }
 
     protected virtual void OnPolicyAppliedAllIdle()
     {
-      //context.Logger.LogInfo(this+ " OnPolicyAppliedAllIdle Context.TurnOwner "+ Context.TurnOwner);
+      if(detailedLogs)
+        context.Logger.LogInfo(this+ " OnPolicyAppliedAllIdle Context.TurnOwner "+ Context.TurnOwner);
       if (Context.TurnOwner == turnOwner)//this check is mainly for ASCII/UT
       {
-        //Context.Logger.LogInfo(this+ " OnPolicyAppliedAllIdle calling MoveToNextTurnOwner");
-        pendingForAllIdle = false;
+        if (detailedLogs)
+          Context.Logger.LogInfo(this+ " OnPolicyAppliedAllIdle calling MoveToNextTurnOwner");
+        PendingForAllIdle = false;
         Context.MoveToNextTurnOwner();
       }
     }

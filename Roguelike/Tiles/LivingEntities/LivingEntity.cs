@@ -101,6 +101,7 @@ namespace Roguelike.Tiles.LivingEntities
       get { return state; }
       set 
       {
+        //Logger.LogInfo(this+" state=>"+state);
         var oldState = state;
         state = value;
         if (oldState != state)
@@ -349,7 +350,6 @@ namespace Roguelike.Tiles.LivingEntities
 
     internal bool CalculateIfStatChanceApplied(EntityStatKind esk, LivingEntity target = null)
     {
-      //Container.GetInstance<ILogger>().LogInfo(this + " CalculateIfStatChanceApplied...");
       var randVal = (float)RandHelper.Random.NextDouble();
       var chance = GetEffectChance(esk);
       if (target != null)

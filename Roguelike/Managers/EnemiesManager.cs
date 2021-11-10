@@ -114,8 +114,8 @@ namespace Roguelike.Managers
         makeRandMove = true;
       if (makeRandMove)
       {
-        if (detailedLogs)
-          context.Logger.LogInfo("!makeRandMove");
+        //if (detailedLogs)
+        //  context.Logger.LogInfo("!makeRandMove");
         MakeRandomMove(enemy);
       }
     }
