@@ -69,11 +69,16 @@ namespace Roguelike.Spells
       }
     }
 
-    public override SpellStatsDescription CreateSpellStatsDescription(bool currentMagicLevel)
+    public float GetDamage(bool withVariation)
     {
-      var desc = base.CreateSpellStatsDescription(currentMagicLevel);
+      return withVariation ? Damage : NominalDamage;
+    }
+
+    public override SpellStatsDescription CreateSpellStatsDescription(bool currentMagicLevel, bool withVariation)
+    {
+      var desc = base.CreateSpellStatsDescription(currentMagicLevel, withVariation);
       if(currentMagicLevel)
-        desc.Damage = Damage;
+        desc.Damage = GetDamage(withVariation);
       else
         desc.Damage = CalcDamage(CurrentLevel+1, withVariation);
       return desc;

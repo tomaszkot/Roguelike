@@ -75,7 +75,7 @@ namespace Roguelike.Abstract.Spells
     int CurrentLevel { get; }
     SpellKind Kind { get;}
 
-    SpellStatsDescription CreateSpellStatsDescription(bool currentLevel);
+    SpellStatsDescription CreateSpellStatsDescription(bool currentLevel, bool withVariation);
   }
 
   public interface IProjectileSpell : ISpell, Roguelike.Abstract.Projectiles.IProjectile

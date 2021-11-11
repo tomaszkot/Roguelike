@@ -88,6 +88,14 @@ namespace Roguelike.Tiles.Looting
     //  SendStateChanged();
     //}
 
+    public bool IsBowLikeAmmo
+    {
+      get
+      {
+        return fightItemKind == FightItemKind.PlainArrow || fightItemKind == FightItemKind.PlainBolt;
+      }
+    }
+
     public virtual FightItemKind FightItemKind
     {
       get { return fightItemKind; }

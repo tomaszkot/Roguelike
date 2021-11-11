@@ -127,8 +127,10 @@ namespace Roguelike.Calculated
       {
         if (wpn.IsBowLike && attackKind == AttackKind.PhysicalProjectile)
         {
-          Current += ent.ActiveFightItem.Damage;
-          //Current += wpn.Damage; added by ent.GetCurrentValue(attackStat)
+          if (ent.ActiveFightItem.IsBowLikeAmmo)
+            Current += ent.ActiveFightItem.Damage;
+          else
+            Current -= wpn.Damage;//ammo not matching
         }
         else if (wpn.IsMagician && attackKind == AttackKind.WeaponElementalProjectile)
         {
@@ -170,7 +172,7 @@ namespace Roguelike.Calculated
 
       if (offensiveSpell != null)
       {
-        var dmg = withVariation ? offensiveSpell.Damage : offensiveSpell.NominalDamage;
+        var dmg = offensiveSpell.GetDamage(withVariation);
         if (wpn != null && attackKind == AttackKind.WeaponElementalProjectile)
         {
           AddExtraDamage(ent, wpn, weapons2Esk, ref dmg);

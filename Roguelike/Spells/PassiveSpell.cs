@@ -92,9 +92,9 @@ namespace Roguelike.Spells
       return (int)(baseVal / 4f);
     }
 
-    public override SpellStatsDescription CreateSpellStatsDescription(bool currentMagicLevel)
+    public override SpellStatsDescription CreateSpellStatsDescription(bool currentMagicLevel, bool withVariation)
     {
-      var desc = base.CreateSpellStatsDescription(currentMagicLevel);
+      var desc = base.CreateSpellStatsDescription(currentMagicLevel, withVariation);
       if(currentMagicLevel)
         desc.TourLasting = TurnLasting;
       else

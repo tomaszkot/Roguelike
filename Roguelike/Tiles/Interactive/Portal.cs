@@ -25,7 +25,7 @@ namespace Roguelike.Tiles.Interactive
     }
 
     string[] extraStatDescription = new string[0];
-    public string[] GetExtraStatDescription(bool currentLevel)
+    public string[] GetExtraStatDescription(bool currentLevel, bool withVariation)
     {
       return extraStatDescription;
     }
@@ -50,7 +50,7 @@ namespace Roguelike.Tiles.Interactive
 
     SpellKind ISpell.Kind => SpellKind.Portal;
 
-    public SpellStatsDescription CreateSpellStatsDescription(bool currentLevel) 
+    public SpellStatsDescription CreateSpellStatsDescription(bool currentLevel, bool withVariation) 
     { 
       return new SpellStatsDescription(1, ManaCost, 10, ((ISpell)this).Kind); 
     }

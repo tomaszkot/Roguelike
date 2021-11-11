@@ -313,12 +313,12 @@ namespace Roguelike.Tiles.Looting
       return res;
     }
 
-    public SpellStatsDescription GetExtraStatDescription(LivingEntity caller, bool currentLevel)
+    public SpellStatsDescription GetExtraStatDescription(LivingEntity caller, bool currentLevel, bool withVariation = false)
     {
       ISpell spell = CreateSpell(caller);
       if (spell == null)
         return null;
-      var spellStatsDescription = spell.CreateSpellStatsDescription(currentLevel);
+      var spellStatsDescription = spell.CreateSpellStatsDescription(currentLevel, withVariation);
 
       return spellStatsDescription;
     }
