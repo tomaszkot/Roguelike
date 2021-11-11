@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Roguelike.Extensions;
+using System;
 
 namespace Roguelike.Attributes
 {
@@ -133,11 +134,7 @@ namespace Roguelike.Attributes
 
     public static float Round(float value)
     {
-      //if (value % 0.5f >= 0)
-      //  return (float)Math.Ceiling(value);
-      //else
-      //  return (float)Math.Floor(value);
-      return (float)Math.Round(value);
+      return value.Rounded();
     }
 
     public string GetFormattedCurrentValue(float cv)

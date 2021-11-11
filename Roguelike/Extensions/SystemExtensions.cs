@@ -6,8 +6,13 @@ using System.Threading.Tasks;
 
 namespace Roguelike.Extensions
 {
-  static class SystemExtensions
+  public static class SystemExtensions
   {
+    public static float Rounded(this float val)
+    {
+      return (float)Math.Round(val);
+    }
+
     public static void Increment<T>(this Dictionary<T, int> dictionary, T key)
     {
       int count;

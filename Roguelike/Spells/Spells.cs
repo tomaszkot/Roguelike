@@ -1,4 +1,5 @@
-﻿using Roguelike.Attributes;
+﻿using Roguelike.Abstract.Spells;
+using Roguelike.Attributes;
 using Roguelike.Extensions;
 using Roguelike.Tiles;
 using Roguelike.Tiles.LivingEntities;
@@ -159,8 +160,11 @@ namespace Roguelike.Spells
   public class SkeletonSpell : OffensiveSpell
   {
     Ally enemy;
+    Ally enemyNextLevel;
 
     public Ally Ally { get => enemy; set => enemy = value; }
+    public Ally AllyNextLevel { get => enemyNextLevel; set => enemyNextLevel = value; }
+
     public const int SkeletonSpellStrengthIncrease = 5;
 
     public SkeletonSpell() : this(new LivingEntity(), Difficulty.Normal)
@@ -173,34 +177,54 @@ namespace Roguelike.Spells
       //damage = ProjectiveSpell.BaseDamage + 1;
 
       var level = CurrentLevel;
-      Ally = caller.Container.GetInstance<AlliedEnemy>();
-      Ally.InitSpawned(EnemySymbols.SkeletonSymbol, level, diff);
-      Ally.Stats.SetNominal(EntityStatKind.Strength, AdvancedLivingEntity.BaseStrength.Value.Nominal+ SkeletonSpellStrengthIncrease);//same as hero
-      Ally.Stats.SetNominal(EntityStatKind.Dexterity, AdvancedLivingEntity.BaseDexterity.Value.Nominal + 5);
-      Ally.RecalculateStatFactors(false);
-      Ally.Name = "Skeleton";
-      //Ally.Stats[EntityStatKind.Attack].Nominal = Damage;
-      //var health = CalcHealth(level);
-      //Ally.Stats[EntityStatKind.Health].Nominal = health;
+      Ally = CreateAlly(caller, diff, level);
+      AllyNextLevel = CreateAlly(caller, diff, level+1);
+
       manaCost = (float)(BaseManaCost * 2) + 2;
     }
 
-    float CalcHealth(int magicLevel)
+    private Ally CreateAlly(LivingEntity caller, Difficulty? diff, int level)
     {
-      var hfl = PassiveSpell.CalcHealthFromLevel(magicLevel);
-      var val = (int)(hfl * (3 + 6 * ((float)(magicLevel * 10) / 100f)));
-
-      var inc = val * 80f / 100f;
-      inc *= ((float)magicLevel) / 15f;
-      return (int)(val + inc);
+      var ally = caller.Container.GetInstance<AlliedEnemy>();
+      ally.InitSpawned(EnemySymbols.SkeletonSymbol, level, diff);
+      ally.Stats.SetNominal(EntityStatKind.Strength, AdvancedLivingEntity.BaseStrength.Value.Nominal + SkeletonSpellStrengthIncrease);//same as hero
+      ally.Stats.SetNominal(EntityStatKind.Dexterity, AdvancedLivingEntity.BaseDexterity.Value.Nominal + 5);
+      ally.RecalculateStatFactors(false);
+      ally.Name = "Skeleton";
+      return ally;
     }
 
-    protected override float CalcDamage(int magicLevel, bool withVariation)
+    public override SpellStatsDescription CreateSpellStatsDescription(bool currentMagicLevel, bool withVariation)
     {
-      var baseD = base.CalcDamage(magicLevel, withVariation);
-      baseD += (float)(baseD * 25.0 / 100f);
-      return baseD;
+      var desc = base.CreateSpellStatsDescription(currentMagicLevel, withVariation);
+      float dmg = 0;
+      if (currentMagicLevel)
+      {
+        dmg = Ally.Stats.MeleeAttack;
+      }
+      else
+        dmg = AllyNextLevel.Stats.MeleeAttack;
+
+      desc.Damage = Ally.GetForDisplay(true, dmg);
+      return desc;
     }
+
+    //float CalcHealth(int magicLevel)
+    //{
+    //  var hfl = PassiveSpell.CalcHealthFromLevel(magicLevel);
+    //  var val = (int)(hfl * (3 + 6 * ((float)(magicLevel * 10) / 100f)));
+
+    //  var inc = val * 80f / 100f;
+    //  inc *= ((float)magicLevel) / 15f;
+    //  return (int)(val + inc);
+    //}
+
+    //protected override float CalcDamage(int magicLevel, bool withVariation)
+    //{
+    //  var baseD = base.CalcDamage(magicLevel, withVariation);
+    //  baseD += (float)(baseD * 25.0 / 100f);
+    //  return baseD;
+    //}
   }
 
   public class TransformSpell : PassiveSpell

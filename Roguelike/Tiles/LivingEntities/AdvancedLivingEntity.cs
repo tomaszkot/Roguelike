@@ -1,9 +1,6 @@
-﻿using Newtonsoft.Json;
-using Roguelike.Abilities;
+﻿using Roguelike.Abilities;
 using Roguelike.Abstract.Inventory;
-using Roguelike.Abstract.Projectiles;
 using Roguelike.Attributes;
-using Roguelike.Calculated;
 using Roguelike.Discussions;
 using Roguelike.Effects;
 using Roguelike.Events;
@@ -343,15 +340,26 @@ namespace Roguelike.Tiles.LivingEntities
 
     public virtual string GetFormattedStatValue(EntityStatKind kind, bool round)
     {
-      var currentValue = GetCurrentValue(kind);
+      float currentValue = GetStatForDisplay(kind, round);
       var stat = Stats.GetStat(kind);
-      if (round)
-        currentValue = (float)Math.Round((double)currentValue);
       var value = stat.GetFormattedCurrentValue(currentValue);
 
       return value;
     }
 
+    public float GetStatForDisplay(EntityStatKind kind, bool round)
+    {
+      var currentValue = GetCurrentValue(kind);
+
+      return GetForDisplay(round, currentValue);
+    }
+
+    public static float GetForDisplay(bool round, float currentValue)
+    {
+      if (round)
+        currentValue = currentValue.Rounded();
+      return currentValue;
+    }
 
     public double PrevLevelExperience { get; private set; }
     CurrentEquipment IEquipable.CurrentEquipment { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
