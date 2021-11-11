@@ -92,7 +92,7 @@ namespace Roguelike.Managers
       //SetEntities(Context.CurrentNode.GetTiles<LivingEntity>().Where(i=> !(i is Hero)).ToList());
     }
 
-    protected bool detailedLogs = true;
+    protected bool detailedLogs = false;
 
     public virtual void MakeTurn()
     {

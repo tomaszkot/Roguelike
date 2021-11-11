@@ -126,6 +126,8 @@ namespace Roguelike.Managers
         //  Logger.LogError("Hero attacks dead!" );
         //else
         //  Logger.LogInfo("Hero attacks en health = "+en.Stats.Health);
+        gm.EnemiesManager.RemoveDead();
+
         Context.ApplyPhysicalAttackPolicy(Hero, tile, (p) => gm.OnHeroPolicyApplied(p));
 
         return InteractionResult.Attacked;

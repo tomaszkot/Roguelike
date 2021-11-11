@@ -77,7 +77,7 @@ namespace Roguelike
     public void ApplyPhysicalAttackPolicy(LivingEntity attacker, Tile target, Action<Policy> AfterApply)
     {
       var attackPolicy = Container.GetInstance<AttackPolicy>();
-
+      
       if (AttackPolicyInitializer != null)
         AttackPolicyInitializer(attackPolicy, attacker, target);
       attackPolicy.OnApplied +=
