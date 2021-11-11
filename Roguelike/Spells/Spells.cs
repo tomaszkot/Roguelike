@@ -161,9 +161,11 @@ namespace Roguelike.Spells
     Ally enemy;
 
     public Ally Ally { get => enemy; set => enemy = value; }
+    public const int SkeletonSpellStrengthIncrease = 5;
 
     public SkeletonSpell() : this(new LivingEntity(), Difficulty.Normal)
-    { }
+    { 
+    }
 
     public SkeletonSpell(LivingEntity caller, Difficulty? diff = null) : base(caller, null)
     {
@@ -173,7 +175,7 @@ namespace Roguelike.Spells
       var level = CurrentLevel;
       Ally = caller.Container.GetInstance<AlliedEnemy>();
       Ally.InitSpawned(EnemySymbols.SkeletonSymbol, level, diff);
-      Ally.Stats.SetNominal(EntityStatKind.Strength, AdvancedLivingEntity.BaseStrength.Value.Nominal+5);//same as hero
+      Ally.Stats.SetNominal(EntityStatKind.Strength, AdvancedLivingEntity.BaseStrength.Value.Nominal+ SkeletonSpellStrengthIncrease);//same as hero
       Ally.Stats.SetNominal(EntityStatKind.Dexterity, AdvancedLivingEntity.BaseDexterity.Value.Nominal + 5);
       Ally.RecalculateStatFactors(false);
       Ally.Name = "Skeleton";
