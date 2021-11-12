@@ -32,10 +32,10 @@ namespace Roguelike.Tiles
       return (other as Armor).EquipmentKind == this.EquipmentKind;
     }
 
-    public override void SetLevelIndex(int li)
+    public override void SetLevelIndex(int levelIndex)
     {
-      base.SetLevelIndex(li);
-      SetRequiredStat(li, EntityStatKind.Strength);
+      base.SetLevelIndex(levelIndex);
+      SetRequiredStat(levelIndex, EntityStatKind.Strength);
     }
         
     public override EquipmentKind EquipmentKind

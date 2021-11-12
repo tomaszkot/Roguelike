@@ -448,9 +448,15 @@ namespace Roguelike.Tiles
     //setter needed from serialize
     public int EnchantSlots { get => enchantSlots; set { enchantSlots = value; } }
 
-    protected void SetRequiredStat(int li, EntityStatKind esk)
+    public void SetRequiredStat(EntityStatKind esk, int value)
     {
-      var es = new EntityStat(esk, LivingEntities.LivingEntity.BaseStats[esk].Nominal + li-1);
+      var es = new EntityStat(esk, value);
+      this.RequiredStats.SetStat(es.Kind, es);
+    }
+
+    protected void SetRequiredStat(int levelIndex, EntityStatKind esk)
+    {
+      var es = new EntityStat(esk, LivingEntities.LivingEntity.BaseStats[esk].Nominal + levelIndex-1);
       this.RequiredStats.SetStat(es.Kind, es);
     }
 
