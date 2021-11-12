@@ -153,6 +153,8 @@ namespace Roguelike.Managers
         }
       }
 
+      //lootItems.Where(i => i is Equipment).Cast<Equipment>().ToList();
+
       return lootItems;
     }
 
