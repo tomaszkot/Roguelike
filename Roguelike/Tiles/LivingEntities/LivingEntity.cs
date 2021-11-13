@@ -1083,7 +1083,7 @@ namespace Roguelike.Tiles.LivingEntities
 
     public bool IsTileInProjectileFightItemReach(ProjectileFightItem fi, Tile tile)
     {
-      return DistanceFrom(tile) < ProjectileFightItem.DefaultMaxDistance;
+      return DistanceFrom(tile) < fi.Range;
     }
 
     //static EffectType[] BlockingLEs = new[] { EffectType.Stunned, Effects.EffectType.Bleeding };

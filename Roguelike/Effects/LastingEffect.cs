@@ -190,13 +190,13 @@ namespace Roguelike.Effects
       get
       {
         //if (description == null) - health was not real-time updated
-        description = GetDescription();
+        description = GetDescription(false);
 
         return description;
       }
     }
 
-    string GetDescription()
+    public string GetDescription(bool shortOne)
     {
       string res = Type.ToDescription();
 
@@ -245,15 +245,18 @@ namespace Roguelike.Effects
       if (end.Any())
         res += end;
 
-      if (owner is LivingEntity le &&
-        (
-        Type == EffectType.Firing ||
-        Type == EffectType.Poisoned ||
-        Type == EffectType.Frozen
-        )
-        )
+      if (!shortOne)
       {
-        res += ", Health "+ le.Stats.GetCurrentValue(EntityStatKind.Health);
+        if (owner is LivingEntity le &&
+          (
+          Type == EffectType.Firing ||
+          Type == EffectType.Poisoned ||
+          Type == EffectType.Frozen
+          )
+          )
+        {
+          res += ", Health " + le.Stats.GetCurrentValue(EntityStatKind.Health);
+        }
       }
 
       return res;

@@ -12,7 +12,7 @@ namespace Roguelike.Tiles.Looting
 {
   public class ProjectileFightItem : FightItem, Roguelike.Abstract.Projectiles.IProjectile
   {
-    public const int DefaultMaxDistance = 6;
+    public const int DefaultMaxRange = 5;
 
     public ProjectileFightItem() : this(FightItemKind.Unset, null)
     {
@@ -56,7 +56,14 @@ namespace Roguelike.Tiles.Looting
         base.FightItemKind = value;
         if (value == FightItemKind.ExplosiveCocktail)
           DiesOnHit = true;
+
+        if (value == FightItemKind.PlainArrow)
+          Range = DefaultMaxRange + 2;
+        else if (value == FightItemKind.PlainBolt)
+          Range = DefaultMaxRange + 1;
       }
     }
+
+    public int Range { get; internal set; } = DefaultMaxRange;
   }
 }
