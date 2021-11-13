@@ -8,6 +8,7 @@ using Roguelike.Policies;
 using Roguelike.TileContainers;
 using Roguelike.Tiles;
 using Roguelike.Tiles.LivingEntities;
+using System;
 using System.Collections.Generic;
 
 
@@ -21,9 +22,12 @@ namespace Roguelike.Events
 
   public class GameEvent
   {
+    Guid guid;
     public string Info { get; set; } = "";
     public ActionLevel Level { get; set; }
     public int Index { get; set; }
+    public Guid Guid { get => guid; set => guid = value; }
+
     public virtual string GetSound() { return ""; }
 
     public GameEvent() : this("", ActionLevel.Normal)
@@ -34,6 +38,7 @@ namespace Roguelike.Events
     {
       Info = info;
       Level = lvl;
+      guid = Guid.NewGuid();
     }
 
     public override string ToString()

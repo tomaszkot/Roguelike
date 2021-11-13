@@ -416,6 +416,11 @@ namespace Roguelike.Managers
     public void RemoveDead()
     {
       EnemiesManager.RemoveDead();
+      ReportHeroDeathIfNeeded();
+    }
+
+    private void ReportHeroDeathIfNeeded()
+    {
       if (!Hero.Alive)//strike back of enemy could kill hero
         Context.ReportHeroDeath();
     }

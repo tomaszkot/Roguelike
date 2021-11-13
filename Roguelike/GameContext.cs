@@ -333,6 +333,11 @@ namespace Roguelike
             Hero.ApplyAbilities();
             Hero.ApplyLastingEffects();
           }
+          if (!Hero.Alive)
+          {
+            ReportHeroDeath();
+            return;
+          }
         }
         //logger.LogInfo("TurnOwner to =>" + turnOwner);
       }

@@ -2,6 +2,7 @@
 using Roguelike.Events;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Roguelike.InfoScreens
 {
@@ -60,6 +61,11 @@ namespace Roguelike.InfoScreens
         else
           actions.RemoveAt(0);
       }
+    }
+
+    internal bool Contains(GameEvent ac)
+    {
+      return actions.Any(i => i.Guid == ac.Guid);
     }
 
     internal void Add(string action, ActionLevel level = ActionLevel.Normal)

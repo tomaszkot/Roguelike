@@ -795,7 +795,7 @@ namespace Roguelike.Tiles.LivingEntities
 
     public bool DieIfShould(EffectType effect)
     {
-      if (Alive && IsHealthZero())
+      if (Alive && IsHealthGone())
       {
         Alive = false;
         DiedOfEffect = effect;
@@ -814,7 +814,7 @@ namespace Roguelike.Tiles.LivingEntities
       return new LivingEntityAction(LivingEntityActionKind.Died) { InvolvedEntity = this, Level = ActionLevel.Important, Info = info };
     }
 
-    public bool IsHealthZero()
+    public bool IsHealthGone()
     {
       return Stats.GetCurrentValue(EntityStatKind.Health) <= 0;
     }

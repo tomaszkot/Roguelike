@@ -3,7 +3,7 @@
   public enum HintKind
   {
     Unset, LootCollectShorcut, BulkLootCollectShorcut, ShowCraftingPanel, HeroLevelTooLow, CanNotPutOnUnidentified,
-    LootHightlightShorcut, UseProjectile
+    LootHightlightShorcut, UseProjectile, UseElementalWeaponProjectile
   }
 
   public class HintItem

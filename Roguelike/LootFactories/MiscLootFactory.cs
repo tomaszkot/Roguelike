@@ -125,15 +125,21 @@ namespace Roguelike.LootFactories
       {
         factory[fik.ToString()] = (string tag) =>
         {
+          int max = 3;
           var fi = new ProjectileFightItem(fik, null) { };
-          fi.Count = RandHelper.GetRandomInt(3) + 2;
+          if (fik == FightItemKind.PlainArrow || fik == FightItemKind.PlainBolt)
+            max = 6;
+          fi.Count = RandHelper.GetRandomInt(max) + 3;
           return fi;
         };
 
         factoryFightItem[fik.ToString()] = (string tag) =>
         {
+          int max = 3;
           var fi = new ProjectileFightItem(fik, null) { };
-          fi.Count = RandHelper.GetRandomInt(3) + 2;
+          if (fik == FightItemKind.PlainArrow || fik == FightItemKind.PlainBolt)
+            max = 6;
+          fi.Count = RandHelper.GetRandomInt(max) + 3;
           return fi;
         };
       }

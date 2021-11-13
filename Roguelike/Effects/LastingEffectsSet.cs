@@ -157,7 +157,7 @@ namespace Roguelike.Effects
         ApplyLastingEffect(i, false);
 
         eff = i.Type;
-        if (IsHealthZero())
+        if (IsHealthGone())
           break;
       };
 
@@ -165,9 +165,9 @@ namespace Roguelike.Effects
       livingEntity.DieIfShould(eff);
     }
 
-    public bool IsHealthZero()
+    public bool IsHealthGone()
     {
-      return livingEntity.IsHealthZero();
+      return livingEntity.IsHealthGone();
     }
 
     private void ApplyLastingEffect(LastingEffect le, bool newOne)

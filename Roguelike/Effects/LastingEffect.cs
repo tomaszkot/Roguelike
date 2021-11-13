@@ -189,8 +189,8 @@ namespace Roguelike.Effects
     {
       get
       {
-        if (description == null)
-          description = GetDescription();
+        //if (description == null) - health was not real-time updated
+        description = GetDescription();
 
         return description;
       }
@@ -245,6 +245,16 @@ namespace Roguelike.Effects
       if (end.Any())
         res += end;
 
+      if (owner is LivingEntity le &&
+        (
+        Type == EffectType.Firing ||
+        Type == EffectType.Poisoned ||
+        Type == EffectType.Frozen
+        )
+        )
+      {
+        res += ", Health "+ le.Stats.GetCurrentValue(EntityStatKind.Health);
+      }
 
       return res;
     }
