@@ -135,7 +135,7 @@ namespace Roguelike.Tiles.Looting
         else if (fightItemKind == FightItemKind.HunterTrap)
         {
           baseDamage += 4;
-          Price *= 3;
+          Price *= 4;
           PrimaryStatDescription = Name + ", clinch victim and causes bleeding";
           HitTargetSound = "trap";
           TurnLasting = 3;
