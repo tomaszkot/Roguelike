@@ -909,6 +909,7 @@ namespace Roguelike.Managers
       var eqKinds = LootGenerator.GetEqKinds();
       eqKinds.Shuffle();
       int levelIndex = Hero.Level;
+      bool rangeGen = false;
       foreach (var eqKind in eqKinds)
       {
         if (eqKind == EquipmentKind.Trophy || eqKind == EquipmentKind.Unset || eqKind == EquipmentKind.God)
@@ -916,7 +917,7 @@ namespace Roguelike.Managers
 
         var breakCount = 2;
         if (eqKind == EquipmentKind.Weapon)
-          breakCount = 3;
+          breakCount = 5;
 
         int count = 0;
         int attemptTries = 0;
@@ -934,6 +935,9 @@ namespace Roguelike.Managers
               eq.MakeEnchantable();
 
             merch.Inventory.Add(eq);
+            var wpn = eq as Weapon;
+            if (wpn != null && wpn.IsBowLike)
+              rangeGen = true;
             count++;
           }
           else
@@ -942,6 +946,16 @@ namespace Roguelike.Managers
           if (attemptTries == 5)
             break;
         }
+      }
+
+      if (!rangeGen)
+      {
+        if(levelIndex <= 2)
+          merch.Inventory.Add(lootGenerator.GetLootByTileName<Weapon>("Bow"));
+        else if (levelIndex <= 4)
+          merch.Inventory.Add(lootGenerator.GetLootByTileName<Weapon>("solid_bow"));
+        else if (levelIndex <= 6)
+          merch.Inventory.Add(lootGenerator.GetLootByTileName<Weapon>("composite_bow"));
       }
     }
 
