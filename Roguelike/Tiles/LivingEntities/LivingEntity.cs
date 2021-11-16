@@ -251,7 +251,7 @@ namespace Roguelike.Tiles.LivingEntities
       this.Stats.SetNominal(EntityStatKind.ResistLighting, rli);
     }
 
-    public float StatsIncreasePerLevel = .31f;
+    public float StatsIncreasePerLevel = .2f;
 
     protected float GetIncrease(int level, float factor = 1)
     {
@@ -621,6 +621,7 @@ namespace Roguelike.Tiles.LivingEntities
           }
           else if (fi.FightItemKind == FightItemKind.HunterTrap)
           {
+            inflicted = fi.Damage;
             var bleed = StartBleeding(inflicted, null, fi.TurnLasting);
             bleed.Source = fi;
 
@@ -809,8 +810,28 @@ namespace Roguelike.Tiles.LivingEntities
     {
       var info = Name + " Died";
       if (DiedOfEffect != EffectType.Unset)
+      {
         info += ", killing effect: " + DiedOfEffect.ToDescription();
-
+        try
+        {
+          if (DiedOfEffect == EffectType.Bleeding && LastingEffectsSet.LastingEffects.Any())
+          {
+            var trap = LastingEffectsSet.LastingEffects
+              .Where(i => i.Source is ProjectileFightItem pfi && pfi.FightItemKind == FightItemKind.HunterTrap)
+              .Select(i=>i.Source)
+              .Cast<ProjectileFightItem>()
+              .SingleOrDefault();
+            if (trap != null)
+            {
+              trap.SetState(FightItemState.Deactivated);
+            }
+          }
+        }
+        catch (Exception ex)
+        {
+          Logger.LogError(ex);
+        }
+      }
       return new LivingEntityAction(LivingEntityActionKind.Died) { InvolvedEntity = this, Level = ActionLevel.Important, Info = info };
     }
 
@@ -1020,12 +1041,12 @@ namespace Roguelike.Tiles.LivingEntities
       }
       this.Level = level;
       InitStatsFromName();
-      var hard = false;// GameManager.Instance.GameSettings.DifficultyLevel == Commons.GameSettings.Difficulty.Hard;
+      var hard = diff == Difficulty.Hard;
       float inc = 1;
       if (diff == Difficulty.Normal)
         inc = 1.1f;
       else if (diff == Difficulty.Hard)
-        inc = 1.3f;
+        inc = 1.25f;
       
       if(inc > 1)
         IncreaseStats(inc, IncreaseStatsKind.Difficulty);

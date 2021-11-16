@@ -279,6 +279,11 @@ namespace Roguelike.Tiles
       set
       {
         primaryStat.Value.Factor = value;
+        if (value == 0 && kind == EquipmentKind.Weapon && this is Weapon wpn && wpn.Kind == Weapon.WeaponKind.Bow)
+        {
+          int k = 0;
+          k++;
+        }
         SetPrimaryStatDesc();
       }
     }

@@ -27,5 +27,10 @@ namespace Roguelike.Spells
 
     [JsonIgnore]
     public bool DiesOnHit { get; set; } = true;
+
+    public string HitSound 
+    {
+      get { return GetHitSound(); }
+    }
   }
 }

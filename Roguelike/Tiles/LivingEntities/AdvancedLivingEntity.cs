@@ -466,11 +466,14 @@ namespace Roguelike.Tiles.LivingEntities
             )
             return false;
 
-          if (eq is Weapon wpnToUSe && 
+          if (eq is Weapon wpnToUSe &&
               (wpnToUSe.Kind == Weapon.WeaponKind.Bow || wpnToUSe.Kind == Weapon.WeaponKind.Crossbow) &&
-              shield !=null
+              shield != null
             )
+          {
+            AppendAction(new GameEvent("Can not wield that weapon when using a shield", ActionLevel.Important));
             return false;
+          }
         }
       }
 

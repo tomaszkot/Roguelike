@@ -141,7 +141,8 @@ namespace Roguelike.Calculated
       if (attackKind == AttackKind.PhysicalProjectile && ent.ActiveFightItem != null)
       {
         if (ent.ActiveFightItem.FightItemKind == Tiles.Looting.FightItemKind.Stone ||
-           ent.ActiveFightItem.FightItemKind == Tiles.Looting.FightItemKind.ThrowingKnife)
+           ent.ActiveFightItem.FightItemKind == Tiles.Looting.FightItemKind.ThrowingKnife
+           )
         {
           Current += ent.ActiveFightItem.Damage;
           Current += ent.Stats.Strength/2;

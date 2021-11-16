@@ -11,5 +11,7 @@ namespace Dungeons.Tiles.Abstract
   {
     [JsonIgnore]
     Dungeons.Tiles.Tile Target { get; set; }
+
+    string HitSound { get; }
   }
 }

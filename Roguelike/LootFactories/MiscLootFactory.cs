@@ -125,21 +125,13 @@ namespace Roguelike.LootFactories
       {
         factory[fik.ToString()] = (string tag) =>
         {
-          int max = 3;
-          var fi = new ProjectileFightItem(fik, null) { };
-          if (fik == FightItemKind.PlainArrow || fik == FightItemKind.PlainBolt)
-            max = 6;
-          fi.Count = RandHelper.GetRandomInt(max) + 3;
+          var fi = CreateFightItem(fik);
           return fi;
         };
 
         factoryFightItem[fik.ToString()] = (string tag) =>
         {
-          int max = 3;
-          var fi = new ProjectileFightItem(fik, null) { };
-          if (fik == FightItemKind.PlainArrow || fik == FightItemKind.PlainBolt)
-            max = 6;
-          fi.Count = RandHelper.GetRandomInt(max) + 3;
+          var fi = CreateFightItem(fik);
           return fi;
         };
       }
@@ -200,6 +192,23 @@ namespace Roguelike.LootFactories
           return new Gem(gemKind) { EnchanterSize = enchanterSize };
         };
       }
+    }
+
+    private static ProjectileFightItem CreateFightItem(FightItemKind fik)
+    {
+      int max = 3;
+      int add = 3;
+      var fi = new ProjectileFightItem(fik, null) { };
+      if (fik == FightItemKind.PlainArrow || fik == FightItemKind.PlainBolt)
+        max = 6;
+      if (fik == FightItemKind.HunterTrap)
+      {
+        max = 1;
+        add = 2;
+      }
+
+      fi.Count = RandHelper.GetRandomInt(max) + add;
+      return fi;
     }
 
     private void InitRepices()

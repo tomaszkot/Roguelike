@@ -950,8 +950,16 @@ namespace Roguelike.Managers
 
       if (!rangeGen)
       {
-        if(levelIndex <= 2)
-          merch.Inventory.Add(lootGenerator.GetLootByTileName<Weapon>("Bow"));
+        if (levelIndex <= 2)
+        {
+          var bow = lootGenerator.GetLootByTileName<Weapon>("crude_crossbow");
+          if (bow.Damage == 0)
+          {
+            int kk = 0;
+            kk++;
+          }
+          merch.Inventory.Add(bow);
+        }
         else if (levelIndex <= 4)
           merch.Inventory.Add(lootGenerator.GetLootByTileName<Weapon>("solid_bow"));
         else if (levelIndex <= 6)

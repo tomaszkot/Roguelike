@@ -92,7 +92,7 @@ namespace Roguelike.Tiles.Interactive
       get => !IsLooted;
       set
       {
-        IsLooted = value;
+        IsLooted = !value;
         SetColor();
       }
     }
