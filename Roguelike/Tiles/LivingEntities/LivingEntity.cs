@@ -251,7 +251,7 @@ namespace Roguelike.Tiles.LivingEntities
       this.Stats.SetNominal(EntityStatKind.ResistLighting, rli);
     }
 
-    public float StatsIncreasePerLevel = .2f;
+    public float StatsIncreasePerLevel = .13f;
 
     protected float GetIncrease(int level, float factor = 1)
     {

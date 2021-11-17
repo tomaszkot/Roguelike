@@ -104,12 +104,12 @@ namespace RoguelikeUnitTests
       var diffScroll = enemyHealth - enemy.Stats.Health;
 
       //melee
+      enemyHealth = enemy.Stats.Health;
       var wpn = GenerateEquipment<Weapon>("rusty_sword");
       game.Hero.SetEquipment(wpn, CurrentEquipmentKind.Weapon);
       for (int i = 0; i < 10; i++)
       {
         enemy.OnMelleeHitBy(game.Hero);
-        //GotoNextHeroTurn();
       }
       var diffMelee = enemyHealth - enemy.Stats.Health;
       Assert.Greater(diffMelee, 40);
