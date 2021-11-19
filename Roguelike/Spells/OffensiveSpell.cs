@@ -12,7 +12,7 @@ namespace Roguelike.Spells
     public const int BaseDamage = 1;
     public int NominalDamage { get; set; }
     bool withVariation;
-    public const int DefaultAddNominal = 1;
+    public const int DefaultAddNominal = 0;
     public bool AlwaysHit { get; set; }
 
     public OffensiveSpell(LivingEntity caller, Weapon weaponSpellSource, bool withVariation = true) : base(caller, weaponSpellSource)

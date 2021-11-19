@@ -119,6 +119,11 @@ namespace RoguelikeUnitTests
       get { return game.GameManager.EnemiesManager.AllEntities.Cast<Enemy>().Where(i => i.PowerKind == EnemyPowerKind.Plain).ToList(); }
     }
 
+    protected List<Roguelike.Tiles.LivingEntities.Enemy> PlainNormalEnemies
+    {
+      get { return PlainEnemies.Where(i=>!i.IsStrongerThanAve).ToList(); }
+    }
+
     protected List<Roguelike.Tiles.LivingEntities.Enemy> ChampionEnemies
     {
       get { return game.GameManager.EnemiesManager.AllEntities.Cast<Enemy>().Where(i => i.PowerKind == EnemyPowerKind.Champion).ToList(); }

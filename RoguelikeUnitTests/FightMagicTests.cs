@@ -89,7 +89,7 @@ namespace RoguelikeUnitTests
       var game = CreateGame();
       var hero = game.Hero;
       Assert.Less(hero.Stats.MeleeAttack, 20);
-      var enemy = PlainEnemies.First();
+      var enemy = PlainNormalEnemies.First();
       enemy.Stats.SetNominal(Roguelike.Attributes.EntityStatKind.Health, 350);
       hero.Stats.SetNominal(Roguelike.Attributes.EntityStatKind.Mana, 250);
       var enemyHealth = enemy.Stats.Health;
@@ -112,7 +112,7 @@ namespace RoguelikeUnitTests
         enemy.OnMelleeHitBy(game.Hero);
       }
       var diffMelee = enemyHealth - enemy.Stats.Health;
-      Assert.Greater(diffMelee, 40);
+      Assert.Greater(diffMelee, 20);
       Assert.Less(Math.Abs(diffMelee - diffScroll), 30);//TODO %
     }
 
