@@ -101,7 +101,7 @@ namespace Roguelike
       attackPolicy.Apply(attacker, target);
     }
 
-    public bool CanUseScroll(LivingEntity caster, SpellSource spellSource, ISpell spell)
+    public bool CanUseScroll(LivingEntity caster, SpellSource spellSource, ISpell spell, ref string preventReason)
     {
       if (spellSource.Count <= 0)
       {
@@ -111,6 +111,7 @@ namespace Roguelike
 
       if (spell.ManaCost > caster.GetCurrentValue(EntityStatKind.Mana))
       {
+        preventReason = "Not enough mana";
         return false;
       }
 

@@ -27,8 +27,12 @@ namespace Roguelike.Managers
     public PassiveSpell ApplyPassiveSpell(LivingEntity caster, SpellSource spellSource, Point? destPoint = null)
     {
       var spell = spellSource.CreateSpell(caster);
-      if (!gm.Context.CanUseScroll(caster, spellSource, spell))
+      string preventReason = "";
+      if (!gm.Context.CanUseScroll(caster, spellSource, spell, ref preventReason))
+      {
+        gm.ReportFailure(preventReason);
         return null;
+      }
 
       if (spell is PassiveSpell ps)
       {
@@ -40,8 +44,7 @@ namespace Roguelike.Managers
             var teleportSpell = ps as TeleportSpell;
             if (teleportSpell.Range < gm.Hero.DistanceFrom(currentTile))
             {
-              gm.SoundManager.PlayBeepSound();
-              gm.EventsManager.AppendAction(new Events.GameInstructionAction() { Info = "Range of spell is too small (max:" + teleportSpell.Range + ")" });
+              gm.ReportFailure("Range of spell is too small (max:" + teleportSpell.Range + ")");
               return null;
             }
 
@@ -49,7 +52,7 @@ namespace Roguelike.Managers
               gm.CurrentNode.SetTile(gm.Hero, destPoint.Value);
             else
             {
-              gm.SoundManager.PlayBeepSound();
+              gm.ReportFailure("Can not cast on the pointed tile");
               return null;
             }
           }
@@ -67,7 +70,10 @@ namespace Roguelike.Managers
         return ps;
       }
       else
+      {
         gm.Logger.LogError("!PassiveSpell " + spellSource);
+        gm.ReportFailure("");
+      }
 
       return null;
     }
@@ -91,7 +97,10 @@ namespace Roguelike.Managers
         return ps;
       }
       else
+      {
         gm.Logger.LogError("!OffensiveSpell " + spellSource);
+        gm.ReportFailure("");
+      }
 
       return null;
     }

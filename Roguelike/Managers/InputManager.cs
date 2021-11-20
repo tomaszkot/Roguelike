@@ -167,7 +167,8 @@ namespace Roguelike.Managers
             gm.AppendAction<InteractiveTileAction>((InteractiveTileAction ac) =>
             {
               ac.InteractiveKind = InteractiveActionKind.DoorLocked;
-              ac.InvolvedTile = door; ac.Info = "Proper key not available";
+              ac.InvolvedTile = door;
+              ac.Info = "Proper key not available";
             });
             gm.SoundManager.PlayBeepSound();
             return InteractionResult.Blocked;

@@ -69,7 +69,7 @@ namespace Dungeons
 
       List<IDoor> doors = new List<IDoor>();
 
-      [JsonIgnore]
+      //[JsonIgnore]//when ignore were not available after load
       public HiddenTiles HiddenTiles { get; set; } = new HiddenTiles();
 
       

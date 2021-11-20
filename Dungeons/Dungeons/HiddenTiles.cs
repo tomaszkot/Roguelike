@@ -9,16 +9,17 @@ namespace Dungeons
 {
   public class HiddenTilesInfo
   {
-    List<Tile> tiles { get; set; } = new List<Tile>();
+    public List<Tile> Tiles { get; set; } = new List<Tile>();
 
-    public IEnumerable<Tile> Tiles { get { return tiles; } }
+    //public IEnumerable<Tile> Tiles { get { return Tiles; } }
 
-    public void Add(Tile tile) { tiles.Add(tile); }
+    public void Add(Tile tile) { Tiles.Add(tile); }
   }
 
   public class HiddenTiles
   {
-    Dictionary<string, HiddenTilesInfo> Tiles { get; set; } = new Dictionary<string, HiddenTilesInfo>();
+    public string _Name { get; set; }
+    public Dictionary<string, HiddenTilesInfo> Tiles { get; set; } = new Dictionary<string, HiddenTilesInfo>();
         
     public bool Contains(string key)
     {
@@ -43,5 +44,6 @@ namespace Dungeons
       return Tiles[key];
 
     }
+
   } 
 }

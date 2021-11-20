@@ -1232,7 +1232,7 @@ namespace Roguelike.Managers
         {
           if (GetAlliesCount<AlliedEnemy>() > 0)
           {
-            AppendAction(new GameInstructionAction() { Info = "Currently you can not instantiate more skeletons" }); ;
+            ReportFailure("Currently you can not instantiate more skeletons");
             return false;
           }
         }
@@ -1244,8 +1244,7 @@ namespace Roguelike.Managers
         {
           if (wss.Count <= 0)
           {
-            SoundManager.PlayBeepSound();
-            AppendAction(new GameEvent() { Info = "Not enough charges to cast a spell" });
+            ReportFailure("Not enough charges to cast a spell");
             return false;
           }
 
@@ -1254,8 +1253,7 @@ namespace Roguelike.Managers
         {
           if (caster.Stats.Mana < spell.ManaCost)
           {
-            SoundManager.PlayBeepSound();
-            AppendAction(new GameEvent() { Info = "Not enough mana to cast a spell" });
+            ReportFailure("Not enough mana to cast a spell");
             return false;
           }
           caster.ReduceMana(spell.ManaCost);
@@ -1369,6 +1367,13 @@ namespace Roguelike.Managers
 
       policy.Apply(caster);
       return true;
+    }
+
+    public void ReportFailure(string infoToDisplay)
+    {
+      SoundManager.PlayBeepSound();
+      if(infoToDisplay.Any())
+        AppendAction(new GameEvent() { Info = infoToDisplay, Level = ActionLevel.Important });
     }
   }
 }
