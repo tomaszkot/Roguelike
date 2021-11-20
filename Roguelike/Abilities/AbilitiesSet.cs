@@ -10,9 +10,8 @@ namespace Roguelike.Abilities
   {
     List<PassiveAbility> passiveAbilities = new List<PassiveAbility>();
     List<ActiveAbility> activeAbilities = new List<ActiveAbility>();
-    List<Ability> allItems = new List<Ability>();
-    //Dictionary<FightItemKind, FightItem> fightItemsProps = new Dictionary<FightItemKind, FightItem>();
-
+    //List<Ability> allItems = new List<Ability>();
+    
     public AbilitiesSet()
     {
       EnsureItems();
@@ -46,7 +45,7 @@ namespace Roguelike.Abilities
 
             passiveAbilities.Add(ab as PassiveAbility);
           }
-          allItems.Add(ab);
+          //allItems.Add(ab);
         }
       }
 
@@ -60,19 +59,22 @@ namespace Roguelike.Abilities
       return PassiveItems.Where(i => i.AuxStat.Kind == esk).FirstOrDefault();
     }
 
-    public List<Ability> AllItems
-    {
-      get
-      {
-        //can not called it here - deserialization doubles items!
-        //if (!abilities.Any())
-        return allItems;
-      }
-    }
+    //public List<Ability> AllItems
+    //{
+    //  get
+    //  {
+    //    //can not called it here - deserialization doubles items!
+    //    //if (!abilities.Any())
+    //    return allItems;
+    //  }
+    //}
 
     public Ability GetAbility(AbilityKind kind)
     {
-      return allItems.Where(i => i.Kind == kind).FirstOrDefault();
+      Ability ab = passiveAbilities.Where(i => i.Kind == kind).FirstOrDefault();
+      if(ab == null)
+        ab = activeAbilities.Where(i => i.Kind == kind).FirstOrDefault();
+      return ab;
     }
 
     public List<PassiveAbility> PassiveItems

@@ -524,7 +524,7 @@ namespace RoguelikeUnitTests
     //[TestCase(Roguelike.Abilities.AbilityKind.WandsMastering)]
     //[TestCase(Roguelike.Abilities.AbilityKind.SceptersMastering)]
     [TestCase(Roguelike.Abilities.AbilityKind.BowsMastering)]
-    [TestCase(Roguelike.Abilities.AbilityKind.CrossBowsMastering)]
+    //[TestCase(Roguelike.Abilities.AbilityKind.CrossBowsMastering)]
     public void BasicWeaponsMasteryTests(Roguelike.Abilities.AbilityKind ab)//test if mellee damage is increased
     {
       var game = CreateGame();
