@@ -12,25 +12,29 @@ namespace Roguelike.LootFactories
 {
   public class Props
   {
-    public const int BowBaseDamage = 10;
+    public const int BowBaseDamage = 10;//strength is not added to it so melee would be stronger
     public const int CrossbowBaseDamage = 12;
+
+    public const int ScepterBaseDamage = 2;
+    public const int StaffBaseDamage = 3;
+    public const int WandBaseDamage = 2;
+
     public const int FightItemBaseDamage = 1;
+
   }
 
   public class MaterialProps
   {
-
-    public const int BashingWeaponBaseDamage = 1;
-
-    public const int BronzeSwordBaseDamage = 2;
+    public const int BashingWeaponBaseDamage = 2;
+    public const int BronzeSwordBaseDamage = 3;
     public const int BronzeDaggerBaseDamage = 2;
-    public const int BronzeAxeBaseDamage = 2;
+    public const int BronzeAxeBaseDamage = 3;
 
     public const int BronzeToIronMult = 2;
     public const int BronzeToSteelMult = 3;
 
     public const int IronDropLootSrcLevel = 3;
-    public const int SteelDropLootSrcLevel = 4;
+    public const int SteelDropLootSrcLevel = 6;
     
   }
 

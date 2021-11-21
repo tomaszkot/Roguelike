@@ -166,6 +166,7 @@ namespace Roguelike.Calculated
 
       var val = CurrentPhysical;
       AddExtraDamage(ent, wpn, weapons2Esk, ref val);
+      CurrentPhysicalVariated += val - CurrentPhysical;
       CurrentPhysical = val;
 
       CurrentTotal = CurrentPhysical;

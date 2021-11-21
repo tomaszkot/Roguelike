@@ -516,15 +516,15 @@ namespace RoguelikeUnitTests
     }
 
 
-    //[TestCase(Roguelike.Abilities.AbilityKind.AxesMastering)]
-    //[TestCase(Roguelike.Abilities.AbilityKind.BashingMastering)]
-    //[TestCase(Roguelike.Abilities.AbilityKind.DaggersMastering)]
-    //[TestCase(Roguelike.Abilities.AbilityKind.SwordsMastering)]
-    //[TestCase(Roguelike.Abilities.AbilityKind.StaffsMastering)]
-    //[TestCase(Roguelike.Abilities.AbilityKind.WandsMastering)]
-    //[TestCase(Roguelike.Abilities.AbilityKind.SceptersMastering)]
+    [TestCase(Roguelike.Abilities.AbilityKind.AxesMastering)]
+    [TestCase(Roguelike.Abilities.AbilityKind.BashingMastering)]
+    [TestCase(Roguelike.Abilities.AbilityKind.DaggersMastering)]
+    [TestCase(Roguelike.Abilities.AbilityKind.SwordsMastering)]
+    [TestCase(Roguelike.Abilities.AbilityKind.StaffsMastering)]
+    [TestCase(Roguelike.Abilities.AbilityKind.WandsMastering)]
+    [TestCase(Roguelike.Abilities.AbilityKind.SceptersMastering)]
     [TestCase(Roguelike.Abilities.AbilityKind.BowsMastering)]
-    //[TestCase(Roguelike.Abilities.AbilityKind.CrossBowsMastering)]
+    [TestCase(Roguelike.Abilities.AbilityKind.CrossBowsMastering)]
     public void BasicWeaponsMasteryTests(Roguelike.Abilities.AbilityKind ab)//test if mellee damage is increased
     {
       var game = CreateGame();
@@ -552,13 +552,15 @@ namespace RoguelikeUnitTests
       var abVal = 0.0f;
       var abValAux = 0.0f;
       var hero = game.Hero;
-
+      
       float auxStatValue;
       var destStat = SetWeapon(kind, hero, out auxStatValue);
       var en = PlainEnemies.First();
       en.Stats.SetNominal(EntityStatKind.Health, 100);
       en.AddImmunity(Roguelike.Effects.EffectType.Bleeding);//not to mix test results
       var wpn = hero.GetActiveWeapon();
+      wpn.StableDamage = true;
+      Assert.Greater(wpn.LevelIndex, 0);
 
       Func<float> hitEnemy = () =>
       {

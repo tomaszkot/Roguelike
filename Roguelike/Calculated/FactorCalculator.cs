@@ -1,8 +1,10 @@
-﻿namespace Roguelike.Calculated
+﻿using System;
+
+namespace Roguelike.Calculated
 {
-  class FactorCalculator
+  public class FactorCalculator
   {
-    public static int CalcFromLevel(int lvl, int baseFactor, float increase = 10.0f)
+    public static int CalcFromLevel(int lvl, int baseFactor, float incPercentage = 10.0f)
     {
       if (lvl == 0)
         return 0;
@@ -12,7 +14,7 @@
 
       int prev = CalcFromLevel(lvl - 1, baseFactor);
 
-      return AddFactor(prev, increase);
+      return AddFactor(prev, incPercentage);
     }
 
     public static int CalcFromLevel1(int lvl, float increase, float levelMult = 1)
@@ -36,6 +38,22 @@
     public static int CalcFromLevel2(int lvl, float divider = 1)
     {
       return (int)((lvl * lvl) / divider);
+    }
+
+    public static int CalcFromLevel3(int lvl, int baseValue, float incPercentage = 10.0f)
+    {
+      if (lvl == 0)
+        return 0;
+
+      //if (lvl == 1)
+      //  return baseValue;
+
+      float res = baseValue*10;
+      for (int i = 1; i < lvl; i++)
+      {
+        res = (float) Math.Ceiling((double)AddFactor(res, incPercentage));
+      }
+      return (int)res/10;
     }
 
     public static int AddFactor(int prevValue, float incPercentage)

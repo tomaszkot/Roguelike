@@ -138,8 +138,11 @@ namespace Roguelike.Managers
         //if (chest.ChestKind == ChestKind.GoldDeluxe ||
         //  chest.ChestKind == ChestKind.Gold)
         {
-          var lootEx1 = LootGenerator.GetRandomEquipment(GameManager.Hero.Level, GameManager.Hero.GetLootAbility());
-          //var lootEx1 = GetExtraLoot(lootSource, false, loot.LootKind);
+          Loot lootEx1 = null;
+          if(RandHelper.GetRandomDouble() > .33f)
+            lootEx1 = LootGenerator.GetRandomEquipment(GameManager.Hero.Level, GameManager.Hero.GetLootAbility());
+          else
+            lootEx1 = GetExtraLoot(lootSource, false, loot.LootKind);
           if (lootEx1 != null)
           {
             lootItems.Add(lootEx1);

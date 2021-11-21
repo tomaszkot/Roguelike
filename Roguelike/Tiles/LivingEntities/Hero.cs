@@ -16,6 +16,7 @@ namespace Roguelike.Tiles.LivingEntities
 {
   public class Hero : AdvancedLivingEntity
   {
+    public const int HeroStartStrengthIncrease = 5;
     List<Quest> quests = new List<Quest>();
     public List<Quest> Quests
     {
@@ -31,7 +32,7 @@ namespace Roguelike.Tiles.LivingEntities
 
       Stats.SetNominal(EntityStatKind.Health, 40);//level up +2 // 40 -> 140
       // Character.Mana = 40;
-      StartStrength += 5;
+      StartStrength += HeroStartStrengthIncrease;
       Stats.SetNominal(EntityStatKind.Strength, StartStrength);
       Stats.SetNominal(EntityStatKind.MeleeAttack, StartStrength);
       Stats.SetNominal(EntityStatKind.Magic, 10);

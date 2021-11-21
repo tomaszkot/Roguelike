@@ -46,9 +46,10 @@ namespace RoguelikeUnitTests.Helpers
           expectedKindsCounter++;
           res.Add(loot);
         }
-        else if(lootKindMustMach)
+        else if(lootKindMustMach && loot.LootKind != LootKind.Food)//enemies might thow meat
         {
-          Assert.True((loot.Source as Enemy).PowerKind != EnemyPowerKind.Plain);
+          var en = loot.Source as Enemy;
+          Assert.True(en.PowerKind != EnemyPowerKind.Plain);
         }
         Assert.True(!string.IsNullOrEmpty(loot.tag1));
       }

@@ -1,6 +1,7 @@
 ﻿using Roguelike.Abilities;
 using Roguelike.Abstract.Inventory;
 using Roguelike.Attributes;
+using Roguelike.Calculated;
 using Roguelike.Discussions;
 using Roguelike.Effects;
 using Roguelike.Events;
@@ -832,6 +833,12 @@ namespace Roguelike.Tiles.LivingEntities
     public override void RemoveFightItem(FightItem fi)
     {
       Inventory.Remove(fi);
+    }
+
+    public override AttackDescription GetAttackValue(AttackKind attackKind)
+    {
+      var wpn = this.GetActiveWeapon();
+      return new AttackDescription(this, wpn!=null ? !wpn.StableDamage : true, attackKind);
     }
   }
 }

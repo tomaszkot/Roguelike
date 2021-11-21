@@ -530,7 +530,9 @@ namespace Roguelike.Tiles.LivingEntities
     public virtual float OnMelleeHitBy(LivingEntity attacker)
     {
       string desc = "";
-      var inflicted = CalcMeleeDamage(attacker.GetAttackValue(AttackKind.Melee).CurrentPhysicalVariated, ref desc);
+      var av = attacker.GetAttackValue(AttackKind.Melee);
+      var currentPhysicalVariated = av.CurrentPhysicalVariated;
+      var inflicted = CalcMeleeDamage(currentPhysicalVariated, ref desc);
 
       var npds = attacker.GetNonPhysicalDamages();
       foreach (var stat in npds)

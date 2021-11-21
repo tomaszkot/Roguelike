@@ -1,5 +1,6 @@
 ﻿using Dungeons.Core;
 using Roguelike.Attributes;
+using Roguelike.Calculated;
 using Roguelike.Extensions;
 using Roguelike.TileParts;
 using Roguelike.Tiles.Looting;
@@ -461,7 +462,9 @@ namespace Roguelike.Tiles
 
     protected void SetRequiredStat(int levelIndex, EntityStatKind esk)
     {
-      var es = new EntityStat(esk, LivingEntities.LivingEntity.BaseStats[esk].Nominal + levelIndex-1);
+      var baseVal = (int)LivingEntities.LivingEntity.BaseStats[esk].Nominal;
+      var fac = FactorCalculator.CalcFromLevel3(levelIndex, baseVal, 20);
+      var es = new EntityStat(esk, fac);
       this.RequiredStats.SetStat(es.Kind, es);
     }
 

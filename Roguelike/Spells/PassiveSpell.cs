@@ -57,14 +57,6 @@ namespace Roguelike.Spells
     public static int CalcHealthFromLevel(int lvl)
     {
       return FactorCalculator.CalcFromLevel(lvl, baseHealth);
-      //if (lvl == 0)
-      //	return 0;
-
-      //if (lvl == 1)
-      //     return baseHealth;
-
-      //int prev = GetHealthFromLevel(lvl - 1);
-      //return prev + (int)(prev * 10f/100f);
     }
 
     public virtual Tile Tile
@@ -107,45 +99,5 @@ namespace Roguelike.Spells
       }
       return desc;
     }
-
-    //protected override void AppendPrivateFeatures(List<string> fe)
-    //{
-    //  fe.Add(StatKind.ToDescription() + ": " + StatKindPercentage);
-    //  fe.Add(GetTourLasting(TourLasting));
-    //}
-
-    //public string GetCoolingDown()
-    //{
-    //  return "Cooling Down: " + CoolingDown;
-    //}
-
-    //public static string GetTourLasting(int tourLasting)
-    //{
-    //  return "Tour Lasting: " + tourLasting;
-    //}
-
-    //protected string GetNextLevelTourLasting()
-    //{
-    //  return GetNextLevelTourLasting(CalcTourLasting(CurrentLevel() + 1));
-    //}
-
-    //protected string GetNextLevelTourLasting(int tourLasting)
-    //{
-    //  return GetNextLevel(GetTourLasting(tourLasting));
-    //}
-
-    //public static string GetNextLevelTourLasting(int tourLasting)
-    //{
-    //  return "Next Level: Tour Lasting: " + tourLasting;
-    //}
-
-    //protected override void AppendNextLevel(List<string> fe)
-    //{
-    //  base.AppendNextLevel(fe);
-
-    //  var suffix = StatKind.ToDescription() + " " + CalcFactor(GetCurrentLevel() + 1);
-    //  fe.Add(GetNextLevel(suffix));
-    //  fe.Add(GetNextLevelTourLasting());
-    //}
   }
 }

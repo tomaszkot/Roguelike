@@ -1,4 +1,5 @@
 ﻿using Roguelike.Attributes;
+using Roguelike.Calculated;
 using Roguelike.Extensions;
 using Roguelike.LootFactories;
 using Roguelike.Tiles.Looting;
@@ -88,6 +89,19 @@ namespace Roguelike.Tiles
       }
     }
 
+    static readonly Dictionary<WeaponKind, int> baseDamages = new Dictionary<WeaponKind, int>()
+    {
+      { WeaponKind.Axe, MaterialProps.BronzeAxeBaseDamage },
+      { WeaponKind.Bashing, MaterialProps.BashingWeaponBaseDamage },
+      { WeaponKind.Bow, Props.BowBaseDamage },
+      { WeaponKind.Crossbow, Props.CrossbowBaseDamage },
+      { WeaponKind.Dagger, MaterialProps.BronzeDaggerBaseDamage },
+      { WeaponKind.Scepter, Props.ScepterBaseDamage },
+      { WeaponKind.Staff, Props.StaffBaseDamage },
+      { WeaponKind.Sword, MaterialProps.BronzeSwordBaseDamage },
+      { WeaponKind.Wand, Props.WandBaseDamage }
+    };
+
     public override void SetLevelIndex(int li)
     {
       base.SetLevelIndex(li);
@@ -118,6 +132,10 @@ namespace Roguelike.Tiles
             break;
           case WeaponKind.Staff:
             break;
+          case WeaponKind.Bow:
+          case WeaponKind.Crossbow:
+            esk = EntityStatKind.Dexterity;
+            break;
           case WeaponKind.Other:
             break;
           default:
@@ -125,9 +143,15 @@ namespace Roguelike.Tiles
         }
         if(esk != EntityStatKind.Unset)
           SetRequiredStat(li, esk);
+      }
 
-        //if(Kind == WeaponKind.Sword)//TODO show it in UI of descriptor
-          //SetRequiredStat(li, EntityStatKind.Dexterity);
+      if (baseDamages.ContainsKey(Kind))
+      {
+        CalcDamageFromLevel(baseDamages[Kind]);
+      }
+      else
+      {
+        System.Diagnostics.Debug.WriteLine("!baseDamages.ContainsKey(Kind) " + this);
       }
     }
 
@@ -219,6 +243,32 @@ namespace Roguelike.Tiles
       }
     }
 
+    float GetDamageIncreasePerc()
+    {
+      float max = 20;
+      float fact = .1f;
+
+      if (Kind == WeaponKind.Bashing)
+        return max+ fact*80;
+      if (Kind == WeaponKind.Axe)
+        return max + fact * 20;
+      if (Kind == WeaponKind.Sword)
+        return max - fact;
+      if (Kind == WeaponKind.Dagger)
+        return max - fact;
+      if (IsMagician)
+        return max - 4*fact;
+
+      //bowlike
+      return max - 48*fact;
+    }
+
+    public int CalcDamageFromLevel(int startDmg)
+    {
+      Damage = FactorCalculator.CalcFromLevel3(LevelIndex, startDmg, GetDamageIncreasePerc());
+      return Damage;
+    }
+
     protected override void EnhanceStatsDueToMaterial(EquipmentMaterial material)
     {
       if (Material != material)//shall be already set
@@ -268,6 +318,11 @@ namespace Roguelike.Tiles
     protected override void SetPrimaryStatDesc()
     {
       PrimaryStatDescription = PrimaryStatKind.ToDescription() + ": " + GetDamageDescription();
+    }
+
+    public override string ToString()
+    {
+      return base.ToString() + " " + Damage;
     }
   }
 }

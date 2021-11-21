@@ -463,8 +463,8 @@ namespace RoguelikeUnitTests
       Assert.Less(mushes.Count, 20);
 
       var eqs = lootInfo.Get<Equipment>();
-      Assert.Greater(eqs.Count, 15);
-      Assert.Less(eqs.Count, 35);
+      Assert.Greater(eqs.Count, 60);
+      Assert.Less(eqs.Count, 100);
 
       //scrolls
       var scrolls = lootInfo.Get<Scroll>();
@@ -638,7 +638,10 @@ namespace RoguelikeUnitTests
         foreach (var gr in foodTypes)
         {
           var count = gr.Count();
-          Assert.Less(count, 10);
+          if(gr.Key != FoodKind.Meat)
+            Assert.Less(count, 10);
+          else
+            Assert.Less(count, 35);
         }
       }
     }

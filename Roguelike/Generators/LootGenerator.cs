@@ -137,14 +137,6 @@ namespace Roguelike.Generators
       }
     }
 
-    //public virtual Loot GetLootByTag(string tagPart)
-    //{
-    //  var loot = LootFactory.GetByAsset(tagPart) as Roguelike.Tiles.Loot;
-    //  if (loot != null)
-    //    PrepareLoot(loot);
-    //  return loot;
-    //}
-
     protected virtual void PrepareLoot(Loot loot)
     {
       //adjust price...
@@ -161,115 +153,100 @@ namespace Roguelike.Generators
 
       tileName = tileName.ToLower();
 
-      if (loot == null && tileName == "rusty_sword")
+      if (loot == null)
       {
         var wpn = new Weapon();
-        wpn.Kind = Weapon.WeaponKind.Sword;
-        wpn.tag1 = "rusty_sword";
-        wpn.Damage = 2;
-        wpn.Name = "Rusty sword";
-        
-        return wpn;
-      }
+        loot = wpn;
+        if (tileName == "rusty_sword")
+        {
+          wpn.Kind = Weapon.WeaponKind.Sword;
+          wpn.tag1 = "rusty_sword";
+          wpn.Damage = 2;
+          wpn.Name = "Rusty sword";
+          
+        }
+        else if (tileName == "axe")
+        {
+          wpn.tag1 = "axe";
+          wpn.Damage = 2;
+          wpn.Name = "Axe";
+          wpn.Kind = Weapon.WeaponKind.Axe;
+          loot = wpn;
+        }
 
-      if (loot == null && tileName == "axe")
-      {
-        var wpn = new Weapon();
-        wpn.tag1 = "axe";
-        wpn.Damage = 2;
-        wpn.Name = "Axe";
-        wpn.Kind = Weapon.WeaponKind.Axe;
-        return wpn;
-      }
+        else if (tileName == "gladius")
+        {
+          wpn.tag1 = "gladius";
+          wpn.Damage = 5;
+          wpn.Name = "Gladius";
+          wpn.Price *= 2;
+          wpn.Kind = Weapon.WeaponKind.Sword;
+        }
 
-      if (loot == null && tileName == "gladius")
-      {
-        var wpn = new Weapon();
-        wpn.tag1 = "gladius";
-        wpn.Damage = 5;
-        wpn.Name = "Gladius";
-        wpn.Price *= 2;
-        wpn.Kind = Weapon.WeaponKind.Sword;
-        return wpn;
-      }
+        else if (tileName == "hammer")
+        {
+          wpn.tag1 = "hammer";
+          wpn.Damage = 5;
+          wpn.Name = "hammer";
+          wpn.Price *= 2;
+          wpn.Kind = Weapon.WeaponKind.Bashing;
+        }
 
-      if (loot == null && tileName == "hammer")
-      {
-        var wpn = new Weapon();
-        wpn.tag1 = "hammer";
-        wpn.Damage = 5;
-        wpn.Name = "hammer";
-        wpn.Price *= 2;
-        wpn.Kind = Weapon.WeaponKind.Bashing;
-        return wpn;
-      }
+        else if (tileName == "war_dagger")
+        {
+          wpn.tag1 = "war_dagger";
+          wpn.Damage = 5;
+          wpn.Name = "War Dagger";
+          wpn.Price *= 2;
+          wpn.Kind = Weapon.WeaponKind.Dagger;
+        }
 
-      if (loot == null && tileName == "war_dagger")
-      {
-        var wpn = new Weapon();
-        wpn.tag1 = "war_dagger";
-        wpn.Damage = 5;
-        wpn.Name = "War Dagger";
-        wpn.Price *= 2;
-        wpn.Kind = Weapon.WeaponKind.Dagger;
-        return wpn;
-      }
+        else if (tileName == "scepter")
+        {
+          wpn.tag1 = "scepter";
+          wpn.Damage = 5;
+          wpn.Name = "Scepter";
+          wpn.Price *= 2;
+          wpn.Kind = Weapon.WeaponKind.Scepter;
+        }
+        else if (tileName == "staff")
+        {
+          wpn.tag1 = "staff";
+          wpn.Damage = 5;
+          wpn.Name = "Staff";
+          wpn.Price *= 2;
+          wpn.Kind = Weapon.WeaponKind.Staff;
+        }
+        else if (tileName == "wand")
+        {
+          wpn.tag1 = "wand";
+          wpn.Damage = 5;
+          wpn.Name = "Wand";
+          wpn.Price *= 2;
+          wpn.Kind = Weapon.WeaponKind.Wand;
+        }
 
-      if (loot == null && tileName == "scepter")
-      {
-        var wpn = new Weapon();
-        wpn.tag1 = "scepter";
-        wpn.Damage = 5;
-        wpn.Name = "Scepter";
-        wpn.Price *= 2;
-        wpn.Kind = Weapon.WeaponKind.Scepter;
-        return wpn;
-      }
-      if (loot == null && tileName == "staff")
-      {
-        var wpn = new Weapon();
-        wpn.tag1 = "staff";
-        wpn.Damage = 5;
-        wpn.Name = "Staff";
-        wpn.Price *= 2;
-        wpn.Kind = Weapon.WeaponKind.Staff;
-        return wpn;
-      }
-      if (loot == null && tileName == "wand")
-      {
-        var wpn = new Weapon();
-        wpn.tag1 = "wand";
-        wpn.Damage = 5;
-        wpn.Name = "Wand";
-        wpn.Price *= 2;
-        wpn.Kind = Weapon.WeaponKind.Wand;
-        return wpn;
-      }
+        else if (tileName == "bow")
+        {
+          wpn.Kind = Weapon.WeaponKind.Bow;
+          wpn.tag1 = "bow";
+          wpn.Damage = Props.BowBaseDamage;
+          wpn.Name = "Bow";
+          wpn.Price *= 2;
+        }
 
-      if (loot == null && tileName == "bow")
-      {
-        var wpn = new Weapon();
-        wpn.Kind = Weapon.WeaponKind.Bow;
-        wpn.tag1 = "bow";
-        wpn.Damage = Props.BowBaseDamage;
-        wpn.Name = "Bow";
-        wpn.Price *= 2;
-        
-        return wpn;
+        else if (tileName == "crossbow")
+        {
+          wpn.Kind = Weapon.WeaponKind.Crossbow;
+          wpn.tag1 = "crossbow";
+          wpn.Damage = Props.CrossbowBaseDamage;
+          wpn.Name = "Bow";
+          wpn.Price *= 2;
+        }
       }
-
-      if (loot == null && tileName == "crossbow")
-      {
-        var wpn = new Weapon();
-        wpn.Kind = Weapon.WeaponKind.Crossbow;
-        wpn.tag1 = "crossbow";
-        wpn.Damage = Props.CrossbowBaseDamage;
-        wpn.Name = "Bow";
-        wpn.Price *= 2;
-        
-        return wpn;
-      }
-
+      var wpnRes = loot as Weapon;
+      if (wpnRes != null && wpnRes.LevelIndex <=0)
+        wpnRes.SetLevelIndex(1);
       return loot;
     }
 

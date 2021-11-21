@@ -10,26 +10,27 @@ namespace RoguelikeUnitTests
   class LevelGenerationTests : TestBase
   {
     [Test]
+    [Repeat(5)]
     public void TestDifficulty()
     {
       GenerationInfo.Difficulty = Difficulty.Easy;
       var gameEasy = CreateGame(true);
       Assert.AreEqual(gameEasy.GameManager.GameState.CoreInfo.Difficulty, Difficulty.Easy);
       
-      var plainEasy = PlainEnemies.First();
-      var chempEasy = ChampionEnemies.First();
+      var plainEasy = PlainNormalEnemies.First();
+      var chempEasy = ChampionNormalEnemies.First();
       
       GenerationInfo.Difficulty = Difficulty.Normal;
       var gameNormal = CreateGame(true);
       Assert.AreEqual(gameNormal.GameManager.GameState.CoreInfo.Difficulty, Difficulty.Normal);
-      var plainNormal = PlainEnemies.First();
-      var chempNormal = ChampionEnemies.First();
+      var plainNormal = PlainNormalEnemies.First();
+      var chempNormal = ChampionNormalEnemies.First();
 
       GenerationInfo.Difficulty = Difficulty.Hard;
       var gameHard = CreateGame(true);
       Assert.AreEqual(gameHard.GameManager.GameState.CoreInfo.Difficulty, Difficulty.Hard);
-      var plainHard = PlainEnemies.First();
-      var chempHard = ChampionEnemies.First();
+      var plainHard = PlainNormalEnemies.First();
+      var chempHard = ChampionNormalEnemies.First();
 
 
       Assert.Greater(plainNormal.Stats.Defense, plainEasy.Stats.Defense);
