@@ -260,7 +260,7 @@ namespace Roguelike.Tiles
         return max - 4*fact;
 
       //bowlike
-      return max - 48*fact;
+      return max - 62*fact;
     }
 
     public int CalcDamageFromLevel(int startDmg)
