@@ -65,6 +65,13 @@ namespace Roguelike.Tiles.LivingEntities
       //fightItems[FightItemKind.HunterTrap] = new ProjectileFightItem(FightItemKind.HunterTrap, this) { Count = RandHelper.GetRandomInt(3) + 1 };
 
       fightItemKind = RandHelper.GetRandomEnumValue<FightItemKind>((new[] { FightItemKind.Unset, FightItemKind.HunterTrap }));
+
+      SetResist(EntityStatKind.ResistCold, 15);
+      SetResist(EntityStatKind.ResistFire, 15);
+      SetResist(EntityStatKind.ResistPoison, 15);
+      SetResist(EntityStatKind.ResistLighting, 15);
+
+      Stats.SetNominal(EntityStatKind.MeleeAttack, BaseStrength.Value.Nominal+1);//attack is same as str for a simple entity
     }
 
     //internal void RemoveFightItem(FightItemKind kind)
@@ -219,12 +226,17 @@ namespace Roguelike.Tiles.LivingEntities
 
       if (esk != EntityStatKind.Unset)
       {
-        var val = this.Stats.GetNominal(esk);
-        val += 30;
-        if (val > 75)
-          val = 75;
-        this.Stats.SetNominal(esk, val);
+        SetResist(esk);
       }
+    }
+
+    private void SetResist(EntityStatKind esk, int inc = 30)
+    {
+      var val = this.Stats.GetNominal(esk);
+      val += 30;
+      if (val > 75)
+        val = 75;
+      this.Stats.SetNominal(esk, val);
     }
 
     public bool IsStrongerThanAve
