@@ -73,7 +73,12 @@ namespace Roguelike.Generators
       dungeon.Create(w, h, gi, nodeIndex);
     }
 
-
+    protected virtual RoomContentGenerator CreateRoomContentGeneratorForExtraEnemies()
+    {
+      var roomGen = Container.GetInstance<RoomContentGenerator>();
+      roomGen.LevelIndex = LevelIndex;
+      return roomGen;
+    }
 
     protected virtual void CreateDynamicTiles(List<Dungeons.TileContainers.DungeonNode> mazeNodes)
     {
@@ -83,8 +88,7 @@ namespace Roguelike.Generators
         return;
       }
       {
-        var roomGen = Container.GetInstance<RoomContentGenerator>();
-        roomGen.LevelIndex = LevelIndex;
+        var roomGen = CreateRoomContentGeneratorForExtraEnemies();
         foreach (var en in extraEnemies)
         {
           var maze = mazeNodes.GetRandomElem();

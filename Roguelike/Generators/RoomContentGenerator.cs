@@ -15,7 +15,7 @@ namespace Roguelike.Generators
   public class RoomContentGenerator
   {
     private int levelIndex = 0;
-    protected int enemiesStartLevel = 0;
+    int enemiesStartLevel = 0;
     protected ILogger logger;
     protected TileContainers.DungeonNode node;
     protected GenerationInfo gi;
@@ -23,6 +23,8 @@ namespace Roguelike.Generators
     protected LootGenerator lootGen;
     public string LevelBossName { get; set; }
     public int LevelIndex { get => levelIndex; set => levelIndex = value; }
+    public int EnemiesStartLevel { get => enemiesStartLevel; set => enemiesStartLevel = value; }
+
     Difficulty difficulty;
 
     public RoomContentGenerator(Container container)
