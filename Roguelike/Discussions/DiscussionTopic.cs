@@ -137,8 +137,16 @@ namespace Roguelike.Discussions
       return back;
     }
 
+
+
     public void InsertTopic(DiscussionTopic subItem, bool atBegining = true)
     {
+      //TODO prevent duplicates
+      if (HasTopics(subItem.Right.Body))
+      {
+        int k = 0;
+        k++;
+      }
       if (subItem == this)
         throw new Exception("subItem == this!"+this);
       subItem.parent = this;

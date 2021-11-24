@@ -37,7 +37,11 @@ namespace Roguelike.Tiles.LivingEntities
   {
     public RelationToHero RelationToHero { get; set; } = new RelationToHero();
     public bool HasUrgentTopic { get; set; }
-    public Discussion Discussion { get; set; } = new Discussion();
+    public Discussion Discussion 
+    { 
+      get => discussion;
+      set => discussion = value;
+    }
     public EntityProffesionKind Proffesion { get; set; }
     public event EventHandler ExpChanged;
     public event EventHandler<bool> UrgentTopicChanged;
@@ -146,7 +150,7 @@ namespace Roguelike.Tiles.LivingEntities
       { Weapon.WeaponKind.Sword, EntityStatKind.SwordExtraDamage},
       { Weapon.WeaponKind.Bashing, EntityStatKind.BashingExtraDamage},
       { Weapon.WeaponKind.Dagger, EntityStatKind.DaggerExtraDamage},
-            
+
     };
 
     public static Dictionary<Weapon.WeaponKind, EntityStatKind> ProjectileWeapons2Esk = new Dictionary<Weapon.WeaponKind, EntityStatKind>()
@@ -177,7 +181,7 @@ namespace Roguelike.Tiles.LivingEntities
       var ab = abilities.GetAbility(kind);
       return Increase(ab);
     }
-        
+
     private bool Increase(Ability ab)
     {
       var increased = ab.IncreaseLevel(this);
@@ -220,7 +224,7 @@ namespace Roguelike.Tiles.LivingEntities
     public double CalcExpScale()
     {
       var currExp = Experience - PrevLevelExperience;
-      var scale = currExp /( NextLevelExperience - PrevLevelExperience);
+      var scale = currExp / (NextLevelExperience - PrevLevelExperience);
       return scale;
     }
 
@@ -394,6 +398,7 @@ namespace Roguelike.Tiles.LivingEntities
     }
 
     public static CurrentEquipmentPosition DefaultCurrentEquipmentPosition = CurrentEquipmentPosition.Left;
+    private Discussion discussion = new Discussion();
 
     public bool HandleEquipmentFound(Equipment eq)
     {
@@ -422,8 +427,8 @@ namespace Roguelike.Tiles.LivingEntities
         }
       }
 
-      if(
-          CanUseEquipment(eq) && 
+      if (
+          CanUseEquipment(eq) &&
           (currentEq == null || (eq.IsBetter(currentEq)) && Options.Instance.Mechanics.AutoPutOnBetterEquipment)
         )
       {
@@ -447,22 +452,22 @@ namespace Roguelike.Tiles.LivingEntities
       if (Level < eq.RequiredLevel)
         return false;
       foreach (var rs in eq.GetEffectiveRequiredStats())
-      { 
-        if(rs.Value.Nominal > Stats.GetNominal(rs.Kind))
+      {
+        if (rs.Value.Nominal > Stats.GetNominal(rs.Kind))
           return false;
       }
 
-      if(eq.EquipmentKind == EquipmentKind.Weapon || eq.EquipmentKind == EquipmentKind.Shield)
+      if (eq.EquipmentKind == EquipmentKind.Weapon || eq.EquipmentKind == EquipmentKind.Shield)
       {
         var wpn = GetActiveEquipment()[CurrentEquipmentKind.Weapon] as Weapon;
         var shield = GetActiveEquipment()[CurrentEquipmentKind.Shield];
         if
         (
-          eq.EquipmentKind == EquipmentKind.Weapon && shield != null || 
+          eq.EquipmentKind == EquipmentKind.Weapon && shield != null ||
           eq.EquipmentKind == EquipmentKind.Shield && wpn != null
         )
         {
-          if(eq.EquipmentKind == EquipmentKind.Shield && 
+          if (eq.EquipmentKind == EquipmentKind.Shield &&
             (wpn.Kind == Weapon.WeaponKind.Bow || wpn.Kind == Weapon.WeaponKind.Crossbow)
             )
             return false;
@@ -655,7 +660,7 @@ namespace Roguelike.Tiles.LivingEntities
         {
           if (ab.PrimaryStat.Kind != EntityStatKind.Unset)
           {
-            if(ab.PrimaryStat.Factor != 0)
+            if (ab.PrimaryStat.Factor != 0)
               Stats.AccumulateFactor(ab.PrimaryStat.Kind, ab.PrimaryStat.Factor);
             if (ab.AuxStat.Factor != 0)
               AddAuxStat(ab);
@@ -675,9 +680,9 @@ namespace Roguelike.Tiles.LivingEntities
       //    || ab.AuxStat.Kind == EntityStatKind.SwordExtraDamage
       //    || ab.AuxStat.Kind == EntityStatKind.BashingExtraDamage
       //    || ab.AuxStat.Kind == EntityStatKind.DaggerExtraDamage
-                      
+
       //                )
-      if(ab.AuxStat.Factor != 0)
+      if (ab.AuxStat.Factor != 0)
       {
         Stats.AccumulateFactor(ab.AuxStat.Kind, ab.AuxStat.Factor);
       }
@@ -819,7 +824,7 @@ namespace Roguelike.Tiles.LivingEntities
       {
         var livePercentage = inflicted / en.GetTotalValue(EntityStatKind.Health) * 100;
         var award = EnemyDamagingTotalExpAward[en.PowerKind];
-        exp = livePercentage * award/100;
+        exp = livePercentage * award / 100;
       }
       var inc = (1 * victim.Level * exp);
       this.IncreaseExp(inc);
@@ -838,7 +843,7 @@ namespace Roguelike.Tiles.LivingEntities
     public override AttackDescription GetAttackValue(AttackKind attackKind)
     {
       var wpn = this.GetActiveWeapon();
-      return new AttackDescription(this, wpn!=null ? !wpn.StableDamage : true, attackKind);
+      return new AttackDescription(this, wpn != null ? !wpn.StableDamage : true, attackKind);
     }
   }
 }
