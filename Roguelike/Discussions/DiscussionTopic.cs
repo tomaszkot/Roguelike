@@ -1,4 +1,5 @@
 ﻿using Roguelike.Extensions;
+using SimpleInjector;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -26,6 +27,7 @@ namespace Roguelike.Discussions
 
     bool allowBuyHound;
     DiscussionTopic parent;
+    Container container;
 
     public bool HasBack()
     {
@@ -38,13 +40,36 @@ namespace Roguelike.Discussions
       return res;
     }
 
-    public DiscussionTopic() { }
-
-    public DiscussionTopic(KnownSentenceKind right, string left, bool allowBuyHound = false, bool addMerchantItems = merchantItemsAtAllLevels)
+    public DiscussionTopic(Container container) 
     {
-      //RightKnownSentenceKind = right;
+      this.container = container;
+    }
+
+    public DiscussionTopic(Container container, KnownSentenceKind right, string left, 
+      bool allowBuyHound = false, bool addMerchantItems = merchantItemsAtAllLevels)
+      : this(container)
+    {
+      Init(right, left, allowBuyHound , addMerchantItems);
+    }
+        
+    public DiscussionTopic(Container container, string right, string left, bool allowBuyHound = false, bool addMerchantItems = merchantItemsAtAllLevels)
+      : this(container)
+    {
+      Init(right, left, allowBuyHound, addMerchantItems);
+    }
+
+    public void Init(string right, string left, bool allowBuyHound = false, bool addMerchantItems = merchantItemsAtAllLevels)
+    {
       Right = new DiscussionSentence(right);
-      if(right == KnownSentenceKind.Bye && left == "")
+      Left = new DiscussionSentence(left);
+
+      Init(allowBuyHound, addMerchantItems);
+    }
+
+    public void Init(KnownSentenceKind right, string left, bool allowBuyHound = false, bool addMerchantItems = merchantItemsAtAllLevels)
+    {
+      Right = new DiscussionSentence(right);
+      if (right == KnownSentenceKind.Bye && left == "")
         Left = new DiscussionSentence(KnownSentenceKind.Bye);
       else
         Left = new DiscussionSentence(left);
@@ -59,14 +84,6 @@ namespace Roguelike.Discussions
         Discussion.CreateMerchantResponseOptions(this, allowBuyHound);
     }
 
-    public DiscussionTopic(string right, string left, bool allowBuyHound = false, bool addMerchantItems = merchantItemsAtAllLevels)
-    {
-      Right = new DiscussionSentence(right);
-      Left = new DiscussionSentence(left);
-
-      Init(allowBuyHound, addMerchantItems);
-    }
-
     public DiscussionTopic(string right, KnownSentenceKind leftKnownSentenceKind, bool allowBuyHound = false)
     {
       Right = new DiscussionSentence(right);
@@ -79,7 +96,8 @@ namespace Roguelike.Discussions
 
     public void AddTopic(KnownSentenceKind rightKnownSentenceKind, string rightSuffix = "", string left ="")
     {
-      var item = new DiscussionTopic(rightKnownSentenceKind, "", false, false);
+      var item = container.GetInstance<DiscussionTopic>();
+      item.Init(rightKnownSentenceKind, "", false, false);
       item.RightSuffix = rightSuffix;
 
       item.Left.Body = left;
@@ -88,7 +106,8 @@ namespace Roguelike.Discussions
 
     public void AddTopic(string right, string left, bool addMerchantItems = merchantItemsAtAllLevels)
     {
-      var item = new DiscussionTopic(right, left, allowBuyHound, addMerchantItems);
+      var item = container.GetInstance<DiscussionTopic>();
+      item.Init(right, left, allowBuyHound, addMerchantItems);
       InsertTopic(item, false);
     }
 
@@ -132,7 +151,8 @@ namespace Roguelike.Discussions
 
     public DiscussionTopic CreateBack(DiscussionTopic parent)
     {
-      var back = new DiscussionTopic(KnownSentenceKind.Back, KnownSentenceKind.Back.ToString());
+      var back = container.GetInstance<DiscussionTopic>();
+      back.Init(KnownSentenceKind.Back, KnownSentenceKind.Back.ToString());
       back.Parent = parent;
       return back;
     }
@@ -175,7 +195,8 @@ namespace Roguelike.Discussions
 
     public void InsertTopic(string right, string left, bool addMerchantItems = merchantItemsAtAllLevels)
     {
-      var item = new DiscussionTopic(right, left, allowBuyHound, addMerchantItems);
+      var item = container.GetInstance<DiscussionTopic>();
+      item.Init(right, left, allowBuyHound, addMerchantItems);
       InsertTopic(item, true);
     }
 

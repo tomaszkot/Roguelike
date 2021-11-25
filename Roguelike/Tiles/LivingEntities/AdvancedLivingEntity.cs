@@ -164,6 +164,7 @@ namespace Roguelike.Tiles.LivingEntities
 
     public AdvancedLivingEntity(Container cont, Point point, char symbol) : base(point, symbol)
     {
+      discussion = new Discussion(cont);
       NextLevelExperience = GenerationInfo.FirstNextLevelExperienceThreshold;
       RelationToHero.Kind = RelationToHeroKind.Neutral;
       Container = cont;
@@ -398,7 +399,7 @@ namespace Roguelike.Tiles.LivingEntities
     }
 
     public static CurrentEquipmentPosition DefaultCurrentEquipmentPosition = CurrentEquipmentPosition.Left;
-    private Discussion discussion = new Discussion();
+    private Discussion discussion;
 
     public bool HandleEquipmentFound(Equipment eq)
     {

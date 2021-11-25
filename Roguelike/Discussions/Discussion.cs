@@ -1,6 +1,8 @@
-﻿using Roguelike.Extensions;
+﻿using Newtonsoft.Json;
+using Roguelike.Extensions;
 using Roguelike.Managers;
 using Roguelike.Tiles.LivingEntities;
+using SimpleInjector;
 using System.Diagnostics;
 
 namespace Roguelike.Discussions
@@ -12,17 +14,20 @@ namespace Roguelike.Discussions
 
   public class Discussion
   {
+      
+    protected Container container;
     public string EntityName { get; set; }
     DiscussionTopic mainItem;
 
-    public Discussion()
+    public Discussion(Container container)
     {
+      this.container = container;
       mainItem = CreateMainItem();
     }
 
     protected virtual DiscussionTopic CreateMainItem()
     {
-      return new DiscussionTopic();
+      return container.GetInstance<DiscussionTopic>();
     }
 
     public static void CreateMerchantResponseOptions(DiscussionTopic item, bool allowBuyHound)
@@ -43,6 +48,9 @@ namespace Roguelike.Discussions
       get => mainItem; 
       set => mainItem = value; 
     }
+    
+    [JsonIgnore]
+    public Container Container { get => container; set => container = value; }
 
     public void ToXml()
     {
