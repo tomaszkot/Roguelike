@@ -64,7 +64,8 @@ namespace Roguelike.Discussions
             }
           }
 
-          itemToBind = itemToBind.Parent.Parent;
+          //itemToBind = itemToBind.Parent.Parent;
+          itemToBind = npc.Discussion.MainItem;
         }
 
         BindTopics(itemToBind, npc);
