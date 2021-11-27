@@ -118,7 +118,7 @@ namespace Roguelike.Tiles.LivingEntities
         if (eq == null)
           return false;
 
-        if (!CanUseEquipment(eq))
+        if (!CanUseEquipment(eq, false))
           return false;
 
         if (addItemArg == null)
@@ -430,7 +430,7 @@ namespace Roguelike.Tiles.LivingEntities
       }
 
       if (
-          CanUseEquipment(eq) &&
+          CanUseEquipment(eq, true) &&
           (currentEq == null || (eq.IsBetter(currentEq)) && Options.Instance.Mechanics.AutoPutOnBetterEquipment)
         )
       {
@@ -446,7 +446,7 @@ namespace Roguelike.Tiles.LivingEntities
       return false;
     }
 
-    public bool CanUseEquipment(Equipment eq)
+    public bool CanUseEquipment(Equipment eq, bool autoPutoOn)
     {
       if (!eq.IsIdentified)
         return false;
@@ -474,12 +474,15 @@ namespace Roguelike.Tiles.LivingEntities
             )
             return false;
 
-          if (eq is Weapon wpnToUSe &&
+          if (!autoPutoOn &&
+              eq is Weapon wpnToUSe &&
               (wpnToUSe.Kind == Weapon.WeaponKind.Bow || wpnToUSe.Kind == Weapon.WeaponKind.Crossbow) &&
               shield != null
             )
           {
-            AppendAction(new GameEvent("Can not wield that weapon when using a shield", ActionLevel.Important));
+            var ev = new GameEvent("Can not wield that weapon when using a shield", ActionLevel.Important);
+            ev.ShowHint = true;
+            AppendAction(ev);
             return false;
           }
         }

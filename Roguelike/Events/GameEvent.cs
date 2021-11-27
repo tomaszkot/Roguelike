@@ -27,6 +27,7 @@ namespace Roguelike.Events
     public ActionLevel Level { get; set; }
     public int Index { get; set; }
     public Guid Guid { get => guid; set => guid = value; }
+    public bool ShowHint { get; set; }
 
     public virtual string GetSound() { return ""; }
 
