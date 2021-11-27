@@ -22,7 +22,7 @@ namespace Roguelike.Tiles.Looting
     {
       Caller = caller;
       DiesOnHit = false;
-      if (kind == FightItemKind.ExplosiveCocktail)
+      if (kind == FightItemKind.ExplosiveCocktail || kind == FightItemKind.Stone)
         DiesOnHit = true;
     }
 

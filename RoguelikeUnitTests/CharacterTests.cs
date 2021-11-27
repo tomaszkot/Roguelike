@@ -12,7 +12,7 @@ namespace RoguelikeUnitTests
     {
       return game.Hero.GetFormattedStatValue(Roguelike.Attributes.EntityStatKind.Health, false);
     }
-
+        
     [Test]
     public void TestLevelUp()
     {
