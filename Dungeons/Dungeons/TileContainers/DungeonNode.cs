@@ -846,7 +846,11 @@ namespace Dungeons
 
       public bool Created { get => created; set => created = value; }
       public bool ContentGenerated { get => contentGenerated; set => contentGenerated = value; }
-      public bool Secret { get => secret; set => secret = value; }
+      public bool Secret 
+      {
+        get => secret; 
+        set => secret = value;
+      }
       public Dictionary<string, Dictionary<Point, Tile>> SpecialTiles { get => specialTiles; set => specialTiles = value; }
 
       bool AreDoorAllowedToPutOn(Tile tile)
