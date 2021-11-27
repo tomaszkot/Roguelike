@@ -58,14 +58,31 @@ namespace Roguelike.Crafting
       equipmentFactory = container.GetInstance<EquipmentFactory>();
     }
 
-    //Jewellery createJewellery(EquipmentKind kind, int minDropDungeonLevel)
-    //{
-    //  var juwell = new Jewellery();
-    //  juwell.EquipmentKind = kind;
-    //  juwell.MinDropDungeonLevel = minDropDungeonLevel;
-    //  juwell.Price = 10;
-    //  return juwell;
-    //}
+    List<T> Filter<T>(List<Loot> lootToConvert)
+    {
+      return lootToConvert.Where(i => i is T).Cast<T>().ToList();
+    }
+
+    int GetStackedCount<T>(List<Loot> lootToConvert, string name = "") where T : StackedLoot
+    {
+      if(name.Any())
+      {
+        lootToConvert = lootToConvert.Where(i => i.Name == name).ToList();
+      }
+      var stacked = Filter<T>(lootToConvert).FirstOrDefault();
+      return stacked != null ? stacked.Count : 0;
+    }
+
+    List<Mushroom> GetToadstools(List<Loot> lootToConvert)
+    {
+      return lootToConvert.Where(i => i.IsToadstool()).Cast<Mushroom>().ToList();
+    }
+
+    int GetToadstoolsCount(List<Loot> lootToConvert) 
+    {
+      var toadstools = lootToConvert.Where(i => i.IsToadstool()).ToList();
+      return GetStackedCount<StackedLoot>(toadstools);
+    }
 
     public override CraftingResult Craft(Recipe recipe, List<Loot> lootToConvert)
     {
@@ -88,8 +105,8 @@ namespace Roguelike.Crafting
 
       if (lootToConvert.Any())
       {
-        var sulfCount = lootToConvert.Where(i => i is StackedLoot && i.Name == "Sulfur").Count();
-        var hoochCount = lootToConvert.Where(i => i is Hooch).Count();
+        var sulfCount = GetStackedCount<StackedLoot>(lootToConvert, "Sulfur");
+        var hoochCount = GetStackedCount<Hooch>(lootToConvert);
 
         if (lootToConvert.Count == 2 && recipe.Kind == RecipeKind.Custom)
         {
@@ -130,13 +147,9 @@ namespace Roguelike.Crafting
         }
         else if (recipe.Kind == RecipeKind.Pendant)
         {
-          var cords = lootToConvert.Where(i => i is Cord).Count();
+          var cords = GetStackedCount<Cord>(lootToConvert);
           if (cords == 0)
             return ReturnCraftingError("Cord is needed by the Recipe");
-
-          //var tinyTrophies = lootToConvert.Where(i => i is TinyTrophy).Cast<TinyTrophy>().ToList();
-          //if(tinyTrophies.Count == 0 || tinyTrophies.Count > 3)
-          //  return ReturnCraftingError("Amount of ornaments must be between 1-3");
 
           var amulet = Equipment.CreatePendant();
           return ReturnCraftedLoot(amulet);
@@ -169,7 +182,6 @@ namespace Roguelike.Crafting
 
           return ReturnCraftedLoot(eq, false);
         }
-
         else if ((recipe.Kind == RecipeKind.Custom || recipe.Kind == RecipeKind.ExplosiveCocktail) &&
           sulfCount > 0 && hoochCount > 0)
         {
@@ -179,17 +191,18 @@ namespace Roguelike.Crafting
         }
 
         var allGems = lootToConvert.All(i => i is Gem);
-        if ((recipe.Kind == RecipeKind.Custom || recipe.Kind == RecipeKind.ThreeGems) && allGems && lootToConvert.Count == 3)
+        if ((recipe.Kind == RecipeKind.Custom || recipe.Kind == RecipeKind.ThreeGems) && allGems && lootToConvert.Count == 1 &&
+          GetStackedCount<Gem>(lootToConvert) == 3)
         {
           return HandleAllGems(lootToConvert);
         }
 
-
         var allHp = lootToConvert.Where(i => i.IsPotion(PotionKind.Health));
         var allMp = lootToConvert.Where(i => i.IsPotion(PotionKind.Mana));
         var toadstools = lootToConvert.Where(i => i.IsToadstool()).ToList();
+        var toadstoolsCount = GetStackedCount<StackedLoot>(toadstools);
         if ((recipe.Kind == RecipeKind.Custom || recipe.Kind == RecipeKind.TransformPotion) && 
-            (lootToConvert.Count == 3 && toadstools.Count() == 1 && (allHp.Count() == 1 || allMp.Count() == 1)))
+            (lootToConvert.Count == 3 && toadstoolsCount == 1 && (allHp.Count() == 1 || allMp.Count() == 1)))
         {
           //if ((lootToConvert[0] as Potion).Count == 1)//TODO allow many conv (use many M Dust)
           var potion = lootToConvert.Where(i => i.IsPotion()).Single();
@@ -209,7 +222,7 @@ namespace Roguelike.Crafting
 
         if (recipe.Kind == RecipeKind.Custom || recipe.Kind == RecipeKind.Toadstools2Potion)
         {
-          var allToadstool = lootToConvert.All(i => i.IsToadstool()) && lootToConvert.Count == 1;// && lootToConvert[0].Count;
+          var allToadstool = lootToConvert.All(i => i.IsToadstool()) && GetToadstoolsCount(lootToConvert) == 1;
           if (allToadstool)
           {
             //var toadstools = lootToConvert.Cast<Mushroom>().GroupBy(i => i.MushroomKind);
@@ -256,21 +269,21 @@ namespace Roguelike.Crafting
       {
         if (eqs[0].EquipmentKind == EquipmentKind.Weapon)
         {
-          var sps = lootToConvert.Where(i => i is SpecialPotion).Cast<SpecialPotion>().ToList();
-          if (sps.Count == lootToConvert.Count - 1 && sps.Count <= 2)
+          var spsCount = GetStackedCount<SpecialPotion>(lootToConvert);
+          if (spsCount == lootToConvert.Count - 1 && spsCount <= 2)
           {
-            return ReturnStealingEq(eqs, sps);
+            return ReturnStealingEq(eqs, Filter<SpecialPotion>(lootToConvert));
           }
         }
       }
       else if (recipe.Kind == RecipeKind.Custom && lootToConvert.Count == 2)
       {
         //turn one Toadstool kind into other (using Potion)
-        var toadstools = lootToConvert.Where(i => i.IsToadstool()).ToList();
+        var toadstoolsCount = GetToadstoolsCount(lootToConvert);
         var potions = lootToConvert.Where(i => i.IsPotion()).ToList();
-        if (toadstools.Count == 1 && potions.Count == 1)
+        if (toadstoolsCount == 1 && potions.Count == 1)
         {
-          var tk = (toadstools[0].AsToadstool()).MushroomKind;
+          var tk = GetToadstools(lootToConvert)[0].MushroomKind;
           var pk = (potions[0].AsPotion()).Kind;
 
           if (tk == MushroomKind.RedToadstool && pk == PotionKind.Mana)
@@ -478,9 +491,9 @@ namespace Roguelike.Crafting
 
     private CraftingResult HandleAllGems(List<Loot> lootToConvert)
     {
-      if (lootToConvert.Count != 3)
+      if (lootToConvert.Count != 1)
         return ReturnCraftingError("Invalid amount of gems");
-      List<Gem> gems = lootToConvert.Cast<Gem>().ToList();
+      List<Gem> gems = Filter<Gem>(lootToConvert);
       var allSameKind = gems.All(i => i.GemKind == gems[0].GemKind);
       var allSameSize = gems.All(i => i.EnchanterSize == gems[0].EnchanterSize);
       if (allSameKind && allSameSize)
