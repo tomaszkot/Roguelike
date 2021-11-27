@@ -3,6 +3,7 @@ using Dungeons.Core;
 using Dungeons.TileContainers;
 using Dungeons.Tiles;
 using Newtonsoft.Json;
+using Roguelike.Abstract.Tiles;
 using Roguelike.Serialization;
 using Roguelike.Tiles.Interactive;
 using Roguelike.Tiles.LivingEntities;
@@ -136,7 +137,7 @@ namespace Roguelike.TileContainers
         try
         {
           if (dt == null)
-            Logger.LogError("dt == null!!! tile.Symbol = [" + revealedTile.Symbol + "] " + revealedTile.point + " ");
+            Logger.LogError("dt == null!!! tile.Symbol = [" + revealedTile.Symbol + "] " + revealedTile.point);
           else
           {
             if (dt.Symbol != revealedTile.Symbol)
@@ -170,7 +171,13 @@ namespace Roguelike.TileContainers
         return;//TODO
       if (dt is Merchant && revealed.IsEmpty)
         return;//TODO
-      Logger.LogError(this + " dt.Symbol != revealed.Symbol [" + dt.Symbol + "," + revealed.Symbol + "] " + revealed.point + " ");
+            
+      Logger.LogError(this + " dt.Symbol != revealed.Symbol [" + dt.Symbol + "," + revealed.Symbol + "] " + revealed.point + " dt:" + dt + " revealed:"+ revealed);
+      if (dt.IsEmpty && revealed is IAlly)
+      {
+        this.SetTile(revealed, revealed.point);//TODO!
+      }
+
     }
 
     [JsonIgnore]
