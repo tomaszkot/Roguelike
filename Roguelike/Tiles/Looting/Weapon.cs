@@ -324,5 +324,18 @@ namespace Roguelike.Tiles
     {
       return base.ToString() + " " + Damage;
     }
+
+    public FightItemKind GetFightItemKindAmmo()
+    {
+      if (IsBowLike)
+      {
+        if (this.Kind == WeaponKind.Bow)
+          return FightItemKind.PlainArrow;
+        else if (this.Kind == WeaponKind.Crossbow)
+          return FightItemKind.PlainBolt;
+      }
+
+      return FightItemKind.Unset; 
+    }
   }
 }
