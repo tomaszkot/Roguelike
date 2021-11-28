@@ -459,6 +459,21 @@ namespace Roguelike.Tiles.LivingEntities
           return false;
       }
 
+      if(autoPutoOn && eq is Weapon wpnBowLike && wpnBowLike.IsBowLike)
+      {
+        var projs = Inventory.GetItems<ProjectileFightItem>();
+        if (wpnBowLike.Kind == Weapon.WeaponKind.Crossbow)
+        { 
+          if(!projs.Where(i=>i.FightItemKind == FightItemKind.PlainBolt).Any())
+            return false;
+        }
+        if (wpnBowLike.Kind == Weapon.WeaponKind.Bow)
+        {
+          if (!projs.Where(i => i.FightItemKind == FightItemKind.PlainArrow).Any())
+            return false;
+        }
+      }
+
       if (eq.EquipmentKind == EquipmentKind.Weapon || eq.EquipmentKind == EquipmentKind.Shield)
       {
         var wpn = GetActiveEquipment()[CurrentEquipmentKind.Weapon] as Weapon;
