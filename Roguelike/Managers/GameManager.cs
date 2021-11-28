@@ -805,12 +805,14 @@ namespace Roguelike.Managers
         return null;
       }
 
-      if (destInv is CurrentEquipment ce && destInv.Owner == srcInv.Owner && addItemArg is CurrentEquipmentAddItemArg ceAddArgs)
+      if (destInv is CurrentEquipment ce && 
+         (destInv.Owner == srcInv.Owner || destInv.Owner is Ally) 
+         && addItemArg is CurrentEquipmentAddItemArg ceAddArgs)
       {
         var eq = ce.GetActiveEquipment()[ceAddArgs.cek];
         if (eq != null)
         {
-          if (!srcInv.Owner.MoveEquipmentCurrent2Inv(eq, ceAddArgs.cek))
+          if (!destInv.Owner.MoveEquipmentCurrent2Inv(eq, ceAddArgs.cek))
             return null;
         }
       }

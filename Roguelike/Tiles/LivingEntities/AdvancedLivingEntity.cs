@@ -530,6 +530,11 @@ namespace Roguelike.Tiles.LivingEntities
 
     public bool MoveEquipmentCurrent2Inv(Equipment eq, CurrentEquipmentKind cek, bool primary = true)
     {
+      if (primary && CurrentEquipment.PrimaryEquipment[cek] != eq)
+        return false;
+      else if(!primary && CurrentEquipment.SpareEquipment[cek] != eq)
+        return false;
+
       bool done = SetEquipment(null, cek, primary);
       if (done)
       {
