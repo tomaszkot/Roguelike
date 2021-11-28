@@ -161,69 +161,71 @@ namespace Roguelike.Generators
         {
           wpn.Kind = Weapon.WeaponKind.Sword;
           wpn.tag1 = "rusty_sword";
-          wpn.Damage = 2;
           wpn.Name = "Rusty sword";
-          
+          wpn.SetLevelIndex(1);
         }
         else if (tileName == "axe")
         {
-          wpn.tag1 = "axe";
-          wpn.Damage = 2;
-          wpn.Name = "Axe";
           wpn.Kind = Weapon.WeaponKind.Axe;
+          wpn.tag1 = "axe";
+          wpn.Name = "Axe";
+          wpn.SetLevelIndex(2);
           loot = wpn;
         }
 
         else if (tileName == "gladius")
         {
-          wpn.tag1 = "gladius";
-          wpn.Damage = 5;
-          wpn.Name = "Gladius";
-          wpn.Price *= 2;
           wpn.Kind = Weapon.WeaponKind.Sword;
+          wpn.tag1 = "gladius";
+          wpn.Name = "Gladius";
+          wpn.SetLevelIndex(3);
+          wpn.Price *= 2;
+          
         }
 
         else if (tileName == "hammer")
         {
+          wpn.Kind = Weapon.WeaponKind.Bashing;
           wpn.tag1 = "hammer";
-          wpn.Damage = 5;
           wpn.Name = "hammer";
           wpn.Price *= 2;
-          wpn.Kind = Weapon.WeaponKind.Bashing;
+          wpn.SetLevelIndex(4);
         }
 
         else if (tileName == "war_dagger")
         {
+          wpn.Kind = Weapon.WeaponKind.Dagger;
           wpn.tag1 = "war_dagger";
-          wpn.Damage = 5;
           wpn.Name = "War Dagger";
           wpn.Price *= 2;
-          wpn.Kind = Weapon.WeaponKind.Dagger;
+          wpn.SetLevelIndex(5);
         }
 
         else if (tileName == "scepter")
         {
+          wpn.Kind = Weapon.WeaponKind.Scepter;
           wpn.tag1 = "scepter";
-          wpn.Damage = 5;
           wpn.Name = "Scepter";
           wpn.Price *= 2;
-          wpn.Kind = Weapon.WeaponKind.Scepter;
+          wpn.SetLevelIndex(1);
+
         }
         else if (tileName == "staff")
         {
-          wpn.tag1 = "staff";
-          wpn.Damage = 5;
-          wpn.Name = "Staff";
-          wpn.Price *= 2;
           wpn.Kind = Weapon.WeaponKind.Staff;
+          wpn.tag1 = "staff";
+          wpn.Name = "Staff";
+          wpn.Price *= 2; 
+          wpn.SetLevelIndex(1);
+
         }
         else if (tileName == "wand")
         {
+          wpn.Kind = Weapon.WeaponKind.Wand;
           wpn.tag1 = "wand";
-          wpn.Damage = 5;
           wpn.Name = "Wand";
           wpn.Price *= 2;
-          wpn.Kind = Weapon.WeaponKind.Wand;
+          wpn.SetLevelIndex(1);
         }
 
         else if (tileName == "bow")
@@ -233,6 +235,7 @@ namespace Roguelike.Generators
           wpn.Damage = Props.BowBaseDamage;
           wpn.Name = "Bow";
           wpn.Price *= 2;
+          wpn.SetLevelIndex(1);
         }
 
         else if (tileName == "crossbow")
@@ -242,6 +245,7 @@ namespace Roguelike.Generators
           wpn.Damage = Props.CrossbowBaseDamage;
           wpn.Name = "Bow";
           wpn.Price *= 2;
+          wpn.SetLevelIndex(1);
         }
       }
       var wpnRes = loot as Weapon;

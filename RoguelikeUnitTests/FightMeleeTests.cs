@@ -131,15 +131,15 @@ namespace RoguelikeUnitTests
       var attack = game.Hero.GetCurrentValue(Roguelike.Attributes.EntityStatKind.MeleeAttack);
 
       var wpn = GenerateEquipment<Weapon>("rusty_sword");
-      Assert.AreEqual(wpn.PrimaryStatValue, 2);
-      Assert.AreEqual(wpn.PrimaryStatDescription, "Melee Attack: 1-3");
+      Assert.AreEqual(wpn.PrimaryStatValue, 3);
+      Assert.AreEqual(wpn.PrimaryStatDescription, "Melee Attack: 2-4");
 
       game.Hero.SetEquipment(wpn);
       var attackWithWpn = game.Hero.GetCurrentValue(Roguelike.Attributes.EntityStatKind.MeleeAttack);
       Assert.Greater(attackWithWpn, attack);
 
       var attackFormatted = game.Hero.GetFormattedStatValue(Roguelike.Attributes.EntityStatKind.MeleeAttack, false);
-      Assert.AreEqual(attackFormatted, "16-18");
+      Assert.AreEqual(attackFormatted, "17-19");
 
       var damages = new List<float>();
       for (int i = 0; i < 10; i++)

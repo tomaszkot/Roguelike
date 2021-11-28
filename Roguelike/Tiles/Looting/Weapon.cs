@@ -106,44 +106,9 @@ namespace Roguelike.Tiles
     {
       base.SetLevelIndex(li);
       if (IsMagician)
-      {
         SetRequiredStat(li, EntityStatKind.Magic);
-      }
       else
-      {
-        EntityStatKind esk = EntityStatKind.Unset;
-        switch (Kind)
-        {
-          case WeaponKind.Unset:
-            break;
-          case WeaponKind.Dagger:
-            esk = EntityStatKind.Dexterity;
-            break;
-          case WeaponKind.Sword:
-          case WeaponKind.Axe:
-            esk = EntityStatKind.Strength;
-            break;
-          case WeaponKind.Bashing:
-            esk = EntityStatKind.Strength;
-            break;
-          case WeaponKind.Scepter:
-            break;
-          case WeaponKind.Wand:
-            break;
-          case WeaponKind.Staff:
-            break;
-          case WeaponKind.Bow:
-          case WeaponKind.Crossbow:
-            esk = EntityStatKind.Dexterity;
-            break;
-          case WeaponKind.Other:
-            break;
-          default:
-            break;
-        }
-        if(esk != EntityStatKind.Unset)
-          SetRequiredStat(li, esk);
-      }
+        SetRequiredStat(li);
 
       if (baseDamages.ContainsKey(Kind))
       {
@@ -153,6 +118,42 @@ namespace Roguelike.Tiles
       {
         System.Diagnostics.Debug.WriteLine("!baseDamages.ContainsKey(Kind) " + this);
       }
+    }
+
+    private void SetRequiredStat(int levelIndex)
+    {
+      EntityStatKind esk = EntityStatKind.Unset;
+      switch (Kind)
+      {
+        case WeaponKind.Unset:
+          break;
+        case WeaponKind.Dagger:
+          esk = EntityStatKind.Dexterity;
+          break;
+        case WeaponKind.Sword:
+        case WeaponKind.Axe:
+          esk = EntityStatKind.Strength;
+          break;
+        case WeaponKind.Bashing:
+          esk = EntityStatKind.Strength;
+          break;
+        case WeaponKind.Scepter:
+          break;
+        case WeaponKind.Wand:
+          break;
+        case WeaponKind.Staff:
+          break;
+        case WeaponKind.Bow:
+        case WeaponKind.Crossbow:
+          esk = EntityStatKind.Dexterity;
+          break;
+        case WeaponKind.Other:
+          break;
+        default:
+          break;
+      }
+      if (esk != EntityStatKind.Unset)
+        SetRequiredStat(levelIndex, esk);
     }
 
     public void UpdateMagicWeaponDesc()

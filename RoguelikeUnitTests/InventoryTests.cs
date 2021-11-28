@@ -254,6 +254,7 @@ namespace RoguelikeUnitTests
     {
       var game = CreateGame();
       var hero = game.Hero;
+      hero.Level = 3;
 
       var wpn1 = game.GameManager.LootGenerator.GetLootByAsset("rusty_sword") as Weapon;
       PutEqOnLevelAndCollectIt(wpn1);
@@ -264,6 +265,7 @@ namespace RoguelikeUnitTests
       Assert.False(hero.Inventory.Contains(wpn1));
 
       var wpn2 = game.GameManager.LootGenerator.GetLootByAsset("gladius") as Weapon;
+      Assert.True(wpn2.IsBetter(wpn1));
       PutEqOnLevelAndCollectIt(wpn2);
 
       heroEq = hero.GetActiveEquipment();

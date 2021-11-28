@@ -311,7 +311,7 @@ namespace Roguelike.Tiles
       ExtendedInfo.Stats.SetStat(statKind, stat);
     }
 
-    internal bool IsBetter(Equipment currentEq)
+    public bool IsBetter(Equipment currentEq)
     {
       return Price > currentEq.Price;
     }

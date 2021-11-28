@@ -164,7 +164,7 @@ namespace Roguelike.Tiles.LivingEntities
 
     public AdvancedLivingEntity(Container cont, Point point, char symbol) : base(point, symbol)
     {
-      discussion = new Discussion(cont);
+      discussion = cont.GetInstance<Discussion>();
       NextLevelExperience = GenerationInfo.FirstNextLevelExperienceThreshold;
       RelationToHero.Kind = RelationToHeroKind.Neutral;
       Container = cont;
