@@ -21,7 +21,6 @@ namespace Roguelike.Discussions
     public bool NPCJoinsAsAlly { get; internal set; }
     public bool HoundJoinsAsAlly { get;  set; }
 
-    [XmlIgnoreAttribute]
     public DiscussionTopic Parent { get => parent; set => parent = value; }
     protected const bool merchantItemsAtAllLevels = false;
 

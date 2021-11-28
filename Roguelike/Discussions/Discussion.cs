@@ -99,5 +99,25 @@ namespace Roguelike.Discussions
     {
       return false;
     }
+
+    public void SetParents()
+    {
+      SetParentsForTopic(MainItem);
+    }
+
+    private void SetParentsForTopic(DiscussionTopic parent)
+    {
+      foreach (var topic in parent.Topics)
+      {
+        if (topic.Parent == null)
+        {
+          topic.Parent = parent;
+          if(topic.RightKnownSentenceKind == KnownSentenceKind.Back)
+            topic.Parent = parent.Parent;
+        }
+
+        SetParentsForTopic(topic);
+      }
+    }
   }
 }
