@@ -30,7 +30,9 @@ namespace Roguelike.Spells
       if (weaponSpellSource != null)
         damage += weaponSpellSource.LevelIndex;
       else
-        damage += magicLevel;//TODO variation
+        damage += magicLevel;
+
+      damage -= 1;
 
       var addNominal = DefaultAddNominal;
       NominalDamage = damage + addNominal;
@@ -39,9 +41,9 @@ namespace Roguelike.Spells
         if (weaponSpellSource != null && !weaponSpellSource.StableDamage)
         {
           var val = RandHelper.GetRandomDouble();
-          if (val > 0.66f)
-            addNominal += 1;
-          else if (val < 0.33f)
+          //if (val > 0.66f)
+          //  addNominal += 1;//too much
+          if (val < 0.33f)
             addNominal -= -1;
 
           if (damage > 10)
@@ -49,6 +51,8 @@ namespace Roguelike.Spells
         }
       }
       damage += addNominal;
+      if (damage <= 0)
+        damage = 1;
       return damage;
     }
 

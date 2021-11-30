@@ -246,8 +246,8 @@ namespace Roguelike.Managers
 
       if (context.TurnOwner != turnOwner)
       {
-        context.Logger.LogError("OnPolicyApplied " + policy + " context.TurnOwner != turnOwner, context.TurnOwner: " + context.TurnOwner);
-        return;
+        context.Logger.LogError("OnPolicyApplied " + policy + " context.TurnOwner != turnOwner, context.TurnOwner: " + context.TurnOwner + " this: "+this);
+        //return;//that return probably causes a critical bug that hero is not moving at all
       }
       //  return;//in ascii/UT mode this can happend
       if (pendingForAllIdle)

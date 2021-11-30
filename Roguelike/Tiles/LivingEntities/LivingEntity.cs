@@ -210,6 +210,20 @@ namespace Roguelike.Tiles.LivingEntities
       foreach (var kv in Stats.GetStats())
       {
         var incToUse = inc;
+        if (kv.Value.Kind == EntityStatKind.Strength ||
+            kv.Value.Kind == EntityStatKind.MeleeAttack 
+            //kv.Value.Kind == EntityStatKind.Defense
+            )
+        {
+          incToUse *= 1.5f;
+        }
+        //enemies usually do not have that stat
+        //if (
+        //    kv.Value.Kind == EntityStatKind.FireAttack ||
+        //    )
+        //{
+        //  incToUse *= 0.2f;
+        //}
         var val = kv.Value.Value.Nominal * incToUse;
         Stats.SetNominal(kv.Key, val);
       }
@@ -251,7 +265,7 @@ namespace Roguelike.Tiles.LivingEntities
       this.Stats.SetNominal(EntityStatKind.ResistLighting, rli);
     }
 
-    public float StatsIncreasePerLevel = .13f;
+    public float StatsIncreasePerLevel = .14f;
 
     protected float GetIncrease(int level, float factor = 1)
     {
@@ -333,7 +347,7 @@ namespace Roguelike.Tiles.LivingEntities
 
     internal bool CalculateIfHitWillHappen(LivingEntity target, AttackKind kind)
     {
-      if (AlwaysHit.ContainsKey(kind) && AlwaysHit[kind])
+      if (IsAlwaysHitting(kind))
         return true;
 
       var esk = EntityStatKind.Unset;
@@ -346,6 +360,11 @@ namespace Roguelike.Tiles.LivingEntities
 
       var hitWillHappen = CalculateIfStatChanceApplied(esk, target);
       return hitWillHappen;
+    }
+
+    public bool IsAlwaysHitting(AttackKind kind)
+    {
+      return AlwaysHit.ContainsKey(kind) && AlwaysHit[kind];
     }
 
     internal bool CalculateIfStatChanceApplied(EntityStatKind esk, LivingEntity target = null)
