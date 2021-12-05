@@ -429,6 +429,7 @@ namespace Roguelike.Tiles.LivingEntities
         }
       }
 
+      
       if (
           CanUseEquipment(eq, true) &&
           (currentEq == null || (eq.IsBetter(currentEq)) && Options.Instance.Mechanics.AutoPutOnBetterEquipment)
@@ -510,12 +511,12 @@ namespace Roguelike.Tiles.LivingEntities
     }
 
     public bool MoveEquipmentInv2Current(Equipment eq,
-                              CurrentEquipmentKind cek, bool primary = true)
+                              CurrentEquipmentKind cek)
     {
       bool removed = inventory.Remove(eq);
       if (removed)
       {
-        var set = SetEquipment(eq, cek, primary);
+        var set = SetEquipment(eq, cek);
 
         return set;
       }
@@ -528,14 +529,15 @@ namespace Roguelike.Tiles.LivingEntities
       return removed;
     }
 
-    public bool MoveEquipmentCurrent2Inv(Equipment eq, CurrentEquipmentKind cek, bool primary = true)
+    public bool MoveEquipmentCurrent2Inv(Equipment eq, CurrentEquipmentKind cek)
     {
+      bool primary = CurrentEquipment.SpareEquipmentUsed[cek] ? false : true;
       if (primary && CurrentEquipment.PrimaryEquipment[cek] != eq)
         return false;
       else if(!primary && CurrentEquipment.SpareEquipment[cek] != eq)
         return false;
 
-      bool done = SetEquipment(null, cek, primary);
+      bool done = SetEquipment(null, cek);
       if (done)
       {
         //done = inventory.Add(eq);
@@ -557,11 +559,26 @@ namespace Roguelike.Tiles.LivingEntities
       return CurrentEquipment.GetActiveEquipment();
     }
 
-    //TODO make it priv. this is a dangerous method!, as not guarating user do not have same eq in the inventory. MoveEquipmentInv2Current shall be used.
-    public bool SetEquipment(Equipment eq, CurrentEquipmentKind cek = CurrentEquipmentKind.Unset, bool primary = true)
+    public bool RemoveEquipment(Loot eq, CurrentEquipmentKind cek)
+    {
+      var removed = SetEquipment(null, cek);//shall move it to inv
+      if (removed)
+      {
+        if (Inventory.Contains(eq))
+          Inventory.Remove(eq);
+      }
+
+      return removed;
+    }
+
+    //Pivate as this is a dangerous method!, not guarating user have this eq in the inventory.
+    bool SetEquipment(Equipment eq, CurrentEquipmentKind cek = CurrentEquipmentKind.Unset)
     {
       if (!CurrentEquipment.EnsureCurrEqKind(eq, ref cek))
         return false;
+
+      var primary = CurrentEquipment.SpareEquipmentUsed[cek] ? false : true;
+
       if (CurrentEquipment.GetActiveEquipment()[cek] != null)
       {
         var prev = this.CurrentEquipment.GetActiveEquipment()[cek];
@@ -575,6 +592,7 @@ namespace Roguelike.Tiles.LivingEntities
         if (eq == null)
           return true;
       }
+      
       var set = CurrentEquipment.SetEquipment(eq, cek, primary);
       if (!set)
         return false;
@@ -737,7 +755,7 @@ namespace Roguelike.Tiles.LivingEntities
 
       foreach (var ek in eqipKinds)
       {
-        if (currentEquipment.SpareEquipmentUsed.ContainsKey(ek))//old game save ?
+        if (currentEquipment.SpareEquipmentUsed.ContainsKey(ek))
         {
           bool spareUsed = currentEquipment.SpareEquipmentUsed[ek];
           var eq = spareUsed ? currentEquipment.SpareEquipment[ek] : currentEquipment.PrimaryEquipment[ek];

@@ -172,7 +172,7 @@ namespace RoguelikeUnitTests
       var wpn = game.GameManager.LootGenerator.GetRandomEquipment(EquipmentKind.Weapon, 1);
       var li = wpn.LevelIndex;
       Assert.GreaterOrEqual(wpn.LevelIndex, 0);
-      hero.SetEquipment(wpn, CurrentEquipmentKind.Weapon);
+      SetHeroEquipment(wpn, CurrentEquipmentKind.Weapon);
       game.GameManager.Save();
       game.GameManager.Load(hero.Name);
       var loadedHero = game.GameManager.Hero;

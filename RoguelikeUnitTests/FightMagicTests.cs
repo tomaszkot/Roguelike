@@ -106,7 +106,7 @@ namespace RoguelikeUnitTests
       //melee
       enemyHealth = enemy.Stats.Health;
       var wpn = GenerateEquipment<Weapon>("rusty_sword");
-      game.Hero.SetEquipment(wpn, CurrentEquipmentKind.Weapon);
+      SetHeroEquipment(wpn, CurrentEquipmentKind.Weapon);
       for (int i = 0; i < 10; i++)
       {
         enemy.OnMelleeHitBy(game.Hero);
@@ -115,7 +115,7 @@ namespace RoguelikeUnitTests
       Assert.Greater(diffMelee, 20);
       Assert.Less(Math.Abs(diffMelee - diffScroll), 30);//TODO %
     }
-
+        
     [Test]
     public void KillEnemy()
     {

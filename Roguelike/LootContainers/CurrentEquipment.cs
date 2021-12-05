@@ -26,11 +26,11 @@ namespace Roguelike.LootContainers
     public CurrentEquipment(Container container) : base(container)
     {
       var eqipTypes = Enum.GetValues(typeof(CurrentEquipmentKind));
-      foreach (CurrentEquipmentKind et in eqipTypes)
+      foreach (CurrentEquipmentKind cek in eqipTypes)
       {
-        PrimaryEquipment[et] = null;
-        SpareEquipment[et] = null;
-        SpareEquipmentUsed[et] = false;
+        PrimaryEquipment[cek] = null;
+        SpareEquipment[cek] = null;
+        SpareEquipmentUsed[cek] = false;
       }
     }
 
@@ -39,19 +39,17 @@ namespace Roguelike.LootContainers
 
     //currently only weapon/shield can be not null
     public SerializableDictionary<CurrentEquipmentKind, bool> SpareEquipmentUsed { get; set; } = new SerializableDictionary<CurrentEquipmentKind, bool>();
-    //float priceFactor = 1;
-    //public float PriceFactor { get => priceFactor; set => priceFactor = value; }
 
     public Weapon GetWeapon()
     {
-      CurrentEquipmentKind cek = CurrentEquipmentKind.Weapon;
-      return GetActiveEquipment()[cek] as Weapon;
+      var ae = GetActiveEquipment();
+      return ae[CurrentEquipmentKind.Weapon] as Weapon;
     }
 
     public Armor GetHelmet()
     {
-      CurrentEquipmentKind cek = CurrentEquipmentKind.Helmet;
-      return GetActiveEquipment()[cek] as Armor;
+      var ae = GetActiveEquipment();
+      return ae[CurrentEquipmentKind.Helmet] as Armor;
     }
 
     public Dictionary<CurrentEquipmentKind, Equipment> GetActiveEquipment()
@@ -91,15 +89,11 @@ namespace Roguelike.LootContainers
       else
         equipmentSet = SpareEquipment;
 
-      CurrentEquipmentKind cek = CurrentEquipmentKind.Unset;
+      var cek = CurrentEquipmentKind.Unset;
       if (equipmentSet.Any(i => i.Value == eq))
-      {
         cek = equipmentSet.First(i => i.Value == eq).Key;
-      }
       if (cek != CurrentEquipmentKind.Unset)
-      {
         return SetEquipment(null, cek, equipmentSet == PrimaryEquipment);
-      }
 
       return false;
     }
@@ -140,12 +134,6 @@ namespace Roguelike.LootContainers
       {
         if (eq == null)
           return false;
-        //if (eq.EquipmentKind == EquipmentKind.Ring)
-        //  cek = CurrentEquipmentKind.RingLeft;
-
-        //else if (eq.EquipmentKind == EquipmentKind.Ring)
-        //  cek = CurrentEquipmentKind.TrophyLeft;
-
         cek = eq.EquipmentKind.GetCurrentEquipmentKind(CurrentEquipmentPosition.Left);
       }
 

@@ -383,5 +383,12 @@ namespace RoguelikeUnitTests
       hero.ActiveFightItem = fi;
       return fi;
     }
+
+    protected bool SetHeroEquipment(Equipment eq, CurrentEquipmentKind cek = CurrentEquipmentKind.Unset)
+    {
+      if (!game.Hero.Inventory.Contains(eq))
+        game.Hero.Inventory.Add(eq);
+      return game.Hero.MoveEquipmentInv2Current(eq, cek);
+    }
   }
 }

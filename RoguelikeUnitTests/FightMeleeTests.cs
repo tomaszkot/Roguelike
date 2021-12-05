@@ -86,7 +86,7 @@ namespace RoguelikeUnitTests
       var wpn = GenerateEquipment<Weapon>("hammer");
       wpn.MakeMagic(EntityStatKind.ChanceToCauseStunning, 100);
       wpn.Identify();
-      hero.SetEquipment(wpn);
+      SetHeroEquipment(wpn);
       var ccs = hero.GetCurrentValue(EntityStatKind.ChanceToCauseStunning);
       Assert.AreEqual(ccs, 100);
 
@@ -134,7 +134,7 @@ namespace RoguelikeUnitTests
       Assert.AreEqual(wpn.PrimaryStatValue, 3);
       Assert.AreEqual(wpn.PrimaryStatDescription, "Melee Attack: 2-4");
 
-      game.Hero.SetEquipment(wpn);
+      SetHeroEquipment(wpn);
       var attackWithWpn = game.Hero.GetCurrentValue(Roguelike.Attributes.EntityStatKind.MeleeAttack);
       Assert.Greater(attackWithWpn, attack);
 

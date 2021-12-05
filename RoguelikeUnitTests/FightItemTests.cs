@@ -51,7 +51,7 @@ namespace RoguelikeUnitTests
       //arrow
       ActivateFightItem(FightItemKind.PlainArrow, hero);
       var wpn = GenerateEquipment<Weapon>("Bow");
-      Assert.True(hero.SetEquipment(wpn));
+      Assert.True(SetHeroEquipment(wpn));
       var expectedBowAttackValue = Props.FightItemBaseDamage + 1 + Props.BowBaseDamage;
       AssertAttackValue(hero, Roguelike.Attributes.AttackKind.PhysicalProjectile, expectedBowAttackValue);
       Assert.Greater(expectedBowAttackValue, expectedThrowingKnifeAttackValue);
@@ -59,7 +59,7 @@ namespace RoguelikeUnitTests
       //bolt
       ActivateFightItem(FightItemKind.PlainBolt, hero);
       wpn = GenerateEquipment<Weapon>("Crossbow");
-      Assert.True(hero.SetEquipment(wpn));
+      Assert.True(SetHeroEquipment(wpn));
       var expectedCrossbowAttackValue = Props.FightItemBaseDamage + 2 + Props.CrossbowBaseDamage;
       AssertAttackValue(hero, Roguelike.Attributes.AttackKind.PhysicalProjectile, expectedCrossbowAttackValue);
       Assert.Greater(expectedCrossbowAttackValue, expectedBowAttackValue);
@@ -89,7 +89,7 @@ namespace RoguelikeUnitTests
 
       Assert.True(game.GameManager.HeroTurn);
       var bow = GenerateEquipment<Weapon>("Bow");
-      Assert.True(hero.SetEquipment(bow));
+      Assert.True(SetHeroEquipment(bow));
 
       var tile = game.GameManager.CurrentNode.GetClosestEmpty(hero);
       game.GameManager.CurrentNode.SetTile(enemy, tile.point);

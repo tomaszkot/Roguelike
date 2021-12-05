@@ -676,7 +676,7 @@ namespace RoguelikeUnitTests
       originalStatValue = Hero.Stats.GetCurrentValue(auxStat);
       wpn = game.GameManager.LootGenerator.GetLootByAsset(wpnName) as Weapon;
       Assert.NotNull(wpn);
-      Hero.SetEquipment(wpn, CurrentEquipmentKind.Weapon);
+      SetHeroEquipment(wpn, CurrentEquipmentKind.Weapon);
       return auxStat;
     }
   }

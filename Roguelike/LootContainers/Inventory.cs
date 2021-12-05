@@ -56,7 +56,6 @@ namespace Roguelike.LootContainers
 
     [JsonIgnore]
     public AdvancedLivingEntity Owner { get; set; }
-    //public InvOwner InvOwner { get; set; }
     public InvBasketKind InvBasketKind { get; set; }
 
     [JsonIgnore]
