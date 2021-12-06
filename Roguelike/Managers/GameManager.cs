@@ -245,6 +245,17 @@ namespace Roguelike.Managers
     public virtual void HandleDeath(LivingEntity dead)
     {
       GameState.History.LivingEntity.AddItem(new Roguelike.History.LivingEntityHistoryItem(dead));
+      if (dead is Ally ally)
+      {
+        foreach (var item in ally.Inventory.Items)
+          AppendTile(item, CurrentNode.GetClosestEmpty(dead).point);
+
+        foreach (var item in ally.CurrentEquipment.GetActiveEquipment().Values)
+        {
+          if (item != null)
+            AppendTile(item, CurrentNode.GetClosestEmpty(dead).point);
+        }
+      }
     }
 
     public List<Enemy> GetHerdMembers(Enemy chemp, List<Enemy> allEnemies = null)
