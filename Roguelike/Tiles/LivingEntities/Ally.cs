@@ -19,11 +19,8 @@ namespace Roguelike.Tiles.LivingEntities
 
     public AllyKind Kind
     {
-      get
-      {
-        return AllyKind.Enemy;
-      }
-      set { }
+      get;
+      set;
     }
 
     public Point Point { get => point; set => point = value; }
