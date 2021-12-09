@@ -449,7 +449,7 @@ namespace Roguelike.Tiles.LivingEntities
       return false;
     }
 
-    public bool CanUseEquipment(Equipment eq, bool autoPutoOn)
+    public virtual bool CanUseEquipment(Equipment eq, bool autoPutoOn)
     {
       if (!eq.IsIdentified)
         return false;

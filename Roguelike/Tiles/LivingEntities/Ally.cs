@@ -30,7 +30,17 @@ namespace Roguelike.Tiles.LivingEntities
           AnimalKind = AnimalKind.Hound;
       }
     }
-        
+
+    public override bool CanUseEquipment(Equipment eq, bool autoPutoOn)
+    {
+      if (eq.EquipmentKind != EquipmentKind.Amulet)
+      {
+        if (this.AnimalKind != eq.MatchingAnimalKind)
+          return false;
+      }
+      return base.CanUseEquipment(eq, autoPutoOn);
+    }
+
     public Point Point { get => point; set => point = value; }
 
     public bool TakeLevelFromCaster { get; protected set; }
