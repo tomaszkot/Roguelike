@@ -3,6 +3,7 @@ using Roguelike.Attributes;
 using Roguelike.Calculated;
 using Roguelike.Extensions;
 using Roguelike.TileParts;
+using Roguelike.Tiles.LivingEntities;
 using Roguelike.Tiles.Looting;
 using System;
 using System.Collections.Generic;
@@ -22,6 +23,7 @@ namespace Roguelike.Tiles
 
   public class Equipment : Loot
   {
+    public AnimalKind MatchingAnimalKind { get; set; }
     public EquipmentMaterial Material { get; set; }
     EquipmentKind kind;
     EntityStat primaryStat;

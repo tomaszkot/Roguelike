@@ -26,6 +26,8 @@ namespace Roguelike.Tiles.LivingEntities
   public enum EntityProffesionKind { Unset, King, Prince, Knight, Priest, Mercenary, Merchant, Peasant, Bandit, Adventurer, Slave }
   public enum EntityGender { Unset, Male, Female }
   public enum RelationToHeroKind { Unset, Neutral, Like, Dislike, Hate };
+  public enum EntityKind { Unset, Human, Animal, Undead }
+  public enum AnimalKind { Unset, Hound, Pig }
 
   public class RelationToHero
   {

@@ -17,12 +17,20 @@ namespace Roguelike.Tiles.LivingEntities
 
     public bool Active { get; set; }
 
+    public AnimalKind AnimalKind { get; set; }
+
+    public AllyKind kind;
     public AllyKind Kind
     {
-      get;
-      set;
+      get { return kind; }
+      set 
+      {
+        kind = value;
+        if (kind == AllyKind.Hound)
+          AnimalKind = AnimalKind.Hound;
+      }
     }
-
+        
     public Point Point { get => point; set => point = value; }
 
     public bool TakeLevelFromCaster { get; protected set; }
