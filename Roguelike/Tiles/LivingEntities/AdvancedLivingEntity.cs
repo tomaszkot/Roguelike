@@ -449,6 +449,11 @@ namespace Roguelike.Tiles.LivingEntities
       return false;
     }
 
+    virtual protected bool CanUseAnimalKindEq(Equipment eq)
+    {
+      return false;
+    }
+
     public virtual bool CanUseEquipment(Equipment eq, bool autoPutoOn)
     {
       if (!eq.IsIdentified)
@@ -456,6 +461,12 @@ namespace Roguelike.Tiles.LivingEntities
 
       if (Level < eq.RequiredLevel)
         return false;
+
+      if (eq.MatchingAnimalKind != AnimalKind.Unset && !CanUseAnimalKindEq(eq))
+      {
+        return false;
+      }
+            
       foreach (var rs in eq.GetEffectiveRequiredStats())
       {
         if (rs.Value.Nominal > Stats.GetNominal(rs.Kind))

@@ -44,6 +44,24 @@ namespace Roguelike.LootFactories
     public EquipmentTypeFactory(Container container) : base(container)
     {
     }
+    protected void CreatePrototypes()
+    {
+      foreach (var sh in factory.Keys)
+      {
+        if (factory.ContainsKey(sh))
+        {
+          var res = factory[sh](sh);
+          prototypes.Add(sh, res);
+        }
+        else
+          ReportError("!factory.ContainsKey(sh): " + sh);
+      }
+    }
+
+    protected void ReportError(string error)
+    {
+      container.GetInstance<ILogger>().LogError(error);
+    }
 
     public List<Roguelike.Tiles.Equipment> GetUniqueItems(int level)
     {
@@ -85,22 +103,27 @@ namespace Roguelike.LootFactories
       if (prototypes.Any())
       {
         var eq = GetLootAtLevel(level);
-        if (eq.Item1.Any())
-        {
-          var eqCreator = factory[eq.Item1];
-          var eqDone = eqCreator(eq.Item1);
-          if (eq.Item2 != EquipmentMaterial.Unset)
-            EnsureMaterialFromLootSource(eqDone, eq.Item2);
-
-          if (eqDone is Weapon wpn && wpn.IsMagician && wpn.Class != EquipmentClass.Unique)
-          {
-            wpn.LevelIndex = level;
-            //(wpn.SpellSource as WeaponSpellSource).Level;
-          }
-          return eqDone;
-        }
-        Debug.Assert(false);
+        return CreateItem(level, eq);
       }
+      return null;
+    }
+
+    protected Loot CreateItem(int level, Tuple<string, EquipmentMaterial> eqDesc)
+    {
+      if (eqDesc != null && eqDesc.Item1.Any())
+      {
+        var eqCreator = factory[eqDesc.Item1];
+        var eqDone = eqCreator(eqDesc.Item1);
+        if (eqDesc.Item2 != EquipmentMaterial.Unset)
+          EnsureMaterialFromLootSource(eqDone, eqDesc.Item2);
+
+        if (eqDone is Weapon wpn && wpn.IsMagician && wpn.Class != EquipmentClass.Unique)
+        {
+          wpn.LevelIndex = level;
+        }
+        return eqDone;
+      }
+     
       return null;
     }
 
@@ -131,18 +154,28 @@ namespace Roguelike.LootFactories
         level--;
 
       var plains = prototypes.Values.Where(i => i.Class == EquipmentClass.Plain).ToList();
+      res = GetRandomFromList(level, ref mat, plains);
+      //if (eq !=null mat != EquipmentMaterial.Bronze)
+      //{
+      //  EnsureMaterialFromLootSource(eq);
+      //}
+      return res;
+    }
+    protected Tuple<string, EquipmentMaterial> GetRandomFromList(int level, ref EquipmentMaterial mat, List<Equipment> plains)
+    {
+      Tuple<string, EquipmentMaterial> res = null;
       var eqsAtLevel = plains.Where(i => i.LevelIndex == level).ToList();
-      if (!eqsAtLevel.Any())//TODO!
-      {
-        var maxLevel = plains.Max(i => i.LevelIndex);
-        for (int i = level + 1; i <= maxLevel; i++)
-        {
-          eqsAtLevel = plains.Where(j => j.LevelIndex == i).ToList();
-          if (eqsAtLevel.Any())
-            break;
-        }
-        //eqsAtLevel = plains.Where(i => i.LevelIndex == maxLevel).ToList();
-      }
+      //if (!eqsAtLevel.Any())//TODO!
+      //{
+      //  var maxLevel = plains.Max(i => i.LevelIndex);
+      //  for (int i = level + 1; i <= maxLevel; i++)
+      //  {
+      //    eqsAtLevel = plains.Where(j => j.LevelIndex == i).ToList();
+      //    if (eqsAtLevel.Any())
+      //      break;
+      //  }
+      //  //eqsAtLevel = plains.Where(i => i.LevelIndex == maxLevel).ToList();
+      //}
       var eq = RandHelper.GetRandomElem<Equipment>(eqsAtLevel);
       if (eq != null)
       {
@@ -150,10 +183,7 @@ namespace Roguelike.LootFactories
           mat = EquipmentMaterial.Bronze;
         res = new Tuple<string, EquipmentMaterial>(eq.tag1, mat);
       }
-      //if (eq !=null mat != EquipmentMaterial.Bronze)
-      //{
-      //  EnsureMaterialFromLootSource(eq);
-      //}
+
       return res;
     }
 
@@ -180,5 +210,4 @@ namespace Roguelike.LootFactories
       return loot;
     }
 
-  };
-}
+  }}

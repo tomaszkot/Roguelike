@@ -30,6 +30,12 @@ namespace Roguelike.Tiles.LivingEntities
           AnimalKind = AnimalKind.Hound;
       }
     }
+    override protected bool CanUseAnimalKindEq(Equipment eq)
+    {
+      if (this.Kind == AllyKind.Hound && eq.MatchingAnimalKind == AnimalKind.Hound)
+        return true;
+      return base.CanUseAnimalKindEq(eq);
+    }
 
     public override bool CanUseEquipment(Equipment eq, bool autoPutoOn)
     {
@@ -38,6 +44,8 @@ namespace Roguelike.Tiles.LivingEntities
         if (this.AnimalKind != eq.MatchingAnimalKind)
           return false;
       }
+            
+
       return base.CanUseEquipment(eq, autoPutoOn);
     }
 

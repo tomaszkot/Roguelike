@@ -12,6 +12,7 @@ namespace Roguelike.LootFactories
     public EquipmentFactory EquipmentFactory { get; set; }
     public ScrollsFactory ScrollsFactory { get; set; }
     public BooksFactory BooksFactory { get; set; }
+    
     public MiscLootFactory MiscLootFactory { get; set; }
     List<AbstractLootFactory> factories = new List<AbstractLootFactory>();
 

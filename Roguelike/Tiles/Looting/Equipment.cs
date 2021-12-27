@@ -80,22 +80,21 @@ namespace Roguelike.Tiles
           break;
       }
 
+      this.Material = material;
+      if (material == EquipmentMaterial.Iron)
+      {
+        int k = 0;
+        k++;
+      }
+      if (this.Name == "Tusk")
+      {
+        int k = 0;
+        k++;
+      }
       if (eskToEnhance != EntityStatKind.Unset)
       {
-        this.Material = material;
-        if (material == EquipmentMaterial.Iron)
-        {
-          int k = 0;
-          k++;
-        }
-        if (this.Name == "Tusk")
-        {
-          int k = 0;
-          k++;
-        }
         if (Class != EquipmentClass.Unique)
         {
-
           this.DisplayedName = material.ToDescription() + " " + Name.ToLower();
           EnhanceStatsDueToMaterial(material);
         }
