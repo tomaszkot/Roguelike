@@ -44,9 +44,22 @@ namespace Roguelike.Tiles.LivingEntities
         if (this.AnimalKind != eq.MatchingAnimalKind)
           return false;
       }
-            
+      if (IsBowLike(eq))
+      {
+        return false;//other pose for a skeleton is needed for a bow
+      }
+
+      if (Kind == AllyKind.Hound && eq is Armor arm && arm.MatchingAnimalKind != AnimalKind.Hound)
+      {
+        return false;
+      }
 
       return base.CanUseEquipment(eq, autoPutoOn);
+    }
+
+    private static bool IsBowLike(Equipment eq)
+    {
+      return eq is Weapon wpn && wpn.IsBowLike;
     }
 
     public Point Point { get => point; set => point = value; }
