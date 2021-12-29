@@ -7,7 +7,7 @@
   }
 
   /// <summary>
-  /// 
+  /// s
   /// </summary>
   public class HintItem
   {
