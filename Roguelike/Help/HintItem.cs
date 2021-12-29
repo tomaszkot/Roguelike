@@ -6,6 +6,9 @@
     LootHightlightShorcut, UseProjectile, UseElementalWeaponProjectile
   }
 
+  /// <summary>
+  /// 
+  /// </summary>
   public class HintItem
   {
     public string Info { get; set; }
