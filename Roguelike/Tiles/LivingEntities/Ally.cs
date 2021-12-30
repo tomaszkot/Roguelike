@@ -13,6 +13,7 @@ namespace Roguelike.Tiles.LivingEntities
     {
       canAdvanceInExp = true;
       Inventory.InvBasketKind = InvBasketKind.AllyEquipment;
+      Inventory.Capacity = 8;
     }
 
     public bool Active { get; set; }
