@@ -980,7 +980,7 @@ namespace Roguelike.Managers
       }
     }
 
-    protected void PopulateMerchantInv(Merchant merch, int heroLevel)
+    protected virtual void PopulateMerchantInv(Merchant merch, int heroLevel)
     {
       merch.Inventory.Items.Clear();
       var lootKinds = Enum.GetValues(typeof(LootKind)).Cast<LootKind>()
@@ -1014,6 +1014,7 @@ namespace Roguelike.Managers
       if(!merch.Inventory.Items.Any(i=>i is Book))
         merch.Inventory.Items.Add(lootGenerator.GetRandomLoot(LootKind.Book, 1));
 
+   
       //int maxPotions = 4;
       //for (int numOfLootPerKind = 0; numOfLootPerKind < maxPotions; numOfLootPerKind++)
       //{
