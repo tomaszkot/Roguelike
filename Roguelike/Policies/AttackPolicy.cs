@@ -1,4 +1,5 @@
 ﻿using Dungeons.Tiles;
+using Roguelike.Events;
 using Roguelike.Tiles.LivingEntities;
 
 namespace Roguelike.Policies
@@ -34,8 +35,7 @@ namespace Roguelike.Policies
           attacker.ApplyPhysicalDamage(le);
         else
         {
-          int k = 0;
-          k++;
+          attacker.EventsManager.AppendAction(new LivingEntityAction(LivingEntityActionKind.Missed) { InvolvedEntity = attacker, Info = attacker.Name + " missed " + victim.Name });
         }
       }
 

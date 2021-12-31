@@ -99,6 +99,15 @@ namespace RoguelikeUnitTests
       Assert.Greater(enemyHealth, enemy.Stats.Health);
       Assert.AreEqual(mana, hero.Stats.Mana);
       Assert.False(game.GameManager.HeroTurn);
+      var diffBow = enemyHealth - enemy.Stats.Health;
+      enemyHealth = enemy.Stats.Health;
+
+      GotoNextHeroTurn();
+      fi = ActivateFightItem(FightItemKind.ThrowingKnife, hero);
+      Assert.True(UseFightItem(hero, enemy, fi));
+      Assert.Greater(enemyHealth, enemy.Stats.Health);
+      var diffKnife = enemyHealth - enemy.Stats.Health;
+      Assert.Greater(diffBow, diffKnife);
     }
 
     [Test]
