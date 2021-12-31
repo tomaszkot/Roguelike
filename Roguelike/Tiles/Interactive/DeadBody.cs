@@ -16,6 +16,7 @@ namespace Roguelike.Tiles.Interactive
       Name = "Dead body";
       tag1 = "dead_body";
       DestroySound = "uncloth";
+      InteractSound = "uncloth";
     }
 
     public DeadBody() : this(new Point().Invalid())
