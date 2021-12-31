@@ -10,7 +10,7 @@ namespace Roguelike
     {
       public class HintHistory
       {
-        public static Dictionary<HintKind, string> Messages = new Dictionary<HintKind, string>();
+        //public static Dictionary<HintKind, string> Messages = new Dictionary<HintKind, string>();
         private List<HintItem> hints = new List<HintItem>();
 
         //[Json]
@@ -22,27 +22,33 @@ namespace Roguelike
             hints = value;
           }
         }
+
         static HintHistory()
         {
-          Messages.Add(HintKind.HeroLevelTooLow, "Hero level too low to use an item");
-          Messages.Add(HintKind.CanNotPutOnUnidentified, "Can not put on unidentified item");
-          //Messages.Add(HintKind.SwapActiveWeapon, "Press X ");
+          //Messages.Add(HintKind.HeroLevelTooLow, "Hero level too low to use an item");
+          //Messages.Add(HintKind.CanNotPutOnUnidentified, "Can not put on unidentified item");
         }
 
         public HintHistory()
         {
           //TODO 'G' - shall be formatted based on KeyCode
-          Hints.Add(new HintItem() { Info = "Press 'Left Alt' to see collectable/interactive items.", Kind = HintKind.LootHightlightShorcut });
+          //Hints.Add(new HintItem() { Info = "Press 'Left Alt' to see collectable/interactive items.", Kind = HintKind.LootHightlightShorcut });
           Hints.Add(new HintItem() { Info = "Press 'G' to collect a single loot.", Kind = HintKind.LootCollectShorcut });
-          Hints.Add(new HintItem() { Info = "Press 'J' to collect nearby loot items.", Kind = HintKind.BulkLootCollectShorcut });
-          Hints.Add(new HintItem() { Info = "Recipe has been collected. Press 'R' to open Crafting Panel and see it's description.", Kind = HintKind.ShowCraftingPanel });
+          //Hints.Add(new HintItem() { Info = "Press 'J' to collect nearby loot items.", Kind = HintKind.BulkLootCollectShorcut });
+          //Hints.Add(new HintItem() { Info = "Recipe has been collected. Press 'R' to open Crafting Panel and see it's description.", Kind = HintKind.ShowCraftingPanel });
 
+          //Hints.Add(new HintItem() { Info = Messages[HintKind.HeroLevelTooLow], Kind = HintKind.HeroLevelTooLow });
+          //Hints.Add(new HintItem() { Info = Messages[HintKind.CanNotPutOnUnidentified], Kind = HintKind.CanNotPutOnUnidentified });
+          ////Hints.Add(new HintItem() { Info = "TODO", Kind = HintKind.UseProjectile });
+          ////Hints.Add(new HintItem() { Info = "TODO", Kind = HintKind.UseElementalWeaponProjectile });
 
-          Hints.Add(new HintItem() { Info = Messages[HintKind.HeroLevelTooLow], Kind = HintKind.HeroLevelTooLow });
-          Hints.Add(new HintItem() { Info = Messages[HintKind.CanNotPutOnUnidentified], Kind = HintKind.CanNotPutOnUnidentified });
-          Hints.Add(new HintItem() { Info = "TODO", Kind = HintKind.UseProjectile });
-          Hints.Add(new HintItem() { Info = "TODO", Kind = HintKind.UseElementalWeaponProjectile });
+          //Hints.Add(new HintItem() { Info = "", Kind = HintKind.LootHightlightShorcut });
+          //Hints.Add(new HintItem() { Info = "", Kind = HintKind.LootCollectShorcut });
+          //Hints.Add(new HintItem() { Info = "", Kind = HintKind.BulkLootCollectShorcut });
+          //Hints.Add(new HintItem() { Info = "", Kind = HintKind.ShowCraftingPanel });
 
+          //Hints.Add(new HintItem() { Info = Messages[HintKind.HeroLevelTooLow], Kind = HintKind.HeroLevelTooLow });
+          //Hints.Add(new HintItem() { Info = Messages[HintKind.CanNotPutOnUnidentified], Kind = HintKind.CanNotPutOnUnidentified });
         }
 
         public List<int> GetKeyCodes()
