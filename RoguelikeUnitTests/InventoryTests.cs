@@ -1,4 +1,5 @@
 ﻿using NUnit.Framework;
+using Roguelike.LootContainers;
 using Roguelike.Tiles;
 using Roguelike.Tiles.LivingEntities;
 using Roguelike.Tiles.Looting;
@@ -333,15 +334,14 @@ namespace RoguelikeUnitTests
       var hero = game.Hero;
       hero.Level = 2;
 
-      Assert.False(hero.CurrentEquipment.SpareEquipmentUsed[CurrentEquipmentKind.Weapon]);
+      Assert.AreEqual(hero.CurrentEquipment.GetActiveWeaponSet(), ActiveWeaponSet.Primary);
 
       var wpn1 = game.GameManager.LootGenerator.GetLootByAsset("rusty_sword") as Weapon;
       PutEqOnLevelAndCollectIt(wpn1);
       var heroEq = hero.GetActiveEquipment();
       Assert.AreEqual(heroEq[CurrentEquipmentKind.Weapon], wpn1);
 
-      hero.CurrentEquipment.SpareEquipmentUsed[CurrentEquipmentKind.Weapon] = true;
-      hero.CurrentEquipment.SpareEquipmentUsed[CurrentEquipmentKind.Shield] = true;
+      hero.CurrentEquipment.SwapActiveWeaponSet();
 
       heroEq = hero.GetActiveEquipment();
       Assert.AreEqual(heroEq[CurrentEquipmentKind.Weapon], null);
@@ -351,13 +351,12 @@ namespace RoguelikeUnitTests
       PutEqOnLevelAndCollectIt(wpn2);
       heroEq = hero.GetActiveEquipment();
       Assert.AreEqual(heroEq[CurrentEquipmentKind.Weapon], wpn2);
-      Assert.True(hero.CurrentEquipment.SpareEquipmentUsed[CurrentEquipmentKind.Weapon]);
+      Assert.AreEqual(hero.CurrentEquipment.GetActiveWeaponSet(), ActiveWeaponSet.Secondary);
 
       Game.GameManager.Save();
       Game.GameManager.Load(hero.Name);
       hero = game.Hero;
-      Assert.True(hero.CurrentEquipment.SpareEquipmentUsed[CurrentEquipmentKind.Weapon]);
-      Assert.True(hero.CurrentEquipment.SpareEquipmentUsed[CurrentEquipmentKind.Shield]);
+      Assert.AreEqual(hero.CurrentEquipment.GetActiveWeaponSet(), ActiveWeaponSet.Secondary);
       heroEq = hero.GetActiveEquipment();
       Assert.AreEqual(heroEq[CurrentEquipmentKind.Weapon].name, wpn2.name);
     }

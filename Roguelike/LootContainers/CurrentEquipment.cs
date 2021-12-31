@@ -8,6 +8,8 @@ using System.Linq;
 
 namespace Roguelike.LootContainers
 {
+  public enum ActiveWeaponSet { Unset, Primary, Secondary };
+
   public class EquipmentChangedArgs
   {
     public Equipment Equipment { get; set; }
@@ -23,6 +25,12 @@ namespace Roguelike.LootContainers
     //spareEquipment - currently only weapon/shield can be not null
     SerializableDictionary<CurrentEquipmentKind, Equipment> spareEquipment = new SerializableDictionary<CurrentEquipmentKind, Equipment>();
 
+    public SerializableDictionary<CurrentEquipmentKind, Equipment> PrimaryEquipment { get => primaryEquipment; set => primaryEquipment = value; }
+    public SerializableDictionary<CurrentEquipmentKind, Equipment> SpareEquipment { get => spareEquipment; set => spareEquipment = value; }
+
+    //currently only weapon/shield can be not null
+    public SerializableDictionary<CurrentEquipmentKind, bool> SpareEquipmentUsed { get; set; } = new SerializableDictionary<CurrentEquipmentKind, bool>();
+
     public CurrentEquipment(Container container) : base(container)
     {
       var eqipTypes = Enum.GetValues(typeof(CurrentEquipmentKind));
@@ -34,11 +42,26 @@ namespace Roguelike.LootContainers
       }
     }
 
-    public SerializableDictionary<CurrentEquipmentKind, Equipment> PrimaryEquipment { get => primaryEquipment; set => primaryEquipment = value; }
-    public SerializableDictionary<CurrentEquipmentKind, Equipment> SpareEquipment { get => spareEquipment; set => spareEquipment = value; }
+    public ActiveWeaponSet GetActiveWeaponSet()
+    {
+      return SpareEquipmentUsed[CurrentEquipmentKind.Weapon] == true ? ActiveWeaponSet.Secondary : ActiveWeaponSet.Primary;
+    }
 
-    //currently only weapon/shield can be not null
-    public SerializableDictionary<CurrentEquipmentKind, bool> SpareEquipmentUsed { get; set; } = new SerializableDictionary<CurrentEquipmentKind, bool>();
+    public ActiveWeaponSet SwapActiveWeaponSet()
+    {
+      if (GetActiveWeaponSet() == ActiveWeaponSet.Primary)
+      {
+        SpareEquipmentUsed[CurrentEquipmentKind.Weapon] = true;
+        SpareEquipmentUsed[CurrentEquipmentKind.Shield] = true;
+      }
+      else
+      {
+        SpareEquipmentUsed[CurrentEquipmentKind.Weapon] = false;
+        SpareEquipmentUsed[CurrentEquipmentKind.Shield] = false;
+      }
+
+      return GetActiveWeaponSet();
+    }
 
     public Weapon GetWeapon()
     {

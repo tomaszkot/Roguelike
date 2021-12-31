@@ -15,7 +15,7 @@ namespace Roguelike.Settings
   public enum GameKey
   { 
     Unset, 
-    MoveLeft, MoveRight, MoveUp, MoveDown, Grab, DistanceCollect, SkipTurn, HighlightLoot,
+    MoveLeft, MoveRight, MoveUp, MoveDown, Grab, DistanceCollect, SkipTurn, HighlightLoot, SwapActiveWeapon,
 
     UICharacter, UIHeroInventory, UIAbilities, UIMap, UICrafting, UIQuests, UIAlly
   }
