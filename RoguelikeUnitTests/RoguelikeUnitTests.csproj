@@ -69,6 +69,7 @@
     <Compile Include="FightMeleeTests.cs" />
     <Compile Include="LastingEffectTests.cs" />
     <Compile Include="LevelGenerationTests.cs" />
+    <Compile Include="LocalizationTests.cs" />
     <Compile Include="LootingProbabilityTests.cs" />
     <Compile Include="LootingTests.cs" />
     <Compile Include="PotionTests.cs" />
@@ -99,6 +100,9 @@
     <Reference Include="System" />
     <Reference Include="System.Drawing">
       <HintPath>..\..\..\..\..\..\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.6.1\System.Drawing.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.CoreModule">
+      <HintPath>..\..\..\..\..\..\Program Files\Unity\Hub\Editor\2020.3.25f1\Editor\Data\Managed\UnityEngine\UnityEngine.CoreModule.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup />

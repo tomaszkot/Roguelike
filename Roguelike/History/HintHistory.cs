@@ -1,4 +1,5 @@
 ﻿using Roguelike.Help;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -51,6 +52,46 @@ namespace Roguelike
           //Hints.Add(new HintItem() { Info = Messages[HintKind.CanNotPutOnUnidentified], Kind = HintKind.CanNotPutOnUnidentified });
         }
 
+        string BuildDesc(HintKind kind, int keyCode, Func<HintKind, string> codeFormatter = null)
+        {
+          string desc = "";
+          switch (kind)
+          {
+            case HintKind.Unset:
+              break;
+            case HintKind.LootCollectShortcut:
+              desc = "Press '{0}' to collect a single loot.";
+              break;
+            case HintKind.BulkLootCollectShortcut:
+              break;
+            case HintKind.ShowCraftingPanel:
+              break;
+            case HintKind.HeroLevelTooLow:
+              break;
+            case HintKind.CanNotPutOnUnidentified:
+              break;
+            case HintKind.LootHightlightShortcut:
+              break;
+            case HintKind.UseProjectile:
+              break;
+            case HintKind.UseElementalWeaponProjectile:
+              break;
+            case HintKind.SwapActiveWeapon:
+              break;
+            default:
+              break;
+          }
+          if (codeFormatter != null)
+          {
+            string code = codeFormatter(kind);
+            desc = string.Format(desc, code);
+          }
+          else
+            desc = string.Format(desc, (char)keyCode);
+          
+          return desc;
+        }
+
         public List<int> GetKeyCodes()
         {
           return Hints.Select(i => i.KeyCode).ToList();
@@ -62,6 +103,15 @@ namespace Roguelike
           if (hint == null)
             return;
           hint.KeyCode = keyCode;
+          if (!codeFormatters.ContainsKey(kind))
+            codeFormatters[kind] = null;
+          hint.Info = BuildDesc(kind, keyCode, codeFormatters[kind]);
+        }
+
+        Dictionary<HintKind, Func<HintKind, string>> codeFormatters = new Dictionary<HintKind, Func<HintKind, string>>();
+        public void SetKeyCodeProvider(HintKind kind, Func<HintKind, string> codeFormatter)
+        {
+          codeFormatters[kind] = codeFormatter;
         }
 
         public HintItem Get(int keyCode)
@@ -84,7 +134,6 @@ namespace Roguelike
 
           hint.Shown = true;
         }
-
         public void SetShown(HintKind kind)
         {
           var hint = Get(kind);
