@@ -32,24 +32,15 @@ namespace Roguelike
 
         public HintHistory()
         {
-          //TODO 'G' - shall be formatted based on KeyCode
-          //Hints.Add(new HintItem() { Info = "Press 'Left Alt' to see collectable/interactive items.", Kind = HintKind.LootHightlightShortcut });
+          Hints.Add(new HintItem() { Info = "Press 'Left Alt' to see collectable/interactive items.", Kind = HintKind.LootHightlightShortcut });
           Hints.Add(new HintItem() { Info = "Press 'G' to collect a single loot.", Kind = HintKind.LootCollectShortcut });
-          //Hints.Add(new HintItem() { Info = "Press 'J' to collect nearby loot items.", Kind = HintKind.BulkLootCollectShortcut });
-          //Hints.Add(new HintItem() { Info = "Recipe has been collected. Press 'R' to open Crafting Panel and see it's description.", Kind = HintKind.ShowCraftingPanel });
-
-          //Hints.Add(new HintItem() { Info = Messages[HintKind.HeroLevelTooLow], Kind = HintKind.HeroLevelTooLow });
-          //Hints.Add(new HintItem() { Info = Messages[HintKind.CanNotPutOnUnidentified], Kind = HintKind.CanNotPutOnUnidentified });
-          ////Hints.Add(new HintItem() { Info = "TODO", Kind = HintKind.UseProjectile });
-          ////Hints.Add(new HintItem() { Info = "TODO", Kind = HintKind.UseElementalWeaponProjectile });
-
-          //Hints.Add(new HintItem() { Info = "", Kind = HintKind.LootHightlightShortcut });
-          //Hints.Add(new HintItem() { Info = "", Kind = HintKind.LootCollectShortcut });
-          //Hints.Add(new HintItem() { Info = "", Kind = HintKind.BulkLootCollectShortcut });
-          //Hints.Add(new HintItem() { Info = "", Kind = HintKind.ShowCraftingPanel });
-
-          //Hints.Add(new HintItem() { Info = Messages[HintKind.HeroLevelTooLow], Kind = HintKind.HeroLevelTooLow });
-          //Hints.Add(new HintItem() { Info = Messages[HintKind.CanNotPutOnUnidentified], Kind = HintKind.CanNotPutOnUnidentified });
+          Hints.Add(new HintItem() { Info = "Press 'J' to collect nearby loot items.", Kind = HintKind.BulkLootCollectShortcut });
+          Hints.Add(new HintItem() { Info = "Recipe has been collected. Press 'R' to open Crafting Panel and see it's description.", Kind = HintKind.ShowCraftingPanel });
+          Hints.Add(new HintItem() { Info = "Hero level too low to use an item", Kind = HintKind.HeroLevelTooLow });
+          Hints.Add(new HintItem() { Info = "Can not put on unidentified item", Kind = HintKind.CanNotPutOnUnidentified });
+          Hints.Add(new HintItem() { Info = "TODO", Kind = HintKind.UseProjectile });
+          Hints.Add(new HintItem() { Info = "TODO", Kind = HintKind.UseElementalWeaponProjectile });
+          Hints.Add(new HintItem() { Info = "Press 'X' to swap an active weapon/shield set.", Kind = HintKind.SwapActiveWeapon });
         }
 
         string BuildDesc(HintKind kind, int keyCode, Func<HintKind, string> codeFormatter = null)
@@ -63,20 +54,16 @@ namespace Roguelike
               desc = "Press '{0}' to collect a single loot.";
               break;
             case HintKind.BulkLootCollectShortcut:
+              desc = "Press '{0}' to collect nearby loot items.";
               break;
             case HintKind.ShowCraftingPanel:
-              break;
-            case HintKind.HeroLevelTooLow:
-              break;
-            case HintKind.CanNotPutOnUnidentified:
+              desc = "Recipe has been collected. Press '{0}' to open Crafting Panel and see it's description.";
               break;
             case HintKind.LootHightlightShortcut:
-              break;
-            case HintKind.UseProjectile:
-              break;
-            case HintKind.UseElementalWeaponProjectile:
+              desc = "Press '{0}' to see collectable/interactive items.";
               break;
             case HintKind.SwapActiveWeapon:
+              desc = "Press '{0}' to swap an active weapon/shield set.";
               break;
             default:
               break;
@@ -97,14 +84,13 @@ namespace Roguelike
           return Hints.Select(i => i.KeyCode).ToList();
         }
 
-        public void SetKeyCode(HintKind kind, int keyCode)
+        public void SetKeyCode(HintKind kind, int keyCode, Func<HintKind, string> codeFormatter)
         {
           var hint = Get(kind);
           if (hint == null)
             return;
           hint.KeyCode = keyCode;
-          if (!codeFormatters.ContainsKey(kind))
-            codeFormatters[kind] = null;
+          codeFormatters[kind] = codeFormatter;
           hint.Info = BuildDesc(kind, keyCode, codeFormatters[kind]);
         }
 
