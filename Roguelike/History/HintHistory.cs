@@ -32,9 +32,9 @@ namespace Roguelike
         public HintHistory()
         {
           //TODO 'G' - shall be formatted based on KeyCode
-          //Hints.Add(new HintItem() { Info = "Press 'Left Alt' to see collectable/interactive items.", Kind = HintKind.LootHightlightShorcut });
-          Hints.Add(new HintItem() { Info = "Press 'G' to collect a single loot.", Kind = HintKind.LootCollectShorcut });
-          //Hints.Add(new HintItem() { Info = "Press 'J' to collect nearby loot items.", Kind = HintKind.BulkLootCollectShorcut });
+          //Hints.Add(new HintItem() { Info = "Press 'Left Alt' to see collectable/interactive items.", Kind = HintKind.LootHightlightShortcut });
+          Hints.Add(new HintItem() { Info = "Press 'G' to collect a single loot.", Kind = HintKind.LootCollectShortcut });
+          //Hints.Add(new HintItem() { Info = "Press 'J' to collect nearby loot items.", Kind = HintKind.BulkLootCollectShortcut });
           //Hints.Add(new HintItem() { Info = "Recipe has been collected. Press 'R' to open Crafting Panel and see it's description.", Kind = HintKind.ShowCraftingPanel });
 
           //Hints.Add(new HintItem() { Info = Messages[HintKind.HeroLevelTooLow], Kind = HintKind.HeroLevelTooLow });
@@ -42,9 +42,9 @@ namespace Roguelike
           ////Hints.Add(new HintItem() { Info = "TODO", Kind = HintKind.UseProjectile });
           ////Hints.Add(new HintItem() { Info = "TODO", Kind = HintKind.UseElementalWeaponProjectile });
 
-          //Hints.Add(new HintItem() { Info = "", Kind = HintKind.LootHightlightShorcut });
-          //Hints.Add(new HintItem() { Info = "", Kind = HintKind.LootCollectShorcut });
-          //Hints.Add(new HintItem() { Info = "", Kind = HintKind.BulkLootCollectShorcut });
+          //Hints.Add(new HintItem() { Info = "", Kind = HintKind.LootHightlightShortcut });
+          //Hints.Add(new HintItem() { Info = "", Kind = HintKind.LootCollectShortcut });
+          //Hints.Add(new HintItem() { Info = "", Kind = HintKind.BulkLootCollectShortcut });
           //Hints.Add(new HintItem() { Info = "", Kind = HintKind.ShowCraftingPanel });
 
           //Hints.Add(new HintItem() { Info = Messages[HintKind.HeroLevelTooLow], Kind = HintKind.HeroLevelTooLow });

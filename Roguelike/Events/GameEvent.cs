@@ -70,11 +70,11 @@ namespace Roguelike.Events
     public int QuestID { get; set; }
   }
 
-  public enum ShorcutsBarActionKind { ShorcutsBarChanged, ActiveItemDigitChanged }
-  public class ShorcutsBarAction : GameEvent
+  public enum ShortcutsBarActionKind { ShortcutsBarChanged, ActiveItemDigitChanged }
+  public class ShortcutsBarAction : GameEvent
   {
     public int Digit { get; set; } = -1;
-    public ShorcutsBarActionKind Kind { get; set; }
+    public ShortcutsBarActionKind Kind { get; set; }
   }
 
   public enum InventoryActionKind { ItemAdded, ItemRemoved, DragDropDone }
