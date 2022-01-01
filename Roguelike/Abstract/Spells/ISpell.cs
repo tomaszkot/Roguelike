@@ -57,13 +57,13 @@ namespace Roguelike.Abstract.Spells
       if (ManaCost != null)
         AddString("Mana Cost: " + ManaCost, addIndent);
       if (Damage != null)
-        AddString(Kind + " Damage: " + Damage, addIndent);
+        AddString(Kind + "Damage: " + Damage, addIndent);
       if (TourLasting != null)
         AddString("Duration: " + TourLasting);
       if (StatKind != null)
         AddString(StatKind + " " + StatKindPercentage.ToString(), addIndent);
       if(Range > 0)
-        AddString("Range: " + Range);
+        AddString("Range: " + Range, addIndent);
 
       return extraStatDescription.ToArray();
     }
