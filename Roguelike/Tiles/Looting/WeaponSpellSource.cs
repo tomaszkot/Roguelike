@@ -78,7 +78,8 @@ namespace Roguelike.Tiles.Looting
           break;
       }
 
-      spell = base.CreateSpell(caller);
+      if(spell == null)
+        spell = base.CreateSpell(caller);
 
       if (spell is IProjectile proj)
       {

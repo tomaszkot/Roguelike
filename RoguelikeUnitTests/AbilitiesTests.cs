@@ -429,6 +429,7 @@ namespace RoguelikeUnitTests
       foreach (var en in PlainEnemies)
       {
         var spell = weapon.SpellSource.CreateSpell(game.Hero);
+        PlaceCloseToHero(en);
         Assert.True(game.GameManager.SpellManager.ApplyAttackPolicy(game.Hero, en, weapon.SpellSource));
         Assert.True(en.HasLastingEffect(Roguelike.Effects.EffectType.Firing));
         GotoNextHeroTurn();
@@ -489,6 +490,7 @@ namespace RoguelikeUnitTests
       var enHealthBase = en.Stats.Health;
 
       var spell = weapon.SpellSource.CreateSpell(game.Hero);
+      PlaceCloseToHero(en);
       Assert.True(game.GameManager.SpellManager.ApplyAttackPolicy(game.Hero, en, weapon.SpellSource));
       GotoNextHeroTurn();
             

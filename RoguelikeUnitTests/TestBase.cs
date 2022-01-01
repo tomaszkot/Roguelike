@@ -318,6 +318,12 @@ namespace RoguelikeUnitTests
       }
     }
 
+    protected void PlaceCloseToHero(IDestroyable enemy)
+    {
+      var hero = game.Hero;
+      var empty = GameManager.CurrentNode.GetClosestEmpty(hero);
+      GameManager.CurrentNode.SetTile(enemy as Tile, empty.point);
+    }
     protected Tuple<Point, Dungeons.TileNeighborhood> SetCloseToHero(Dungeons.Tiles.Tile tile)
     {
       var level = game.Level;
@@ -355,6 +361,7 @@ namespace RoguelikeUnitTests
 
     protected bool UseFireBallSpellSource(Hero caster, IDestroyable victim, bool useScroll)
     {
+      PlaceCloseToHero(victim as IDestroyable);
       SpellSource src = null;
       if (useScroll)
         src = new Scroll(Roguelike.Spells.SpellKind.FireBall);

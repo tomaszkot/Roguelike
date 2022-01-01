@@ -82,7 +82,7 @@ namespace Roguelike.Tiles.LivingEntities
     public void SetNextExpFromLevel()
     {
       var nle = NextLevelExperience;
-      for (int i = 0; i < Level; i++)
+      for (int i = 1; i < Level; i++)
         nle = CalcNextLevelExperience((float)nle);
 
       SetNextLevelExp(nle);
