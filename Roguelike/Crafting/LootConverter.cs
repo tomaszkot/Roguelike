@@ -12,6 +12,9 @@ using System.Linq;
 
 namespace Roguelike.Crafting
 {
+  /// <summary>
+  /// 
+  /// </summary>
   public class CraftingResult
   {
     public string Message { get; set; }
