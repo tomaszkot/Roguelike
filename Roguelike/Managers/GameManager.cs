@@ -1098,12 +1098,13 @@ namespace Roguelike.Managers
       le.Container = this.Container;
       le.Revealed = true;
 
-      if (ally.TakeLevelFromCaster)// is TrainedHound)//TODO
+      if (ally.TakeLevelFromCaster)
       {
-        var lvl = Hero.Level / 2;
-        if (lvl == 0)
+        float lvl = Hero.Level * 0.8f;
+        if (lvl < 1)
           lvl = 1;
-        ally.SetLevel(lvl, GameState.CoreInfo.Difficulty);
+
+        ally.SetLevel((int)lvl, GameState.CoreInfo.Difficulty);
       }
       AlliesManager.AddEntity(le);
 
