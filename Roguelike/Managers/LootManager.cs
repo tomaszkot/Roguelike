@@ -126,6 +126,8 @@ namespace Roguelike.Managers
           GameManager.AddLootReward(loot, lootSource, true);//add loot at closest empty
           GameManager.AppendAction<InteractiveTileAction>((InteractiveTileAction ac) => { ac.InvolvedTile = db; ac.InteractiveKind = InteractiveActionKind.DeadBodyLooted; });
           db.SetLooted(true);
+          TryAddExtraLoot(lootSource, lootItems, loot, loot is Equipment);
+          TryAddExtraLoot(lootSource, lootItems, loot, loot is Equipment);
         }
       }
       else
@@ -150,12 +152,7 @@ namespace Roguelike.Managers
 
           if (chest.ChestKind == ChestKind.GoldDeluxe || RandHelper.GetRandomDouble() > 0.33f)
           {
-            var lootEx2 = GetExtraLoot(lootSource, true, loot.LootKind);
-            if (lootEx2 != null)
-            {
-              lootItems.Add(lootEx2);
-              GameManager.AddLootReward(lootEx2, lootSource, true);
-            }
+            TryAddExtraLoot(lootSource, lootItems, loot, true);
           }
         }
       }
@@ -163,6 +160,16 @@ namespace Roguelike.Managers
       //lootItems.Where(i => i is Equipment).Cast<Equipment>().ToList();
 
       return lootItems;
+    }
+
+    private void TryAddExtraLoot(ILootSource lootSource, List<Loot> lootItems, Loot loot, bool nonEquipment)
+    {
+      var lootEx2 = GetExtraLoot(lootSource, nonEquipment, loot.LootKind);
+      if (lootEx2 != null)
+      {
+        lootItems.Add(lootEx2);
+        GameManager.AddLootReward(lootEx2, lootSource, true);
+      }
     }
 
     Loot TryAddLootForDeadEnemy(Enemy enemy)

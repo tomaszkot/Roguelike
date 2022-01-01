@@ -474,15 +474,18 @@ namespace Roguelike.Generators
         Debug.Assert(false);
       }
 
-      //if(res is Equipment)
-      //        EnasureLevelIndex(res as Equipment);
       return res;
     }
 
+    List<RecipeKind> alreadyGen = new List<RecipeKind>();
     protected virtual Recipe GetRandRecipe()
     {
       var kind_ = RandHelper.GetRandomEnumValue<RecipeKind>();
+      if (alreadyGen.Contains(kind_))
+        kind_ = RandHelper.GetRandomEnumValue<RecipeKind>();//help luck
       var res = new Recipe(kind_);
+      if(!alreadyGen.Contains(kind_))
+        alreadyGen.Add(kind_);
       return res;
     }
 

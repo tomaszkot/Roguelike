@@ -3,6 +3,7 @@ using Roguelike.Attributes;
 using Roguelike.Spells;
 using Roguelike.Tiles;
 using Roguelike.Tiles.LivingEntities;
+using Roguelike.Tiles.Looting;
 using System.Collections.Generic;
 
 namespace Roguelike.Calculated
@@ -20,12 +21,14 @@ namespace Roguelike.Calculated
     LivingEntity ent = null;
     OffensiveSpell spell;
     bool withVariation;
+    FightItem fightItem;
 
     public AttackDescription(LivingEntity ent,
       bool withVariation = true,
       AttackKind attackKind = AttackKind.Unset,//if uset it will be based on current weapon/active fi
       OffensiveSpell spell = null)
     {
+      fightItem = null;
       Calc(ent, withVariation, ref attackKind, spell);
     }
 
@@ -46,8 +49,13 @@ namespace Roguelike.Calculated
 
         if (attackKind == AttackKind.PhysicalProjectile)
         {
-          if (ent.ActiveFightItem == null)
-            return;
+          fightItem = ent.ActiveFightItem;
+          if (fightItem == null)
+          {
+            fightItem = ent.RecentlyActivatedFightItem;//HACK
+            if (fightItem == null)
+              return;
+          }
         }
         if (attackKind == AttackKind.WeaponElementalProjectile)
         {
@@ -127,8 +135,8 @@ namespace Roguelike.Calculated
       {
         if (wpn.IsBowLike && attackKind == AttackKind.PhysicalProjectile)
         {
-          if (ent.ActiveFightItem.IsBowLikeAmmo)
-            Current += ent.ActiveFightItem.Damage;
+          if (fightItem.IsBowLikeAmmo)
+            Current += fightItem.Damage;
           else
             Current -= wpn.Damage;//ammo not matching
         }
@@ -138,13 +146,13 @@ namespace Roguelike.Calculated
         }
       }
 
-      if (attackKind == AttackKind.PhysicalProjectile && ent.ActiveFightItem != null)
+      if (attackKind == AttackKind.PhysicalProjectile && fightItem != null)
       {
-        if (ent.ActiveFightItem.FightItemKind == Tiles.Looting.FightItemKind.Stone ||
-           ent.ActiveFightItem.FightItemKind == Tiles.Looting.FightItemKind.ThrowingKnife
+        if (fightItem.FightItemKind == Tiles.Looting.FightItemKind.Stone ||
+           fightItem.FightItemKind == Tiles.Looting.FightItemKind.ThrowingKnife
            )
         {
-          Current += ent.ActiveFightItem.Damage;
+          Current += fightItem.Damage;
           Current += ent.Stats.Strength/2;
         }
       }

@@ -81,10 +81,17 @@ namespace Roguelike.Tiles.LivingEntities
       set { activeManaPoweredSpellSource = value; }
     }
 
-    public virtual FightItem ActiveFightItem 
-    { 
-      get;
-      set;
+    //HACK, jest to handle AttackDescription with 0 amount of ammo
+    public FightItem RecentlyActivatedFightItem { get; set; }
+
+    public virtual FightItem ActiveFightItem
+    {
+      get => activeFightItem;
+      set
+      {
+        activeFightItem = value;
+        RecentlyActivatedFightItem = value;
+      }
     }
 
     public Point Position
@@ -99,13 +106,13 @@ namespace Roguelike.Tiles.LivingEntities
     public EntityState State
     {
       get { return state; }
-      set 
+      set
       {
         //Logger.LogInfo(this+" state=>"+state);
         var oldState = state;
         state = value;
         if (oldState != state)
-          AppendAction(new LivingEntityStateChangedEvent(oldState, state, this)) ;
+          AppendAction(new LivingEntityStateChangedEvent(oldState, state, this));
       }
     }
     List<Algorithms.PathFinderNode> pathToTarget;
@@ -165,9 +172,9 @@ namespace Roguelike.Tiles.LivingEntities
         if (nv > 0)
           Stats.SetNominal(basicStat.Key, nv);
       }
-      
+
       Stats.SetNominal(EntityStatKind.MeleeAttack, BaseStrength.Value.Nominal);//attack is same as str for a simple entity
-            
+
       Alive = true;
       Name = "";
       Stats.SetNominal(EntityStatKind.ChanceToMeleeHit, 75);
@@ -211,7 +218,7 @@ namespace Roguelike.Tiles.LivingEntities
       {
         var incToUse = inc;
         if (kv.Value.Kind == EntityStatKind.Strength ||
-            kv.Value.Kind == EntityStatKind.MeleeAttack 
+            kv.Value.Kind == EntityStatKind.MeleeAttack
             //kv.Value.Kind == EntityStatKind.Defense
             )
         {
@@ -392,14 +399,14 @@ namespace Roguelike.Tiles.LivingEntities
           //Logger.LogInfo(this + " CalculateIfStatChanceApplied true");
 
         }
-        
+
       }
       return randVal > 0 && (randVal * 100 <= chance);
     }
 
     virtual protected bool ShouldEvade(LivingEntity target, EntityStatKind esk, Spell spell)
     {
-      if (spell !=null && spell is OffensiveSpell os && os.AlwaysHit)
+      if (spell != null && spell is OffensiveSpell os && os.AlwaysHit)
         return false;
 
       var avoidCh = target.GetCurrentValue(esk);
@@ -410,7 +417,7 @@ namespace Roguelike.Tiles.LivingEntities
       return false;
 
     }
-        
+
     public virtual AttackDescription GetAttackValue(AttackKind attackKind)
     {
       return new AttackDescription(this, true, attackKind);
@@ -431,7 +438,7 @@ namespace Roguelike.Tiles.LivingEntities
         inflicted -= manaReduce;
         damageDesc = null;//TODO
       }
-      
+
       ReduceHealth(inflicted);
       attacker.OnDamageCaused(inflicted, this);
 
@@ -445,7 +452,7 @@ namespace Roguelike.Tiles.LivingEntities
       var frighten = this.GetFirstLastingEffect(EffectType.Frighten);
       if (frighten != null)
         RemoveLastingEffect(frighten);
-            
+
       if (attacker.IsTransformed())
       {
         var transf = attacker.GetFirstLastingEffect(EffectType.Transform);
@@ -460,7 +467,7 @@ namespace Roguelike.Tiles.LivingEntities
         State = EntityState.Idle;
     }
 
-    protected virtual void OnDamageCaused(float inflicted, LivingEntity victim){}
+    protected virtual void OnDamageCaused(float inflicted, LivingEntity victim) { }
 
     List<EffectType> everCausedEffect = new List<EffectType>();
     internal bool EverCausedEffect(EffectType type)
@@ -559,7 +566,7 @@ namespace Roguelike.Tiles.LivingEntities
         var npd = AppendNonPhysicalDamage(stat.Key, stat.Value, ref inflicted, ref desc);
 
         var manaShieldEffect = LastingEffectsSet.GetByType(EffectType.ManaShield);//TODO ?
-        if(manaShieldEffect==null)
+        if (manaShieldEffect == null)
           LastingEffectsSet.TryAddLastingEffectOnHit(npd, attacker, stat.Key);
       }
 
@@ -577,7 +584,7 @@ namespace Roguelike.Tiles.LivingEntities
         if (IsWounded)
         {
           if (attacker.CanCauseBleeding())
-            StartBleeding(inflicted/3, attacker, -1);
+            StartBleeding(inflicted / 3, attacker, -1);
         }
         attacker.EnsurePhysicalHitEffect(inflicted, this);
       }
@@ -666,7 +673,7 @@ namespace Roguelike.Tiles.LivingEntities
         Assert(false, "OnHitBy - not supported" + projectile);
       }
 
-      return HitResult.Unset; 
+      return HitResult.Unset;
     }
 
     protected virtual float GetDamageAddition(ProjectileFightItem pfi)
@@ -685,7 +692,7 @@ namespace Roguelike.Tiles.LivingEntities
         return;
 
       //if (attacker is Hero && this is Enemy && (this as Enemy).HeroAlly)
-        //  amount /= 10;
+      //  amount /= 10;
       var sound = "";
       var srcName = "";
       if (spell != null)
@@ -693,7 +700,7 @@ namespace Roguelike.Tiles.LivingEntities
         srcName = " from " + spell.Kind.ToDescription();
         if (spell.Kind == SpellKind.StonedBall)
           amount /= Stats.Defense;
-                
+
         sound = spell.GetHitSound();
 
         lastHitBySpell = true;
@@ -708,7 +715,7 @@ namespace Roguelike.Tiles.LivingEntities
       ReduceHealth(attacker, sound, damageDesc, srcName, ref amount);
 
       LastingEffectsSet.TryAddLastingEffectOnHit(amount, attacker, spell);
-     
+
     }
 
     protected virtual LastingEffect EnsurePhysicalHitEffect(float inflicted, LivingEntity victim)
@@ -839,7 +846,7 @@ namespace Roguelike.Tiles.LivingEntities
           {
             var trap = LastingEffectsSet.LastingEffects
               .Where(i => i.Source is ProjectileFightItem pfi && pfi.FightItemKind == FightItemKind.HunterTrap)
-              .Select(i=>i.Source)
+              .Select(i => i.Source)
               .Cast<ProjectileFightItem>()
               .SingleOrDefault();
             if (trap != null)
@@ -1048,6 +1055,8 @@ namespace Roguelike.Tiles.LivingEntities
     public virtual void PlayAllySpawnedSound() { }
 
     Difficulty difficulty;
+    private FightItem activeFightItem;
+
     public virtual bool SetLevel(int level, Difficulty? diff = null)
     {
       difficulty = Difficulty.Normal;
@@ -1068,8 +1077,8 @@ namespace Roguelike.Tiles.LivingEntities
         inc = 1.1f;
       else if (diff == Difficulty.Hard)
         inc = 1.25f;
-      
-      if(inc > 1)
+
+      if (inc > 1)
         IncreaseStats(inc, IncreaseStatsKind.Difficulty);
 
       if (level > 1)
@@ -1115,11 +1124,11 @@ namespace Roguelike.Tiles.LivingEntities
 
     public bool IsSleeping
     {
-      get{ return state == EntityState.Sleeping; }
+      get { return state == EntityState.Sleeping; }
     }
 
     public virtual void RemoveFightItem(FightItem fi)
-    { 
+    {
 
     }
 

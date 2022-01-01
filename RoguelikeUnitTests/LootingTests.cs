@@ -20,6 +20,19 @@ namespace RoguelikeUnitTests
   class LootingTests : TestBaseTyped<LootingTestsHelper>
   {
     [Test]
+    public void TestRecipiesRandomize()
+    {
+      var env = CreateTestEnv();
+      var list = new List<Recipe>();
+      for(int i=0;i<10;i++)
+        list.Add(env.LootGenerator.GetRandomLoot(LootKind.Recipe, 1) as Recipe);
+
+      var gr = list.GroupBy(i => i.Kind).Count();
+      Assert.GreaterOrEqual(gr, 8);
+
+    }
+
+    [Test]
     public void Names()
     {
       //var env = CreateTestEnv();
