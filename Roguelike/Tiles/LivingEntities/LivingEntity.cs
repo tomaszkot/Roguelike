@@ -1156,5 +1156,10 @@ namespace Roguelike.Tiles.LivingEntities
       var statValue = GetCurrentValue(kind);
       return statValue / 100f > RandHelper.GetRandomDouble();
     }
+
+    public float CalcNextLevelExperience(float currentNextLevelExperience)
+    {
+       return Calculated.FactorCalculator.AddFactor((int)currentNextLevelExperience, 110);
+    }
   }
 }

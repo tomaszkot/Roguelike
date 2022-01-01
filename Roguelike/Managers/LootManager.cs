@@ -136,24 +136,20 @@ namespace Roguelike.Managers
           return lootItems;
         GameManager.AppendAction<InteractiveTileAction>((InteractiveTileAction ac) => { ac.InvolvedTile = chest; ac.InteractiveKind = InteractiveActionKind.ChestOpened; });
         GameManager.AddLootReward(loot, lootSource, true);//add loot at closest empty
-        //if (chest.ChestKind == ChestKind.GoldDeluxe ||
-        //  chest.ChestKind == ChestKind.Gold)
+        Loot lootEx1 = null;
+        if(RandHelper.GetRandomDouble() > .2f)
+          lootEx1 = LootGenerator.GetRandomEquipment(GameManager.Hero.Level, GameManager.Hero.GetLootAbility());
+        else
+          lootEx1 = GetExtraLoot(lootSource, false, loot.LootKind);
+        if (lootEx1 != null)
         {
-          Loot lootEx1 = null;
-          if(RandHelper.GetRandomDouble() > .33f)
-            lootEx1 = LootGenerator.GetRandomEquipment(GameManager.Hero.Level, GameManager.Hero.GetLootAbility());
-          else
-            lootEx1 = GetExtraLoot(lootSource, false, loot.LootKind);
-          if (lootEx1 != null)
-          {
-            lootItems.Add(lootEx1);
-            GameManager.AddLootReward(lootEx1, lootSource, true);
-          }
+          lootItems.Add(lootEx1);
+          GameManager.AddLootReward(lootEx1, lootSource, true);
+        }
 
-          if (chest.ChestKind == ChestKind.GoldDeluxe || RandHelper.GetRandomDouble() > 0.33f)
-          {
-            TryAddExtraLoot(lootSource, lootItems, loot, true);
-          }
+        if (chest.ChestKind == ChestKind.GoldDeluxe || RandHelper.GetRandomDouble() > 0.33f)
+        {
+          TryAddExtraLoot(lootSource, lootItems, loot, true);
         }
       }
 

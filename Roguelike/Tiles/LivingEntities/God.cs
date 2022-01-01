@@ -36,7 +36,12 @@ namespace Roguelike.Tiles.LivingEntities
 
       //SetMagicValue();
     }
-        
+
+    public void SetNextLevelExp(int v)
+    {
+      NextLevelExperience = v;
+    }
+
     //public virtual int GetMagicFactor()
     //{
     //  return 1;
@@ -183,7 +188,7 @@ namespace Roguelike.Tiles.LivingEntities
     //    fromHero = value;
     //  }
     //}
-        
+
     //public bool HasAcceptedGift(string giftName)
     //{
     //  return AcceptedLoot.Contains(giftName);

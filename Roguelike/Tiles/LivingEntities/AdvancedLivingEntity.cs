@@ -239,11 +239,11 @@ namespace Roguelike.Tiles.LivingEntities
       if (thresholdReached && canAdvanceInExp)
       {
         PrevLevelExperience = NextLevelExperience;
+        NextLevelExperience = Calculated.FactorCalculator.AddFactor((int)NextLevelExperience, 110);
         Level++;
         LevelUpPoints += GenerationInfo.LevelUpPoints;
         AbilityPoints += 2;
-        NextLevelExperience = Calculated.FactorCalculator.AddFactor((int)NextLevelExperience, 110);
-        //NextLevelExperience = (int)(NextLevelExperience + (NextLevelExperience * GenerationInfo.NextExperienceIncrease));
+        
         //if (Level == 2 || Level == 3)
         //  NextLevelExperience *= 1.5f;
 

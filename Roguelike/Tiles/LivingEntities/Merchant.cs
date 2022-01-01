@@ -65,5 +65,10 @@ namespace Roguelike.Tiles.LivingEntities
       Inventory.Container = container;
       Inventory.Owner = this;
     }
+
+    public void SetNextLevelExp(int v)
+    {
+      NextLevelExperience = v;
+    }
   }
 }

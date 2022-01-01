@@ -79,6 +79,14 @@ namespace Roguelike.Tiles.LivingEntities
 
       return ally;
     }
+    public void SetNextExpFromLevel()
+    {
+      var nle = NextLevelExperience;
+      for (int i = 0; i < Level; i++)
+        nle = CalcNextLevelExperience((float)nle);
+
+      NextLevelExperience = nle;
+    }
 
     public void InitSpawned(char symbol, int level, Difficulty? diff = null) //where T : Ally, new()
     {
@@ -100,6 +108,11 @@ namespace Roguelike.Tiles.LivingEntities
     public override bool GetGoldWhenSellingTo(IInventoryOwner dest)
     {
       return false;
+    }
+
+    public void SetNextLevelExp(int nextLevelExp)
+    {
+      NextLevelExperience = nextLevelExp;
     }
   }
 

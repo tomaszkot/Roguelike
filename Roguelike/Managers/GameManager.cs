@@ -1116,6 +1116,8 @@ namespace Roguelike.Managers
       {
         var empty = CurrentNode.GetClosestEmpty(Hero, true, false);
         ReplaceTile<LivingEntity>(le, empty);
+        if (ally is Ally ally_)
+          ally_.SetNextExpFromLevel();
         le.PlayAllySpawnedSound();
 
         AppendAction(new AllyAction() { Info = le.Name + " has been added", InvolvedTile = ally, AllyActionKind = AllyActionKind.Created });

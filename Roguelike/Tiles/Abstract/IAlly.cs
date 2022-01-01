@@ -15,5 +15,7 @@ namespace Roguelike.Abstract.Tiles
     string Name { get; }
 
     event EventHandler LeveledUp;
+
+    void SetNextLevelExp(int v);
   }
 }
