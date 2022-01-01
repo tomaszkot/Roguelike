@@ -124,8 +124,7 @@ namespace Roguelike.Managers
         if (!db.IsLooted)
         {
           GameManager.AddLootReward(loot, lootSource, true);//add loot at closest empty
-          GameManager.AppendAction<InteractiveTileAction>((InteractiveTileAction ac) => { ac.InvolvedTile = db; 
-            ac.InteractiveKind = InteractiveActionKind.DeadBodyLooted; });
+          GameManager.AppendAction<InteractiveTileAction>((InteractiveTileAction ac) => { ac.InvolvedTile = db; ac.InteractiveKind = InteractiveActionKind.DeadBodyLooted; });
           db.SetLooted(true);
         }
       }

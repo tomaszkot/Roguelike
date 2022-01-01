@@ -458,6 +458,10 @@ namespace Roguelike.Managers
       //{
       //  EnsureMaterialFromLootSource(eq);
       //}
+      if (loot == null && ls is DeadBody)
+      {
+        loot = LootGenerator.GetRandomLoot(ls.Level);
+      }
       return loot;
     }
 
