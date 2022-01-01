@@ -170,7 +170,7 @@ namespace Dungeons
           logger = Container.GetInstance<ILogger>();
       }
 
-      void Log(string info, bool error)
+      protected void Log(string info, bool error)
       {
         EnsureLogger();
         if (logger != null)
@@ -1039,7 +1039,20 @@ namespace Dungeons
           }
         }
 
+        var neibs = GetNeighborTiles(baseTile, incDiagonals);
+        foreach (var neib in neibs)
+        {
+          var tile = GetClosestEmpty(neib, sameNodeId, skip, incDiagonals);
+          if (tile != null)
+            return tile;
+        }
+
         Log("GetClosestEmpty - failed to find empty fast way!", true);
+        return GetClosestEmptyLastChance(baseTile, sameNodeId, skip);
+      }
+
+      protected virtual Tile GetClosestEmptyLastChance(Tile baseTile, bool sameNodeId, List<Tile> skip)
+      {
         var emptyTiles = GetEmptyTiles();
         if (skip != null)
           emptyTiles.RemoveAll(i => skip.Contains(i));
