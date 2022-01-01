@@ -1320,7 +1320,7 @@ namespace Roguelike.Managers
       }
 
       var target = pointedTile;/// CurrentGameGrid.GetTileAt(pointedTile);
-      var inReach = hero.IsTileInProjectileFightItemReach(fi, target);
+      var inReach = hero.IsInProjectileReach(fi, target.point);
       if (!inReach)
       {
         this.SoundManager.PlayBeepSound();

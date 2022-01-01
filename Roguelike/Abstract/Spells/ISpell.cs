@@ -29,14 +29,15 @@ namespace Roguelike.Abstract.Spells
     private float? damage;
 
     SpellKind Kind { get; set; }
+    public int Range { get; set; }
 
-
-    public SpellStatsDescription(int level, int? manaCost, int magicRequired, SpellKind kind)
+    public SpellStatsDescription(int level, int? manaCost, int magicRequired, SpellKind kind, int range)
     {
       Level = level;
       ManaCost = manaCost;
       MagicRequired = magicRequired;
       Kind = kind;
+      Range = range;
     }
 
     public void AddString(string str, bool addIndent = true)
@@ -61,6 +62,9 @@ namespace Roguelike.Abstract.Spells
         AddString("Duration: " + TourLasting);
       if (StatKind != null)
         AddString(StatKind + " " + StatKindPercentage.ToString(), addIndent);
+      if(Range > 0)
+        AddString("Range: " + Range);
+
       return extraStatDescription.ToArray();
     }
 

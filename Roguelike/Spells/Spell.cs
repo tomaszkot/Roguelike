@@ -47,9 +47,6 @@ namespace Roguelike.Spells
       }
     }
 
-    //public Spell() : this(LivingEntity.CreateDummy())
-    //{
-    //}
     protected Weapon weaponSpellSource;
 
     public Spell(LivingEntity caller, Weapon weaponSpellSource)
@@ -123,9 +120,12 @@ namespace Roguelike.Spells
     {
       int level = currentMagicLevel ? CurrentLevel : CurrentLevel + 1;
       int? mana = null;
+      int range = 0;
+      if (this is IProjectileSpell proj)
+        range = proj.Range;
       if (weaponSpellSource == null)
         mana = CalcManaCost(level);
-      var desc = new SpellStatsDescription(level, mana, NextLevelMagicNeeded, Kind);
+      var desc = new SpellStatsDescription(level, mana, NextLevelMagicNeeded, Kind, range);
       return desc;
     }
   }

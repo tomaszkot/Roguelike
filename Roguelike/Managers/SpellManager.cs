@@ -121,6 +121,16 @@ namespace Roguelike.Managers
         applyingBulk = false;
       var spell = spellSource.CreateSpell(caster) as IProjectileSpell;
 
+      if (spell != null)
+      {
+        if (!caster.IsInProjectileReach(spell, target.Position))
+        {
+          this.gm.SoundManager.PlayBeepSound();
+          this.gm.AppendAction(new GameEvent() { Info = "Target out of range" });
+          return false;
+        }
+      }
+      
       if (!looped && !gm.UtylizeSpellSource(caster, spellSource, spell))
         return false;
 

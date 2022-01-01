@@ -13,5 +13,7 @@ namespace Dungeons.Tiles.Abstract
     Dungeons.Tiles.Tile Target { get; set; }
 
     string HitSound { get; }
+
+    int Range { get; set; }
   }
 }

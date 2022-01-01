@@ -85,7 +85,7 @@ namespace Roguelike.Tiles.LivingEntities
       for (int i = 0; i < Level; i++)
         nle = CalcNextLevelExperience((float)nle);
 
-      NextLevelExperience = nle;
+      SetNextLevelExp(nle);
     }
 
     public void InitSpawned(char symbol, int level, Difficulty? diff = null) //where T : Ally, new()
@@ -110,9 +110,9 @@ namespace Roguelike.Tiles.LivingEntities
       return false;
     }
 
-    public void SetNextLevelExp(int nextLevelExp)
+    public void SetNextLevelExp(double exp)
     {
-      NextLevelExperience = nextLevelExp;
+      NextLevelExperience = exp;
     }
   }
 

@@ -8,74 +8,6 @@ using System.Diagnostics;
 
 namespace Roguelike.Tiles.Looting
 {
-  public class WeaponSpellSource : SpellSource
-  {
-    public Weapon Weapon { get; set; }
-
-    public int Level 
-    { 
-      get 
-      { 
-        return this.Weapon.LevelIndex; 
-      } 
-    }
-    int initChargesCount = 0;
-    public int RestoresCount { get; set; }
-
-    public WeaponSpellSource(Weapon weapon, SpellKind kind, int chargesCount = 15) : base(kind)
-    {
-      this.Weapon = weapon;
-      InitChargesCount = chargesCount;
-    }
-
-    public void Restore()
-    {
-      RestoresCount++;
-      RestoredChargesCount = initChargesCount - 2 * RestoresCount;
-      Count = RestoredChargesCount;
-    }
-
-    public int InitChargesCount 
-    { 
-      get => initChargesCount; 
-      set
-      {
-        initChargesCount = value;
-        Count = value;
-        RestoredChargesCount = Count;
-      }
-    }
-    public int RestoredChargesCount { get; set; }
-
-    public override string GetExtraStatDescriptionFormatted(LivingEntity caller)
-    {
-      var statDescCurrent = GetExtraStatDescription(caller, true);
-      if (statDescCurrent == null)
-        return "";
-      var res = "Level: " + statDescCurrent.Level + "\r\n";
-      var str = string.Join("\r\n", statDescCurrent.GetDescription(false));
-      res += str;
-
-      return res;
-    }
-
-    public override ISpell CreateSpell(LivingEntity caller)
-    {
-      var weapon = Weapon;
-      switch (this.Kind)
-      {
-        case SpellKind.FireBall:
-          return new FireBallSpell(caller, weapon);
-        case SpellKind.PoisonBall:
-          return new PoisonBallSpell(caller, weapon);
-        case SpellKind.IceBall:
-          return new IceBallSpell(caller, weapon);
-      }
-      return base.CreateSpell(caller);
-    }
-
-  }
-
   public class SpellSource : StackedLoot
   {
     public virtual bool Enabled 
@@ -240,7 +172,8 @@ namespace Roguelike.Tiles.Looting
 
     public T CreateSpell<T>(LivingEntity caller) where T : class, ISpell
     {
-      var ispell = CreateSpell( caller);
+      var ispell = CreateSpell(caller);
+     
       return ispell as T;
     }
 
@@ -257,39 +190,55 @@ namespace Roguelike.Tiles.Looting
 
     public virtual ISpell CreateSpell(LivingEntity caller)
     {
+      ISpell spell = null;
       switch (this.Kind)
       {
         case SpellKind.FireBall:
-          return new FireBallSpell(caller);
+          spell = new FireBallSpell(caller);
+          break;
         case SpellKind.PoisonBall:
-          return new PoisonBallSpell(caller);
+          spell = new PoisonBallSpell(caller);
+          break;
         case SpellKind.IceBall:
-          return new IceBallSpell(caller);
+          spell = new IceBallSpell(caller);
+          break;
         case SpellKind.Skeleton:
-          return new SkeletonSpell(caller, Roguelike.Generators.GenerationInfo.Difficulty);
+          spell = new SkeletonSpell(caller, Roguelike.Generators.GenerationInfo.Difficulty);
+          break;
         case SpellKind.Transform:
-          return new TransformSpell(caller);
+          spell = new TransformSpell(caller);
+          break;
         case SpellKind.ManaShield:
-          return new ManaShieldSpell(caller);
+          spell = new ManaShieldSpell(caller);
+          break;
         case SpellKind.Rage:
-          return new RageSpell(caller);
+          spell = new RageSpell(caller);
+          break;
         case SpellKind.Weaken:
-          return new WeakenSpell(caller);
+          spell = new WeakenSpell(caller);
+          break;
         case SpellKind.Inaccuracy:
-          return new InaccuracySpell(caller);
+          spell = new InaccuracySpell(caller);
+          break;
         case SpellKind.IronSkin:
-          return new IronSkinSpell(caller);
+          spell = new IronSkinSpell(caller);
+          break;
         case SpellKind.Teleport:
-          return new TeleportSpell(caller);
+          spell = new TeleportSpell(caller);
+          break;
         case SpellKind.Portal:
-          return new Portal(caller);
+          spell = new Portal(caller);
+          break;
         case SpellKind.ResistAll:
-          return new ResistAllSpell(caller);
+          spell = new ResistAllSpell(caller);
+          break;
         default:
           break;
           throw new Exception("CreateSpell ???" + Kind);
       }
-      return null;
+      if (spell is IProjectileSpell proj)
+        proj.Range += spell.CurrentLevel - 1;
+      return spell;
     }
 
     public override string[] GetExtraStatDescription()

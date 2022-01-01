@@ -16,6 +16,6 @@ namespace Roguelike.Abstract.Tiles
 
     event EventHandler LeveledUp;
 
-    void SetNextLevelExp(int v);
+    void SetNextLevelExp(double exp);
   }
 }

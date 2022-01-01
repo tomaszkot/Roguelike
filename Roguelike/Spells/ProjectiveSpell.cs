@@ -12,7 +12,8 @@ namespace Roguelike.Spells
 {
   public class ProjectiveSpell : OffensiveSpell, IProjectileSpell
   {
-    
+    public const int DefaultMaxRange = 5;
+
     public bool SourceOfDamage = true;
 
     [JsonIgnore]
@@ -32,5 +33,7 @@ namespace Roguelike.Spells
     {
       get { return GetHitSound(); }
     }
+
+    public int Range { get; set; } = DefaultMaxRange;
   }
 }

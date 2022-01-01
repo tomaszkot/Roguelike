@@ -125,6 +125,7 @@ namespace Roguelike
             
       private bool UseMagicAttack(LivingEntity attacker, LivingEntity target)
       {
+        //if (attacker.IsInProjectileReach(pfi, target.Position))
         if (attacker.DistanceFrom(target) < attacker.MaxMagicAttackDistance)
         {
           var useMagic = IsClearPath(attacker, target);
@@ -255,7 +256,7 @@ namespace Roguelike
         if (fi != null)
         {
           var pfi = fi as ProjectileFightItem;
-          if (attacker.IsTileInProjectileFightItemReach(pfi, target))
+          if (attacker.IsInProjectileReach(pfi, target.Position))
           {
             var useProjectile = IsClearPath(attacker, target);
             if (useProjectile)

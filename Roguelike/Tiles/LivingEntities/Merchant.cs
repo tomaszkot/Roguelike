@@ -66,9 +66,9 @@ namespace Roguelike.Tiles.LivingEntities
       Inventory.Owner = this;
     }
 
-    public void SetNextLevelExp(int v)
+    public void SetNextLevelExp(double exp)
     {
-      NextLevelExperience = v;
+      NextLevelExperience = exp;
     }
   }
 }

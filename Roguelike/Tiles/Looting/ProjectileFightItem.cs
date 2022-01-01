@@ -64,7 +64,7 @@ namespace Roguelike.Tiles.Looting
       }
     }
 
-    public int Range { get; internal set; } = DefaultMaxRange;
+    public int Range { get; set; } = DefaultMaxRange;
 
     public string HitSound => HitTargetSound;
   }

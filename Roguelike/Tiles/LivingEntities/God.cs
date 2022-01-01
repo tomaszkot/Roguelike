@@ -37,9 +37,9 @@ namespace Roguelike.Tiles.LivingEntities
       //SetMagicValue();
     }
 
-    public void SetNextLevelExp(int v)
+    public void SetNextLevelExp(double exp)
     {
-      NextLevelExperience = v;
+      NextLevelExperience = exp;
     }
 
     //public virtual int GetMagicFactor()

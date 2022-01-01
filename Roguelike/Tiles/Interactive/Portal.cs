@@ -52,7 +52,7 @@ namespace Roguelike.Tiles.Interactive
 
     public SpellStatsDescription CreateSpellStatsDescription(bool currentLevel, bool withVariation) 
     { 
-      return new SpellStatsDescription(1, ManaCost, 10, ((ISpell)this).Kind); 
+      return new SpellStatsDescription(1, ManaCost, 10, ((ISpell)this).Kind, 0); 
     }
   }
 }

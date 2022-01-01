@@ -791,6 +791,8 @@ namespace Roguelike.Tiles.LivingEntities
     }
 
     public LastingEffectsSet LastingEffectsSet { get => lastingEffectsSet; }
+
+    //TODO use IsInProjectileReach
     public float MaxMagicAttackDistance { get; internal set; } = GenerationInfo.MaxMagicAttackDistance;
 
     public virtual void RemoveLastingEffect(LastingEffect le)
@@ -1132,9 +1134,9 @@ namespace Roguelike.Tiles.LivingEntities
 
     }
 
-    public bool IsTileInProjectileFightItemReach(ProjectileFightItem fi, Tile tile)
+    public bool IsInProjectileReach(Roguelike.Abstract.Projectiles.IProjectile fi, Point target)
     {
-      return DistanceFrom(tile) < fi.Range;
+      return DistanceFrom(target) < fi.Range;
     }
 
     //static EffectType[] BlockingLEs = new[] { EffectType.Stunned, Effects.EffectType.Bleeding };
