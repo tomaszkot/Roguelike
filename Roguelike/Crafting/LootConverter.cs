@@ -197,12 +197,12 @@ namespace Roguelike.Crafting
           return HandleAllGems(lootToConvert);
         }
 
-        var allHp = lootToConvert.Where(i => i.IsPotion(PotionKind.Health));
-        var allMp = lootToConvert.Where(i => i.IsPotion(PotionKind.Mana));
+        var hpCount = lootToConvert.Where(i => i.IsPotion(PotionKind.Health)).Count();
+        var mpCount = lootToConvert.Where(i => i.IsPotion(PotionKind.Mana)).Count();
         var toadstools = lootToConvert.Where(i => i.IsToadstool()).ToList();
         var toadstoolsCount = GetStackedCount<StackedLoot>(toadstools);
         if ((recipe.Kind == RecipeKind.Custom || recipe.Kind == RecipeKind.TransformPotion) && 
-            (lootToConvert.Count == 3 && toadstoolsCount == 1 && (allHp.Count() == 1 || allMp.Count() == 1)))
+            (lootToConvert.Count == 2 && toadstoolsCount == 1 && (hpCount == 1 || mpCount == 1)))
         {
           //if ((lootToConvert[0] as Potion).Count == 1)//TODO allow many conv (use many M Dust)
           var potion = lootToConvert.Where(i => i.IsPotion()).Single();
