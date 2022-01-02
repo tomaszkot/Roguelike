@@ -12,7 +12,25 @@ namespace RoguelikeUnitTests
     {
       return game.Hero.GetFormattedStatValue(Roguelike.Attributes.EntityStatKind.Health, false);
     }
-        
+
+    [Test]
+    public void TestExpSaveLoad()
+    {
+      var tt = new TimeTracker();
+      var game = CreateGame();
+
+      var enemy = game.GameManager.EnemiesManager.AllEntities.First();
+      for (int i = 0; i < 10; i++)
+      {
+        game.Hero.IncreaseExp(i);
+      }
+      var exp = game.Hero.Experience;
+      Assert.Greater(exp, 0);
+      game.GameManager.Save();
+      game.GameManager.Load(game.Hero.Name);
+      Assert.AreEqual(game.Hero.Experience, exp);
+    }
+
     [Test]
     public void TestLevelUp()
     {

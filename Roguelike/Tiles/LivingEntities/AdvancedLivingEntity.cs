@@ -75,7 +75,7 @@ namespace Roguelike.Tiles.LivingEntities
     public event EventHandler<EntityStatKind> StatLeveledUp;
     public event EventHandler<int> GoldChanged;
 
-    public double Experience { get; private set; }
+    public double Experience { get;  set; }
     public double NextLevelExperience { get; set; }
 
     int gold;
