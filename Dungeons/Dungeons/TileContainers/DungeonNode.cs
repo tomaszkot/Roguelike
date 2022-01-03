@@ -1042,6 +1042,8 @@ namespace Dungeons
         var neibs = GetNeighborTiles(baseTile, incDiagonals);
         foreach (var neib in neibs)
         {
+          if (neib == null)
+            continue;
           var tile = GetClosestEmpty(neib, sameNodeId, skip, incDiagonals);
           if (tile != null)
             return tile;
