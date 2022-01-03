@@ -59,9 +59,9 @@ namespace Roguelike.Tiles.LivingEntities
       if (string.IsNullOrEmpty(Name) && symbol != EnemySymbols.CommonEnemySymbol)
         Name = NameFromSymbol(symbol);
 
-      fightItems[FightItemKind.Stone] = new ProjectileFightItem(FightItemKind.Stone, this) { Count = RandHelper.GetRandomInt(3)+1 };
-      fightItems[FightItemKind.ThrowingKnife] = new ProjectileFightItem(FightItemKind.ThrowingKnife, this) { Count = RandHelper.GetRandomInt(3)+1 };
-      fightItems[FightItemKind.ExplosiveCocktail] = new ProjectileFightItem(FightItemKind.ExplosiveCocktail, this) { Count = RandHelper.GetRandomInt(3) + 1 };
+      AddFightItem(FightItemKind.Stone);
+      AddFightItem(FightItemKind.ThrowingKnife);
+      AddFightItem(FightItemKind.ExplosiveCocktail);
       //fightItems[FightItemKind.HunterTrap] = new ProjectileFightItem(FightItemKind.HunterTrap, this) { Count = RandHelper.GetRandomInt(3) + 1 };
 
       fightItemKind = RandHelper.GetRandomEnumValue<FightItemKind>((new[] { FightItemKind.Unset, FightItemKind.HunterTrap }));
@@ -78,6 +78,10 @@ namespace Roguelike.Tiles.LivingEntities
     //{
     //  fightItems[kind].Count--;
     //}
+    public void AddFightItem(FightItemKind kind)
+    {
+      fightItems[kind] = new ProjectileFightItem(kind, this) { Count = RandHelper.GetRandomInt(3) + 1 };
+    }
 
     public override void RemoveFightItem(FightItem fi)
     {
@@ -188,6 +192,19 @@ namespace Roguelike.Tiles.LivingEntities
     {
       var set = base.SetLevel(level, diff);
       LevelSet = set;
+      if (set)
+      {
+        foreach (var fi in this.fightItems)
+        {
+          if (fi.Value is ProjectileFightItem pfi)
+          {
+            int inc = 80;
+            if (pfi.FightItemKind == FightItemKind.ExplosiveCocktail)
+              inc = 60;
+            pfi.baseDamage = Roguelike.Calculated.FactorCalculator.AddFactor(pfi.baseDamage, inc);
+          }
+        }
+      }
       return set;
     }
 

@@ -137,5 +137,34 @@ namespace RoguelikeUnitTests
       
       return game.GameManager.TryApplyAttackPolicy(fi, enemy);
     }
+
+    [Test]
+    public void TestExplosiveOnHero()
+    {
+      var game = CreateGame();
+      var en = PlainEnemies.First();
+      en.AddFightItem(FightItemKind.ExplosiveCocktail);
+      en.AddFightItem(FightItemKind.ExplosiveCocktail);
+      var hero = game.GameManager.Hero;
+      var beginHealth = hero.Stats.Health;
+
+      var explosiveCocktail = en.GetFightItem(FightItemKind.ExplosiveCocktail) as ProjectileFightItem;
+      var dam = explosiveCocktail.Damage;
+      PlaceCloseToHero(en);
+      Assert.True(game.GameManager.ApplyAttackPolicy(en, hero, explosiveCocktail, null, (p) => { }));
+      var lifeDiff = beginHealth - hero.Stats.Health;
+      
+      Assert.Greater(lifeDiff, 0);
+      while (hero.LastingEffects.Any())
+        GotoNextHeroTurn();
+
+      beginHealth = hero.Stats.Health;
+      Assert.True(en.SetLevel(5));
+      explosiveCocktail = en.GetFightItem(FightItemKind.ExplosiveCocktail) as ProjectileFightItem;
+      //Assert.Greater(explosiveCocktail.Damage, dam);
+      Assert.True(game.GameManager.ApplyAttackPolicy(en, hero, explosiveCocktail, null, (p) => { }));
+      var lifeDiff1 = beginHealth - hero.Stats.Health;
+      Assert.Greater(lifeDiff1, lifeDiff);
+    }
   }
 }

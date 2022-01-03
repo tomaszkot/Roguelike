@@ -158,6 +158,8 @@ namespace RoguelikeUnitTests
       return res;
     }
 
+    
+
     [Test]
     public void TestExplosiveMasteringBurning()
     {

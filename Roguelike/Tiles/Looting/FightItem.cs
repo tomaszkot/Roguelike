@@ -203,7 +203,7 @@ namespace Roguelike.Tiles.Looting
 
     public ActiveAbility GetAbility()
     {
-      var hero = Caller as Hero;
+      var hero = Caller as AdvancedLivingEntity;
       if(hero != null)
         return hero.GetActiveAbility(AbilityKind);
       return null;

@@ -93,6 +93,16 @@ namespace Roguelike.Tiles
       get { return price; }
       set
       {
+        if (value < price)
+        {
+          var uw = this is Equipment eq && eq.Class == EquipmentClass.Unique;
+          var hw = this is Equipment eq1 && eq1.Name.ToLower().Contains("hound");
+          if (!uw && !hw)
+          {
+            int k1 = 0;
+            k1++;
+          }
+        }
         price = value;
         if (basePrice == -1)
           basePrice = price;
@@ -100,6 +110,11 @@ namespace Roguelike.Tiles
         //{
         //  int k = 0;
         //}
+        if (price == 30 && this is Weapon eq2 && eq2.IsMagician && eq2.LevelIndex > 1)
+        {
+          int k1 = 0;
+          k1++;
+        }
       }
     }
 
