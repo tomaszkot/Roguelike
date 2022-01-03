@@ -923,6 +923,8 @@ namespace Roguelike.Managers
 
     private void GenerateMerchantEq(Merchant merch, bool magic)
     {
+      var args = new AddItemArg();
+      args.notifyObservers = false;//prevent 100 sounds
       var eqKinds = LootGenerator.GetEqKinds();
       eqKinds.Shuffle();
       int levelIndex = Hero.Level;
@@ -950,8 +952,8 @@ namespace Roguelike.Managers
               eq.MakeMagic();
             else
               eq.MakeEnchantable();
-
-            merch.Inventory.Add(eq);
+                        
+            merch.Inventory.Add(eq, args);
             var wpn = eq as Weapon;
             if (wpn != null && wpn.IsBowLike)
               rangeGen = true;
@@ -978,9 +980,9 @@ namespace Roguelike.Managers
           merch.Inventory.Add(bow);
         }
         else if (levelIndex <= 4)
-          merch.Inventory.Add(lootGenerator.GetLootByTileName<Weapon>("solid_bow"));
+          merch.Inventory.Add(lootGenerator.GetLootByTileName<Weapon>("solid_bow"), args);
         else if (levelIndex <= 6)
-          merch.Inventory.Add(lootGenerator.GetLootByTileName<Weapon>("composite_bow"));
+          merch.Inventory.Add(lootGenerator.GetLootByTileName<Weapon>("composite_bow"), args);
       }
     }
 
