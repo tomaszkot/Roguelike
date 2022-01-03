@@ -54,7 +54,7 @@ namespace Roguelike.Tiles.Looting
       var statDescCurrent = GetExtraStatDescription(caller, true);
       if (statDescCurrent == null)
         return "";
-      var res = "Level: " + statDescCurrent.Level + "\r\n";
+      var res = "Level: " + Level + "\r\n";
       var str = string.Join("\r\n", statDescCurrent.GetDescription(false));
       res += str;
 
