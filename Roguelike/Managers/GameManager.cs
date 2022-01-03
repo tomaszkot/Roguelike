@@ -984,6 +984,10 @@ namespace Roguelike.Managers
       }
     }
 
+    public void RegenerateMerchantInv(Merchant merch)
+    {
+      PopulateMerchantInv(merch, this.Hero.Level);
+    }
     protected virtual void PopulateMerchantInv(Merchant merch, int heroLevel)
     {
       merch.Inventory.Items.Clear();
