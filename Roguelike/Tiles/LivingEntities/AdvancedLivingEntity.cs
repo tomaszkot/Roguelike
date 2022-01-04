@@ -456,21 +456,29 @@ namespace Roguelike.Tiles.LivingEntities
 
     public virtual bool CanUseEquipment(Equipment eq, bool autoPutoOn)
     {
-      if (!eq.IsIdentified)
+      Func<string, bool> report = (string message) =>
+      {
+        var ev = new GameEvent(message, ActionLevel.Important);
+        ev.ShowHint = true;
+        AppendAction(ev);
         return false;
+      };
+
+      if (!eq.IsIdentified)
+        return report("Item is not identified"); 
 
       if (Level < eq.RequiredLevel)
-        return false;
+        return report("Required Level too high");
 
       if (eq.MatchingAnimalKind != AnimalKind.Unset && !CanUseAnimalKindEq(eq))
       {
-        return false;
+        return report("Can not use Animal's equipment");
       }
             
       foreach (var rs in eq.GetEffectiveRequiredStats())
       {
         if (rs.Value.Nominal > Stats.GetNominal(rs.Kind))
-          return false;
+          return report("Required statistic " + rs.Kind.ToDescription() +" not met.");
       }
 
       if(autoPutoOn && eq is Weapon wpnBowLike && wpnBowLike.IsBowLike)
@@ -479,12 +487,12 @@ namespace Roguelike.Tiles.LivingEntities
         if (wpnBowLike.Kind == Weapon.WeaponKind.Crossbow)
         { 
           if(!projs.Where(i=>i.FightItemKind == FightItemKind.PlainBolt).Any())
-            return false;
+            return report("Ammo kind mismatch");
         }
         if (wpnBowLike.Kind == Weapon.WeaponKind.Bow)
         {
           if (!projs.Where(i => i.FightItemKind == FightItemKind.PlainArrow).Any())
-            return false;
+            return report("Ammo kind mismatch");
         }
       }
 
@@ -501,7 +509,7 @@ namespace Roguelike.Tiles.LivingEntities
           if (eq.EquipmentKind == EquipmentKind.Shield &&
             (wpn.Kind == Weapon.WeaponKind.Bow || wpn.Kind == Weapon.WeaponKind.Crossbow)
             )
-            return false;
+            return report("Can not wield that shield when using "+ wpn.Kind.ToDescription());
 
           if (
               eq is Weapon wpnToUSe &&
@@ -511,9 +519,7 @@ namespace Roguelike.Tiles.LivingEntities
           {
             if (!autoPutoOn)
             {
-              var ev = new GameEvent("Can not wield that weapon when using a shield", ActionLevel.Important);
-              ev.ShowHint = true;
-              AppendAction(ev);
+              return report("Can not wield that weapon when using a shield");
             }
             return false;
           }

@@ -40,7 +40,7 @@ namespace Roguelike
           Hints.Add(new HintItem() { Info = "Can not put on unidentified item", Kind = HintKind.CanNotPutOnUnidentified });
           Hints.Add(new HintItem() { Info = "TODO", Kind = HintKind.UseProjectile });
           Hints.Add(new HintItem() { Info = "TODO", Kind = HintKind.UseElementalWeaponProjectile });
-          Hints.Add(new HintItem() { Info = "Press 'X' to swap an active weapon/shield set.", Kind = HintKind.SwapActiveWeapon });
+          Hints.Add(new HintItem() { Info = "swapping an active weapon/shield set Press 'X' to .", Kind = HintKind.SwapActiveWeapon });
         }
 
         string BuildDesc(HintKind kind, int keyCode, Func<HintKind, string> codeFormatter = null)
