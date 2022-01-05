@@ -126,9 +126,10 @@ namespace Roguelike.TileContainers
       return GetEmptyNeighborhoodTiles(baseTile, true);
     }
 
-    public override Tile GetClosestEmpty(Tile baseTile, bool sameNodeId = false, List<Tile> skip = null, bool incDiagonals = true)
+    public override Tile GetClosestEmpty(Tile baseTile, bool sameNodeId = false, List<Tile> skip = null, bool incDiagonals = true
+      ,Func<Tile, bool> canBeUsed = null)
     {
-      return base.GetClosestEmpty(baseTile, sameNodeId, skip);
+      return base.GetClosestEmpty(baseTile, sameNodeId, skip, incDiagonals,  canBeUsed);
     }
 
     bool IsLootTile(Tile tile)
@@ -160,14 +161,18 @@ namespace Roguelike.TileContainers
         return emptyTiles.First();
       }
 
-      //TODO slow, first check neibs of neibs!!!
-      emptyTiles = GetEmptyTiles();
-      if (excludeLootPositions)
+      Func<Tile, bool> canBeUsed = (Tile tile) =>
       {
-        int removed = emptyTiles.RemoveAll(i => Loot.Any(j => j.Value.point == i.point));
-        Logger.LogInfo("removed " + removed);
-      }
-      return GetClosestEmpty(baseTile, emptyTiles);
+        if (excludeLootPositions)
+        {
+          if(Loot.Any(j => j.Value.point == tile.point))
+            return false;
+        }
+        
+        return true;
+      };
+
+      return base.GetClosestEmpty(baseTile, false, null, incDiagonals, canBeUsed);
     }
 
     public override bool SetTile

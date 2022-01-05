@@ -1026,7 +1026,11 @@ namespace Dungeons
         return pt.X >= 0 && pt.Y >= 0 && pt.X < this.Width && pt.Y < this.Height;
       }
 
-      public virtual Tile GetClosestEmpty(Tile baseTile, bool sameNodeId = false, List<Tile> skip = null, bool incDiagonals = true)
+      public virtual Tile GetClosestEmpty
+      (
+        Tile baseTile, bool sameNodeId = false, List<Tile> skip = null, bool incDiagonals = true,
+        Func<Tile, bool> canBeUsed = null
+      )
       {
         var fastVersionResult = GetEmptyNeighborhoodPoint(baseTile);
         if (fastVersionResult != null)
@@ -1035,7 +1039,10 @@ namespace Dungeons
           if (skip == null || !skip.Contains(tile))
           {
             if (tile != null && (!sameNodeId || tile.DungeonNodeIndex == baseTile.DungeonNodeIndex))
-              return tile;
+            {
+              if(canBeUsed == null || canBeUsed(tile))
+                return tile;
+            }
           }
         }
 
