@@ -485,9 +485,12 @@ namespace Roguelike.Tiles.LivingEntities
       return true;
     }
 
-    public virtual float GetAttackVariation()
+    static readonly List<int> AttackValueDecrease = Enumerable.Range(0, 20).ToList();
+    public virtual float GetAttackVariation(AttackKind kind, float currentAttackValue)
     {
-      return 0;
+      var percentToDecrease = RandHelper.GetRandomElem(AttackValueDecrease);
+      currentAttackValue = currentAttackValue * ((float)percentToDecrease) / 100f;
+      return currentAttackValue;
     }
 
     string GetAttackDesc(EntityStatKind esk)

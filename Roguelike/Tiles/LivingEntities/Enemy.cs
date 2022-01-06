@@ -1,6 +1,7 @@
 ﻿#define ASCII_BUILD  
 using Dungeons.Core;
 using Roguelike.Attributes;
+using Roguelike.Calculated;
 using Roguelike.Effects;
 using Roguelike.Spells;
 using Roguelike.Tiles.Looting;
@@ -408,5 +409,6 @@ namespace Roguelike.Tiles.LivingEntities
       return base.GetAttackingScroll();
     }
 
+    
   }
 }

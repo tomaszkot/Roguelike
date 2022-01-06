@@ -93,11 +93,12 @@ namespace Roguelike.Tiles.LivingEntities
     }
 
 
-    public Tuple<int, int> GetTotalAttackValues()
+    public Tuple<int, int> GetTotalMeleeAttackValuesForDisplay()
     {
       Tuple<int, int> res;
-      var intAttack = (int)GetAttackValue(AttackKind.Melee).CurrentTotal;
-      var variation = (int)GetAttackVariation();
+      var ad = GetAttackValue(AttackKind.Melee);
+      var intAttack = (int)ad.CurrentTotal;
+      var variation = (int)ad.CalcVariation(AttackKind.Melee);
       if (variation != 0)
         res = new Tuple<int, int>(intAttack - variation, intAttack + variation);
       else
@@ -107,9 +108,9 @@ namespace Roguelike.Tiles.LivingEntities
     }
 
     //for UI
-    public string GetTotalAttackValue()
+    public string GetTotalMeleeAttackValueForDisplay()
     {
-      var attack = GetTotalAttackValues();
+      var attack = GetTotalMeleeAttackValuesForDisplay();
       var value = attack.Item1.ToString();
       if (attack.Item1 != attack.Item2)
       {
@@ -133,7 +134,7 @@ namespace Roguelike.Tiles.LivingEntities
       var value = base.GetFormattedStatValue(kind, round);
       if (kind == EntityStatKind.MeleeAttack)
       {
-        value = GetTotalAttackValue();
+        value = GetTotalMeleeAttackValueForDisplay();
       }
       return value;
     }
@@ -143,14 +144,19 @@ namespace Roguelike.Tiles.LivingEntities
       Inventory.Remove(loot);
     }
 
-    public override float GetAttackVariation()
+    public override float GetAttackVariation(AttackKind kind, float currentAttackValue)
     {
-      var currentWpn = GetActiveWeapon();
-      if (currentWpn != null)
+      if (kind == AttackKind.Melee)
       {
-        return currentWpn.GetPrimaryDamageVariation();
+        var currentWpn = GetActiveWeapon();
+        if (currentWpn != null)
+        {
+          return currentWpn.GetPrimaryDamageVariation();
+        }
+        else
+          return base.GetAttackVariation(kind, currentAttackValue);
       }
-
+      //other cases are not handled here
       return 0;
     }
 

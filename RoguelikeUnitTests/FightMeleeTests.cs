@@ -17,6 +17,30 @@ namespace RoguelikeUnitTests
   class FightMeleeTests : TestBase
   {
     [Test]
+    public void DamageFromEnemiesVaries()
+    {
+      var game = CreateGame();
+      var hero = game.Hero;
+
+      Assert.Greater(ActiveEnemies.Count, 0);
+      var enemy = ActiveEnemies.First();
+      var healthChanges = new List<float>();
+      for (int i = 0; i < 10; i++)
+      {
+        var health = hero.Stats.Health;
+        hero.OnMelleeHitBy(enemy);
+        healthChanges.Add(health - hero.Stats.Health);
+      }
+
+      var groupedChnages = healthChanges.GroupBy(i => i).ToList();
+      Assert.Greater(groupedChnages.Count, 3);
+      var min = groupedChnages.Min(i=>i.Key);
+      var max = groupedChnages.Max(i => i.Key);
+      Assert.Greater(max, min);
+      Assert.Less(max, enemy.Stats.MeleeAttack/3);
+    }
+
+    [Test]
     public void NonPlainEnemyUsesEffects()
     {
       for (int loop = 0; loop < 1; loop++)
