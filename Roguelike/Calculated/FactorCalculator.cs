@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Dungeons.Core;
+using System;
+using System.Collections.Generic;
 
 namespace Roguelike.Calculated
 {
@@ -58,12 +60,30 @@ namespace Roguelike.Calculated
 
     public static int AddFactor(int prevValue, float incPercentage)
     {
-      return prevValue + (int)(prevValue * incPercentage / 100f);
+      return prevValue + (int)CalcPercentage(prevValue, incPercentage);
     }
 
     public static float AddFactor(float prevValue, float incPercentage)
     {
-      return prevValue + (float)(prevValue * incPercentage / 100f);
+      return prevValue + CalcPercentage(prevValue, incPercentage);
     }
+
+    public static float CalcPercentage(float value, float incPercentage)
+    {
+      return value * incPercentage / 100f;
+    }
+
+    public static float GetRandAttackVariation(float currentAttackValue, List<int> attackValueDecrease, bool signed)
+    {
+      var percentToDecrease = RandHelper.GetRandomElem(attackValueDecrease);
+      var variation = CalcPercentage(currentAttackValue, percentToDecrease);
+
+      var sign = 1;
+      if(signed)
+        sign = RandHelper.Random.NextDouble() > .5f ? -1 : 1;
+
+      return sign * variation;
+    }
+
   }
 }

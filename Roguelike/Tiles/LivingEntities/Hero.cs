@@ -98,7 +98,7 @@ namespace Roguelike.Tiles.LivingEntities
       Tuple<int, int> res;
       var ad = GetAttackValue(AttackKind.Melee);
       var intAttack = (int)ad.CurrentTotal;
-      var variation = (int)ad.CalcVariation(AttackKind.Melee);
+      var variation = (int)ad.CalcVariation(AttackKind.Melee, false, ad.CurrentPhysical);
       if (variation != 0)
         res = new Tuple<int, int>(intAttack - variation, intAttack + variation);
       else
@@ -144,20 +144,20 @@ namespace Roguelike.Tiles.LivingEntities
       Inventory.Remove(loot);
     }
 
-    public override float GetAttackVariation(AttackKind kind, float currentAttackValue)
+    public override float GetAttackVariation(AttackKind kind, float currentAttackValue, bool signed)
     {
+      float variation = 0;
       if (kind == AttackKind.Melee)
       {
         var currentWpn = GetActiveWeapon();
+        
         if (currentWpn != null)
         {
-          return currentWpn.GetPrimaryDamageVariation();
+          variation = currentWpn.GetPrimaryDamageVariation();
         }
-        else
-          return base.GetAttackVariation(kind, currentAttackValue);
       }
-      //other cases are not handled here
-      return 0;
+      variation += base.GetAttackVariation(kind, currentAttackValue, signed);
+      return variation;
     }
 
     internal void PrepareForSave()

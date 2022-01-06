@@ -17,30 +17,6 @@ namespace RoguelikeUnitTests
   class FightMeleeTests : TestBase
   {
     [Test]
-    public void DamageFromEnemiesVaries()
-    {
-      var game = CreateGame();
-      var hero = game.Hero;
-
-      Assert.Greater(ActiveEnemies.Count, 0);
-      var enemy = ActiveEnemies.First();
-      var healthChanges = new List<float>();
-      for (int i = 0; i < 10; i++)
-      {
-        var health = hero.Stats.Health;
-        hero.OnMelleeHitBy(enemy);
-        healthChanges.Add(health - hero.Stats.Health);
-      }
-
-      var groupedChnages = healthChanges.GroupBy(i => i).ToList();
-      Assert.Greater(groupedChnages.Count, 3);
-      var min = groupedChnages.Min(i=>i.Key);
-      var max = groupedChnages.Max(i => i.Key);
-      Assert.Greater(max, min);
-      Assert.Less(max, enemy.Stats.MeleeAttack/3);
-    }
-
-    [Test]
     public void NonPlainEnemyUsesEffects()
     {
       for (int loop = 0; loop < 1; loop++)
@@ -146,34 +122,117 @@ namespace RoguelikeUnitTests
       Assert.AreEqual(finalEnemyCount, CurrentNode.GetTiles<Enemy>().Count);
     }
 
-    [Test]
-    public void WeaponDamageRandomisation()
+    public void DamageFromEnemiesVaries()
     {
       var game = CreateGame();
-      var en = game.GameManager.EnemiesManager.GetEnemies().Where(i => i.PowerKind == EnemyPowerKind.Champion).First();
+      var hero = game.Hero;
 
-      var attack = game.Hero.GetCurrentValue(Roguelike.Attributes.EntityStatKind.MeleeAttack);
+      Assert.Greater(ActiveEnemies.Count, 0);
+      var enemy = ActiveEnemies.First();
+      DoDamage(enemy, game.Hero, (LivingEntity attacker, LivingEntity en) => { en.OnMelleeHitBy(attacker); });
+    }
+
+    [Test]
+    [TestCase(AttackKind.Unset)]
+    [TestCase(AttackKind.Melee)]
+    [TestCase(AttackKind.PhysicalProjectile)]
+    [TestCase(AttackKind.WeaponElementalProjectile)]
+    [TestCase(AttackKind.SpellElementalProjectile)]
+    public void HeroDamageRandomization(AttackKind attackKind)
+    {
+      var game = CreateGame();
+      game.Hero.Stats.GetStat(EntityStatKind.Health).Value.Nominal = 500;
+      game.Hero.Stats.GetStat(EntityStatKind.Mana).Value.Nominal = 500;
+
+      var enemy = game.GameManager.EnemiesManager.GetEnemies().Where(i => i.PowerKind == EnemyPowerKind.Champion).First();
+      List<float> healthChanges = null;
+      PlaceCloseToHero(enemy);
+      if (attackKind == AttackKind.Unset)
+      {
+        healthChanges = DoDamage(game.Hero, enemy, (LivingEntity attacker, LivingEntity en) => { en.OnMelleeHitBy(attacker); });
+      }
+      else if (attackKind == AttackKind.Melee)
+      {
+        healthChanges = DoDamage(game.Hero, enemy, (LivingEntity attacker, LivingEntity en) => CallDoDamageMelee(attacker, en));
+      }
+      else if (attackKind == AttackKind.PhysicalProjectile)
+      {
+        healthChanges = DoDamage(game.Hero, enemy, (LivingEntity attacker, LivingEntity en) => CallDoDamagePhysicalProjectile(attacker, en));
+      }
+      else if (attackKind == AttackKind.WeaponElementalProjectile)
+      {
+        healthChanges = DoDamage(game.Hero, enemy, (LivingEntity attacker, LivingEntity en) => CallDoDamageWeaponElementalProjectile(attacker, en));
+      }
+      else if (attackKind == AttackKind.SpellElementalProjectile)
+      {
+        healthChanges = DoDamage(game.Hero, enemy, (LivingEntity attacker, LivingEntity en) => CallDoDamageSpellElementalProjectile(attacker, en));
+      }
+    }
+
+    private void CallDoDamageSpellElementalProjectile(LivingEntity attacker, LivingEntity en)
+    {
+      var wpn = game.GameManager.LootGenerator.GetLootByAsset("staff") as Weapon;
+      SetHeroEquipment(wpn);
+      var weapon = game.Hero.GetActiveWeapon();
+      Assert.AreEqual(weapon.SpellSource.Kind, SpellKind.FireBall);
+      Assert.True(game.GameManager.SpellManager.ApplyAttackPolicy(game.Hero, en, weapon.SpellSource));
+    }
+
+
+    private void CallDoDamageWeaponElementalProjectile(LivingEntity attacker, LivingEntity en)
+    {
+      Assert.True(UseFireBallSpellSource(attacker as Hero, en, true));
+    }
+
+    List<float> DoDamage(LivingEntity attacker, LivingEntity victim, Action<LivingEntity, LivingEntity> hitVictim)
+    {
+      var healthChanges = new List<float>();
+      for (int ind = 0; ind < 10; ind++)
+      {
+        var health = victim.Stats.Health;
+        hitVictim(attacker, victim);
+        healthChanges.Add(health - victim.Stats.Health);
+        GotoNextHeroTurn();
+      }
+
+      var groupedChanges = healthChanges.GroupBy(i => i).ToList();
+      Assert.Greater(groupedChanges.Count, 3);
+      var min = groupedChanges.Min(i => i.Key);
+      var max = groupedChanges.Max(i => i.Key);
+      Assert.Greater(max, min);
+      Assert.Less(max, attacker.Stats.MeleeAttack / 3);
+
+      return healthChanges;
+    }
+
+    private void CallDoDamagePhysicalProjectile(LivingEntity _hero, LivingEntity victim)
+    {
+      var hero = _hero as Hero;
+      var fi = ActivateFightItem(FightItemKind.PlainArrow, hero);
+      var wpn = GenerateEquipment<Weapon>("Bow");
+      Assert.True(SetHeroEquipment(wpn));
+      Assert.True(UseFightItem(hero, victim, fi)); 
+    }
+
+    private void CallDoDamageMelee(LivingEntity _hero, LivingEntity victim)
+    {
+      var hero = _hero as Hero;
+      if (hero.GetActiveWeapon() != null)
+        hero.MoveEquipmentCurrent2Inv(hero.GetActiveWeapon(), CurrentEquipmentKind.Weapon);
+      var attack = hero.GetCurrentValue(Roguelike.Attributes.EntityStatKind.MeleeAttack);
 
       var wpn = GenerateEquipment<Weapon>("rusty_sword");
       Assert.AreEqual(wpn.PrimaryStatValue, 3);
       Assert.AreEqual(wpn.PrimaryStatDescription, "Melee Attack: 2-4");
 
       SetHeroEquipment(wpn);
-      var attackWithWpn = game.Hero.GetCurrentValue(Roguelike.Attributes.EntityStatKind.MeleeAttack);
+      var attackWithWpn = hero.GetCurrentValue(Roguelike.Attributes.EntityStatKind.MeleeAttack);
       Assert.Greater(attackWithWpn, attack);
 
-      var attackFormatted = game.Hero.GetFormattedStatValue(Roguelike.Attributes.EntityStatKind.MeleeAttack, false);
-      Assert.AreEqual(attackFormatted, "17-19");
+      var attackFormatted = hero.GetFormattedStatValue(Roguelike.Attributes.EntityStatKind.MeleeAttack, false);
+      Assert.True(attackFormatted.Contains("-"));//e.g. "17-19");
 
-      var damages = new List<float>();
-      for (int i = 0; i < 10; i++)
-      {
-        var damage = en.OnMelleeHitBy(game.Hero);
-        if (damage > 0)
-          damages.Add(damage);
-      }
-      var grouped = damages.GroupBy(i => i);
-      Assert.Greater(grouped.Count(), 1);
+      Assert.Greater(victim.OnMelleeHitBy(hero), 0); 
     }
 
     [Test]

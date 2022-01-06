@@ -1399,8 +1399,11 @@ namespace Roguelike.Managers
     public void ReportFailure(string infoToDisplay)
     {
       SoundManager.PlayBeepSound();
-      if(infoToDisplay.Any())
+      if (infoToDisplay.Any())
+      {
         AppendAction(new GameEvent() { Info = infoToDisplay, Level = ActionLevel.Important });
+        Logger.LogInfo(infoToDisplay);
+      }
     }
   }
 }

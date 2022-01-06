@@ -128,16 +128,7 @@ namespace RoguelikeUnitTests
       Assert.AreEqual(mana, hero.Stats.Mana);
       Assert.False(game.GameManager.HeroTurn);
     }
-
-    private bool UseFightItem(Roguelike.Tiles.LivingEntities.Hero hero, Roguelike.Tiles.LivingEntities.Enemy enemy, ProjectileFightItem fi)
-    {
-      hero.Inventory.Add(fi);
-      if (fi.FightItemKind == FightItemKind.Stone)
-        return game.GameManager.ApplyAttackPolicy(hero, enemy, fi);
-      
-      return game.GameManager.TryApplyAttackPolicy(fi, enemy);
-    }
-
+        
     [Test]
     public void TestExplosiveOnHero()
     {

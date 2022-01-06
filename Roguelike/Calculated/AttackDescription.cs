@@ -161,10 +161,7 @@ namespace Roguelike.Calculated
       CurrentPhysicalVariated = CurrentPhysical;
       if (withVariation)//GUI is not meant to have it changed on character panel
       {
-        var variation = CalcVariation(attackKind);
-        var sign = RandHelper.Random.NextDouble() > .5f ? -1 : 1;
-
-        CurrentPhysicalVariated += sign * variation * (float)RandHelper.Random.NextDouble();
+        CurrentPhysicalVariated += CalcVariation(attackKind, true, CurrentPhysical);
       }
 
       if (CurrentPhysicalVariated < 0)
@@ -172,17 +169,17 @@ namespace Roguelike.Calculated
       if (CurrentPhysical < 0)
         CurrentPhysical = 0;
 
-      var val = CurrentPhysical;
+      var val = CurrentPhysicalVariated;
       AddExtraDamage(ent, wpn, weapons2Esk, ref val);
-      CurrentPhysicalVariated += val - CurrentPhysical;
-      CurrentPhysical = val;
-
+      CurrentPhysicalVariated += val - CurrentPhysicalVariated;
+      
       CurrentTotal = CurrentPhysical;
       var nonPhysical = ent.GetNonPhysicalDamages();
 
       if (offensiveSpell != null)
       {
         var dmg = offensiveSpell.GetDamage(withVariation);
+        dmg += CalcVariation(attackKind, true, dmg);
         if (wpn != null && attackKind == AttackKind.WeaponElementalProjectile)
         {
           AddExtraDamage(ent, wpn, weapons2Esk, ref dmg);
@@ -220,11 +217,9 @@ namespace Roguelike.Calculated
       Display = Nominal + "/" + CurrentTotal;
     }
 
-    public float CalcVariation(AttackKind attackKind)
+    public float CalcVariation(AttackKind attackKind, bool signed, float currentDamage)
     {
-      if(attackKind == AttackKind.Melee)
-        return ent.GetAttackVariation(attackKind, CurrentPhysicalVariated);
-      return 0;
+      return ent.GetAttackVariation(attackKind, currentDamage, signed);
     }
 
     private void AddExtraDamage(LivingEntity ent, Weapon wpn, Dictionary<Weapon.WeaponKind, EntityStatKind> weapons2Esk, ref float currentDamage)

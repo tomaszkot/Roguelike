@@ -485,12 +485,10 @@ namespace Roguelike.Tiles.LivingEntities
       return true;
     }
 
-    static readonly List<int> AttackValueDecrease = Enumerable.Range(0, 20).ToList();
-    public virtual float GetAttackVariation(AttackKind kind, float currentAttackValue)
+    public static readonly List<int> AttackValueDecrease = Enumerable.Range(0, 20).ToList();
+    public virtual float GetAttackVariation(AttackKind kind, float currentAttackValue, bool signed)
     {
-      var percentToDecrease = RandHelper.GetRandomElem(AttackValueDecrease);
-      currentAttackValue = currentAttackValue * ((float)percentToDecrease) / 100f;
-      return currentAttackValue;
+      return FactorCalculator.GetRandAttackVariation(currentAttackValue, AttackValueDecrease, signed);
     }
 
     string GetAttackDesc(EntityStatKind esk)
@@ -630,7 +628,7 @@ namespace Roguelike.Tiles.LivingEntities
           var damageDesc = "";
 
           var ad = new AttackDescription(fi.Caller, true, AttackKind.PhysicalProjectile);
-          var inflicted = CalcMeleeDamage(ad.CurrentPhysical, ref damageDesc);//TODO what about NonPhysical?
+          var inflicted = CalcMeleeDamage(ad.CurrentPhysicalVariated, ref damageDesc);//TODO what about NonPhysical?
           var sound = pfi.HitTargetSound;// "punch";
           var srcName = fi.FightItemKind.ToDescription();
           var attacker = pfi.Caller;

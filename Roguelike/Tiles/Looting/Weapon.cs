@@ -312,7 +312,7 @@ namespace Roguelike.Tiles
     {
       float min = PrimaryStatValue - GetPrimaryDamageVariation();
       float max = PrimaryStatValue + GetPrimaryDamageVariation();
-      //return "+["+min + "-" + max+"]";
+
       return min + "-" + max;
     }
 

@@ -397,5 +397,14 @@ namespace RoguelikeUnitTests
         game.Hero.Inventory.Add(eq);
       return game.Hero.MoveEquipmentInv2Current(eq, cek);
     }
+
+    protected bool UseFightItem(Hero hero, LivingEntity enemy, ProjectileFightItem fi)
+    {
+      hero.Inventory.Add(fi);
+      if (fi.FightItemKind == FightItemKind.Stone)
+        return game.GameManager.ApplyAttackPolicy(hero, enemy, fi);
+
+      return game.GameManager.TryApplyAttackPolicy(fi, enemy);
+    }
   }
 }
