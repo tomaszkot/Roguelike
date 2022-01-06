@@ -35,7 +35,7 @@ namespace Roguelike.Tiles.LivingEntities
     public Loot DeathLoot { get; set; }
     public bool ShoutedAtHero { get; set; }
     public Dictionary<FightItemKind, FightItem> fightItems = new Dictionary<FightItemKind, FightItem>();
-    FightItemKind fightItemKind = FightItemKind.Stone;
+    //FightItemKind fightItemKind = FightItemKind.Stone;
 
     public Enemy() : this(new Point().Invalid(), 'e')
     {
@@ -65,7 +65,8 @@ namespace Roguelike.Tiles.LivingEntities
       AddFightItem(FightItemKind.ExplosiveCocktail);
       //fightItems[FightItemKind.HunterTrap] = new ProjectileFightItem(FightItemKind.HunterTrap, this) { Count = RandHelper.GetRandomInt(3) + 1 };
 
-      fightItemKind = RandHelper.GetRandomEnumValue<FightItemKind>((new[] { FightItemKind.Unset, FightItemKind.HunterTrap }));
+      //FightItemKind = RandHelper.GetRandomEnumValue<FightItemKind>((new[] { FightItemKind.Unset, FightItemKind.HunterTrap }));
+      this.ActiveFightItem = RandHelper.GetRandomElem<FightItem>(this.fightItems.Values.ToList());
 
       SetResist(EntityStatKind.ResistCold, 15);
       SetResist(EntityStatKind.ResistFire, 15);
@@ -79,9 +80,10 @@ namespace Roguelike.Tiles.LivingEntities
     //{
     //  fightItems[kind].Count--;
     //}
-    public void AddFightItem(FightItemKind kind)
+    public ProjectileFightItem AddFightItem(FightItemKind kind)
     {
       fightItems[kind] = new ProjectileFightItem(kind, this) { Count = RandHelper.GetRandomInt(3) + 1 };
+      return fightItems[kind] as ProjectileFightItem;
     }
 
     public override void RemoveFightItem(FightItem fi)
@@ -398,7 +400,11 @@ namespace Roguelike.Tiles.LivingEntities
       }
     }
 
-    public FightItemKind FightItemKind { get => fightItemKind; set => fightItemKind = value; }
+    //public FightItemKind FightItemKind 
+    //{ 
+    //  get => fightItemKind; 
+    //  set => fightItemKind = value; 
+    //}
 
     public override SpellSource GetAttackingScroll()
     {

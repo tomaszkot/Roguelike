@@ -252,7 +252,7 @@ namespace Roguelike
         if (attacker.IsAlwaysHitting(Attributes.AttackKind.SpellElementalProjectile) ||  RandHelper.GetRandomDouble() < 0.5)
           return false;
         var enemy = attacker as Enemy;
-        var fi = enemy.GetFightItem(enemy.FightItemKind);
+        var fi = enemy.ActiveFightItem;
         if (fi != null)
         {
           var pfi = fi as ProjectileFightItem;

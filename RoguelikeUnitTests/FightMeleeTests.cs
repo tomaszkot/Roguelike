@@ -122,14 +122,39 @@ namespace RoguelikeUnitTests
       Assert.AreEqual(finalEnemyCount, CurrentNode.GetTiles<Enemy>().Count);
     }
 
-    public void DamageFromEnemiesVaries()
+    [Test]
+    [TestCase(AttackKind.Unset)]
+    [TestCase(AttackKind.PhysicalProjectile)]
+    [TestCase(AttackKind.SpellElementalProjectile)]
+    public void DamageFromEnemiesVaries(AttackKind attackKind)
     {
       var game = CreateGame();
       var hero = game.Hero;
 
       Assert.Greater(ActiveEnemies.Count, 0);
       var enemy = ActiveEnemies.First();
-      DoDamage(enemy, game.Hero, (LivingEntity attacker, LivingEntity en) => { en.OnMelleeHitBy(attacker); });
+      if (attackKind == AttackKind.Unset)
+        DoDamage(enemy, game.Hero, (LivingEntity attacker, LivingEntity victim) => { victim.OnMelleeHitBy(attacker); });
+
+      else if (attackKind == AttackKind.PhysicalProjectile)
+      {
+        var en = enemy as Enemy;
+        var fi = en.AddFightItem(FightItemKind.ThrowingKnife);
+        fi.Count = 10;
+        en.ActiveFightItem = fi as ProjectileFightItem;
+        DoDamage(enemy, game.Hero, (LivingEntity attacker, LivingEntity victim) => CallDoDamagePhysicalProjectile(attacker, victim));
+      }
+      //else if (attackKind == AttackKind.WeaponElementalProjectile)
+      //{
+      //  healthChanges = DoDamage(game.Hero, enemy, (LivingEntity attacker, LivingEntity en) => CallDoDamageWeaponElementalProjectile(attacker, en));
+      //}
+      else if (attackKind == AttackKind.SpellElementalProjectile)
+      {
+        enemy.ActiveManaPoweredSpellSource = new Scroll(SpellKind.FireBall);
+        enemy.Stats.SetNominal(EntityStatKind.Mana, 1000);
+        DoDamage(game.Hero, enemy, (LivingEntity attacker, LivingEntity en) => CallDoDamageSpellElementalProjectile(attacker, en));
+      }
+
     }
 
     [Test]
@@ -169,13 +194,20 @@ namespace RoguelikeUnitTests
       }
     }
 
-    private void CallDoDamageSpellElementalProjectile(LivingEntity attacker, LivingEntity en)
+    private void CallDoDamageSpellElementalProjectile(LivingEntity attacker, LivingEntity victim)
     {
-      var wpn = game.GameManager.LootGenerator.GetLootByAsset("staff") as Weapon;
-      SetHeroEquipment(wpn);
-      var weapon = game.Hero.GetActiveWeapon();
-      Assert.AreEqual(weapon.SpellSource.Kind, SpellKind.FireBall);
-      Assert.True(game.GameManager.SpellManager.ApplyAttackPolicy(game.Hero, en, weapon.SpellSource));
+      if (attacker is Hero)
+      {
+        var wpn = game.GameManager.LootGenerator.GetLootByAsset("staff") as Weapon;
+        SetHeroEquipment(wpn);
+        var weapon = game.Hero.GetActiveWeapon();
+        Assert.AreEqual(weapon.SpellSource.Kind, SpellKind.FireBall);
+        Assert.True(game.GameManager.SpellManager.ApplyAttackPolicy(game.Hero, victim, weapon.SpellSource));
+      }
+      else 
+      {
+        game.GameManager.SpellManager.ApplyAttackPolicy(attacker, victim, attacker.ActiveManaPoweredSpellSource, null, (p) => {});
+      }
     }
 
 
@@ -192,7 +224,18 @@ namespace RoguelikeUnitTests
         var health = victim.Stats.Health;
         hitVictim(attacker, victim);
         healthChanges.Add(health - victim.Stats.Health);
-        GotoNextHeroTurn();
+        if (attacker is Hero)
+          GotoNextHeroTurn();
+        else
+        {
+
+          if (game.GameManager.Context.TurnOwner != TurnOwner.Enemies)
+          {
+            game.GameManager.SkipHeroTurn();
+            game.MakeGameTick();
+          }
+          Assert.AreEqual(game.GameManager.Context.TurnOwner, Roguelike.TurnOwner.Enemies);
+        }
       }
 
       var groupedChanges = healthChanges.GroupBy(i => i).ToList();
@@ -205,13 +248,22 @@ namespace RoguelikeUnitTests
       return healthChanges;
     }
 
-    private void CallDoDamagePhysicalProjectile(LivingEntity _hero, LivingEntity victim)
+    private void CallDoDamagePhysicalProjectile(LivingEntity attacker, LivingEntity victim)
     {
-      var hero = _hero as Hero;
-      var fi = ActivateFightItem(FightItemKind.PlainArrow, hero);
-      var wpn = GenerateEquipment<Weapon>("Bow");
-      Assert.True(SetHeroEquipment(wpn));
-      Assert.True(UseFightItem(hero, victim, fi)); 
+      if (attacker is Hero)
+      {
+        var hero = attacker as Hero;
+        var fi = ActivateFightItem(FightItemKind.PlainArrow, hero);
+        var wpn = GenerateEquipment<Weapon>("Bow");
+        Assert.True(SetHeroEquipment(wpn));
+        Assert.True(UseFightItem(hero, victim, fi));
+      }
+      else 
+      {
+        var en = attacker as Enemy;
+        var pfi = en.ActiveFightItem as ProjectileFightItem;
+        Assert.True(game.GameManager.ApplyAttackPolicy(attacker, victim, pfi, null, (p) => { }));
+      }
     }
 
     private void CallDoDamageMelee(LivingEntity _hero, LivingEntity victim)
