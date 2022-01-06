@@ -133,6 +133,9 @@ namespace RoguelikeUnitTests
 
       Assert.Greater(ActiveEnemies.Count, 0);
       var enemy = ActiveEnemies.First();
+      var emp = game.Level.GetEmptyTiles().Where(i => i.DistanceFrom(hero) < 6 && i.DistanceFrom(hero) > 1).First();
+      game.Level.SetTile(enemy, emp.point);
+      //PlaceCloseToHero(enemy);
       if (attackKind == AttackKind.Unset)
         DoDamage(enemy, game.Hero, (LivingEntity attacker, LivingEntity victim) => { victim.OnMelleeHitBy(attacker); });
 
@@ -152,7 +155,7 @@ namespace RoguelikeUnitTests
       {
         enemy.ActiveManaPoweredSpellSource = new Scroll(SpellKind.FireBall);
         enemy.Stats.SetNominal(EntityStatKind.Mana, 1000);
-        DoDamage(game.Hero, enemy, (LivingEntity attacker, LivingEntity en) => CallDoDamageSpellElementalProjectile(attacker, en));
+        DoDamage(enemy, game.Hero, (LivingEntity attacker, LivingEntity victim) => CallDoDamageSpellElementalProjectile(attacker, victim));
       }
 
     }
@@ -262,6 +265,10 @@ namespace RoguelikeUnitTests
       {
         var en = attacker as Enemy;
         var pfi = en.ActiveFightItem as ProjectileFightItem;
+
+        if (attacker.DistanceFrom(victim) <= 1)
+          return;
+
         Assert.True(game.GameManager.ApplyAttackPolicy(attacker, victim, pfi, null, (p) => { }));
       }
     }

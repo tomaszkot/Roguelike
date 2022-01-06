@@ -65,7 +65,6 @@ namespace Roguelike.Tiles.LivingEntities
       AddFightItem(FightItemKind.ExplosiveCocktail);
       //fightItems[FightItemKind.HunterTrap] = new ProjectileFightItem(FightItemKind.HunterTrap, this) { Count = RandHelper.GetRandomInt(3) + 1 };
 
-      //FightItemKind = RandHelper.GetRandomEnumValue<FightItemKind>((new[] { FightItemKind.Unset, FightItemKind.HunterTrap }));
       this.ActiveFightItem = RandHelper.GetRandomElem<FightItem>(this.fightItems.Values.ToList());
 
       SetResist(EntityStatKind.ResistCold, 15);
@@ -76,13 +75,9 @@ namespace Roguelike.Tiles.LivingEntities
       Stats.SetNominal(EntityStatKind.MeleeAttack, BaseStrength.Value.Nominal+2);//attack is same as str for a simple entity
     }
 
-    //internal void RemoveFightItem(FightItemKind kind)
-    //{
-    //  fightItems[kind].Count--;
-    //}
     public ProjectileFightItem AddFightItem(FightItemKind kind)
     {
-      fightItems[kind] = new ProjectileFightItem(kind, this) { Count = RandHelper.GetRandomInt(3) + 1 };
+      fightItems[kind] = new ProjectileFightItem(kind, this) { Count = RandHelper.GetRandomInt(3) + 2 };
       return fightItems[kind] as ProjectileFightItem;
     }
 

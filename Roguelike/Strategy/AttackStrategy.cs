@@ -249,13 +249,23 @@ namespace Roguelike
         if (!allow)
           return false;
 
-        if (attacker.IsAlwaysHitting(Attributes.AttackKind.SpellElementalProjectile) ||  RandHelper.GetRandomDouble() < 0.5)
+        var skip = true;
+        if (attacker.Stats.HealthBelow(0.3f) || RandHelper.GetRandomDouble() < 0.5)
+          skip = false;
+
+        if (skip)
           return false;
         var enemy = attacker as Enemy;
         var fi = enemy.ActiveFightItem;
         if (fi != null)
         {
           var pfi = fi as ProjectileFightItem;
+          if (pfi.FightItemKind == FightItemKind.Stone ||
+              pfi.FightItemKind == FightItemKind.ThrowingKnife)
+          {
+            if(enemy.DistanceFrom(target) <=1.5)
+              return false;
+          }
           if (attacker.IsInProjectileReach(pfi, target.Position))
           {
             var useProjectile = IsClearPath(attacker, target);
