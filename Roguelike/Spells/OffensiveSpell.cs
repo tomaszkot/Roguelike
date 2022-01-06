@@ -14,7 +14,7 @@ namespace Roguelike.Spells
 
     float calcedDamage;
     public const int BaseDamage = 1;
-    public int NominalDamage { get; set; }
+    //public int NominalDamage { get; set; }
     bool withVariation;
     public const int DefaultAddNominal = 0;
     public bool AlwaysHit { get; set; }
@@ -36,26 +36,26 @@ namespace Roguelike.Spells
       else
         damage += magicLevel;
 
-      damage -= 1;
+      damage = damage - 1;
 
       float addNominal = DefaultAddNominal;
-      NominalDamage = (int)(damage + addNominal);
-      if (withVariation)
-      {
-        if (weaponSpellSource != null && !weaponSpellSource.StableDamage)
-        {
-          //var val = RandHelper.GetRandomDouble();
-          ////if (val > 0.66f)
-          ////  addNominal += 1;//too much
-          //if (val < 0.33f)
-          //  addNominal -= -1;
+      //NominalDamage = (int)(damage + addNominal);
+      //if (withVariation)
+      //{
+      //  if (weaponSpellSource != null && !weaponSpellSource.StableDamage)
+      //  {
+      //    //var val = RandHelper.GetRandomDouble();
+      //    ////if (val > 0.66f)
+      //    ////  addNominal += 1;//too much
+      //    //if (val < 0.33f)
+      //    //  addNominal -= -1;
 
-          //if (damage > 10)
-          //  addNominal *= 2;
-          var percentToDecrease = RandHelper.GetRandomElem(AttackValueDecrease);
-          addNominal += FactorCalculator.CalcPercentage(NominalDamage, percentToDecrease);
-        }
-      }
+      //    //if (damage > 10)
+      //    //  addNominal *= 2;
+      //    var percentToDecrease = RandHelper.GetRandomElem(AttackValueDecrease);
+      //    addNominal += FactorCalculator.CalcPercentage(NominalDamage, percentToDecrease);
+      //  }
+      //}
       damage += addNominal;
       if (damage <= 0)
         damage = 1;
@@ -79,9 +79,10 @@ namespace Roguelike.Spells
       }
     }
 
-    public float GetDamage(bool withVariation)
+    public float GetDamage()
     {
-      return withVariation ? Damage : NominalDamage;
+      //return withVariation ? Damage : NominalDamage;
+      return Damage;
     }
 
     public override SpellStatsDescription CreateSpellStatsDescription(bool currentMagicLevel, bool withVariation)
@@ -90,7 +91,7 @@ namespace Roguelike.Spells
       if (currentMagicLevel)
       {
         CalcDamage(CurrentLevel, withVariation);
-        desc.Damage = GetDamage(withVariation);
+        desc.Damage = GetDamage();
       }
       else
         desc.Damage = CalcDamage(CurrentLevel + 1, withVariation);

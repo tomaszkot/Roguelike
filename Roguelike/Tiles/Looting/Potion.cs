@@ -4,7 +4,7 @@ using System;
 
 namespace Roguelike.Tiles.Looting
 {
-  public enum PotionKind { Unset, Health, Mana, Poison, Special }
+  public enum PotionKind { Unset, Health, Mana, Antidote, Special }
 
   public class Potion : Consumable
   {
@@ -27,7 +27,7 @@ namespace Roguelike.Tiles.Looting
 
     public override PercentageFactor GetPercentageStatIncrease()
     {
-      var inc = Kind == PotionKind.Poison ? 0 : 50;
+      var inc = Kind == PotionKind.Antidote ? 0 : 50;
       return new PercentageFactor(inc);
     }
 
@@ -48,10 +48,10 @@ namespace Roguelike.Tiles.Looting
         StatKind = EntityStatKind.Mana;
         PrimaryStatDescription = "Restores " + StatKind;
       }
-      else if (kind == PotionKind.Poison)
+      else if (kind == PotionKind.Antidote)
       {
-        Name = "Poison Potion";
-        tag1 = "poison_potion";
+        Name = "Antidote Potion";
+        tag1 = "antidote_potion";
         PrimaryStatDescription = "Removes poison effect";
         StatKind = EntityStatKind.Unset;
       }

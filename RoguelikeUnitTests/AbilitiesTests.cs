@@ -556,7 +556,7 @@ namespace RoguelikeUnitTests
       var abVal = 0.0f;
       var abValAux = 0.0f;
       var hero = game.Hero;
-      
+      hero.UseAttackVariation = false;
       float auxStatValue;
       var destStat = SetWeapon(kind, hero, out auxStatValue);
       var en = PlainEnemies.First();

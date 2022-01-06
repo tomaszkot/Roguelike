@@ -486,8 +486,12 @@ namespace Roguelike.Tiles.LivingEntities
     }
 
     public static readonly List<int> AttackValueDecrease = Enumerable.Range(0, 20).ToList();
+    public bool UseAttackVariation { get; set; } = true;
+
     public virtual float GetAttackVariation(AttackKind kind, float currentAttackValue, bool signed)
     {
+      if (!UseAttackVariation)
+        return 0;
       return FactorCalculator.GetRandAttackVariation(currentAttackValue, AttackValueDecrease, signed);
     }
 

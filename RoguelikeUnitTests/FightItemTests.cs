@@ -79,6 +79,7 @@ namespace RoguelikeUnitTests
     {
       var game = CreateGame();
       var hero = game.Hero;
+      hero.UseAttackVariation = false;//other tests do it
 
       var fi = ActivateFightItem(FightItemKind.PlainArrow, hero);
 

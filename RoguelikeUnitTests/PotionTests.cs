@@ -72,7 +72,7 @@ namespace RoguelikeUnitTests
       Assert.Greater(mana.PrimaryStatDescription.Length, 5);
 
       var poison = new Potion();
-      poison.SetKind(Roguelike.Tiles.Looting.PotionKind.Poison);
+      poison.SetKind(Roguelike.Tiles.Looting.PotionKind.Antidote);
       Assert.Greater(poison.PrimaryStatDescription.Length, 5);
 
       var game = CreateGame();
@@ -174,7 +174,7 @@ namespace RoguelikeUnitTests
       Assert.NotNull(le1);
 
       var pot = Helper.AddTile<Potion>();
-      pot.SetKind(PotionKind.Poison);
+      pot.SetKind(PotionKind.Antidote);
       AddItemToInv(pot);
       hero.Consume(pot);
 

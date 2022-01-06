@@ -280,7 +280,7 @@ namespace Roguelike.Tiles.LivingEntities
         if (consumable.StatKind == EntityStatKind.Unset)
         {
           var pot = consumable.Loot as Potion;
-          Debug.Assert(pot != null && pot.Kind == PotionKind.Poison);
+          Debug.Assert(pot != null && pot.Kind == PotionKind.Antidote);
         }
 
         var stacked = consumable.Loot as StackedLoot;
@@ -296,7 +296,7 @@ namespace Roguelike.Tiles.LivingEntities
           if (consumable is Potion potion)
           {
             Debug.Assert(consumable.ConsumptionSteps == 1);
-            if (potion.Kind == PotionKind.Poison)
+            if (potion.Kind == PotionKind.Antidote)
             {
               var le = GetFirstLastingEffect(EffectType.Poisoned);
               if (le != null)

@@ -33,8 +33,8 @@ namespace Roguelike.LootFactories
         else if (tag == "mana_potion")
           kind = PotionKind.Mana;
 
-        else if (tag == "poison_potion")
-          kind = PotionKind.Poison;
+        else if (tag == "antidote_potion")
+          kind = PotionKind.Antidote;
 
         else if (tag == "magic_potion")
         {
@@ -57,7 +57,7 @@ namespace Roguelike.LootFactories
           loot = new Potion(kind);
         return loot;
       };
-      var names = new[] { "poison_potion", "health_potion", "mana_potion", "magic_potion", "strength_potion" };
+      var names = new[] { "antidote_potion", "health_potion", "mana_potion", "magic_potion", "strength_potion" };
       foreach (var name in names)
       {
         factory[name] = createPotion;

@@ -251,7 +251,8 @@ namespace RoguelikeUnitTests
       var normalRoomEnemies = en.Where(i => i.DungeonNodeIndex == normalRoom.NodeIndex).ToList();
       var islandRoomEnemies = en.Where(i => i.DungeonNodeIndex == island.NodeIndex).ToList();
       Assert.AreEqual(en.Count, normalRoomEnemies.Count + islandRoomEnemies.Count);
-      Assert.True(normalRoomEnemies.Count > 0 && islandRoomEnemies.Count > 0);
+      Assert.Greater(normalRoomEnemies.Count, 0);
+      Assert.Greater(islandRoomEnemies.Count, 0);
       Log("TestLootRevealFlagBasic end");
     }
 

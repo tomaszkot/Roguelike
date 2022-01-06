@@ -229,7 +229,7 @@ namespace RoguelikeUnitTests
       var lootItems = env.AssertLootFromEnemies(new[] { LootKind.Potion }).Cast<Potion>().ToList();
       Assert.True(lootItems.Any(i => i.Kind == PotionKind.Health));
       Assert.True(lootItems.Any(i => i.Kind == PotionKind.Mana));
-      Assert.True(lootItems.Any(i => i.Kind == PotionKind.Poison));
+      Assert.True(lootItems.Any(i => i.Kind == PotionKind.Antidote));
       Assert.False(lootItems.Any(i => i.Kind == PotionKind.Special));//these are rare
     }
 

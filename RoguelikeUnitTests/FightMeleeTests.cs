@@ -299,7 +299,7 @@ namespace RoguelikeUnitTests
     {
       var game = CreateGame();
       var hero = game.Hero;
-
+      hero.UseAttackVariation = false;
       var enemy = AllEnemies.First();
 
       Func<float> hitEnemy = () =>

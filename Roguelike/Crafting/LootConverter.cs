@@ -148,6 +148,14 @@ namespace Roguelike.Crafting
           }
           return ReturnCraftedLoot(wpn, false);
         }
+        else if (recipe.Kind == RecipeKind.AntidotePotion)
+        {
+          var plants = GetStackedCount<Plant>(lootToConvert);
+          if (plants !=1 || Filter<Plant>(lootToConvert).Where(i=>i.Kind == PlantKind.Thistle).Count() !=1)
+            return ReturnCraftingError("Thistle is needed by the Recipe");
+
+          return ReturnCraftedLoot(new Potion(PotionKind.Antidote), true);
+        }
         else if (recipe.Kind == RecipeKind.Pendant)
         {
           var cords = GetStackedCount<Cord>(lootToConvert);

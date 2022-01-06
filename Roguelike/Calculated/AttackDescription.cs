@@ -173,12 +173,12 @@ namespace Roguelike.Calculated
       AddExtraDamage(ent, wpn, weapons2Esk, ref val);
       CurrentPhysicalVariated += val - CurrentPhysicalVariated;
       
-      CurrentTotal = CurrentPhysical;
+      CurrentTotal = CurrentPhysicalVariated;
       var nonPhysical = ent.GetNonPhysicalDamages();
 
       if (offensiveSpell != null)
       {
-        var dmg = offensiveSpell.GetDamage(withVariation);
+        var dmg = offensiveSpell.GetDamage();
         dmg += CalcVariation(attackKind, true, dmg);
         if (wpn != null && attackKind == AttackKind.WeaponElementalProjectile)
         {

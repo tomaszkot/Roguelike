@@ -170,22 +170,27 @@ namespace RoguelikeUnitTests
       game.Level.SetTile(enemy, closeTile.point);
 
       var enemyDistFromHero = enemy.DistanceFrom(game.Hero);
-      Assert.Less(enemyDistFromHero, 4);
+      //Assert.Less(enemyDistFromHero, 4);
+      Assert.AreEqual(enemyDistFromHero, 3);
 
       var emptyCount = game.Level.GetEmptyTiles().Count;
       game.Level.GetEmptyTiles().ForEach(i => game.Level.SetTile(new Surface() { Kind = SurfaceKind.ShallowWater }, i.point));
-      Assert.AreEqual(emptyCount, game.Level.GetEmptyTiles().Count);//empty are not addected by surface
+      Assert.AreEqual(emptyCount, game.Level.GetEmptyTiles().Count);//empty are not affected by surface
 
       game.Level.SetTile(new Surface() { Kind = SurfaceKind.ShallowWater }, enemy.point);
+      //check if water is under the enemy
       Assert.AreEqual(game.Level.GetSurfaceKindUnderTile(enemy), SurfaceKind.ShallowWater);
       enemies = game.Level.GetTiles<Enemy>();
       Assert.AreEqual(enemies.Count, 1);
 
+      //make enemy turn
       var enTurnsCount = game.GameManager.Context.TurnCounts[TurnOwner.Enemies];
       game.GameManager.SkipHeroTurn();
       GotoNextHeroTurn();
       var enTurnsCountAfter = game.GameManager.Context.TurnCounts[TurnOwner.Enemies];
       Assert.Greater(enTurnsCountAfter, enTurnsCount);
+
+      //check pos
       var enemyDistFromHeroNew = enemy.DistanceFrom(game.Hero);
       Assert.AreEqual(enemyDistFromHeroNew, enemyDistFromHero - 2);
     }
