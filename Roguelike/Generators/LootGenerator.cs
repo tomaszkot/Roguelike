@@ -279,7 +279,7 @@ namespace Roguelike.Generators
       return eq;
     }
 
-    bool debug = true;
+    bool debug = false;
 
     internal Loot TryGetRandomLootByDiceRoll(LootSourceKind lsk, int maxEqLevel, LootAbility ab)
     {
