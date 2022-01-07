@@ -303,7 +303,7 @@ namespace Roguelike.Tiles.LivingEntities
     }
 
     [JsonIgnore]
-    public List<Algorithms.PathFinderNode> PathToTarget
+    public virtual List<Algorithms.PathFinderNode> PathToTarget
     {
       get
       {
