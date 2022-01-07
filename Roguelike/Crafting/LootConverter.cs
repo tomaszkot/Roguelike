@@ -148,7 +148,7 @@ namespace Roguelike.Crafting
           }
           return ReturnCraftedLoot(wpn, false);
         }
-        else if (recipe.Kind == RecipeKind.AntidotePotion)
+        else if (recipe.Kind == RecipeKind.Custom || recipe.Kind == RecipeKind.AntidotePotion)
         {
           var plants = GetStackedCount<Plant>(lootToConvert);
           if (plants !=1 || Filter<Plant>(lootToConvert).Where(i=>i.Kind == PlantKind.Thistle).Count() !=1)
@@ -156,7 +156,7 @@ namespace Roguelike.Crafting
 
           return ReturnCraftedLoot(new Potion(PotionKind.Antidote), true);
         }
-        else if (recipe.Kind == RecipeKind.Pendant)
+        else if (recipe.Kind == RecipeKind.Custom || recipe.Kind == RecipeKind.Pendant)
         {
           var cords = GetStackedCount<Cord>(lootToConvert);
           if (cords == 0)
@@ -165,7 +165,7 @@ namespace Roguelike.Crafting
           var amulet = Equipment.CreatePendant();
           return ReturnCraftedLoot(amulet);
         }
-        else if (recipe.Kind == RecipeKind.EnchantEquipment)
+        else if (recipe.Kind == RecipeKind.Custom || recipe.Kind == RecipeKind.EnchantEquipment)
         {
           var equips = lootToConvert.Where(i => i is Equipment);
           var equipsCount = equips.Count();

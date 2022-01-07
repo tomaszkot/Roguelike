@@ -63,6 +63,7 @@ namespace Roguelike.Tiles.LivingEntities
       AddFightItem(FightItemKind.Stone);
       AddFightItem(FightItemKind.ThrowingKnife);
       AddFightItem(FightItemKind.ExplosiveCocktail);
+      AddFightItem(FightItemKind.PoisonCocktail);
       //fightItems[FightItemKind.HunterTrap] = new ProjectileFightItem(FightItemKind.HunterTrap, this) { Count = RandHelper.GetRandomInt(3) + 1 };
 
       this.ActiveFightItem = RandHelper.GetRandomElem<FightItem>(this.fightItems.Values.ToList());
@@ -197,7 +198,8 @@ namespace Roguelike.Tiles.LivingEntities
           if (fi.Value is ProjectileFightItem pfi)
           {
             int inc = 80;
-            if (pfi.FightItemKind == FightItemKind.ExplosiveCocktail)
+            if (pfi.FightItemKind == FightItemKind.ExplosiveCocktail ||
+                pfi.FightItemKind == FightItemKind.PoisonCocktail)
               inc = 60;
             pfi.baseDamage = Roguelike.Calculated.FactorCalculator.AddFactor(pfi.baseDamage, inc);
           }

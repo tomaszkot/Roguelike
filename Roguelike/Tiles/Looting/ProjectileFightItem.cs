@@ -21,9 +21,6 @@ namespace Roguelike.Tiles.Looting
     public ProjectileFightItem(FightItemKind kind, LivingEntity caller = null) : base(kind)
     {
       Caller = caller;
-      DiesOnHit = false;
-      if (kind == FightItemKind.ExplosiveCocktail || kind == FightItemKind.Stone)
-        DiesOnHit = true;
     }
 
     [JsonIgnore]
@@ -54,7 +51,8 @@ namespace Roguelike.Tiles.Looting
       set
       {
         base.FightItemKind = value;
-        if (value == FightItemKind.ExplosiveCocktail)
+
+        if (value == FightItemKind.ExplosiveCocktail || value == FightItemKind.Stone || value == FightItemKind.PoisonCocktail)
           DiesOnHit = true;
 
         if (value == FightItemKind.PlainArrow)

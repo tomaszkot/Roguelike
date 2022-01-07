@@ -120,6 +120,7 @@ namespace Roguelike.LootFactories
         return new Gold();
       };
 
+      //PoisonCocktail and others 
       var fis = GetEnumValues<FightItemKind>();
       foreach(var fik in fis)
       {

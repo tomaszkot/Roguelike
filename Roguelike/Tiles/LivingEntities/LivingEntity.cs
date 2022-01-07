@@ -640,9 +640,15 @@ namespace Roguelike.Tiles.LivingEntities
 
           if (fi.FightItemKind == FightItemKind.ExplosiveCocktail)
           {
-            //AppendNonPhysicalDamage(EntityStatKind.FireAttack, fi.Damage, ref inflicted, ref damageDesc);
             var npd = CalculateNonPhysicalDamage(EntityStatKind.FireAttack, fi.Damage);
             lastingEffectsSet.EnsureEffect(EffectType.Firing, npd, attacker, fi.TurnLasting);
+            PlaySound(sound);//TODO
+            return HitResult.Hit;
+          }
+          else if (fi.FightItemKind == FightItemKind.PoisonCocktail)
+          {
+            var npd = CalculateNonPhysicalDamage(EntityStatKind.PoisonAttack, fi.Damage);
+            lastingEffectsSet.EnsureEffect(EffectType.Poisoned, npd, attacker, fi.TurnLasting);
             PlaySound(sound);//TODO
             return HitResult.Hit;
           }

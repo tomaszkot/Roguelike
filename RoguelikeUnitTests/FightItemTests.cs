@@ -131,16 +131,18 @@ namespace RoguelikeUnitTests
     }
         
     [Test]
-    public void TestExplosiveOnHero()
+    [TestCase(FightItemKind.ExplosiveCocktail)]
+    [TestCase(FightItemKind.PoisonCocktail)]
+    public void TestExplosiveOnHero(FightItemKind fightItemKind)
     {
       var game = CreateGame();
       var en = PlainEnemies.First();
-      en.AddFightItem(FightItemKind.ExplosiveCocktail);
-      en.AddFightItem(FightItemKind.ExplosiveCocktail);
+      en.AddFightItem(fightItemKind);
+      en.AddFightItem(fightItemKind);
       var hero = game.GameManager.Hero;
       var beginHealth = hero.Stats.Health;
 
-      var explosiveCocktail = en.GetFightItem(FightItemKind.ExplosiveCocktail) as ProjectileFightItem;
+      var explosiveCocktail = en.GetFightItem(fightItemKind) as ProjectileFightItem;
       var dam = explosiveCocktail.Damage;
       PlaceCloseToHero(en);
       Assert.True(game.GameManager.ApplyAttackPolicy(en, hero, explosiveCocktail, null, (p) => { }));
@@ -152,7 +154,7 @@ namespace RoguelikeUnitTests
 
       beginHealth = hero.Stats.Health;
       Assert.True(en.SetLevel(5));
-      explosiveCocktail = en.GetFightItem(FightItemKind.ExplosiveCocktail) as ProjectileFightItem;
+      explosiveCocktail = en.GetFightItem(fightItemKind) as ProjectileFightItem;
       //Assert.Greater(explosiveCocktail.Damage, dam);
       Assert.True(game.GameManager.ApplyAttackPolicy(en, hero, explosiveCocktail, null, (p) => { }));
       var lifeDiff1 = beginHealth - hero.Stats.Health;
