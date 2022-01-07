@@ -219,6 +219,12 @@ namespace Roguelike.Tiles
       return stats;
     }
 
+    internal void RemoveMagicStat(EntityStatKind stat, int statValue)
+    {
+      var es = ExtendedInfo.Stats.GetStat(stat);
+      es.Value.Factor -= statValue;
+    }
+
     public EquipmentClass Class
     {
       get

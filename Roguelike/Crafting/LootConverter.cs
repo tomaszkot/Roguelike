@@ -18,10 +18,25 @@ namespace Roguelike.Crafting
   public class CraftingResult
   {
     public string Message { get; set; }
-    public Loot Loot { get; set; }
+    public List<Loot> LootItems { get; set; }
 
-    public bool Success { get { return Loot != null; } }
+    public bool Success { get { return LootItems != null && LootItems.Any(); } }
     public bool DeleteCraftedLoot { get; set; } = true;
+
+    public CraftingResult(List<Loot> lootItems)
+    {
+      this.LootItems = lootItems;
+    }
+
+    public Loot FirstOrDefault()
+    {
+      return LootItems.FirstOrDefault();
+    }
+
+    public T FirstOrDefault<T>() where T : Loot
+    {
+      return LootItems.FirstOrDefault() as T;
+    }
   }
 
   public interface ILootCrafter
@@ -31,15 +46,31 @@ namespace Roguelike.Crafting
 
   public abstract class LootCrafterBase : ILootCrafter
   {
-    static CraftingResult error = new CraftingResult();
+    static CraftingResult error = new CraftingResult(null);
     public abstract CraftingResult Craft(Recipe recipe, List<Loot> lootToCraft);
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="loot"></param>
+    /// <param name="deleteCraftedLoot">Normally true but in rare cases when Eq is enhanced/fixed (e.g. Magical weapon recharge) false</param>
+    /// <returns></returns>
+    protected CraftingResult ReturnCraftedLoot(List<Loot> loot, bool deleteCraftedLoot = true)
+    {
+      return new CraftingResult(loot) { DeleteCraftedLoot = deleteCraftedLoot };
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="loot"></param>
+    /// <param name="deleteCraftedLoot">Normally true but in rare cases when Eq is enhanced/fixed (e.g. Magical weapon recharge) false</param>
+    /// <returns></returns>
     protected CraftingResult ReturnCraftedLoot(Loot loot, bool deleteCraftedLoot = true)
     {
       if (loot == null)//ups
         return ReturnCraftingError("Improper ingredients");
-
-      return new CraftingResult() { Loot = loot, DeleteCraftedLoot = deleteCraftedLoot };
+      return ReturnCraftedLoot(new List<Loot>() { loot }, deleteCraftedLoot);
     }
 
     protected CraftingResult ReturnCraftingError(string errorMessage)
@@ -115,6 +146,27 @@ namespace Roguelike.Crafting
         {
           return HandleCustomRecipe(lootToConvert);
         }
+        else if (recipe.Kind == RecipeKind.Custom || recipe.Kind == RecipeKind.UnEnchantEquipment)
+        {
+          var eqsToUncraft = Filter<Equipment>(lootToConvert);
+          if (eqsToUncraft.Count != 1 || eqsToUncraft[0].Enchants.Count == 0)
+            return ReturnCraftingError("One enchanted piece of equipment is required");
+          var eq = eqsToUncraft[0];
+          var enchs = eqsToUncraft[0].Enchants.Select(i => i.Enchanter).ToList();
+          enchs.ForEach(i => i.Count = 1);
+          foreach (var ench in eqsToUncraft[0].Enchants)
+          {
+            foreach (var stat in ench.StatKinds)
+            {
+              eq.RemoveMagicStat(stat, ench.StatValue);
+            }
+          }
+          eq.Enchants = new List<Enchant>();
+
+          var lootItems = new List<Loot>() { eqsToUncraft[0] };
+          lootItems.AddRange(enchs);
+          return ReturnCraftedLoot(lootItems);//deleteCraftedLoot:false
+        }
         else if (recipe.Kind == RecipeKind.CraftSpecialPotion && lootToConvert.Count == 2)
         {
           var healthPotion = lootToConvert.Where(i => i.IsPotion(PotionKind.Health));
@@ -152,7 +204,11 @@ namespace Roguelike.Crafting
         {
           var plants = GetStackedCount<Plant>(lootToConvert);
           if (plants !=1 || Filter<Plant>(lootToConvert).Where(i=>i.Kind == PlantKind.Thistle).Count() !=1)
-            return ReturnCraftingError("Thistle is needed by the Recipe");
+            return ReturnCraftingError("One thistle is needed by the Recipe");
+
+          var hoohCount = GetStackedCount<Hooch>(lootToConvert);
+          if(hoohCount!=1)
+            return ReturnCraftingError("One hooch is needed by the Recipe");
 
           return ReturnCraftedLoot(new Potion(PotionKind.Antidote), true);
         }
@@ -303,6 +359,7 @@ namespace Roguelike.Crafting
             return ReturnCraftedLoot(new Mushroom(MushroomKind.RedToadstool));
         }
       }
+      
 
       return ReturnCraftingError(InvalidIngredients);
     }

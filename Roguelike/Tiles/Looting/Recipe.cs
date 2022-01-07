@@ -5,7 +5,7 @@ namespace Roguelike.Tiles.Looting
   public enum RecipeKind
   {
     Unset, Custom, ThreeGems, OneEq, TransformPotion, TwoEq, TransformGem, Toadstools2Potion, ExplosiveCocktail, Pendant,
-    EnchantEquipment, CraftSpecialPotion, RechargeMagicalWeapon, AntidotePotion
+    EnchantEquipment, CraftSpecialPotion, RechargeMagicalWeapon, AntidotePotion, UnEnchantEquipment
   }
 
   public class Recipe : StackedLoot
@@ -73,7 +73,7 @@ namespace Roguelike.Tiles.Looting
           desc = "Turns toadstools into a potion";
           break;
         case RecipeKind.ExplosiveCocktail:
-          desc = "Turns Hooch plus Sulfur into Explosive Cocktail";
+          desc = "Turns hooch plus sulfur into an explosive cocktail";
           break;
         case RecipeKind.Pendant:
           desc = "Turns a piece of cord into a pendant";
@@ -89,7 +89,10 @@ namespace Roguelike.Tiles.Looting
           desc = "Recharges magical weapon";
           break;
         case RecipeKind.AntidotePotion:
-          desc = "Turns thistle into an antidote potion";
+          desc = "Turns hooch plus thistle into an antidote potion";
+          break;
+        case RecipeKind.UnEnchantEquipment:
+          desc = "Detaches enchant items from the equipment";
           break;
         default:
           break;
@@ -188,6 +191,9 @@ namespace Roguelike.Tiles.Looting
             break;
           case RecipeKind.AntidotePotion:
             tag1 += "antidote_potion";
+            break;
+          case RecipeKind.UnEnchantEquipment:
+            tag1 += "unenchant";
             break;
           default:
             break;
