@@ -10,7 +10,6 @@ namespace RoguelikeUnitTests
   [TestFixture]
   class EquipmentTests : TestBase
   {
-    //
    
 
 
