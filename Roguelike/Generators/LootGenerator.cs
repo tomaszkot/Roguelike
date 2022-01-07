@@ -279,10 +279,13 @@ namespace Roguelike.Generators
       return eq;
     }
 
-
+    bool debug = true;
 
     internal Loot TryGetRandomLootByDiceRoll(LootSourceKind lsk, int maxEqLevel, LootAbility ab)
     {
+      if(debug)
+        return GetRandomEquipment(EquipmentKind.Weapon, maxEqLevel);
+
       //return null;
       LootKind lootKind = LootKind.Unset;
       if (
@@ -551,6 +554,9 @@ namespace Roguelike.Generators
     //a cheap loot generated randomly on the level
     public virtual Loot GetRandomLoot(int level, LootKind skip = LootKind.Unset)
     {
+      if(debug)
+        return GetRandomEquipment(EquipmentKind.Weapon, level);
+
       if (RandHelper.GetRandomDouble() > .9f)//TODO
       {
         return new Hooch();

@@ -262,9 +262,14 @@ namespace Roguelike.Tiles.Looting
       return res;
     }
 
+    protected virtual ISpell GetSpell(LivingEntity caller)
+    { 
+      return CreateSpell(caller);
+    }
+
     public SpellStatsDescription GetExtraStatDescription(LivingEntity caller, bool currentLevel, bool withVariation = false)
     {
-      ISpell spell = CreateSpell(caller);
+      var spell = GetSpell(caller);
       if (spell == null)
         return null;
       var spellStatsDescription = spell.CreateSpellStatsDescription(currentLevel, withVariation);

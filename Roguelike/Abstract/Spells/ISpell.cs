@@ -47,12 +47,11 @@ namespace Roguelike.Abstract.Spells
       extraStatDescription.Add(str);
     }
 
-    public string[] GetDescription(bool addIndent = true, bool includeLevel = false)
+    public string[] GetDescription(bool addIndent = true)
     {
       extraStatDescription.Clear();
 
-      if (includeLevel)
-        AddString("Level: " + Level, addIndent);
+      AddString("Level: " + Level, addIndent);
 
       if (ManaCost != null)
         AddString("Mana Cost: " + ManaCost, addIndent);

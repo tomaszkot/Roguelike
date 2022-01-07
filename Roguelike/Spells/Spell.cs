@@ -109,6 +109,8 @@ namespace Roguelike.Spells
     {
       get
       {
+        if (weaponSpellSource != null)
+          return weaponSpellSource.LevelIndex;
         var lev = GetNextLevelMagicIndex() - 1;
         return lev;
       }

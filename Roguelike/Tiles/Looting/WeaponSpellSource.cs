@@ -54,11 +54,11 @@ namespace Roguelike.Tiles.Looting
       var statDescCurrent = GetExtraStatDescription(caller, true);
       if (statDescCurrent == null)
         return "";
-      var res = "Level: " + Level + "\r\n";
-      var str = string.Join("\r\n", statDescCurrent.GetDescription(false));
-      res += str;
+      //var res = "Level: " + Level + "\r\n";
+      var str = string.Join("\r\n", statDescCurrent.GetDescription());
+      //res += str;
 
-      return res;
+      return str;
     }
 
     public override ISpell CreateSpell(LivingEntity caller)
