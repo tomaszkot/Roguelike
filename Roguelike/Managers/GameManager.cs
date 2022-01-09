@@ -1405,5 +1405,42 @@ namespace Roguelike.Managers
         Logger.LogInfo(infoToDisplay);
       }
     }
+
+    public T GetStackedLootFromInv<T>(Inventory inv) where T: StackedLoot
+    {
+      return inv.GetStacked<T>().FirstOrDefault();
+    }
+
+    public T GetStackedLootFromHeroInventory<T>() where T : StackedLoot
+    {
+      foreach (var inv in GetHeroInventories())
+      {
+        var loot = inv.GetStacked<T>().FirstOrDefault();
+        if (loot != null)
+          return loot;
+      }
+      return null;
+    }
+
+    public Recipe GetRecipeFromInv(RecipeKind kind, Inventory inv) 
+    {
+      return inv.GetStacked<Recipe>().Where(i => i.Kind == kind).FirstOrDefault();
+    }
+
+    public List<Inventory> GetHeroInventories()
+    {
+      return new List<Inventory>() { Hero.Inventory, Hero.Crafting.InvItems.Inventory , Hero.Crafting.Recipes.Inventory};
+    }
+
+    public Recipe GetHeroRecipe(RecipeKind kind)
+    {
+      foreach(var inv in GetHeroInventories())
+      {
+        var rec = GetRecipeFromInv(kind, inv);
+        if (rec != null)
+          return rec;
+      }
+      return null;
+    }
   }
 }
