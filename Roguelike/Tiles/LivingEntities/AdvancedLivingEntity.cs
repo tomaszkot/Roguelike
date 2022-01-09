@@ -459,7 +459,7 @@ namespace Roguelike.Tiles.LivingEntities
       Func<string, bool> report = (string message) =>
       {
         var ev = new GameEvent(message, ActionLevel.Important);
-        ev.ShowHint = true;
+        ev.ShowHint = !autoPutoOn;
         AppendAction(ev);
         return false;
       };
@@ -509,7 +509,7 @@ namespace Roguelike.Tiles.LivingEntities
           if (eq.EquipmentKind == EquipmentKind.Shield &&
             (wpn.Kind == Weapon.WeaponKind.Bow || wpn.Kind == Weapon.WeaponKind.Crossbow)
             )
-            return report("Can not wield that shield when using "+ wpn.Kind.ToDescription());
+            return report("Can not wield a shield when using a "+ wpn.Kind.ToDescription());
 
           if (
               eq is Weapon wpnToUSe &&
