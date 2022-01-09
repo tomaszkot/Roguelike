@@ -17,7 +17,7 @@ namespace Roguelike.Tiles.Looting
     public Book(SpellKind kind = SpellKind.Unset) : base(kind)
     {
       LootKind = LootKind.Book;
-      Price *= 10;
+      Price *= 5;
     }
 
     public static SpellKind DiscoverKindFromName(string name)//->name fire_ball -> FireBall
