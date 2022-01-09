@@ -64,7 +64,7 @@ namespace Roguelike.Settings
     public bool RestoreHeroToSafePointAfterLoad { get; set; } = true;
     public bool RestoreHeroToDungeon { get; set; } = false;////TODO this way loading predefinied levels did not worked in Unity
     public bool RegenerateLevelsOnLoad { get; set; } = true;
-    public bool CollectLootOnEntering { get; set; }
+    public bool AutoCollectLootOnEntering { get; set; }
   }
 
   public class Input : SettingsBase

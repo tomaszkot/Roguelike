@@ -108,7 +108,7 @@ namespace Roguelike.Managers
 
       if (tile is Loot loot)
       {
-        if (gm.GameSettings.Mechanics.CollectLootOnEntering)
+        if (gm.GameSettings.Mechanics.AutoCollectLootOnEntering)
         {
           gm.CollectLoot(loot, true);
           return InteractionResult.Handled;
