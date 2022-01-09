@@ -82,6 +82,8 @@ namespace Roguelike.Settings
         gameControllingMode = value;
       }
     }
+
+    public bool AllowMovementUsingMouse { get; set; } = true;
   }
 
   public class View : SettingsBase

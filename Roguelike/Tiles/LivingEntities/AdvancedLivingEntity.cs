@@ -481,20 +481,20 @@ namespace Roguelike.Tiles.LivingEntities
           return report("Required statistic " + rs.Kind.ToDescription() +" not met.");
       }
 
-      if(autoPutoOn && eq is Weapon wpnBowLike && wpnBowLike.IsBowLike)
-      {
-        var projs = Inventory.GetItems<ProjectileFightItem>();
-        if (wpnBowLike.Kind == Weapon.WeaponKind.Crossbow)
-        { 
-          if(!projs.Where(i=>i.FightItemKind == FightItemKind.PlainBolt).Any())
-            return report("Ammo kind mismatch");
-        }
-        if (wpnBowLike.Kind == Weapon.WeaponKind.Bow)
-        {
-          if (!projs.Where(i => i.FightItemKind == FightItemKind.PlainArrow).Any())
-            return report("Ammo kind mismatch");
-        }
-      }
+      //if(autoPutoOn && eq is Weapon wpnBowLike && wpnBowLike.IsBowLike)
+      //{
+      //  var projs = Inventory.GetItems<ProjectileFightItem>();
+      //  if (wpnBowLike.Kind == Weapon.WeaponKind.Crossbow)
+      //  { 
+      //    if(!projs.Where(i=>i.FightItemKind == FightItemKind.PlainBolt).Any())
+      //      return report("Ammo kind mismatch");
+      //  }
+      //  if (wpnBowLike.Kind == Weapon.WeaponKind.Bow)
+      //  {
+      //    if (!projs.Where(i => i.FightItemKind == FightItemKind.PlainArrow).Any())
+      //      return report("Ammo kind mismatch");
+      //  }
+      //}
 
       if (eq.EquipmentKind == EquipmentKind.Weapon || eq.EquipmentKind == EquipmentKind.Shield)
       {
