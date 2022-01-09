@@ -81,23 +81,23 @@ namespace Roguelike
       if (AttackPolicyInitializer != null)
         AttackPolicyInitializer(attackPolicy, attacker, target);
       attackPolicy.OnApplied +=
-        (s, e) =>
+      (s, e) =>
+      {
+        AfterApply(e);
+        if (target is LivingEntity le && le.Alive)
         {
-          AfterApply(e);
-          if (target is LivingEntity le && le.Alive)
+          if (le.IsStatRandomlyTrue(EntityStatKind.ChanceToStrikeBack))
           {
-            if (le.IsStatRandomlyTrue(EntityStatKind.ChanceToStrikeBack))
+            EventsManager.AppendAction(new LivingEntityAction(LivingEntityActionKind.StrikedBack)
+            { Info = target.Name + " used ability Strike Back", Level = ActionLevel.Important, InvolvedEntity = target as LivingEntity });
+            ApplyPhysicalAttackPolicy(le, attacker, (p) =>
             {
-              EventsManager.AppendAction(new LivingEntityAction(LivingEntityActionKind.StrikedBack)
-              { Info = target.Name + " used ability Strike Back", Level = ActionLevel.Important, InvolvedEntity = target as LivingEntity });
-              ApplyPhysicalAttackPolicy(le, attacker, (p) =>
-              {
-                if (AttackPolicyDone != null)
-                  AttackPolicyDone();
-              });
-            }
+              if (AttackPolicyDone != null)
+                AttackPolicyDone();
+            });
           }
-        };
+        }
+      };
       attackPolicy.Apply(attacker, target);
     }
 
@@ -339,6 +339,7 @@ namespace Roguelike
             ReportHeroDeath();
             return;
           }
+          
         }
         //logger.LogInfo("TurnOwner to =>" + turnOwner);
       }

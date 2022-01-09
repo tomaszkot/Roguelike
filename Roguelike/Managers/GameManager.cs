@@ -123,6 +123,9 @@ namespace Roguelike.Managers
         RemoveDead();
       };
 
+      Context.TurnOwnerChanged += Context_TurnOwnerChanged;
+
+
       enemiesManager = new EnemiesManager(Context, EventsManager, Container, null, this);
       AlliesManager = new AlliesManager(Context, EventsManager, Container, enemiesManager, this);
       enemiesManager.AlliesManager = AlliesManager;
@@ -133,6 +136,22 @@ namespace Roguelike.Managers
 
       SoundManager = new SoundManager(this, container);
       SpellManager = new SpellManager(this);
+    }
+
+    private void Context_TurnOwnerChanged(object sender, TurnOwner e)
+    {
+      if (e == TurnOwner.Hero)
+      {
+        if (GameSettings.Mechanics.AutoCollectLootOnEntering)
+        {
+          var lootTile = CurrentNode.GetLootTile(Hero.point);
+          if (lootTile != null)
+          {
+            CollectLootOnHeroPosition();
+            Context.MoveToNextTurnOwner();
+          }
+        }
+      }
     }
 
     public void DisconnectEvents()
