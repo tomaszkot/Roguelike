@@ -14,7 +14,7 @@ namespace Roguelike.Tiles
   {
     public const string PartOfCraftingRecipe = "Part of the crafting recipe.";
     public const string ConsumeDescPart = "";// Press Right Mouse Button to consume.";
-    public const string DropOnEnchantable = "Drop it on an enchantable item in the Inventory.";
+    //public const string DropOnEnchantable = "Drop it on an enchantable item in the Inventory.";
   }
 
   [Flags]

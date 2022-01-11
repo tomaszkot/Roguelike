@@ -105,11 +105,11 @@ namespace Roguelike.Tiles.Looting
       get
       {
         string desc = "Enchants equipment. ";
-        var allowInPlaceInventoryCrafting = Options.Instance.Mechanics.AllowEnchantOnDragDrop;
-        if (allowInPlaceInventoryCrafting)
-          desc += Strings.DropOnEnchantable;
-        else
-          desc += "Use it with the Enchant Equipment recipe on the Crafting Panel.";
+        //var allowInPlaceInventoryCrafting = Options.Instance.Mechanics.AllowEnchantOnDragDrop;
+        //if (allowInPlaceInventoryCrafting)
+        //  desc += Strings.DropOnEnchantable;
+        //else
+        //  desc += "Use it with the Enchant Equipment recipe on the Crafting Panel.";
 
         return desc;
       }

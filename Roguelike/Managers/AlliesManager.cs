@@ -50,6 +50,15 @@ namespace Roguelike.Managers
         var allyCasted = ally as Ally;
         if (allyCasted != null)
         {
+          if (allyCasted.LastingEffects.Any(i => i.Type == Effects.EffectType.Poisoned))
+          {
+            var anty = allyCasted.Inventory.Items.FirstOrDefault(i => i is Potion pot && pot.Kind == PotionKind.Antidote);
+            if (anty != null)
+            {
+              allyCasted.Consume(anty as Consumable);
+              return;
+            }
+          }
           var food = allyCasted.Inventory.Items.FirstOrDefault(i => i is Consumable);
           if (food != null)
           {

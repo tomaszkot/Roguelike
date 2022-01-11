@@ -78,8 +78,8 @@ namespace Roguelike.Tiles.Looting
           break;
       }
 
-      if (PrimaryStatDescription.Any())
-        PrimaryStatDescription += Strings.DropOnEnchantable;
+      //if (PrimaryStatDescription.Any())
+      //  PrimaryStatDescription += Strings.DropOnEnchantable;
     }
 
 
