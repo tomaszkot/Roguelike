@@ -53,6 +53,7 @@ namespace Roguelike.Attributes
     
     AxeExtraDamage = 140, SwordExtraDamage = 142, BashingExtraDamage = 144, DaggerExtraDamage = 146,
     ExlosiveCoctailExtraDamage = 148,
+    PoisonCoctailExtraDamage = 149,
     ThrowingKnifeExtraDamage = 150, ThrowingStoneExtraDamage = 152,
     //    ExtraElementalDamage,
     StaffExtraElementalProjectileDamage = 160, ScepterExtraElementalProjectileDamage = 162, WandExtraElementalProjectileDamage = 164, 

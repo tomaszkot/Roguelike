@@ -183,6 +183,8 @@ namespace Roguelike.Tiles.Looting
           return AbilityKind.ThrowingKnifeMastering;
         if (fightItemKind == FightItemKind.ExplosiveCocktail)
           return AbilityKind.ExplosiveMastering;
+        if (fightItemKind == FightItemKind.PoisonCocktail)
+          return AbilityKind.PoisonMastering;
         if (fightItemKind == FightItemKind.Stone)
           return AbilityKind.ThrowingStoneMastering;
         if (fightItemKind == FightItemKind.HunterTrap)

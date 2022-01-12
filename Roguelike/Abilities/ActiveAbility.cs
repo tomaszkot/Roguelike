@@ -15,7 +15,8 @@ namespace Roguelike.Abilities
   {
     public override bool useCustomStatDescription()
     {
-      return Kind == AbilityKind.ExplosiveMastering;
+      return Kind == AbilityKind.ExplosiveMastering ||
+        Kind == AbilityKind.PoisonMastering;
     }
 
 
@@ -32,6 +33,7 @@ namespace Roguelike.Abilities
       switch (kind)
       {
         case AbilityKind.ExplosiveMastering:
+        case AbilityKind.PoisonMastering:
         case AbilityKind.ThrowingStoneMastering:
         case AbilityKind.ThrowingKnifeMastering:
           float fac = CalcFightItemFactor(level);
@@ -46,7 +48,8 @@ namespace Roguelike.Abilities
           {
             //if (kind == AbilityKind.HuntingMastering)
             //  factor = level;
-            if (kind == AbilityKind.ExplosiveMastering)
+            if (kind == AbilityKind.ExplosiveMastering ||
+              kind == AbilityKind.PoisonMastering)
               factor *= 3;
             else
               factor *= 4;
@@ -54,7 +57,8 @@ namespace Roguelike.Abilities
           factor = (int)Math.Ceiling(factor);
           if (primary)
           {
-            if (kind == AbilityKind.ExplosiveMastering)
+            if (kind == AbilityKind.ExplosiveMastering ||
+              kind == AbilityKind.PoisonMastering)
             {
               factor *= 2f;
             }
@@ -87,6 +91,10 @@ namespace Roguelike.Abilities
         case AbilityKind.ExplosiveMastering:
           desc = "Bonus to Explosive Cocktail damage";
           break;
+        case AbilityKind.PoisonMastering:
+          desc = "Bonus to Poison Cocktail damage";
+          break;
+          
         case AbilityKind.ThrowingStoneMastering:
           desc = "Bonus to throwing stones";
           break;
@@ -120,26 +128,10 @@ namespace Roguelike.Abilities
         switch (kind)
         {
           case AbilityKind.ExplosiveMastering:
-            //case AbilityKind.ThrowingWeaponsMastering:
-            //case AbilityKind.HuntingMastering:
-            //PageIndex = 1;
-            //abilityLevelToPlayerLevel.Add(1, 0);
-            //abilityLevelToPlayerLevel.Add(2, 2);
-            //abilityLevelToPlayerLevel.Add(3, 5);
-            //abilityLevelToPlayerLevel.Add(4, 7);
-            //abilityLevelToPlayerLevel.Add(5, 11);//max level is about 13
-            //if (kind == AbilityKind.ThrowingWeaponsMastering)
-            //{
-            //  ask = EntityStatKind.ChanceToCauseBleeding;
-            //  Name = "Throwing Mastery";
-            //}
-            //if (kind == AbilityKind.ExplosiveMastering)
-            {
-              psk = EntityStatKind.ExlosiveCoctailExtraDamage;
-              //ask = EntityStatKind.ChanceToBurnNeighbour; TODO 
-            }
-            //if(kind == AbilityKind.HuntingMastering)
-            //  psk = EntityStatKind.bl
+            psk = EntityStatKind.ExlosiveCoctailExtraDamage;
+            break;
+          case AbilityKind.PoisonMastering:
+            psk = EntityStatKind.PoisonCoctailExtraDamage;
             break;
           case AbilityKind.ThrowingKnifeMastering:
             psk = EntityStatKind.ThrowingKnifeExtraDamage;
