@@ -70,7 +70,7 @@ namespace Roguelike.Events
     public int QuestID { get; set; }
   }
 
-  public enum ShortcutsBarActionKind { ShortcutsBarChanged, ActiveItemDigitChanged }
+  public enum ShortcutsBarActionKind { ShortcutsBarChanged, ActiveItemDigitChanged, ContainerIndexChanged }
   public class ShortcutsBarAction : GameEvent
   {
     public int Digit { get; set; } = -1;
