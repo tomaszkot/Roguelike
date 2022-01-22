@@ -17,7 +17,9 @@ namespace Roguelike.Settings
     Unset, 
     MoveLeft, MoveRight, MoveUp, MoveDown, Grab, DistanceCollect, SkipTurn, HighlightLoot, SwapActiveWeapon,
 
-    UICharacter, UIHeroInventory, UIAbilities, UIMap, UICrafting, UIQuests, UIAlly
+    UICharacter, UIHeroInventory, UIAbilities, UIMap, UICrafting, UIQuests, UIAlly,
+
+    SwapActiveHotBar, PreviewSwapActiveHotBar
   }
     
   public enum GameControllingMode
