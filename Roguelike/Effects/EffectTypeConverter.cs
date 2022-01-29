@@ -86,7 +86,7 @@ namespace Roguelike.Effects
         esk = EntityStatKind.Health;
 
       else if (et == EffectType.Inaccuracy)
-        esk = EntityStatKind.ChanceToMeleeHit;//TODO es Bow?
+        esk = EntityStatKind.ChanceToMeleeHit;//TODO Crossbow, Bow?
       else if (et == EffectType.Poisoned || et == EffectType.Frozen || et == EffectType.Firing)
         esk = EntityStatKind.Health;
 

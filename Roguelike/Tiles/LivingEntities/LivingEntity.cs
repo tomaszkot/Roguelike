@@ -239,7 +239,7 @@ namespace Roguelike.Tiles.LivingEntities
 
     public static float GetResistanceLevelFactor(int level)
     {
-      //TODO
+      //TODO !
       return (level + 1) * 10;
       //if (!ResistanceFactors.Any())
       //{
@@ -571,7 +571,7 @@ namespace Roguelike.Tiles.LivingEntities
       {
         var npd = AppendNonPhysicalDamage(stat.Key, stat.Value, ref inflicted, ref desc);
 
-        var manaShieldEffect = LastingEffectsSet.GetByType(EffectType.ManaShield);//TODO ?
+        var manaShieldEffect = LastingEffectsSet.GetByType(EffectType.ManaShield);//TODO, shall Mana Shield be that powerful ?
         if (manaShieldEffect == null)
           LastingEffectsSet.TryAddLastingEffectOnHit(npd, attacker, stat.Key);
       }
@@ -804,7 +804,7 @@ namespace Roguelike.Tiles.LivingEntities
 
     public LastingEffectsSet LastingEffectsSet { get => lastingEffectsSet; }
 
-    //TODO use IsInProjectileReach
+    //TODO ! use IsInProjectileReach
     public float MaxMagicAttackDistance { get; internal set; } = GenerationInfo.MaxMagicAttackDistance;
 
     public virtual void RemoveLastingEffect(LastingEffect le)
@@ -1183,6 +1183,11 @@ namespace Roguelike.Tiles.LivingEntities
       if (kind == AbilityKind.StrikeBack)
           esk = EntityStatKind.ChanceToStrikeBack;
       return IsStatRandomlyTrue(esk);
+    }
+
+    public virtual Weapon GetActiveWeapon()
+    {
+        return null;
     }
   }
 }

@@ -118,7 +118,7 @@ namespace Roguelike.Spells
 
     public bool IsFromMagicalWeapon { get => weaponSpellSource != null;}
 
-    //TODO remove withVariation, use AttackDesc is needed
+    //TODO ! remove withVariation, use AttackDesc is needed
     public virtual SpellStatsDescription CreateSpellStatsDescription(bool currentMagicLevel, bool withVariation) 
     {
       int level = currentMagicLevel ? CurrentLevel : CurrentLevel + 1;

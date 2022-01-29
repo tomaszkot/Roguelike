@@ -31,9 +31,8 @@ namespace Roguelike.Tiles.LivingEntities
       Alive = false;//TODO, for turn to work
       //HeroAlly = true;
       //inventory = new InventoryGod();
-      //inventory.InvType = InvType.God; //InvType.Merchant;
+      //inventory.InvType = InvType.God;
       //inventory.PriceFactor = 1;
-
       //SetMagicValue();
     }
 

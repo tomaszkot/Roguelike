@@ -225,7 +225,7 @@ namespace Roguelike.Tiles.LivingEntities
       {
         ActiveManaPoweredSpellSource = new Scroll(attackSpells.GetRandomElem());
         SetResistanceFromScroll(ActiveManaPoweredSpellSource);
-        Stats.SetNominal(EntityStatKind.Mana, 1000);//TODO
+        Stats.SetNominal(EntityStatKind.Mana, 10000);//TODO
       }
     }
 

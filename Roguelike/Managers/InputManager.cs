@@ -106,15 +106,6 @@ namespace Roguelike.Managers
         return InteractionResult.None;
       }
 
-      //if (tile is Loot loot)
-      //{
-      //  if (gm.GameSettings.Mechanics.AutoCollectLootOnEntering)
-      //  {
-      //    gm.CollectLoot(loot, true);
-      //    return InteractionResult.Handled;
-      //  }
-      //}
-
       bool tileIsDoor = tile is Tiles.Interactive.Door;
       bool tileIsDoorBySumbol = tile.Symbol == Constants.SymbolDoor;
 

@@ -176,7 +176,7 @@ namespace Roguelike.LootFactories
       {
         var stats = eq.GetPossibleMagicStats();
         var stat = RandHelper.GetRandomElem(stats);
-        eq.MakeMagicSecLevel(stat.Key, 3);//TODO
+        eq.MakeMagicSecLevel(stat.Key, 3);//TODO !
       }
     }
 

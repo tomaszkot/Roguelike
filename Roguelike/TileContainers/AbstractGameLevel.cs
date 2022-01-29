@@ -193,8 +193,8 @@ namespace Roguelike.TileContainers
         var ls = tile as ILootSource;
         if (ls.Level <= 0)
         {
-          //some UT needed it
-          ls.SetLevel(Index + 1, Difficulty.Normal);//TODO Normal
+          //TODO some UT needed it
+          ls.SetLevel(Index + 1, Difficulty.Normal);//TODO Normal, pass Settings here
         }
       }
 

@@ -64,7 +64,7 @@ namespace Roguelike.Settings
     public bool AllowEnchantOnDragDrop { get; set; } = true;
     
     public bool RestoreHeroToSafePointAfterLoad { get; set; } = true;
-    public bool RestoreHeroToDungeon { get; set; } = false;////TODO this way loading predefinied levels did not worked in Unity
+    public bool RestoreHeroToDungeon { get; set; } = false;//TODO this way loading predefinied levels did not worked in Unity
     public bool RegenerateLevelsOnLoad { get; set; } = true;
     public bool AutoCollectLootOnEntering { get; set; }
   }

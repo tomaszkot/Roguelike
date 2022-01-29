@@ -40,10 +40,7 @@ namespace Roguelike.Calculated
         this.spell = spell;
         NonPhysical = new Dictionary<EntityStatKind, float>();
         this.ent = ent;
-        var aent = ent as AdvancedLivingEntity;
-        Weapon wpn = null;
-        if (aent != null)//TODO add GetActiveWeapon in LivingEntity?
-          wpn = aent.GetActiveWeapon();
+        var wpn = ent.GetActiveWeapon();
 
         attackKind = DiscoverAttackKind(attackKind, wpn);
 

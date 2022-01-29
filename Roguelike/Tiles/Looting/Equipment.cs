@@ -477,7 +477,7 @@ namespace Roguelike.Tiles
 
     public List<EntityStat> GetEffectiveRequiredStats()
     {
-      //TODO too heavy?
+      //TODO too heavy, maybe do it once?
       return RequiredStats.GetStats().Where(i => GetReqStatValue(i.Value) > 0).Select(i => i.Value).ToList();
     }
 
@@ -804,7 +804,7 @@ namespace Roguelike.Tiles
 
     public void SetPriceFromLevel()
     {
-      Price = (LevelIndex + 1) * 15;//TODO
+      Price = (LevelIndex + 1) * 15;//TODO !
     }
   }
 }

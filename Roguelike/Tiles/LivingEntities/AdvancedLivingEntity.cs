@@ -621,7 +621,7 @@ namespace Roguelike.Tiles.LivingEntities
       return true;
     }
 
-    public Weapon GetActiveWeapon()
+    public override Weapon GetActiveWeapon()
     {
       var currentEquipment = GetActiveEquipment();
       return currentEquipment[CurrentEquipmentKind.Weapon] as Weapon;

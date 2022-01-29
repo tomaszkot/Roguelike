@@ -259,12 +259,12 @@ namespace Roguelike.LootFactories
       return null;
     }
 
-    public override Loot GetRandom(int level)//TODO level
+    public override Loot GetRandom(int level)//TODO ! level
     {
       return GetRandom<Loot>(factory);
     }
 
-    public FightItem GetRandomFightItem(int level)//TODO level
+    public FightItem GetRandomFightItem(int level)//TODO ! level
     {
       return GetRandom<FightItem>(factoryFightItem);
     }

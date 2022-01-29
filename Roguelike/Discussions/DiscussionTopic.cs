@@ -1,4 +1,5 @@
-﻿using Roguelike.Extensions;
+﻿using Dungeons.Core;
+using Roguelike.Extensions;
 using SimpleInjector;
 using System;
 using System.Collections.Generic;
@@ -157,15 +158,12 @@ namespace Roguelike.Discussions
     }
 
 
-
     public void InsertTopic(DiscussionTopic subItem, bool atBegining = true)
     {
       //TODO prevent duplicates
       if (HasTopics(subItem.Right.Body))
-      {
-        int k = 0;
-        k++;
-      }
+        container.GetInstance<ILogger>().LogError("HasTopics! "+ subItem.Right.Body);
+
       if (subItem == this)
         throw new Exception("subItem == this!"+this);
       subItem.parent = this;
