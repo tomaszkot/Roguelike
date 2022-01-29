@@ -89,7 +89,7 @@ namespace Roguelike
           bool activeUsed;
           if (le.CanUseAbility(Abilities.AbilityKind.StrikeBack, out activeUsed))
           {
-            UseActiveAbility(attacker, le, Abilities.AbilityKind.StrikeBack);
+            UseActiveAbility(attacker, le, Abilities.AbilityKind.StrikeBack, activeUsed);
             if (activeUsed)
             {
             }
@@ -99,7 +99,7 @@ namespace Roguelike
       attackPolicy.Apply(attacker, target);
     }
         
-    private void UseActiveAbility(LivingEntity attacker, LivingEntity stricker, Abilities.AbilityKind abilityKind)
+    private void UseActiveAbility(LivingEntity attacker, LivingEntity stricker, Abilities.AbilityKind abilityKind, bool activeUsed)
     {
       if (abilityKind != Abilities.AbilityKind.StrikeBack)
         return;
@@ -112,10 +112,13 @@ namespace Roguelike
           AttackPolicyDone();
       });
 
-      var adv = stricker as AdvancedLivingEntity;
-      if (adv != null)
+      if (activeUsed)
       {
-        adv.GetActiveAbility(abilityKind).CollDownCounter = 5;//TODO
+        var adv = stricker as AdvancedLivingEntity;
+        if (adv != null)
+        {
+          adv.GetActiveAbility(abilityKind).CollDownCounter = 5;//TODO
+        }
       }
     }
 

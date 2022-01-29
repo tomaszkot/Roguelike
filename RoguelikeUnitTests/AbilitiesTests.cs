@@ -8,6 +8,7 @@ using Roguelike.Tiles;
 using Roguelike.Tiles.Interactive;
 using Roguelike.Tiles.LivingEntities;
 using Roguelike.Tiles.Looting;
+using SimpleInjector;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -107,6 +108,10 @@ namespace RoguelikeUnitTests
       TestLootMastery<Barrel>();
     }
 
+    private void TestLootMastery<T>(Container cont) where T : Enemy, ILootSource
+    {
+    }
+
     private void TestLootMastery<T>() where T : Tile, ILootSource, new()
     {
       var game = CreateGame();
@@ -133,7 +138,7 @@ namespace RoguelikeUnitTests
     [Test]
     public void TestLootMasteryEnemies()
     {
-      TestLootMastery<Enemy>();
+      TestLootMastery<Enemy>(Container);
     }
 
     private List<Loot> GetLootFromSrc(Roguelike.RoguelikeGame game, IEnumerable<ILootSource> enemies)

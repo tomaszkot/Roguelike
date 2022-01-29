@@ -1,5 +1,6 @@
 ﻿using Dungeons.Core;
 using Roguelike.Spells;
+using SimpleInjector;
 
 namespace Roguelike.Tiles.LivingEntities
 {
@@ -7,6 +8,10 @@ namespace Roguelike.Tiles.LivingEntities
   {
     public int RandMoveCoolDown = 1;
     public bool PreventMove { get; set; } = false;
+
+    public Animal(Container cont) : base(cont)
+    {
+    }
 
     internal override bool CanMakeRandomMove()
     {

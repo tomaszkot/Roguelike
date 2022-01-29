@@ -406,5 +406,10 @@ namespace RoguelikeUnitTests
 
       return game.GameManager.TryApplyAttackPolicy(fi, enemy);
     }
+
+    protected Enemy CreateEnemy()
+    {
+      return new Enemy(this.Container);
+    }
   }
 }

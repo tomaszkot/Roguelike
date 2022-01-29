@@ -476,8 +476,8 @@ namespace RoguelikeUnitTests
       Assert.Less(mushes.Count, 20);
 
       var eqs = lootInfo.Get<Equipment>();
-      Assert.Greater(eqs.Count, 60);
-      Assert.Less(eqs.Count, 100);
+      Assert.Greater(eqs.Count, 80);
+      Assert.Less(eqs.Count, 120);
 
       //scrolls
       var scrolls = lootInfo.Get<Scroll>();

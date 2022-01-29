@@ -29,7 +29,7 @@ namespace RoguelikeUnitTests
         dungeon.Create(10, 10, gi);
 
         var li = game.LevelGenerator.LevelIndex + 1;
-        dungeon.SetTileAtRandomPosition<Enemy>(li);
+        dungeon.SetTileAtRandomPosition<Enemy>(li, Container);
         dungeon.SetTileAtRandomPosition<Barrel>(li);
         dungeon.SetTileAtRandomPosition<Barrel>(li);
         return dungeon;
@@ -312,16 +312,15 @@ namespace RoguelikeUnitTests
       {
         Assert.True(i.Name.Any());
         Assert.True(i.Name.ToLower() != "enemy");
-      }
-      );
+      });
 
-      var enemy = new Enemy();
+      var enemy = CreateEnemy();
       Assert.False(enemy.Name.Any());
       enemy.Symbol = EnemySymbols.SkeletonSymbol;
       Assert.True(enemy.Name.Any());
       Assert.AreEqual(enemy.Name.ToLower(), "skeleton");
 
-      var drowned = new Enemy();
+      var drowned = CreateEnemy(); 
       drowned.tag1 = "drowned_man";
       Assert.False(drowned.Name.Any());
     }

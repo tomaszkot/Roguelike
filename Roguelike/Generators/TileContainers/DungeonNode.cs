@@ -1,6 +1,7 @@
 ﻿using Dungeons.Core;
 using Dungeons.Tiles;
 using Roguelike.Tiles.Interactive;
+using Roguelike.Tiles.LivingEntities;
 using SimpleInjector;
 using System.Diagnostics;
 using System.Drawing;
@@ -85,10 +86,20 @@ namespace Roguelike.Generators.TileContainers
       }
       return tileSet;
     }
+    public T SetTileAtRandomPosition<T>(int levelIndex, Container container, bool matchNodeIndex = true) where T : Enemy
+    {
+      var tile = container.GetInstance<T>();
+      return InitTile(levelIndex, matchNodeIndex, tile);
+    }
 
     public T SetTileAtRandomPosition<T>(int levelIndex, bool matchNodeIndex = true) where T : Tile, new()
     {
       var tile = new T();
+      return InitTile(levelIndex, matchNodeIndex, tile);
+    }
+
+    private T InitTile<T>(int levelIndex, bool matchNodeIndex, T tile) where T : Tile
+    {
       var inter = tile as Roguelike.Tiles.Interactive.InteractiveTile;
       if (inter != null)
         inter.Level = levelIndex;

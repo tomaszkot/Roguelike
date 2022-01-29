@@ -163,9 +163,9 @@ namespace Roguelike.Tiles.LivingEntities
     {
     }
 
-    public LivingEntity(Point point, char symbol, Container cont = null) : base(point, symbol)
+    public LivingEntity(Point point, char symbol, Container cont) : base(point, symbol)
     {
-      lastingEffectsSet = new LastingEffectsSet(this, null);
+      lastingEffectsSet = new LastingEffectsSet(this, cont);
       this.Container = cont;
       foreach (var basicStat in BaseStats.GetStats())
       {
@@ -296,11 +296,6 @@ namespace Roguelike.Tiles.LivingEntities
     {
       var stat = Stats.GetStat(EntityStatKind.Mana);
       stat.Subtract(amount);
-    }
-
-    public static LivingEntity CreateDummy()
-    {
-      return new LivingEntity(new Point(0, 0), '\0');
     }
 
     [JsonIgnore]

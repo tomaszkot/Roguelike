@@ -25,12 +25,11 @@ namespace Roguelike.Serialization
   {
     protected const string extension = ".json";
     public enum FileKind { Hero, GameLevel, GameState, Allies, Options }
-    Container container;
 
     public JSONPersister(Container container)
     {
-      this.container = container;
-      container.GetInstance<ILogger>().LogInfo("JSONPersister ctor [container]: " + this.container.GetHashCode());
+      this.Container = container;
+      container.GetInstance<ILogger>().LogInfo("JSONPersister ctor [container]: " + this.Container.GetHashCode());
     }
 
     public void Save<T>(T entity, string filePath)
@@ -51,7 +50,7 @@ namespace Roguelike.Serialization
           // only log an error once
           if (args.CurrentObject == args.ErrorContext.OriginalObject)
           {
-            this.container.GetInstance<ILogger>().LogError(args.ErrorContext.Error.Message);
+            this.Container.GetInstance<ILogger>().LogError(args.ErrorContext.Error.Message);
             throw new Exception(args.ErrorContext.Error.Message);
           }
         };
@@ -65,7 +64,7 @@ namespace Roguelike.Serialization
       }
       catch (Exception ex)
       {
-        this.container.GetInstance<ILogger>().LogError(ex);
+        this.Container.GetInstance<ILogger>().LogError(ex);
         throw;
       }
     }
@@ -81,7 +80,7 @@ namespace Roguelike.Serialization
 
         if (!IsValidJson(json))
         {
-          this.container.GetInstance<ILogger>().LogError("param json is not a valid json!");
+          this.Container.GetInstance<ILogger>().LogError("param json is not a valid json!");
           return null;
         }
         ITraceWriter traceWriter = null;// new MemoryTraceWriter();
@@ -103,7 +102,7 @@ namespace Roguelike.Serialization
       }
       catch (Exception ex)
       {
-        this.container.GetInstance<ILogger>().LogError(ex);
+        this.Container.GetInstance<ILogger>().LogError(ex);
         throw;
       }
 
@@ -173,7 +172,7 @@ namespace Roguelike.Serialization
     }
 
     [JsonIgnore]
-    public Container Container { get => container; private set => container = value; }
+    public Container Container { get; private set; }
 
     //protected virtual string GameFolder { get { return GameName; } }
 
@@ -192,13 +191,13 @@ namespace Roguelike.Serialization
     public AlliesStore LoadAllies(string hero)
     {
       var fileName = GetFullFilePath(FileKind.Allies, hero);
-      return Load<AlliesStore>(fileName, container);
+      return Load<AlliesStore>(fileName, Container);
     }
 
     public Hero LoadHero(string heroName)
     {
       var fileName = GetFullFilePath(FileKind.Hero, heroName);
-      return Load<Hero>(fileName, container);
+      return Load<Hero>(fileName, Container);
     }
 
     public virtual void DeleteGame(string heroName)
@@ -223,7 +222,7 @@ namespace Roguelike.Serialization
     public GameLevel LoadLevel(string heroName, int index)
     {
       var filePath = GetFullFilePath(FileKind.GameLevel, heroName, index.ToString());
-      return Load<GameLevel>(filePath, container);
+      return Load<GameLevel>(filePath, Container);
     }
 
     public void SaveGameState(string heroName, GameState gameState)
@@ -235,7 +234,7 @@ namespace Roguelike.Serialization
     public GameState LoadGameState(string heroName)
     {
       var filePath = GetFullFilePath(FileKind.GameState, heroName);
-      return Load<GameState>(filePath, container);
+      return Load<GameState>(filePath, Container);
     }
 
     public void SaveOptions(Options opt)
@@ -248,7 +247,7 @@ namespace Roguelike.Serialization
     {
       var filePath = Path.Combine(GamePath, "Options" + extension);
       if(File.Exists(filePath))
-        return Load<Options>(filePath, container);
+        return Load<Options>(filePath, Container);
       return null;
     }
   }

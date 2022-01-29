@@ -37,16 +37,16 @@ namespace Roguelike.Tiles.LivingEntities
     public Dictionary<FightItemKind, FightItem> fightItems = new Dictionary<FightItemKind, FightItem>();
     //FightItemKind fightItemKind = FightItemKind.Stone;
 
-    public Enemy() : this(new Point().Invalid(), 'e')
+    public Enemy(Container cont) : this(new Point().Invalid(), 'e', null)
     {
 
     }
 
-    public Enemy(char symbol) : this(new Point().Invalid(), symbol)
+    public Enemy(char symbol, Container cont) : this(new Point().Invalid(), symbol, cont)
     {
     }
 
-    public Enemy(Point point, char symbol) : base(point, symbol)
+    public Enemy(Point point, char symbol, Container cont) : base(point, symbol, cont)
     {
       //MovesCountPerTurn = 2;
       //IsWounded = true;
@@ -360,7 +360,7 @@ namespace Roguelike.Tiles.LivingEntities
 
     public static Enemy Spawn(char symbol, int level, Container cont, Difficulty? difficulty = null)
     {
-      var enemy = new Enemy(symbol);
+      var enemy = new Enemy(symbol, cont);
       enemy.Container = cont;
       enemy.SetLevel(level, difficulty);
       enemy.tag1 = EnemySymbols.EnemiesToSymbols.Where(i => i.Value == symbol).Single().Key;

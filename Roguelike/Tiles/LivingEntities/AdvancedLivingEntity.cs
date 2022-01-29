@@ -136,16 +136,6 @@ namespace Roguelike.Tiles.LivingEntities
       return true;
     }
 
-    public override Container Container
-    {
-      get { return base.Container; }
-      set
-      {
-        base.Container = value;
-        //this.Inventory.Container = value;
-      }
-    }
-
     public static Dictionary<Weapon.WeaponKind, EntityStatKind> MalleeWeapons2Esk = new Dictionary<Weapon.WeaponKind, EntityStatKind>()
     {
       {Weapon.WeaponKind.Axe,  EntityStatKind.AxeExtraDamage},
@@ -164,7 +154,7 @@ namespace Roguelike.Tiles.LivingEntities
       { Weapon.WeaponKind.Wand, EntityStatKind.WandExtraElementalProjectileDamage},
     };
 
-    public AdvancedLivingEntity(Container cont, Point point, char symbol) : base(point, symbol)
+    public AdvancedLivingEntity(Container cont, Point point, char symbol) : base(point, symbol, cont)
     {
       discussion = cont.GetInstance<Discussion>();
       NextLevelExperience = GenerationInfo.FirstNextLevelExperienceThreshold;
