@@ -29,7 +29,6 @@ namespace Roguelike.Abilities
   /// </summary>
   public class PassiveAbility : Ability
   {
-    
     public bool BeginTurnApply;
     
     public override string ToString()

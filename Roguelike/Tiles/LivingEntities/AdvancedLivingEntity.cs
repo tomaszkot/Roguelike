@@ -800,17 +800,15 @@ namespace Roguelike.Tiles.LivingEntities
       var toApply = Abilities.PassiveItems.Where(i => i.BeginTurnApply && i.Level > 0).ToList();
       foreach (var ab in toApply)
       {
-        if (ab.Kind == AbilityKind.RestoreHealth ||
-          ab.Kind == AbilityKind.RestoreMana)
+        if (ab.Kind == AbilityKind.RestoreHealth || ab.Kind == AbilityKind.RestoreMana)
         {
           var entityStatKind = EntityStatKind.Unset;
 
           if (ab.Kind == AbilityKind.RestoreHealth)
-          {
             entityStatKind = EntityStatKind.Health;
-          }
           else
             entityStatKind = EntityStatKind.Mana;
+
           var stat = Stats.GetStat(entityStatKind);
           var factor = stat.Value.Subtracted;
 
@@ -822,6 +820,12 @@ namespace Roguelike.Tiles.LivingEntities
             //GameManager.Instance.AppendDiagnosticsUnityLog("restored " + entityStatKind + " " + val);
           }
         }
+      }
+
+      foreach (var ab in Abilities.ActiveItems)
+      {
+        if (ab.CollDownCounter > 0)
+          ab.CollDownCounter--;
       }
     }
 
@@ -909,6 +913,11 @@ namespace Roguelike.Tiles.LivingEntities
     {
       var wpn = this.GetActiveWeapon();
       return new AttackDescription(this, wpn != null ? !wpn.StableDamage : true, attackKind);
+    }
+
+    public virtual AbilityKind GetSelectedActiveAbility()
+    {
+      return AbilityKind.Unset;
     }
   }
 }

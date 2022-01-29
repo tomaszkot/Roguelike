@@ -65,6 +65,7 @@
     <Compile Include="Abilities\LootAbility.cs" />
     <Compile Include="Abstract\Abilities\IAbility.cs" />
     <Compile Include="Abstract\Discussions\IDiscussPanel.cs" />
+    <Compile Include="Abstract\HotBar\IHotbarItem.cs" />
     <Compile Include="Abstract\IGame.cs" />
     <Compile Include="Abstract\Multimedia\ISoundPlayer.cs" />
     <Compile Include="Abstract\Spells\ISpell.cs" />

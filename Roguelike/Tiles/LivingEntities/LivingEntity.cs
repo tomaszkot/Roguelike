@@ -2,6 +2,7 @@
 using Dungeons.Fight;
 using Dungeons.Tiles;
 using Newtonsoft.Json;
+using Roguelike.Abilities;
 using Roguelike.Abstract.Spells;
 using Roguelike.Attributes;
 using Roguelike.Calculated;
@@ -1173,6 +1174,15 @@ namespace Roguelike.Tiles.LivingEntities
     public float CalcNextLevelExperience(float currentNextLevelExperience)
     {
        return Calculated.FactorCalculator.AddFactor((int)currentNextLevelExperience, 110);
+    }
+
+    public virtual bool CanUseAbility(AbilityKind kind, out bool activeUsed)
+    {
+      activeUsed = false;
+      var esk = EntityStatKind.Unset;
+      if (kind == AbilityKind.StrikeBack)
+          esk = EntityStatKind.ChanceToStrikeBack;
+      return IsStatRandomlyTrue(esk);
     }
   }
 }

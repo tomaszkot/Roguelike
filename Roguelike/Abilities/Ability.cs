@@ -1,17 +1,15 @@
 ﻿using Roguelike.Abstract;
+using Roguelike.Abstract.HotBar;
 using Roguelike.Attributes;
 using Roguelike.Calculated;
 using Roguelike.Tiles.Abstract;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Roguelike.Abilities
 {
-  public abstract class Ability : IDescriptable
-  {
+  public abstract class Ability : IDescriptable, IHotbarItem
+    {
     protected string primaryStatDescription;
     static List<string> emptyExtraStatDescription = new List<string>();
     public int Level { get; set; }
@@ -25,6 +23,7 @@ namespace Roguelike.Abilities
     protected List<string> customExtraStatDescription = new List<string>();
     public string LastIncError { get; set; }
     protected AbilityKind kind;
+    public int CollDownCounter { get; set; }
 
     public Ability()
     {

@@ -86,19 +86,37 @@ namespace Roguelike
         AfterApply(e);
         if (target is LivingEntity le && le.Alive)
         {
-          if (le.IsStatRandomlyTrue(EntityStatKind.ChanceToStrikeBack))
+          bool activeUsed;
+          if (le.CanUseAbility(Abilities.AbilityKind.StrikeBack, out activeUsed))
           {
-            EventsManager.AppendAction(new LivingEntityAction(LivingEntityActionKind.StrikedBack)
-            { Info = target.Name + " used ability Strike Back", Level = ActionLevel.Important, InvolvedEntity = target as LivingEntity });
-            ApplyPhysicalAttackPolicy(le, attacker, (p) =>
+            UseActiveAbility(attacker, le, Abilities.AbilityKind.StrikeBack);
+            if (activeUsed)
             {
-              if (AttackPolicyDone != null)
-                AttackPolicyDone();
-            });
+            }
           }
         }
       };
       attackPolicy.Apply(attacker, target);
+    }
+        
+    private void UseActiveAbility(LivingEntity attacker, LivingEntity stricker, Abilities.AbilityKind abilityKind)
+    {
+      if (abilityKind != Abilities.AbilityKind.StrikeBack)
+        return;
+      EventsManager.AppendAction(new LivingEntityAction(LivingEntityActionKind.StrikedBack){
+        Info = stricker.Name + " used ability Strike Back", Level = ActionLevel.Important, InvolvedEntity = stricker
+      });
+      ApplyPhysicalAttackPolicy(stricker, attacker, (p) =>
+      {
+        if (AttackPolicyDone != null)
+          AttackPolicyDone();
+      });
+
+      var adv = stricker as AdvancedLivingEntity;
+      if (adv != null)
+      {
+        adv.GetActiveAbility(abilityKind).CollDownCounter = 5;//TODO
+      }
     }
 
     public bool CanUseScroll(LivingEntity caster, SpellSource spellSource, ISpell spell, ref string preventReason)

@@ -1,6 +1,7 @@
 ﻿#define ASCII_BUILD  
 using Dungeons.Tiles;
 using Newtonsoft.Json;
+using Roguelike.Abstract.HotBar;
 using Roguelike.Attributes;
 using Roguelike.Tiles.Abstract;
 using Roguelike.Tiles.LivingEntities;
@@ -9,7 +10,7 @@ using System.Collections.Generic;
 using System.Linq;
 
 namespace Roguelike.Tiles
-{
+{  
   public class Strings
   {
     public const string PartOfCraftingRecipe = "Part of the crafting recipe.";
@@ -65,7 +66,7 @@ namespace Roguelike.Tiles
   public enum LootSourceKind { Enemy, PlainChest, GoldChest, DeluxeGoldChest, Barrel }
   public enum EquipmentClass { Unset, Plain, Magic, MagicSecLevel, Unique }
 
-  public abstract class Loot : Tile//, IDescriptable
+  public abstract class Loot : Tile, IHotbarItem
   {
     //public static EntityStatKind[] AttackingExtendedStats = new[] { EntityStatKind.Attack, EntityStatKind.FireAttack, 
     //EntityStatKind.PoisonAttack, EntityStatKind.ColdAttack };
