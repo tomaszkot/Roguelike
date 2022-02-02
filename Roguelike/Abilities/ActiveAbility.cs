@@ -1,10 +1,7 @@
 ﻿using Roguelike.Attributes;
 using Roguelike.Extensions;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Diagnostics;
 
 namespace Roguelike.Abilities
 {
@@ -22,7 +19,7 @@ namespace Roguelike.Abilities
 
     public override bool IsPercentageFromKind()
     {
-      return false;
+      return kind == AbilityKind.Stride;
     }
 
     public override float CalcFactor(bool primary, int level)
@@ -36,18 +33,12 @@ namespace Roguelike.Abilities
         case AbilityKind.PoisonMastering:
         case AbilityKind.ThrowingStoneMastering:
         case AbilityKind.ThrowingKnifeMastering:
+        case AbilityKind.Stride:
           float fac = CalcFightItemFactor(level);
-          //List<float> facs = new List<float>();
-          //for (int i = 0; i < 5; i++)
-          //{
-          //  facs.Add(CalcExplFactor(i));
-          //}
           factor = fac;
 
           if (!primary)
           {
-            //if (kind == AbilityKind.HuntingMastering)
-            //  factor = level;
             if (kind == AbilityKind.ExplosiveMastering ||
               kind == AbilityKind.PoisonMastering)
               factor *= 3;
@@ -62,12 +53,8 @@ namespace Roguelike.Abilities
             {
               factor *= 2f;
             }
-            //else if (kind == PassiveAbilityKind.ThrowingWeaponsMastering)
-            //{
-            //  factor *= 23f;
-            //}
-            //else if (kind == AbilityKind.HuntingMastering)
-            //  factor *= 18f;
+            if (kind == AbilityKind.Stride)
+              factor *= 5f;
           }
           break;
         
@@ -103,6 +90,9 @@ namespace Roguelike.Abilities
           break;
         case AbilityKind.HunterTrapMastering:
           desc = "Bonus to hunter trap";
+          break;
+        case AbilityKind.Stride:
+          desc = "Hit target with your body causing damage and possibly knocking it back";
           break;
         default:
           break;
@@ -142,8 +132,11 @@ namespace Roguelike.Abilities
           case AbilityKind.HunterTrapMastering:
             psk = EntityStatKind.HunterTrapExtraDamage;
             break;
+          case AbilityKind.Stride:
+            psk = EntityStatKind.MeleeAttack;
+            break;
           default:
-
+            Debug.WriteLine("Unsupported kind:  "+ kind);
             break;
         }
         //if (PrimaryStat == null)

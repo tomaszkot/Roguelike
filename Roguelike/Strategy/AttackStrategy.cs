@@ -45,7 +45,7 @@ namespace Roguelike
         TilesAtPathProvider = context.Container.GetInstance<ITilesAtPathProvider>();
       }
 
-      public GameContext Context { get => context; set => context = value; }
+      //public GameContext Context { get => context; set => context = value; }
 
       public bool AttackIfPossible(LivingEntity attacker, LivingEntity target)
       {
@@ -79,14 +79,12 @@ namespace Roguelike
             }
 
           }
-
-          if (Context != null)
+                    
+          GameManager.ApplyPhysicalAttackPolicy(attacker, target, (policy) =>
           {
-            Context.ApplyPhysicalAttackPolicy(attacker, target, (pol) =>
-            {
-              OnPolicyApplied(pol);
-            });
-          }
+            OnPolicyApplied(policy);
+          });
+          
           return true;
         }
 

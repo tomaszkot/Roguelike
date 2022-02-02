@@ -63,18 +63,24 @@ namespace Roguelike.Managers
 
     public InteractionResult HandleHeroShift(TileNeighborhood neib)
     {
-      int horizontal = 0;
-      int vertical = 0;
+      int horizontal, vertical;
+      GetMoveData(neib, out horizontal, out vertical);
+
+      return HandleHeroShift(horizontal, vertical);
+    }
+
+    public static void GetMoveData(TileNeighborhood neib, out int horizontal, out int vertical)
+    {
+      horizontal = 0;
+      vertical = 0;
       var res = DungeonNode.GetNeighborPoint(new Tile() { point = new Point(0, 0) }, neib);
       if (res.X != 0)
         horizontal = res.X;
       else
         vertical = res.Y;
-
-      return HandleHeroShift(horizontal, vertical);
     }
 
-    public MoveResult GetNewPositionFromMove(Point pos, int horizontal, int vertical)
+    public static MoveResult GetNewPositionFromMove(Point pos, int horizontal, int vertical)
     {
       if (horizontal != 0 || vertical != 0)
       {
@@ -119,7 +125,7 @@ namespace Roguelike.Managers
         //  Logger.LogInfo("Hero attacks en health = "+en.Stats.Health);
         gm.EnemiesManager.RemoveDead();
 
-        Context.ApplyPhysicalAttackPolicy(Hero, tile, (p) => gm.OnHeroPolicyApplied(p));
+        gm.ApplyHeroPhysicalAttackPolicy(tile, true);
 
         return InteractionResult.Attacked;
       }
@@ -211,7 +217,7 @@ namespace Roguelike.Managers
       }
       else
       {
-        Context.ApplyPhysicalAttackPolicy(Hero, tile, (policy) => gm.OnHeroPolicyApplied(policy));
+        gm.ApplyHeroPhysicalAttackPolicy(tile, true);
         return InteractionResult.Attacked;
       }
       return InteractionResult.Blocked;//blok hero by default

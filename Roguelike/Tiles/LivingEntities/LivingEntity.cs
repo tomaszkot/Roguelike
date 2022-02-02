@@ -531,7 +531,7 @@ namespace Roguelike.Tiles.LivingEntities
       return npd;
     }
 
-    float CalcMeleeDamage(float attackerPower, ref string desc)
+    public float CalcMeleeDamage(float attackerPower, ref string desc)
     {
       float defense = GetDefense();
       if (defense == 0)
@@ -560,7 +560,6 @@ namespace Roguelike.Tiles.LivingEntities
       var av = attacker.GetAttackValue(AttackKind.Melee);
       var currentPhysicalVariated = av.CurrentPhysicalVariated;
       var inflicted = CalcMeleeDamage(currentPhysicalVariated, ref desc);
-
       var npds = attacker.GetNonPhysicalDamages();
       foreach (var stat in npds)
       {
@@ -571,16 +570,21 @@ namespace Roguelike.Tiles.LivingEntities
           LastingEffectsSet.TryAddLastingEffectOnHit(npd, attacker, stat.Key);
       }
 
+      return InflictDamage(attacker, true, ref inflicted, ref desc);
+    }
+
+    public float InflictDamage(LivingEntity attacker, bool normalAttack, ref float inflicted, ref string desc)
+    {
       ReduceHealth(attacker, "punch", desc, "", ref inflicted);
 
-      if (inflicted > 0)
+      if (normalAttack && inflicted > 0)
         StealStatIfApplicable(inflicted, attacker);
       //if (this is Enemy || this is Hero)// || this is CrackedStone)
       //{
       //  PlayPunchSound();
       //}
       var dead = DieIfShould(EffectType.Unset);
-      if (!dead)
+      if (normalAttack && !dead)
       {
         if (IsWounded)
         {
@@ -1184,5 +1188,8 @@ namespace Roguelike.Tiles.LivingEntities
     {
         return null;
     }
+
+    [JsonIgnore]
+    public bool MoveDueToAbilityVictim { get; internal set; }
   }
 }

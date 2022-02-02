@@ -207,8 +207,8 @@ namespace Roguelike.Events
   public enum LivingEntityActionKind
   {
     LeveledUp, Moved, Died, GainedDamage, ExperiencedEffect, EffectFinished, Trapped, Interacted, Missed, UsedSpell,
-    FailedToCastSpell, GodsTurn, GodsPowerReleased, StrikedBack, BulkAttack, UsedPortal, Teleported, AppendedToLevel,
-    StateChanged
+    FailedToCastSpell, GodsTurn, GodsPowerReleased, UsedPortal, Teleported, AppendedToLevel,
+    StateChanged, UsedAbility
   }
 
   public class PolicyAppliedAction : GameEvent

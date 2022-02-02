@@ -32,7 +32,8 @@ namespace Roguelike.Abilities
               kind == AbilityKind.ThrowingStoneMastering ||
               kind == AbilityKind.ThrowingKnifeMastering ||
               kind == AbilityKind.HunterTrapMastering ||
-              kind == AbilityKind.PoisonMastering)
+              kind == AbilityKind.PoisonMastering ||
+              kind == AbilityKind.Stride)
           {
             ab = new ActiveAbility() { Kind = kind };
             activeAbilities.Add(ab as ActiveAbility);

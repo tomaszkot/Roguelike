@@ -56,8 +56,7 @@ namespace Roguelike
 
     //actions (move, attack) count in turn - typically 1
     Dictionary<TurnOwner, int> turnActionsCount = new Dictionary<TurnOwner, int>();
-    public Action<Policy, LivingEntity, Tile> AttackPolicyInitializer;
-    public Action AttackPolicyDone;
+    
 
     public GameContext(Container container)
     {
@@ -73,55 +72,7 @@ namespace Roguelike
       turnCounts[TurnOwner.Enemies] = 0;
       turnCounts[TurnOwner.Animals] = 0;
     }
-
-    public void ApplyPhysicalAttackPolicy(LivingEntity attacker, Tile target, Action<Policy> AfterApply)
-    {
-      var attackPolicy = Container.GetInstance<AttackPolicy>();
-      
-      if (AttackPolicyInitializer != null)
-        AttackPolicyInitializer(attackPolicy, attacker, target);
-      attackPolicy.OnApplied +=
-      (s, e) =>
-      {
-        AfterApply(e);
-        if (target is LivingEntity le && le.Alive)
-        {
-          bool activeUsed;
-          if (le.CanUseAbility(Abilities.AbilityKind.StrikeBack, out activeUsed))
-          {
-            UseActiveAbility(attacker, le, Abilities.AbilityKind.StrikeBack, activeUsed);
-            if (activeUsed)
-            {
-            }
-          }
-        }
-      };
-      attackPolicy.Apply(attacker, target);
-    }
         
-    private void UseActiveAbility(LivingEntity attacker, LivingEntity stricker, Abilities.AbilityKind abilityKind, bool activeUsed)
-    {
-      if (abilityKind != Abilities.AbilityKind.StrikeBack)
-        return;
-      EventsManager.AppendAction(new LivingEntityAction(LivingEntityActionKind.StrikedBack){
-        Info = stricker.Name + " used ability Strike Back", Level = ActionLevel.Important, InvolvedEntity = stricker
-      });
-      ApplyPhysicalAttackPolicy(stricker, attacker, (p) =>
-      {
-        if (AttackPolicyDone != null)
-          AttackPolicyDone();
-      });
-
-      if (activeUsed)
-      {
-        var adv = stricker as AdvancedLivingEntity;
-        if (adv != null)
-        {
-          adv.GetActiveAbility(abilityKind).CollDownCounter = 5;//TODO
-        }
-      }
-    }
-
     public bool CanUseScroll(LivingEntity caster, SpellSource spellSource, ISpell spell, ref string preventReason)
     {
       if (spellSource.Count <= 0)

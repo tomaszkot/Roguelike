@@ -27,6 +27,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
+using System.Threading;
 
 namespace Roguelike.Managers
 {
@@ -118,7 +119,7 @@ namespace Roguelike.Managers
 
       Context = container.GetInstance<GameContext>();
       Context.EventsManager = EventsManager;
-      Context.AttackPolicyDone += () =>
+      AttackPolicyDone += () =>
       {
         RemoveDead();
       };
@@ -164,7 +165,7 @@ namespace Roguelike.Managers
       inputManager = new InputManager(this);
     }
 
-    public bool ApplyMovePolicy(LivingEntity entity, Point newPos, List<Point> fullPath, Action<Policy> OnApplied)
+    public bool ApplyMovePolicy(LivingEntity entity, Point newPos, List<Point> fullPath = null, Action<Policy> OnApplied = null)
     {
       var movePolicy = Container.GetInstance<MovePolicy>();
       //Logger.LogInfo("moving " + entity + " to " + newPos + " mp = " + movePolicy);
@@ -755,8 +756,16 @@ namespace Roguelike.Managers
       return lootGenerator.GetRandomEquipment(kind, Hero.Level, Hero.GetLootAbility());
     }
 
+    Enemy activeAbilityVictim;
     public void MakeGameTick()
     {
+      if (activeAbilityVictim != null)
+      {
+        if(activeAbilityVictim.Alive && activeAbilityVictim.State!= EntityState.Idle)
+          return;
+        activeAbilityVictim.MoveDueToAbilityVictim = false;
+        activeAbilityVictim = null;
+      }
       if (context.PendingTurnOwnerApply)
       {
         EntitiesManager mgr = null;
@@ -1460,6 +1469,112 @@ namespace Roguelike.Managers
           return rec;
       }
       return null;
+    }
+
+    public Action<Policy, LivingEntity, Tile> AttackPolicyInitializer;
+    public Action AttackPolicyDone;
+
+    
+    public void ApplyHeroPhysicalAttackPolicy(Tile target, bool allowPostAttackLogic)
+    {
+      Action<Policy> afterApply = (p) => { };
+      if (allowPostAttackLogic)
+        afterApply = (p)=>OnHeroPolicyApplied(p);
+      ApplyPhysicalAttackPolicy(Hero, target, afterApply);
+    }
+
+    public void ApplyPhysicalAttackPolicy(LivingEntity attacker, Tile target, Action<Policy> afterApply)
+    {
+      var attackPolicy = Container.GetInstance<AttackPolicy>();
+
+      if (AttackPolicyInitializer != null)
+        AttackPolicyInitializer(attackPolicy, attacker, target);
+
+      attackPolicy.OnApplied += (s, e) =>
+      {
+        afterApply(e);
+        bool activeUsed = false;
+                
+        if (target is LivingEntity le && le.Alive)
+        {
+          if (le.CanUseAbility(Abilities.AbilityKind.StrikeBack, out activeUsed))
+          {
+            UseActiveAbility(attacker, le, Abilities.AbilityKind.StrikeBack, activeUsed);
+            if (activeUsed)
+            {
+            }
+          }
+        }
+        
+      };
+      attackPolicy.Apply(attacker, target);
+    }
+
+    public void UseActiveAbility(LivingEntity target, LivingEntity abilityUser, Abilities.AbilityKind abilityKind, bool activeAbility)
+    {
+      if (abilityKind != Abilities.AbilityKind.StrikeBack &&
+          abilityKind != Abilities.AbilityKind.Stride)
+        return;
+      EventsManager.AppendAction(new LivingEntityAction(LivingEntityActionKind.UsedAbility)
+      {
+        Info = abilityUser.Name + " used ability " + abilityKind,
+        Level = ActionLevel.Important,
+        InvolvedEntity = abilityUser
+      });
+
+      bool used = false;
+      if (abilityKind == Abilities.AbilityKind.StrikeBack)
+      {
+        ApplyPhysicalAttackPolicy(abilityUser, target, (p) =>
+        {
+          used = true;
+          if (AttackPolicyDone != null)
+            AttackPolicyDone();
+        });
+      }
+      else if (abilityKind == Abilities.AbilityKind.Stride)
+      {
+        int horizontal = 0, vertical = 0;
+        var neibKind = GetTileNeighborhoodKindCompareToHero(target);
+        if (neibKind.HasValue)
+        {
+          InputManager.GetMoveData(neibKind.Value, out horizontal, out vertical);
+          var newPos = InputManager.GetNewPositionFromMove(target.point, horizontal, vertical);
+          activeAbilityVictim = target as Enemy;
+          activeAbilityVictim.MoveDueToAbilityVictim = true;
+
+          var desc = "";
+          var ab = (abilityUser as AdvancedLivingEntity).GetActiveAbility(Abilities.AbilityKind.Stride);
+          var damage = target.CalcMeleeDamage(Calculated.FactorCalculator.AddFactor(abilityUser.Stats.Strength, ab.PrimaryStat.Factor) , ref desc);
+          var inflicted = target.InflictDamage(abilityUser, false, ref damage, ref desc);
+          
+          ApplyMovePolicy(target, newPos.Point);
+          used = true;
+        }
+      }
+
+      if (used && activeAbility)
+      {
+        var adv = abilityUser as AdvancedLivingEntity;
+        if (adv != null)
+        {
+          adv.GetActiveAbility(abilityKind).CollDownCounter = 5;//TODO
+        }
+      }
+    }
+
+    TileNeighborhood? GetTileNeighborhoodKindCompareToHero(LivingEntity target)
+    {
+      TileNeighborhood? neib = null;
+      if (target.Position.X > Hero.Position.X)
+        neib = TileNeighborhood.East;
+      else if (target.Position.X < Hero.Position.X)
+        neib = TileNeighborhood.West;
+      else if (target.Position.Y > Hero.Position.Y)
+        neib = TileNeighborhood.South;
+      else if (target.Position.Y < Hero.Position.Y)
+        neib = TileNeighborhood.North;
+      return neib;
     }
   }
 }

@@ -80,11 +80,9 @@ namespace RoguelikeUnitTests
     public void TestStrikeBack()
     {
       var game = CreateGame();
-      var empOnes = game.GameManager.CurrentNode.GetEmptyNeighborhoodTiles(game.GameManager.Hero, false);
-      Assert.Greater(empOnes.Count, 1);
-      var enemies = PlainEnemies;
-      float en1Health = enemies[0].Stats.Health;
-      game.GameManager.CurrentNode.SetTile(enemies[0], empOnes[0].point);
+      var en = PlainEnemies.First();
+      PlaceCloseToHero(en);
+      float en1Health = en.Stats.Health;
 
       var ab = game.GameManager.Hero.GetPassiveAbility(Roguelike.Abilities.AbilityKind.StrikeBack);
       for (int i = 0; i < 5; i++)
@@ -95,14 +93,16 @@ namespace RoguelikeUnitTests
 
       for (int i = 0; i < 20; i++)
       {
-        game.GameManager.Context.ApplyPhysicalAttackPolicy(enemies[0], game.Hero, (p) => { });
+        game.GameManager.ApplyPhysicalAttackPolicy(en, game.Hero, (p) => { });
         //GotoNextHeroTurn();
       }
 
-      Assert.Greater(en1Health, enemies[0].Stats.Health);
+      Assert.Greater(en1Health, en.Stats.Health);
     }
 
-    [Test]
+    
+
+      [Test]
     public void TestLootMasteryBarrels()
     {
       TestLootMastery<Barrel>();

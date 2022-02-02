@@ -58,7 +58,7 @@ namespace Roguelike.Managers
           .ToList();
         }
         if (HeroBulkAttackTargets.Any())
-          gm.AppendAction(new LivingEntityAction(LivingEntityActionKind.BulkAttack)
+          gm.AppendAction(new LivingEntityAction(LivingEntityActionKind.UsedAbility)
           { Info = hero.Name + " used ability Bulk Attack", Level = ActionLevel.Important, InvolvedEntity = hero });
       }
     }
@@ -74,12 +74,19 @@ namespace Roguelike.Managers
         HandlePolicyApplied(policy);
         var ap = policy as AttackPolicy;
         var en = ap.Victim as Enemy;
+
+        bool activeUsed;
+        if (en.Alive && gm.Hero.CanUseAbility(Abilities.AbilityKind.Stride, out activeUsed))
+        {
+          gm.UseActiveAbility(en, gm.Hero, Abilities.AbilityKind.Stride, activeUsed);
+        }
+
         var bulkOK = HandleBulk(en, EntityStatKind.ChanceToBulkAttack);
         if (!bulkOK)
         {
           var repeatOK = gm.Hero.IsStatRandomlyTrue(EntityStatKind.ChanceToRepeatMelleeAttack);
           if (repeatOK)
-            gm.Context.ApplyPhysicalAttackPolicy(gm.Hero, en, (p) => { });
+            gm.ApplyHeroPhysicalAttackPolicy(en, false);
         }
       }
 
@@ -109,7 +116,7 @@ namespace Roguelike.Managers
                 break;
               HeroBulkAttackTargets.Remove(target);
               if (esk == EntityStatKind.ChanceToBulkAttack)
-                gm.Context.ApplyPhysicalAttackPolicy(gm.Hero, target, (p) => { });
+                gm.ApplyHeroPhysicalAttackPolicy(target, false);
               if (func != null)
                 func(target);
             }

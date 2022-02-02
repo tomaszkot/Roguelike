@@ -116,7 +116,8 @@ namespace Roguelike.Tiles
       }
       else
       {
-        System.Diagnostics.Debug.WriteLine("!baseDamages.ContainsKey(Kind) " + this);
+        if(!this.Name.Contains("Hound"))
+          System.Diagnostics.Debug.WriteLine("!baseDamages.ContainsKey(Kind) " + this);
       }
     }
 

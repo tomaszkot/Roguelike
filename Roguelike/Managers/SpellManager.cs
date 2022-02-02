@@ -10,9 +10,7 @@ using Roguelike.Tiles.LivingEntities;
 using Roguelike.Tiles.Looting;
 using SimpleInjector;
 using System;
-using System.Collections.Generic;
 using System.Drawing;
-using System.Linq;
 
 namespace Roguelike.Managers
 {

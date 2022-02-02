@@ -21,7 +21,7 @@ namespace Roguelike.Abilities
     //HuntingMastering /*<-(to del)*/
     ExplosiveMastering, ThrowingStoneMastering, ThrowingKnifeMastering, HunterTrapMastering
 
-    ,StaffsMastering, SceptersMastering, WandsMastering, PoisonMastering
+    ,StaffsMastering, SceptersMastering, WandsMastering, PoisonMastering, Stride
   }
 
   /// <summary>
