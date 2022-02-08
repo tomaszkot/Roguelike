@@ -74,19 +74,21 @@ namespace Roguelike.Managers
         HandlePolicyApplied(policy);
         var ap = policy as AttackPolicy;
         var en = ap.Victim as Enemy;
-
-        bool activeUsed;
-        if (en.Alive && gm.Hero.CanUseAbility(Abilities.AbilityKind.Stride, out activeUsed))
+        if (en != null)
         {
-          gm.UseActiveAbility(en, gm.Hero, Abilities.AbilityKind.Stride, activeUsed);
-        }
+          bool activeUsed;
+          if (en.Alive && gm.Hero.CanUseAbility(Abilities.AbilityKind.Stride, out activeUsed))
+          {
+            gm.UseActiveAbility(en, gm.Hero, Abilities.AbilityKind.Stride, activeUsed);
+          }
 
-        var bulkOK = HandleBulk(en, EntityStatKind.ChanceToBulkAttack);
-        if (!bulkOK)
-        {
-          var repeatOK = gm.Hero.IsStatRandomlyTrue(EntityStatKind.ChanceToRepeatMelleeAttack);
-          if (repeatOK)
-            gm.ApplyHeroPhysicalAttackPolicy(en, false);
+          var bulkOK = HandleBulk(en, EntityStatKind.ChanceToBulkAttack);
+          if (!bulkOK)
+          {
+            var repeatOK = gm.Hero.IsStatRandomlyTrue(EntityStatKind.ChanceToRepeatMelleeAttack);
+            if (repeatOK)
+              gm.ApplyHeroPhysicalAttackPolicy(en, false);
+          }
         }
       }
 

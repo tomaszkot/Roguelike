@@ -1515,12 +1515,6 @@ namespace Roguelike.Managers
       if (abilityKind != Abilities.AbilityKind.StrikeBack &&
           abilityKind != Abilities.AbilityKind.Stride)
         return;
-      EventsManager.AppendAction(new LivingEntityAction(LivingEntityActionKind.UsedAbility)
-      {
-        Info = abilityUser.Name + " used ability " + abilityKind,
-        Level = ActionLevel.Important,
-        InvolvedEntity = abilityUser
-      });
 
       bool used = false;
       if (abilityKind == Abilities.AbilityKind.StrikeBack)
@@ -1545,22 +1539,37 @@ namespace Roguelike.Managers
 
           var desc = "";
           var ab = (abilityUser as AdvancedLivingEntity).GetActiveAbility(Abilities.AbilityKind.Stride);
-          var damage = target.CalcMeleeDamage(Calculated.FactorCalculator.AddFactor(abilityUser.Stats.Strength, ab.PrimaryStat.Factor) , ref desc);
+          var damage = target.CalcMeleeDamage(Calculated.FactorCalculator.AddFactor(abilityUser.Stats.Strength, ab.PrimaryStat.Factor), ref desc);
           var inflicted = target.InflictDamage(abilityUser, false, ref damage, ref desc);
-          
+
           ApplyMovePolicy(target, newPos.Point);
           used = true;
         }
       }
 
-      if (used && activeAbility)
+      if (used)
       {
-        var adv = abilityUser as AdvancedLivingEntity;
-        if (adv != null)
+        if (activeAbility)
         {
-          adv.GetActiveAbility(abilityKind).CollDownCounter = 5;//TODO
+          var adv = abilityUser as AdvancedLivingEntity;
+          if (adv != null)
+          {
+            var ab = adv.GetActiveAbility(abilityKind);
+            ab.CollDownCounter = ab.MaxCollDownCounter;
+          }
         }
+        AppendUsedAbilityAction(abilityUser, abilityKind);
       }
+    }
+
+    private void AppendUsedAbilityAction(LivingEntity abilityUser, Abilities.AbilityKind abilityKind)
+    {
+      EventsManager.AppendAction(new LivingEntityAction(LivingEntityActionKind.UsedAbility)
+      {
+        Info = abilityUser.Name + " used ability " + abilityKind,
+        Level = ActionLevel.Important,
+        InvolvedEntity = abilityUser
+      });
     }
 
     TileNeighborhood? GetTileNeighborhoodKindCompareToHero(LivingEntity target)

@@ -24,6 +24,7 @@ namespace Roguelike.Abilities
     public string LastIncError { get; set; }
     protected AbilityKind kind;
     public int CollDownCounter { get; set; }
+    public int MaxCollDownCounter { get; set; } = 5;
 
     public Ability()
     {
@@ -145,30 +146,22 @@ namespace Roguelike.Abilities
         {
           var esN = new EntityStat(PrimaryStat.Kind, 0);
           desc.Add("Next Level: ");
-
-          //if (fightItemKind != FightItemKind.None)
-          //{
-
-          //}
-          //else
+          var fac = CalcFactor(true, Level + 1);
+          if (usesCustomStatDescription)
           {
-            var fac = CalcFactor(true, Level + 1);
-            if (usesCustomStatDescription)
-            {
-              desc.AddRange(this.GetCustomExtraStatDescription(Level + 1));
-            }
-            else
-            {
-              esN.Factor = fac;
-              desc.Add(PrimaryStat.Kind + ": " + GetFormattedCurrentValue(esN));
-            }
-            if (AuxStat.Kind != EntityStatKind.Unset)
-            {
-              fac = CalcFactor(false, Level + 1);
-              esN = new EntityStat(AuxStat.Kind, 0);
-              esN.Factor = fac;
-              desc.Add(AuxStat.Kind + ": " + GetFormattedCurrentValue(esN));
-            }
+            desc.AddRange(this.GetCustomExtraStatDescription(Level + 1));
+          }
+          else
+          {
+            esN.Factor = fac;
+            desc.Add(PrimaryStat.Kind + ": " + GetFormattedCurrentValue(esN));
+          }
+          if (AuxStat.Kind != EntityStatKind.Unset)
+          {
+            fac = CalcFactor(false, Level + 1);
+            esN = new EntityStat(AuxStat.Kind, 0);
+            esN.Factor = fac;
+            desc.Add(AuxStat.Kind + ": " + GetFormattedCurrentValue(esN));
           }
         }
         else
@@ -201,10 +194,6 @@ namespace Roguelike.Abilities
       var secondary = new EntityStat(AuxStat.Kind, 0);
       if (Level < MaxLevel)
       {
-        //if (fightItemKind != FightItemKind.None)
-        //{
-        //}
-        //else
         {
           var fac = CalcFactor(true, Level + 1);
           //if (Kind == PassiveAbilityKind.LootingMastering)
