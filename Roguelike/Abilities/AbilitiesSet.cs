@@ -60,17 +60,7 @@ namespace Roguelike.Abilities
 
       return PassiveItems.Where(i => i.AuxStat.Kind == esk).FirstOrDefault();
     }
-
-    //public List<Ability> AllItems
-    //{
-    //  get
-    //  {
-    //    //can not called it here - deserialization doubles items!
-    //    //if (!abilities.Any())
-    //    return allItems;
-    //  }
-    //}
-
+        
     public Ability GetAbility(AbilityKind kind)
     {
       Ability ab = passiveAbilities.Where(i => i.Kind == kind).FirstOrDefault();
