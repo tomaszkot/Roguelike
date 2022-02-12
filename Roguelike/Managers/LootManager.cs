@@ -208,7 +208,7 @@ namespace Roguelike.Managers
         }
       }
 
-      if (enemy.SpeciesKind == EnemySpeciesKind.Animal)
+      if (enemy.EntityKind == EntityKind.Animal)
       {
         extraLootItems.Add(new Food(FoodKind.Meat));
       }

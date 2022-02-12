@@ -32,6 +32,18 @@ namespace Roguelike.Tiles.LivingEntities
   /// </summary>
   public class LivingEntity : Tile, ILastingEffectOwner, IDestroyable
   {
+    //some attributes describing LivingEntity
+    public string Herd { get; set; } = "";
+    public int Level
+    {
+      get;
+      set;
+    } = 1;
+    public EntityKind EntityKind { get; set; }
+
+    List<EffectType> everCausedEffect = new List<EffectType>();
+    public event EventHandler Wounded;
+
     public bool d_immortal = false;
     protected int StartStrength = 10;
     public static readonly EntityStat BaseStrength = new EntityStat(EntityStatKind.Strength, 10);
@@ -47,7 +59,10 @@ namespace Roguelike.Tiles.LivingEntities
       { EntityStatKind.ManaStealing, EntityStatKind.Mana }
     };
 
-    public string Herd { get; set; } = "";
+    List<Algorithms.PathFinderNode> pathToTarget;
+    protected LastingEffectsSet lastingEffectsSet;
+    protected List<EffectType> immunedEffects = new List<EffectType>();
+    Dictionary<FightItemKind, int> fightItemHitsCounter = new Dictionary<FightItemKind, int>();
 
     [JsonIgnore]
     public bool Destroyed
@@ -94,7 +109,6 @@ namespace Roguelike.Tiles.LivingEntities
         RecentlyActivatedFightItem = value;
       }
     }
-
     public Point Position
     {
       get { return point; }
@@ -116,22 +130,13 @@ namespace Roguelike.Tiles.LivingEntities
           AppendAction(new LivingEntityStateChangedEvent(oldState, state, this));
       }
     }
-    List<Algorithms.PathFinderNode> pathToTarget;
-    protected LastingEffectsSet lastingEffectsSet;
-    protected List<EffectType> immunedEffects = new List<EffectType>();
-
+    
     [JsonIgnore]
     public List<LivingEntity> EverHitBy { get; set; } = new List<LivingEntity>();
 
     bool alive = true;
     //[JsonIgnoreAttribute]
     public EntityStats Stats { get => stats; set => stats = value; }
-
-    public int Level
-    {
-      get;
-      set;
-    } = 1;
 
     public bool IsWounded { get; protected set; }
     protected Dictionary<EffectType, int> effectsToUse = new Dictionary<EffectType, int>();
@@ -395,7 +400,6 @@ namespace Roguelike.Tiles.LivingEntities
           //Logger.LogInfo(this + " CalculateIfStatChanceApplied true");
 
         }
-
       }
       return randVal > 0 && (randVal * 100 <= chance);
     }
@@ -411,7 +415,6 @@ namespace Roguelike.Tiles.LivingEntities
         return true;
 
       return false;
-
     }
 
     public virtual AttackDescription GetAttackValue(AttackKind attackKind)
@@ -464,8 +467,7 @@ namespace Roguelike.Tiles.LivingEntities
     }
 
     protected virtual void OnDamageCaused(float inflicted, LivingEntity victim) { }
-
-    List<EffectType> everCausedEffect = new List<EffectType>();
+        
     internal bool EverCausedEffect(EffectType type)
     {
       return everCausedEffect.Contains(type);
@@ -553,7 +555,6 @@ namespace Roguelike.Tiles.LivingEntities
       desc = Name.ToString() + " received melee damage: " + inflicted.Formatted();
       return inflicted;
     }
-
     public virtual float OnMelleeHitBy(LivingEntity attacker)
     {
       string desc = "";
@@ -596,9 +597,7 @@ namespace Roguelike.Tiles.LivingEntities
 
       return inflicted;
     }
-
-    Dictionary<FightItemKind, int> fightItemHitsCounter = new Dictionary<FightItemKind, int>();
-
+        
     public int GetFightItemKindHitCounter(FightItemKind kind)
     {
       return fightItemHitsCounter.ContainsKey(kind) ? fightItemHitsCounter[kind] : 0;
@@ -726,7 +725,6 @@ namespace Roguelike.Tiles.LivingEntities
       ReduceHealth(attacker, sound, damageDesc, srcName, ref amount);
 
       LastingEffectsSet.TryAddLastingEffectOnHit(amount, attacker, spell);
-
     }
 
     protected virtual LastingEffect EnsurePhysicalHitEffect(float inflicted, LivingEntity victim)
@@ -944,9 +942,7 @@ namespace Roguelike.Tiles.LivingEntities
 
       return EntityStatKind.Unset;
     }
-
-    public event EventHandler Wounded;
-
+        
     public void SetIsWounded(bool wounded)
     {
       if (wounded && IsWounded)

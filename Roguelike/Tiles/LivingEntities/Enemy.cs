@@ -17,11 +17,10 @@ namespace Roguelike.Tiles.LivingEntities
   public enum EnemyPowerKind { Unset, Plain, Champion, Boss };
   public enum PrefferedFightStyle { Physical, Magic, Distance }
   public enum IncreaseStatsKind { Level, PowerKind, Name, Difficulty }
-  public enum EnemySpeciesKind { Unset, Human, Animal }
 
   public class Enemy : LivingEntity
   {
-    public EnemySpeciesKind SpeciesKind { get; set; }
+    //public EntityKind SpeciesKind { get; set; }
     bool LevelSet { get; set; }
     public const string ChempTagSuffix = "_ch";
     public PrefferedFightStyle PrefferedFightStyle { get; set; }//= PrefferedFightStyle.Magic;
@@ -292,43 +291,45 @@ namespace Roguelike.Tiles.LivingEntities
         if (!Name.Any() && value != EnemySymbols.Unset)
           Name = Enemy.NameFromSymbol(value);
 
-        SpeciesKind = Enemy.SpeciesKindFromSymbol(value);
+        if(EntityKind == EntityKind.Unset)
+          EntityKind = Enemy.EntityKindFromSymbol(value);
         SetSpecialAttackStat();
       }
     }
 
     static readonly string[] AnimalNames = new[] { "bear", "boar", "lynx", "worm", "wolverine" };
 
-    private static EnemySpeciesKind SpeciesKindFromName(string name)
+    private static EntityKind SpeciesKindFromName(string name)
     {
       if (AnimalNames.Contains(name))
-        return EnemySpeciesKind.Animal;
+        return EntityKind.Animal;
 
-      return EnemySpeciesKind.Unset;
+      return EntityKind.Unset;
     }
 
-    private static EnemySpeciesKind SpeciesKindFromSymbol(char value)
+    private static EntityKind EntityKindFromSymbol(char value)
     {
       if (value == EnemySymbols.VampireSymbol ||
           value == EnemySymbols.MerchantBroSymbol ||
           value == EnemySymbols.WizardSymbol ||
           value == EnemySymbols.CommonEnemySymbol || 
-          value == EnemySymbols.FallenOneSymbol ||
           value == EnemySymbols.MorphSymbol ||
-          value == EnemySymbols.DaemonSymbol ||
-          value == EnemySymbols.SkeletonSymbol ||
           value == EnemySymbols.TreantSymbol ||
           value == EnemySymbols.OgreSymbol ||
           value == EnemySymbols.ManEaterSymbol || 
-          value == EnemySymbols.FallenOneSymbolPhantom || 
-          value == EnemySymbols.ZombieSymbol ||
+          value == EnemySymbols.FallenOneSymbolPhantom ||
           value == EnemySymbols.QuestBoss
           )
       {
-        return EnemySpeciesKind.Unset;
+        return EntityKind.Unset;
       }
+      else if(value == EnemySymbols.SkeletonSymbol || value == EnemySymbols.ZombieSymbol)
+        return EntityKind.Undead;
 
-      return EnemySpeciesKind.Animal;
+      else if (value == EnemySymbols.FallenOneSymbol || value == EnemySymbols.DaemonSymbol)
+        return EntityKind.Daemon;
+
+      return EntityKind.Animal;
     }
 
     public void SetSpecialAttackStat()
@@ -393,7 +394,8 @@ namespace Roguelike.Tiles.LivingEntities
         if (name.Contains("hornet"))
           SetStat(EntityStatKind.PoisonAttack);
 
-        SpeciesKind = SpeciesKindFromName(name);
+        if (EntityKind == EntityKind.Unset)
+          EntityKind = SpeciesKindFromName(name);
       }
     }
 
