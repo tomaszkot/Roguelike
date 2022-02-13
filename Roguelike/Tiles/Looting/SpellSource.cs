@@ -8,7 +8,7 @@ using System.Diagnostics;
 
 namespace Roguelike.Tiles.Looting
 {
-  public class SpellSource : StackedLoot
+  public abstract class SpellSource : StackedLoot
   {
     public virtual bool Enabled 
     {
@@ -188,6 +188,8 @@ namespace Roguelike.Tiles.Looting
       set;
     }
 
+    public abstract ISpell CreateSpell();
+    
     public virtual ISpell CreateSpell(LivingEntity caller)
     {
       ISpell spell = null;
@@ -266,8 +268,12 @@ namespace Roguelike.Tiles.Looting
     { 
       return CreateSpell(caller);
     }
+    public virtual SpellStatsDescription GetExtraStatDescription(bool currentLevel, bool withVariation = false)
+    {
+      throw new Exception("Call the one with caller");
+    }
 
-    public SpellStatsDescription GetExtraStatDescription(LivingEntity caller, bool currentLevel, bool withVariation = false)
+    public virtual SpellStatsDescription GetExtraStatDescription(LivingEntity caller, bool currentLevel, bool withVariation = false)
     {
       var spell = GetSpell(caller);
       if (spell == null)

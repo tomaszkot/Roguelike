@@ -2,11 +2,6 @@
 using Roguelike.Abstract.Spells;
 using Roguelike.Spells;
 using Roguelike.Tiles.LivingEntities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Roguelike.Tiles.Looting
 {
@@ -49,6 +44,11 @@ namespace Roguelike.Tiles.Looting
     }
     public int RestoredChargesCount { get; set; }
 
+    public override SpellStatsDescription GetExtraStatDescription(bool currentLevel, bool withVariation = false)
+    {
+      return GetExtraStatDescription(null, currentLevel, withVariation);
+    }
+
     public override string GetExtraStatDescriptionFormatted(LivingEntity caller)
     {
       var statDescCurrent = GetExtraStatDescription(caller, true);
@@ -56,9 +56,12 @@ namespace Roguelike.Tiles.Looting
         return "";
       //var res = "Level: " + Level + "\r\n";
       var str = string.Join("\r\n", statDescCurrent.GetDescription());
-      //res += str;
 
       return str;
+    }
+    public override ISpell CreateSpell()
+    {
+      return CreateSpell(null);
     }
 
     public override ISpell CreateSpell(LivingEntity caller)
@@ -68,18 +71,18 @@ namespace Roguelike.Tiles.Looting
       switch (this.Kind)
       {
         case SpellKind.FireBall:
-          spell = new FireBallSpell(caller, weapon);
+          spell = new FireBallSpell(null, weapon);
           break;
         case SpellKind.PoisonBall:
-          spell = new PoisonBallSpell(caller, weapon);
+          spell = new PoisonBallSpell(null, weapon);
           break;
         case SpellKind.IceBall:
-          spell = new IceBallSpell(caller, weapon);
+          spell = new IceBallSpell(null, weapon);
           break;
       }
 
-      if(spell == null)
-        spell = base.CreateSpell(caller);
+      //if(spell == null)//WTF ?
+        //spell = base.CreateSpell(null);
 
       if (spell is IProjectile proj)
       {

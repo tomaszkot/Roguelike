@@ -123,12 +123,16 @@ namespace Roguelike.Spells
     {
       int level = currentMagicLevel ? CurrentLevel : CurrentLevel + 1;
       int? mana = null;
+      int? magicRequired = null;
       int range = 0;
       if (this is IProjectileSpell proj)
         range = proj.Range;
       if (weaponSpellSource == null)
+      {
         mana = CalcManaCost(level);
-      var desc = new SpellStatsDescription(level, mana, NextLevelMagicNeeded, Kind, range);
+        magicRequired = NextLevelMagicNeeded;
+      }
+      var desc = new SpellStatsDescription(level, mana, magicRequired, Kind, range);
       return desc;
     }
   }

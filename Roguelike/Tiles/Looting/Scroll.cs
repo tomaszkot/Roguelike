@@ -20,5 +20,10 @@ namespace Roguelike.Tiles.Looting
     {
       return DiscoverKindFromName(name, false);
     }
+
+    public override ISpell CreateSpell()
+    {
+      throw new Exception("Call the one with caller");
+    }
   }
 }

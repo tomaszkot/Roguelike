@@ -15,7 +15,7 @@ namespace Roguelike.Abstract.Spells
   {
     public int Level { get; set; }
     public int? ManaCost { get; set; }
-    public int MagicRequired { get; set; }
+    public int? MagicRequired { get; set; }
 
     public float? Damage
     {
@@ -31,7 +31,7 @@ namespace Roguelike.Abstract.Spells
     SpellKind Kind { get; set; }
     public int Range { get; set; }
 
-    public SpellStatsDescription(int level, int? manaCost, int magicRequired, SpellKind kind, int range)
+    public SpellStatsDescription(int level, int? manaCost, int? magicRequired, SpellKind kind, int range)
     {
       Level = level;
       ManaCost = manaCost;
