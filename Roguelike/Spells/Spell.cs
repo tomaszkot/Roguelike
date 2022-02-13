@@ -7,11 +7,6 @@ using Roguelike.Tiles.Looting;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Roguelike.Tiles.Looting
-{
-  
-}
-
 namespace Roguelike.Spells
 {
   public enum SpellKind

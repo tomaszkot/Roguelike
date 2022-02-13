@@ -66,7 +66,6 @@ namespace Roguelike.Abstract.Spells
 
       return extraStatDescription.ToArray();
     }
-
   }
 
   public interface ISpell : Dungeons.Tiles.Abstract.ISpell
