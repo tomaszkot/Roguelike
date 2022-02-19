@@ -40,9 +40,15 @@ namespace Roguelike.Calculated
         this.spell = spell;
         NonPhysical = new Dictionary<EntityStatKind, float>();
         this.ent = ent;
-        var wpn = ent.GetActiveWeapon();
+        Weapon wpn = null;
+        //if (ent != null)//can be if using WeaponElementalProjectile
+        {
+          wpn = ent.GetActiveWeapon();
 
-        attackKind = DiscoverAttackKind(attackKind, wpn);
+          attackKind = DiscoverAttackKind(attackKind, wpn);
+        }
+        //else
+        //  attackKind = AttackKind.WeaponElementalProjectile;
 
         if (attackKind == AttackKind.PhysicalProjectile)
         {

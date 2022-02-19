@@ -71,13 +71,13 @@ namespace Roguelike.Tiles.Looting
       switch (this.Kind)
       {
         case SpellKind.FireBall:
-          spell = new FireBallSpell(null, weapon);
+          spell = new FireBallSpell(caller, weapon);
           break;
         case SpellKind.PoisonBall:
-          spell = new PoisonBallSpell(null, weapon);
+          spell = new PoisonBallSpell(caller, weapon);
           break;
         case SpellKind.IceBall:
-          spell = new IceBallSpell(null, weapon);
+          spell = new IceBallSpell(caller, weapon);
           break;
       }
 

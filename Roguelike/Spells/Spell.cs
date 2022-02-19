@@ -3,7 +3,6 @@ using Roguelike.Abstract.Spells;
 using Roguelike.Attributes;
 using Roguelike.Tiles;
 using Roguelike.Tiles.LivingEntities;
-using Roguelike.Tiles.Looting;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -24,7 +23,6 @@ namespace Roguelike.Spells
 
     float manaCostMultiplicator = 20;
     public bool SendByGod { get; set; }
-    //public FightItem FightItem { get; internal set; }
 
     public SpellKind Kind { get; set; }
     public bool EnemyRequired = false;
