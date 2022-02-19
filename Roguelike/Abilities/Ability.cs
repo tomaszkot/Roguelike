@@ -118,7 +118,35 @@ namespace Roguelike.Abilities
     }
 
     public abstract bool IsPercentageFromKind();
-    
+
+    public List<EntityStat> GetEntityStats(bool currentLevel)
+    {
+      var res = new List<EntityStat>();
+      if (currentLevel)
+      {
+        res.Add(PrimaryStat);
+        if (AuxStat.Kind != EntityStatKind.Unset)
+          res.Add(AuxStat);
+      }
+      else {
+        if (Level < MaxLevel)
+        {
+          var esN = new EntityStat(PrimaryStat.Kind, 0);
+          var fac = CalcFactor(true, Level + 1);
+          esN.Factor = fac;
+          res.Add(esN);
+
+          if (AuxStat.Kind != EntityStatKind.Unset)
+          {
+            fac = CalcFactor(false, Level + 1);
+            esN = new EntityStat(AuxStat.Kind, 0);
+            esN.Factor = fac;
+            res.Add(esN);
+          }
+        }
+      }
+      return res;
+    }
 
     public string[] GetExtraStatDescription(bool currentLevel)
     {
