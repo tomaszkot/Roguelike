@@ -52,11 +52,6 @@ namespace Roguelike.Spells
       levelToMagic[1] = 10;
     }
 
-    //public EntityStat[] GetEntityStats(bool currentMagicLevel, bool withVariation)
-    //{
-    //  return CreateSpellStatsDescription(currentMagicLevel, withVariation).GetEntityStats();
-    //}
-
     protected int CalcManaCost(int level)
     {
       var cost = manaCost + (manaCost * (level - 1)) * manaCostMultiplicator / 100.0f;

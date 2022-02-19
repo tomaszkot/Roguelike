@@ -52,15 +52,27 @@ namespace RoguelikeUnitTests
         spellSource = new Book(Roguelike.Spells.SpellKind.FireBall);
       var spell = spellSource.CreateSpell(hero);
       var stats1 = spell.CreateSpellStatsDescription(true).GetEntityStats();
-      Assert.Greater(stats1.Count(), 0);
+      Assert.AreEqual(stats1.Count(), 3);
       var mana1 = stats1.SingleOrDefault(i => i.Kind == EntityStatKind.Mana);
       Assert.NotNull(mana1);
+      var attack1 = stats1.SingleOrDefault(i => i.Kind == EntityStatKind.ElementalSpellProjectilesAttack);
+      Assert.NotNull(attack1);
+      var range1 = stats1.SingleOrDefault(i => i.Kind == EntityStatKind.ElementalProjectilesRange);
+      Assert.NotNull(range1);
 
       var stats2 = spell.CreateSpellStatsDescription(false).GetEntityStats();
-      Assert.Greater(stats2.Count(), 0);
+      Assert.AreEqual(stats2.Count(), 3);
       var mana2 = stats2.SingleOrDefault(i => i.Kind == EntityStatKind.Mana);
       Assert.NotNull(mana2);
       Assert.Greater(mana2.Value.TotalValue, mana1.Value.TotalValue);
+
+      var attack2 = stats2.SingleOrDefault(i => i.Kind == EntityStatKind.ElementalSpellProjectilesAttack);
+      Assert.NotNull(attack2);
+      Assert.Greater(attack2.Value.TotalValue, attack1.Value.TotalValue);
+
+      var range2 = stats2.SingleOrDefault(i => i.Kind == EntityStatKind.ElementalProjectilesRange);
+      Assert.NotNull(range2);
+      Assert.GreaterOrEqual(range2.Value.TotalValue, range1.Value.TotalValue);
     }
 
     [Test]

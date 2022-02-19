@@ -1,10 +1,6 @@
 ﻿using Roguelike.Attributes;
 using Roguelike.Factors;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Roguelike.Spells
 {
@@ -17,7 +13,10 @@ namespace Roguelike.Spells
     public float? Damage
     {
       get => damage;
-      set => damage = value;
+      set
+      {
+        damage = value;
+      }
     }
     public int? TourLasting { get; set; }
     public EntityStatKind? StatKind { get; set; }
@@ -36,14 +35,25 @@ namespace Roguelike.Spells
       MagicRequired = magicRequired;
       Kind = kind;
       Range = range;
-
-      entityStats = new List<EntityStat>();
-      if(manaCost.HasValue)
-        entityStats.Add(new EntityStat() { Kind = EntityStatKind.Mana, Value = new StatValue() { Nominal = ManaCost.Value } });
+           
     }
 
     public EntityStat[] GetEntityStats()
     {
+      if (entityStats == null)
+      {
+        entityStats = new List<EntityStat>();
+        if (ManaCost.HasValue)
+        {
+          entityStats.Add(new EntityStat() { Kind = EntityStatKind.Mana, Value = new StatValue() { Nominal = ManaCost.Value } });
+        }
+
+        if(Range > 0)
+          entityStats.Add(new EntityStat() { Kind = EntityStatKind.ElementalProjectilesRange, Value = new StatValue() { Nominal = Range } });
+
+        if (Damage.HasValue)
+          entityStats.Add(new EntityStat() { Kind = EntityStatKind.ElementalSpellProjectilesAttack, Value = new StatValue() { Nominal = Damage.Value } });
+      }
       return entityStats.ToArray();
     }
 
