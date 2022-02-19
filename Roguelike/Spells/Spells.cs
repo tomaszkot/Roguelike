@@ -198,7 +198,6 @@ namespace Roguelike.Spells
   public class TransformSpell : PassiveSpell
   {
     //const float factor = 1.25f;
-
     public TransformSpell() : this(new LivingEntity())
     { }
 
@@ -206,6 +205,7 @@ namespace Roguelike.Spells
     {
       Kind = SpellKind.Transform;
       CoolingDown = 10;
+      Duration--;
     }
   }
 

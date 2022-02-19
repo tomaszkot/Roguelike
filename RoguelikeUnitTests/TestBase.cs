@@ -311,7 +311,7 @@ namespace RoguelikeUnitTests
 
     protected void GotoSpellEffectEnd(PassiveSpell spell)
     {
-      for (int i = 0; i < spell.TurnLasting; i++)
+      for (int i = 0; i < spell.Duration; i++)
       {
         game.GameManager.SkipHeroTurn();
         GotoNextHeroTurn();

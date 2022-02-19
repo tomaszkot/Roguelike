@@ -3,17 +3,15 @@ using Roguelike.Abstract.Effects;
 using Roguelike.Abstract.Spells;
 using Roguelike.Attributes;
 using Roguelike.Calculated;
-using Roguelike.Extensions;
 using Roguelike.Factors;
 using Roguelike.Tiles.LivingEntities;
-using System.Collections.Generic;
 
 namespace Roguelike.Spells
 {
   public class PassiveSpell : Spell, ILastingSpell
   {
     protected Tile tile;
-    public int TurnLasting { get; set; }
+    public int Duration { get; set; }
     public readonly int BaseFactor = 30;
 
     public EntityStatKind StatKind { get; set; }
@@ -28,7 +26,7 @@ namespace Roguelike.Spells
 
       StatKindPercentage = CalcFactor(CurrentLevel);
       StatKindEffective = caller.CalcEffectiveFactor(StatKind, StatKindPercentage.Value);
-      TurnLasting = CalcTourLasting();
+      Duration = CalcDuration();
     }
 
     protected virtual PercentageFactor CalcFactor()
@@ -72,12 +70,19 @@ namespace Roguelike.Spells
       }
     }
 
-    protected int CalcTourLasting(float factor = 1)
+    protected int CalcDuration(float factor = 1)
     {
-      return CalcTourLasting(CurrentLevel, factor);
+      var dur = CalcDuration(CurrentLevel, factor);
+      if (CurrentLevel > 1)
+      {
+        var durPrev = CalcDuration(CurrentLevel-1, factor);
+        if (durPrev == dur)
+          dur++; 
+      }
+      return dur;
     }
 
-    protected int CalcTourLasting(int magicLevel, float factor = 1)
+    protected int CalcDuration(int magicLevel, float factor = 1)
     {
       var he = GetHealthFromLevel(magicLevel);
       float baseVal = ((float)he) * factor;
@@ -88,9 +93,9 @@ namespace Roguelike.Spells
     {
       var desc = base.CreateSpellStatsDescription(currentMagicLevel);
       if(currentMagicLevel)
-        desc.Duration = TurnLasting;
+        desc.Duration = Duration;
       else
-        desc.Duration = CalcTourLasting(CurrentLevel+1);
+        desc.Duration = CalcDuration(CurrentLevel+1);
 
       if (StatKind != EntityStatKind.Unset && Kind != SpellKind.ManaShield)
       {
