@@ -88,9 +88,9 @@ namespace Roguelike.Spells
     {
       var desc = base.CreateSpellStatsDescription(currentMagicLevel);
       if(currentMagicLevel)
-        desc.TourLasting = TurnLasting;
+        desc.Duration = TurnLasting;
       else
-        desc.TourLasting = CalcTourLasting(CurrentLevel+1);
+        desc.Duration = CalcTourLasting(CurrentLevel+1);
 
       if (StatKind != EntityStatKind.Unset && Kind != SpellKind.ManaShield)
       {

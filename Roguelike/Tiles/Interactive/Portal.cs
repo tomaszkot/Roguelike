@@ -11,6 +11,7 @@ namespace Roguelike.Tiles.Interactive
   {
     public PortalDirection PortalKind { get; set; }
 
+    public int NextLevelMagicNeeded { get; }
     public Portal(LivingEntity caller) : this()
     {
       Caller = caller;

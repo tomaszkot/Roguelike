@@ -23,8 +23,10 @@ namespace Roguelike.Abstract.Spells
     SpellKind Kind { get;}
 
     SpellStatsDescription CreateSpellStatsDescription(bool currentLevel);
+
+    int NextLevelMagicNeeded { get; }
     //EntityStatKind[] GetEntityStatKinds();
-    
+
   }
 
   public interface IProjectileSpell : ISpell, Roguelike.Abstract.Projectiles.IProjectile

@@ -18,7 +18,7 @@ namespace Roguelike.Spells
         damage = value;
       }
     }
-    public int? TourLasting { get; set; }
+    public int? Duration { get; set; }
     public EntityStatKind? StatKind { get; set; }
     public PercentageFactor StatKindPercentage { get; set; }
     List<string> extraStatDescription = new List<string>();
@@ -51,8 +51,16 @@ namespace Roguelike.Spells
         if(Range > 0)
           entityStats.Add(new EntityStat() { Kind = EntityStatKind.ElementalProjectilesRange, Value = new StatValue() { Nominal = Range } });
 
+        //if (Duration.HasValue)
+          //entityStats.Add(new EntityStat() { Kind = EntityStatKind.Du, Value = new StatValue() { Nominal = Range } });
+
         if (Damage.HasValue)
-          entityStats.Add(new EntityStat() { Kind = EntityStatKind.ElementalSpellProjectilesAttack, Value = new StatValue() { Nominal = Damage.Value } });
+        {
+          var esk = EntityStatKind.ElementalSpellProjectilesAttack;
+          if (Kind == SpellKind.Skeleton)
+            esk = EntityStatKind.MeleeAttack;
+          entityStats.Add(new EntityStat() { Kind = esk , Value = new StatValue() { Nominal = Damage.Value } });
+        }
       }
       return entityStats.ToArray();
     }
@@ -74,8 +82,8 @@ namespace Roguelike.Spells
         AddString("Mana Cost: " + ManaCost, addIndent);
       if (Damage != null)
         AddString(Kind + " Damage: " + Damage, addIndent);
-      if (TourLasting != null)
-        AddString("Duration: " + TourLasting);
+      if (Duration != null)
+        AddString("Duration: " + Duration);
       if (StatKind != null)
         AddString(StatKind + " " + StatKindPercentage.ToString(), addIndent);
       if (Range > 0)
