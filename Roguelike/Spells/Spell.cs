@@ -52,6 +52,11 @@ namespace Roguelike.Spells
       levelToMagic[1] = 10;
     }
 
+    //public EntityStat[] GetEntityStats(bool currentMagicLevel, bool withVariation)
+    //{
+    //  return CreateSpellStatsDescription(currentMagicLevel, withVariation).GetEntityStats();
+    //}
+
     protected int CalcManaCost(int level)
     {
       var cost = manaCost + (manaCost * (level - 1)) * manaCostMultiplicator / 100.0f;
@@ -114,7 +119,7 @@ namespace Roguelike.Spells
     public bool IsFromMagicalWeapon { get => weaponSpellSource != null;}
 
     //TODO ! remove withVariation, use AttackDesc is needed
-    public virtual SpellStatsDescription CreateSpellStatsDescription(bool currentMagicLevel, bool withVariation) 
+    public virtual SpellStatsDescription CreateSpellStatsDescription(bool currentMagicLevel) 
     {
       int level = currentMagicLevel ? CurrentLevel : CurrentLevel + 1;
       int? mana = null;

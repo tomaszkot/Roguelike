@@ -268,17 +268,17 @@ namespace Roguelike.Tiles.Looting
     { 
       return CreateSpell(caller);
     }
-    public virtual SpellStatsDescription GetExtraStatDescription(bool currentLevel, bool withVariation = false)
+    public virtual SpellStatsDescription GetExtraStatDescription(bool currentLevel)
     {
       throw new Exception("Call the one with caller");
     }
 
-    public virtual SpellStatsDescription GetExtraStatDescription(LivingEntity caller, bool currentLevel, bool withVariation = false)
+    public virtual SpellStatsDescription GetExtraStatDescription(LivingEntity caller, bool currentLevel)
     {
       var spell = GetSpell(caller);
       if (spell == null)
         return null;
-      var spellStatsDescription = spell.CreateSpellStatsDescription(currentLevel, withVariation);
+      var spellStatsDescription = spell.CreateSpellStatsDescription(currentLevel);
 
       return spellStatsDescription;
     }

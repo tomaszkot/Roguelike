@@ -23,9 +23,10 @@ namespace Roguelike.Tiles.Interactive
 #endif
       tag1 = "portal";
     }
+        
 
     string[] extraStatDescription = new string[0];
-    public string[] GetExtraStatDescription(bool currentLevel, bool withVariation)
+    public string[] GetExtraStatDescription(bool currentLevel)
     {
       return extraStatDescription;
     }
@@ -35,7 +36,6 @@ namespace Roguelike.Tiles.Interactive
       return extraStatDescription;
     }
     
-
     public LivingEntity Caller { get; set; }
     public int CoolingDown { get; set; } = 0;
     public bool Used { get; set; }
@@ -50,9 +50,14 @@ namespace Roguelike.Tiles.Interactive
 
     SpellKind ISpell.Kind => SpellKind.Portal;
 
-    public SpellStatsDescription CreateSpellStatsDescription(bool currentLevel, bool withVariation) 
+    public SpellStatsDescription CreateSpellStatsDescription(bool currentLevel) 
     { 
       return new SpellStatsDescription(1, ManaCost, 10, ((ISpell)this).Kind, 0); 
+    }
+
+    public EntityStat[] GetEntityStats()
+    {
+      return new EntityStat[] { new EntityStat() { Kind = EntityStatKind.Mana, Value = new StatValue() { Nominal = ManaCost } } };
     }
   }
 }

@@ -28,7 +28,7 @@ namespace RoguelikeUnitTests
         spellSource = new Book(Roguelike.Spells.SpellKind.FireBall);
 
       {
-        var desc = spellSource.GetDescription();
+        //var desc = spellSource.GetDescription();
         var extraDesc = spellSource.GetExtraStatDescription(hero, true);
         Assert.NotNull(extraDesc);
         Assert.Greater(extraDesc.GetDescription().Count(), 0);
@@ -39,6 +39,29 @@ namespace RoguelikeUnitTests
       }
     }
 
+    [TestCase(true)]
+    [TestCase(false)]
+    public void SpellSourceEntityStatKindPropertiesTest(bool scroll)
+    {
+      var game = CreateGame();
+      var hero = game.Hero;
+      SpellSource spellSource = null;
+      if (scroll)
+        spellSource = new Scroll(SpellKind.FireBall);
+      else
+        spellSource = new Book(Roguelike.Spells.SpellKind.FireBall);
+      var spell = spellSource.CreateSpell(hero);
+      var stats1 = spell.CreateSpellStatsDescription(true).GetEntityStats();
+      Assert.Greater(stats1.Count(), 0);
+      var mana1 = stats1.SingleOrDefault(i => i.Kind == EntityStatKind.Mana);
+      Assert.NotNull(mana1);
+
+      var stats2 = spell.CreateSpellStatsDescription(false).GetEntityStats();
+      Assert.Greater(stats2.Count(), 0);
+      var mana2 = stats2.SingleOrDefault(i => i.Kind == EntityStatKind.Mana);
+      Assert.NotNull(mana2);
+      Assert.Greater(mana2.Value.TotalValue, mana1.Value.TotalValue);
+    }
 
     [Test]
     public void SpellPropertiesTest()

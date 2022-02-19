@@ -36,7 +36,7 @@ namespace RoguelikeUnitTests
       var scroll = new Scroll(SpellKind.IronSkin);
       var spell = scroll.CreateSpell(game.Hero);
       var castedSpell = spell as PassiveSpell;
-      var features = castedSpell.CreateSpellStatsDescription(true, false);
+      var features = castedSpell.CreateSpellStatsDescription(true);
       Assert.NotNull(features);
 
       Assert.AreEqual(Math.Round(castedSpell.StatKindEffective.Value, 3), 3.1);

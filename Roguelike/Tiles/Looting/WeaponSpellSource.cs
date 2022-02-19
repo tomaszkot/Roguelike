@@ -44,9 +44,9 @@ namespace Roguelike.Tiles.Looting
     }
     public int RestoredChargesCount { get; set; }
 
-    public override SpellStatsDescription GetExtraStatDescription(bool currentLevel, bool withVariation = false)
+    public override SpellStatsDescription GetExtraStatDescription(bool currentLevel)
     {
-      return GetExtraStatDescription(null, currentLevel, withVariation);
+      return GetExtraStatDescription(null, currentLevel);
     }
 
     public override string GetExtraStatDescriptionFormatted(LivingEntity caller)

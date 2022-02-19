@@ -78,6 +78,7 @@
     <Compile Include="Managers\PolicyManager.cs" />
     <Compile Include="Managers\SpellManager.cs" />
     <Compile Include="Spells\ProjectiveSpell.cs" />
+    <Compile Include="Spells\SpellStatsDescription.cs" />
     <Compile Include="Tiles\Abstract\IAdvancedEntity.cs" />
     <Compile Include="Tiles\Abstract\IAlly.cs" />
     <Compile Include="Abstract\IDescriptable.cs" />

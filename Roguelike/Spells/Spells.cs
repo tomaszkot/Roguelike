@@ -179,9 +179,9 @@ namespace Roguelike.Spells
       return ally;
     }
 
-    public override SpellStatsDescription CreateSpellStatsDescription(bool currentMagicLevel, bool withVariation)
+    public override SpellStatsDescription CreateSpellStatsDescription(bool currentMagicLevel)
     {
-      var desc = base.CreateSpellStatsDescription(currentMagicLevel, withVariation);
+      var desc = base.CreateSpellStatsDescription(currentMagicLevel);
       float dmg = 0;
       if (currentMagicLevel)
       {
