@@ -22,6 +22,13 @@ namespace Roguelike.Attributes
     Percentage
   }
 
+  public enum EntityStatImportance
+  {
+    Unset,
+    Normal,
+    Important
+  }
+
   //Would be nice to generate dynamically these enums
   public enum EntityStatKind
   {
