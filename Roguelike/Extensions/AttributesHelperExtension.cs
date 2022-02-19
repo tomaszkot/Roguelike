@@ -23,6 +23,10 @@ namespace Roguelike.Extensions
       {
         return "Elemental Attack";//was too long on eq. desc
       }
+      else if (valueString == EntityStatKind.ElementalProjectilesRange.ToString())
+      {
+        return "Elemental Range";//was too long on eq. desc
+      }
 
       if (valueString == KnownSentenceKind.WhatsUp.ToString())
         return "What's up?";

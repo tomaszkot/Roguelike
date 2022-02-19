@@ -234,9 +234,12 @@ namespace Roguelike.Tiles.Looting
         case SpellKind.ResistAll:
           spell = new ResistAllSpell(caller);
           break;
+        case SpellKind.Identify:
+          break;//TODO ?
         default:
+          Debug.Assert(false, "CreateSpell ???" + Kind);
           break;
-          throw new Exception("CreateSpell ???" + Kind);
+          
       }
       if (spell is IProjectileSpell proj)
         proj.Range += spell.CurrentLevel - 1;

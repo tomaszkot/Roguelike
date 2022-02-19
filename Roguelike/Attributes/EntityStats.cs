@@ -15,6 +15,13 @@ namespace Roguelike.Attributes
     SpellElementalProjectile,//from scroll, book
   }
 
+  public enum EntityStatUnit
+  { 
+    Unset,
+    Absolute,
+    Percentage
+  }
+
   //Would be nice to generate dynamically these enums
   public enum EntityStatKind
   {
