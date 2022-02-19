@@ -17,7 +17,11 @@ namespace Roguelike.Extensions
 
       if (valueString == EntityStatKind.PhysicalProjectilesAttack.ToString())
       {
-        return "Projectiles Attack";//was too long on eq. desc
+        return "Projectile Attack";//was too long on eq. desc
+      }
+      else if (valueString == EntityStatKind.ElementalSpellProjectilesAttack.ToString())
+      {
+        return "Elemental Attack";//was too long on eq. desc
       }
 
       if (valueString == KnownSentenceKind.WhatsUp.ToString())

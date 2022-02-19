@@ -50,6 +50,9 @@ namespace RoguelikeUnitTests
         spellSource = new Scroll(SpellKind.FireBall);
       else
         spellSource = new Book(Roguelike.Spells.SpellKind.FireBall);
+
+      Assert.True(new Scroll(SpellKind.FireBall).IsOffensive);
+
       var spell = spellSource.CreateSpell(hero);
       var stats1 = spell.CreateSpellStatsDescription(true).GetEntityStats();
       Assert.AreEqual(stats1.Count(), 3);

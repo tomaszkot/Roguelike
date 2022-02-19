@@ -243,6 +243,21 @@ namespace Roguelike.Tiles.Looting
       return spell;
     }
 
+    ISpell dummyForIsOffensive;
+    [JsonIgnore]
+    public bool IsOffensive
+    {
+      get
+      {
+        if (this.Kind == SpellKind.Skeleton)
+          return true;//TODO, otherwise Container is needed
+
+        if (dummyForIsOffensive == null)
+          dummyForIsOffensive = CreateSpell(new LivingEntity());
+
+        return dummyForIsOffensive is OffensiveSpell;
+      }
+    }
     public override string[] GetExtraStatDescription()
     {
       Debug.Assert(false, "call the one with (LivingEntity caller)");

@@ -1,6 +1,6 @@
-﻿using Roguelike.Abstract.Spells;
+﻿using Newtonsoft.Json;
+using Roguelike.Abstract.Spells;
 using Roguelike.Spells;
-using Roguelike.Tiles.Interactive;
 using Roguelike.Tiles.LivingEntities;
 using System;
 
@@ -20,10 +20,11 @@ namespace Roguelike.Tiles.Looting
     {
       return DiscoverKindFromName(name, false);
     }
-
     public override ISpell CreateSpell()
     {
       throw new Exception("Call the one with caller");
     }
+
+    
   }
 }
