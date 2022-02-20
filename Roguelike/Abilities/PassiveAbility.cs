@@ -125,11 +125,8 @@ namespace Roguelike.Abilities
     {
       return primary ? PrimaryStat.Kind : AuxStat.Kind;
     }
-        
-    public override bool IsPercentageFromKind()
-    {
-      return IsPercentageFromKind(Kind);
-    }
+
+    public override bool IsPercentageFromKind => IsPercFromKind(Kind);
 
     public override float CalcFactor(bool primary, int level)
     {
@@ -257,7 +254,7 @@ namespace Roguelike.Abilities
       return Kind == AbilityKind.LootingMastering;
     }
 
-    public static bool IsPercentageFromKind(AbilityKind kind)
+    public static bool IsPercFromKind(AbilityKind kind)
     {
       if (kind == AbilityKind.RestoreHealth ||
           kind == AbilityKind.RestoreMana)
@@ -267,35 +264,9 @@ namespace Roguelike.Abilities
 
     public bool IsPercentage(bool primary)
     {
-      if (IsPercentageFromKind())
+      if (IsPercFromKind(Kind))
         return true;
       return primary ? PrimaryStat.IsPercentage : AuxStat.IsPercentage;
     }
-       
-
-    //FightItemKind GetFightItemKind(PassiveAbilityKind abilityKind)
-    //{
-    //  switch (abilityKind)
-
-    //  {
-    //    case PassiveAbilityKind.ExplosiveMastering:
-    //      return FightItemKind.ExplosiveCocktail;
-    //    case PassiveAbilityKind.LootingMastering:
-    //      break;
-    //    case PassiveAbilityKind.ThrowingWeaponsMastering:
-    //      return FightItemKind.ThrowingKnife;
-
-    //    //case AbilityKind.HuntingMastering:
-    //    //  return FightItemKind.Trap;
-
-    //    default:
-    //      break;
-    //  }
-
-    //  return FightItemKind.Unset;
-    //}
-
-    
-    
   }
 }

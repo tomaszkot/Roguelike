@@ -17,10 +17,7 @@ namespace Roguelike.Abilities
     }
 
 
-    public override bool IsPercentageFromKind()
-    {
-      return kind == AbilityKind.Stride;
-    }
+    public override bool IsPercentageFromKind => kind == AbilityKind.Stride;
 
     public override float CalcFactor(bool primary, int level)
     {

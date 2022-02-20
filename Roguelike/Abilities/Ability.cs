@@ -112,12 +112,12 @@ namespace Roguelike.Abilities
     public string GetFormattedCurrentValue(EntityStat es)
     {
       var fv = es.GetFormattedCurrentValue();
-      if (!es.IsPercentage && IsPercentageFromKind())
+      if (!es.IsPercentage && IsPercentageFromKind)
         fv += "%";
       return fv;
     }
 
-    public abstract bool IsPercentageFromKind();
+    public abstract bool IsPercentageFromKind { get; }
 
     public List<EntityStat> GetEntityStats(bool currentLevel)
     {
@@ -243,6 +243,16 @@ namespace Roguelike.Abilities
         }
       }
       return new Tuple<EntityStat, EntityStat>(primary, secondary);
+    }
+
+    public EntityStatUnit EntityStatUnit
+    {
+      get 
+      { 
+        if(IsPercentageFromKind)
+          return EntityStatUnit.Percentage;
+        return EntityStatUnit.Absolute;
+      }
     }
   }
 }

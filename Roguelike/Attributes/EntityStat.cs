@@ -65,11 +65,6 @@ namespace Roguelike.Attributes
       return Kind + " " + Value.TotalValue + " (" + Value.ToString() + ")";
     }
 
-    //public void Divide(EntityStat other)
-    //{
-    //  Stat.Divide(other.Stat);
-    //}
-
     public void Subtract(float amount)
     {
       var finalSubtr = stat.Subtracted + amount;
