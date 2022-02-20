@@ -389,7 +389,7 @@ namespace Roguelike.Attributes
       Ensure(kind);
       var stat = this.Stats[kind];
       stat.Factor += value;
-      if (stat.IsPercentage && stat.Value.TotalValue > 100)
+      if (stat.Unit == EntityStatUnit.Percentage && stat.Value.TotalValue > 100)
       {
         var diff = stat.Value.TotalValue - 100;
         stat.Factor -= diff;

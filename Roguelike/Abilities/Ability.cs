@@ -11,7 +11,7 @@ namespace Roguelike.Abilities
   public abstract class Ability : IDescriptable, IHotbarItem
     {
     protected string primaryStatDescription;
-    static List<string> emptyExtraStatDescription = new List<string>();
+    //static List<string> emptyExtraStatDescription = new List<string>();
     public int Level { get; set; }
     public EntityStat PrimaryStat { get; set; }
     public EntityStat AuxStat { get; set; }
@@ -53,7 +53,7 @@ namespace Roguelike.Abilities
         var lev = abilityLevelToPlayerLevel[Level + 1];
         if (lev > entity.Level)
         {
-          LastIncError = "Required character level for ablility increase: " + lev;
+          LastIncError = "Required character level for ability increase: " + lev;
           return false;
         }
       }
@@ -112,7 +112,7 @@ namespace Roguelike.Abilities
     public string GetFormattedCurrentValue(EntityStat es)
     {
       var fv = es.GetFormattedCurrentValue();
-      if (!es.IsPercentage && IsPercentageFromKind)
+      if (es.Unit != EntityStatUnit.Percentage && IsPercentageFromKind)//Health, Magic... ability is always in %
         fv += "%";
       return fv;
     }
@@ -128,7 +128,8 @@ namespace Roguelike.Abilities
         if (AuxStat.Kind != EntityStatKind.Unset)
           res.Add(AuxStat);
       }
-      else {
+      else 
+      {
         if (Level < MaxLevel)
         {
           var esN = new EntityStat(PrimaryStat.Kind, 0);

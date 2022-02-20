@@ -53,8 +53,10 @@ namespace Roguelike.Attributes
         && sk != EntityStatKind.ElementalProjectilesRange
         )
       {
-        IsPercentage = true;
+        Unit = EntityStatUnit.Percentage;
       }
+      else
+        Unit = EntityStatUnit.Absolute;
 
       if (kind == EntityStatKind.Health)
         CanBeBelowZero = true;//death
@@ -116,15 +118,11 @@ namespace Roguelike.Attributes
       }
     }
 
-    public bool IsPercentage { get; set; }
-    //public StatValue Stat1 { get => stat; set => stat = value; }
-
+    public EntityStatUnit Unit { get; set; } = EntityStatUnit.Unset;
+        
     public string GetFormattedCurrentValue()
     {
-      var val = Value.CurrentValue.ToString();
-      if (IsPercentage)
-        val += " " + "%";
-      return val;
+      return GetFormattedCurrentValue(Value.CurrentValue);
     }
 
     public static float Round(float value)
@@ -135,7 +133,7 @@ namespace Roguelike.Attributes
     public string GetFormattedCurrentValue(float cv)
     {
       var val = cv.ToString();
-      if (IsPercentage)
+      if (Unit == EntityStatUnit.Percentage)
         val += " " + "%";
       else
       {

@@ -899,8 +899,9 @@ namespace Roguelike.Tiles.LivingEntities
     {
       var stat = Stats.GetStat(kind);
       var cv = stat.Value.CurrentValue;
-      if (stat.IsPercentage && cv > 100)
+      if (stat.Unit == EntityStatUnit.Percentage && cv > 100)
       {
+        Logger.LogError("stat.Unit == EntityStatUnit.Percentage && cv > 100! "+this);
         cv = 100;
       }
 

@@ -1,11 +1,7 @@
-﻿using Roguelike.Abstract;
-using Roguelike.Attributes;
-using Roguelike.Calculated;
+﻿using Roguelike.Attributes;
 using Roguelike.Extensions;
-using Roguelike.Tiles.Abstract;
 using Roguelike.Tiles.Looting;
 using System;
-using System.Collections.Generic;
 
 namespace Roguelike.Abilities
 {
@@ -120,12 +116,7 @@ namespace Roguelike.Abilities
     {
       return primary ? PrimaryStat.Factor : AuxStat.Factor;
     }
-        
-    EntityStatKind GetEffectiveStatKind(bool primary)
-    {
-      return primary ? PrimaryStat.Kind : AuxStat.Kind;
-    }
-
+    
     public override bool IsPercentageFromKind => IsPercFromKind(Kind);
 
     public override float CalcFactor(bool primary, int level)
@@ -266,7 +257,7 @@ namespace Roguelike.Abilities
     {
       if (IsPercFromKind(Kind))
         return true;
-      return primary ? PrimaryStat.IsPercentage : AuxStat.IsPercentage;
+      return primary ? PrimaryStat.Unit == EntityStatUnit.Percentage : AuxStat.Unit == EntityStatUnit.Percentage;
     }
   }
 }
