@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using Roguelike.Calculated;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -311,9 +312,9 @@ namespace Roguelike.Attributes
       return this[kind].CurrentValue;
     }
 
-    internal void IncreaseStatFactor(EntityStatKind sk, float percent)
+    internal void IncreaseDynamicStatValue(EntityStatKind sk, EntityStat percIncrease, bool useCurrentValue = true)
     {
-      var inc = this[sk].TotalValue * percent / 100;
+      var inc = FactorCalculator.CalcPercentageValue(Stats[sk].GetValueToCalcPercentage(useCurrentValue), percIncrease.Factor);
       //if (inc < 1)
       //  inc = 1;
       ChangeStatDynamicValue(sk, inc);

@@ -309,8 +309,8 @@ namespace RoguelikeUnitTests
     public void BasicManaAndHealthTests()
     {
       var game = CreateGame();
-      Assert.IsTrue(game.Hero.Abilities.PassiveItems.Any());//shall have all at 0
-      Assert.IsTrue(game.Hero.Abilities.PassiveItems.All(i => i.Level == 0));
+      Assert.IsTrue(game.Hero.Abilities.PassiveItems.Any());
+      Assert.IsTrue(game.Hero.Abilities.PassiveItems.All(i => i.Level == 0));//shall have all at 0
       //TestRestoreFactorChange(true);
       TestRestoreFactorChange(false);
     }
@@ -322,8 +322,9 @@ namespace RoguelikeUnitTests
       var abVal = 0.0;
       for (int i = 0; i < MaxAbilityInc + 1; i++)
       {
-        var done = Hero.IncreaseAbility(forMana ? Roguelike.Abilities.AbilityKind.RestoreMana : Roguelike.Abilities.AbilityKind.RestoreHealth);
-        var ab = Hero.GetPassiveAbility(forMana ? Roguelike.Abilities.AbilityKind.RestoreMana : Roguelike.Abilities.AbilityKind.RestoreHealth);
+        var done = Hero.IncreaseAbility(forMana ? AbilityKind.RestoreMana : AbilityKind.RestoreHealth);
+        var ab = Hero.GetPassiveAbility(forMana ? AbilityKind.RestoreMana : AbilityKind.RestoreHealth);
+        Assert.AreEqual(ab.PrimaryStat.Unit, EntityStatUnit.Percentage);
         AssertNextValue(i, ab, abVal, null);
         var factor = GetFactor(ab, true);
         Assert.Less(factor, 10);

@@ -51,6 +51,10 @@ namespace Roguelike.Attributes
       return "NV: " + Nominal + ", F: " + Factor + ", Sub:" + Subtracted;
     }
 
+
+    /// <summary>
+    /// returns Nominal + Factor
+    /// </summary>
     [JsonIgnore]
     public float TotalValue
     {
@@ -71,6 +75,9 @@ namespace Roguelike.Attributes
       return TotalValue - subtracted;
     }
 
+    /// <summary>
+    /// Amount of values subtracted, e.g. gained damage or used mana
+    /// </summary>
     public float Subtracted
     {
       get
@@ -93,7 +100,6 @@ namespace Roguelike.Attributes
         Factor /= value;
 
         Subtracted /= value;
-
       }
     }
 

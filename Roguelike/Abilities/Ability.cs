@@ -112,8 +112,8 @@ namespace Roguelike.Abilities
     public string GetFormattedCurrentValue(EntityStat es)
     {
       var fv = es.GetFormattedCurrentValue();
-      if (es.Unit != EntityStatUnit.Percentage && IsPercentageFromKind)//Health, Magic... ability is always in %
-        fv += "%";
+      //if (es.Unit != EntityStatUnit.Percentage && IsPercentageFromKind)//Health, Magic... ability is always in %
+      //  fv += "%";
       return fv;
     }
 
@@ -151,7 +151,7 @@ namespace Roguelike.Abilities
 
     public string[] GetExtraStatDescription(bool currentLevel)
     {
-      List<string> desc = new List<string>();
+      var desc = new List<string>();
 
       bool usesCustomStatDescription = useCustomStatDescription();
       
@@ -246,14 +246,14 @@ namespace Roguelike.Abilities
       return new Tuple<EntityStat, EntityStat>(primary, secondary);
     }
 
-    public EntityStatUnit EntityStatUnit
-    {
-      get 
-      { 
-        if(IsPercentageFromKind)
-          return EntityStatUnit.Percentage;
-        return EntityStatUnit.Absolute;
-      }
-    }
+    //public EntityStatUnit EntityStatUnit
+    //{
+    //  get 
+    //  { 
+    //    if(IsPercentageFromKind)
+    //      return EntityStatUnit.Percentage;
+    //    return EntityStatUnit.Absolute;
+    //  }
+    //}
   }
 }

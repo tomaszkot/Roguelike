@@ -108,6 +108,7 @@ namespace Roguelike.Abilities
       set
       {
         kind = value;
+
         SetName(Kind.ToDescription());
         SetPrimaryStatDescription();
         EntityStatKind psk = EntityStatKind.Unset;
@@ -140,6 +141,10 @@ namespace Roguelike.Abilities
         //  return;
         PrimaryStat.SetKind(psk);
         AuxStat.SetKind(ask);
+        if (kind == AbilityKind.Stride)
+        {
+          PrimaryStat.Unit = EntityStatUnit.Percentage;
+        }
       }
     }
   }

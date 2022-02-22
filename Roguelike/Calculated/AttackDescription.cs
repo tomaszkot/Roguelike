@@ -231,8 +231,11 @@ namespace Roguelike.Calculated
       {
         if (weapons2Esk.ContainsKey(wpn.Kind))//AxeExtraDamage, SwordExtraDamage...
         {
-          var extraPercentage = ent.Stats.GetCurrentValue(weapons2Esk[wpn.Kind]);
-          currentDamage = FactorCalculator.AddFactor(currentDamage, extraPercentage);
+          currentDamage = ent.Stats.GetStat(weapons2Esk[wpn.Kind]).SumPercentageFactorAndValue(currentDamage);
+          //var extraPercentage = ent.Stats.GetCurrentValue(weapons2Esk[wpn.Kind]);
+          //var currentDamage1 = FactorCalculator.AddFactor(currentDamage, extraPercentage);
+          //if (currentDamage1 != currentDamage)
+          //  throw new System.Exception("currentDamage1 != currentDamage");
         }
       }
     }

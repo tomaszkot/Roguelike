@@ -6,6 +6,7 @@ using Roguelike.Abstract.Inventory;
 using Roguelike.Abstract.Projectiles;
 using Roguelike.Abstract.Spells;
 using Roguelike.Abstract.Tiles;
+using Roguelike.Attributes;
 using Roguelike.Events;
 using Roguelike.Extensions;
 using Roguelike.Generators;
@@ -1539,7 +1540,8 @@ namespace Roguelike.Managers
 
           var desc = "";
           var ab = (abilityUser as AdvancedLivingEntity).GetActiveAbility(Abilities.AbilityKind.Stride);
-          var damage = target.CalcMeleeDamage(Calculated.FactorCalculator.AddFactor(abilityUser.Stats.Strength, ab.PrimaryStat.Factor), ref desc);
+          var attack = abilityUser.Stats.GetStat(EntityStatKind.Strength).SumValueAndPercentageFactor(ab.PrimaryStat, true);
+          var damage = target.CalcMeleeDamage(attack, ref desc);
           var inflicted = target.InflictDamage(abilityUser, false, ref damage, ref desc);
 
           ApplyMovePolicy(target, newPos.Point);

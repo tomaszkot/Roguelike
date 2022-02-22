@@ -108,7 +108,9 @@ namespace Roguelike.Abilities
             break;
         }
         PrimaryStat.SetKind(psk);
+        PrimaryStat.Unit = EntityStatUnit.Percentage;
         AuxStat.SetKind(ask);
+        AuxStat.Unit = EntityStatUnit.Percentage;
       }
     }
 

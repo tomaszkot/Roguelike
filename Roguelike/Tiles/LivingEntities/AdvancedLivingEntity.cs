@@ -804,9 +804,9 @@ namespace Roguelike.Tiles.LivingEntities
 
           if (factor > 0 && Math.Abs(factor) > 0.001)
           {
-            var inc = ab.PrimaryStat.Factor;
-            var val = stat.Value.Nominal * inc / 100f;
-            Stats.IncreaseStatFactor(entityStatKind, val);
+            //var inc = .Factor;
+            //var val = stat.Value.Nominal * inc / 100f;
+            Stats.IncreaseDynamicStatValue(entityStatKind, ab.PrimaryStat);
             //GameManager.Instance.AppendDiagnosticsUnityLog("restored " + entityStatKind + " " + val);
           }
         }

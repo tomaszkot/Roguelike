@@ -1,4 +1,5 @@
-﻿using Roguelike.Extensions;
+﻿using Roguelike.Calculated;
+using Roguelike.Extensions;
 using System;
 
 namespace Roguelike.Attributes
@@ -65,6 +66,37 @@ namespace Roguelike.Attributes
     public override string ToString()
     {
       return Kind + " " + Value.TotalValue + " (" + Value.ToString() + ")";
+    }
+
+    public float GetValueToCalcPercentage(bool useCurrentValue)
+    {
+      if (this.Unit != EntityStatUnit.Absolute)
+        throw new Exception("this.Unit != EntityStatUnit.Absolute "+this);
+      return useCurrentValue ? Value.CurrentValue : Value.Nominal;
+    }
+
+    public float SumValueAndPercentageFactor(EntityStat factorPercentage, bool useCurrentValue)
+    {
+      if (factorPercentage.Unit != EntityStatUnit.Percentage)
+        throw new Exception("factorPercentage.Unit != EntityStatUnit.Percentage" + factorPercentage);
+      return SumValueAndPercentageFactor(factorPercentage.Value.Factor, useCurrentValue);
+    }
+
+    public float SumValueAndPercentageFactor(float factorPercentage, bool useCurrentValue)
+    {
+      if (Unit != EntityStatUnit.Absolute)
+        throw new Exception("Unit != EntityStatUnit.Absolute " + this);
+
+      float val = GetValueToCalcPercentage(useCurrentValue);
+      return FactorCalculator.AddFactor(val, factorPercentage);
+    }
+    public float SumPercentageFactorAndValue(float value)
+    {
+      if (Unit != EntityStatUnit.Percentage)
+        throw new Exception("Unit != EntityStatUnit.Percentage " + this);
+
+      //float val = GetValueToCalcPercentage(useCurrentValue);
+      return FactorCalculator.AddFactor(value, this.Factor);
     }
 
     public void Subtract(float amount)
