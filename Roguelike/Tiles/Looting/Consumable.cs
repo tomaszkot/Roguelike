@@ -56,11 +56,6 @@ namespace Roguelike.Tiles.Looting
       return new PercentageFactor(inc);
     }
 
-    //public virtual EffectiveFactor GetEffectiveStatIncrease()
-    //{
-    //  return new EffectiveFactor(0);
-    //}
-    
     protected string GetConsumeDesc(string desc)
     {
       if (Strings.ConsumeDescPart.Any())

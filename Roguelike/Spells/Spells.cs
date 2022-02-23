@@ -209,6 +209,19 @@ namespace Roguelike.Spells
     }
   }
 
+  public class DziewannaSpell : PassiveSpell
+  {
+    public DziewannaSpell() : this(new LivingEntity()){ }
+
+    public DziewannaSpell(LivingEntity caller) : base(caller, EntityStatKind.Unset)
+    {
+      Kind = SpellKind.Dziewanna;
+      CoolingDown = 10;
+      StatKind = EntityStatKind.Health;
+    }
+  }
+  
+
   public class TeleportSpell : PassiveSpell
   {
     const int baseRange = 3;

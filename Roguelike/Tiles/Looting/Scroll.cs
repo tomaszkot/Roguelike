@@ -1,7 +1,5 @@
-﻿using Newtonsoft.Json;
-using Roguelike.Abstract.Spells;
+﻿using Roguelike.Abstract.Spells;
 using Roguelike.Spells;
-using Roguelike.Tiles.LivingEntities;
 using System;
 
 namespace Roguelike.Tiles.Looting

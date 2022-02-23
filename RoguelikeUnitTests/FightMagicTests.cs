@@ -234,11 +234,41 @@ namespace RoguelikeUnitTests
       Assert.True(game.GameManager.EnemiesManager.ShallChaseTarget(enemy, game.Hero));
     }
 
-    private Scroll PrepareScroll(Hero hero, SpellKind spellKind, Enemy enemy = null)
+    [Test]
+    public void DziewannaScrollTest()
+    {
+      var game = CreateGame();
+      var hero = game.Hero;
+
+      Enemy enemy = AllEnemies.First();
+      var scroll = PrepareScroll(hero, SpellKind.Dziewanna, enemy);
+
+      var enHealth = enemy.Stats.Health;
+      var apples = game.GameManager.CurrentNode.GetTiles<Food>().Where(i => i.Kind == FoodKind.Apple && i.EffectType == Roguelike.Effects.EffectType.Poisoned);
+      Assert.AreEqual(apples.Count(), 0);
+      game.GameManager.SpellManager.ApplyPassiveSpell(hero, scroll);
+      Assert.True(!game.GameManager.HeroTurn);
+      apples = game.GameManager.CurrentNode.GetTiles<Food>().Where(i => i.Kind == FoodKind.Apple);
+      var applesCount = apples.Count();
+      Assert.Greater(applesCount, 0);
+      
+      for (int i = 0; i < 10; i++)
+      {
+        GotoNextHeroTurn();
+        if (enemy.HasLastingEffect(Roguelike.Effects.EffectType.Poisoned))
+          break;
+      }
+      Assert.True(enemy.HasLastingEffect(Roguelike.Effects.EffectType.Poisoned));
+      var applesAfter = game.GameManager.CurrentNode.GetTiles<Food>().Where(i => i.Kind == FoodKind.Apple && i.EffectType == Roguelike.Effects.EffectType.Poisoned).ToList();
+      Assert.Greater(applesCount, applesAfter.Count);
+      Assert.Greater(enHealth, enemy.Stats.Health);
+    }
+
+    private Scroll PrepareScroll(Hero hero, SpellKind spellKind, Enemy enemyToPlaceNearby = null)
     {
       var emp = game.GameManager.CurrentNode.GetClosestEmpty(hero);
-      if (enemy != null)
-        Assert.True(game.GameManager.CurrentNode.SetTile(enemy, emp.point));
+      if (enemyToPlaceNearby != null)
+        Assert.True(game.GameManager.CurrentNode.SetTile(enemyToPlaceNearby, emp.point));
       var scroll = new Scroll(spellKind);
       hero.Inventory.Add(scroll);
 

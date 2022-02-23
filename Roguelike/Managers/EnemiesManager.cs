@@ -1,6 +1,7 @@
 ﻿using Dungeons.Core;
 using Dungeons.Tiles;
 using Roguelike.Events;
+using Roguelike.Tiles;
 using Roguelike.Tiles.LivingEntities;
 using SimpleInjector;
 using System.Collections.Generic;
@@ -74,6 +75,16 @@ namespace Roguelike.Managers
           context.Logger.LogInfo("!Frighten");
         MoveAwayFromHero(enemy);
         return;
+      }
+
+      var apples = context.CurrentNode.GetNeighborTiles<Food>(enemy).Where
+        (i => i is Food food && food.Kind == FoodKind.Apple && food.EffectType == Effects.EffectType.Poisoned).ToList();
+      if (apples.Any())
+      {
+        var apple = apples.First();
+        context.CurrentNode.RemoveLoot(apple.point);
+        MoveEntity(enemy, apple.point);
+        enemy.AddLastingEffectFromSpell(Spells.SpellKind.Dziewanna, Effects.EffectType.Poisoned);
       }
 
       if (AttackAlly(enemy))

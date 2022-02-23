@@ -11,6 +11,7 @@ using Roguelike.Tiles.Looting;
 using SimpleInjector;
 using System;
 using System.Drawing;
+using System.Linq;
 
 namespace Roguelike.Managers
 {
@@ -53,6 +54,30 @@ namespace Roguelike.Managers
               gm.ReportFailure("Can not cast on the pointed tile");
               return null;
             }
+          }
+        }
+        else if (ps.Kind == SpellKind.Dziewanna)
+        {
+          //for (int i = 0; i < 2; i++)
+          {
+            var enemies = gm.CurrentNode.GetNeighborTiles<Enemy>(gm.Hero);
+            foreach (var en in enemies)
+            {
+              var emptyOnes = gm.CurrentNode.GetEmptyNeighborhoodTiles(en, false);
+              if (emptyOnes.Any())
+              {
+                var apple = new Food(FoodKind.Apple);
+                apple.EffectType = Effects.EffectType.Poisoned;
+                gm.CurrentNode.SetTile(apple, emptyOnes.First().point);
+              }
+            }
+            //var emptyOnes = gm.CurrentNode.GetEmptyNeighborhoodTiles(gm.Hero);
+            //if (emptyOnes.Any())
+            //{
+            //  var apple = new Food(FoodKind.Apple);
+            //  apple.EffectType = Effects.EffectType.Poisoned;
+            //  gm.CurrentNode.SetTile(apple, emptyOnes.First().point);
+            //}
           }
         }
         else

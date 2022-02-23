@@ -6,7 +6,7 @@ using System.Linq;
 
 namespace Roguelike.Tiles
 {
-  public enum FoodKind { Unset, Mushroom, Plum, /*Herb,*/ Meat, Fish }
+  public enum FoodKind { Unset, Mushroom, Plum, /*Herb,*/ Meat, Fish, Apple }
 
   public class Food : Consumable
   {
@@ -128,6 +128,9 @@ namespace Roguelike.Tiles
           if (Roasted)
             tag1 = "fish_roasted";
           break;
+        case FoodKind.Apple:
+          tag1 = "apple";
+          break;
         default:
           break;
       }
@@ -147,6 +150,10 @@ namespace Roguelike.Tiles
           desc = "Roasted, delicious piece of " + Kind.ToString().ToLower();
         else
           desc = "Raw yet nutritious piece of " + Kind.ToString().ToLower();
+      }
+      else if (Kind == FoodKind.Apple)
+      {
+        desc = "juicy, delicious fruit";
       }
       desc = GetConsumeDesc(desc);
       PrimaryStatDescription = desc;

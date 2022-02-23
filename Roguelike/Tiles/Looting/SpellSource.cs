@@ -234,6 +234,9 @@ namespace Roguelike.Tiles.Looting
         case SpellKind.ResistAll:
           spell = new ResistAllSpell(caller);
           break;
+        case SpellKind.Dziewanna:
+          spell = new DziewannaSpell(caller);
+          break;
         case SpellKind.Identify:
           break;//TODO ?
         default:

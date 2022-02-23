@@ -13,8 +13,6 @@ namespace Roguelike.Abilities
     public override bool useCustomStatDescription()
     {
       return false;
-      //Kind == AbilityKind.ExplosiveMastering ||
-        //Kind == AbilityKind.PoisonMastering;
     }
 
 
@@ -138,8 +136,7 @@ namespace Roguelike.Abilities
             Debug.WriteLine("Unsupported kind:  "+ kind);
             break;
         }
-        //if (PrimaryStat == null)
-        //  return;
+
         PrimaryStat.SetKind(psk);
         AuxStat.SetKind(ask);
         if (kind == AbilityKind.Stride)
