@@ -12,8 +12,9 @@ namespace Roguelike.Abilities
   {
     public override bool useCustomStatDescription()
     {
-      return Kind == AbilityKind.ExplosiveMastering ||
-        Kind == AbilityKind.PoisonMastering;
+      return false;
+      //Kind == AbilityKind.ExplosiveMastering ||
+        //Kind == AbilityKind.PoisonMastering;
     }
 
 
