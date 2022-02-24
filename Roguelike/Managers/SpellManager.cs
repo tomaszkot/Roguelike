@@ -1,4 +1,5 @@
-﻿using Roguelike.Abstract.Projectiles;
+﻿using Dungeons.Tiles;
+using Roguelike.Abstract.Projectiles;
 using Roguelike.Abstract.Spells;
 using Roguelike.Attributes;
 using Roguelike.Events;
@@ -10,6 +11,7 @@ using Roguelike.Tiles.LivingEntities;
 using Roguelike.Tiles.Looting;
 using SimpleInjector;
 using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 
@@ -21,6 +23,14 @@ namespace Roguelike.Managers
     {
       this.gm = mgr;
       Container = gm.Container;
+    }
+
+    void AddApple(Tile dest)
+    {
+      var apple = new Food(FoodKind.Apple);
+      apple.SetPoisoned();
+      
+      gm.CurrentNode.SetTile(apple, dest.point);
     }
 
     public PassiveSpell ApplyPassiveSpell(LivingEntity caster, SpellSource spellSource, Point? destPoint = null)
@@ -60,24 +70,29 @@ namespace Roguelike.Managers
         {
           //for (int i = 0; i < 2; i++)
           {
+            int counter = 0;
             var enemies = gm.CurrentNode.GetNeighborTiles<Enemy>(gm.Hero);
+            var tiles = new List<Tile>();
             foreach (var en in enemies)
             {
-              var emptyOnes = gm.CurrentNode.GetEmptyNeighborhoodTiles(en, false);
+              var emptyOnes = gm.CurrentNode.GetEmptyNeighborhoodTiles(en, false).Where(i=> !tiles.Contains(i));
               if (emptyOnes.Any())
               {
-                var apple = new Food(FoodKind.Apple);
-                apple.EffectType = Effects.EffectType.Poisoned;
-                gm.CurrentNode.SetTile(apple, emptyOnes.First().point);
+                tiles.Add(emptyOnes.First());
+                counter++;
+                if (counter >= 2)
+                  break;
               }
             }
-            //var emptyOnes = gm.CurrentNode.GetEmptyNeighborhoodTiles(gm.Hero);
-            //if (emptyOnes.Any())
-            //{
-            //  var apple = new Food(FoodKind.Apple);
-            //  apple.EffectType = Effects.EffectType.Poisoned;
-            //  gm.CurrentNode.SetTile(apple, emptyOnes.First().point);
-            //}
+            if (counter == 0)
+            {
+              var emp = gm.CurrentNode.GetClosestEmpty(gm.Hero);
+              tiles.Add(emp);
+            }
+            foreach (var tile in tiles)
+            {
+              AddApple(tile);              
+            }
           }
         }
         else

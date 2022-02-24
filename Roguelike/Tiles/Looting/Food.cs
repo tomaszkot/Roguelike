@@ -32,6 +32,13 @@ namespace Roguelike.Tiles
       Price = 15;
     }
 
+    public void SetPoisoned()
+    {
+      EffectType = Effects.EffectType.Poisoned;
+      NegativeFactor = true;
+      SetPrimaryStatDesc();
+    }
+
     public override string ToString()
     {
       return base.ToString() + " " + Kind;
@@ -153,7 +160,10 @@ namespace Roguelike.Tiles
       }
       else if (Kind == FoodKind.Apple)
       {
-        desc = "juicy, delicious fruit";
+        if (EffectType == Effects.EffectType.Poisoned)
+          desc = "juicy, poisonous fruit";
+        else
+          desc = "juicy, delicious fruit";
       }
       desc = GetConsumeDesc(desc);
       PrimaryStatDescription = desc;

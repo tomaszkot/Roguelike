@@ -218,10 +218,10 @@ namespace Roguelike.Spells
       Kind = SpellKind.Dziewanna;
       CoolingDown = 10;
       StatKind = EntityStatKind.Health;
+      manaCost += 5;
     }
   }
   
-
   public class TeleportSpell : PassiveSpell
   {
     const int baseRange = 3;

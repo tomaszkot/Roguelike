@@ -86,6 +86,11 @@ namespace Roguelike.Managers
         MoveEntity(enemy, apple.point);
         enemy.AddLastingEffectFromSpell(Spells.SpellKind.Dziewanna, Effects.EffectType.Poisoned);
       }
+      else
+      {
+        int k = 0;
+        k++;
+      }
 
       if (AttackAlly(enemy))
       {

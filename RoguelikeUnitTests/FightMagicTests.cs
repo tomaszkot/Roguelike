@@ -237,7 +237,7 @@ namespace RoguelikeUnitTests
     [Test]
     public void DziewannaScrollTest()
     {
-      var game = CreateGame();
+      var game = CreateGame(numEnemies:1);
       var hero = game.Hero;
 
       Enemy enemy = AllEnemies.First();

@@ -128,7 +128,9 @@ namespace Roguelike.Tiles.Looting
           break;
         case SpellKind.ResistAll:
           desc = "";
-
+          break;
+        case SpellKind.Dziewanna:
+          desc = "Creates a poisonous apple(s), irresisteble for many entities";
           break;
         case SpellKind.Inaccuracy:
           desc = "Reduces the Chance to Hit statistic of the victim";
