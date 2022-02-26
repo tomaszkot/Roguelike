@@ -1226,7 +1226,7 @@ namespace Roguelike.Tiles.LivingEntities
           {
             LastingEffectsSet.AddPercentageLastingEffect(EffectType.Hooch, consumable, consumable.Loot);
           }
-          if (consumable is Food food && food.EffectType == EffectType.Poisoned)
+          else if(consumable is Food food && food.EffectType == EffectType.Poisoned)
           {
             var npd = CalculateNonPhysicalDamage(EntityStatKind.PoisonAttack, food.StatKindEffective.Value);
             int tours = food.Duration;

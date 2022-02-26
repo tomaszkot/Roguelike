@@ -537,13 +537,13 @@ namespace RoguelikeUnitTests
         food.SetMushroomKind(MushroomKind.BlueToadstool);
         Assert.AreEqual(food.tag1, "mash_BlueToadstool1");
         Assert.AreEqual(food.Kind, FoodKind.Mushroom);
-        Assert.AreEqual(food.StatKind, EntityStatKind.Mana);
+        Assert.AreEqual(food.StatKind, EntityStatKind.PoisonAttack);
       }
       {
         var food = new Roguelike.Tiles.Mushroom();
         food.SetMushroomKind(MushroomKind.RedToadstool);
         Assert.AreEqual(food.Kind, FoodKind.Mushroom);
-        Assert.AreEqual(food.StatKind, EntityStatKind.Health);
+        Assert.AreEqual(food.StatKind, EntityStatKind.PoisonAttack);
       }
       {
         var food = new Roguelike.Tiles.Mushroom();
