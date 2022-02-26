@@ -1,4 +1,5 @@
 ﻿using Dungeons.Core;
+using Roguelike.Attributes;
 using Roguelike.Extensions;
 using Roguelike.Tiles.Looting;
 using System;
@@ -32,10 +33,23 @@ namespace Roguelike.Tiles
       Price = 15;
     }
 
+    protected override string StatToDescription()
+    {
+      if (EffectType == Effects.EffectType.Poisoned)
+      {
+        return "Poison Damage: " + Math.Abs(StatKindEffective.Value);
+      }
+      return base.StatToDescription();
+    }
+
     public void SetPoisoned()
     {
       EffectType = Effects.EffectType.Poisoned;
       NegativeFactor = true;
+      PercentageStatIncrease = false;
+      StatKind = EntityStatKind.PoisonAttack;
+      defaultEffectiveFactor = 3;
+
       SetPrimaryStatDesc();
     }
 

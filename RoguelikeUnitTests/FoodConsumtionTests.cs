@@ -1,5 +1,6 @@
 ﻿using NUnit.Framework;
 using Roguelike.Attributes;
+using Roguelike.Effects;
 using Roguelike.Tiles;
 using Roguelike.Tiles.Looting;
 using System;
@@ -66,6 +67,36 @@ namespace RoguelikeUnitTests
       }
       var diff = heroHealth - heroHurtHealth;
       Assert.AreEqual(diff, expectedHealthRestore);
+    }
+
+    [Test]
+    public void TestApple()
+    {
+      var food = new Food(FoodKind.Apple);
+      Assert.AreEqual(food.PercentageStatIncrease, true);
+      food.SetPoisoned();
+      TestPoisonous(food);
+    }
+
+    private void TestPoisonous(Food food)
+    {
+      var game = CreateGame();
+      var hero = game.Hero;
+      
+      Assert.AreEqual(food.PercentageStatIncrease, false);
+      Assert.AreEqual(food.StatKind, EntityStatKind.PoisonAttack);
+      Assert.Greater(food.StatKindEffective.Value, 0);
+      var lsi = food.GetLootStatInfo(hero);
+      Assert.AreEqual(lsi[0].Desc, "Poison Damage: " + Math.Abs(food.StatKindEffective.Value));
+    }
+
+    [TestCase(MushroomKind.BlueToadstool)]
+    [TestCase(MushroomKind.RedToadstool)]
+    public void TestMash(MushroomKind kind)
+    {
+      var food = new Mushroom(kind);
+      Assert.AreEqual(food.EffectType, EffectType.Poisoned);
+      TestPoisonous(food);
     }
 
     [Test]

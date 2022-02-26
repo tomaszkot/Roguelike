@@ -238,7 +238,11 @@ namespace Roguelike.Effects
         res += "+";
 
       if (EffectiveFactor.Value != 0)
+      {
+        //if (res.Last() != ' ')
+        //  res += " ";
         res += EffectiveFactor.Value.Formatted();
+      }
       else
         res += PercentageFactor.Value.Formatted();
 

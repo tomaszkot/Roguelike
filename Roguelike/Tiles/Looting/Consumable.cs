@@ -38,7 +38,9 @@ namespace Roguelike.Tiles.Looting
       get => GetPercentageStatIncrease();
     }
 
-    public virtual EffectiveFactor StatKindEffective => new EffectiveFactor(0);
+    protected float defaultEffectiveFactor = 0;
+
+    public virtual EffectiveFactor StatKindEffective => new EffectiveFactor(defaultEffectiveFactor);
 
     //EffectiveFactor GetEffectiveStatIncrease() { return new EffectiveFactor(0); }
     public bool NegativeFactor { get; set; }
@@ -71,22 +73,29 @@ namespace Roguelike.Tiles.Looting
       {
         m_lootStatInfo = new List<LootStatInfo>();
         var lsi = new LootStatInfo();
-        lsi.Desc = statKind.ToDescription() + ": ";
-        if (PercentageStatIncrease)
-        {
-          lsi.Desc += GetPercentageStatIncrease();
-          if (Duration > 1 && !TourLastingProperty)
-            lsi.Desc += FormatTurns(Duration);
-        }
-        else
-          lsi.Desc += " +"+StatKindEffective.Value;
-
+        lsi.Desc = StatToDescription();
+        
         lsi.EntityStatKind = StatKind;
 
         m_lootStatInfo.Add(lsi);
       }
 
       return m_lootStatInfo;
+    }
+
+    protected virtual string StatToDescription()
+    {
+      var res = statKind.ToDescription() + ": ";
+      if (PercentageStatIncrease)
+      {
+        res += GetPercentageStatIncrease();
+        if (Duration > 1 && !TourLastingProperty)
+          res += FormatTurns(Duration);
+      }
+      else
+        res += " +" + StatKindEffective.Value;
+
+      return res;
     }
   }
 }

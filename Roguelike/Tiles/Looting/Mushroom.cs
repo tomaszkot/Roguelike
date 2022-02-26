@@ -47,8 +47,9 @@ namespace Roguelike.Tiles
       }
       NegativeFactor = MushroomKind == MushroomKind.RedToadstool;
 
+      //yes, both are poisonous
       if (MushroomKind == MushroomKind.BlueToadstool || MushroomKind == MushroomKind.RedToadstool)
-        this.EffectType = Effects.EffectType.Poisoned;
+        SetPoisoned();
 
       DisplayedName = Name;
       SetPrimaryStatDesc();
