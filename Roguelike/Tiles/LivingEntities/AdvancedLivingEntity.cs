@@ -263,62 +263,19 @@ namespace Roguelike.Tiles.LivingEntities
       coolingDownSpells[kind] = ActiveManaPoweredSpellSource.CreateSpell(this).CoolingDown;
     }
 
-    public void Consume(IConsumable consumable)
+    public override void Consume(IConsumable consumable)
     {
       if (inventory.Contains(consumable.Loot))
       {
-        if (consumable.StatKind == EntityStatKind.Unset)
-        {
-          var pot = consumable.Loot as Potion;
-          Debug.Assert(pot != null && pot.Kind == PotionKind.Antidote);
-        }
-
         var stacked = consumable.Loot as StackedLoot;
-        inventory.Remove(stacked);
-
-        if (consumable is SpecialPotion)
+        var rem = inventory.Remove(stacked);
+        if (!rem)
         {
-          var sp = consumable as SpecialPotion;
-          this.Stats[sp.StatKind].Nominal += (float)consumable.StatKindEffective.Value;
+          Assert(false);
+          return;
         }
-        else
-        {
-          if (consumable is Potion potion)
-          {
-            Debug.Assert(consumable.ConsumptionSteps == 1);
-            if (potion.Kind == PotionKind.Antidote)
-            {
-              var le = GetFirstLastingEffect(EffectType.Poisoned);
-              if (le != null)
-                RemoveLastingEffect(le);
-            }
-            else
-            {
-              var factor = LastingEffectsSet.CalcLastingEffectInfo(EffectType.Unset, consumable);
-              DoConsume(consumable.StatKind, factor);
-            }
-          }
-          else
-          {
-            if (consumable is Hooch hooch)
-            {
-              LastingEffectsSet.AddPercentageLastingEffect(EffectType.Hooch, consumable, consumable.Loot);
-            }
-            else
-            {
-              EffectType et = EffectType.ConsumedRawFood;
-              if (consumable.Roasted)
-                et = EffectType.ConsumedRoastedFood;
-              LastingEffectsSet.AddPercentageLastingEffect(et, consumable, consumable.Loot);
-            }
-          }
-        }
-
-        var info = Name + " consumed " + (consumable as Dungeons.Tiles.Tile).Name + ", Health: " + this.GetCurrentValue(EntityStatKind.Health);
-        AppendAction(new LootAction(consumable.Loot, this) { Kind = LootActionKind.Consumed, Info = info });
       }
-      else
-        Assert(false);
+      base.Consume(consumable);
     }
 
     public void IncreaseStatByLevelUpPoint(EntityStatKind stat)
@@ -752,7 +709,7 @@ namespace Roguelike.Tiles.LivingEntities
     {
       return Stats.GetNominal(eqStat.Kind) >= eq.GetReqStatValue(eqStat);
     }
-
+    
     public override string ToString()
     {
       return base.ToString();

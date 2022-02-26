@@ -30,7 +30,8 @@ namespace Roguelike.Managers
       var apple = new Food(FoodKind.Apple);
       apple.SetPoisoned();
       
-      gm.CurrentNode.SetTile(apple, dest.point);
+      //gm.CurrentNode.SetTile(apple, dest.point);
+      gm.AppendTile(apple, dest.point);
     }
 
     public PassiveSpell ApplyPassiveSpell(LivingEntity caster, SpellSource spellSource, Point? destPoint = null)

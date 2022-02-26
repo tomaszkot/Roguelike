@@ -19,6 +19,7 @@ using Roguelike.Utils;
 using SimpleInjector;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 
@@ -1188,5 +1189,55 @@ namespace Roguelike.Tiles.LivingEntities
 
     [JsonIgnore]
     public bool MoveDueToAbilityVictim { get; internal set; }
+
+    public virtual void Consume(IConsumable consumable)
+    {
+      if (consumable.StatKind == EntityStatKind.Unset)
+      {
+        var pot = consumable.Loot as Potion;
+        Debug.Assert(pot != null && pot.Kind == PotionKind.Antidote);
+      }
+
+      if (consumable is SpecialPotion)
+      {
+        var sp = consumable as SpecialPotion;
+        this.Stats[sp.StatKind].Nominal += (float)consumable.StatKindEffective.Value;
+      }
+      else
+      {
+        if (consumable is Potion potion)
+        {
+          Debug.Assert(consumable.ConsumptionSteps == 1);
+          if (potion.Kind == PotionKind.Antidote)
+          {
+            var le = GetFirstLastingEffect(EffectType.Poisoned);
+            if (le != null)
+              RemoveLastingEffect(le);
+          }
+          else
+          {
+            var factor = LastingEffectsSet.CalcLastingEffectInfo(EffectType.Unset, consumable);
+            DoConsume(consumable.StatKind, factor);
+          }
+        }
+        else
+        {
+          if (consumable is Hooch hooch)
+          {
+            LastingEffectsSet.AddPercentageLastingEffect(EffectType.Hooch, consumable, consumable.Loot);
+          }
+          else
+          {
+            EffectType et = EffectType.ConsumedRawFood;
+            if (consumable.Roasted)
+              et = EffectType.ConsumedRoastedFood;
+            LastingEffectsSet.AddPercentageLastingEffect(et, consumable, consumable.Loot);
+          }
+        }
+      }
+
+      var info = Name + " consumed " + (consumable as Dungeons.Tiles.Tile).Name + ", Health: " + this.GetCurrentValue(EntityStatKind.Health);
+      AppendAction(new LootAction(consumable.Loot, this) { Kind = LootActionKind.Consumed, Info = info });
+    }
   }
 }

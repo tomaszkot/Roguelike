@@ -255,10 +255,12 @@ namespace RoguelikeUnitTests
       for (int i = 0; i < 10; i++)
       {
         GotoNextHeroTurn();
-        if (enemy.HasLastingEffect(Roguelike.Effects.EffectType.Poisoned))
+        if (enemy.HasLastingEffect(Roguelike.Effects.EffectType.Poisoned) ||
+            enemy.HasLastingEffect(Roguelike.Effects.EffectType.ConsumedRawFood))
           break;
       }
-      Assert.True(enemy.HasLastingEffect(Roguelike.Effects.EffectType.Poisoned));
+      Assert.True(enemy.HasLastingEffect(Roguelike.Effects.EffectType.Poisoned) ||
+        enemy.HasLastingEffect(Roguelike.Effects.EffectType.ConsumedRawFood));
       var applesAfter = game.GameManager.CurrentNode.GetTiles<Food>().Where(i => i.Kind == FoodKind.Apple && i.EffectType == Roguelike.Effects.EffectType.Poisoned).ToList();
       Assert.Greater(applesCount, applesAfter.Count);
       Assert.Greater(enHealth, enemy.Stats.Health);

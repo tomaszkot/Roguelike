@@ -509,6 +509,13 @@ namespace Roguelike.Managers
       this.EventsManager.AppendAction(action);
     }
 
+    /// <summary>
+    /// Appends tile, decreases scrolls count in the inv.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="tile"></param>
+    /// <param name="pt"></param>
+    /// <returns></returns>
     public bool AppendTileByScrollUsage<T>(T tile, Point pt) where T : Tile
     {
       bool appended = AppendTile(tile, pt);
