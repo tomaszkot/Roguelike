@@ -697,6 +697,8 @@ namespace Roguelike.Tiles.LivingEntities
       return lastingEffectsSet.EnsureEffect(EffectType.Bleeding, damageEachTurn, attacker, turnLasting);
     }
 
+    public bool ImmuneOnEffects { get; set; }
+
     protected virtual void OnHitBy(float amount, Spell spell, string damageDesc = null)
     {
       if (!Alive)
@@ -725,7 +727,8 @@ namespace Roguelike.Tiles.LivingEntities
       //Debug
       ReduceHealth(attacker, sound, damageDesc, srcName, ref amount);
 
-      LastingEffectsSet.TryAddLastingEffectOnHit(amount, attacker, spell);
+      if(!ImmuneOnEffects)
+        LastingEffectsSet.TryAddLastingEffectOnHit(amount, attacker, spell);
     }
 
     protected virtual LastingEffect EnsurePhysicalHitEffect(float inflicted, LivingEntity victim)
