@@ -57,7 +57,7 @@ namespace RoguelikeUnitTests
       try
       {
         var lootInfo = new LootInfo(game, null);
-        ILootSource lootSrc = ActiveEnemies.First();
+        ILootSource lootSrc = ActivePlainEnemies.First();
         for (int i = 0; i < 10; i++)
         {
           var loot = env.LootGenerator.GetRandomLoot(LootKind.Gem, 1) as Gem;
@@ -138,7 +138,7 @@ namespace RoguelikeUnitTests
       try
       {
         var lootInfo = new LootInfo(game, null);
-        ILootSource lootSrc = ActiveEnemies.First();//env.Game.Hero
+        ILootSource lootSrc = ActivePlainEnemies.First();//env.Game.Hero
         for (int i = 0; i < 10; i++)
         {
           var pot = env.LootGenerator.GetRandomLoot(LootKind.Potion, 1);

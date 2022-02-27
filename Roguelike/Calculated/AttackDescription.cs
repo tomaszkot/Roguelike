@@ -50,8 +50,9 @@ namespace Roguelike.Calculated
           attackKind = DiscoverAttackKind(attackKind, wpn);
           AttackKind = attackKind;
         }
-        //else
-        //  attackKind = AttackKind.WeaponElementalProjectile;
+
+        if (AttackKind == AttackKind.SpellElementalProjectile && spell == null)
+          return;
 
         if (attackKind == AttackKind.PhysicalProjectile)
         {
@@ -65,11 +66,13 @@ namespace Roguelike.Calculated
         }
         if (attackKind == AttackKind.WeaponElementalProjectile)
         {
-          //if (wpn != null && )
-          //{
-          //  if (wpn.SpellSource.Count == 0)
-          //    return;
-          //}
+          if (wpn != null)
+          {
+            if (wpn.SpellSource == null || wpn.SpellSource.Count == 0)
+              return;
+          }
+          else
+            return;
         }
 
         Dictionary<Weapon.WeaponKind, EntityStatKind> weapons2Esk = null;
@@ -185,7 +188,8 @@ namespace Roguelike.Calculated
       if (offensiveSpell != null)
       {
         var dmg = offensiveSpell.GetDamage();
-        dmg += CalcVariation(attackKind, true, dmg);
+        if(withVariation)
+          dmg += CalcVariation(attackKind, true, dmg);
         if (wpn != null && attackKind == AttackKind.WeaponElementalProjectile)
         {
           AddExtraDamage(ent, wpn, weapons2Esk, ref dmg);

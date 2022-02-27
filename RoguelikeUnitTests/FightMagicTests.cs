@@ -103,7 +103,7 @@ namespace RoguelikeUnitTests
       var hero = game.Hero;
       //SpellSource spellSource = scroll ? new Scroll ? 
 
-      var enemy = ActiveEnemies.First();
+      var enemy = ActivePlainEnemies.First();
       var enemyHealth = enemy.Stats.Health;
       var mana = hero.Stats.Mana;
 

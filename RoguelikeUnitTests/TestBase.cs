@@ -104,7 +104,13 @@ namespace RoguelikeUnitTests
       GotoNextHeroTurn();
     }
 
-    protected List<Roguelike.Tiles.LivingEntities.Enemy> ActiveEnemies
+    protected List<Roguelike.Tiles.LivingEntities.Enemy> ActivePlainEnemies
+    {
+      get { return game.GameManager.EnemiesManager.GetActiveEnemies().Where(i=>i.PowerKind == EnemyPowerKind.Plain).ToList(); }
+    }
+
+
+    List<Roguelike.Tiles.LivingEntities.Enemy> ActiveEnemies
     {
       get { return game.GameManager.EnemiesManager.GetActiveEnemies().ToList(); }
     }

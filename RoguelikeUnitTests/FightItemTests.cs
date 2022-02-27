@@ -3,11 +3,7 @@ using Roguelike.Calculated;
 using Roguelike.LootFactories;
 using Roguelike.Tiles;
 using Roguelike.Tiles.Looting;
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace RoguelikeUnitTests
 {
@@ -75,6 +71,7 @@ namespace RoguelikeUnitTests
     }
 
     [Test]
+    [Repeat(1)]
     public void ArrowFightItemTest()
     {
       var game = CreateGame();
@@ -83,7 +80,7 @@ namespace RoguelikeUnitTests
 
       var fi = ActivateFightItem(FightItemKind.PlainArrow, hero);
 
-      var enemy = ActiveEnemies.First();
+      var enemy = ActivePlainEnemies.First();
       var enemyHealth = enemy.Stats.Health;
       enemy.Stats.SetNominal(Roguelike.Attributes.EntityStatKind.Defense, 10);
       var mana = hero.Stats.Mana;
@@ -118,7 +115,7 @@ namespace RoguelikeUnitTests
       var hero = game.Hero;
 
       var fi = ActivateFightItem(FightItemKind.Stone, hero);
-      var enemy = ActiveEnemies.First();
+      var enemy = ActivePlainEnemies.First();
       var enemyHealth = enemy.Stats.Health;
       var mana = hero.Stats.Mana;
 

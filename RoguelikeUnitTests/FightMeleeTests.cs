@@ -64,8 +64,8 @@ namespace RoguelikeUnitTests
       var game = CreateGame();
       var hero = game.Hero;
 
-      Assert.Greater(ActiveEnemies.Count, 0);
-      var enemy = ActiveEnemies.First();
+      Assert.Greater(ActivePlainEnemies.Count, 0);
+      var enemy = ActivePlainEnemies.First();
       var enemyHealth = enemy.Stats.Health;
       enemy.OnMelleeHitBy(hero);
       Assert.Greater(enemyHealth, enemy.Stats.Health);
@@ -90,7 +90,7 @@ namespace RoguelikeUnitTests
       var ccs = hero.GetCurrentValue(EntityStatKind.ChanceToCauseStunning);
       Assert.AreEqual(ccs, 100);
 
-      var enemy = ActiveEnemies.First();
+      var enemy = ActivePlainEnemies.First();
       enemy.OnMelleeHitBy(hero);
       Assert.True(enemy.LastingEffects.Any());
       Assert.AreEqual(enemy.LastingEffects[0].Type, EffectType.Stunned);
@@ -114,7 +114,7 @@ namespace RoguelikeUnitTests
       Assert.Greater(initEnemyCount, 0);
       Assert.AreEqual(initEnemyCount, CurrentNode.GetTiles<Enemy>().Count);
 
-      var enemy = ActiveEnemies.First();
+      var enemy = ActivePlainEnemies.First();
       while (enemy.Alive)
         InteractHeroWith(enemy as Enemy);
       var finalEnemyCount = enemies.Count;
@@ -131,8 +131,8 @@ namespace RoguelikeUnitTests
       var game = CreateGame();
       var hero = game.Hero;
 
-      Assert.Greater(ActiveEnemies.Count, 0);
-      var enemy = ActiveEnemies.First();
+      Assert.Greater(ActivePlainEnemies.Count, 0);
+      var enemy = ActivePlainEnemies.First();
       var emp = game.Level.GetEmptyTiles().Where(i => i.DistanceFrom(hero) < 6 && i.DistanceFrom(hero) > 1).First();
       game.Level.SetTile(enemy, emp.point);
       //PlaceCloseToHero(enemy);

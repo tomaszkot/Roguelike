@@ -489,8 +489,6 @@ namespace Roguelike.Tiles.LivingEntities
 
     public virtual float GetAttackVariation(AttackKind kind, float currentAttackValue, bool signed)
     {
-      if (!UseAttackVariation)
-        return 0;
       return FactorCalculator.GetRandAttackVariation(currentAttackValue, AttackValueDecrease, signed);
     }
 

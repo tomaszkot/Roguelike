@@ -95,7 +95,7 @@ namespace RoguelikeUnitTests
       var game = CreateGame();
 
       game.Hero.Name = "Edd";
-      var en = ActiveEnemies.First();
+      var en = ActivePlainEnemies.First();
       var le = game.Hero.LastingEffectsSet.EnsureEffect(EffectType.Bleeding, 10, en);
       Assert.NotNull(le);
 
@@ -115,7 +115,7 @@ namespace RoguelikeUnitTests
     {
       var game = CreateGame();
 
-      var en = ActiveEnemies.First();
+      var en = ActivePlainEnemies.First();
       var le = game.Hero.LastingEffectsSet.EnsureEffect(EffectType.Bleeding, 10, en);
       Assert.NotNull(le);
 
@@ -310,7 +310,7 @@ namespace RoguelikeUnitTests
         }
       };
 
-      var enemy = ActiveEnemies.First();
+      var enemy = ActivePlainEnemies.First();
       var healthStat = enemy.Stats.GetStat(EntityStatKind.Health);
       healthStat.Value.Nominal = 150;
       enemy.SetIsWounded(true);//make sure will bleed
