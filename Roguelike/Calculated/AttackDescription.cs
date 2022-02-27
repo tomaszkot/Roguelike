@@ -22,12 +22,14 @@ namespace Roguelike.Calculated
     OffensiveSpell spell;
     bool withVariation;
     FightItem fightItem;
+    public AttackKind AttackKind { get; private set; }
 
     public AttackDescription(LivingEntity ent,
       bool withVariation = true,
       AttackKind attackKind = AttackKind.Unset,//if uset it will be based on current weapon/active fi
       OffensiveSpell spell = null)
     {
+      AttackKind = attackKind;
       fightItem = null;
       Calc(ent, withVariation, ref attackKind, spell);
     }
@@ -46,6 +48,7 @@ namespace Roguelike.Calculated
           wpn = ent.GetActiveWeapon();
 
           attackKind = DiscoverAttackKind(attackKind, wpn);
+          AttackKind = attackKind;
         }
         //else
         //  attackKind = AttackKind.WeaponElementalProjectile;
