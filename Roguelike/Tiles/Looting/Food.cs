@@ -170,7 +170,7 @@ namespace Roguelike.Tiles
         if (Roasted)
           desc = "Roasted, delicious piece of " + Kind.ToString().ToLower();
         else
-          desc = "Raw yet nutritious piece of " + Kind.ToString().ToLower();
+          desc = "Raw, yet nutritious piece of " + Kind.ToString().ToLower();
       }
       else if (Kind == FoodKind.Apple)
       {

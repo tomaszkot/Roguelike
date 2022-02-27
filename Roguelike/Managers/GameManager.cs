@@ -494,6 +494,11 @@ namespace Roguelike.Managers
     {
       SpellManager.OnHeroPolicyApplied(policy);
     }
+    public void AppendAction(string info, ActionLevel lvl)
+    {
+      var ev = new GameEvent(info, lvl);
+      this.EventsManager.AppendAction(ev);
+    }
 
     public void AppendAction(GameEvent ac)
     {

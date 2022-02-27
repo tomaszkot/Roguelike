@@ -159,8 +159,8 @@ namespace RoguelikeUnitTests
       for (int i = 0; i < 1; i++)
       {
         LootPropsTest(FoodKind.Plum, "Sweet, delicious fruit");
-        LootPropsTest(FoodKind.Meat, "Raw yet nutritious piece of meat");
-        LootPropsTest(FoodKind.Fish, "Raw yet nutritious piece of fish");
+        LootPropsTest(FoodKind.Meat, "Raw, yet nutritious piece of meat");
+        LootPropsTest(FoodKind.Fish, "Raw, yet nutritious piece of fish");
       }
     }
 
