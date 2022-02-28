@@ -639,14 +639,14 @@ namespace Roguelike.Tiles.LivingEntities
           if (fi.FightItemKind == FightItemKind.ExplosiveCocktail)
           {
             var npd = CalculateNonPhysicalDamage(EntityStatKind.FireAttack, fi.Damage);
-            lastingEffectsSet.EnsureEffect(EffectType.Firing, npd, attacker, fi.TurnLasting);
+            lastingEffectsSet.EnsureEffect(EffectType.Firing, npd, attacker, fi.Duration);
             PlaySound(sound);//TODO
             return HitResult.Hit;
           }
           else if (fi.FightItemKind == FightItemKind.PoisonCocktail)
           {
             var npd = CalculateNonPhysicalDamage(EntityStatKind.PoisonAttack, fi.Damage);
-            lastingEffectsSet.EnsureEffect(EffectType.Poisoned, npd, attacker, fi.TurnLasting);
+            lastingEffectsSet.EnsureEffect(EffectType.Poisoned, npd, attacker, fi.Duration);
             PlaySound(sound);//TODO
             return HitResult.Hit;
           }
@@ -659,7 +659,7 @@ namespace Roguelike.Tiles.LivingEntities
           else if (fi.FightItemKind == FightItemKind.HunterTrap)
           {
             inflicted = fi.Damage;
-            var bleed = StartBleeding(inflicted, null, fi.TurnLasting);
+            var bleed = StartBleeding(inflicted, null, fi.Duration);
             bleed.Source = fi;
 
             fi.SetState(FightItemState.Busy);
@@ -1246,5 +1246,11 @@ namespace Roguelike.Tiles.LivingEntities
       var info = Name + " consumed " + (consumable as Dungeons.Tiles.Tile).Name + ", Health: " + this.GetCurrentValue(EntityStatKind.Health);
       AppendAction(new LootAction(consumable.Loot, this) { Kind = LootActionKind.Consumed, Info = info });
     }
+
+    [JsonIgnore]
+    public bool EverUsedFightItem { get; set; }
+
+    [JsonIgnore]
+    public bool LastAttackWasProjectile { get; set; }
   }
 }

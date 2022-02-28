@@ -46,7 +46,7 @@ namespace Roguelike.Tiles.Looting
     private FightItemKind fightItemKind;
     public FightItemState FightItemState { get; set; }
     public float baseDamage = Roguelike.LootFactories.Props.FightItemBaseDamage;
-    public int TurnLasting { get; set; }
+    public int Duration { get; set; }
 
     protected string primaryFactorName = "Damage";
     protected string auxFactorName = "";
@@ -140,7 +140,7 @@ namespace Roguelike.Tiles.Looting
           Price *= 4;
           PrimaryStatDescription = Name + ", clinch victim and causes bleeding";
           HitTargetSound = "trap";
-          TurnLasting = 3;
+          Duration = 3;
         }
         else if (fightItemKind == FightItemKind.ExplosiveCocktail)
         {
@@ -148,7 +148,7 @@ namespace Roguelike.Tiles.Looting
           Price *= 3;
           PrimaryStatDescription = Name + ", explodes hurting the victim and nearby entities with fire";
           HitTargetSound = "SHATTER_Glass1";
-          TurnLasting = 4;
+          Duration = 4;
         }
         else if (fightItemKind == FightItemKind.PoisonCocktail)
         {
@@ -156,7 +156,7 @@ namespace Roguelike.Tiles.Looting
           Price *= 3;
           PrimaryStatDescription = Name + ", explodes spreading a poison on the victim and nearby entities";
           HitTargetSound = "SHATTER_Glass1";
-          TurnLasting = 4;
+          Duration = 4;
         }
 
       }
@@ -325,7 +325,7 @@ namespace Roguelike.Tiles.Looting
         {
           EntityStatKind = esk,
           Kind = lsk,
-          Desc = preffix +"Damage: " + Damage + " " + FormatTurns(this.TurnLasting) 
+          Desc = preffix +"Damage: " + Damage + " " + FormatTurns(this.Duration) 
         };
 
         res.Add(lsi);

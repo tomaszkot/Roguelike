@@ -80,10 +80,11 @@ namespace Roguelike.Tiles.LivingEntities
       fightItems[kind] = new ProjectileFightItem(kind, this) { Count = RandHelper.GetRandomInt(3) + 2 };
       return fightItems[kind] as ProjectileFightItem;
     }
-
+        
     public override void RemoveFightItem(FightItem fi)
     {
       fightItems[fi.FightItemKind].Count--;
+      EverUsedFightItem = true;
     }
 
     //public FightItemKind GetAvaiableFightItemKind()

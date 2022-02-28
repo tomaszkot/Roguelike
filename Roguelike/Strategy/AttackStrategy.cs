@@ -61,9 +61,11 @@ namespace Roguelike
 
           if (TryUseMagicAttack(attacker, target))
             return true;
-          
+
           if (TryUseProjectileAttack(attacker, target))
             return true;
+          else
+            attacker.LastAttackWasProjectile = false;
         }
 
         var victim = GetPhysicalAttackVictim(attacker, target);
@@ -240,6 +242,8 @@ namespace Roguelike
         return false;
       }
 
+      //List<LivingEntity> everUsedProjectile = new List<LivingEntity>();
+
       private bool TryUseProjectileAttack(LivingEntity attacker, LivingEntity target)
       {
         var allow = attacker.Name.Contains("Bandit") || attacker.Name.Contains("Skeleton") || attacker.Name.Contains("Druid") ||
@@ -247,8 +251,14 @@ namespace Roguelike
         if (!allow)
           return false;
 
+        if(attacker.LastAttackWasProjectile && RandHelper.GetRandomDouble() > 0.1)
+          return false;
+
         var skip = true;
-        if (attacker.Stats.HealthBelow(0.3f) || RandHelper.GetRandomDouble() < 0.5)
+        if (attacker.Stats.HealthBelow(0.5f) && !attacker.EverUsedFightItem)
+          skip = false;
+
+        if (skip && RandHelper.GetRandomDouble() < 0.5)
           skip = false;
 
         if (skip)
@@ -272,6 +282,7 @@ namespace Roguelike
               if (GameManager.ApplyAttackPolicy(enemy, target, pfi, null, (p) => { OnPolicyApplied(p); }))
               {
                 enemy.RemoveFightItem(fi);
+                enemy.LastAttackWasProjectile = true;
                 return true;
               }
               else
