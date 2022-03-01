@@ -66,6 +66,7 @@ namespace Roguelike.Tiles.LivingEntities
       //fightItems[FightItemKind.HunterTrap] = new ProjectileFightItem(FightItemKind.HunterTrap, this) { Count = RandHelper.GetRandomInt(3) + 1 };
 
       this.ActiveFightItem = RandHelper.GetRandomElem<FightItem>(this.fightItems.Values.ToList());
+      //this.ActiveFightItem = new ProjectileFightItem(FightItemKind.Explosive Cocktail);
 
       SetResist(EntityStatKind.ResistCold, 15);
       SetResist(EntityStatKind.ResistFire, 15);

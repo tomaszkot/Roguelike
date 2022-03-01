@@ -144,7 +144,7 @@ namespace Roguelike.Tiles.Looting
         }
         else if (fightItemKind == FightItemKind.ExplosiveCocktail)
         {
-          baseDamage += 2;
+          baseDamage += 1;
           Price *= 3;
           PrimaryStatDescription = Name + ", explodes hurting the victim and nearby entities with fire";
           HitTargetSound = "SHATTER_Glass1";
@@ -152,7 +152,7 @@ namespace Roguelike.Tiles.Looting
         }
         else if (fightItemKind == FightItemKind.PoisonCocktail)
         {
-          baseDamage += 2;
+          baseDamage += 1;
           Price *= 3;
           PrimaryStatDescription = Name + ", explodes spreading a poison on the victim and nearby entities";
           HitTargetSound = "SHATTER_Glass1";

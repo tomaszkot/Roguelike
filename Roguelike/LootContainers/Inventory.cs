@@ -198,7 +198,7 @@ namespace Roguelike.LootContainers
         if (Capacity <= ItemsCount)
         {
           Assert(false, "Capacity <= ItemsCount");
-          AppendAction(new Events.GameEvent() { Info = "Not enough room", Level= ActionLevel.Important});
+          AppendAction(new InventoryAction(this) { Info = "Not enough room", Level= ActionLevel.Important, Kind=InventoryActionKind.NotEnoughRoom});
           return false;
         }
 

@@ -21,6 +21,10 @@ namespace Roguelike.Crafting
     public List<Loot> LootItems { get; set; }
 
     public bool Success { get { return LootItems != null && LootItems.Any(); } }
+
+    /// <summary>
+    /// Normally true but in rare cases when Eq is enhanced/fixed (e.g.Magical weapon recharge) false
+    /// </summary>
     public bool DeleteCraftedLoot { get; set; } = true;
 
     public CraftingResult(List<Loot> lootItems)

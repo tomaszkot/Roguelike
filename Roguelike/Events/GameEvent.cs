@@ -77,7 +77,7 @@ namespace Roguelike.Events
     public ShortcutsBarActionKind Kind { get; set; }
   }
 
-  public enum InventoryActionKind { ItemAdded, ItemRemoved, DragDropDone }
+  public enum InventoryActionKind { ItemAdded, ItemRemoved, DragDropDone, NotEnoughRoom }
   public enum InventoryActionDetailedKind { Unset, Collected, TradedDragDrop }
 
   public class InventoryAction : GameEvent
