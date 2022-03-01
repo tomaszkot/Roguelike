@@ -862,9 +862,9 @@ namespace Roguelike.Tiles.LivingEntities
       return new AttackDescription(this, wpn != null ? !wpn.StableDamage : true, attackKind);
     }
 
-    public virtual AbilityKind GetSelectedActiveAbility()
+    public virtual AbilityKind SelectedActiveAbilityKind
     {
-      return AbilityKind.Unset;
+      get { return AbilityKind.Unset; }
     }
   }
 }
