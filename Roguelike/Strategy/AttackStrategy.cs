@@ -265,7 +265,7 @@ namespace Roguelike
           return false;
         var enemy = attacker as Enemy;
         var fi = enemy.ActiveFightItem;
-        if (fi != null)
+        if (fi != null && fi.Count > 0)
         {
           var pfi = fi as ProjectileFightItem;
           if (pfi.FightItemKind == FightItemKind.Stone ||

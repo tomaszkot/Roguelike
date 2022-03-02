@@ -323,7 +323,7 @@ namespace Roguelike.Managers
       OnActionAppended(e);
     }
 
-    protected virtual void OnActionAppended(GameEvent e)
+    protected virtual void OnActionAppended(GameEvent ev)
     {
       if (this != _debugCurrentInstance)
         throw new Exception("this != _debugCurrentInstance");
@@ -337,29 +337,35 @@ namespace Roguelike.Managers
       //  return;
       //}
 
-      var la = e as LootAction;
-      if (la != null)
+      if (ev is LootAction la)
       {
         if (la.Kind == LootActionKind.Consumed)
         {
           if (la.LootOwner is Hero)//TODO
             Context.MoveToNextTurnOwner();
         }
+        if (la.Kind == LootActionKind.Deactivated && la.Loot is ProjectileFightItem pfi && pfi.FightItemKind == FightItemKind.HunterTrap)
+        {
+           if (pfi.DeactivatedCount > 3)
+          {
+            CurrentNode.RemoveLoot(pfi.point);
+            AppendAction(new LootAction(pfi, null) { Kind = LootActionKind.Destroyed });
+          }
+        }
         return;
       }
 
-
-      var isLivingEntityAction = e is LivingEntityAction;
+      var isLivingEntityAction = ev is LivingEntityAction;
       if (!isLivingEntityAction)
       {
-        var gsa = e as GameStateAction;
+        var gsa = ev as GameStateAction;
         if (gsa != null)
           Logger.LogInfo(gsa.Info);
         return;
       }
       else
       {
-        var lea = e as LivingEntityAction;
+        var lea = ev as LivingEntityAction;
         if (lea.Kind == LivingEntityActionKind.Died)
         {
           if (context.CurrentNode.HasTile(lea.InvolvedEntity))

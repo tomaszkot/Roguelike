@@ -256,6 +256,7 @@ namespace Roguelike.Effects
         if (le.Source is FightItem fi)
         {
           fi.SetState(FightItemState.Deactivated);
+          AppendAction(new LootAction(fi, null) { Kind = LootActionKind.Deactivated });
         }
 
         if (LastingEffectDone != null)

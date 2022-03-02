@@ -1,4 +1,5 @@
-﻿using Dungeons.Tiles;
+﻿using Dungeons.Core;
+using Dungeons.Tiles;
 using Roguelike.Abstract.Projectiles;
 using Roguelike.Abstract.Spells;
 using Roguelike.Attributes;
@@ -69,30 +70,27 @@ namespace Roguelike.Managers
         }
         else if (ps.Kind == SpellKind.Dziewanna)
         {
-          //for (int i = 0; i < 2; i++)
+          int maxApples = 1;
+          if (RandHelper.GetRandomDouble() > 0.5)
+            maxApples += 1;
+          for (int appleIndex = 0; appleIndex < maxApples; appleIndex++)
           {
-            int counter = 0;
             var enemies = gm.CurrentNode.GetNeighborTiles<Enemy>(gm.Hero);
-            var tiles = new List<Tile>();
+            bool added = false;
             foreach (var en in enemies)
             {
-              var emptyOnes = gm.CurrentNode.GetEmptyNeighborhoodTiles(en, false).Where(i=> !tiles.Contains(i));
+              var emptyOnes = gm.CurrentNode.GetEmptyNeighborhoodTiles(en, false);
               if (emptyOnes.Any())
               {
-                tiles.Add(emptyOnes.First());
-                counter++;
-                if (counter >= 2)
-                  break;
+                AddApple(emptyOnes.First());
+                added = true;
+                break;
               }
             }
-            if (counter == 0)
+            if (!added)
             {
               var emp = gm.CurrentNode.GetClosestEmpty(gm.Hero);
-              tiles.Add(emp);
-            }
-            foreach (var tile in tiles)
-            {
-              AddApple(tile);              
+              AddApple(emp);
             }
           }
         }

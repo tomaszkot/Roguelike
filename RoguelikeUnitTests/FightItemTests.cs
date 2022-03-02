@@ -1,5 +1,7 @@
-﻿using NUnit.Framework;
+﻿using Dungeons.Tiles;
+using NUnit.Framework;
 using Roguelike.Calculated;
+using Roguelike.Events;
 using Roguelike.LootFactories;
 using Roguelike.Tiles;
 using Roguelike.Tiles.Looting;
@@ -11,6 +13,26 @@ namespace RoguelikeUnitTests
   class FightItemTests : TestBase
   {
     const float StartAttack = 15.0f;
+
+    [Test]
+    public void HunterTrapDeact()
+    {
+      var game = CreateGame();
+      var hero = game.Hero;
+      var fi = new ProjectileFightItem(FightItemKind.HunterTrap, hero);
+      fi.Count = 1;
+      game.GameManager.CurrentNode.SetTileAtRandomPosition(fi);
+      Assert.AreEqual(game.GameManager.CurrentNode.GetTile(fi.point), fi);
+
+      for (int i = 0; i < 10; i++)
+      {
+        fi.SetState(FightItemState.Activated);
+        fi.SetState(FightItemState.Busy);
+        fi.SetState(FightItemState.Deactivated);
+        game.GameManager.AppendAction(new LootAction(fi, null) { Kind = LootActionKind.Deactivated });
+      }
+      Assert.AreEqual(game.GameManager.CurrentNode.GetTile(fi.point).Symbol, new Tile().Symbol);
+    }
 
     [Test]
     public void WeaponPower()
@@ -33,16 +55,11 @@ namespace RoguelikeUnitTests
       Assert.AreEqual(meleeStart1, meleeStart);
       var expectedStoneAttackValue = StartAttack/2 + 1;
       AssertAttackValue(hero, Roguelike.Attributes.AttackKind.PhysicalProjectile, expectedStoneAttackValue);
-
+            
       //ThrowingKnife
       ActivateFightItem(FightItemKind.ThrowingKnife, hero);
       var expectedThrowingKnifeAttackValue = StartAttack / 2 + 3;
       AssertAttackValue(hero, Roguelike.Attributes.AttackKind.PhysicalProjectile, expectedThrowingKnifeAttackValue);
-
-      ////ExplosiveCocktail
-      //ActivateFightItem(FightItemKind.ExplosiveCocktail, hero);
-      //var expectedHunterTrapAttackValue = 4;
-      //AssertAttackValue(hero, Roguelike.Attributes.AttackKind.PhysicalProjectile, expectedHunterTrapAttackValue);
 
       //arrow
       ActivateFightItem(FightItemKind.PlainArrow, hero);

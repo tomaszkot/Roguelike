@@ -138,7 +138,8 @@ namespace Roguelike.Events
   /// <summary>
   /// ///////////////
   /// </summary>
-  public enum LootActionKind { Generated, Collected, PutOn, PutOff, Crafted, SpecialDrunk, Enchanted, Consumed, Identified }
+  public enum LootActionKind { Generated, Collected, PutOn, PutOff, Crafted, SpecialDrunk, Enchanted, Consumed, Identified, 
+    Deactivated, Destroyed }
   public class LootAction : GameEvent
   {
 

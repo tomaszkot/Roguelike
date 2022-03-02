@@ -855,18 +855,18 @@ namespace Roguelike.Tiles.LivingEntities
         info += ", killing effect: " + DiedOfEffect.ToDescription();
         try
         {
-          if (DiedOfEffect == EffectType.Bleeding && LastingEffectsSet.LastingEffects.Any())
-          {
-            var trap = LastingEffectsSet.LastingEffects
-              .Where(i => i.Source is ProjectileFightItem pfi && pfi.FightItemKind == FightItemKind.HunterTrap)
-              .Select(i => i.Source)
-              .Cast<ProjectileFightItem>()
-              .SingleOrDefault();
-            if (trap != null)
-            {
-              trap.SetState(FightItemState.Deactivated);
-            }
-          }
+          //if (DiedOfEffect == EffectType.Bleeding && LastingEffectsSet.LastingEffects.Any())
+          //{
+          //  var trap = LastingEffectsSet.LastingEffects
+          //    .Where(i => i.Source is ProjectileFightItem pfi && pfi.FightItemKind == FightItemKind.HunterTrap)
+          //    .Select(i => i.Source)
+          //    .Cast<ProjectileFightItem>()
+          //    .SingleOrDefault();
+          //  if (trap != null)
+          //  {
+          //    trap.SetState(FightItemState.Deactivated);
+          //  }
+          //}
         }
         catch (Exception ex)
         {

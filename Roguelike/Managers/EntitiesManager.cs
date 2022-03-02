@@ -1,10 +1,12 @@
 ﻿using Dungeons.Core;
 using Roguelike.Abstract.Tiles;
+using Roguelike.Events;
 using Roguelike.Policies;
 using Roguelike.Strategy;
 using Roguelike.TileContainers;
 using Roguelike.Tiles;
 using Roguelike.Tiles.LivingEntities;
+using Roguelike.Tiles.Looting;
 using SimpleInjector;
 using System;
 using System.Collections.Generic;
@@ -297,6 +299,12 @@ namespace Roguelike.Managers
         Context.EventsManager.AppendAction(dead.GetDeadAction());
         RemoveDeadEntity(dead);
         gameManager.HandleDeath(dead);
+        var atDead = gameManager.CurrentNode.GetTile(dead.point);
+        if (atDead is ProjectileFightItem pfi && pfi.FightItemKind == FightItemKind.HunterTrap)
+        {
+          pfi.SetState(FightItemState.Deactivated);
+          gameManager.AppendAction(new LootAction(pfi, null) { Kind = LootActionKind.Deactivated });
+        }
       }
     }
 

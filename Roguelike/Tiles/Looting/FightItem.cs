@@ -73,8 +73,11 @@ namespace Roguelike.Tiles.Looting
       
     }
 
+    public int DeactivatedCount { get; set; }
     public void SetState(FightItemState state)
     {
+      if (state == FightItemState.Deactivated)
+        DeactivatedCount++;
       FightItemState = state;
       SendStateChanged();
     }

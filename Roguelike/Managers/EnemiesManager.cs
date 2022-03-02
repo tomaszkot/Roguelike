@@ -82,10 +82,14 @@ namespace Roguelike.Managers
       if (apples.Any())
       {
         var apple = apples.First();
-        if (context.CurrentNode.RemoveLoot(apple.point))
+        
         {
+          //TODO in one turn?
           MoveEntity(enemy, apple.point);
           enemy.Consume(apple);
+          var removed = context.CurrentNode.RemoveLoot(apple.point);
+          gameManager.Assert(removed, "RemoveLoot for apple failed");
+          return;
         }
         //enemy.AddLastingEffectFromSpell(Spells.SpellKind.Dziewanna, Effects.EffectType.Poisoned);
       }
