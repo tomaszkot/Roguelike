@@ -729,7 +729,7 @@ namespace Roguelike.Managers
         {
           var eq = lootTile as Equipment;
           Hero.HandleEquipmentFound(eq);
-          PrintHeroStats("loot On");
+          PrintHeroStats("loot On " + lootTile.name);
         }
         OnLootCollected(lootTile);
         Context.MoveToNextTurnOwner();
@@ -1514,22 +1514,25 @@ namespace Roguelike.Managers
         afterApply(e);
         bool activeUsed = false;
                 
-        if (target is LivingEntity le && le.Alive)
+        if (target is LivingEntity targetLe && targetLe.Alive)
         {
-          if (le.CanUseAbility(Abilities.AbilityKind.StrikeBack, out activeUsed))
+          if (targetLe.CanUseAbility(Abilities.AbilityKind.StrikeBack, out activeUsed))
           {
-            UseActiveAbility(attacker, le, Abilities.AbilityKind.StrikeBack, activeUsed);
-            if (activeUsed)
-            {
-            }
+            UseActiveAbility(attacker, targetLe, Abilities.AbilityKind.StrikeBack, activeUsed);
+          }
+
+          if (attacker.CanUseAbility(Abilities.AbilityKind.Stride, out activeUsed))
+          {
+            UseActiveAbility(targetLe, attacker, Abilities.AbilityKind.Stride, activeUsed);
           }
         }
-        
+       
+
       };
       attackPolicy.Apply(attacker, target);
     }
 
-    public void UseActiveAbility(LivingEntity target, LivingEntity abilityUser, Abilities.AbilityKind abilityKind, bool activeAbility)
+    public void UseActiveAbility(LivingEntity victim, LivingEntity abilityUser, Abilities.AbilityKind abilityKind, bool activeAbility)
     {
       if (abilityKind != Abilities.AbilityKind.StrikeBack &&
           abilityKind != Abilities.AbilityKind.Stride)
@@ -1538,7 +1541,7 @@ namespace Roguelike.Managers
       bool used = false;
       if (abilityKind == Abilities.AbilityKind.StrikeBack)
       {
-        ApplyPhysicalAttackPolicy(abilityUser, target, (p) =>
+        ApplyPhysicalAttackPolicy(abilityUser, victim, (p) =>
         {
           used = true;
           if (AttackPolicyDone != null)
@@ -1548,21 +1551,21 @@ namespace Roguelike.Managers
       else if (abilityKind == Abilities.AbilityKind.Stride)
       {
         int horizontal = 0, vertical = 0;
-        var neibKind = GetTileNeighborhoodKindCompareToHero(target);
+        var neibKind = GetTileNeighborhoodKindCompareToHero(victim);
         if (neibKind.HasValue)
         {
           InputManager.GetMoveData(neibKind.Value, out horizontal, out vertical);
-          var newPos = InputManager.GetNewPositionFromMove(target.point, horizontal, vertical);
-          activeAbilityVictim = target as Enemy;
+          var newPos = InputManager.GetNewPositionFromMove(victim.point, horizontal, vertical);
+          activeAbilityVictim = victim as Enemy;
           activeAbilityVictim.MoveDueToAbilityVictim = true;
 
           var desc = "";
           var ab = (abilityUser as AdvancedLivingEntity).GetActiveAbility(Abilities.AbilityKind.Stride);
           var attack = abilityUser.Stats.GetStat(EntityStatKind.Strength).SumValueAndPercentageFactor(ab.PrimaryStat, true);
-          var damage = target.CalcMeleeDamage(attack, ref desc);
-          var inflicted = target.InflictDamage(abilityUser, false, ref damage, ref desc);
+          var damage = victim.CalcMeleeDamage(attack, ref desc);
+          var inflicted = victim.InflictDamage(abilityUser, false, ref damage, ref desc);
 
-          ApplyMovePolicy(target, newPos.Point);
+          ApplyMovePolicy(victim, newPos.Point);
           used = true;
         }
       }

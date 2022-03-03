@@ -78,7 +78,7 @@ namespace Roguelike.Tiles.LivingEntities
 
     public ProjectileFightItem AddFightItem(FightItemKind kind)
     {
-      fightItems[kind] = new ProjectileFightItem(kind, this) { Count = RandHelper.GetRandomInt(3) + 2 };
+      fightItems[kind] = new ProjectileFightItem(kind, this) { Count = RandHelper.GetRandomInt(2) + 2 };
       return fightItems[kind] as ProjectileFightItem;
     }
         

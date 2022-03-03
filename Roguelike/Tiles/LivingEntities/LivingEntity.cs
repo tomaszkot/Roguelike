@@ -238,6 +238,13 @@ namespace Roguelike.Tiles.LivingEntities
         //{
         //  incToUse *= 0.2f;
         //}
+        if (kv.Value.Unit == EntityStatUnit.Percentage)
+        {
+          incToUse = 1.1f;
+          if(kv.Value.Value.Nominal > 50)
+            incToUse = 1.05f;
+        }
+
         var val = kv.Value.Value.Nominal * incToUse;
         Stats.SetNominal(kv.Key, val);
       }
@@ -1165,6 +1172,8 @@ namespace Roguelike.Tiles.LivingEntities
 
     public bool IsStatRandomlyTrue(EntityStatKind kind)
     {
+      if (kind == EntityStatKind.Unset)
+        return false;
       var statValue = GetCurrentValue(kind);
       return statValue / 100f > RandHelper.GetRandomDouble();
     }

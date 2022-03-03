@@ -47,6 +47,14 @@ namespace Roguelike.LootContainers
       return SpareEquipmentUsed[CurrentEquipmentKind.Weapon] == true ? ActiveWeaponSet.Secondary : ActiveWeaponSet.Primary;
     }
 
+    public bool HasWeapon(bool primaryEq)
+    {
+      if (primaryEq)
+        return PrimaryEquipment[CurrentEquipmentKind.Weapon] != null;
+
+      return SpareEquipment[CurrentEquipmentKind.Weapon] != null;
+    }
+
     public ActiveWeaponSet SwapActiveWeaponSet()
     {
       if (GetActiveWeaponSet() == ActiveWeaponSet.Primary)

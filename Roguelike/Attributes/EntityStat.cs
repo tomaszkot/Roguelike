@@ -21,6 +21,14 @@ namespace Roguelike.Attributes
     {
       this.Kind = kind;
       Value.Nominal = nominalValue;
+      if (kind == EntityStatKind.ChanceToMeleeHit)
+      {
+        if (nominalValue > 100)
+        {
+          int k = 0;
+          k++;
+        }
+      }
     }
 
     public EntityStatKind Kind

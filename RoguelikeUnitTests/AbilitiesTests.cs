@@ -193,7 +193,7 @@ namespace RoguelikeUnitTests
 
       //take one which is active to make sure will have it's turn
       RevealAllEnemies(game);
-      var enemy = ChampionEnemies.Where(i=> i.PowerKind == EnemyPowerKind.Champion).First();
+      var enemy = ChampionEnemies.First();
       Assert.True(enemy.Revealed && enemy.Alive);
       enemy.Stats.SetNominal(EntityStatKind.Health, 100);
       var enemyBeginHealth = enemy.Stats.Health;

@@ -285,6 +285,15 @@ namespace Roguelike.Attributes
         //int k = 0;
       }
       this[kind].Nominal = value;
+
+      if (kind == EntityStatKind.ChanceToMeleeHit)
+      {
+        if (value > 100)
+        {
+          int k = 0;
+          k++;
+        }
+      }
     }
 
     public void SetFactor(EntityStatKind kind, float value)

@@ -30,6 +30,7 @@ namespace Roguelike.Attributes
       set
       {
         nominal = value;
+
       }
     }
 
