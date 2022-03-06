@@ -283,6 +283,8 @@ namespace Roguelike.Tiles.LivingEntities
       if (LevelUpPoints == 0)
         return;
       this.Stats[stat].Nominal += 1;
+      if(stat == EntityStatKind.Magic)
+        this.Stats[EntityStatKind.Mana].Nominal += 1;
       LevelUpPoints--;
       RecalculateStatFactors(false);//Attack depends on Str
       EmitStatsLeveledUp(stat);

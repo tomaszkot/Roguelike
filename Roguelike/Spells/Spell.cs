@@ -15,7 +15,9 @@ namespace Roguelike.Spells
         //,MindControl
         , Mana = 14, BushTrap = 15, 
     //Rage = 16, 
-    Weaken = 17, NESWFireBall = 18, Teleport = 19, IronSkin = 20, ResistAll = 25, 
+    Weaken = 17, NESWFireBall = 18, Teleport = 19, 
+    //IronSkin = 20, 
+    ResistAll = 25, 
     Inaccuracy = 29, /*CallMerchant, CallGod,*/ Identify = 30, Portal = 33,
     Dziewanna = 40
   }

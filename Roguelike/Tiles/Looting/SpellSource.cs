@@ -123,9 +123,6 @@ namespace Roguelike.Tiles.Looting
           desc = "Teleports hero to a chosen point";
           TargetRequired = true;
           break;
-        case SpellKind.IronSkin:
-          desc = "Increases the Defense statistic of the caster";
-          break;
         case SpellKind.ResistAll:
           desc = "";
           break;
@@ -220,9 +217,6 @@ namespace Roguelike.Tiles.Looting
           break;
         case SpellKind.Inaccuracy:
           spell = new InaccuracySpell(caller);
-          break;
-        case SpellKind.IronSkin:
-          spell = new IronSkinSpell(caller);
           break;
         case SpellKind.Teleport:
           spell = new TeleportSpell(caller);

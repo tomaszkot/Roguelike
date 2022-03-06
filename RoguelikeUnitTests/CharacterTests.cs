@@ -1,5 +1,6 @@
 ﻿using Dungeons.Core;
 using NUnit.Framework;
+using Roguelike.Tiles.LivingEntities;
 using System;
 using System.Linq;
 
@@ -32,6 +33,19 @@ namespace RoguelikeUnitTests
     }
 
     [Test]
+    public void TestHeroMana()
+    {
+      var game = CreateGame();
+      var mana = game.Hero.Stats.Mana;
+      var magic = game.Hero.Stats.Magic;
+      DoLevelUp(game.Hero);
+      game.Hero.IncreaseStatByLevelUpPoint(Roguelike.Attributes.EntityStatKind.Magic);
+      Assert.AreEqual(game.Hero.Stats.Magic, magic+1);
+      Assert.AreEqual(game.Hero.Stats.Mana, mana+1);
+
+    }
+
+    [Test]
     public void TestLevelUp()
     {
       var tt = new TimeTracker();
@@ -48,14 +62,22 @@ namespace RoguelikeUnitTests
 
       game.Hero.OnMelleeHitBy(enemy);
       Assert.Greater(health, game.Hero.Stats.Health);
+      DoLevelUp(game.Hero);
+      var time = tt.TotalSeconds;
+      Assert.True(leveledUpDone);
+    }
+
+    private static bool DoLevelUp(Hero hero)
+    {
+      bool leveledUpDone = false;
       for (int i = 0; i < 100; i++)
       {
-        game.Hero.IncreaseExp(i);
+        hero.IncreaseExp(i);
         if (leveledUpDone)
           break;
       }
-      var time = tt.TotalSeconds;
-      Assert.True(leveledUpDone);
+
+      return leveledUpDone;
     }
 
     [Test]

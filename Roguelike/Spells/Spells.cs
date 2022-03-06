@@ -344,18 +344,4 @@ namespace Roguelike.Spells
       EntityRequired = true;
     }
   }
-
-  ///////////////////////////////////////////////////////////////////////////
-  public class IronSkinSpell : PassiveSpell
-  {
-    public IronSkinSpell() : this(new LivingEntity())
-    {
-    }
-
-    public IronSkinSpell(LivingEntity caller) : base(caller, EntityStatKind.Defense)
-    {
-      Kind = SpellKind.IronSkin;
-      EntityRequired = false;
-    }
-  }
 }
