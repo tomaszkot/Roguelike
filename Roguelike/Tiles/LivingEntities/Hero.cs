@@ -15,8 +15,6 @@ namespace Roguelike.Tiles.LivingEntities
 {
   public class Hero : AdvancedLivingEntity
   {
-    const int HeroStartStrengthIncrease = 5;
-    //const int HeroStartDefenceIncrease = 3;
     List<Quest> quests = new List<Quest>();
     public List<Quest> Quests
     {
@@ -29,17 +27,14 @@ namespace Roguelike.Tiles.LivingEntities
     public static float GetStrengthStartStat()
     {
       var value = StartStatValues[EntityStatKind.Strength];
-      return value + HeroStartStrengthIncrease;
+      return value;
     }
 
     public override float GetStartStat(EntityStatKind esk)
     {
       var value = base.GetStartStat(esk);
-      if (esk == EntityStatKind.Strength)
-        value = GetStrengthStartStat();
-
       if (esk == EntityStatKind.Defense)
-        value += 3;
+        value = 10;
       else if (esk == EntityStatKind.Health || esk == EntityStatKind.Mana)
         value = 40;
       return value;

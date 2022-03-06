@@ -729,7 +729,6 @@ namespace Roguelike.Managers
         {
           var eq = lootTile as Equipment;
           Hero.HandleEquipmentFound(eq);
-          PrintHeroStats("loot On " + lootTile.name);
         }
         OnLootCollected(lootTile);
         Context.MoveToNextTurnOwner();

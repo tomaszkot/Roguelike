@@ -360,7 +360,7 @@ namespace RoguelikeUnitTests
       if (caster is Hero)
       {
         game.Hero.ActiveManaPoweredSpellSource = spellSource;
-        return game.GameManager.SpellManager.ApplyAttackPolicy(caster, victim, spellSource);
+        return game.GameManager.SpellManager.ApplyAttackPolicy(caster, victim, spellSource) == Roguelike.Managers.ApplyAttackPolicyResult.OK;
       }
       return false;
     }

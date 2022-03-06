@@ -12,12 +12,13 @@ using Roguelike.Tiles.LivingEntities;
 using Roguelike.Tiles.Looting;
 using SimpleInjector;
 using System;
-using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 
 namespace Roguelike.Managers
 {
+  public enum ApplyAttackPolicyResult { Unset, OK, NotEnoughResources, OutOfRange }
+
   public class SpellManager : PolicyManager
   {
     public SpellManager(GameManager mgr) : base(mgr)
@@ -141,10 +142,9 @@ namespace Roguelike.Managers
 
       return null;
     }
-
-
+        
     bool applyingBulk = false;
-    public bool ApplyAttackPolicy
+    public ApplyAttackPolicyResult ApplyAttackPolicy
     (
       LivingEntity caster,//hero, enemy, ally
       Tiles.Abstract.IObstacle target,
@@ -154,7 +154,7 @@ namespace Roguelike.Managers
       bool looped = false
     )
     {
-      if(!looped)
+      if (!looped)
         applyingBulk = false;
       var spell = spellSource.CreateSpell(caster) as IProjectileSpell;
 
@@ -164,12 +164,12 @@ namespace Roguelike.Managers
         {
           this.gm.SoundManager.PlayBeepSound();
           this.gm.AppendAction(new GameEvent() { Info = "Target out of range" });
-          return false;
+          return ApplyAttackPolicyResult.OutOfRange;
         }
       }
       
       if (!looped && !gm.UtylizeSpellSource(caster, spellSource, spell))
-        return false;
+        return ApplyAttackPolicyResult.NotEnoughResources;
 
       var policy = Container.GetInstance<ProjectileCastPolicy>();
       policy.Target = target as Dungeons.Tiles.Tile;
@@ -215,7 +215,7 @@ namespace Roguelike.Managers
           ApplyAttackPolicy(caster, en1, spellSource, BeforeApply, AfterApply, true);
         });
 
-      return true;
+      return ApplyAttackPolicyResult.OK;
     }
 
 

@@ -205,7 +205,7 @@ namespace RoguelikeUnitTests
         SetHeroEquipment(wpn);
         var weapon = game.Hero.GetActiveWeapon();
         Assert.AreEqual(weapon.SpellSource.Kind, SpellKind.FireBall);
-        Assert.True(game.GameManager.SpellManager.ApplyAttackPolicy(game.Hero, victim, weapon.SpellSource));
+        Assert.AreEqual(game.GameManager.SpellManager.ApplyAttackPolicy(game.Hero, victim, weapon.SpellSource), Roguelike.Managers.ApplyAttackPolicyResult.OK);
       }
       else 
       {

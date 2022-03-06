@@ -439,7 +439,7 @@ namespace RoguelikeUnitTests
         var en = PlainEnemies[i];
         var spell = weapon.SpellSource.CreateSpell(game.Hero);
         PlaceCloseToHero(en);
-        Assert.True(game.GameManager.SpellManager.ApplyAttackPolicy(game.Hero, en, weapon.SpellSource));
+        Assert.AreEqual(game.GameManager.SpellManager.ApplyAttackPolicy(game.Hero, en, weapon.SpellSource), Roguelike.Managers.ApplyAttackPolicyResult.OK);
         Assert.True(en.HasLastingEffect(Roguelike.Effects.EffectType.Firing));
         GotoNextHeroTurn();
       }
@@ -475,7 +475,7 @@ namespace RoguelikeUnitTests
         weapon.SpellSource.Count = 20;
         //hit only 1st enemy
         var spell = weapon.SpellSource.CreateSpell(game.Hero);
-        Assert.True(game.GameManager.SpellManager.ApplyAttackPolicy(game.Hero, enemies[0], weapon.SpellSource));
+        Assert.AreEqual(game.GameManager.SpellManager.ApplyAttackPolicy(game.Hero, enemies[0], weapon.SpellSource), Roguelike.Managers.ApplyAttackPolicyResult.OK);
         GotoNextHeroTurn();
       }
 
@@ -500,7 +500,7 @@ namespace RoguelikeUnitTests
 
       var spell = weapon.SpellSource.CreateSpell(game.Hero);
       PlaceCloseToHero(en);
-      Assert.True(game.GameManager.SpellManager.ApplyAttackPolicy(game.Hero, en, weapon.SpellSource));
+      Assert.AreEqual(game.GameManager.SpellManager.ApplyAttackPolicy(game.Hero, en, weapon.SpellSource), Roguelike.Managers.ApplyAttackPolicyResult.OK);
       GotoNextHeroTurn();
             
       var healthDiffBase = enHealthBase - en.Stats.Health;
@@ -512,7 +512,7 @@ namespace RoguelikeUnitTests
       for (int i = 0; i < 10; i++)
       {
         spell = weapon.SpellSource.CreateSpell(game.Hero);
-        Assert.True(game.GameManager.SpellManager.ApplyAttackPolicy(game.Hero, en, weapon.SpellSource));
+        Assert.AreEqual(game.GameManager.SpellManager.ApplyAttackPolicy(game.Hero, en, weapon.SpellSource), Roguelike.Managers.ApplyAttackPolicyResult.OK);
         GotoNextHeroTurn();
         var healthDiff = enHealthBase - en.Stats.Health;
         if (healthDiff > healthDiffBase)
