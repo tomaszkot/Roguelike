@@ -73,7 +73,7 @@ namespace Roguelike.Tiles.LivingEntities
       SetResist(EntityStatKind.ResistPoison, 15);
       SetResist(EntityStatKind.ResistLighting, 15);
 
-      Stats.SetNominal(EntityStatKind.MeleeAttack, BaseStrength.Value.Nominal+2);//attack is same as str for a simple entity
+      Stats.SetNominal(EntityStatKind.MeleeAttack, LivingEntity.StartStatValues[EntityStatKind.Strength]+2);
     }
 
     public ProjectileFightItem AddFightItem(FightItemKind kind)
@@ -390,7 +390,7 @@ namespace Roguelike.Tiles.LivingEntities
         if (name.Contains("druid"))
         {
           PrefferedFightStyle = PrefferedFightStyle.Magic;
-          this.Stats.SetNominal(EntityStatKind.Mana, BaseMana.Value.TotalValue * 100);
+          this.Stats.SetNominal(EntityStatKind.Mana, LivingEntity.StartStatValues[EntityStatKind.Mana] * 100);
           this.color = ConsoleColor.Magenta;
         }
         if (name.Contains("hornet"))

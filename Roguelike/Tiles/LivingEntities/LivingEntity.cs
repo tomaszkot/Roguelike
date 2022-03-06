@@ -46,14 +46,17 @@ namespace Roguelike.Tiles.LivingEntities
     public event EventHandler Wounded;
 
     public bool d_immortal = false;
-    protected int StartStrength = 10;
-    public static readonly EntityStat BaseStrength = new EntityStat(EntityStatKind.Strength, 10);
-    public static readonly EntityStat BaseHealth = new EntityStat(EntityStatKind.Health, 10);
-    public static readonly EntityStat BaseDefence = new EntityStat(EntityStatKind.Defense, 7);
-    public static readonly EntityStat BaseDexterity = new EntityStat(EntityStatKind.Dexterity, 10);
-    public static readonly EntityStat BaseMana = new EntityStat(EntityStatKind.Mana, 10);
-    public static readonly EntityStat BaseMagic = new EntityStat(EntityStatKind.Magic, 10);
-
+    protected const int StartStrength = 10;
+    protected const int StartDefense = 7;
+    public static readonly Dictionary<EntityStatKind, int> StartStatValues = new Dictionary<EntityStatKind, int>() {
+      { EntityStatKind.Strength, StartStrength },
+      { EntityStatKind.Health, 10 },
+      { EntityStatKind.Defense, StartDefense },
+      { EntityStatKind.Dexterity, 10 },
+      { EntityStatKind.Mana, 10 },
+      { EntityStatKind.Magic, 10 },
+    };
+            
     static Dictionary<EntityStatKind, EntityStatKind> statsHitIncrease = new Dictionary<EntityStatKind, EntityStatKind>
     {
       { EntityStatKind.LifeStealing, EntityStatKind.Health },
@@ -85,7 +88,7 @@ namespace Roguelike.Tiles.LivingEntities
     public Tile FixedWalkTarget = null;
     public LivingEntity AllyModeTarget;
     public bool HasRelocateSkill { get; set; }
-    public static readonly EntityStats BaseStats;
+    //public static readonly EntityStats BaseStats;
     public string OriginMap { get; set; }
     SpellSource activeManaPoweredSpellSource;
 
@@ -150,14 +153,6 @@ namespace Roguelike.Tiles.LivingEntities
 
     static LivingEntity()
     {
-      BaseStats = new EntityStats();
-
-      BaseStats.SetStat(EntityStatKind.Strength, BaseStrength);
-      BaseStats.SetStat(EntityStatKind.Defense, BaseDefence);
-      BaseStats.SetStat(EntityStatKind.Health, BaseHealth);
-      BaseStats.SetStat(EntityStatKind.Mana, BaseMana);
-      BaseStats.SetStat(EntityStatKind.Magic, BaseMagic);
-      BaseStats.SetStat(EntityStatKind.Dexterity, BaseDexterity);
     }
 
     public LivingEntity() : this(new Point(-1, -1), '\0', null)
@@ -173,14 +168,14 @@ namespace Roguelike.Tiles.LivingEntities
     {
       lastingEffectsSet = new LastingEffectsSet(this, cont);
       this.Container = cont;
-      foreach (var basicStat in BaseStats.GetStats())
+      foreach (var basicStat in StartStatValues)
       {
-        var nv = basicStat.Value.Value.Nominal;
+        var nv = basicStat.Value;
         if (nv > 0)
           Stats.SetNominal(basicStat.Key, nv);
       }
 
-      Stats.SetNominal(EntityStatKind.MeleeAttack, BaseStrength.Value.Nominal);//attack is same as str for a simple entity
+      Stats.SetNominal(EntityStatKind.MeleeAttack, GetStartStat(EntityStatKind.Strength));//attack is same as str for a simple entity
 
       Alive = true;
       Name = "";
@@ -208,6 +203,12 @@ namespace Roguelike.Tiles.LivingEntities
       effectsToUse[EffectType.IronSkin] = GenerationInfo.DefaultEnemyIronSkinUsageCount;
       effectsToUse[EffectType.ResistAll] = GenerationInfo.DefaultEnemyResistAllUsageCount;
       effectsToUse[EffectType.Inaccuracy] = GenerationInfo.DefaultEnemyResistAllUsageCount;
+    }
+
+    public virtual float GetStartStat(EntityStatKind esk)
+    {
+      var value = StartStatValues[esk];
+      return value;
     }
 
     protected void AssertFalse(string info)

@@ -164,6 +164,14 @@ namespace Roguelike.Generators
           wpn.Name = "Rusty sword";
           wpn.SetLevelIndex(1);
         }
+        else if (tileName == "sickle")
+        {
+          wpn.Kind = Weapon.WeaponKind.Axe;
+          wpn.tag1 = "sickle";
+          wpn.Name = "Sickle";
+          wpn.SetLevelIndex(1);
+          loot = wpn;
+        }
         else if (tileName == "axe")
         {
           wpn.Kind = Weapon.WeaponKind.Axe;

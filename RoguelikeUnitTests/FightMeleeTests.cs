@@ -293,43 +293,6 @@ namespace RoguelikeUnitTests
 
       Assert.Greater(victim.OnMelleeHitBy(hero), 0); 
     }
-
-    [Test]
-    public void RageScrollTest()
-    {
-      var game = CreateGame();
-      var hero = game.Hero;
-      hero.UseAttackVariation = false;
-      var enemy = AllEnemies.First();
-
-      Func<float> hitEnemy = () =>
-      {
-        var enemyHealth = enemy.Stats.Health;
-        enemy.OnMelleeHitBy(game.Hero);
-        var lastEnemyHealthDiff = enemyHealth - enemy.Stats.Health;
-        return lastEnemyHealthDiff;
-      };
-      var healthDiff = hitEnemy();
-
-      var emp = CurrentNode.GetClosestEmpty(hero);
-      CurrentNode.SetTile(enemy, emp.point);
-
-      var scroll = new Scroll(SpellKind.Rage);
-      hero.Inventory.Add(scroll);
-      var attackPrev = hero.GetCurrentValue(EntityStatKind.MeleeAttack);
-      var spell = game.GameManager.SpellManager.ApplyPassiveSpell(hero, scroll);
-      Assert.NotNull(spell);
-      Assert.Greater(hero.GetCurrentValue(EntityStatKind.MeleeAttack), attackPrev);
-
-      var healthDiffRage = hitEnemy();
-      Assert.Greater(healthDiffRage, healthDiff);//rage in work
-
-      GotoSpellEffectEnd(spell);
-      Assert.AreEqual(hero.GetCurrentValue(EntityStatKind.MeleeAttack), attackPrev);
-      var healthDiffAfterRage = hitEnemy();
-      var delta = Math.Abs(healthDiffAfterRage - healthDiff);
-      Assert.Less(delta, 0.001);//rage was over
-
-    }
+    
   }
 }

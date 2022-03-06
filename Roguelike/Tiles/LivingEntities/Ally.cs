@@ -1,6 +1,7 @@
 ﻿using Dungeons.Core;
 using Roguelike.Abstract.Inventory;
 using Roguelike.Abstract.Tiles;
+using Roguelike.Attributes;
 using Roguelike.LootContainers;
 using SimpleInjector;
 using System.Drawing;
@@ -91,6 +92,7 @@ namespace Roguelike.Tiles.LivingEntities
     public void InitSpawned(char symbol, int level, Difficulty? diff = null) //where T : Ally, new()
     {
       Symbol = symbol;
+      
       SetLevel(level, diff);
       SetTag();
       Revealed = true;
@@ -113,6 +115,23 @@ namespace Roguelike.Tiles.LivingEntities
     public void SetNextLevelExp(double exp)
     {
       NextLevelExperience = exp;
+    }
+
+    internal void SetInitialStat(EntityStatKind stat, int inc)
+    {
+      var val = 0;
+      if (stat == EntityStatKind.Strength)
+      {
+        val = LivingEntity.StartStatValues[EntityStatKind.Strength] + inc;
+        if (Stats.GetStat(EntityStatKind.MeleeAttack).Value.Nominal < val)
+          Stats.SetNominal(EntityStatKind.MeleeAttack, val);
+      }
+      else if (stat == EntityStatKind.Dexterity)
+      {
+        val = LivingEntity.StartStatValues[EntityStatKind.Dexterity] + inc;
+      }
+      if (val != 0)
+        Stats.SetNominal(stat, val);
     }
   }
 

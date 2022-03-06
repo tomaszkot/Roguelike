@@ -10,11 +10,11 @@ namespace RoguelikeUnitTests
   class LevelGenerationTests : TestBase
   {
     [Test]
-    [Repeat(5)]
+    [Repeat(2)]
     public void TestDifficulty()
     {
       GenerationInfo.Difficulty = Difficulty.Easy;
-      var gameEasy = CreateGame(true);
+      var gameEasy = CreateGame(true, 60);
       Assert.AreEqual(gameEasy.GameManager.GameState.CoreInfo.Difficulty, Difficulty.Easy);
       
       var plainEasy = PlainNormalEnemies.First();

@@ -651,20 +651,12 @@ namespace Roguelike.Tiles.LivingEntities
     public void RecalculateStatFactors(bool fromLoad)
     {
       Stats.ResetStatFactors();
-      if (fromLoad)//this shall not be affected by any after load
-      {
-        //Stats.GetStat(EntityStatKind.ChanceToMeleeHit).SetSubtraction(0);
-        //Stats.GetStat(EntityStatKind.ChanceToPhysicalProjectileHit).SetSubtraction(0);
-        //Stats.GetStat(EntityStatKind.ChanceToElementalProjectile).SetSubtraction(0);
-        //Stats.GetStat(EntityStatKind.Defense).SetSubtraction(0);
-        //Stats.GetStat(EntityStatKind.Attack).SetSubtraction(0);
-      }
-
+      
       //accumulate positive factors
       AccumulateEqFactors(true);
 
-      var si = GetStrengthIncrease();
-      Stats.AccumulateFactor(EntityStatKind.MeleeAttack, si);
+      //tested by TestSkeletonAttackIncWithStrength
+      Stats.GetStat(EntityStatKind.MeleeAttack).Value.Nominal = Stats.GetStat(EntityStatKind.Strength).Value.Nominal;
       var abs = Abilities.PassiveItems;
       foreach (var ab in abs)
       {
@@ -700,10 +692,10 @@ namespace Roguelike.Tiles.LivingEntities
       }
     }
 
-    protected virtual float GetStrengthIncrease()
-    {
-      return Stats.GetCurrentValue(EntityStatKind.Strength) - StartStrength;
-    }
+    //protected virtual float GetStrengthIncrease()
+    //{
+    //  return Stats.GetCurrentValue(EntityStatKind.Strength) - StartStrength;
+    //}
 
     public bool CanUseEquipment(Equipment eq, EntityStat eqStat)
     {

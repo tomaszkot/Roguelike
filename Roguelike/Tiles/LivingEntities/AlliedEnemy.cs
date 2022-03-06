@@ -1,4 +1,7 @@
-﻿using SimpleInjector;
+﻿using Roguelike.Attributes;
+using Roguelike.Spells;
+using SimpleInjector;
+using System;
 using System.Linq;
 
 namespace Roguelike.Tiles.LivingEntities
@@ -13,6 +16,7 @@ namespace Roguelike.Tiles.LivingEntities
     public AlliedEnemy(Container cont) : base(cont)
     {
       Kind = AllyKind.Enemy;
+      SetInitialStat(EntityStatKind.Strength, SkeletonSpell.SkeletonSpellStrengthIncrease);
 #if ASCII_BUILD
         color = ConsoleColor.Yellow;
 #endif
@@ -27,5 +31,7 @@ namespace Roguelike.Tiles.LivingEntities
     {
       tag1 = EnemySymbols.EnemiesToSymbols.Where(i => i.Value == Symbol).Single().Key; //"skeleton";
     }
+
+    
   }
 }

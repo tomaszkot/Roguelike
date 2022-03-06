@@ -353,7 +353,7 @@ namespace RoguelikeUnitTests
       game.Hero.SetChanceToExperienceEffect(EffectType.Poisoned, 100);
 
       //make enemy poisonus
-      var enemy = AllEnemies.First();
+      var enemy = PlainNormalEnemies.First();
       var poisonAttack = enemy.Stats.GetStat(EntityStatKind.PoisonAttack);
       poisonAttack.Value.Nominal = 10;
 

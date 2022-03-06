@@ -152,7 +152,7 @@ namespace RoguelikeUnitTests
     }
 
     int numEnemies = 0;
-    public virtual RoguelikeGame CreateGame(bool autoLoadLevel = true, int numEnemies = 10, int numberOfRooms = 5, GenerationInfo gi = null)
+    public virtual RoguelikeGame CreateGame(bool autoLoadLevel = true, int numEnemies = 20, int numberOfRooms = 5, GenerationInfo gi = null)
     {
       //if(gi!=null)
 

@@ -1,4 +1,5 @@
 ﻿using NUnit.Framework;
+using Roguelike.Attributes;
 using Roguelike.LootContainers;
 using Roguelike.Tiles;
 using Roguelike.Tiles.LivingEntities;
@@ -256,6 +257,7 @@ namespace RoguelikeUnitTests
       var game = CreateGame();
       var hero = game.Hero;
       hero.Level = 3;
+      hero.Stats[EntityStatKind.Strength].Nominal = 20;
 
       var wpn1 = game.GameManager.LootGenerator.GetLootByAsset("rusty_sword") as Weapon;
       PutEqOnLevelAndCollectIt(wpn1);
@@ -265,7 +267,7 @@ namespace RoguelikeUnitTests
 
       Assert.False(hero.Inventory.Contains(wpn1));
 
-      var wpn2 = game.GameManager.LootGenerator.GetLootByAsset("gladius") as Weapon;
+      var wpn2 = game.GameManager.LootGenerator.GetLootByAsset("axe") as Weapon;
       Assert.True(wpn2.IsBetter(wpn1));
       PutEqOnLevelAndCollectIt(wpn2);
 
@@ -287,7 +289,7 @@ namespace RoguelikeUnitTests
       var heroEq = hero.GetActiveEquipment();
       Assert.AreEqual(heroEq[CurrentEquipmentKind.Weapon], wpn1);
 
-      var wpn2 = game.GameManager.LootGenerator.GetLootByAsset("axe") as Weapon;
+      var wpn2 = game.GameManager.LootGenerator.GetLootByAsset("sickle") as Weapon;
       PutEqOnLevelAndCollectIt(wpn2);
       Assert.True(hero.Inventory.Contains(wpn2));
 
@@ -312,12 +314,12 @@ namespace RoguelikeUnitTests
 
       for (int i = 0; i < hero.Inventory.Capacity; i++)
       {
-        var wpn2 = game.GameManager.LootGenerator.GetLootByAsset("axe") as Weapon;
+        var wpn2 = game.GameManager.LootGenerator.GetLootByAsset("sickle") as Weapon;
         PutEqOnLevelAndCollectIt(wpn2);
         Assert.True(hero.Inventory.Contains(wpn2));
       }
 
-      var wpnFail = game.GameManager.LootGenerator.GetLootByAsset("axe") as Weapon;
+      var wpnFail = game.GameManager.LootGenerator.GetLootByAsset("sickle") as Weapon;
       PutEqOnLevelAndCollectIt(wpnFail);
       Assert.False(hero.Inventory.Contains(wpnFail));
 
@@ -346,7 +348,7 @@ namespace RoguelikeUnitTests
       heroEq = hero.GetActiveEquipment();
       Assert.AreEqual(heroEq[CurrentEquipmentKind.Weapon], null);
 
-      var wpn2 = game.GameManager.LootGenerator.GetLootByAsset("axe") as Weapon;
+      var wpn2 = game.GameManager.LootGenerator.GetLootByAsset("sickle") as Weapon;
       Assert.True(hero.CanUseEquipment(wpn2, true));
       PutEqOnLevelAndCollectIt(wpn2);
       heroEq = hero.GetActiveEquipment();

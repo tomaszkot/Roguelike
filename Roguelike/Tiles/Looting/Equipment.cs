@@ -469,7 +469,7 @@ namespace Roguelike.Tiles
 
     protected void SetRequiredStat(int levelIndex, EntityStatKind esk)
     {
-      var baseVal = (int)LivingEntities.LivingEntity.BaseStats[esk].Nominal;
+      var baseVal = (int) Hero.GetStrengthStartStat();
       var fac = FactorCalculator.CalcFromLevel3(levelIndex, baseVal, 20);
       var es = new EntityStat(esk, fac);
       this.RequiredStats.SetStat(es.Kind, es);

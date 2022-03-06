@@ -109,9 +109,9 @@ namespace Roguelike.Tiles.Looting
           desc = "";
           TargetRequired = true;
           break;
-        case SpellKind.Rage:
-          desc = "Increases the Damage statistic of the caster";
-          break;
+        //case SpellKind.Rage:
+        //  desc = "Increases the Damage statistic of the caster";
+        //  break;
         case SpellKind.Weaken:
           desc = "Reduces the Defense statistic of the victim";
           TargetRequired = true;
@@ -214,9 +214,6 @@ namespace Roguelike.Tiles.Looting
           break;
         case SpellKind.ManaShield:
           spell = new ManaShieldSpell(caller);
-          break;
-        case SpellKind.Rage:
-          spell = new RageSpell(caller);
           break;
         case SpellKind.Weaken:
           spell = new WeakenSpell(caller);

@@ -434,8 +434,9 @@ namespace RoguelikeUnitTests
       Assert.Greater(PlainEnemies.Count, 5);
       Assert.AreEqual(game.Hero.Stats.GetCurrentValue(EntityStatKind.ChanceToCauseElementalAilment), 0);
       game.Hero.Stats.SetNominal(EntityStatKind.ChanceToCauseElementalAilment, 100);
-      foreach (var en in PlainEnemies)
+      for (int i=0;i<5;i++)
       {
+        var en = PlainEnemies[i];
         var spell = weapon.SpellSource.CreateSpell(game.Hero);
         PlaceCloseToHero(en);
         Assert.True(game.GameManager.SpellManager.ApplyAttackPolicy(game.Hero, en, weapon.SpellSource));
@@ -643,7 +644,7 @@ namespace RoguelikeUnitTests
       switch (kind)
       {
         case Roguelike.Abilities.AbilityKind.AxesMastering:
-          wpnName = "axe";
+          wpnName = "sickle";
           auxStat = EntityStatKind.ChanceToCauseTearApart;
           break;
         case Roguelike.Abilities.AbilityKind.BashingMastering:

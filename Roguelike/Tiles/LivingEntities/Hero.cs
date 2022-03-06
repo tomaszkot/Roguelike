@@ -2,7 +2,6 @@
 using Dungeons.Core;
 using Roguelike.Abstract.Inventory;
 using Roguelike.Attributes;
-using Roguelike.Calculated;
 using Roguelike.LootContainers;
 using Roguelike.Quests;
 using Roguelike.Tiles.Looting;
@@ -16,7 +15,8 @@ namespace Roguelike.Tiles.LivingEntities
 {
   public class Hero : AdvancedLivingEntity
   {
-    public const int HeroStartStrengthIncrease = 5;
+    const int HeroStartStrengthIncrease = 5;
+    //const int HeroStartDefenceIncrease = 3;
     List<Quest> quests = new List<Quest>();
     public List<Quest> Quests
     {
@@ -26,19 +26,31 @@ namespace Roguelike.Tiles.LivingEntities
 
     public LootContainers.Crafting Crafting { get; set; }
 
+    public static float GetStrengthStartStat()
+    {
+      var value = StartStatValues[EntityStatKind.Strength];
+      return value + HeroStartStrengthIncrease;
+    }
+
+    public override float GetStartStat(EntityStatKind esk)
+    {
+      var value = base.GetStartStat(esk);
+      if (esk == EntityStatKind.Strength)
+        value = GetStrengthStartStat();
+
+      if (esk == EntityStatKind.Defense)
+        value += 3;
+      else if (esk == EntityStatKind.Health || esk == EntityStatKind.Mana)
+        value = 40;
+      return value;
+    }
+
     public Hero(Container container) : base(container, new Point().Invalid(), '@')
     {
       canAdvanceInExp = true;
 
-      Stats.SetNominal(EntityStatKind.Health, 40);//level up +2 // 40 -> 140
-      // Character.Mana = 40;
-      StartStrength += HeroStartStrengthIncrease;
-      Stats.SetNominal(EntityStatKind.Strength, StartStrength);
-      Stats.SetNominal(EntityStatKind.MeleeAttack, StartStrength);
-      Stats.SetNominal(EntityStatKind.Magic, 10);
-      Stats.SetNominal(EntityStatKind.Mana, 40);
-      Stats.SetNominal(EntityStatKind.Defense, 10);
-      Stats.SetNominal(EntityStatKind.Dexterity, 10);
+      foreach(var kv in LivingEntity.StartStatValues)
+        Stats.SetNominal(kv.Key, GetStartStat(kv.Key));
 
       //Inventory.InvOwner = InvOwner.Hero;
       Inventory.InvBasketKind = InvBasketKind.Hero;
@@ -73,7 +85,6 @@ namespace Roguelike.Tiles.LivingEntities
       }
       return false;
     }
-
     public override string ToString()
     {
       return base.ToString();
@@ -87,11 +98,10 @@ namespace Roguelike.Tiles.LivingEntities
       Crafting.Recipes.Inventory.Owner = this;
     }
 
-    protected override float GetStrengthIncrease()
-    {
-      return Stats.GetCurrentValue(EntityStatKind.Strength) - StartStrength;
-    }
-
+    //protected override float GetStrengthIncrease()
+    //{
+    //  return Stats.GetCurrentValue(EntityStatKind.Strength) - StartStrength;
+    //}
 
     public Tuple<int, int> GetTotalMeleeAttackValuesForDisplay()
     {

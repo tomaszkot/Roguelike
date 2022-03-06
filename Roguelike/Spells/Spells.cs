@@ -172,8 +172,7 @@ namespace Roguelike.Spells
     {
       var ally = caller.Container.GetInstance<AlliedEnemy>();
       ally.InitSpawned(EnemySymbols.SkeletonSymbol, level, diff);
-      ally.Stats.SetNominal(EntityStatKind.Strength, AdvancedLivingEntity.BaseStrength.Value.Nominal + SkeletonSpellStrengthIncrease);//same as hero
-      ally.Stats.SetNominal(EntityStatKind.Dexterity, AdvancedLivingEntity.BaseDexterity.Value.Nominal + 5);
+      //ally.Stats.SetNominal(EntityStatKind.Dexterity, LivingEntity.StartStatValues[EntityStatKind.Dexterity]+5);
       ally.RecalculateStatFactors(false);
       ally.Name = "Skeleton";
       return ally;
@@ -300,18 +299,7 @@ namespace Roguelike.Spells
   //  }
 
   ///////////////////////////////////////////////////////////////////////////
-  public class RageSpell : PassiveSpell
-  {
-    public RageSpell() : this(new LivingEntity())
-    {
-    }
-
-    public RageSpell(LivingEntity caller) : base(caller, EntityStatKind.MeleeAttack)
-    {
-      Kind = SpellKind.Rage;
-    }
-  }
-
+  
   /////////////////////////////////////////////////////////////////////
   public class ResistAllSpell : PassiveSpell
   {
