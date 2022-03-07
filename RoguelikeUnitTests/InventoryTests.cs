@@ -279,6 +279,33 @@ namespace RoguelikeUnitTests
     }
 
     [Test]
+    public void EquipmentPrimaryForCap()
+    {
+      var game = CreateGame();
+      var hero = game.Hero;
+      hero.Level = 3;
+      hero.Stats[EntityStatKind.Strength].Nominal = 20;
+
+      var eq1 = game.GameManager.LootGenerator.GetLootByAsset("cap") as Equipment;
+      PutEqOnLevelAndCollectIt(eq1);
+
+      var heroEq = hero.GetActiveEquipment();
+      Assert.AreEqual(heroEq[CurrentEquipmentKind.Helmet], eq1);
+      Assert.AreEqual(hero.CurrentEquipment.PrimaryEquipment[CurrentEquipmentKind.Helmet], eq1);
+            
+      Assert.True(Game.GameManager.Hero.MoveEquipmentCurrent2Inv(eq1, eq1.EquipmentKind, CurrentEquipmentPosition.Unset));
+      
+      Game.GameManager.Hero.CurrentEquipment.SwapActiveWeaponSet();
+      
+      //try to chaet
+      Game.GameManager.Hero.CurrentEquipment.SetEquipment(eq1, CurrentEquipmentKind.Unset, false);
+
+      Assert.AreEqual(heroEq[CurrentEquipmentKind.Helmet], eq1);
+      Assert.AreEqual(hero.CurrentEquipment.PrimaryEquipment[CurrentEquipmentKind.Helmet], eq1);
+
+    }
+
+    [Test]
     public void EquipmentPutOnHeroRevert()
     {
       var game = CreateGame();

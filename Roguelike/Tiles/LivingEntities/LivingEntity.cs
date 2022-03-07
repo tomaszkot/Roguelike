@@ -47,7 +47,7 @@ namespace Roguelike.Tiles.LivingEntities
 
     public bool d_immortal = false;
     protected const int StartStrength = 10;
-    protected const int StartDefense = 7;
+    protected const int StartDefense = 6;
     public static readonly Dictionary<EntityStatKind, int> StartStatValues = new Dictionary<EntityStatKind, int>() {
       { EntityStatKind.Strength, StartStrength },
       { EntityStatKind.Health, 10 },

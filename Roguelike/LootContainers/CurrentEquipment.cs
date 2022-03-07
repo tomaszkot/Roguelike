@@ -141,6 +141,8 @@ namespace Roguelike.LootContainers
           return false;
       }
 
+      primary = SpareEquipmentUsed[cek] ? false : true;
+
       if (primary)
       {
         if (eq != null && PrimaryEquipment[cek] != null)

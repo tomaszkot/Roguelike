@@ -344,4 +344,31 @@ namespace Roguelike.Spells
       EntityRequired = true;
     }
   }
+
+  //
+  public class RageSpell : PassiveSpell
+  {
+    public RageSpell() : this(new LivingEntity())
+    {
+    }
+
+    public RageSpell(LivingEntity caller) : base(caller, EntityStatKind.MeleeAttack)
+    {
+      Kind = SpellKind.Rage;
+    }
+  }
+
+  ///////////////////////////////////////////////////////////////////////////
+  public class IronSkinSpell : PassiveSpell
+  {
+    public IronSkinSpell() : this(new LivingEntity())
+    {
+    }
+
+    public IronSkinSpell(LivingEntity caller) : base(caller, EntityStatKind.Defense)
+    {
+      Kind = SpellKind.IronSkin;
+      EntityRequired = false;
+    }
+  }
 }

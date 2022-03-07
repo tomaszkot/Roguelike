@@ -65,7 +65,7 @@ namespace Roguelike.Tiles.LivingEntities
       AddFightItem(FightItemKind.PoisonCocktail);
       //fightItems[FightItemKind.HunterTrap] = new ProjectileFightItem(FightItemKind.HunterTrap, this) { Count = RandHelper.GetRandomInt(3) + 1 };
 
-      this.ActiveFightItem = RandHelper.GetRandomElem<FightItem>(this.fightItems.Values.ToList());
+      SetActiveFightItem(RandHelper.GetRandomElem<FightItem>(this.fightItems.Values.ToList()).FightItemKind);
       //this.ActiveFightItem = new ProjectileFightItem(FightItemKind.Explosive Cocktail);
 
       SetResist(EntityStatKind.ResistCold, 15);
@@ -76,9 +76,15 @@ namespace Roguelike.Tiles.LivingEntities
       Stats.SetNominal(EntityStatKind.MeleeAttack, LivingEntity.StartStatValues[EntityStatKind.Strength]+2);
     }
 
+    public ProjectileFightItem SetActiveFightItem(FightItemKind kind)
+    {
+      this.ActiveFightItem = fightItems[kind];
+      return this.ActiveFightItem as ProjectileFightItem;
+    }
+
     public ProjectileFightItem AddFightItem(FightItemKind kind)
     {
-      fightItems[kind] = new ProjectileFightItem(kind, this) { Count = RandHelper.GetRandomInt(2) + 2 };
+      fightItems[kind] = new ProjectileFightItem(kind, this) { Count = RandHelper.GetRandomInt(2) + 1 };
       return fightItems[kind] as ProjectileFightItem;
     }
         
@@ -87,13 +93,7 @@ namespace Roguelike.Tiles.LivingEntities
       fightItems[fi.FightItemKind].Count--;
       EverUsedFightItem = true;
     }
-
-    //public FightItemKind GetAvaiableFightItemKind()
-    //{
-    //  //fightItems.Where(i=>i.Value.Count > 0).
-    //  //RandHelper.GEt
-    //}
-
+        
     public FightItem GetFightItem(FightItemKind kind)
     {
       if (fightItems.ContainsKey(kind) && fightItems[kind].Count > 0)

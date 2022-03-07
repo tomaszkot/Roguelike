@@ -151,6 +151,15 @@ namespace Roguelike.Generators
       else
         loot = LootFactory.GetByName(tileName);
 
+      if (tileName == "cap")
+      {
+        var arm = new Armor();
+        arm.EquipmentKind = Roguelike.Tiles.EquipmentKind.Helmet;
+        arm.Defence = 5;
+        arm.tag1 = tileName;
+        arm.SetLevelIndex(1);
+        return arm;
+      }
       tileName = tileName.ToLower();
 
       if (loot == null)

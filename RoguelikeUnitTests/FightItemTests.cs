@@ -12,7 +12,7 @@ namespace RoguelikeUnitTests
   [TestFixture]
   class FightItemTests : TestBase
   {
-    const float StartAttack = 15.0f;
+    readonly float StartAttack = Roguelike.Tiles.LivingEntities.Hero.GetStrengthStartStat();
 
     [Test]
     public void HunterTrapDeact()
@@ -151,8 +151,9 @@ namespace RoguelikeUnitTests
     {
       var game = CreateGame();
       var en = PlainEnemies.First();
-      en.AddFightItem(fightItemKind);
-      en.AddFightItem(fightItemKind);
+
+      en.ActiveFightItem = en.SetActiveFightItem(fightItemKind);
+      Assert.LessOrEqual(en.ActiveFightItem.Count, 4);
       var hero = game.GameManager.Hero;
       var beginHealth = hero.Stats.Health;
 
@@ -169,10 +170,11 @@ namespace RoguelikeUnitTests
       beginHealth = hero.Stats.Health;
       Assert.True(en.SetLevel(5));
       explosiveCocktail = en.GetFightItem(fightItemKind) as ProjectileFightItem;
-      //Assert.Greater(explosiveCocktail.Damage, dam);
+      
       Assert.True(game.GameManager.ApplyAttackPolicy(en, hero, explosiveCocktail, null, (p) => { }));
       var lifeDiff1 = beginHealth - hero.Stats.Health;
       Assert.Greater(lifeDiff1, lifeDiff);
+      Assert.LessOrEqual(en.ActiveFightItem.Count, 2);
     }
   }
 }

@@ -92,6 +92,8 @@ namespace Roguelike.Spells
           break;
         case SpellKind.Teleport:
           break;
+        case SpellKind.IronSkin:
+          break;
         case SpellKind.ResistAll:
           break;
         case SpellKind.Inaccuracy:
@@ -134,6 +136,9 @@ namespace Roguelike.Spells
           break;
         case EffectType.Weaken:
           spellKind = SpellKind.Weaken;
+          break;
+        case EffectType.IronSkin:
+          spellKind = SpellKind.IronSkin;
           break;
         case EffectType.ResistAll:
           spellKind = SpellKind.ResistAll;

@@ -1,5 +1,4 @@
 ﻿using NUnit.Framework;
-using Roguelike.Attributes;
 using Roguelike.Spells;
 using Roguelike.Tiles.Interactive;
 using Roguelike.Tiles.Looting;
@@ -34,16 +33,15 @@ namespace RoguelikeUnitTests
     public void TestDescriptions()
     {
       var game = CreateGame();
-      var scroll = new Scroll(SpellKind.ManaShield);
+      var scroll = new Scroll(SpellKind.IronSkin);
       var spell = scroll.CreateSpell(game.Hero);
       var castedSpell = spell as PassiveSpell;
       var features = castedSpell.CreateSpellStatsDescription(true);
       Assert.NotNull(features);
-      var stats = features.GetEntityStats();
-      Assert.AreEqual(stats.Length, 1);
-      Assert.AreEqual(stats[0].Kind, EntityStatKind.Mana);
-      Assert.Greater(stats[0].Value.TotalValue, 0);
-      Assert.AreEqual(castedSpell.CurrentLevel, 1);
+
+      Assert.AreEqual(Math.Round(castedSpell.StatKindEffective.Value, 3), 3.1);
+      Assert.AreEqual(castedSpell.StatKindPercentage.Value, 31);
+      //Assert.AreEqual(features[1], "Defense: +" + (BaseFactor + 1) + "%");
     }
 
 
