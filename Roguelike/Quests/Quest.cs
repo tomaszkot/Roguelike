@@ -16,6 +16,11 @@ namespace Roguelike.Quests
 
   public class Quest
   {
+    public Quest()
+    { 
+      
+    }
+
     public QuestStatus Status { get; set; }
     public string Tag { get; set; }
     public string Name { get; set; }
@@ -24,6 +29,8 @@ namespace Roguelike.Quests
     public LootKind RewardLootKind { get; set; }
     public string RewardLootName { get; set; }
     public bool SkipReward { get; set; }
+
+    public int DoneExperienceAmount { get; set; }
   }
 
 

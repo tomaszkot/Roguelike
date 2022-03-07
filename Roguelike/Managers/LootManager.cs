@@ -34,6 +34,7 @@ namespace Roguelike.Managers
     public List<Loot> TryAddForLootSource(ILootSource lootSource)//Barrel, Chest from attackPolicy.Victim
     {
       var lootItems = new List<Loot>();
+            
       if (lootSource == null)//hit a wall ?
         return lootItems;
       Loot debugLoot = null;
@@ -108,6 +109,10 @@ namespace Roguelike.Managers
       }
 
       var loot = GameManager.TryGetRandomLootByDiceRoll(lsk, lootSource);
+      //bool test = true;
+      //if (test)
+      //  loot = GameManager.LootGenerator.GetLootByAsset("ice_scepter5") as Equipment;
+
       if (loot != null)
       {
         loot.Source = lootSource;
