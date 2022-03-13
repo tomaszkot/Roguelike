@@ -229,6 +229,7 @@ namespace RoguelikeUnitTests
       info.MaxNodeSize = new Size(30, 30);
       info.ForceChildIslandInterior = true;
       info.PreventSecretRoomGeneration = true;
+      info.ForcedNumberOfEnemiesInRoom = 10;
       var game = CreateGame(gi: info);
 
       var level = game.Level;

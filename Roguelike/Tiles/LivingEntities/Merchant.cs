@@ -17,15 +17,6 @@ namespace Roguelike.Tiles.LivingEntities
     public Merchant(Container cont) : base(cont)
     {
       Proffesion = EntityProffesionKind.Merchant;
-      Stats.SetNominal(EntityStatKind.Health, 15);
-      // Character.Mana = 40;
-      var str = 15;
-      Stats.SetNominal(EntityStatKind.Strength, str);//15
-      Stats.SetNominal(EntityStatKind.MeleeAttack, str);
-      Stats.SetNominal(EntityStatKind.Magic, 10);
-      Stats.SetNominal(EntityStatKind.Mana, 40);
-      Stats.SetNominal(EntityStatKind.Defense, 10);
-      Stats.SetNominal(EntityStatKind.Dexterity, 10);
 
       Gold = 100000;
       Inventory.Capacity = 64;

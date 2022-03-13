@@ -44,8 +44,9 @@ namespace Roguelike.Tiles.LivingEntities
     {
       canAdvanceInExp = true;
 
-      foreach(var kv in LivingEntity.StartStatValues)
-        Stats.SetNominal(kv.Key, GetStartStat(kv.Key));
+      //done in base
+      //foreach(var kv in LivingEntity.StartStatValues)
+      //  Stats.SetNominal(kv.Key, GetStartStat(kv.Key));
 
       //Inventory.InvOwner = InvOwner.Hero;
       Inventory.InvBasketKind = InvBasketKind.Hero;

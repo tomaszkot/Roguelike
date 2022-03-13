@@ -34,6 +34,7 @@ namespace Roguelike.Tiles.LivingEntities
     public Loot DeathLoot { get; set; }
     public bool ShoutedAtHero { get; set; }
     public Dictionary<FightItemKind, FightItem> fightItems = new Dictionary<FightItemKind, FightItem>();
+    public const float StrengthInc = 2;//no matter what difficulty this is start value
     //FightItemKind fightItemKind = FightItemKind.Stone;
 
     public Enemy(Container cont) : this(new Point().Invalid(), 'e', null)
@@ -72,8 +73,15 @@ namespace Roguelike.Tiles.LivingEntities
       SetResist(EntityStatKind.ResistFire, 15);
       SetResist(EntityStatKind.ResistPoison, 15);
       SetResist(EntityStatKind.ResistLighting, 15);
+    }
 
-      Stats.SetNominal(EntityStatKind.MeleeAttack, LivingEntity.StartStatValues[EntityStatKind.Strength]+2);
+    public override float GetStartStat(EntityStatKind esk)
+    {
+      var startStat = base.GetStartStat(esk);
+      if (esk == EntityStatKind.Strength)
+        startStat += StrengthInc;
+
+      return startStat;
     }
 
     public ProjectileFightItem SetActiveFightItem(FightItemKind kind)

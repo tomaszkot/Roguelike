@@ -452,16 +452,16 @@ namespace RoguelikeUnitTests
       float originalStatValue = 0;
       var destExtraStat = SetWeapon(AbilityKind.WandsMastering, game.Hero, out originalStatValue);
       var weapon = game.Hero.GetActiveWeapon();
-
-      var empOnes = game.GameManager.CurrentNode.GetEmptyNeighborhoodTiles(game.GameManager.Hero, false);
-      Assert.Greater(empOnes.Count, 1);
+            
+      //Assert.Greater(empOnes.Count, 1);
       var enemies = AllEnemies.Where(i => i.PowerKind == EnemyPowerKind.Champion).ToList();
       enemies[0].Stats.GetStat(EntityStatKind.Health).Value.Nominal *= 10;//make sure wont' die
       float en1Health = enemies[0].Stats.Health;
       float en2Health = enemies[1].Stats.Health;
       for (int i = 0; i < 2; i++)
       {
-        game.GameManager.CurrentNode.SetTile(enemies[i], empOnes[i].point);
+        var empOne = game.GameManager.CurrentNode.GetClosestEmpty(game.GameManager.Hero, true);
+        game.GameManager.CurrentNode.SetTile(enemies[i], empOne.point);
       }
       var ab = game.GameManager.Hero.GetPassiveAbility(Roguelike.Abilities.AbilityKind.WandsMastering);
       for (int i = 0; i < 5; i++)

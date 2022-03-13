@@ -117,22 +117,6 @@ namespace Roguelike.Tiles.LivingEntities
       NextLevelExperience = exp;
     }
 
-    internal void SetInitialStat(EntityStatKind stat, int inc)
-    {
-      var val = 0;
-      if (stat == EntityStatKind.Strength)
-      {
-        val = LivingEntity.StartStatValues[EntityStatKind.Strength] + inc;
-        if (Stats.GetStat(EntityStatKind.MeleeAttack).Value.Nominal < val)
-          Stats.SetNominal(EntityStatKind.MeleeAttack, val);
-      }
-      else if (stat == EntityStatKind.Dexterity)
-      {
-        val = LivingEntity.StartStatValues[EntityStatKind.Dexterity] + inc;
-      }
-      if (val != 0)
-        Stats.SetNominal(stat, val);
-    }
   }
 
 }

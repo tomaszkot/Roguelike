@@ -170,12 +170,10 @@ namespace Roguelike.Tiles.LivingEntities
       this.Container = cont;
       foreach (var basicStat in StartStatValues)
       {
-        var nv = basicStat.Value;
-        if (nv > 0)
-          Stats.SetNominal(basicStat.Key, nv);
+        Stats.SetNominal(basicStat.Key, GetStartStat(basicStat.Key));
       }
 
-      Stats.SetNominal(EntityStatKind.MeleeAttack, GetStartStat(EntityStatKind.Strength));//attack is same as str for a simple entity
+      AlignMelleeeAttack();
 
       Alive = true;
       Name = "";
@@ -203,6 +201,11 @@ namespace Roguelike.Tiles.LivingEntities
       effectsToUse[EffectType.IronSkin] = GenerationInfo.DefaultEnemyIronSkinUsageCount;
       effectsToUse[EffectType.ResistAll] = GenerationInfo.DefaultEnemyResistAllUsageCount;
       effectsToUse[EffectType.Inaccuracy] = GenerationInfo.DefaultEnemyResistAllUsageCount;
+    }
+
+    protected void AlignMelleeeAttack()
+    {
+      Stats.SetNominal(EntityStatKind.MeleeAttack, this.Stats.Strength);//attack is same as str for a simple entity
     }
 
     public virtual float GetStartStat(EntityStatKind esk)

@@ -1,10 +1,14 @@
-﻿using NUnit.Framework;
+﻿//using Dungeons;
+using Dungeons.Tiles;
+using NUnit.Framework;
 using Roguelike;
 using Roguelike.Attributes;
+using Roguelike.Generators;
 using Roguelike.Managers;
 using Roguelike.Tiles;
 using Roguelike.Tiles.Interactive;
 using Roguelike.Tiles.LivingEntities;
+using System.Diagnostics;
 using System.Linq;
 
 namespace RoguelikeUnitTests
@@ -19,6 +23,7 @@ namespace RoguelikeUnitTests
       var game = CreateGame();
       var enemy = SpawnEnemy();
       enemy.Symbol = EnemySymbols.SkeletonSymbol;
+      Assert.AreEqual(enemy.Stats.Strength, enemy.Stats[EntityStatKind.MeleeAttack].TotalValue);
 
       Assert.False(enemy.GetNonPhysicalDamages().Any());
       enemy.Symbol = EnemySymbols.SpiderSymbol;
@@ -158,20 +163,27 @@ namespace RoguelikeUnitTests
     }
 
     [Test]
+    [Repeat(3)]
     public void TestSpeedInWater()
     {
-      var game = CreateGame(true, 1, 1);
+      var gi = new GenerationInfo();
+      gi.GenerateRandomInterior = false;
+      gi.GenerateRandomStonesBlocks = false;
+      gi.GenerateInteractiveTiles = false;
+      var game = CreateGame(true, 1, 1, gi);
+      var walls = game.Level.GetTiles<Wall>().Where(i=> !i.IsSide).ToList();
+      //Assert.AreEqual(walls.Count, 0);
       var enemies = game.Level.GetTiles<Enemy>();
       Assert.AreEqual(enemies.Count, 1);
       var enemy = enemies.First();
       enemy.SetSurfaceSkillLevel(SurfaceKind.ShallowWater, 1);
 
       var closeTile = game.Level.GetEmptyTiles().Where(i => i.DistanceFrom(game.Hero) == 3).FirstOrDefault();
-      game.Level.SetTile(enemy, closeTile.point);
+      Assert.True(game.Level.SetTile(enemy, closeTile.point));
 
       var enemyDistFromHero = enemy.DistanceFrom(game.Hero);
-      //Assert.Less(enemyDistFromHero, 4);
       Assert.AreEqual(enemyDistFromHero, 3);
+      Debug.WriteLine("init enemy pos: " + enemy.Position);
 
       var emptyCount = game.Level.GetEmptyTiles().Count;
       game.Level.GetEmptyTiles().ForEach(i => game.Level.SetTile(new Surface() { Kind = SurfaceKind.ShallowWater }, i.point));
@@ -192,6 +204,11 @@ namespace RoguelikeUnitTests
 
       //check pos
       var enemyDistFromHeroNew = enemy.DistanceFrom(game.Hero);
+      if (enemyDistFromHeroNew != enemyDistFromHero - 2)
+      {
+        var enNeibs = game.Level.GetNeighborTiles(game.Hero);
+        enNeibs.ForEach(i => Debug.WriteLine(i));
+      }
       Assert.AreEqual(enemyDistFromHeroNew, enemyDistFromHero - 2);
     }
 

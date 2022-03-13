@@ -8,18 +8,21 @@ namespace Roguelike.Tiles.LivingEntities
 {
   public class AlliedEnemy : Ally
   {
-    //public AlliedEnemy() : base(null)
-    //{
-    //  throw new Exception("use other ctor");
-    //}
-
     public AlliedEnemy(Container cont) : base(cont)
     {
       Kind = AllyKind.Enemy;
-      SetInitialStat(EntityStatKind.Strength, SkeletonSpell.SkeletonSpellStrengthIncrease);
 #if ASCII_BUILD
         color = ConsoleColor.Yellow;
 #endif
+    }
+
+    public override float GetStartStat(EntityStatKind esk)
+    {
+      var startStat = base.GetStartStat(esk);
+      if (esk == EntityStatKind.Strength)
+        startStat += SkeletonSpell.SkeletonSpellStrengthIncrease;
+
+      return startStat;
     }
 
     public override void PlayAllySpawnedSound()

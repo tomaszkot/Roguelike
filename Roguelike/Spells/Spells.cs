@@ -155,7 +155,7 @@ namespace Roguelike.Spells
     public const int SkeletonSpellStrengthIncrease = 5;
 
     public SkeletonSpell() : this(new LivingEntity(), Difficulty.Normal)
-    { 
+    {   
     }
 
     public SkeletonSpell(LivingEntity caller, Difficulty? diff = null) : base(caller, null)

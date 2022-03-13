@@ -10,7 +10,7 @@ namespace RoguelikeUnitTests
   class LevelGenerationTests : TestBase
   {
     [Test]
-    [Repeat(2)]
+    [Repeat(1)]
     public void TestDifficulty()
     {
       GenerationInfo.Difficulty = Difficulty.Easy;

@@ -166,7 +166,8 @@ namespace Roguelike.Generators
       var barrels = node.GetTiles<Barrel>();
       bool zero1 = barrels.Any(i => i.Level <= 0);
       bool zero2 = node.GetTiles<Chest>().Any(i => i.Level <= 0);
-      Debug.Assert(!zero1 && !zero2);
+      var rgi = gi as Roguelike.Generators.GenerationInfo;
+      Debug.Assert(!rgi.GenerateInteractiveTiles || (!zero1 && !zero2));
       return node;
     }
 

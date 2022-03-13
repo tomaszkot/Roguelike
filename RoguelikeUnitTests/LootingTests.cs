@@ -265,7 +265,7 @@ namespace RoguelikeUnitTests
     {
       var totals = new Dictionary<SpellKind, int>();
       List<Scroll> scrolls = new List<Scroll>();
-      int mult = 5;
+      int mult = 2;
       for (int run = 0; run < mult; run++)
       {
         var env = CreateTestEnv(true, numEnemies: 100);

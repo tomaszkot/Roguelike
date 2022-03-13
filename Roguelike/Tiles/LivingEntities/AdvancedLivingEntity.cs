@@ -586,19 +586,6 @@ namespace Roguelike.Tiles.LivingEntities
 
     }
 
-    //public IProjectile ActiveProjectile
-    //{
-    //  get 
-    //  {
-    //    if (ActiveSpellSource != null)
-    //      return ActiveSpellSource.;
-    //    if (ActiveFightItem != null)
-    //      return ActiveFightItem;
-
-    //    return null;
-    //  }
-    //}
-
     public SpellSource ActiveSpellSource
     {
       get
@@ -658,7 +645,8 @@ namespace Roguelike.Tiles.LivingEntities
       AccumulateEqFactors(true);
 
       //tested by TestSkeletonAttackIncWithStrength
-      Stats.GetStat(EntityStatKind.MeleeAttack).Value.Nominal = Stats.GetStat(EntityStatKind.Strength).Value.Nominal;
+      AlignMelleeeAttack();
+
       var abs = Abilities.PassiveItems;
       foreach (var ab in abs)
       {
