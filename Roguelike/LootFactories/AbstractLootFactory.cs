@@ -119,7 +119,7 @@ namespace Roguelike.LootFactories
 
         if (eqDone is Weapon wpn && wpn.IsMagician && wpn.Class != EquipmentClass.Unique)
         {
-          wpn.LevelIndex = level;
+          wpn.SetLevelIndex(level);//TODO
         }
         return eqDone;
       }

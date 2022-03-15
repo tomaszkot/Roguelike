@@ -130,7 +130,7 @@ namespace Roguelike.Crafting
       if (recipe.MagicDustRequired > 0)
       {
         var magicDust = lootToConvert.Where(i => i is MagicDust).Cast<MagicDust>().FirstOrDefault();
-        if (magicDust == null || magicDust.Count != recipe.MagicDustRequired)
+        if (magicDust == null || magicDust.Count < recipe.MagicDustRequired)
         {
           return ReturnCraftingError("Invalid amount of Magic Dust");
         }
