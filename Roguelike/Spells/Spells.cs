@@ -216,7 +216,7 @@ namespace Roguelike.Spells
     {
       Kind = SpellKind.Dziewanna;
       CoolingDown = 10;
-      StatKind = EntityStatKind.Health;
+      StatKind = EntityStatKind.Unset;
       manaCost += 5;
     }
   }
