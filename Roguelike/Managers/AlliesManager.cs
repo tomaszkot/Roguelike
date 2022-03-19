@@ -88,7 +88,12 @@ namespace Roguelike.Managers
 
       if (ally.AllyModeTarget == null || ally.AllyModeTarget.DistanceFrom(ally) >= MaxEntityDistanceToToChase)
       {
-        ally.AllyModeTarget = enemiesManager.AllEntities.Where(i => i.DistanceFrom(ally) < MaxEntityDistanceToToChase).OrderBy(i => i.DistanceFrom(ally)).ToList().FirstOrDefault();
+        ally.AllyModeTarget = enemiesManager
+          .AllEntities
+          .Where(i => i.Revealed && i.DistanceFrom(ally) < MaxEntityDistanceToToChase)
+          .OrderBy(i => i.DistanceFrom(ally))
+          .ToList()
+          .FirstOrDefault();
       }
 
       bool moveCloserToHero = false;

@@ -1096,11 +1096,13 @@ namespace Roguelike.Tiles.LivingEntities
       InitStatsFromName();
       var hard = diff == Difficulty.Hard;
       float inc = 1;
-      if (diff == Difficulty.Normal)
-        inc = 1.1f;
-      else if (diff == Difficulty.Hard)
-        inc = 1.25f;
-
+      if (CanIncreaseStatsDueToDifficulty())
+      {
+        if (diff == Difficulty.Normal)
+          inc = 1.1f;
+        else if (diff == Difficulty.Hard)
+          inc = 1.25f;
+      }
       if (inc > 1)
         IncreaseStats(inc, IncreaseStatsKind.Difficulty);
 
@@ -1111,6 +1113,11 @@ namespace Roguelike.Tiles.LivingEntities
       }
       InitResistance();
       InitActiveScroll();
+      return true;
+    }
+
+    protected virtual bool CanIncreaseStatsDueToDifficulty()
+    {
       return true;
     }
 

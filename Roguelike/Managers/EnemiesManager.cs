@@ -67,8 +67,6 @@ namespace Roguelike.Managers
 
     public override void MakeTurn(LivingEntity enemy)
     {
-      var target = Hero;
-
       if (enemy.LastingEffects.Any(i => i.Type == Effects.EffectType.Frighten))
       {
         if (detailedLogs)
@@ -94,7 +92,7 @@ namespace Roguelike.Managers
         //enemy.AddLastingEffectFromSpell(Spells.SpellKind.Dziewanna, Effects.EffectType.Poisoned);
       }
 
-      if (AttackAlly(enemy))
+      if (AttackAlly(enemy, false))
       {
         if (detailedLogs)
           context.Logger.LogInfo("!AttackAlly");
@@ -104,6 +102,7 @@ namespace Roguelike.Managers
       if (enemy.DistanceFrom(Hero) > 12)
         return;
 
+      var target = Hero;
       if (!target.IsTransformed())
       {
         //if (CastEffectsForAllies(entity))
@@ -119,6 +118,13 @@ namespace Roguelike.Managers
           //if (TryRelocate(enemy))
           //  return;
         }
+      }
+      //try agin
+      if (AttackAlly(enemy, true))
+      {
+        if (detailedLogs)
+          context.Logger.LogInfo("!AttackAlly");
+        return;
       }
 
       bool makeRandMove = false;
@@ -234,12 +240,13 @@ namespace Roguelike.Managers
       }
     }
 
-    bool AttackAlly(LivingEntity enemy)
+    bool AttackAlly(LivingEntity enemy, bool forced)
     {
       var ally = AlliesManager.AllEntities.Where(i => i.DistanceFrom(enemy) < 2).FirstOrDefault();
       if (ally != null)
       {
-        if (RandHelper.Random.NextDouble() < 0.3f)
+        var rand = RandHelper.Random.NextDouble();
+        if ((forced && rand < 0.75) || rand < 0.3f)//TODO attack if there is no clear path to hero
           return AttackIfPossible(enemy, ally);
       }
       return false;

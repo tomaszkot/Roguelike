@@ -10,11 +10,17 @@ namespace Roguelike.Tiles.LivingEntities
 {
   public abstract class Ally : AdvancedLivingEntity, IAlly
   {
+    public bool IncreaseStatsDueToDifficulty = true;//too easy ?
     public Ally(Container cont, char symbol = '!') : base(cont, new Point().Invalid(), symbol)
     {
       canAdvanceInExp = true;
       Inventory.InvBasketKind = InvBasketKind.AllyEquipment;
       Inventory.Capacity = 8;
+    }
+
+    protected override bool CanIncreaseStatsDueToDifficulty()
+    {
+      return IncreaseStatsDueToDifficulty;
     }
 
     public bool Active { get; set; }
