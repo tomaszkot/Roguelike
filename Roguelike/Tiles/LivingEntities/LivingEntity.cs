@@ -104,6 +104,14 @@ namespace Roguelike.Tiles.LivingEntities
     //HACK, jest to handle AttackDescription with 0 amount of ammo
     public FightItem RecentlyActivatedFightItem { get; set; }
 
+    public FightItem GetActivatedFightItem()
+    {
+      var fightItem = ActiveFightItem;
+      if (fightItem == null)
+        fightItem = RecentlyActivatedFightItem;//HACK
+      return fightItem;
+    }
+
     public virtual FightItem ActiveFightItem
     {
       get => activeFightItem;

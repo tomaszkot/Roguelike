@@ -66,7 +66,7 @@ namespace Roguelike.Abilities
     {
       if (primary)
         PrimaryStat.Factor = factor;
-      else
+      else if(AuxStat.Kind != EntityStatKind.Unset)
         AuxStat.Factor = factor;
     }
 

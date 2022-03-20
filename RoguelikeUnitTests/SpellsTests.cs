@@ -44,8 +44,16 @@ namespace RoguelikeUnitTests
       //Assert.AreEqual(features[1], "Defense: +" + (BaseFactor + 1) + "%");
     }
 
-
     [Test]
+    public void TestPrices()
+    {
+      var game = CreateGame();
+      var scroll = new Scroll(SpellKind.Dziewanna);
+      Assert.Less(scroll.Price, 100);
+    }
+
+
+      [Test]
     public void TourLastingTest()
     {
       var game = CreateGame();

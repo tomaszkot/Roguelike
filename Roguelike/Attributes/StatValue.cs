@@ -43,11 +43,6 @@ namespace Roguelike.Attributes
 
       set
       {
-        if (value == 5)
-        {
-          int k = 0;
-          k++;
-        }
         factor = value;
       }
     }

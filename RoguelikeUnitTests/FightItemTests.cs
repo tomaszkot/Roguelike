@@ -154,6 +154,8 @@ namespace RoguelikeUnitTests
 
       en.ActiveFightItem = en.SetActiveFightItem(fightItemKind);
       Assert.LessOrEqual(en.ActiveFightItem.Count, 4);
+      if (en.ActiveFightItem.Count < 2)
+        en.ActiveFightItem.Count = 2;
       var hero = game.GameManager.Hero;
       var beginHealth = hero.Stats.Health;
 

@@ -138,7 +138,14 @@ namespace Roguelike.Attributes
       set
       {
         stat.Factor = value;
-
+        if (Kind == EntityStatKind.Unset && value > 0)
+        {
+          if (value == 5)
+          {
+            int k = 0;
+            k++;
+          }
+        }
         if (StatChanged != null)
           StatChanged(this, Kind);
       }

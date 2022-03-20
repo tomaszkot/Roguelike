@@ -56,13 +56,9 @@ namespace Roguelike.Calculated
 
         if (attackKind == AttackKind.PhysicalProjectile)
         {
-          fightItem = ent.ActiveFightItem;
+          fightItem = ent.GetActivatedFightItem();
           if (fightItem == null)
-          {
-            fightItem = ent.RecentlyActivatedFightItem;//HACK
-            if (fightItem == null)
-              return;
-          }
+            return;
         }
         if (attackKind == AttackKind.WeaponElementalProjectile)
         {
@@ -102,14 +98,6 @@ namespace Roguelike.Calculated
       {
         throw ex;
       }
-      //finally
-      //{
-      //  if (CurrentTotal == 0 && attackKind != AttackKind.Melee)
-      //  {
-      //    AttackKind attackKindAlt = AttackKind.Melee;
-      //    Calc(ent, withVariation, ref attackKindAlt, spell);
-      //  }
-      //}
     }
 
     public static AttackKind DiscoverAttackKind(AttackKind attackKind, Weapon wpn)
@@ -138,7 +126,10 @@ namespace Roguelike.Calculated
       AttackKind attackKind
     )
     {
-      Current = ent.GetCurrentValue(attackStat);
+      if(attackStat != EntityStatKind.Unset)
+        Current = ent.GetCurrentValue(attackStat);
+      else
+        Current = 0;
       OffensiveSpell offensiveSpell = spell;
       if (wpn != null)
       {
@@ -183,9 +174,10 @@ namespace Roguelike.Calculated
       CurrentPhysicalVariated += val - CurrentPhysicalVariated;
       
       CurrentTotal = CurrentPhysicalVariated;
-      var nonPhysical = ent.GetNonPhysicalDamages();
-
-      if (offensiveSpell != null)
+      
+      if (offensiveSpell != null 
+        && 
+        (attackKind == AttackKind.SpellElementalProjectile || attackKind == AttackKind.WeaponElementalProjectile))
       {
         var dmg = offensiveSpell.GetDamage();
         if(withVariation)
@@ -198,28 +190,34 @@ namespace Roguelike.Calculated
         CurrentTotal += dmg;
       }
 
-      foreach (var npd in nonPhysical)
+      if (attackKind != AttackKind.SpellElementalProjectile)
       {
-        bool add = true;
-        if (wpn != null)
+        var nonPhysical = ent.GetNonPhysicalDamages();
+        foreach (var npd in nonPhysical)
         {
-          if (wpn.IsMagician && attackKind == AttackKind.WeaponElementalProjectile)
+          bool add = true;
+          if (wpn != null)
           {
-            add = offensiveSpell.Kind.ToEntityStatKind() == npd.Key;
+            if (attackKind == AttackKind.WeaponElementalProjectile)
+            {
+              if (wpn.IsMagician)
+                add = offensiveSpell.Kind.ToEntityStatKind() == npd.Key;
+            }
+            else if (attackKind == AttackKind.Melee)
+              add = !wpn.IsBowLike;
+
+            if (add)
+            {
+              var addition = npd.Value;
+              AddExtraDamage(ent, wpn, weapons2Esk, ref addition);
+              CurrentTotal += addition;
+
+
+              if (!NonPhysical.ContainsKey(npd.Key))
+                NonPhysical[npd.Key] = 0;
+              NonPhysical[npd.Key] += addition;
+            }
           }
-          if (wpn.IsBowLike && attackKind == AttackKind.Melee)
-            add = false;
-        }
-        if (add)
-        {
-          var addition = npd.Value;
-          AddExtraDamage(ent, wpn, weapons2Esk, ref addition);
-          CurrentTotal += addition;
-
-
-          if (!NonPhysical.ContainsKey(npd.Key))
-            NonPhysical[npd.Key] = 0;
-          NonPhysical[npd.Key] += addition;
         }
       }
 
