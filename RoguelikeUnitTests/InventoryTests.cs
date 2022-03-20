@@ -137,7 +137,7 @@ namespace RoguelikeUnitTests
       Assert.False(wpn.GetMagicStats().Any());
 
       //identify
-      hero.Identify(wpn);
+      hero.Identify(wpn, game.GameManager.SpellManager);
       Assert.AreEqual(scroll.Count, count - 1);
       Assert.True(wpn.GetMagicStats().Any());
 

@@ -3,6 +3,7 @@ using Dungeons.Core;
 using Roguelike.Abstract.Inventory;
 using Roguelike.Attributes;
 using Roguelike.LootContainers;
+using Roguelike.Managers;
 using Roguelike.Quests;
 using Roguelike.Tiles.Looting;
 using SimpleInjector;
@@ -65,14 +66,29 @@ namespace Roguelike.Tiles.LivingEntities
     {
     }
 
-    public bool Identify(Equipment eq)
+    public SpellSource GetIdentificationSpellSource()
     {
       var scroll = Inventory.GetItems<Scroll>().Where(i => i.Kind == Spells.SpellKind.Identify).FirstOrDefault();
-      if (scroll != null)
+      if (scroll == null)
+        return Inventory.GetItems<Book>().Where(i => i.Kind == Spells.SpellKind.Identify).FirstOrDefault();
+
+      return scroll;
+    }
+
+    public bool Identify(Equipment eq, SpellManager sm)
+    {
+      var ss = GetIdentificationSpellSource();
+      Book book = ss as Book;
+      Scroll scroll = ss as Scroll;
+
+      if (scroll != null || book!=null)
       {
+        //if (book != null && sm.ApplyPassiveSpell(this, book) == null)//TODO ?
+        //  return false;
         if (eq.Identify())
         {
-          Inventory.Remove(scroll);
+          if(scroll!=null)
+            Inventory.Remove(scroll);
           if (CurrentEquipment.PrimaryEquipment.Values.Contains(eq) ||
             CurrentEquipment.SpareEquipment.Values.Contains(eq))
             RecalculateStatFactors(false);
