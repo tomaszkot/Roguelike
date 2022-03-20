@@ -786,32 +786,32 @@ namespace Roguelike.Managers
       }
       if (context.PendingTurnOwnerApply)
       {
-        EntitiesManager mgr = null;
-        if (context.TurnOwner == TurnOwner.Allies)
-        {
-          mgr = AlliesManager;
-          //logger.LogInfo("MakeGameTick call to AlliesManager.MoveHeroAllies");
-          //context.PendingTurnOwnerApply = false;
-          //AlliesManager.MoveHeroAllies();
-
-        }
-        else if (context.TurnOwner == TurnOwner.Enemies)
-        {
-          mgr = EnemiesManager;
-          //logger.LogInfo("MakeGameTick call to EnemiesManager.MakeEntitiesMove");
-          //context.PendingTurnOwnerApply = false;
-          //EnemiesManager.MakeEntitiesMove();
-        }
-        else if (context.TurnOwner == TurnOwner.Animals)
-        {
-          mgr = animalsManager;
-          //logger.LogInfo("MakeGameTick call to EnemiesManager.MakeEntitiesMove");
-          //context.PendingTurnOwnerApply = false;
-          //EnemiesManager.MakeEntitiesMove();
-        }
+        EntitiesManager mgr = GetCurrentEntitiesManager();
         if (mgr != null)
           mgr.MakeTurn();
       }
+    }
+
+    public EntitiesManager GetCurrentEntitiesManager()
+    {
+      EntitiesManager mgr = null;
+      if (context.TurnOwner == TurnOwner.Allies)
+      {
+        mgr = AlliesManager;
+        //logger.LogInfo("MakeGameTick call to AlliesManager.MoveHeroAllies");
+      }
+      else if (context.TurnOwner == TurnOwner.Enemies)
+      {
+        mgr = EnemiesManager;
+        //logger.LogInfo("MakeGameTick call to EnemiesManager.MakeEntitiesMove");
+      }
+      else if (context.TurnOwner == TurnOwner.Animals)
+      {
+        mgr = animalsManager;
+        //logger.LogInfo("MakeGameTick call to EnemiesManager.MakeEntitiesMove");
+      }
+
+      return mgr;
     }
 
     public void SetGameState(GameState gameState)

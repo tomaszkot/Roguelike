@@ -84,9 +84,11 @@ namespace Roguelike.Managers
       return false;
     }
 
-    private List<LivingEntity> FindBusyOnes()
+    public List<LivingEntity> FindBusyOnes()
     {
-      return entities.Where(i => i.State != EntityState.Idle && i.State != EntityState.Sleeping).ToList();
+      return entities
+      .Where(i => i.State != EntityState.Idle && i.State != EntityState.Sleeping)
+      .ToList();
     }
 
     private void Context_ContextSwitched(object sender, ContextSwitch e)
