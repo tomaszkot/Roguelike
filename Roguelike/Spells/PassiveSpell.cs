@@ -92,11 +92,13 @@ namespace Roguelike.Spells
     public override SpellStatsDescription CreateSpellStatsDescription(bool currentMagicLevel)
     {
       var desc = base.CreateSpellStatsDescription(currentMagicLevel);
-      if(currentMagicLevel)
-        desc.Duration = Duration;
-      else
-        desc.Duration = CalcDuration(CurrentLevel+1);
-
+      if (Kind != SpellKind.Teleport)
+      {
+        if (currentMagicLevel)
+          desc.Duration = Duration;
+        else
+          desc.Duration = CalcDuration(CurrentLevel + 1);
+      }
       if (StatKind != EntityStatKind.Unset && Kind != SpellKind.ManaShield)
       {
         desc.StatKind = StatKind;

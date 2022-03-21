@@ -117,14 +117,14 @@ namespace Roguelike.Spells
     public bool IsFromMagicalWeapon { get => weaponSpellSource != null;}
 
     //TODO ! remove withVariation, use AttackDesc is needed
-    public virtual SpellStatsDescription CreateSpellStatsDescription(bool currentMagicLevel) 
+    public virtual SpellStatsDescription CreateSpellStatsDescription(bool currentMagicLevel)
     {
       int level = currentMagicLevel ? CurrentLevel : CurrentLevel + 1;
       int? mana = null;
       int? magicRequired = null;
       int range = 0;
-      if (this is IProjectileSpell proj)
-        range = proj.Range;
+
+      range = GetRange();
       if (weaponSpellSource == null)
       {
         mana = CalcManaCost(level);
@@ -132,6 +132,14 @@ namespace Roguelike.Spells
       }
       var desc = new SpellStatsDescription(level, mana, magicRequired, Kind, range);
       return desc;
+    }
+
+    protected virtual int GetRange()
+    {
+      var range = 0;
+      if (this is IProjectileSpell proj)
+        range = proj.Range;
+      return range;
     }
   }
 

@@ -24,8 +24,6 @@ namespace Roguelike.Generators
     {
       NumberOfRooms = 6;//5 + 1 secret = 6
 
-      //TMP!!!
-      //GenerateEnemies = true;
 #if TEST_ON
       ForcedNumberOfEnemiesInRoom = 1;
       NumberOfRooms = 2;
@@ -46,7 +44,7 @@ namespace Roguelike.Generators
     public const float NextExperienceIncrease = .5f;
     public const int FirstNextLevelExperienceThreshold = 250;
 
-    public bool GenerateEnemies { get; set; } = false && !ForceEmpty;
+    public bool GenerateEnemies { get; set; } = true && !ForceEmpty;
 
     public bool GenerateLoot { get; set; } = true && !ForceEmpty;
 

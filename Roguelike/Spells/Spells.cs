@@ -239,6 +239,12 @@ namespace Roguelike.Spells
       EntityRequired = true;
       Kind = SpellKind.Teleport;
       CoolingDown = 8;
+      Duration = 0;
+    }
+
+    protected override int GetRange()
+    {
+      return Range;
     }
   }
 

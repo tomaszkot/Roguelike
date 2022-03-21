@@ -53,13 +53,29 @@ namespace RoguelikeUnitTests
     }
 
 
-      [Test]
+    [Test]
     public void TourLastingTest()
     {
       var game = CreateGame();
       var scroll = new Scroll(SpellKind.ManaShield);
       var spell = scroll.CreateSpell(game.Hero) as ManaShieldSpell;
       Assert.AreEqual(spell.Duration, 5);
+    }
+
+    [Test]
+    public void TeleportDescTest()
+    {
+      var game = CreateGame();
+      var scroll = new Scroll(SpellKind.Teleport);
+      var spell = scroll.CreateSpell<TeleportSpell>(game.Hero);
+      Assert.AreEqual(spell.Duration, 0);
+      Assert.Greater(spell.Range, 0);
+      Assert.Greater(spell.ManaCost, 0);
+
+      var desc = spell.CreateSpellStatsDescription(true).GetEntityStats();
+      Assert.AreEqual(desc.Count(), 2);
+      Assert.AreEqual(desc[0].Kind, Roguelike.Attributes.EntityStatKind.Mana);
+      Assert.AreEqual(desc[1].Kind, Roguelike.Attributes.EntityStatKind.ElementalProjectilesRange);
     }
 
     //[Test]
