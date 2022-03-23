@@ -90,7 +90,7 @@ namespace Roguelike.Managers
       if (lootSource is Barrel barrel &&
           !(lootSource is DeadBody) &&
           RandHelper.GetRandomDouble() < GenerationInfo.ChanceToGenerateEnemyFromBarrel ||
-          enFromChest 
+          enFromChest
           )
       {
         if (enFromChest)
@@ -109,6 +109,8 @@ namespace Roguelike.Managers
       }
 
       var loot = GameManager.TryGetRandomLootByDiceRoll(lsk, lootSource);
+      loot = EnsureVariety(lootSource, lsk, loot);
+
       //bool test = true;
       //if (test)
       //  loot = GameManager.LootGenerator.GetLootByAsset("ice_scepter5") as Equipment;
@@ -142,14 +144,22 @@ namespace Roguelike.Managers
         GameManager.AppendAction<InteractiveTileAction>((InteractiveTileAction ac) => { ac.InvolvedTile = chest; ac.InteractiveKind = InteractiveActionKind.ChestOpened; });
         GameManager.AddLootReward(loot, lootSource, true);//add loot at closest empty
         Loot lootEx1 = null;
-        if(RandHelper.GetRandomDouble() > .2f)
+        if (RandHelper.GetRandomDouble() > .2f)
           lootEx1 = LootGenerator.GetRandomEquipment(GameManager.Hero.Level, GameManager.Hero.GetLootAbility());
         else
           lootEx1 = GetExtraLoot(lootSource, false, loot.LootKind);
         if (lootEx1 != null)
         {
-          lootItems.Add(lootEx1);
-          GameManager.AddLootReward(lootEx1, lootSource, true);
+          if (lootItems.Where(i => i.Name == lootEx1.Name).Any())
+          {
+            //try avoid duplicates
+            lootEx1 = LootGenerator.GetRandomEquipment(GameManager.Hero.Level, GameManager.Hero.GetLootAbility());
+          }
+          if (lootEx1 != null)
+          {
+            lootItems.Add(lootEx1);
+            GameManager.AddLootReward(lootEx1, lootSource, true);
+          }
         }
 
         if (chest.ChestKind == ChestKind.GoldDeluxe || RandHelper.GetRandomDouble() > 0.33f)
@@ -161,6 +171,17 @@ namespace Roguelike.Managers
       //lootItems.Where(i => i is Equipment).Cast<Equipment>().ToList();
 
       return lootItems;
+    }
+    public Loot EnsureVariety(ILootSource lootSource, LootSourceKind lsk, Loot loot)
+    {
+      if (loot is Recipe rec)
+      {
+        //help luck
+        if (GameManager.Hero.Crafting.Recipes.Inventory.Items.Where(i => i.Name == rec.Name).Any())
+          loot = GameManager.LootManager.LootGenerator.LootFactory.MiscLootFactory.GetRandomRecipe(lootSource.Level);
+      }
+
+      return loot;
     }
 
     private void TryAddExtraLoot(ILootSource lootSource, List<Loot> lootItems, Loot loot, bool nonEquipment)
@@ -185,7 +206,10 @@ namespace Roguelike.Managers
         addRichConsumableOrOtherReward = true;
       }
       else
+      {
         loot = GameManager.TryGetRandomLootByDiceRoll(LootSourceKind.Enemy, enemy);
+        loot = EnsureVariety(enemy, LootSourceKind.Enemy, loot);
+      }
 
       if (loot != null)
         GameManager.AddLootReward(loot, enemy, false);

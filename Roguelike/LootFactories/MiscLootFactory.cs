@@ -13,7 +13,7 @@ namespace Roguelike.LootFactories
   {
     protected Dictionary<string, Func<string, Loot>> factory = new Dictionary<string, Func<string, Loot>>();
     protected Dictionary<string, Func<string, FightItem>> factoryFightItem = new Dictionary<string, Func<string, FightItem>>();
-
+    
     List<Recipe> recipesPrototypes = new List<Recipe>();
 
     public MiscLootFactory(Container container) : base(container)
@@ -267,6 +267,11 @@ namespace Roguelike.LootFactories
     public FightItem GetRandomFightItem(int level)//TODO ! level
     {
       return GetRandom<FightItem>(factoryFightItem);
+    }
+
+    public Recipe GetRandomRecipe(int level)//TODO ! level
+    {
+      return RandHelper.GetRandomElem<Recipe>(recipesPrototypes).Clone();
     }
   }
 }

@@ -14,7 +14,8 @@ namespace Roguelike.Tiles.LivingEntities
     public Ally(Container cont, char symbol = '!') : base(cont, new Point().Invalid(), symbol)
     {
       canAdvanceInExp = true;
-      Inventory.InvBasketKind = InvBasketKind.AllyEquipment;
+      Inventory.InvBasketKind = InvBasketKind.Ally;
+      CurrentEquipment.InvBasketKind = InvBasketKind.AllyEquipment;
       Inventory.Capacity = 8;
     }
 

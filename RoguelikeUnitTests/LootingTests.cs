@@ -727,8 +727,26 @@ namespace RoguelikeUnitTests
       }
       Assert.Greater(expectedKindsCounter, 0);
     }
-    ///
 
+
+    [Test]
+    public void RecipeVariety()
+    {
+      var game = CreateGame();
+      var recipe = new Recipe(RecipeKind.EnchantEquipment);
+      game.Hero.Crafting.Recipes.Inventory.Add(recipe);
+      int duplCount = 0;
+      for (int i = 0; i < 10; i++)
+      {
+        var lootReturned = game.GameManager.LootManager.EnsureVariety(new Chest(), LootSourceKind.PlainChest, recipe);
+        Assert.True(lootReturned is Recipe);
+        var rec = lootReturned as Recipe;
+        if (rec.Kind == recipe.Kind)
+          duplCount++;
+      }
+
+      Assert.Less(duplCount, 2);
+    }
 
   }
 }

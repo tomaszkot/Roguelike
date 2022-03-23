@@ -489,6 +489,7 @@ namespace Roguelike.Managers
       {
         loot = LootGenerator.GetRandomLoot(ls.Level);
       }
+      
       return loot;
     }
 
