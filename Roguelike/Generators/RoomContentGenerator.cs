@@ -410,6 +410,8 @@ namespace Roguelike.Generators
     protected List<string> Filter(List<string> enemyNames)
     {
       var chosen = RandHelper.GetRandomElem<string>(enemyNames);
+      if (GenerationInfo.ForcedEnemyName.Any())
+        chosen = GenerationInfo.ForcedEnemyName;
       var selEnemyNames = new List<string>();
       selEnemyNames.Add(chosen);
       return selEnemyNames;

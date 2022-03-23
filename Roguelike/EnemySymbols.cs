@@ -44,7 +44,7 @@ namespace Roguelike
       {"spider", SpiderSymbol},
       {"skeleton", SkeletonSymbol},
       {"snake", SnakeSymbol},
-      {"wolf", WolfSymbol},
+      {"wolf_skeleton", WolfSymbol},
       {"bear", CommonEnemySymbol},
       {"boar", CommonEnemySymbol},
       {"lynx", CommonEnemySymbol},

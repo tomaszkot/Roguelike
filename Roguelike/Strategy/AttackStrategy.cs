@@ -247,7 +247,7 @@ namespace Roguelike
       private bool TryUseProjectileAttack(LivingEntity attacker, LivingEntity target)
       {
         var nameLower = attacker.Name.ToLower();
-        var allow = nameLower.Contains("bandit") || nameLower.Contains("skeleton") || nameLower.Contains("druid") ||
+        var allow = nameLower.Contains("bandit") || nameLower.StartsWith("skeleton") || nameLower.Contains("druid") ||
           nameLower.Contains("drowned");
         if (!allow)
           return false;
