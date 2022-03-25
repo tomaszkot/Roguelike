@@ -16,7 +16,7 @@ namespace Roguelike.Abilities
     }
 
 
-    public override bool IsPercentageFromKind => kind == AbilityKind.Stride;
+    public override bool IsPercentageFromKind => kind == AbilityKind.Stride;//|| kind == AbilityKind.CauseBleeding;
 
     public override float CalcFactor(bool primary, int level)
     {
@@ -30,6 +30,8 @@ namespace Roguelike.Abilities
         case AbilityKind.ThrowingStoneMastering:
         case AbilityKind.ThrowingKnifeMastering:
         case AbilityKind.Stride:
+        case AbilityKind.CauseBleeding:
+        case AbilityKind.Rage:
           float fac = CalcFightItemFactor(level);
           factor = fac;
 
@@ -90,6 +92,12 @@ namespace Roguelike.Abilities
         case AbilityKind.Stride:
           desc = "Hit target with your body causing damage and possibly knocking it back";
           break;
+        case AbilityKind.CauseBleeding:
+          desc = "Hitting target with mellee will cause bleeding";
+          break;
+        case AbilityKind.Rage:
+          desc = "Increases the mellee damage of the caster";
+          break;
         default:
           break;
       }
@@ -130,6 +138,12 @@ namespace Roguelike.Abilities
             psk = EntityStatKind.HunterTrapExtraDamage;
             break;
           case AbilityKind.Stride:
+            psk = EntityStatKind.MeleeAttack;
+            break;
+          case AbilityKind.CauseBleeding:
+            psk = EntityStatKind.CausedBleedingDuration;
+            break;
+          case AbilityKind.Rage:
             psk = EntityStatKind.MeleeAttack;
             break;
           default:

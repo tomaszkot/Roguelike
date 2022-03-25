@@ -10,11 +10,14 @@ namespace Roguelike.Abilities
   {
     List<PassiveAbility> passiveAbilities = new List<PassiveAbility>();
     List<ActiveAbility> activeAbilities = new List<ActiveAbility>();
-    //List<Ability> allItems = new List<Ability>();
-    
+        
     public AbilitiesSet()
     {
       EnsureItems();
+    }
+    public bool IsActive(AbilityKind kind)
+    {
+      return activeAbilities.Where(i => i.Kind == kind).Any();
     }
 
     public void EnsureItems()
@@ -33,7 +36,10 @@ namespace Roguelike.Abilities
               kind == AbilityKind.ThrowingKnifeMastering ||
               kind == AbilityKind.HunterTrapMastering ||
               kind == AbilityKind.PoisonMastering ||
-              kind == AbilityKind.Stride)
+              kind == AbilityKind.Stride ||
+              kind == AbilityKind.CauseBleeding ||
+              kind == AbilityKind.Rage
+           )
           {
             ab = new ActiveAbility() { Kind = kind };
             activeAbilities.Add(ab as ActiveAbility);
@@ -47,7 +53,6 @@ namespace Roguelike.Abilities
 
             passiveAbilities.Add(ab as PassiveAbility);
           }
-          //allItems.Add(ab);
         }
       }
 

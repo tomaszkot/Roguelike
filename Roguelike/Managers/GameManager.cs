@@ -186,11 +186,8 @@ namespace Roguelike.Managers
         if (fi.FightItemKind == FightItemKind.HunterTrap && fi.FightItemState == FightItemState.Activated)
         {
           entity.OnHitBy(fi as ProjectileFightItem);
-          //var bleed = entity.StartBleeding(fi.Damage, null, fi.TurnLasting);
           //bleed.Source = fi;
-
           //fi.SetState(FightItemState.Busy);
-          //SoundManager.PlaySound("trap");
         }
       }
 
@@ -1516,26 +1513,35 @@ namespace Roguelike.Managers
                 
         if (target is LivingEntity targetLe && targetLe.Alive)
         {
-          if (targetLe.CanUseAbility(Abilities.AbilityKind.StrikeBack, out activeUsed))
+          bool done = false;
+          if (attacker is AdvancedLivingEntity ale)
+          {
+            foreach (var aa in ale.Abilities.ActiveItems)
+            {
+              if (aa.Kind == Abilities.AbilityKind.StrikeBack)
+                continue;
+              if (attacker.CanUseAbility(aa.Kind, out activeUsed))
+              {
+                UseActiveAbility(targetLe, attacker, aa.Kind, activeUsed);
+                done = true;
+                break;
+              }
+            }
+          }
+
+          if (!done && targetLe.CanUseAbility(Abilities.AbilityKind.StrikeBack, out activeUsed))
           {
             UseActiveAbility(attacker, targetLe, Abilities.AbilityKind.StrikeBack, activeUsed);
           }
-
-          if (attacker.CanUseAbility(Abilities.AbilityKind.Stride, out activeUsed))
-          {
-            UseActiveAbility(targetLe, attacker, Abilities.AbilityKind.Stride, activeUsed);
-          }
         }
-       
-
       };
       attackPolicy.Apply(attacker, target);
     }
 
     public void UseActiveAbility(LivingEntity victim, LivingEntity abilityUser, Abilities.AbilityKind abilityKind, bool activeAbility)
     {
-      if (abilityKind != Abilities.AbilityKind.StrikeBack &&
-          abilityKind != Abilities.AbilityKind.Stride)
+      var advEnt = abilityUser as AdvancedLivingEntity;
+      if (!advEnt.Abilities.IsActive(abilityKind))
         return;
 
       bool used = false;
@@ -1560,7 +1566,7 @@ namespace Roguelike.Managers
           activeAbilityVictim.MoveDueToAbilityVictim = true;
 
           var desc = "";
-          var ab = (abilityUser as AdvancedLivingEntity).GetActiveAbility(Abilities.AbilityKind.Stride);
+          var ab = advEnt.GetActiveAbility(Abilities.AbilityKind.Stride);
           var attack = abilityUser.Stats.GetStat(EntityStatKind.Strength).SumValueAndPercentageFactor(ab.PrimaryStat, true);
           var damage = victim.CalcMeleeDamage(attack, ref desc);
           var inflicted = victim.InflictDamage(abilityUser, false, ref damage, ref desc);
@@ -1569,15 +1575,22 @@ namespace Roguelike.Managers
           used = true;
         }
       }
+      else if (abilityKind == Abilities.AbilityKind.CauseBleeding)
+      {
+        victim.StartBleeding(3, null, 3);//TODO 
+        used = true;
+      }
+      else if (abilityKind == Abilities.AbilityKind.Rage)
+      {
+        used = true;//was added to the damage
+      }
 
       if (used)
       {
         if (activeAbility)
         {
-          var adv = abilityUser as AdvancedLivingEntity;
-          if (adv != null)
           {
-            var ab = adv.GetActiveAbility(abilityKind);
+            var ab = advEnt.GetActiveAbility(abilityKind);
             ab.CollDownCounter = ab.MaxCollDownCounter;
           }
         }

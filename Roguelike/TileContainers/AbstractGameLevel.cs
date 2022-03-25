@@ -6,6 +6,7 @@ using Roguelike.Abstract.Tiles;
 using Roguelike.Tiles;
 using Roguelike.Tiles.Interactive;
 using Roguelike.Tiles.LivingEntities;
+using Roguelike.Tiles.Looting;
 using SimpleInjector;
 using System;
 using System.Collections.Generic;
@@ -365,7 +366,15 @@ namespace Roguelike.TileContainers
       return null;
     }
 
-    private byte[,] InitMatrixBeforePathSearch(Point from, Point end, bool forHeroAlly, bool canGoOverCrackedStone, bool forEnemyProjectile)
+    private byte[,] InitMatrixBeforePathSearch
+    (
+      Point from, 
+      Point end, 
+      bool forHeroAlly, 
+      bool canGoOverCrackedStone, 
+      bool forEnemyProjectile,
+      LivingEntity movingEntity
+    )
     {
       var findPathMatrix = new byte[Height, Width];
       int width = Width;
@@ -377,20 +386,26 @@ namespace Roguelike.TileContainers
           byte value = 1;
           findPathMatrix[row, col] = value;
 
-          var tile = Tiles[row, col];
-
+          //var tile = Tiles[row, col];
+          var tile = GetTile(new Point(col, row));//TODO slow
           if (tile is Hero)
           {
             if (forHeroAlly)
               findPathMatrix[row, col] = 0;
             continue;
           }
+          else if (tile is ProjectileFightItem pfi && pfi.FightItemKind == FightItemKind.HunterTrap && pfi.FightItemState == FightItemState.Activated
+            &&  movingEntity != null)
+          {
+            if(movingEntity.ShallAvoidTrap())
+              value = 0;
+          }
           else if (tile is IDoor door)
           {
             if (/*&& !EnemyCanPassDoors*/ !door.Opened)
               value = 0;
           }
-          else if (tile is Dungeons.Tiles.IObstacle)
+          else if (tile is IObstacle)
           {
             if (forHeroAlly && tile is LivingEntity)
             {
@@ -455,12 +470,12 @@ namespace Roguelike.TileContainers
     }
 
     public List<Algorithms.PathFinderNode> FindPath(Point from, Point endPoint, bool forHeroAlly, bool canGoOverCrackedStone,
-      bool forEnemyProjectile)
+      bool forEnemyProjectile, LivingEntity movingEntity)
     {
       //Commons.TimeTracker tr = new Commons.TimeTracker();
 
       var startPoint = new Algorithms.Point(from.Y, from.X);
-      var findPathMatrix = InitMatrixBeforePathSearch(from, endPoint, forHeroAlly, canGoOverCrackedStone, forEnemyProjectile);
+      var findPathMatrix = InitMatrixBeforePathSearch(from, endPoint, forHeroAlly, canGoOverCrackedStone, forEnemyProjectile, movingEntity);
 
       var mPathFinder = new Algorithms.PathFinder(findPathMatrix);
       mPathFinder.Diagonals = false;

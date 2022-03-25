@@ -91,7 +91,9 @@ namespace Roguelike.Tiles.LivingEntities
     //public static readonly EntityStats BaseStats;
     public string OriginMap { get; set; }
     SpellSource activeManaPoweredSpellSource;
-
+    
+    [JsonIgnore]
+    public int TrappedCounter { get; set; }
     public virtual SpellSource ActiveManaPoweredSpellSource
     {
       get
@@ -181,7 +183,7 @@ namespace Roguelike.Tiles.LivingEntities
         Stats.SetNominal(basicStat.Key, GetStartStat(basicStat.Key));
       }
 
-      AlignMelleeeAttack();
+      AlignMelleeAttack();
 
       Alive = true;
       Name = "";
@@ -211,7 +213,7 @@ namespace Roguelike.Tiles.LivingEntities
       effectsToUse[EffectType.Inaccuracy] = GenerationInfo.DefaultEnemyResistAllUsageCount;
     }
 
-    protected void AlignMelleeeAttack()
+    protected void AlignMelleeAttack()
     {
       Stats.SetNominal(EntityStatKind.MeleeAttack, this.Stats.Strength);//attack is same as str for a simple entity
     }
@@ -388,6 +390,11 @@ namespace Roguelike.Tiles.LivingEntities
 
       var hitWillHappen = CalculateIfStatChanceApplied(esk, target);
       return hitWillHappen;
+    }
+
+    public virtual bool ShallAvoidTrap()
+    {
+      return TrappedCounter > 0;
     }
 
     public bool IsAlwaysHitting(AttackKind kind)
@@ -677,6 +684,7 @@ namespace Roguelike.Tiles.LivingEntities
           }
           else if (fi.FightItemKind == FightItemKind.HunterTrap)
           {
+            TrappedCounter++;
             inflicted = fi.Damage;
             var bleed = StartBleeding(inflicted, null, fi.Duration);
             bleed.Source = fi;

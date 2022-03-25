@@ -106,27 +106,27 @@ namespace Roguelike.Spells
     }
   }
 
-  ///////////////////////////////////////////////////////////////////////////
-  public class TrapSpell : OffensiveSpell
-  {
-    Trap trap = new Trap();
+  /////////////////////////////////////////////////////////////////////////////
+  //public class TrapSpell : OffensiveSpell
+  //{
+  //  Trap trap = new Trap();
 
-    public TrapSpell() : this(new LivingEntity())
-    { }
+  //  public TrapSpell() : this(new LivingEntity())
+  //  { }
 
-    public TrapSpell(LivingEntity caller) : base(caller, null)
-    {
-      Kind = SpellKind.Trap;
+  //  public TrapSpell(LivingEntity caller) : base(caller, null)
+  //  {
+  //    Kind = SpellKind.Trap;
 
-      trap.Spell = this;
-      trap.SetUp = true;
+  //    trap.Spell = this;
+  //    trap.SetUp = true;
 
-      //damage = ProjectiveSpell.BaseDamage * 5f;
-      manaCost = (float)(BaseManaCost * 2);
-    }
+  //    //damage = ProjectiveSpell.BaseDamage * 5f;
+  //    manaCost = (float)(BaseManaCost * 2);
+  //  }
 
-    public Trap Trap { get { return trap; } }
-  }
+  //  public Trap Trap { get { return trap; } }
+  //}
 
   ///////////////////////////////////////////////////////////////////////////
   public class BushTrapSpell : OffensiveSpell

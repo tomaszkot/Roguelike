@@ -60,6 +60,7 @@
   <ItemGroup>
     <Compile Include="Abilities\AbilitiesSet.cs" />
     <Compile Include="Abilities\Ability.cs" />
+    <Compile Include="Abilities\AbilityLastingEffectSrc.cs" />
     <Compile Include="Abilities\ActiveAbility.cs" />
     <Compile Include="Abilities\PassiveAbility.cs" />
     <Compile Include="Abilities\LootAbility.cs" />

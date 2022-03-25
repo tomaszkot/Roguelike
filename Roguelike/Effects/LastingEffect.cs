@@ -26,7 +26,7 @@ namespace Roguelike.Effects
     Frighten = 50,
     Stunned = 55,
     ManaShield = 60, 
-    //Rage = 65,
+    Rage = 65,
     Weaken = 70, 
     IronSkin = 80, 
     ResistAll = 85, 

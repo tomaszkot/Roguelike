@@ -105,7 +105,7 @@ namespace Roguelike.Managers
           return;
         if (ShallChaseTarget(ally, ally.AllyModeTarget))//, MaxAllyDistToEnemyToChase))
         {
-          moveCloserToHero = !MakeMoveOnPath(ally, ally.AllyModeTarget.point, true);//, true);
+          moveCloserToHero = !MakeMoveOnPath(ally, ally.AllyModeTarget.point, true);
         }
       }
 

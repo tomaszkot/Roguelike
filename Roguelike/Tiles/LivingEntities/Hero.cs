@@ -230,5 +230,10 @@ namespace Roguelike.Tiles.LivingEntities
       }
       return base.GetDamageAddition(pfi);
     }
+
+    public override bool ShallAvoidTrap()
+    {
+      return true;
+    }
   }
 }

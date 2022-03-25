@@ -79,7 +79,9 @@ namespace Roguelike.Attributes
     MeleeAttack = 1000,
     PhysicalProjectilesAttack = 1010,//from bow, stone
     ElementalSpellProjectilesAttack = 1020,//elementals from scroll, book
-    ElementalWeaponProjectilesAttack = 1030//elementals from wand, staff
+    ElementalWeaponProjectilesAttack = 1030,//elementals from wand, staff
+
+    CausedBleedingDuration = 1100
   };
 
   public class EntityStats

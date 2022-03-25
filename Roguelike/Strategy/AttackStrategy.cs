@@ -45,7 +45,7 @@ namespace Roguelike
         TilesAtPathProvider = context.Container.GetInstance<ITilesAtPathProvider>();
       }
 
-      //public GameContext Context { get => context; set => context = value; }
+      
 
       public bool AttackIfPossible(LivingEntity attacker, LivingEntity target)
       {
@@ -320,7 +320,7 @@ namespace Roguelike
 
       public List<Algorithms.PathFinderNode> FindPathForEnemy(LivingEntity enemy, LivingEntity target, int startIndex = 0, bool forEnemyProjectile = false)
       {
-        var pathToTarget = context.CurrentNode.FindPath(enemy.point, target.point, false, true, forEnemyProjectile);
+        var pathToTarget = context.CurrentNode.FindPath(enemy.point, target.point, false, true, forEnemyProjectile, enemy);
         if (pathToTarget != null && pathToTarget.Any())
         {
           return pathToTarget.GetRange(startIndex, pathToTarget.Count - 1);

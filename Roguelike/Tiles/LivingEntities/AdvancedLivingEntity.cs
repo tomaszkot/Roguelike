@@ -645,7 +645,7 @@ namespace Roguelike.Tiles.LivingEntities
       AccumulateEqFactors(true);
 
       //tested by TestSkeletonAttackIncWithStrength
-      AlignMelleeeAttack();
+      AlignMelleeAttack();
 
       var abs = Abilities.PassiveItems;
       foreach (var ab in abs)
