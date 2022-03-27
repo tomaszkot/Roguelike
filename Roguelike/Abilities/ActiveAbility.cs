@@ -25,8 +25,8 @@ namespace Roguelike.Abilities
       float factor = 0;
       switch (kind)
       {
-        case AbilityKind.ExplosiveMastering:
-        case AbilityKind.PoisonMastering:
+        case AbilityKind.ExplosiveCocktailMastering:
+        case AbilityKind.PoisonCocktailMastering:
         case AbilityKind.ThrowingStoneMastering:
         case AbilityKind.ThrowingKnifeMastering:
         case AbilityKind.Stride:
@@ -37,8 +37,8 @@ namespace Roguelike.Abilities
 
           if (!primary)
           {
-            if (kind == AbilityKind.ExplosiveMastering ||
-              kind == AbilityKind.PoisonMastering)
+            if (kind == AbilityKind.ExplosiveCocktailMastering ||
+              kind == AbilityKind.PoisonCocktailMastering)
               factor *= 3;
             else
               factor *= 4;
@@ -46,8 +46,8 @@ namespace Roguelike.Abilities
           factor = (int)Math.Ceiling(factor);
           if (primary)
           {
-            if (kind == AbilityKind.ExplosiveMastering ||
-              kind == AbilityKind.PoisonMastering)
+            if (kind == AbilityKind.ExplosiveCocktailMastering ||
+              kind == AbilityKind.PoisonCocktailMastering)
             {
               factor *= 2f;
             }
@@ -73,10 +73,10 @@ namespace Roguelike.Abilities
       //todo  add map to FightItem AbilityKind/FightItemKind and use here
       switch (kind)
       {
-        case AbilityKind.ExplosiveMastering:
+        case AbilityKind.ExplosiveCocktailMastering:
           desc = "Bonus to Explosive Cocktail damage";
           break;
-        case AbilityKind.PoisonMastering:
+        case AbilityKind.PoisonCocktailMastering:
           desc = "Bonus to Poison Cocktail damage";
           break;
           
@@ -104,6 +104,9 @@ namespace Roguelike.Abilities
         case AbilityKind.PiercingArrow:
           desc = "Pierces an enemy, hitting other one behind";
           break;
+        case AbilityKind.PerfectHit:
+          desc = "Increases chance to hit and damage made by projectile";
+          break;
         default:
           break;
       }
@@ -128,10 +131,10 @@ namespace Roguelike.Abilities
         EntityStatKind ask = EntityStatKind.Unset;
         switch (kind)
         {
-          case AbilityKind.ExplosiveMastering:
+          case AbilityKind.ExplosiveCocktailMastering:
             psk = EntityStatKind.ExlosiveCoctailExtraDamage;
             break;
-          case AbilityKind.PoisonMastering:
+          case AbilityKind.PoisonCocktailMastering:
             psk = EntityStatKind.PoisonCoctailExtraDamage;
             break;
           case AbilityKind.ThrowingKnifeMastering:

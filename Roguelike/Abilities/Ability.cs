@@ -18,12 +18,14 @@ namespace Roguelike.Abilities
 
     //Traps, RemoveClaws, RemoveTusk, Skinning, , ,
     //HuntingMastering /*<-(to del)*/
-    ExplosiveMastering, ThrowingStoneMastering, ThrowingKnifeMastering, HunterTrapMastering
+    ExplosiveCocktailMastering, ThrowingStoneMastering, ThrowingKnifeMastering, HunterTrapMastering
 
-    , StaffsMastering, SceptersMastering, WandsMastering, PoisonMastering, Stride, OpenWound, Rage,
+    , StaffsMastering, SceptersMastering, WandsMastering, PoisonCocktailMastering, Stride, OpenWound, Rage,
     WeightedNetMastering,
 
-    PiercingArrow, ArrowVolley
+    PiercingArrow, ArrowVolley, PerfectHit,
+
+    FireBallMastering, IceBallMastering, PoisonBallMastering, SkeletonMastering
   }
 
   public abstract class Ability : IDescriptable, IHotbarItem

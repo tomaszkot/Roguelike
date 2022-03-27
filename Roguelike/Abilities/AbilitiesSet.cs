@@ -31,17 +31,18 @@ namespace Roguelike.Abilities
             continue;
 
           Ability ab = null;
-          if (kind == AbilityKind.ExplosiveMastering ||
+          if (kind == AbilityKind.ExplosiveCocktailMastering ||
               kind == AbilityKind.ThrowingStoneMastering ||
               kind == AbilityKind.ThrowingKnifeMastering ||
               kind == AbilityKind.HunterTrapMastering ||
-              kind == AbilityKind.PoisonMastering ||
+              kind == AbilityKind.PoisonCocktailMastering ||
               kind == AbilityKind.Stride ||
               kind == AbilityKind.OpenWound ||
               kind == AbilityKind.Rage ||
               kind == AbilityKind.WeightedNetMastering ||
               kind == AbilityKind.ArrowVolley ||
-              kind == AbilityKind.PiercingArrow
+              kind == AbilityKind.PiercingArrow ||
+              kind == AbilityKind.PerfectHit
            )
           {
             ab = new ActiveAbility() { Kind = kind };

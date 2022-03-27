@@ -690,6 +690,9 @@ namespace RoguelikeUnitTests
         case Roguelike.Abilities.AbilityKind.ArrowVolley:
           wpnName = "bow";
           break;
+        case Roguelike.Abilities.AbilityKind.PerfectHit:
+          wpnName = "bow";
+          break;
         case Roguelike.Abilities.AbilityKind.PiercingArrow:
           wpnName = "bow";
           break;

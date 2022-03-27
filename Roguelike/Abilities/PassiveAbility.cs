@@ -75,6 +75,19 @@ namespace Roguelike.Abilities
             psk = EntityStatKind.ChanceToPhysicalProjectileHit;
             ask = EntityStatKind.BowExtraDamage;
             break;
+          case AbilityKind.FireBallMastering:
+            psk = EntityStatKind.FireAttack;
+            //ask = EntityStatKind.ChanceToCauseFiring;TODO
+            break;
+          case AbilityKind.IceBallMastering:
+            psk = EntityStatKind.ColdAttack;
+            //ask = EntityStatKind.ChanceToCauseFreezing;TODO
+            break;
+          case AbilityKind.PoisonCocktailMastering:
+            psk = EntityStatKind.PoisonAttack;
+            //ask = EntityStatKind.ChanceToCausePoisoning;TODO
+            break;
+
           case AbilityKind.LootingMastering:
           case AbilityKind.StrikeBack:
           case AbilityKind.BulkAttack:
