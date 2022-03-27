@@ -30,7 +30,7 @@ namespace Roguelike.Abilities
         case AbilityKind.ThrowingStoneMastering:
         case AbilityKind.ThrowingKnifeMastering:
         case AbilityKind.Stride:
-        case AbilityKind.CauseBleeding:
+        case AbilityKind.OpenWound:
         case AbilityKind.Rage:
           float fac = CalcFightItemFactor(level);
           factor = fac;
@@ -92,7 +92,7 @@ namespace Roguelike.Abilities
         case AbilityKind.Stride:
           desc = "Hit target with your body causing damage and possibly knocking it back";
           break;
-        case AbilityKind.CauseBleeding:
+        case AbilityKind.OpenWound:
           desc = "Hitting target with mellee will cause bleeding";
           break;
         case AbilityKind.Rage:
@@ -146,7 +146,7 @@ namespace Roguelike.Abilities
           case AbilityKind.Stride:
             psk = EntityStatKind.MeleeAttack;
             break;
-          case AbilityKind.CauseBleeding:
+          case AbilityKind.OpenWound:
             psk = EntityStatKind.CausedBleedingDuration;
             break;
           case AbilityKind.Rage:

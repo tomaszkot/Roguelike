@@ -37,7 +37,7 @@ namespace Roguelike.Abilities
               kind == AbilityKind.HunterTrapMastering ||
               kind == AbilityKind.PoisonMastering ||
               kind == AbilityKind.Stride ||
-              kind == AbilityKind.CauseBleeding ||
+              kind == AbilityKind.OpenWound ||
               kind == AbilityKind.Rage ||
               kind == AbilityKind.WeightedNetMastering ||
               kind == AbilityKind.ArrowVolley ||

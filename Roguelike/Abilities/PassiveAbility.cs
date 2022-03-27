@@ -5,24 +5,7 @@ using System;
 
 namespace Roguelike.Abilities
 {
-  public enum AbilityKind
-  {
-    Unset, RestoreHealth, RestoreMana, LootingMastering,
-
-    AxesMastering, BashingMastering, DaggersMastering, SwordsMastering,
-    StrikeBack, BulkAttack,
-    BowsMastering, CrossBowsMastering,
-
-    //Traps, RemoveClaws, RemoveTusk, Skinning, , ,
-    //HuntingMastering /*<-(to del)*/
-    ExplosiveMastering, ThrowingStoneMastering, ThrowingKnifeMastering, HunterTrapMastering
-
-    ,StaffsMastering, SceptersMastering, WandsMastering, PoisonMastering, Stride, CauseBleeding, Rage,
-    WeightedNetMastering,
-
-    PiercingArrow, ArrowVolley
-  }
-
+  
   /// <summary>
   /// PassiveAbility works automatically
   /// </summary>

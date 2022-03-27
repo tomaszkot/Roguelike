@@ -1594,7 +1594,7 @@ namespace Roguelike.Managers
             used = true;
           }
         }
-        else if (abilityKind == Abilities.AbilityKind.CauseBleeding)
+        else if (abilityKind == Abilities.AbilityKind.OpenWound)
         {
           victim.StartBleeding(3, null, 3);//TODO 
           used = true;

@@ -8,11 +8,28 @@ using System.Collections.Generic;
 
 namespace Roguelike.Abilities
 {
+  public enum AbilityKind
+  {
+    Unset, RestoreHealth, RestoreMana, LootingMastering,
+
+    AxesMastering, BashingMastering, DaggersMastering, SwordsMastering,
+    StrikeBack, BulkAttack,
+    BowsMastering, CrossBowsMastering,
+
+    //Traps, RemoveClaws, RemoveTusk, Skinning, , ,
+    //HuntingMastering /*<-(to del)*/
+    ExplosiveMastering, ThrowingStoneMastering, ThrowingKnifeMastering, HunterTrapMastering
+
+    , StaffsMastering, SceptersMastering, WandsMastering, PoisonMastering, Stride, OpenWound, Rage,
+    WeightedNetMastering,
+
+    PiercingArrow, ArrowVolley
+  }
+
   public abstract class Ability : IDescriptable, IHotbarItem
     {
     protected string primaryStatDescription;
-    //static List<string> emptyExtraStatDescription = new List<string>();
-    public int Level { get; set; }
+    public int Level { get; set; } 
     public EntityStat PrimaryStat { get; set; }
     public EntityStat AuxStat { get; set; }
     public int MaxLevel = 5;
