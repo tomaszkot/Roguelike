@@ -432,17 +432,9 @@ namespace Roguelike.Tiles.LivingEntities
 
       if (autoPutoOn && eq is Weapon wpnBowLike && wpnBowLike.IsBowLike)
       {
-        var projs = Inventory.GetItems<ProjectileFightItem>();
-        if (wpnBowLike.Kind == Weapon.WeaponKind.Crossbow)
-        {
-          if (!projs.Where(i => i.FightItemKind == FightItemKind.PlainBolt).Any())
-            return false;// report("Ammo kind mismatch");
-        }
-        if (wpnBowLike.Kind == Weapon.WeaponKind.Bow)
-        {
-          if (!projs.Where(i => i.FightItemKind == FightItemKind.PlainArrow).Any())
-            return false;// report("Ammo kind mismatch");
-        }
+        var pfi = GetFightItemKindAmmo(wpnBowLike);
+        if (pfi == null || pfi.Count == 0)
+          return false;
       }
 
       if (eq.EquipmentKind == EquipmentKind.Weapon || eq.EquipmentKind == EquipmentKind.Shield)
@@ -847,6 +839,27 @@ namespace Roguelike.Tiles.LivingEntities
     public virtual AbilityKind SelectedActiveAbilityKind
     {
       get { return AbilityKind.Unset; }
+    }
+
+    public FightItem GetFightItemKindAmmoForCurrentWeapon()
+    {
+      var wpn = this.GetActiveWeapon();
+      return GetFightItemKindAmmo(wpn);
+    }
+
+    private FightItem GetFightItemKindAmmo(Weapon wpn)
+    {
+      ProjectileFightItem pfi = null;
+
+      if (wpn.IsBowLike)
+      {
+        var projItems = Inventory.GetStacked<ProjectileFightItem>();
+        if (wpn.kind == Weapon.WeaponKind.Bow)
+          pfi = projItems.Where(i => i.FightItemKind == FightItemKind.PlainArrow).SingleOrDefault();
+        else
+          pfi = projItems.Where(i => i.FightItemKind == FightItemKind.PlainBolt).SingleOrDefault();
+      }
+      return pfi;
     }
   }
 }

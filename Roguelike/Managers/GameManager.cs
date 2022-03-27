@@ -1378,7 +1378,7 @@ namespace Roguelike.Managers
         return false;
       }
 
-      var destroyable = target;// as Roguelike.Tiles.Abstract.IDestroyable;
+      var destroyable = target as Tiles.Abstract.IObstacle;
       if (destroyable != null)
       {
         if(beforAttackHandler!=null)
@@ -1390,7 +1390,7 @@ namespace Roguelike.Managers
       return false;
     }
 
-    protected virtual int GetAttackVictimsCount()
+    protected virtual int GetAttackVictimsCount(LivingEntity caster)
     {
       return 1;
     }
@@ -1398,7 +1398,7 @@ namespace Roguelike.Managers
     public bool ApplyAttackPolicy
     (
       LivingEntity caster,//hero, enemy, ally
-      Tile target,
+      Tiles.Abstract.IObstacle target,
       ProjectileFightItem fi,
       Action<Policy> BeforeApply = null,
       Action<Policy> AfterApply = null
@@ -1413,14 +1413,34 @@ namespace Roguelike.Managers
       caster.RemoveFightItem(fi);
       var destFi = fi.Clone(1) as ProjectileFightItem;
 
-      return DoApply(caster, target, destFi, GetAttackVictimsCount(), BeforeApply, AfterApply);
+      return DoApply(caster, target, destFi, GetAttackVictimsCount(caster), BeforeApply, AfterApply);
     }
 
-    private bool DoApply(LivingEntity caster, Tile target, ProjectileFightItem fi, int projectilesCount, Action<Policy> BeforeApply, Action<Policy> AfterApply)
+    public void CallTryAddForLootSource(ProjectileCastPolicy policy)
+    {
+      foreach (var tar in policy.Targets)
+      {
+        var le = tar is LivingEntity;
+        if (!le)//le is handled specially
+        {
+          LootManager.TryAddForLootSource(tar as ILootSource);
+        }
+      }
+    }
+
+    private bool DoApply
+    (
+      LivingEntity caster,
+      Tiles.Abstract.IObstacle target, 
+      ProjectileFightItem fi, 
+      int projectilesCount, 
+      Action<Policy> BeforeApply, 
+      Action<Policy> AfterApply
+    )
     {
       fi.Caller = caster;
       var policy = Container.GetInstance<ProjectileCastPolicy>();
-      policy.Target = target;
+      policy.AddTarget(target);
       policy.GameManager = this;
       policy.ProjectilesCount = projectilesCount;
       policy.ProjectilesFactory = Container.GetInstance<IProjectilesFactory>();
@@ -1431,20 +1451,22 @@ namespace Roguelike.Managers
 
       policy.OnApplied += (s, e) =>
       {
-        var le = policy.TargetDestroyable is LivingEntity;
-        if (!le)//le is handled specially
-        {
-          this.LootManager.TryAddForLootSource(policy.Target as ILootSource);
-        }
-        if (caster is Hero)
-          OnHeroPolicyApplied(policy);
+        CallTryAddForLootSource(policy);
 
-        if (AfterApply != null)
-          AfterApply(policy);
+        FinishPolicyApplied(caster, AfterApply, policy);
       };
 
       policy.Apply(caster);
       return true;
+    }
+
+    public void FinishPolicyApplied(LivingEntity caster, Action<Policy> AfterApply, ProjectileCastPolicy policy)
+    {
+      if (caster is Hero)
+        OnHeroPolicyApplied(policy);
+
+      if (AfterApply != null)
+        AfterApply(policy);
     }
 
     public void ReportFailure(string infoToDisplay)

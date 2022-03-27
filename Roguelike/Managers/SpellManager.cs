@@ -172,7 +172,7 @@ namespace Roguelike.Managers
         return ApplyAttackPolicyResult.NotEnoughResources;
 
       var policy = Container.GetInstance<ProjectileCastPolicy>();
-      policy.Target = target as Dungeons.Tiles.Tile;
+      policy.AddTarget(target);
       policy.ProjectilesFactory = Container.GetInstance<IProjectilesFactory>();
       policy.Projectile = spellSource.CreateSpell(caster) as IProjectileSpell;
       if (BeforeApply != null)
@@ -180,14 +180,8 @@ namespace Roguelike.Managers
 
       policy.OnApplied += (s, e) =>
       {
-        var le = policy.TargetDestroyable is LivingEntity;
-        if (!le)//le is handled specially
-        {
-          this.gm.LootManager.TryAddForLootSource(policy.Target as ILootSource);
-          //dest.Destroyed = true;
-        }
+        gm.CallTryAddForLootSource(policy);
 
-        
         if (looped)
           return;
         if (!applyingBulk)
@@ -199,11 +193,7 @@ namespace Roguelike.Managers
           }
         }
 
-        if (caster is Hero)
-          OnHeroPolicyApplied(policy);
-
-        if (AfterApply != null)
-          AfterApply(policy);
+        gm.FinishPolicyApplied(caster, AfterApply, policy);
       };
 
       policy.Apply(caster);

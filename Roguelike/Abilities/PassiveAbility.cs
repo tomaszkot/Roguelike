@@ -147,7 +147,10 @@ namespace Roguelike.Abilities
         case AbilityKind.SceptersMastering:
         case AbilityKind.StaffsMastering:
         case AbilityKind.BowsMastering:
-        case AbilityKind.CrossBowsMastering:
+        case AbilityKind.FireBallMastering:
+        case AbilityKind.IceBallMastering:
+        case AbilityKind.PoisonBallMastering:
+        case AbilityKind.SkeletonMastering:
 
           if (primary)
           {
@@ -234,7 +237,14 @@ namespace Roguelike.Abilities
         case AbilityKind.BulkAttack:
           desc = "Chance to strike all sourronding enemies in one turn";
           break;
-       
+        case AbilityKind.FireBallMastering:
+        case AbilityKind.IceBallMastering:
+        case AbilityKind.PoisonBallMastering:
+          desc = "Bonus when using "+ kind.ToString().Replace("Mastering", "");
+          break;
+        case AbilityKind.SkeletonMastering:
+          desc = "Bonus when using " + kind.ToString().Replace("Mastering", "");
+          break;
         default:
           break;
       }
