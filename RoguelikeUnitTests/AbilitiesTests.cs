@@ -183,10 +183,11 @@ namespace RoguelikeUnitTests
 
       Assert.True(champion.HasLastingEffect(Roguelike.Effects.EffectType.Firing));
     }
-        
+
     [TestCase(FightItemKind.ExplosiveCocktail)]
     [TestCase(FightItemKind.Stone)]
     [TestCase(FightItemKind.ThrowingKnife)]
+    [TestCase(FightItemKind.WeightedNet)]
     public void TestBasicFightItem(FightItemKind kind)
     {
       var game = CreateGame();
@@ -202,23 +203,45 @@ namespace RoguelikeUnitTests
       var fi = ActivateFightItem(kind, hero);
       
       var damage1 = fi.Damage;
-      Assert.Greater(damage1, 0);
+      if(kind != FightItemKind.WeightedNet)
+        Assert.Greater(damage1, 0);
       Assert.AreEqual(enemy.OnHitBy(fi), HitResult.Hit);
-      var chempAfter1HitHealth = enemy.Stats.Health;
 
-      Assert.Greater(enemyBeginHealth, chempAfter1HitHealth);
-      var firstExplCoctailDamage = enemyBeginHealth - chempAfter1HitHealth;
+      if (kind != FightItemKind.WeightedNet)//TODO test range?
+      {
+        var chempAfter1HitHealth = enemy.Stats.Health;
+        Assert.Greater(enemyBeginHealth, chempAfter1HitHealth);
+        var firstExplCoctailDamage = enemyBeginHealth - chempAfter1HitHealth;
 
-      IncreaseAbility(hero, fi.AbilityKind);
+        IncreaseAbility(hero, fi.AbilityKind);
 
-      fi = ActivateFightItem(kind, hero);
-      var damage2 = fi.Damage;
-      Assert.Greater(damage2, damage1);
-      enemy.OnHitBy(fi);
-      GotoNextHeroTurn();//effect prolonged - make turn to see effect
-      var chempAfter2HitHealth = enemy.Stats.Health;
-      var secExplCoctailDamage = chempAfter1HitHealth - chempAfter2HitHealth;
-      Assert.Greater(secExplCoctailDamage, firstExplCoctailDamage);
+        fi = ActivateFightItem(kind, hero);
+        var damage2 = fi.Damage;
+        Assert.Greater(damage2, damage1);
+        enemy.OnHitBy(fi);
+        GotoNextHeroTurn();//effect prolonged - make turn to see effect
+        var chempAfter2HitHealth = enemy.Stats.Health;
+        var secExplCoctailDamage = chempAfter1HitHealth - chempAfter2HitHealth;
+        Assert.Greater(secExplCoctailDamage, firstExplCoctailDamage);
+      }
+      else
+      {
+        int counter = 0;
+        while (true)
+        {
+          var le = enemy.GetFirstLastingEffect(Roguelike.Effects.EffectType.WebTrap);
+          if(le == null)
+            break;
+
+          counter++;
+          Assert.AreEqual(le.Description, "Web Trap");
+          Assert.NotNull(le);
+          Assert.AreEqual(enemyBeginHealth, enemy.Stats.Health);
+          GotoNextHeroTurn();
+        }
+
+        Assert.Greater(counter, 1);
+      }
     }
 
     private void RevealAllEnemies(Roguelike.RoguelikeGame game)
@@ -485,7 +508,7 @@ namespace RoguelikeUnitTests
       Assert.Greater(en2Health, enemies[1].Stats.Health);
 
     }
-
+        
     [Test]
     public void TestStaffMastering()
     {
@@ -539,23 +562,7 @@ namespace RoguelikeUnitTests
     public void BasicWeaponsMasteryTests(Roguelike.Abilities.AbilityKind ab)//test if mellee damage is increased
     {
       var game = CreateGame();
-      //Dictionary<Roguelike.Abilities.AbilityKind, float> abs = new Dictionary<Roguelike.Abilities.AbilityKind, float>()
-      //{
-      //  //{ Roguelike.Abilities.AbilityKind.AxesMastering, 0 },
-      //  //{ Roguelike.Abilities.AbilityKind.BashingMastering, 0 },
-      //  //{ Roguelike.Abilities.AbilityKind.DaggersMastering, 0 },
-      //  //{ Roguelike.Abilities.AbilityKind.SwordsMastering, 0 },
-      //  //{ Roguelike.Abilities.AbilityKind.StaffMastering, 0 },
-      //  //{ Roguelike.Abilities.AbilityKind.WandMastering, 0 },
-      //  //{ Roguelike.Abilities.AbilityKind.ScepterMastering, 0 }
-      //};
-     
-      //foreach (var abKV in abs)
-      {
-        var val = TestWeaponKindMastering(ab);
-        //absR[abKV.Key] = val;
-      }
-      //Debug.WriteLine("end");
+      var val = TestWeaponKindMastering(ab);
     }
 
     private float TestWeaponKindMastering(AbilityKind kind)
@@ -679,6 +686,12 @@ namespace RoguelikeUnitTests
         case Roguelike.Abilities.AbilityKind.BowsMastering:
           wpnName = "bow";
           auxStat = EntityStatKind.ChanceToPhysicalProjectileHit;
+          break;
+        case Roguelike.Abilities.AbilityKind.ArrowVolley:
+          wpnName = "bow";
+          break;
+        case Roguelike.Abilities.AbilityKind.PiercingArrow:
+          wpnName = "bow";
           break;
         default:
           break;

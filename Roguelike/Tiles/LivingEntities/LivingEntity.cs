@@ -676,6 +676,13 @@ namespace Roguelike.Tiles.LivingEntities
             PlaySound(sound);//TODO
             return HitResult.Hit;
           }
+          else if (fi.FightItemKind == FightItemKind.WeightedNet)
+          {
+            var npd = 0;
+            lastingEffectsSet.EnsureEffect(EffectType.WebTrap, npd, attacker, fi.Duration);
+            PlaySound(sound);//TODO
+            return HitResult.Hit;
+          }
           else if (fi.FightItemKind == FightItemKind.ThrowingKnife ||
             fi.FightItemKind == FightItemKind.PlainArrow || fi.FightItemKind == FightItemKind.PlainBolt)
           {
@@ -1209,10 +1216,10 @@ namespace Roguelike.Tiles.LivingEntities
     {
        return Calculated.FactorCalculator.AddFactor((int)currentNextLevelExperience, 110);
     }
-
-    public virtual bool CanUseAbility(AbilityKind kind, out bool activeUsed)
+      
+    public virtual bool CanUseAbility(AbilityKind kind/*, out bool activeUsed*/)
     {
-      activeUsed = false;
+      //activeUsed = false;
       var esk = EntityStatKind.Unset;
       if (kind == AbilityKind.StrikeBack)
           esk = EntityStatKind.ChanceToStrikeBack;

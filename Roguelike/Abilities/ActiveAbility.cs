@@ -98,6 +98,12 @@ namespace Roguelike.Abilities
         case AbilityKind.Rage:
           desc = "Increases the mellee damage of the caster";
           break;
+        case AbilityKind.ArrowVolley:
+          desc = "Discharges a number of arrows at one time";
+          break;
+        case AbilityKind.PiercingArrow:
+          desc = "Pierces an enemy, hitting other one behind";
+          break;
         default:
           break;
       }

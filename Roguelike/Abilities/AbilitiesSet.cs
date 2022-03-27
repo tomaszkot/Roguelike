@@ -38,7 +38,10 @@ namespace Roguelike.Abilities
               kind == AbilityKind.PoisonMastering ||
               kind == AbilityKind.Stride ||
               kind == AbilityKind.CauseBleeding ||
-              kind == AbilityKind.Rage
+              kind == AbilityKind.Rage ||
+              kind == AbilityKind.WeightedNetMastering ||
+              kind == AbilityKind.ArrowVolley ||
+              kind == AbilityKind.PiercingArrow
            )
           {
             ab = new ActiveAbility() { Kind = kind };

@@ -1390,6 +1390,11 @@ namespace Roguelike.Managers
       return false;
     }
 
+    protected virtual int GetAttackVictimsCount()
+    {
+      return 1;
+    }
+
     public bool ApplyAttackPolicy
     (
       LivingEntity caster,//hero, enemy, ally
@@ -1408,14 +1413,16 @@ namespace Roguelike.Managers
       caster.RemoveFightItem(fi);
       var destFi = fi.Clone(1) as ProjectileFightItem;
 
-      return DoApply(caster, target, destFi, BeforeApply, AfterApply);
+      return DoApply(caster, target, destFi, GetAttackVictimsCount(), BeforeApply, AfterApply);
     }
 
-    private bool DoApply(LivingEntity caster, Tile target, ProjectileFightItem fi, Action<Policy> BeforeApply, Action<Policy> AfterApply)
+    private bool DoApply(LivingEntity caster, Tile target, ProjectileFightItem fi, int projectilesCount, Action<Policy> BeforeApply, Action<Policy> AfterApply)
     {
       fi.Caller = caster;
       var policy = Container.GetInstance<ProjectileCastPolicy>();
       policy.Target = target;
+      policy.GameManager = this;
+      policy.ProjectilesCount = projectilesCount;
       policy.ProjectilesFactory = Container.GetInstance<IProjectilesFactory>();
       policy.Projectile = fi;
       policy.Caster = caster;
@@ -1509,8 +1516,7 @@ namespace Roguelike.Managers
       attackPolicy.OnApplied += (s, e) =>
       {
         afterApply(e);
-        bool activeUsed = false;
-                
+               
         if (target is LivingEntity targetLe && targetLe.Alive)
         {
           bool done = false;
@@ -1520,30 +1526,41 @@ namespace Roguelike.Managers
             {
               if (aa.Kind == Abilities.AbilityKind.StrikeBack)
                 continue;
-              if (attacker.CanUseAbility(aa.Kind, out activeUsed))
+              if (attacker.CanUseAbility(aa.Kind))
               {
-                UseActiveAbility(targetLe, attacker, aa.Kind, activeUsed);
+                UseActiveAbility(targetLe, attacker, aa.Kind);
                 done = true;
                 break;
               }
             }
           }
 
-          if (!done && targetLe.CanUseAbility(Abilities.AbilityKind.StrikeBack, out activeUsed))
+          if (!done && targetLe.CanUseAbility(Abilities.AbilityKind.StrikeBack))
           {
-            UseActiveAbility(attacker, targetLe, Abilities.AbilityKind.StrikeBack, activeUsed);
+            //TODO ?
+            UseAbility(attacker, targetLe, Abilities.AbilityKind.StrikeBack, false);
+            
+            //if(used)
+            //  AppendUsedAbilityAction(attacker, Abilities.AbilityKind.StrikeBack);
           }
         }
       };
       attackPolicy.Apply(attacker, target);
     }
 
-    public void UseActiveAbility(LivingEntity victim, LivingEntity abilityUser, Abilities.AbilityKind abilityKind, bool activeAbility)
+    public void UseActiveAbility(LivingEntity victim, LivingEntity abilityUser, Abilities.AbilityKind abilityKind)
     {
       var advEnt = abilityUser as AdvancedLivingEntity;
       if (!advEnt.Abilities.IsActive(abilityKind))
         return;
 
+      bool activeAbility = true;
+      UseAbility(victim, abilityUser, abilityKind, activeAbility);
+    }
+
+    public void UseAbility(LivingEntity victim, LivingEntity abilityUser, Abilities.AbilityKind abilityKind, bool activeAbility)
+    {
+      var advEnt = abilityUser as AdvancedLivingEntity;
       bool used = false;
       if (abilityKind == Abilities.AbilityKind.StrikeBack)
       {
@@ -1554,37 +1571,39 @@ namespace Roguelike.Managers
             AttackPolicyDone();
         });
       }
-      else if (abilityKind == Abilities.AbilityKind.Stride)
+      else
       {
-        int horizontal = 0, vertical = 0;
-        var neibKind = GetTileNeighborhoodKindCompareToHero(victim);
-        if (neibKind.HasValue)
+        if (abilityKind == Abilities.AbilityKind.Stride)
         {
-          InputManager.GetMoveData(neibKind.Value, out horizontal, out vertical);
-          var newPos = InputManager.GetNewPositionFromMove(victim.point, horizontal, vertical);
-          activeAbilityVictim = victim as Enemy;
-          activeAbilityVictim.MoveDueToAbilityVictim = true;
+          int horizontal = 0, vertical = 0;
+          var neibKind = GetTileNeighborhoodKindCompareToHero(victim);
+          if (neibKind.HasValue)
+          {
+            InputManager.GetMoveData(neibKind.Value, out horizontal, out vertical);
+            var newPos = InputManager.GetNewPositionFromMove(victim.point, horizontal, vertical);
+            activeAbilityVictim = victim as Enemy;
+            activeAbilityVictim.MoveDueToAbilityVictim = true;
 
-          var desc = "";
-          var ab = advEnt.GetActiveAbility(Abilities.AbilityKind.Stride);
-          var attack = abilityUser.Stats.GetStat(EntityStatKind.Strength).SumValueAndPercentageFactor(ab.PrimaryStat, true);
-          var damage = victim.CalcMeleeDamage(attack, ref desc);
-          var inflicted = victim.InflictDamage(abilityUser, false, ref damage, ref desc);
+            var desc = "";
+            var ab = advEnt.GetActiveAbility(Abilities.AbilityKind.Stride);
+            var attack = abilityUser.Stats.GetStat(EntityStatKind.Strength).SumValueAndPercentageFactor(ab.PrimaryStat, true);
+            var damage = victim.CalcMeleeDamage(attack, ref desc);
+            var inflicted = victim.InflictDamage(abilityUser, false, ref damage, ref desc);
 
-          ApplyMovePolicy(victim, newPos.Point);
+            ApplyMovePolicy(victim, newPos.Point);
+            used = true;
+          }
+        }
+        else if (abilityKind == Abilities.AbilityKind.CauseBleeding)
+        {
+          victim.StartBleeding(3, null, 3);//TODO 
           used = true;
         }
+        else if (abilityKind == Abilities.AbilityKind.Rage)
+        {
+          used = true;//was added to the damage
+        }
       }
-      else if (abilityKind == Abilities.AbilityKind.CauseBleeding)
-      {
-        victim.StartBleeding(3, null, 3);//TODO 
-        used = true;
-      }
-      else if (abilityKind == Abilities.AbilityKind.Rage)
-      {
-        used = true;//was added to the damage
-      }
-
       if (used)
       {
         if (activeAbility)

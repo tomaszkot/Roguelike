@@ -32,7 +32,8 @@ namespace Roguelike.Effects
     ResistAll = 85, 
     Inaccuracy = 90, 
     Hooch = 95,
-    Ally = 100
+    //Ally = 100,
+    WebTrap  = 105
   }
 
   public interface ILastingEffectOwner
@@ -200,7 +201,7 @@ namespace Roguelike.Effects
     {
       string res = Type.ToDescription();
 
-      if (Type == EffectType.Stunned)
+      if(!ChangesStats(Type))
         return res;
 
       var spellKind = SpellConverter.SpellKindFromEffectType(Type);
@@ -230,28 +231,29 @@ namespace Roguelike.Effects
           end = " to " + this.StatKind.ToDescription();
       }
 
-
-      if (middle.Any())
-        res += middle;
-
-      if(EffectiveFactor.Value >= 0)
-        res += "+";
-
-      if (EffectiveFactor.Value != 0)
+      //if ()
       {
-        //if (res.Last() != ' ')
-        //  res += " ";
-        res += EffectiveFactor.Value.Formatted();
+        if (middle.Any())
+          res += middle;
+
+        if (EffectiveFactor.Value >= 0)
+          res += "+";
+
+        if (EffectiveFactor.Value != 0)
+        {
+          //if (res.Last() != ' ')
+          //  res += " ";
+          res += EffectiveFactor.Value.Formatted();
+        }
+        else
+          res += PercentageFactor.Value.Formatted();
+
+        if (end.Any())
+          res += end;
       }
-      else
-        res += PercentageFactor.Value.Formatted();
-
-      if (end.Any())
-        res += end;
-
       if (!shortOne)
       {
-        if (owner is LivingEntity le &&
+        if(owner is LivingEntity le &&
           (
           Type == EffectType.Firing ||
           Type == EffectType.Poisoned ||
@@ -277,10 +279,8 @@ namespace Roguelike.Effects
       var lea = new LivingEntityAction(LivingEntityActionKind.ExperiencedEffect);
       lea.InvolvedEntity = target;
       lea.EffectType = le.Type;
-      var targetName = target.Name.ToString();
-
+      //var targetName = target.Name.ToString();
       lea.Info = CreateActionInfo(le, target);
-
       lea.Level = ActionLevel.Important;
       return lea;
     }
@@ -309,6 +309,13 @@ namespace Roguelike.Effects
         res += " ";
       res += le.Description;
       return res;
+    }
+
+    static EffectType[] NotChangingStatsEffectTypes = { EffectType.Unset, EffectType.Transform , EffectType.WebTrap, EffectType.Stunned, EffectType.ManaShield };
+
+    public bool ChangesStats(EffectType effectType)
+    {
+      return !NotChangingStatsEffectTypes.Contains(effectType);
     }
   }
 }

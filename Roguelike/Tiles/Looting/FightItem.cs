@@ -22,7 +22,8 @@ namespace Roguelike.Tiles.Looting
     PlainArrow = 50,
     PlainBolt = 55,
 
-    PoisonCocktail = 70
+    PoisonCocktail = 70,
+    WeightedNet = 75
   }
 
   public enum FightItemState
@@ -154,6 +155,14 @@ namespace Roguelike.Tiles.Looting
           HitTargetSound = "SHATTER_Glass1";
           Duration = 4;
         }
+        else if (fightItemKind == FightItemKind.WeightedNet)
+        {
+          baseDamage += 1;
+          Price *= 3;
+          PrimaryStatDescription = Name + ", prevents victim from moving";
+          HitTargetSound = "cloth";
+          Duration = 4;
+        }
 
       }
     }
@@ -185,6 +194,8 @@ namespace Roguelike.Tiles.Looting
           return AbilityKind.ThrowingStoneMastering;
         if (fightItemKind == FightItemKind.HunterTrap)
           return AbilityKind.HunterTrapMastering;
+        if (fightItemKind == FightItemKind.WeightedNet)
+          return AbilityKind.WeightedNetMastering;
         return AbilityKind.Unset;
       }
     }
@@ -317,12 +328,19 @@ namespace Roguelike.Tiles.Looting
           lsk = LootStatKind.Unset;
           preffix = "Poison ";
         }
+
         var lsi = new LootStatInfo()
         {
           EntityStatKind = esk,
           Kind = lsk,
           Desc = preffix +"Damage: " + Damage + " " + FormatTurns(this.Duration) 
         };
+
+        if (FightItemKind == FightItemKind.WeightedNet)
+        {
+          var ab = GetAbility();
+          lsi.Desc = "Duaration: "+ ab.PrimaryStat.Factor;
+        }
 
         res.Add(lsi);
         

@@ -228,6 +228,7 @@ namespace RoguelikeUnitTests
       var le = game.Hero.LastingEffectsSet.GetByType(Roguelike.Effects.EffectType.Transform);
       Assert.NotNull(le);
       Assert.False(game.GameManager.EnemiesManager.ShallChaseTarget(enemy, game.Hero));
+      Assert.AreEqual(le.Description, "Transform");
 
       GotoSpellEffectEnd(spell);
 
@@ -293,6 +294,9 @@ namespace RoguelikeUnitTests
       var scroll = PrepareScroll(hero, SpellKind.ManaShield, enemy);
       var spell = game.GameManager.SpellManager.ApplyPassiveSpell(hero, scroll);
       Assert.NotNull(spell);
+
+      var le = game.Hero.LastingEffectsSet.GetByType(Roguelike.Effects.EffectType.ManaShield);
+      Assert.AreEqual(le.Description, "Mana Shield");
 
       var heroHealth = game.Hero.Stats.Health;
       game.Hero.OnMelleeHitBy(enemy);//PoisonBallSpell work on mana shields!

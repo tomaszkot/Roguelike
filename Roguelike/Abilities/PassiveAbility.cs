@@ -17,7 +17,10 @@ namespace Roguelike.Abilities
     //HuntingMastering /*<-(to del)*/
     ExplosiveMastering, ThrowingStoneMastering, ThrowingKnifeMastering, HunterTrapMastering
 
-    ,StaffsMastering, SceptersMastering, WandsMastering, PoisonMastering, Stride, CauseBleeding, Rage
+    ,StaffsMastering, SceptersMastering, WandsMastering, PoisonMastering, Stride, CauseBleeding, Rage,
+    WeightedNetMastering,
+
+    PiercingArrow, ArrowVolley
   }
 
   /// <summary>

@@ -64,10 +64,10 @@ namespace Roguelike.Tiles.LivingEntities
       AddFightItem(FightItemKind.ThrowingKnife);
       AddFightItem(FightItemKind.ExplosiveCocktail);
       AddFightItem(FightItemKind.PoisonCocktail);
+      AddFightItem(FightItemKind.WeightedNet);
       //fightItems[FightItemKind.HunterTrap] = new ProjectileFightItem(FightItemKind.HunterTrap, this) { Count = RandHelper.GetRandomInt(3) + 1 };
 
       SetActiveFightItem(RandHelper.GetRandomElem<FightItem>(this.fightItems.Values.ToList()).FightItemKind);
-      //this.ActiveFightItem = new ProjectileFightItem(FightItemKind.Explosive Cocktail);
 
       SetResist(EntityStatKind.ResistCold, 15);
       SetResist(EntityStatKind.ResistFire, 15);

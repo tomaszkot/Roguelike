@@ -196,12 +196,9 @@ namespace Roguelike.Effects
     {
       var value = le.EffectiveFactor.Value;
 
-      if (le.Type == EffectType.Stunned)
+      if (!le.ChangesStats(le.Type))
         return;
 
-      var esk = le.StatKind != EntityStatKind.Unset || le.Type == EffectType.ResistAll
-        || le.Type == EffectType.Transform;
-      Assert(esk);
       if (le.Type == EffectType.TornApart)
         value = livingEntity.Stats.Health;
 

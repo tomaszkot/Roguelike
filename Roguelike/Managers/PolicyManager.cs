@@ -76,10 +76,9 @@ namespace Roguelike.Managers
         var enemyVictim = ap.Victim as Enemy;
         if (enemyVictim != null)
         {
-          bool activeUsed;
-          if (enemyVictim.Alive && gm.Hero.CanUseAbility(Abilities.AbilityKind.StrikeBack, out activeUsed))
+          if (enemyVictim.Alive && gm.Hero.CanUseAbility(Abilities.AbilityKind.StrikeBack))
           {
-            gm.UseActiveAbility(enemyVictim, gm.Hero, Abilities.AbilityKind.StrikeBack, activeUsed);
+            gm.UseAbility(enemyVictim, gm.Hero, Abilities.AbilityKind.StrikeBack, false);
           }
 
           var bulkOK = HandleBulk(enemyVictim, EntityStatKind.ChanceToBulkAttack);

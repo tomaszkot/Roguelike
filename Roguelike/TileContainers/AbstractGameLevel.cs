@@ -138,11 +138,11 @@ namespace Roguelike.TileContainers
       return Loot.Any(j => j.Value.point == tile.point);
     }
 
-    void RemoveLoot(List<Tile> tiles)
-    {
-      int removed = tiles.RemoveAll(i => IsLootTile(i));
-      Logger.LogInfo("removed " + removed);
-    }
+    //void RemoveLoot(List<Tile> tiles)
+    //{
+    //  int removed = tiles.RemoveAll(i => IsLootTile(i));
+    //  Logger.LogInfo("removed " + removed);
+    //}
 
     public List<Tile> GetEmptyNeighborhoodTiles(Tile target, bool incDiagonals, bool excludeLoot)
     {
