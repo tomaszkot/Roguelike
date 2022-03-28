@@ -967,31 +967,6 @@ namespace Dungeons
         return res;
       }
 
-      List<T> GetNeighborhoodTilesInner<T>(Tile target)
-      {
-        bool incDiagonal = true;
-        var neibs = GetNeighborTiles(target, incDiagonal).Where(i => i != null).ToList();
-        var res = neibs.Where(i => i is T).Cast<T>().ToList();
-        return res;
-      }
-
-      public List<T> GetNeighborhoodTiles<T>(Tile target, int radius = 1) where T : Tile
-      {
-        var neibs = GetNeighborhoodTilesInner<T>(target);
-        foreach (var neib in neibs.ToList())
-        {
-          if (neib.DistanceFrom(target) < radius)
-          {
-            neibs.AddRange(GetNeighborhoodTilesInner<T>(neib));
-          }
-        }
-        //for (int i = 1; i < radius; i++)
-        //{
-        //  //res += GetNeighborhoodTiles<T>();
-        //}
-        return neibs;
-      }
-
       public List<Tile> GetEmptyNeighborhoodTiles(Tile target, bool incDiagonal = true)
       {
         var neibs = GetNeighborTiles(target, incDiagonal).Where(i => i != null).ToList();

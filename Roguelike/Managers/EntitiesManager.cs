@@ -392,6 +392,14 @@ namespace Roguelike.Managers
 
       return false;
     }
+
+    public List<Enemy> GetInRange(LivingEntity src, int rangeFrom, Enemy skip)
+    {
+      return AllEntities
+        .Where(i => i != skip && i.DistanceFrom(src) < 7)
+        .Cast<Enemy>()
+        .ToList();
+    }
   }
 
 

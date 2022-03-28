@@ -52,10 +52,7 @@ namespace Roguelike.Managers
         }
         else 
         {
-          HeroBulkAttackTargets = gm.EnemiesManager.AllEntities
-          .Where(i => i != lastTarget && i.DistanceFrom(hero) < 7)
-          .Cast<Enemy>()
-          .ToList();
+          HeroBulkAttackTargets = gm.EnemiesManager.GetInRange(hero, 7, lastTarget);
         }
         if (HeroBulkAttackTargets.Any())
           gm.AppendAction(new LivingEntityAction(LivingEntityActionKind.UsedAbility)

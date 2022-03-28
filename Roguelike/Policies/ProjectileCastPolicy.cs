@@ -66,7 +66,9 @@ namespace Roguelike.Policies
       var otherOnes = new List<Tiles.Abstract.IObstacle>();
       if (ProjectilesCount > 1)
       {
-        var neibs = GameManager.CurrentNode.GetNeighborhoodTiles<Enemy>(caster, 9);//TODO 9
+        //var neibs = GameManager.CurrentNode.GetNeighborhoodTiles<Enemy>(caster, caster, 9).Distinct().ToList();//TODO 9
+        var neibs = GameManager.EnemiesManager.GetInRange(caster, 7, target as Enemy);
+        GameManager.Logger.LogInfo("GetNeighborhoodTiles<Enemy> neibs.Count : "+ neibs.Count);
         var en = target as Enemy;
         if (en != null)
           neibs.Remove(en);
