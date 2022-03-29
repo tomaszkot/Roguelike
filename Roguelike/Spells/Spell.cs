@@ -34,7 +34,7 @@ namespace Roguelike.Spells
     public bool EntityRequired = false;
     public const int BaseManaCost = 4;
     protected Dictionary<int, int> levelToMagic = new Dictionary<int, int>();
-    private LivingEntity caller;
+    protected LivingEntity caller;
     public bool Utylized { get; set; }
 
     public int ManaCost

@@ -63,6 +63,11 @@ namespace Roguelike.Tiles.LivingEntities
       { EntityStatKind.ManaStealing, EntityStatKind.Mana }
     };
 
+    public virtual float GetExtraDamage(SpellKind kind, float damage)
+    {
+      return 0;
+    }
+
     List<Algorithms.PathFinderNode> pathToTarget;
     protected LastingEffectsSet lastingEffectsSet;
     protected List<EffectType> immunedEffects = new List<EffectType>();

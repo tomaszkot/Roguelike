@@ -39,8 +39,8 @@ namespace Roguelike.Tiles.LivingEntities
   {
     public RelationToHero RelationToHero { get; set; } = new RelationToHero();
     public bool HasUrgentTopic { get; set; }
-    public Discussion Discussion 
-    { 
+    public Discussion Discussion
+    {
       get => discussion;
       set => discussion = value;
     }
@@ -75,7 +75,7 @@ namespace Roguelike.Tiles.LivingEntities
     public event EventHandler<EntityStatKind> StatLeveledUp;
     public event EventHandler<int> GoldChanged;
 
-    public double Experience { get;  set; }
+    public double Experience { get; set; }
     public double NextLevelExperience { get; set; }
 
     int gold;
@@ -233,7 +233,7 @@ namespace Roguelike.Tiles.LivingEntities
         Level++;
         LevelUpPoints += GenerationInfo.LevelUpPoints;
         AbilityPoints += 2;
-        
+
         //if (Level == 2 || Level == 3)
         //  NextLevelExperience *= 1.5f;
 
@@ -283,7 +283,7 @@ namespace Roguelike.Tiles.LivingEntities
       if (LevelUpPoints == 0)
         return;
       this.Stats[stat].Nominal += 1;
-      if(stat == EntityStatKind.Magic)
+      if (stat == EntityStatKind.Magic)
         this.Stats[EntityStatKind.Mana].Nominal += 1;
       LevelUpPoints--;
       RecalculateStatFactors(false);//Attack depends on Str
@@ -380,7 +380,7 @@ namespace Roguelike.Tiles.LivingEntities
         }
       }
 
-      
+
       if (
           CanUseEquipment(eq, true) &&
           (currentEq == null || (eq.IsBetter(currentEq)) && Options.Instance.Mechanics.AutoPutOnBetterEquipment)
@@ -414,7 +414,7 @@ namespace Roguelike.Tiles.LivingEntities
       };
 
       if (!eq.IsIdentified)
-        return report("Item is not identified"); 
+        return report("Item is not identified");
 
       if (Level < eq.RequiredLevel)
         return report("Required Level too high");
@@ -423,11 +423,11 @@ namespace Roguelike.Tiles.LivingEntities
       {
         return report("Can not use Animal's equipment");
       }
-            
+
       foreach (var rs in eq.GetEffectiveRequiredStats())
       {
         if (rs.Value.Nominal > Stats.GetNominal(rs.Kind))
-          return report("Required statistic " + rs.Kind.ToDescription() +" not met.");
+          return report("Required statistic " + rs.Kind.ToDescription() + " not met.");
       }
 
       if (autoPutoOn && eq is Weapon wpnBowLike && wpnBowLike.IsBowLike)
@@ -450,7 +450,7 @@ namespace Roguelike.Tiles.LivingEntities
           if (eq.EquipmentKind == EquipmentKind.Shield &&
             (wpn.Kind == Weapon.WeaponKind.Bow || wpn.Kind == Weapon.WeaponKind.Crossbow)
             )
-            return report("Can not wield a shield when using a "+ wpn.Kind.ToDescription());
+            return report("Can not wield a shield when using a " + wpn.Kind.ToDescription());
 
           if (
               eq is Weapon wpnToUSe &&
@@ -494,7 +494,7 @@ namespace Roguelike.Tiles.LivingEntities
       bool primary = CurrentEquipment.SpareEquipmentUsed[cek] ? false : true;
       if (primary && CurrentEquipment.PrimaryEquipment[cek] != eq)
         return false;
-      else if(!primary && CurrentEquipment.SpareEquipment[cek] != eq)
+      else if (!primary && CurrentEquipment.SpareEquipment[cek] != eq)
         return false;
 
       bool done = SetEquipment(null, cek);
@@ -552,7 +552,7 @@ namespace Roguelike.Tiles.LivingEntities
         if (eq == null)
           return true;
       }
-      
+
       var set = CurrentEquipment.SetEquipment(eq, cek, primary);
       if (!set)
         return false;
@@ -632,7 +632,7 @@ namespace Roguelike.Tiles.LivingEntities
     public void RecalculateStatFactors(bool fromLoad)
     {
       Stats.ResetStatFactors();
-      
+
       //accumulate positive factors
       AccumulateEqFactors(true);
 
@@ -683,7 +683,7 @@ namespace Roguelike.Tiles.LivingEntities
     {
       return Stats.GetNominal(eqStat.Kind) >= eq.GetReqStatValue(eqStat);
     }
-    
+
     public override string ToString()
     {
       return base.ToString();
@@ -860,6 +860,23 @@ namespace Roguelike.Tiles.LivingEntities
           pfi = projItems.Where(i => i.FightItemKind == FightItemKind.PlainBolt).SingleOrDefault();
       }
       return pfi;
+    }
+
+    static Dictionary<SpellKind, AbilityKind> SpellKind2AbilityKind = new Dictionary<SpellKind, AbilityKind>()
+    {
+      {SpellKind.FireBall, AbilityKind.FireBallMastering},
+      {SpellKind.IceBall, AbilityKind.IceBallMastering},
+      {SpellKind.PoisonBall, AbilityKind.PoisonBallMastering},
+    };
+
+    public override float GetExtraDamage(SpellKind kind, float damage)
+    {
+      if(!SpellKind2AbilityKind.ContainsKey(kind))
+        return 0;
+
+      var ab = this.GetPassiveAbility(SpellKind2AbilityKind[kind]);
+      var dam = Calculated.FactorCalculator.CalcPercentageValue(damage, ab.PrimaryStat.Factor);
+      return dam;
     }
   }
 }

@@ -83,7 +83,7 @@ namespace Roguelike.Abilities
             psk = EntityStatKind.ColdAttack;
             //ask = EntityStatKind.ChanceToCauseFreezing;TODO
             break;
-          case AbilityKind.PoisonCocktailMastering:
+          case AbilityKind.PoisonBallMastering:
             psk = EntityStatKind.PoisonAttack;
             //ask = EntityStatKind.ChanceToCausePoisoning;TODO
             break;
@@ -159,10 +159,22 @@ namespace Roguelike.Abilities
             if (kind == AbilityKind.WandsMastering //ChanceToElementalBulkAttack
               || kind == AbilityKind.SceptersMastering//ChanceToCauseElementalAilment
               || kind == AbilityKind.StaffsMastering//ChanceToRepeatElementalAttack
+              || kind == AbilityKind.FireBallMastering
+              || kind == AbilityKind.IceBallMastering
+              || kind == AbilityKind.PoisonBallMastering
               )
             {
               var multsDef = new int[] { 0, 4, 7, 10, 15, 20 };
               factor = multsDef[level];
+            }
+
+            if (kind == AbilityKind.FireBallMastering
+              || kind == AbilityKind.IceBallMastering
+              || kind == AbilityKind.PoisonBallMastering
+              )
+            {
+              var multsDef = new int[] { 0, 4, 7, 10, 15, 20 };
+              factor = multsDef[level] * 2;
             }
           }
           else

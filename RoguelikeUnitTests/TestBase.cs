@@ -353,7 +353,10 @@ namespace RoguelikeUnitTests
 
     protected bool UseSpellSource(Hero caster, IDestroyable victim, SpellSource spellSource)
     {
-      if(spellSource is Scroll || spellSource is Book)
+      if (victim is LivingEntity le)
+        le.Stats[EntityStatKind.ChanceToEvadeElementalProjectileAttack].Nominal = 0;
+
+      if (spellSource is Scroll || spellSource is Book)
         caster.Inventory.Add(spellSource);
       if (caster is Hero)
       {
@@ -365,12 +368,18 @@ namespace RoguelikeUnitTests
 
     protected bool UseFireBallSpellSource(Hero caster, IDestroyable victim, bool useScroll)
     {
+      return UseSpellSource(caster, victim, useScroll, Roguelike.Spells.SpellKind.FireBall);
+    }
+
+    protected bool UseSpellSource(Hero caster, IDestroyable victim, bool useScroll, Roguelike.Spells.SpellKind sk)
+    {
       PlaceCloseToHero(victim as IDestroyable);
       SpellSource src = null;
       if (useScroll)
-        src = new Scroll(Roguelike.Spells.SpellKind.FireBall);
+        src = new Scroll(sk);
       else
-        src = new Book(Roguelike.Spells.SpellKind.FireBall);
+        src = new Book(sk);
+            
       return UseSpellSource(caster, victim, src);
 
     }

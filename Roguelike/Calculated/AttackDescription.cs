@@ -186,6 +186,7 @@ namespace Roguelike.Calculated
         {
           AddExtraDamage(ent, wpn, weapons2Esk, ref dmg);
         }
+
         NonPhysical[offensiveSpell.Kind.ToEntityStatKind()] = dmg;
         CurrentTotal += dmg;
       }

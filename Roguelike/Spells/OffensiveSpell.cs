@@ -14,7 +14,6 @@ namespace Roguelike.Spells
 
     float calcedDamage;
     public const int BaseDamage = 1;
-    //public int NominalDamage { get; set; }
     bool withVariation;
     public const int DefaultAddNominal = 0;
     public bool AlwaysHit { get; set; }
@@ -59,6 +58,9 @@ namespace Roguelike.Spells
       damage += addNominal;
       if (damage <= 0)
         damage = 1;
+
+      damage += caller.GetExtraDamage(this.Kind, damage);
+
       return damage;
     }
 

@@ -20,6 +20,54 @@ namespace RoguelikeUnitTests
   {
     const int MaxAbilityInc = 5;
 
+    [TestCase(AbilityKind.FireBallMastering)]
+    [TestCase(AbilityKind.IceBallMastering)]
+    [TestCase(AbilityKind.PoisonBallMastering)]
+    public void MagicProjectilePropTest(AbilityKind ak)
+    {
+      var game = CreateGame();
+      var ab = game.GameManager.Hero.GetPassiveAbility(ak);
+      if(ak == AbilityKind.FireBallMastering)
+        Assert.AreEqual(ab.PrimaryStat.Kind, EntityStatKind.FireAttack);
+      else if (ak == AbilityKind.PoisonBallMastering)
+        Assert.AreEqual(ab.PrimaryStat.Kind, EntityStatKind.PoisonAttack);
+      else if (ak == AbilityKind.IceBallMastering)
+        Assert.AreEqual(ab.PrimaryStat.Kind, EntityStatKind.ColdAttack);
+
+      Assert.AreEqual(ab.PrimaryStat.Factor, 0);
+
+      for (int i = 0; i < MaxAbilityInc; i++)
+        ab.IncreaseLevel(game.Hero);
+
+      Assert.Greater(ab.PrimaryStat.Factor, 10);
+      Assert.Less(ab.PrimaryStat.Factor, 50);
+    }
+
+    [TestCase(AbilityKind.FireBallMastering)]
+    [TestCase(AbilityKind.IceBallMastering)]
+    [TestCase(AbilityKind.PoisonBallMastering)]
+    public void MagicProjectileEnemyHitTest(AbilityKind ak)
+    {
+      var game = CreateGame();
+      var ab = game.GameManager.Hero.GetPassiveAbility(ak);
+      var enemy = PlainEnemies.First();
+      var enemyBeginHealth = enemy.Stats.Health;
+      UseFireBallSpellSource(game.Hero, enemy, true);
+      Assert.Less(enemy.Stats.Health, enemyBeginHealth);
+      var diff1 = enemyBeginHealth - enemy.Stats.Health;
+      enemyBeginHealth = enemy.Stats.Health;
+      
+      for(int i=0;i< MaxAbilityInc;i++)
+        ab.IncreaseLevel(game.Hero);
+
+      GotoNextHeroTurn();
+
+      UseFireBallSpellSource(game.Hero, enemy, true);
+      Assert.Less(enemy.Stats.Health, enemyBeginHealth);
+      var diff2 = enemyBeginHealth - enemy.Stats.Health;
+      Assert.Greater(diff2, diff1);
+    }
+
     [Test]
     public void TestBulkAttackForced()
     {
