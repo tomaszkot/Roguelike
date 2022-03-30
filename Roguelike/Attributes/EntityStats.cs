@@ -81,7 +81,12 @@ namespace Roguelike.Attributes
     ElementalSpellProjectilesAttack = 1020,//elementals from scroll, book
     ElementalWeaponProjectilesAttack = 1030,//elementals from wand, staff
 
-    CausedBleedingDuration = 1100
+    CausedBleedingDuration = 1100,
+
+    NumberOfPiercedVictims = 1200,
+    ChanceForPiercing = 1201,
+
+    ArrowVolleyCount = 1210
   };
 
   public class EntityStats

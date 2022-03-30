@@ -87,6 +87,10 @@ namespace Roguelike.Abilities
             psk = EntityStatKind.PoisonAttack;
             //ask = EntityStatKind.ChanceToCausePoisoning;TODO
             break;
+          case AbilityKind.SkeletonMastering:
+            psk = EntityStatKind.MeleeAttack;
+            //ask = EntityStatKind.ChanceToCausePoisoning;TODO
+            break;
 
           case AbilityKind.LootingMastering:
           case AbilityKind.StrikeBack:
@@ -171,6 +175,7 @@ namespace Roguelike.Abilities
             if (kind == AbilityKind.FireBallMastering
               || kind == AbilityKind.IceBallMastering
               || kind == AbilityKind.PoisonBallMastering
+              || kind == AbilityKind.SkeletonMastering
               )
             {
               var multsDef = new int[] { 0, 4, 7, 10, 15, 20 };

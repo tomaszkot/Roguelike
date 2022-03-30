@@ -15,7 +15,6 @@ namespace Roguelike.Abilities
       return false;
     }
 
-
     public override bool IsPercentageFromKind => kind == AbilityKind.Stride;//|| kind == AbilityKind.CauseBleeding;
 
     public override float CalcFactor(bool primary, int level)
@@ -60,7 +59,25 @@ namespace Roguelike.Abilities
           var multsHunt = new int[] { 0, 10, 20, 30, 40, 50 };
           factor = multsHunt[level];
           break;
-
+        case AbilityKind.PiercingArrow:
+          if (primary)
+          {
+            var percentToDo = new int[] { 0, 80, 85, 90, 95, 100 };
+            factor = percentToDo[level];
+          }
+          else 
+          {
+            var victims = new int[] { 0, 1, 2, 3, 4, 5 };
+            factor = victims[level];
+          }
+          break;
+        case AbilityKind.ArrowVolley:
+          if (primary)
+          {
+            var victims = new int[] { 0, 2, 3, 4, 5, 6 };
+            factor = victims[level];
+          }
+          break;
         default:
           break;
       }
@@ -155,6 +172,14 @@ namespace Roguelike.Abilities
           case AbilityKind.Rage:
             psk = EntityStatKind.MeleeAttack;
             break;
+          case AbilityKind.PiercingArrow:
+            psk = EntityStatKind.ChanceForPiercing;
+            ask = EntityStatKind.NumberOfPiercedVictims;
+            break;
+          case AbilityKind.ArrowVolley:
+            psk = EntityStatKind.ArrowVolleyCount;
+            break;
+
           default:
             Debug.WriteLine("Unsupported kind:  "+ kind);
             break;
@@ -162,10 +187,15 @@ namespace Roguelike.Abilities
 
         PrimaryStat.SetKind(psk);
         AuxStat.SetKind(ask);
-        if (kind == AbilityKind.Stride)
+        if (kind == AbilityKind.Stride || kind == AbilityKind.PiercingArrow)
         {
           PrimaryStat.Unit = EntityStatUnit.Percentage;
+          if (kind == AbilityKind.PiercingArrow)
+            AuxStat.Unit = EntityStatUnit.Absolute;
         }
+
+        if (kind == AbilityKind.ArrowVolley)
+          PrimaryStat.Unit = EntityStatUnit.Absolute;
       }
     }
   }

@@ -20,9 +20,77 @@ namespace RoguelikeUnitTests
   {
     const int MaxAbilityInc = 5;
 
+
+    [Test]
+    public void SkeletonMasteringTest()
+    {
+      var game = CreateGame();
+      var hero = game.Hero;
+
+      var scroll = PrepareScroll(hero, SpellKind.Skeleton);
+      scroll.Count = 10;
+      var gm = game.GameManager;
+      //var enemiesCount = gm.CurrentNode.GetTiles<Ally>().Count;
+      var spell = gm.SpellManager.ApplySpell(hero, scroll) as SkeletonSpell;
+      Assert.NotNull(spell.Ally);
+      Assert.Greater(spell.Ally.Stats.Strength, 0);
+      var str = spell.Ally.Stats.Strength;
+
+      var ab = game.GameManager.Hero.GetPassiveAbility(AbilityKind.SkeletonMastering);
+      ab.IncreaseLevel(game.Hero);
+      game.GameManager.AlliesManager.AllEntities.Clear();
+
+      var spell1 = gm.SpellManager.ApplySpell(hero, scroll) as SkeletonSpell;
+      Assert.NotNull(spell1.Ally);
+      Assert.AreNotEqual(spell.Ally, spell1.Ally);
+      Assert.Greater(spell1.Ally.Stats.Strength, str);
+    }
+
+    [Test]
+    public void ArrowVolleyPropsTest()
+    {
+      var game = CreateGame();
+      var hero = game.GameManager.Hero;
+      var ab = game.GameManager.Hero.GetActiveAbility(AbilityKind.ArrowVolley);
+
+      Assert.AreEqual(ab.PrimaryStat.Unit, EntityStatUnit.Absolute);
+      Assert.AreEqual(ab.PrimaryStat.Factor, 0);
+
+      ab.IncreaseLevel(game.Hero);
+      Assert.AreEqual(ab.PrimaryStat.Factor, 2);
+
+      ab.IncreaseLevel(game.Hero);
+      Assert.AreEqual(ab.PrimaryStat.Factor, 3);
+    }
+
+    [TestCase(AbilityKind.PiercingArrow)]
+    public void PiercingArrowPropsTest(AbilityKind kind)
+    {
+      var game = CreateGame();
+      var hero = game.GameManager.Hero;
+      var ab = game.GameManager.Hero.GetActiveAbility(kind);
+      
+      Assert.AreEqual(ab.PrimaryStat.Unit, EntityStatUnit.Percentage);
+      Assert.AreEqual(ab.AuxStat.Unit, EntityStatUnit.Absolute);
+
+      Assert.AreEqual(ab.PrimaryStat.Factor, 0);
+      
+      ab.IncreaseLevel(game.Hero);
+      Assert.AreEqual(ab.PrimaryStat.Factor, 80);
+      Assert.AreEqual(ab.AuxStat.Factor, 1);
+      
+
+      ab.IncreaseLevel(game.Hero);
+      Assert.AreEqual(ab.PrimaryStat.Factor, 85);
+
+      Assert.AreEqual(ab.AuxStat.Factor, 2);
+
+    }
+
     [TestCase(AbilityKind.FireBallMastering)]
     [TestCase(AbilityKind.IceBallMastering)]
     [TestCase(AbilityKind.PoisonBallMastering)]
+    [TestCase(AbilityKind.SkeletonMastering)]
     public void MagicProjectilePropTest(AbilityKind ak)
     {
       var game = CreateGame();
@@ -33,6 +101,8 @@ namespace RoguelikeUnitTests
         Assert.AreEqual(ab.PrimaryStat.Kind, EntityStatKind.PoisonAttack);
       else if (ak == AbilityKind.IceBallMastering)
         Assert.AreEqual(ab.PrimaryStat.Kind, EntityStatKind.ColdAttack);
+      else if (ak == AbilityKind.SkeletonMastering)
+        Assert.AreEqual(ab.PrimaryStat.Kind, EntityStatKind.MeleeAttack);
 
       Assert.AreEqual(ab.PrimaryStat.Factor, 0);
 

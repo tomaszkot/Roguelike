@@ -58,7 +58,7 @@ namespace Roguelike.Policies
     //called in ascii version
     protected virtual void DoApply(LivingEntity caster)
     {
-      Targets.First().OnHitBy(Projectile);
+      Targets.ForEach(i=> i.OnHitBy(Projectile));
     }
 
     private List<Tiles.Abstract.IObstacle> GetOtherVictims(LivingEntity caster, Tiles.Abstract.IObstacle target)

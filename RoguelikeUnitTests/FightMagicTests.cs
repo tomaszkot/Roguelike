@@ -269,18 +269,7 @@ namespace RoguelikeUnitTests
       Assert.Greater(applesCount, applesAfter.Count);
       Assert.Greater(enHealth, enemy.Stats.Health);
     }
-
-    private Scroll PrepareScroll(Hero hero, SpellKind spellKind, Enemy enemyToPlaceNearby = null)
-    {
-      var emp = game.GameManager.CurrentNode.GetClosestEmpty(hero);
-      if (enemyToPlaceNearby != null)
-        Assert.True(game.GameManager.CurrentNode.SetTile(enemyToPlaceNearby, emp.point));
-      var scroll = new Scroll(spellKind);
-      hero.Inventory.Add(scroll);
-
-      return scroll;
-    }
-
+        
     [Test]
     public void ManaScrollTest()
     {
