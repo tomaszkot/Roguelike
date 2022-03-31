@@ -29,8 +29,7 @@ namespace Roguelike.Abilities
         case AbilityKind.ThrowingStoneMastering:
         case AbilityKind.ThrowingKnifeMastering:
         case AbilityKind.Stride:
-        case AbilityKind.OpenWound:
-        case AbilityKind.Rage:
+                
           float fac = CalcFightItemFactor(level);
           factor = fac;
 
@@ -76,6 +75,42 @@ namespace Roguelike.Abilities
           {
             var victims = new int[] { 0, 2, 3, 4, 5, 6 };
             factor = victims[level];
+          }
+          break;
+        case AbilityKind.OpenWound:
+          if (primary)
+          {
+            var victims = new int[] { 0, 3, 3, 4, 4, 5 };
+            factor = victims[level];
+          }
+          else
+          {
+            var extraDamages = new int[] { 0, 5, 10, 15, 20, 25 };
+            factor = extraDamages[level];
+          }
+          break;
+        case AbilityKind.Rage:
+          if (primary)
+          {
+            var perc = new int[] { 0, 25, 30, 40, 55, 70 };
+            factor = perc[level];
+          }
+          break;
+        case AbilityKind.WeightedNetMastering:
+            var vals = new int[] { 0, 1, 2, 3, 4, 5 };
+            factor = vals[level];
+  
+          break;
+        case AbilityKind.PerfectHit:
+          if (primary)
+          {
+            var victims = new int[] { 0, 10, 15, 35, 50, 70 };//PerfectHitDamage %
+            factor = victims[level];
+          }
+          else
+          {
+            var extraDamages = new int[] { 0, 5, 10, 15, 20, 25 };//PerfectHitChanceToHit %
+            factor = extraDamages[level];
           }
           break;
         default:
@@ -167,7 +202,11 @@ namespace Roguelike.Abilities
             psk = EntityStatKind.MeleeAttack;
             break;
           case AbilityKind.OpenWound:
-            psk = EntityStatKind.CausedBleedingDuration;
+            psk = EntityStatKind.BleedingDuration;
+            
+
+            ask = EntityStatKind.BleedingExtraDamage;
+            
             break;
           case AbilityKind.Rage:
             psk = EntityStatKind.MeleeAttack;
@@ -180,6 +219,14 @@ namespace Roguelike.Abilities
             psk = EntityStatKind.ArrowVolleyCount;
             break;
 
+          case AbilityKind.WeightedNetMastering:
+            psk = EntityStatKind.WeightedNetDuration;
+            ask = EntityStatKind.WeightedNetRange;
+            break;
+          case AbilityKind.PerfectHit:
+            psk = EntityStatKind.PerfectHitDamage;
+            ask = EntityStatKind.PerfectHitChanceToHit;
+            break;
           default:
             Debug.WriteLine("Unsupported kind:  "+ kind);
             break;
@@ -196,6 +243,22 @@ namespace Roguelike.Abilities
 
         if (kind == AbilityKind.ArrowVolley)
           PrimaryStat.Unit = EntityStatUnit.Absolute;
+
+        if (kind == AbilityKind.OpenWound)
+        {
+          AuxStat.Unit = EntityStatUnit.Percentage;
+          PrimaryStat.Unit = EntityStatUnit.Absolute;
+        }
+
+        if (kind == AbilityKind.Rage)
+        {
+          PrimaryStat.Unit = EntityStatUnit.Percentage;
+        }
+        if (kind == AbilityKind.WeightedNetMastering)
+        {
+          PrimaryStat.Unit = EntityStatUnit.Absolute;
+          AuxStat.Unit = EntityStatUnit.Absolute;
+        }
       }
     }
   }

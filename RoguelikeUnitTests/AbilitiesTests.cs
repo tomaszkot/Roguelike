@@ -20,6 +20,8 @@ namespace RoguelikeUnitTests
   {
     const int MaxAbilityInc = 5;
 
+    
+
 
     [Test]
     public void SkeletonMasteringTest()
@@ -30,88 +32,28 @@ namespace RoguelikeUnitTests
       var scroll = PrepareScroll(hero, SpellKind.Skeleton);
       scroll.Count = 10;
       var gm = game.GameManager;
-      //var enemiesCount = gm.CurrentNode.GetTiles<Ally>().Count;
       var spell = gm.SpellManager.ApplySpell(hero, scroll) as SkeletonSpell;
       Assert.NotNull(spell.Ally);
       Assert.Greater(spell.Ally.Stats.Strength, 0);
-      var str = spell.Ally.Stats.Strength;
+      var str = spell.Ally.Stats.MeleeAttack;
 
       var ab = game.GameManager.Hero.GetPassiveAbility(AbilityKind.SkeletonMastering);
       ab.IncreaseLevel(game.Hero);
       game.GameManager.AlliesManager.AllEntities.Clear();
 
+      GotoNextHeroTurn();
       var spell1 = gm.SpellManager.ApplySpell(hero, scroll) as SkeletonSpell;
       Assert.NotNull(spell1.Ally);
       Assert.AreNotEqual(spell.Ally, spell1.Ally);
-      Assert.Greater(spell1.Ally.Stats.Strength, str);
+      Assert.Greater(spell1.Ally.Stats.MeleeAttack, str);
     }
 
-    [Test]
-    public void ArrowVolleyPropsTest()
+    static Dictionary<AbilityKind, SpellKind> AbilityKind2SpellKind = new Dictionary<AbilityKind, SpellKind>()
     {
-      var game = CreateGame();
-      var hero = game.GameManager.Hero;
-      var ab = game.GameManager.Hero.GetActiveAbility(AbilityKind.ArrowVolley);
-
-      Assert.AreEqual(ab.PrimaryStat.Unit, EntityStatUnit.Absolute);
-      Assert.AreEqual(ab.PrimaryStat.Factor, 0);
-
-      ab.IncreaseLevel(game.Hero);
-      Assert.AreEqual(ab.PrimaryStat.Factor, 2);
-
-      ab.IncreaseLevel(game.Hero);
-      Assert.AreEqual(ab.PrimaryStat.Factor, 3);
-    }
-
-    [TestCase(AbilityKind.PiercingArrow)]
-    public void PiercingArrowPropsTest(AbilityKind kind)
-    {
-      var game = CreateGame();
-      var hero = game.GameManager.Hero;
-      var ab = game.GameManager.Hero.GetActiveAbility(kind);
-      
-      Assert.AreEqual(ab.PrimaryStat.Unit, EntityStatUnit.Percentage);
-      Assert.AreEqual(ab.AuxStat.Unit, EntityStatUnit.Absolute);
-
-      Assert.AreEqual(ab.PrimaryStat.Factor, 0);
-      
-      ab.IncreaseLevel(game.Hero);
-      Assert.AreEqual(ab.PrimaryStat.Factor, 80);
-      Assert.AreEqual(ab.AuxStat.Factor, 1);
-      
-
-      ab.IncreaseLevel(game.Hero);
-      Assert.AreEqual(ab.PrimaryStat.Factor, 85);
-
-      Assert.AreEqual(ab.AuxStat.Factor, 2);
-
-    }
-
-    [TestCase(AbilityKind.FireBallMastering)]
-    [TestCase(AbilityKind.IceBallMastering)]
-    [TestCase(AbilityKind.PoisonBallMastering)]
-    [TestCase(AbilityKind.SkeletonMastering)]
-    public void MagicProjectilePropTest(AbilityKind ak)
-    {
-      var game = CreateGame();
-      var ab = game.GameManager.Hero.GetPassiveAbility(ak);
-      if(ak == AbilityKind.FireBallMastering)
-        Assert.AreEqual(ab.PrimaryStat.Kind, EntityStatKind.FireAttack);
-      else if (ak == AbilityKind.PoisonBallMastering)
-        Assert.AreEqual(ab.PrimaryStat.Kind, EntityStatKind.PoisonAttack);
-      else if (ak == AbilityKind.IceBallMastering)
-        Assert.AreEqual(ab.PrimaryStat.Kind, EntityStatKind.ColdAttack);
-      else if (ak == AbilityKind.SkeletonMastering)
-        Assert.AreEqual(ab.PrimaryStat.Kind, EntityStatKind.MeleeAttack);
-
-      Assert.AreEqual(ab.PrimaryStat.Factor, 0);
-
-      for (int i = 0; i < MaxAbilityInc; i++)
-        ab.IncreaseLevel(game.Hero);
-
-      Assert.Greater(ab.PrimaryStat.Factor, 10);
-      Assert.Less(ab.PrimaryStat.Factor, 50);
-    }
+      {AbilityKind.FireBallMastering, SpellKind.FireBall},
+      {AbilityKind.IceBallMastering, SpellKind.IceBall},
+      {AbilityKind.PoisonBallMastering, SpellKind.PoisonBall},
+    };
 
     [TestCase(AbilityKind.FireBallMastering)]
     [TestCase(AbilityKind.IceBallMastering)]
@@ -122,7 +64,7 @@ namespace RoguelikeUnitTests
       var ab = game.GameManager.Hero.GetPassiveAbility(ak);
       var enemy = PlainEnemies.First();
       var enemyBeginHealth = enemy.Stats.Health;
-      UseFireBallSpellSource(game.Hero, enemy, true);
+      UseSpellSource(game.Hero, enemy, true, AbilityKind2SpellKind[ak]);
       Assert.Less(enemy.Stats.Health, enemyBeginHealth);
       var diff1 = enemyBeginHealth - enemy.Stats.Health;
       enemyBeginHealth = enemy.Stats.Health;
@@ -132,7 +74,7 @@ namespace RoguelikeUnitTests
 
       GotoNextHeroTurn();
 
-      UseFireBallSpellSource(game.Hero, enemy, true);
+      UseSpellSource(game.Hero, enemy, true, AbilityKind2SpellKind[ak]);
       Assert.Less(enemy.Stats.Health, enemyBeginHealth);
       var diff2 = enemyBeginHealth - enemy.Stats.Health;
       Assert.Greater(diff2, diff1);
@@ -589,7 +531,7 @@ namespace RoguelikeUnitTests
     [Test]
     public void TestWandMastering()//ChanceToElementalBulkAttack()
     {
-      var game = CreateGame();
+      var game = CreateGame(numEnemies:100);
       float originalStatValue = 0;
       var destExtraStat = SetWeapon(AbilityKind.WandsMastering, game.Hero, out originalStatValue);
       var weapon = game.Hero.GetActiveWeapon();

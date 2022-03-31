@@ -151,6 +151,7 @@ namespace Roguelike.Abilities
         case AbilityKind.SceptersMastering:
         case AbilityKind.StaffsMastering:
         case AbilityKind.BowsMastering:
+        case AbilityKind.CrossBowsMastering:
         case AbilityKind.FireBallMastering:
         case AbilityKind.IceBallMastering:
         case AbilityKind.PoisonBallMastering:
