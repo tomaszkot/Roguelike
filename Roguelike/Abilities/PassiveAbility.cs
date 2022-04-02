@@ -76,20 +76,20 @@ namespace Roguelike.Abilities
             ask = EntityStatKind.BowExtraDamage;
             break;
           case AbilityKind.FireBallMastering:
-            psk = EntityStatKind.FireAttack;
+            psk = EntityStatKind.FireBallExtraDamage;
             //ask = EntityStatKind.ChanceToCauseFiring;TODO
             break;
           case AbilityKind.IceBallMastering:
-            psk = EntityStatKind.ColdAttack;
+            psk = EntityStatKind.IceBallExtraDamage;
             //ask = EntityStatKind.ChanceToCauseFreezing;TODO
             break;
           case AbilityKind.PoisonBallMastering:
-            psk = EntityStatKind.PoisonAttack;
+            psk = EntityStatKind.PoisonBallExtraDamage;
             //ask = EntityStatKind.ChanceToCausePoisoning;TODO
             break;
           case AbilityKind.SkeletonMastering:
-            psk = EntityStatKind.MeleeAttack;
-            //ask = EntityStatKind.ChanceToCausePoisoning;TODO
+            psk = EntityStatKind.PrimaryAttributes;
+            ask = EntityStatKind.MaxSkeletonsCount;
             break;
 
           case AbilityKind.LootingMastering:
@@ -114,6 +114,11 @@ namespace Roguelike.Abilities
         PrimaryStat.Unit = EntityStatUnit.Percentage;
         AuxStat.SetKind(ask);
         AuxStat.Unit = EntityStatUnit.Percentage;
+
+        if (kind == AbilityKind.SkeletonMastering)
+        {
+          AuxStat.Unit = EntityStatUnit.Absolute;
+        }
       }
     }
 
@@ -155,18 +160,15 @@ namespace Roguelike.Abilities
         case AbilityKind.FireBallMastering:
         case AbilityKind.IceBallMastering:
         case AbilityKind.PoisonBallMastering:
-        case AbilityKind.SkeletonMastering:
+
 
           if (primary)
           {
             factor = level;
-            
+
             if (kind == AbilityKind.WandsMastering //ChanceToElementalBulkAttack
               || kind == AbilityKind.SceptersMastering//ChanceToCauseElementalAilment
               || kind == AbilityKind.StaffsMastering//ChanceToRepeatElementalAttack
-              || kind == AbilityKind.FireBallMastering
-              || kind == AbilityKind.IceBallMastering
-              || kind == AbilityKind.PoisonBallMastering
               )
             {
               var multsDef = new int[] { 0, 4, 7, 10, 15, 20 };
@@ -179,8 +181,9 @@ namespace Roguelike.Abilities
               || kind == AbilityKind.SkeletonMastering
               )
             {
-              var multsDef = new int[] { 0, 4, 7, 10, 15, 20 };
-              factor = multsDef[level] * 2;
+              //damage in %
+              var multsDef = new int[] { 0, 10, 20, 30, 40, 50 };
+              factor = multsDef[level];
             }
           }
           else
@@ -194,7 +197,20 @@ namespace Roguelike.Abilities
             }
           }
           break;
-        
+        case AbilityKind.SkeletonMastering:
+          if (primary)
+          {
+            //PrimaryAttributes %
+            var multsDef = new int[] { 0, 10, 15, 20, 25, 30 };
+            factor = multsDef[level];
+          }
+          else 
+          {
+            //MaxSkeletonsCount
+            var maxSkeletonsCount = new int[] { 0, 1, 1, 2, 2, 3 };
+            factor = maxSkeletonsCount[level];
+          }
+          break;
         case AbilityKind.StrikeBack:
           var multsDefSB = new int[] { 0, 2, 4, 7, 10, 15 };
           factor = multsDefSB[level];
@@ -258,7 +274,7 @@ namespace Roguelike.Abilities
         case AbilityKind.FireBallMastering:
         case AbilityKind.IceBallMastering:
         case AbilityKind.PoisonBallMastering:
-          desc = "Bonus when using "+ kind.ToString().Replace("Mastering", "");
+          desc = "Bonus when using mana-powered "+ kind.ToString().Replace("Mastering", "");
           break;
         case AbilityKind.SkeletonMastering:
           desc = "Bonus when using " + kind.ToString().Replace("Mastering", "");

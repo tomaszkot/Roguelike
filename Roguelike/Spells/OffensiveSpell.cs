@@ -59,7 +59,8 @@ namespace Roguelike.Spells
       if (damage <= 0)
         damage = 1;
 
-      damage += caller.GetExtraDamage(this.Kind, damage);
+      if(caller != null)//for proj. weapon it can be null
+        damage += caller.GetExtraDamage(this.Kind, damage);
 
       return damage;
     }

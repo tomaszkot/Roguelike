@@ -96,6 +96,11 @@ namespace Roguelike.Tiles.LivingEntities
       SetNextLevelExp(nle);
     }
 
+    public void IncreaseStats(Abilities.PassiveAbility ab)
+    {
+      base.IncreaseStats(1+ (ab.PrimaryStat.Factor)/100, IncreaseStatsKind.Ability);
+    }
+
     public void InitSpawned(char symbol, int level, Difficulty? diff = null) //where T : Ally, new()
     {
       Symbol = symbol;

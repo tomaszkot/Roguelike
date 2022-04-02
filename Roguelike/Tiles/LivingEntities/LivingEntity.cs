@@ -243,27 +243,30 @@ namespace Roguelike.Tiles.LivingEntities
       foreach (var kv in Stats.GetStats())
       {
         var incToUse = inc;
-        if (kv.Value.Kind == EntityStatKind.Strength ||
-            kv.Value.Kind == EntityStatKind.MeleeAttack
-            //kv.Value.Kind == EntityStatKind.Defense
-            )
-        {
-          incToUse *= 1.5f;
-        }
-        //enemies usually do not have that stat
-        //if (
-        //    kv.Value.Kind == EntityStatKind.FireAttack ||
-        //    )
-        //{
-        //  incToUse *= 0.2f;
-        //}
-        if (kv.Value.Unit == EntityStatUnit.Percentage)
-        {
-          incToUse = 1.1f;
-          if(kv.Value.Value.Nominal > 50)
-            incToUse = 1.05f;
-        }
 
+        if (kind != IncreaseStatsKind.Ability)
+        {
+          if (kv.Value.Kind == EntityStatKind.Strength ||
+              kv.Value.Kind == EntityStatKind.MeleeAttack
+              //kv.Value.Kind == EntityStatKind.Defense
+              )
+          {
+            incToUse *= 1.5f;
+          }
+          //enemies usually do not have that stat
+          //if (
+          //    kv.Value.Kind == EntityStatKind.FireAttack ||
+          //    )
+          //{
+          //  incToUse *= 0.2f;
+          //}
+          if (kv.Value.Unit == EntityStatUnit.Percentage)
+          {
+            incToUse = 1.1f;
+            if (kv.Value.Value.Nominal > 50)
+              incToUse = 1.05f;
+          }
+        }
         var val = kv.Value.Value.Nominal * incToUse;
         Stats.SetNominal(kv.Key, val);
       }

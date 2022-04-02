@@ -16,7 +16,7 @@ namespace Roguelike.Tiles.LivingEntities
   public enum RoomKind { Unset, PuzzleRoom, Island }
   public enum EnemyPowerKind { Unset, Plain, Champion, Boss };
   public enum PrefferedFightStyle { Physical, Magic, Distance }
-  public enum IncreaseStatsKind { Level, PowerKind, Name, Difficulty }
+  public enum IncreaseStatsKind { Level, PowerKind, Name, Difficulty, Ability }
 
   public class Enemy : LivingEntity
   {

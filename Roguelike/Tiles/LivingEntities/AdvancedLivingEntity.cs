@@ -878,5 +878,14 @@ namespace Roguelike.Tiles.LivingEntities
       var dam = Calculated.FactorCalculator.CalcPercentageValue(damage, ab.PrimaryStat.Factor);
       return dam;
     }
+
+    internal bool CanAddNextSkeleton(int currentCount)
+    {
+      var ab = this.GetPassiveAbility(AbilityKind.SkeletonMastering);
+      if (currentCount > ab.AuxStat.Factor)
+        return false;
+
+      return true;
+    }
   }
 }

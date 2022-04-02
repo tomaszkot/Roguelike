@@ -1301,10 +1301,15 @@ namespace Roguelike.Managers
       {
         if (spellSource.Kind == Spells.SpellKind.Skeleton)
         {
-          if (GetAlliesCount<AlliedEnemy>() > 0)
+          var count = GetAlliesCount<AlliedEnemy>();
+          if (count > 0)
           {
-            ReportFailure("Currently you can not instantiate more skeletons");
-            return false;
+            var casterAdv = caster as AdvancedLivingEntity;
+            if (casterAdv == null || !casterAdv.CanAddNextSkeleton(count))
+            {
+              ReportFailure("Currently you can not instantiate more skeletons");
+              return false;
+            }
           }
         }
 

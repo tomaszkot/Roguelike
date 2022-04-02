@@ -203,10 +203,7 @@ namespace Roguelike.Abilities
             break;
           case AbilityKind.OpenWound:
             psk = EntityStatKind.BleedingDuration;
-            
-
             ask = EntityStatKind.BleedingExtraDamage;
-            
             break;
           case AbilityKind.Rage:
             psk = EntityStatKind.MeleeAttack;

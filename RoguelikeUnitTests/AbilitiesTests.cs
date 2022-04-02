@@ -20,9 +20,6 @@ namespace RoguelikeUnitTests
   {
     const int MaxAbilityInc = 5;
 
-    
-
-
     [Test]
     public void SkeletonMasteringTest()
     {
@@ -32,20 +29,28 @@ namespace RoguelikeUnitTests
       var scroll = PrepareScroll(hero, SpellKind.Skeleton);
       scroll.Count = 10;
       var gm = game.GameManager;
+      Assert.AreEqual(gm.AlliesManager.AllAllies.Count(), 0);
       var spell = gm.SpellManager.ApplySpell(hero, scroll) as SkeletonSpell;
       Assert.NotNull(spell.Ally);
       Assert.Greater(spell.Ally.Stats.Strength, 0);
-      var str = spell.Ally.Stats.MeleeAttack;
+      var ally1 = spell.Ally;
+      Assert.AreEqual(gm.AlliesManager.AllAllies.Count(), 1);
+
+      var spell1 = gm.SpellManager.ApplySpell(hero, scroll) as SkeletonSpell;
+      Assert.AreEqual(gm.AlliesManager.AllAllies.Count(), 1);//shall fail as so far 1 skeleton allowed
 
       var ab = game.GameManager.Hero.GetPassiveAbility(AbilityKind.SkeletonMastering);
       ab.IncreaseLevel(game.Hero);
-      game.GameManager.AlliesManager.AllEntities.Clear();
+      //game.GameManager.AlliesManager.AllEntities.Clear();
 
       GotoNextHeroTurn();
-      var spell1 = gm.SpellManager.ApplySpell(hero, scroll) as SkeletonSpell;
+      spell1 = gm.SpellManager.ApplySpell(hero, scroll) as SkeletonSpell;
+      Assert.AreEqual(gm.AlliesManager.AllAllies.Count(), 2);
       Assert.NotNull(spell1.Ally);
       Assert.AreNotEqual(spell.Ally, spell1.Ally);
-      Assert.Greater(spell1.Ally.Stats.MeleeAttack, str);
+      Assert.Greater(spell1.Ally.Stats.Strength, ally1.Stats.Strength);
+      var ratio = spell1.Ally.Stats.Strength / ally1.Stats.Strength;
+      Assert.That(ratio, Is.EqualTo(1).Within(.15));
     }
 
     static Dictionary<AbilityKind, SpellKind> AbilityKind2SpellKind = new Dictionary<AbilityKind, SpellKind>()

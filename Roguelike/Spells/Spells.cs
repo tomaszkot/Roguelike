@@ -166,6 +166,13 @@ namespace Roguelike.Spells
       AllyNextLevel = CreateAlly(caller, diff, level+1);
 
       manaCost = (float)(BaseManaCost * 2) + 2;
+
+      if (caller is AdvancedLivingEntity ale)
+      {
+        var ab = ale.GetPassiveAbility(Abilities.AbilityKind.SkeletonMastering);
+        if(ab.Level > 0)
+          Ally.IncreaseStats(ab);
+      }
     }
 
     private Ally CreateAlly(LivingEntity caller, Difficulty? diff, int level)

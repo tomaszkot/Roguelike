@@ -94,6 +94,14 @@ namespace Roguelike.Attributes
 
     PerfectHitChanceToHit = 1250,
     PerfectHitDamage = 1251,
+
+    PrimaryAttributes = 1300,
+    MaxSkeletonsCount = 1310,
+
+    FireBallExtraDamage = 1350,
+    IceBallExtraDamage = 1351,
+    PoisonBallExtraDamage = 1352,
+    LightingBallExtraDamage = 1353
   };
 
   public class EntityStats
