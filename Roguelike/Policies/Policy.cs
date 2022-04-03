@@ -1,4 +1,5 @@
-﻿using Roguelike.Tiles.LivingEntities;
+﻿using Roguelike.Tiles.Abstract;
+using Roguelike.Tiles.LivingEntities;
 using System;
 
 namespace Roguelike.Policies
@@ -9,6 +10,13 @@ namespace Roguelike.Policies
   {
     public PolicyKind Kind { get; set; }
     public event EventHandler<Policy> OnApplied;
+    public event EventHandler<IObstacle> OnTargetHit;
+
+    protected virtual void ReportHit(IObstacle entity)
+    {
+      if(OnTargetHit!=null)
+        OnTargetHit(this, entity);
+    }
 
     protected virtual void ReportApplied(LivingEntity entity)
     {

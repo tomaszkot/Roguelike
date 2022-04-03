@@ -1421,14 +1421,17 @@ namespace Roguelike.Managers
       return DoApply(caster, target, destFi, GetAttackVictimsCount(caster), BeforeApply, AfterApply);
     }
 
-    public void CallTryAddForLootSource(ProjectileCastPolicy policy)
+    public void CallTryAddForLootSource(IObstacle obstacle)
     {
-      foreach (var tar in policy.Targets)
+      //foreach (var tar in policy.Targets)
       {
-        var le = tar is LivingEntity;
-        if (!le)//le is handled specially
+        if (obstacle is ILootSource)
         {
-          LootManager.TryAddForLootSource(tar as ILootSource);
+          var le = obstacle is LivingEntity;
+          if (!le)//le is handled specially
+          {
+            LootManager.TryAddForLootSource(obstacle as ILootSource);
+          }
         }
       }
     }
@@ -1455,9 +1458,14 @@ namespace Roguelike.Managers
       if (BeforeApply != null)
         BeforeApply(policy);
 
+      policy.OnTargetHit += (s, e) =>
+      {
+        CallTryAddForLootSource(e);
+      };
+
       policy.OnApplied += (s, e) =>
       {
-        CallTryAddForLootSource(policy);
+        //CallTryAddForLootSource(policy);
 
         FinishPolicyApplied(caster, AfterApply, policy);
       };

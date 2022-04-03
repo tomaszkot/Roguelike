@@ -180,7 +180,7 @@ namespace Roguelike.Managers
 
       policy.OnApplied += (s, e) =>
       {
-        gm.CallTryAddForLootSource(policy);
+        gm.CallTryAddForLootSource(policy.Targets.First());
 
         if (looped)
           return;
