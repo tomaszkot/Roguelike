@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using Roguelike.Abilities;
 using Roguelike.Tiles.LivingEntities;
 
 namespace Roguelike.Abstract.Projectiles
@@ -9,5 +10,9 @@ namespace Roguelike.Abstract.Projectiles
     LivingEntity Caller { get; set; }
 
     bool DiesOnHit { get; set; }
+
+    AbilityKind ActiveAbilityKind { get; set; }
+
+    int MaxVictimsCount { get; set; }
   }
 }

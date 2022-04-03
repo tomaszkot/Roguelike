@@ -4,6 +4,7 @@ using Roguelike.Abilities;
 using Roguelike.Abstract.Projectiles;
 using Roguelike.Attributes;
 using Roguelike.Extensions;
+using Roguelike.Tiles.Abstract;
 using Roguelike.Tiles.LivingEntities;
 using System;
 using System.Collections.Generic;
@@ -80,12 +81,6 @@ namespace Roguelike.Tiles.Looting
     {
       StateChanged?.Invoke(this, FightItemState);
     }
-
-    //public void Deactivate()
-    //{
-    //  FightItemState = FightItemState.Deactivated;
-    //  SendStateChanged();
-    //}
 
     public bool IsBowLikeAmmo
     {
@@ -166,7 +161,6 @@ namespace Roguelike.Tiles.Looting
 
       }
     }
-
     public bool RequiresEnemyOnCast
     {
       get
@@ -178,6 +172,34 @@ namespace Roguelike.Tiles.Looting
                fightItemKind == FightItemKind.PlainArrow ||
                fightItemKind == FightItemKind.PlainBolt;
       }
+    }
+
+    List<IDestroyable> hits;
+    public int RegisterHit(IDestroyable dest)
+    {
+      if (hits == null)
+        hits = new List<IDestroyable>();
+      if (!hits.Contains(dest))
+        hits.Add(dest);
+      return hits.Count;
+    }
+
+    public bool WasHit(IDestroyable dest)
+    {
+      if (hits == null)
+        return false;
+      return hits.Contains(dest);
+    }
+
+    public int Hits 
+    {
+      get 
+      {
+        if (hits == null)
+          return 0;
+        return hits.Count; 
+      }
+      
     }
 
     public AbilityKind AbilityKind

@@ -66,7 +66,7 @@ namespace Roguelike.Abilities
           }
           else 
           {
-            var victims = new int[] { 0, 1, 2, 3, 4, 5 };
+            var victims = new int[] { 0, 2, 3, 4, 5, 6 };
             factor = victims[level];
           }
           break;
@@ -149,7 +149,7 @@ namespace Roguelike.Abilities
           desc = "Hit target with a sword or a dagger to cause bleeding";
           break;
         case AbilityKind.Rage:
-          desc = "Increases the mellee damage of the caster";
+          desc = "Increases the melee damage of the caster";
           break;
         case AbilityKind.ArrowVolley:
           desc = "Discharges a number of arrows at one time";

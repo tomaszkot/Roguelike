@@ -30,13 +30,13 @@ namespace Roguelike.Tiles.LivingEntities
       base.OnHitBy(amount, spell, damageDesc);
     }
 
-    public override float OnMelleeHitBy(LivingEntity attacker)
+    public override float OnMeleeHitBy(LivingEntity attacker)
     {
       if(tag1 == "rooster" || tag1 == "hen")
         PlaySound("rooster_scream");
       else if (tag1 == "pig")
         PlaySound("pig_scream");
-      return base.OnMelleeHitBy(attacker);
+      return base.OnMeleeHitBy(attacker);
     }
   }
 }

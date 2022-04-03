@@ -41,7 +41,7 @@ namespace RoguelikeUnitTests
         enemy.ActiveManaPoweredSpellSource = null;//this causes attack
 
         //hit enemy to force him to use effect
-        enemy.OnMelleeHitBy(hero);
+        enemy.OnMeleeHitBy(hero);
 
         game.GameManager.Context.TurnOwner = TurnOwner.Allies;
         game.GameManager.Context.PendingTurnOwnerApply = true;
@@ -67,12 +67,12 @@ namespace RoguelikeUnitTests
       Assert.Greater(ActivePlainEnemies.Count, 0);
       var enemy = ActivePlainEnemies.First();
       var enemyHealth = enemy.Stats.Health;
-      enemy.OnMelleeHitBy(hero);
+      enemy.OnMeleeHitBy(hero);
       Assert.Greater(enemyHealth, enemy.Stats.Health);
       enemyHealth = enemy.Stats.Health;
 
       var wpn = GenerateRandomEqOnLevelAndCollectIt<Weapon>();
-      enemy.OnMelleeHitBy(hero);
+      enemy.OnMeleeHitBy(hero);
 
       Assert.Greater(enemyHealth, enemy.Stats.Health);
     }
@@ -91,7 +91,7 @@ namespace RoguelikeUnitTests
       Assert.AreEqual(ccs, 100);
 
       var enemy = ActivePlainEnemies.First();
-      enemy.OnMelleeHitBy(hero);
+      enemy.OnMeleeHitBy(hero);
       Assert.True(enemy.LastingEffects.Any());
       Assert.AreEqual(enemy.LastingEffects[0].Type, EffectType.Stunned);
       Assert.AreEqual(enemy.LastingEffects[0].Description, "Stunned");
@@ -137,7 +137,7 @@ namespace RoguelikeUnitTests
       game.Level.SetTile(enemy, emp.point);
       //PlaceCloseToHero(enemy);
       if (attackKind == AttackKind.Unset)
-        DoDamage(enemy, game.Hero, (LivingEntity attacker, LivingEntity victim) => { victim.OnMelleeHitBy(attacker); });
+        DoDamage(enemy, game.Hero, (LivingEntity attacker, LivingEntity victim) => { victim.OnMeleeHitBy(attacker); });
 
       else if (attackKind == AttackKind.PhysicalProjectile)
       {
@@ -177,7 +177,7 @@ namespace RoguelikeUnitTests
       PlaceCloseToHero(enemy);
       if (attackKind == AttackKind.Unset)
       {
-        healthChanges = DoDamage(game.Hero, enemy, (LivingEntity attacker, LivingEntity en) => { en.OnMelleeHitBy(attacker); });
+        healthChanges = DoDamage(game.Hero, enemy, (LivingEntity attacker, LivingEntity en) => { en.OnMeleeHitBy(attacker); });
       }
       else if (attackKind == AttackKind.Melee)
       {
@@ -291,7 +291,7 @@ namespace RoguelikeUnitTests
       var attackFormatted = hero.GetFormattedStatValue(Roguelike.Attributes.EntityStatKind.MeleeAttack, false);
       Assert.True(attackFormatted.Contains("-"));//e.g. "17-19");
 
-      Assert.Greater(victim.OnMelleeHitBy(hero), 0); 
+      Assert.Greater(victim.OnMeleeHitBy(hero), 0); 
     }
     
   }

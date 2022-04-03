@@ -81,7 +81,7 @@ namespace Roguelike.Managers
           var bulkOK = HandleBulk(enemyVictim, EntityStatKind.ChanceToBulkAttack);
           if (!bulkOK)
           {
-            var repeatOK = gm.Hero.IsStatRandomlyTrue(EntityStatKind.ChanceToRepeatMelleeAttack);
+            var repeatOK = gm.Hero.IsStatRandomlyTrue(EntityStatKind.ChanceToRepeatMeleeAttack);
             if (repeatOK)
               gm.ApplyHeroPhysicalAttackPolicy(enemyVictim, false);
           }

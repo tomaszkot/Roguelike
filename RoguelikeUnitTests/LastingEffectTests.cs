@@ -276,7 +276,7 @@ namespace RoguelikeUnitTests
       var wpn = game.GameManager.LootGenerator.GetLootByTileName<Weapon>("rusty_sword");
       SetHeroEquipment(wpn);
 
-      enemy.OnMelleeHitBy(game.Hero);
+      enemy.OnMeleeHitBy(game.Hero);
       var le1 = enemy.LastingEffects.Where(i => i.Type == EffectType.Bleeding).FirstOrDefault();
       Assert.NotNull(le1);
       Assert.Greater(enemyHealth, enemy.Stats.Health);
@@ -317,7 +317,7 @@ namespace RoguelikeUnitTests
       var wpn = game.GameManager.LootGenerator.GetLootByTileName<Weapon>("rusty_sword");
       SetHeroEquipment(wpn);
 
-      enemy.OnMelleeHitBy(game.Hero);
+      enemy.OnMeleeHitBy(game.Hero);
       var le1 = enemy.LastingEffects.Where(i => i.Type == EffectType.Bleeding).SingleOrDefault();
       Assert.NotNull(le1);
 
@@ -335,7 +335,7 @@ namespace RoguelikeUnitTests
         GotoNextHeroTurn();
         if (i == 0)
         {
-          enemy.OnMelleeHitBy(game.Hero);
+          enemy.OnMeleeHitBy(game.Hero);
         }
 
       }
@@ -357,7 +357,7 @@ namespace RoguelikeUnitTests
       var poisonAttack = enemy.Stats.GetStat(EntityStatKind.PoisonAttack);
       poisonAttack.Value.Nominal = 10;
 
-      game.Hero.OnMelleeHitBy(enemy);
+      game.Hero.OnMeleeHitBy(enemy);
       var le1 = game.Hero.GetFirstLastingEffect(EffectType.Poisoned);
       Assert.NotNull(le1);
 

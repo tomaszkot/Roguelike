@@ -188,7 +188,7 @@ namespace Roguelike.Tiles.LivingEntities
         Stats.SetNominal(basicStat.Key, GetStartStat(basicStat.Key));
       }
 
-      AlignMelleeAttack();
+      AlignMeleeAttack();
 
       Alive = true;
       Name = "";
@@ -218,7 +218,7 @@ namespace Roguelike.Tiles.LivingEntities
       effectsToUse[EffectType.Inaccuracy] = GenerationInfo.DefaultEnemyResistAllUsageCount;
     }
 
-    protected void AlignMelleeAttack()
+    protected void AlignMeleeAttack()
     {
       Stats.SetNominal(EntityStatKind.MeleeAttack, this.Stats.Strength);//attack is same as str for a simple entity
     }
@@ -566,7 +566,7 @@ namespace Roguelike.Tiles.LivingEntities
       return npd;
     }
 
-    public float CalcMeleeDamage(float attackerPower, ref string desc)
+    public float CalcMeleeDamage(float attackerPower, ref string desc, ProjectileFightItem fi = null)
     {
       float defense = GetDefense();
       if (defense == 0)
@@ -585,10 +585,13 @@ namespace Roguelike.Tiles.LivingEntities
       if (defense <= 0)
         defense = 1;//HACK, TODO
       var inflicted = attackerPower / defense;
-      desc = Name.ToString() + " received melee damage: " + inflicted.Formatted();
+      var damageName = "melee";
+      if (fi != null)
+        damageName = "projectile";
+      desc = Name.ToString() + " received "+ damageName+" damage: " + inflicted.Formatted();
       return inflicted;
     }
-    public virtual float OnMelleeHitBy(LivingEntity attacker)
+    public virtual float OnMeleeHitBy(LivingEntity attacker)
     {
       string desc = "";
       var av = attacker.GetAttackValue(AttackKind.Melee);
@@ -662,9 +665,9 @@ namespace Roguelike.Tiles.LivingEntities
         if (fi is ProjectileFightItem pfi)
         {
           var damageDesc = "";
-
+          
           var ad = new AttackDescription(fi.Caller, true, AttackKind.PhysicalProjectile);
-          var inflicted = CalcMeleeDamage(ad.CurrentPhysicalVariated, ref damageDesc);//TODO what about NonPhysical?
+          var inflicted = CalcMeleeDamage(ad.CurrentPhysicalVariated, ref damageDesc, pfi);//TODO what about NonPhysical?
           var sound = pfi.HitTargetSound;// "punch";
           var srcName = fi.FightItemKind.ToDescription();
           var attacker = pfi.Caller;
@@ -936,7 +939,7 @@ namespace Roguelike.Tiles.LivingEntities
 
     internal void ApplyPhysicalDamage(LivingEntity victim)
     {
-      victim.OnMelleeHitBy(this);
+      victim.OnMeleeHitBy(this);
     }
 
     public float GetCurrentValue(EntityStatKind kind)

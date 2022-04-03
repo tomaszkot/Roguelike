@@ -53,7 +53,7 @@ namespace Roguelike.Attributes
     ChanceToCauseBleeding = 80, ChanceToCauseStunning = 82, ChanceToCauseTearApart = 84, 
 
     ChanceToStrikeBack = 90, ChanceToBulkAttack = 92, ChanceToBurnNeighbour = 94, 
-    ChanceToRepeatMelleeAttack = 100, ChanceToRepeatElementalProjectileAttack = 102, ChanceToRepeatPhysicalProjectileAttack = 104,
+    ChanceToRepeatMeleeAttack = 100, ChanceToRepeatElementalProjectileAttack = 102, ChanceToRepeatPhysicalProjectileAttack = 104,
     ChanceToCauseElementalAilment,
     ChanceToElementalProjectileBulkAttack = 110,
 

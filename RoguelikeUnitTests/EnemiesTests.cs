@@ -154,7 +154,7 @@ namespace RoguelikeUnitTests
     private static float CheckHit(Hero hero, float lastDamageFromPlain, Enemy plain)
     {
       var healthBefore = hero.Stats.Health;
-      hero.OnMelleeHitBy(plain);
+      hero.OnMeleeHitBy(plain);
       var healthAfter = hero.Stats.Health;
       Assert.Greater(healthBefore, healthAfter);
       var diffPlain = healthBefore - healthAfter;

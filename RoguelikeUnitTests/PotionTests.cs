@@ -94,7 +94,7 @@ namespace RoguelikeUnitTests
       var halfHealth = heroHealth / 2;
 
       while (hero.Stats.Health > halfHealth)
-        hero.OnMelleeHitBy(ActivePlainEnemies.First());
+        hero.OnMeleeHitBy(ActivePlainEnemies.First());
       Assert.Greater(heroHealth, hero.Stats.Health);
       heroHealth = hero.Stats.Health;
 
@@ -169,7 +169,7 @@ namespace RoguelikeUnitTests
       var poisonAttack = enemy.Stats.GetStat(EntityStatKind.PoisonAttack);
       poisonAttack.Value.Nominal = 10;
 
-      game.Hero.OnMelleeHitBy(enemy);
+      game.Hero.OnMeleeHitBy(enemy);
       var le1 = game.Hero.GetFirstLastingEffect(EffectType.Poisoned);
       Assert.NotNull(le1);
 

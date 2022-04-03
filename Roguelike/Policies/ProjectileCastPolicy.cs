@@ -19,9 +19,13 @@ namespace Roguelike.Policies
     public IProjectile Projectile { get; set; }
     public LivingEntity Caster { get => caster; set => caster = value; }
     public IProjectilesFactory ProjectilesFactory { get; set; }
-    public int ProjectilesCount { get; internal set; } = 1;
+    public int MaxVictimsCount 
+    {
+      get; 
+      internal set; 
+    } = 1;
     public bool ContinueAfterHit { get; set; } = false;
-    public int MaxVictimsCount = 1;
+    //public int MaxVictimsCount = 1;
     public List<Tiles.Abstract.IObstacle> Targets = new List<Tiles.Abstract.IObstacle>();
 
     public void AddTarget(Tiles.Abstract.IObstacle obstacle)
@@ -31,10 +35,12 @@ namespace Roguelike.Policies
 
     public void Apply(LivingEntity caster)
     {
-      if (this.Targets.Count == 1 && ProjectilesCount > 1)
+      //if (this.Targets.Count == 1 && MaxVictimsCount > 1)
       {
         var target = this.Targets[0];
-        Targets = GetOtherVictims(caster, target);
+        if(MaxVictimsCount > 1)
+          Targets = GetOtherVictims(caster, target);
+
         Targets.Insert(0, target);
       }
 
@@ -64,37 +70,33 @@ namespace Roguelike.Policies
     private List<Tiles.Abstract.IObstacle> GetOtherVictims(LivingEntity caster, Tiles.Abstract.IObstacle target)
     {
       var otherOnes = new List<Tiles.Abstract.IObstacle>();
-      if (ProjectilesCount > 1)
+      if (MaxVictimsCount > 1)
       {
         //var neibs = GameManager.CurrentNode.GetNeighborhoodTiles<Enemy>(caster, caster, 9).Distinct().ToList();//TODO 9
-        var neibs = GameManager.EnemiesManager.GetInRange(caster, 7, target as Enemy);
-        GameManager.Logger.LogInfo("GetNeighborhoodTiles<Enemy> neibs.Count : "+ neibs.Count);
-        var en = target as Enemy;
-        if (en != null)
-          neibs.Remove(en);
-        for (int i = 1; i < ProjectilesCount; i++)
+        if (Projectile.ActiveAbilityKind == Abilities.AbilityKind.ArrowVolley)
         {
-          en = neibs.FirstOrDefault();
+          var neibs = GameManager.EnemiesManager.GetInRange(caster, 7, target as Enemy);
+          GameManager.Logger.LogInfo("GetNeighborhoodTiles<Enemy> neibs.Count : " + neibs.Count);
+          var en = target as Enemy;
           if (en != null)
-          {
-            otherOnes.Add(en);
             neibs.Remove(en);
+          for (int i = 1; i < MaxVictimsCount; i++)
+          {
+            en = neibs.FirstOrDefault();
+            if (en != null)
+            {
+              otherOnes.Add(en);
+              neibs.Remove(en);
+            }
+            else
+              break;
           }
-          else
-            break;
+        }
+        else if (Projectile.ActiveAbilityKind == Abilities.AbilityKind.PiercingArrow)
+        {
         }
       }
       return otherOnes;
-      //else if (ContinueAfterHit)
-      //{
-      //  //TODO
-      //  var en = TargetDestroyable as Enemy;
-      //  var neibs = GameManager.CurrentNode.GetNeighborhoodTiles<Enemy>(caster, 1);
-      //  if (neibs.Any())
-      //  {
-      //  }
-
-      //}
     }
   }
 }

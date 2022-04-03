@@ -73,7 +73,7 @@ namespace RoguelikeUnitTests.Helpers
     {
       Assert.True(en.Alive);
       while (en.Alive)
-        en.OnMelleeHitBy(game.Hero);
+        en.OnMeleeHitBy(game.Hero);
 
       game.GameManager.EnemiesManager.RemoveDead();
     }

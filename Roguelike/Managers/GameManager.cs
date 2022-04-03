@@ -1353,7 +1353,7 @@ namespace Roguelike.Managers
       Persister.SaveOptions(Options.Instance);
     }
 
-    public bool TryApplyAttackPolicy(ProjectileFightItem fi, Tile pointedTile, Action<Tile> beforAttackHandler = null)
+    public virtual bool TryApplyAttackPolicy(ProjectileFightItem fi, Tile pointedTile, Action<Tile> beforAttackHandler = null)
     {
       if (!CanHeroDoAction())
         return false;
@@ -1438,7 +1438,7 @@ namespace Roguelike.Managers
       LivingEntity caster,
       Tiles.Abstract.IObstacle target, 
       ProjectileFightItem fi, 
-      int projectilesCount, 
+      int maxVictimsCount, 
       Action<Policy> BeforeApply, 
       Action<Policy> AfterApply
     )
@@ -1447,9 +1447,10 @@ namespace Roguelike.Managers
       var policy = Container.GetInstance<ProjectileCastPolicy>();
       policy.AddTarget(target);
       policy.GameManager = this;
-      policy.ProjectilesCount = projectilesCount;
+      policy.MaxVictimsCount = maxVictimsCount;
       policy.ProjectilesFactory = Container.GetInstance<IProjectilesFactory>();
       policy.Projectile = fi;
+      fi.MaxVictimsCount = maxVictimsCount;
       policy.Caster = caster;
       if (BeforeApply != null)
         BeforeApply(policy);

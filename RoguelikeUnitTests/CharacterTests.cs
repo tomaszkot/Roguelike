@@ -60,7 +60,7 @@ namespace RoguelikeUnitTests
 
       var enemy = game.GameManager.EnemiesManager.AllEntities.First();
 
-      game.Hero.OnMelleeHitBy(enemy);
+      game.Hero.OnMeleeHitBy(enemy);
       Assert.Greater(health, game.Hero.Stats.Health);
       DoLevelUp(game.Hero);
       var time = tt.TotalSeconds;

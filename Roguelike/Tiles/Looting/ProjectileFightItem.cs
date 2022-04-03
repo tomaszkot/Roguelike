@@ -1,6 +1,7 @@
 ﻿using Dungeons.Tiles;
 using Dungeons.Tiles.Abstract;
 using Newtonsoft.Json;
+using Roguelike.Abilities;
 using Roguelike.Tiles.LivingEntities;
 using System;
 using System.Collections.Generic;
@@ -22,6 +23,8 @@ namespace Roguelike.Tiles.Looting
     {
       Caller = caller;
     }
+
+    public AbilityKind ActiveAbilityKind { get; set; }
 
     [JsonIgnore]
     public Tile Target { get; set; }
@@ -65,5 +68,8 @@ namespace Roguelike.Tiles.Looting
     public int Range { get; set; } = DefaultMaxRange;
 
     public string HitSound => HitTargetSound;
+
+    [JsonIgnore]
+    public int MaxVictimsCount { get; set; }
   }
 }

@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using Roguelike.Abilities;
 using Roguelike.Abstract.Spells;
 using Roguelike.Tiles;
 using Roguelike.Tiles.LivingEntities;
@@ -29,11 +30,15 @@ namespace Roguelike.Spells
     [JsonIgnore]
     public bool DiesOnHit { get; set; } = true;
 
+    public AbilityKind ActiveAbilityKind { get; set; }
     public string HitSound 
     {
       get { return GetHitSound(); }
     }
 
     public int Range { get; set; } = DefaultMaxRange;
+
+    [JsonIgnore]
+    public int MaxVictimsCount { get; set; }
   }
 }

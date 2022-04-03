@@ -278,7 +278,7 @@ namespace RoguelikeUnitTests
         Assert.Greater(enemyBeginHealth, chempAfter1HitHealth);
         var firstExplCoctailDamage = enemyBeginHealth - chempAfter1HitHealth;
 
-        IncreaseAbility(hero, fi.AbilityKind);
+        IncreaseAbility(hero, fi.ActiveAbilityKind);
 
         fi = ActivateFightItem(kind, hero);
         var damage2 = fi.Damage;
@@ -440,7 +440,7 @@ namespace RoguelikeUnitTests
       {
         var en = PlainEnemies.First();
         var health = Hero.Stats.Health;
-        while (Hero.OnMelleeHitBy(en) == 0)
+        while (Hero.OnMeleeHitBy(en) == 0)
           ;
         var health1 = Hero.Stats.Health;
         Assert.Less(health1, health);
@@ -479,7 +479,7 @@ namespace RoguelikeUnitTests
     }
 
     [Test]
-    public void TestChanceToRepeatMelleeAttack()
+    public void TestChanceToRepeatMeleeAttack()
     {
       var game = CreateGame();
       game.Hero.Stats.SetNominal(EntityStatKind.ChanceToMeleeHit, 100);
@@ -487,12 +487,12 @@ namespace RoguelikeUnitTests
       var en = PlainEnemies.First();
       en.Stats.SetNominal(EntityStatKind.Health, 300);
       var enHealthBase = en.Stats.Health;
-      en.OnMelleeHitBy(game.Hero);
+      en.OnMeleeHitBy(game.Hero);
       var healthDiffBase = enHealthBase - en.Stats.Health;
       enHealthBase = en.Stats.Health;
       Assert.Greater(healthDiffBase, 0);
-      Assert.AreEqual(game.Hero.Stats.GetCurrentValue(EntityStatKind.ChanceToRepeatMelleeAttack), 0);
-      game.Hero.Stats.SetNominal(EntityStatKind.ChanceToRepeatMelleeAttack, 50);
+      Assert.AreEqual(game.Hero.Stats.GetCurrentValue(EntityStatKind.ChanceToRepeatMeleeAttack), 0);
+      game.Hero.Stats.SetNominal(EntityStatKind.ChanceToRepeatMeleeAttack, 50);
       bool works = false; 
       for (int i = 0; i < 20; i++)
       {
@@ -624,7 +624,7 @@ namespace RoguelikeUnitTests
     [TestCase(Roguelike.Abilities.AbilityKind.SceptersMastering)]
     [TestCase(Roguelike.Abilities.AbilityKind.BowsMastering)]
     [TestCase(Roguelike.Abilities.AbilityKind.CrossBowsMastering)]
-    public void BasicWeaponsMasteryTests(Roguelike.Abilities.AbilityKind ab)//test if mellee damage is increased
+    public void BasicWeaponsMasteryTests(Roguelike.Abilities.AbilityKind ab)//test if melee damage is increased
     {
       var game = CreateGame();
       var val = TestWeaponKindMastering(ab);
@@ -649,7 +649,7 @@ namespace RoguelikeUnitTests
       {
         var health = en.Stats.Health;
         if(!wpn.IsBowLike)
-          en.OnMelleeHitBy(hero);
+          en.OnMeleeHitBy(hero);
         else
           en.OnHitBy(hero.ActiveFightItem as ProjectileFightItem);
         var health1 = en.Stats.Health;

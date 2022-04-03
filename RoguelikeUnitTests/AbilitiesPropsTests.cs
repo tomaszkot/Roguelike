@@ -31,7 +31,7 @@ namespace RoguelikeUnitTests
 
       ab.IncreaseLevel(game.Hero);
       Assert.Greater(ab.PrimaryStat.Factor, 0);
-      Assert.AreEqual(ab.AuxStat.Factor, 1);
+      Assert.AreEqual(ab.AuxStat.Factor, 2);//2 skeletons
     }
 
     [Test]
