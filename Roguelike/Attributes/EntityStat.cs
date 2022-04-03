@@ -17,9 +17,11 @@ namespace Roguelike.Attributes
     {
     }
 
-    public EntityStat(EntityStatKind kind, float nominalValue)
+    public EntityStat(EntityStatKind kind, float nominalValue, EntityStatUnit unit = EntityStatUnit.Unset)
     {
       this.Kind = kind;
+      if (unit != EntityStatUnit.Unset)
+        this.Unit = unit;
       Value.Nominal = nominalValue;
       if (kind == EntityStatKind.ChanceToMeleeHit)
       {
@@ -43,6 +45,14 @@ namespace Roguelike.Attributes
     {
       this.kind = kind;
 
+      SetUnitFromKind();
+
+      if (kind == EntityStatKind.Health)
+        CanBeBelowZero = true;//death
+    }
+
+    private void SetUnitFromKind()
+    {
       var sk = Kind;
       if (sk != EntityStatKind.Unset
         && sk != EntityStatKind.Strength
@@ -66,9 +76,6 @@ namespace Roguelike.Attributes
       }
       else
         Unit = EntityStatUnit.Absolute;
-
-      if (kind == EntityStatKind.Health)
-        CanBeBelowZero = true;//death
     }
 
     public override string ToString()

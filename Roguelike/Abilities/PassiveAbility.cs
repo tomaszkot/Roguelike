@@ -178,7 +178,6 @@ namespace Roguelike.Abilities
             if (kind == AbilityKind.FireBallMastering
               || kind == AbilityKind.IceBallMastering
               || kind == AbilityKind.PoisonBallMastering
-              || kind == AbilityKind.SkeletonMastering
               )
             {
               //damage in %
@@ -207,7 +206,7 @@ namespace Roguelike.Abilities
           else 
           {
             //MaxSkeletonsCount
-            var maxSkeletonsCount = new int[] { 0, 1, 1, 2, 2, 3 };
+            var maxSkeletonsCount = new int[] { 0, 2, 2, 3, 3, 4 };
             factor = maxSkeletonsCount[level];
           }
           break;

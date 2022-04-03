@@ -18,10 +18,10 @@ namespace Roguelike.Abilities
 
     //Traps, RemoveClaws, RemoveTusk, Skinning, , ,
     //HuntingMastering /*<-(to del)*/
-    ExplosiveCocktailMastering, ThrowingStoneMastering, ThrowingKnifeMastering, HunterTrapMastering
+    ExplosiveCocktail, ThrowingStone, ThrowingKnife, HunterTrap
 
-    , StaffsMastering, SceptersMastering, WandsMastering, PoisonCocktailMastering, Stride, OpenWound, Rage,
-    WeightedNetMastering,
+    , StaffsMastering, SceptersMastering, WandsMastering, PoisonCocktail, Stride, OpenWound, Rage,
+    WeightedNet,
 
     PiercingArrow, ArrowVolley, PerfectHit,
 
@@ -138,6 +138,26 @@ namespace Roguelike.Abilities
 
     public abstract bool IsPercentageFromKind { get; }
 
+    EntityStat CreateForLevel(EntityStat src, bool primary, int level)
+    {
+      var esN = new EntityStat(src.Kind, 0, src.Unit);
+      var fac = CalcFactor(primary, level);
+      esN.Factor = fac;
+      return esN;
+    }
+
+    List<EntityStat> CreateForLevel(int level)
+    {
+      var res = new List<EntityStat>();
+      
+      res.Add(CreateForLevel(PrimaryStat, true, level));
+
+      if (AuxStat.Kind != EntityStatKind.Unset)
+        res.Add(CreateForLevel(AuxStat, false, level));
+
+      return res;
+    }
+
     public List<EntityStat> GetEntityStats(bool currentLevel)
     {
       var res = new List<EntityStat>();
@@ -151,18 +171,7 @@ namespace Roguelike.Abilities
       {
         if (Level < MaxLevel)
         {
-          var esN = new EntityStat(PrimaryStat.Kind, 0);
-          var fac = CalcFactor(true, Level + 1);
-          esN.Factor = fac;
-          res.Add(esN);
-
-          if (AuxStat.Kind != EntityStatKind.Unset)
-          {
-            fac = CalcFactor(false, Level + 1);
-            esN = new EntityStat(AuxStat.Kind, 0);
-            esN.Factor = fac;
-            res.Add(esN);
-          }
+          res = CreateForLevel(Level+1);
         }
       }
       return res;
@@ -192,23 +201,19 @@ namespace Roguelike.Abilities
       {
         if (Level < MaxLevel)
         {
-          var esN = new EntityStat(PrimaryStat.Kind, 0);
+          var esN = CreateForLevel(PrimaryStat, true, Level + 1);// new EntityStat(PrimaryStat.Kind, 0, PrimaryStat.Unit);
           desc.Add("Next Level: ");
-          var fac = CalcFactor(true, Level + 1);
           if (usesCustomStatDescription)
           {
             desc.AddRange(this.GetCustomExtraStatDescription(Level + 1));
           }
           else
           {
-            esN.Factor = fac;
             desc.Add(PrimaryStat.Kind + ": " + GetFormattedCurrentValue(esN));
           }
           if (AuxStat.Kind != EntityStatKind.Unset)
           {
-            fac = CalcFactor(false, Level + 1);
-            esN = new EntityStat(AuxStat.Kind, 0);
-            esN.Factor = fac;
+            esN = CreateForLevel(AuxStat, false, Level + 1);
             desc.Add(AuxStat.Kind + ": " + GetFormattedCurrentValue(esN));
           }
         }

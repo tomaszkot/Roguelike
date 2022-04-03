@@ -435,5 +435,21 @@ namespace RoguelikeUnitTests
 
       return scroll;
     }
+
+    public static void AssertHealthDiffPercentageInRange(DamageComparer dc1, DamageComparer dc2, int percMin, int percMax)
+    {
+      Assert.Greater(dc2.HealthDifference, dc1.HealthDifference);
+      var diff = dc2.CalcHealthDiffPerc(dc1);
+      Assert.Greater(diff, percMin);
+      Assert.Less(diff, percMax);
+    }
+
+    public static void AssertDurationDiffInRange(DamageComparer dc1, DamageComparer dc2, int min, int max)
+    {
+      Assert.Greater(dc2.EffectDuration, dc1.EffectDuration);
+      var diff = dc2.EffectDuration * 100 / dc1.EffectDuration;
+      Assert.Greater(diff, min);
+      Assert.Less(diff, max);
+    }
   }
 }

@@ -101,7 +101,9 @@ namespace Roguelike.Attributes
     FireBallExtraDamage = 1350,
     IceBallExtraDamage = 1351,
     PoisonBallExtraDamage = 1352,
-    LightingBallExtraDamage = 1353
+    LightingBallExtraDamage = 1353,
+
+    StrideExtraDamage = 1400
   };
 
   public class EntityStats
@@ -110,17 +112,16 @@ namespace Roguelike.Attributes
 
     public EntityStats()
     {
-      //var statKinds = Enum.GetValues(typeof(EntityStatKind));
-      //foreach (EntityStatKind sk in statKinds)
-      //{
-      //  //Ensure(sk);
-      //}
     }
 
     public void Ensure(EntityStatKind kind)
     {
       if (!stats.ContainsKey(kind))
-        stats[kind] = new EntityStat(kind, 0);
+      {
+        var es = new EntityStat(kind, 0, EntityStatUnit.Unset);
+        es.SetKind(kind);
+        stats[kind] = es;
+      }
     }
 
     [JsonProperty]

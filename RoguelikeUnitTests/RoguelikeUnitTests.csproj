@@ -60,6 +60,7 @@
     <Compile Include="FightMagicTests.cs" />
     <Compile Include="FoodConsumtionTests.cs" />
     <Compile Include="Helpers\BaseHelper.cs" />
+    <Compile Include="Helpers\DamageComparer.cs" />
     <Compile Include="Helpers\LootInfo.cs" />
     <Compile Include="Helpers\LootingTestsHelper.cs" />
     <Compile Include="InteractionTests.cs" />

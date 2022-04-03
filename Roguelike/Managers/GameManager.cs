@@ -1623,7 +1623,10 @@ namespace Roguelike.Managers
         }
         else if (abilityKind == Abilities.AbilityKind.OpenWound)
         {
-          victim.StartBleeding(3, null, 3);//TODO 
+          var ab = advEnt.GetActiveAbility(abilityKind);
+          var dur = ab.PrimaryStat.Factor;
+          var damage = Calculated.FactorCalculator.AddFactor(3, ab.AuxStat.Factor);//TODO  3
+          victim.StartBleeding(damage, null, (int)dur);
           used = true;
         }
         else if (abilityKind == Abilities.AbilityKind.Rage)

@@ -24,10 +24,10 @@ namespace Roguelike.Abilities
       float factor = 0;
       switch (kind)
       {
-        case AbilityKind.ExplosiveCocktailMastering:
-        case AbilityKind.PoisonCocktailMastering:
-        case AbilityKind.ThrowingStoneMastering:
-        case AbilityKind.ThrowingKnifeMastering:
+        case AbilityKind.ExplosiveCocktail:
+        case AbilityKind.PoisonCocktail:
+        case AbilityKind.ThrowingStone:
+        case AbilityKind.ThrowingKnife:
         case AbilityKind.Stride:
                 
           float fac = CalcFightItemFactor(level);
@@ -35,8 +35,8 @@ namespace Roguelike.Abilities
 
           if (!primary)
           {
-            if (kind == AbilityKind.ExplosiveCocktailMastering ||
-              kind == AbilityKind.PoisonCocktailMastering)
+            if (kind == AbilityKind.ExplosiveCocktail ||
+              kind == AbilityKind.PoisonCocktail)
               factor *= 3;
             else
               factor *= 4;
@@ -44,17 +44,17 @@ namespace Roguelike.Abilities
           factor = (int)Math.Ceiling(factor);
           if (primary)
           {
-            if (kind == AbilityKind.ExplosiveCocktailMastering ||
-              kind == AbilityKind.PoisonCocktailMastering)
+            if (kind == AbilityKind.ExplosiveCocktail ||
+              kind == AbilityKind.PoisonCocktail)
             {
               factor *= 2f;
             }
             if (kind == AbilityKind.Stride)
-              factor *= 5f;
+              factor *= 6f;
           }
           break;
         
-        case AbilityKind.HunterTrapMastering:
+        case AbilityKind.HunterTrap:
           var multsHunt = new int[] { 0, 10, 20, 30, 40, 50 };
           factor = multsHunt[level];
           break;
@@ -80,8 +80,9 @@ namespace Roguelike.Abilities
         case AbilityKind.OpenWound:
           if (primary)
           {
-            var victims = new int[] { 0, 3, 3, 4, 4, 5 };
-            factor = victims[level];
+            //duration
+            var durations = new int[] { 0, 3, 3, 4, 4, 5 };
+            factor = durations[level];
           }
           else
           {
@@ -96,7 +97,7 @@ namespace Roguelike.Abilities
             factor = perc[level];
           }
           break;
-        case AbilityKind.WeightedNetMastering:
+        case AbilityKind.WeightedNet:
             var vals = new int[] { 0, 1, 2, 3, 4, 5 };
             factor = vals[level];
   
@@ -125,27 +126,27 @@ namespace Roguelike.Abilities
       //todo  add map to FightItem AbilityKind/FightItemKind and use here
       switch (kind)
       {
-        case AbilityKind.ExplosiveCocktailMastering:
+        case AbilityKind.ExplosiveCocktail:
           desc = "Bonus to Explosive Cocktail damage";
           break;
-        case AbilityKind.PoisonCocktailMastering:
+        case AbilityKind.PoisonCocktail:
           desc = "Bonus to Poison Cocktail damage";
           break;
           
-        case AbilityKind.ThrowingStoneMastering:
+        case AbilityKind.ThrowingStone:
           desc = "Bonus to throwing stones";
           break;
-        case AbilityKind.ThrowingKnifeMastering:
+        case AbilityKind.ThrowingKnife:
           desc = "Bonus to throwing knife";
           break;
-        case AbilityKind.HunterTrapMastering:
+        case AbilityKind.HunterTrap:
           desc = "Bonus to hunter trap";
           break;
         case AbilityKind.Stride:
           desc = "Hit target with your body causing damage and possibly knocking it back";
           break;
         case AbilityKind.OpenWound:
-          desc = "Hitting target with mellee will cause bleeding";
+          desc = "Hit target with a sword or a dagger to cause bleeding";
           break;
         case AbilityKind.Rage:
           desc = "Increases the mellee damage of the caster";
@@ -183,23 +184,23 @@ namespace Roguelike.Abilities
         EntityStatKind ask = EntityStatKind.Unset;
         switch (kind)
         {
-          case AbilityKind.ExplosiveCocktailMastering:
+          case AbilityKind.ExplosiveCocktail:
             psk = EntityStatKind.ExlosiveCoctailExtraDamage;
             break;
-          case AbilityKind.PoisonCocktailMastering:
+          case AbilityKind.PoisonCocktail:
             psk = EntityStatKind.PoisonCoctailExtraDamage;
             break;
-          case AbilityKind.ThrowingKnifeMastering:
+          case AbilityKind.ThrowingKnife:
             psk = EntityStatKind.ThrowingKnifeExtraDamage;
             break;
-          case AbilityKind.ThrowingStoneMastering:
+          case AbilityKind.ThrowingStone:
             psk = EntityStatKind.ThrowingStoneExtraDamage;
             break;
-          case AbilityKind.HunterTrapMastering:
+          case AbilityKind.HunterTrap:
             psk = EntityStatKind.HunterTrapExtraDamage;
             break;
           case AbilityKind.Stride:
-            psk = EntityStatKind.MeleeAttack;
+            psk = EntityStatKind.StrideExtraDamage;
             break;
           case AbilityKind.OpenWound:
             psk = EntityStatKind.BleedingDuration;
@@ -216,7 +217,7 @@ namespace Roguelike.Abilities
             psk = EntityStatKind.ArrowVolleyCount;
             break;
 
-          case AbilityKind.WeightedNetMastering:
+          case AbilityKind.WeightedNet:
             psk = EntityStatKind.WeightedNetDuration;
             ask = EntityStatKind.WeightedNetRange;
             break;
@@ -241,17 +242,17 @@ namespace Roguelike.Abilities
         if (kind == AbilityKind.ArrowVolley)
           PrimaryStat.Unit = EntityStatUnit.Absolute;
 
-        if (kind == AbilityKind.OpenWound)
+        else if (kind == AbilityKind.OpenWound)
         {
-          AuxStat.Unit = EntityStatUnit.Percentage;
           PrimaryStat.Unit = EntityStatUnit.Absolute;
+          AuxStat.Unit = EntityStatUnit.Percentage;
         }
 
-        if (kind == AbilityKind.Rage)
+        else if (kind == AbilityKind.Rage)
         {
           PrimaryStat.Unit = EntityStatUnit.Percentage;
         }
-        if (kind == AbilityKind.WeightedNetMastering)
+        else if (kind == AbilityKind.WeightedNet)
         {
           PrimaryStat.Unit = EntityStatUnit.Absolute;
           AuxStat.Unit = EntityStatUnit.Absolute;

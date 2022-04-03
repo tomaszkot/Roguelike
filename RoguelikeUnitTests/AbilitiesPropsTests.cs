@@ -47,6 +47,10 @@ namespace RoguelikeUnitTests
       Assert.AreEqual(ab.AuxStat.Unit, EntityStatUnit.Percentage);
       Assert.AreEqual(ab.PrimaryStat.Factor, 0);
 
+      var nl = ab.GetEntityStats(false);
+      Assert.AreEqual(nl[0].Kind, EntityStatKind.BleedingDuration);
+      Assert.AreEqual(nl[0].Unit, EntityStatUnit.Absolute);
+
       ab.IncreaseLevel(game.Hero);
       Assert.AreEqual(ab.PrimaryStat.Factor, 3);
       Assert.AreEqual(ab.AuxStat.Factor, 5);
@@ -155,7 +159,7 @@ namespace RoguelikeUnitTests
     {
       var game = CreateGame();
       var hero = game.GameManager.Hero;
-      var ab = game.GameManager.Hero.GetActiveAbility(AbilityKind.WeightedNetMastering);
+      var ab = game.GameManager.Hero.GetActiveAbility(AbilityKind.WeightedNet);
 
       Assert.AreEqual(ab.PrimaryStat.Kind, EntityStatKind.WeightedNetDuration);
       Assert.AreEqual(ab.PrimaryStat.Unit, EntityStatUnit.Absolute);
