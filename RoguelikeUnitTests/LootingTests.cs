@@ -608,7 +608,7 @@ namespace RoguelikeUnitTests
         Assert.Greater(lootItems.Count, 10);
         var potions = li.Get<Potion>();
         Assert.Greater(potions.Count, 2);
-        Assert.Less(potions.Count, 20);
+        Assert.Less(potions.Count, 10);
       }
     }
 
@@ -642,8 +642,8 @@ namespace RoguelikeUnitTests
       {
         var lootItems = KillEnemies(100);
         var food = lootItems.Get<Food>();
-        Assert.Greater(food.Count, 0);
-        Assert.Less(food.Count, 36);
+        Assert.Greater(food.Count, 40);
+        Assert.Less(food.Count, 70);
 
         var foodCasted = food.Cast<Food>().ToList();
         var foodTypes = foodCasted.GroupBy(f => f.Kind).ToList();
@@ -652,9 +652,9 @@ namespace RoguelikeUnitTests
         {
           var count = gr.Count();
           if(gr.Key != FoodKind.Meat)
-            Assert.Less(count, 10);
+            Assert.Less(count, 20);
           else
-            Assert.Less(count, 35);
+            Assert.Less(count, 60);
         }
       }
     }

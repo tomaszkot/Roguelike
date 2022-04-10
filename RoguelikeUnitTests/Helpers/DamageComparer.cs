@@ -33,7 +33,7 @@ namespace RoguelikeUnitTests.Helpers
     {
       get
       {
-        return h1.Value / h2.Value;
+        return 100-(h2.Value*100 / h1.Value);
       }
     }
 

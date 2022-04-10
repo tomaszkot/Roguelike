@@ -11,7 +11,7 @@ namespace Roguelike.Abstract.Projectiles
 
     bool DiesOnHit { get; set; }
 
-    AbilityKind ActiveAbilityKind { get; set; }
+    AbilityKind ActiveAbilitySrc { get; set; }
 
     int MaxVictimsCount { get; set; }
   }

@@ -2,6 +2,7 @@
 using Dungeons.Core;
 using Dungeons.Tiles;
 using Newtonsoft.Json;
+using Roguelike.Abilities;
 using Roguelike.Abstract.Inventory;
 using Roguelike.Abstract.Projectiles;
 using Roguelike.Abstract.Spells;
@@ -1395,8 +1396,9 @@ namespace Roguelike.Managers
       return false;
     }
 
-    protected virtual int GetAttackVictimsCount(LivingEntity caster)
+    protected virtual int GetAttackVictimsCount(LivingEntity caster, out Ability ab)
     {
+      ab = null;
       return 1;
     }
 
@@ -1414,11 +1416,19 @@ namespace Roguelike.Managers
         logger.LogError("gm fi.Count <= 0");
         return false;
       }
+      Ability ab;
+      var attackVictimsCount = GetAttackVictimsCount(caster, out ab);
+      if (attackVictimsCount > fi.Count)
+        attackVictimsCount = fi.Count;
 
-      caster.RemoveFightItem(fi);
-      var destFi = fi.Clone(1) as ProjectileFightItem;
+      if (ab != null && ab.Kind == AbilityKind.ArrowVolley)
+      {
+        for(int i=0;i< attackVictimsCount;i++)
+          caster.RemoveFightItem(fi);
+      }
+      var destFi = fi.Clone(attackVictimsCount) as ProjectileFightItem;
 
-      return DoApply(caster, target, destFi, GetAttackVictimsCount(caster), BeforeApply, AfterApply);
+      return DoApply(caster, target, destFi, attackVictimsCount, BeforeApply, AfterApply);
     }
 
     public void CallTryAddForLootSource(IObstacle obstacle)

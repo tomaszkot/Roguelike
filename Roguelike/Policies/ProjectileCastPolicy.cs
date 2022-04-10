@@ -41,7 +41,8 @@ namespace Roguelike.Policies
         if(MaxVictimsCount > 1)
           Targets = GetOtherVictims(caster, target);
 
-        Targets.Insert(0, target);
+        if(!Targets.Contains(target))
+          Targets.Insert(0, target);
       }
 
       Apply(this.Projectile, caster, this.Targets, this.ProjectilesFactory);
@@ -73,7 +74,7 @@ namespace Roguelike.Policies
       if (MaxVictimsCount > 1)
       {
         //var neibs = GameManager.CurrentNode.GetNeighborhoodTiles<Enemy>(caster, caster, 9).Distinct().ToList();//TODO 9
-        if (Projectile.ActiveAbilityKind == Abilities.AbilityKind.ArrowVolley)
+        if (Projectile.ActiveAbilitySrc == Abilities.AbilityKind.ArrowVolley)
         {
           var neibs = GameManager.EnemiesManager.GetInRange(caster, 7, target as Enemy);
           GameManager.Logger.LogInfo("GetNeighborhoodTiles<Enemy> neibs.Count : " + neibs.Count);
@@ -92,7 +93,7 @@ namespace Roguelike.Policies
               break;
           }
         }
-        else if (Projectile.ActiveAbilityKind == Abilities.AbilityKind.PiercingArrow)
+        else if (Projectile.ActiveAbilitySrc == Abilities.AbilityKind.PiercingArrow)
         {
         }
       }

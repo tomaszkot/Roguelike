@@ -1,11 +1,6 @@
 ﻿using NUnit.Framework;
 using Roguelike.Abilities;
 using Roguelike.Attributes;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace RoguelikeUnitTests
 {
@@ -90,18 +85,22 @@ namespace RoguelikeUnitTests
 
       Assert.AreEqual(ab.PrimaryStat.Unit, EntityStatUnit.Percentage);
       Assert.AreEqual(ab.AuxStat.Unit, EntityStatUnit.Absolute);
-
+      
       Assert.AreEqual(ab.PrimaryStat.Factor, 0);
 
       ab.IncreaseLevel(game.Hero);
-      Assert.AreEqual(ab.PrimaryStat.Factor, 80);
-      Assert.AreEqual(ab.AuxStat.Factor, 1);
 
+      Assert.AreEqual(ab.PrimaryStat.Kind, EntityStatKind.ChanceForPiercing);
+      Assert.AreEqual(ab.PrimaryStat.Factor, 80);
+      Assert.AreEqual(ab.AuxStat.Kind, EntityStatKind.NumberOfPiercedVictims);
+      var numberOfPiercedVictims = 2;
+      Assert.AreEqual(ab.AuxStat.Factor, numberOfPiercedVictims);
+      numberOfPiercedVictims++;
 
       ab.IncreaseLevel(game.Hero);
       Assert.AreEqual(ab.PrimaryStat.Factor, 85);
 
-      Assert.AreEqual(ab.AuxStat.Factor, 2);
+      Assert.AreEqual(ab.AuxStat.Factor, numberOfPiercedVictims);
 
     }
 
@@ -114,11 +113,11 @@ namespace RoguelikeUnitTests
       var game = CreateGame();
       var ab = game.GameManager.Hero.GetPassiveAbility(ak);
       if (ak == AbilityKind.FireBallMastering)
-        Assert.AreEqual(ab.PrimaryStat.Kind, EntityStatKind.FireAttack);
+        Assert.AreEqual(ab.PrimaryStat.Kind, EntityStatKind.FireBallExtraDamage);
       else if (ak == AbilityKind.PoisonBallMastering)
-        Assert.AreEqual(ab.PrimaryStat.Kind, EntityStatKind.PoisonAttack);
+        Assert.AreEqual(ab.PrimaryStat.Kind, EntityStatKind.PoisonBallExtraDamage);
       else if (ak == AbilityKind.IceBallMastering)
-        Assert.AreEqual(ab.PrimaryStat.Kind, EntityStatKind.ColdAttack);
+        Assert.AreEqual(ab.PrimaryStat.Kind, EntityStatKind.IceBallExtraDamage);
       else if (ak == AbilityKind.SkeletonMastering)
         Assert.AreEqual(ab.PrimaryStat.Kind, EntityStatKind.MeleeAttack);
 
@@ -129,7 +128,7 @@ namespace RoguelikeUnitTests
         ab.IncreaseLevel(game.Hero);
 
       Assert.Greater(ab.PrimaryStat.Factor, 10);
-      Assert.Less(ab.PrimaryStat.Factor, 50);
+      Assert.Less(ab.PrimaryStat.Factor, 60);
     }
 
 

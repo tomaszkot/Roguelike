@@ -24,7 +24,7 @@ namespace Roguelike.Tiles.Looting
       Caller = caller;
     }
 
-    public AbilityKind ActiveAbilityKind { get; set; }
+    public AbilityKind ActiveAbilitySrc { get; set; }
 
     [JsonIgnore]
     public Tile Target { get; set; }

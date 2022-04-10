@@ -1,4 +1,5 @@
 ﻿using Dungeons.Core;
+using Roguelike.Abilities;
 using Roguelike.Attributes;
 using Roguelike.Spells;
 using Roguelike.Tiles;
@@ -56,7 +57,7 @@ namespace Roguelike.Calculated
 
         if (attackKind == AttackKind.PhysicalProjectile)
         {
-          fightItem = ent.GetActivatedFightItem();
+          fightItem = GetActiveFightItem(ent);
           if (fightItem == null)
             return;
         }
@@ -98,6 +99,16 @@ namespace Roguelike.Calculated
       {
         throw ex;
       }
+    }
+        
+
+    public static FightItem GetActiveFightItem(LivingEntity ent)
+    {
+      var fightItem = ent.GetActivatedFightItem();
+      if (fightItem == null)
+        fightItem = ent.GetFightItemFromActiveProjectileAbility();
+
+      return fightItem;
     }
 
     public static AttackKind DiscoverAttackKind(AttackKind attackKind, Weapon wpn)
@@ -170,20 +181,21 @@ namespace Roguelike.Calculated
         CurrentPhysical = 0;
 
       var val = CurrentPhysicalVariated;
+      //add extra melee damage
       AddExtraDamage(ent, wpn, weapons2Esk, ref val);
       CurrentPhysicalVariated += val - CurrentPhysicalVariated;
       
       CurrentTotal = CurrentPhysicalVariated;
       
-      if (offensiveSpell != null 
-        && 
-        (attackKind == AttackKind.SpellElementalProjectile || attackKind == AttackKind.WeaponElementalProjectile))
+      if (offensiveSpell != null && 
+         (attackKind == AttackKind.SpellElementalProjectile || attackKind == AttackKind.WeaponElementalProjectile))
       {
         var dmg = offensiveSpell.GetDamage();
         if(withVariation)
           dmg += CalcVariation(attackKind, true, dmg);
         if (wpn != null && attackKind == AttackKind.WeaponElementalProjectile)
         {
+          //add extra projectile damage
           AddExtraDamage(ent, wpn, weapons2Esk, ref dmg);
         }
 
@@ -238,12 +250,9 @@ namespace Roguelike.Calculated
         if (weapons2Esk.ContainsKey(wpn.Kind))//AxeExtraDamage, SwordExtraDamage...
         {
           currentDamage = ent.Stats.GetStat(weapons2Esk[wpn.Kind]).SumPercentageFactorAndValue(currentDamage);
-          //var extraPercentage = ent.Stats.GetCurrentValue(weapons2Esk[wpn.Kind]);
-          //var currentDamage1 = FactorCalculator.AddFactor(currentDamage, extraPercentage);
-          //if (currentDamage1 != currentDamage)
-          //  throw new System.Exception("currentDamage1 != currentDamage");
         }
       }
+      //return ale.GetActivePhysicalProjectileAbility();
     }
   }
 }

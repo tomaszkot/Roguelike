@@ -20,6 +20,14 @@ namespace RoguelikeUnitTests
   {
     const int MaxAbilityInc = 5;
 
+    public void MaximizeAbility(Ability ab, AdvancedLivingEntity le)
+    {
+      while (ab.Level < ab.MaxLevel)
+      {
+        Assert.True(le.IncreaseAbility(ab.Kind));
+      }
+    }
+
     [Test]
     public void SkeletonMasteringTest()
     {
@@ -122,8 +130,7 @@ namespace RoguelikeUnitTests
         game.GameManager.CurrentNode.SetTile(enemies[i], empOnes[i].point);
       }
       var ab = game.GameManager.Hero.GetPassiveAbility(Roguelike.Abilities.AbilityKind.BulkAttack);
-      for (int i = 0; i < 5; i++)
-        ab.IncreaseLevel(game.Hero);
+      MaximizeAbility(ab, game.Hero);
 
       game.Hero.RecalculateStatFactors(false);
       var sb = game.Hero.GetTotalValue(EntityStatKind.ChanceToBulkAttack);
@@ -142,6 +149,7 @@ namespace RoguelikeUnitTests
     }
 
     [Test]
+    [Repeat(5)]
     public void TestStrikeBack()
     {
       var game = CreateGame();
@@ -149,14 +157,13 @@ namespace RoguelikeUnitTests
       PlaceCloseToHero(en);
       float en1Health = en.Stats.Health;
 
-      var ab = game.GameManager.Hero.GetPassiveAbility(Roguelike.Abilities.AbilityKind.StrikeBack);
-      for (int i = 0; i < 5; i++)
-        ab.IncreaseLevel(game.Hero);
+      var ab = game.GameManager.Hero.GetPassiveAbility(AbilityKind.StrikeBack);
+      MaximizeAbility(ab, game.Hero);
 
       game.Hero.RecalculateStatFactors(false);
       var sb = game.Hero.GetTotalValue(EntityStatKind.ChanceToStrikeBack);
 
-      for (int i = 0; i < 20; i++)
+      for (int i = 0; i < 50; i++)
       {
         game.GameManager.ApplyPhysicalAttackPolicy(en, game.Hero, (p) => { });
         //GotoNextHeroTurn();
@@ -165,9 +172,7 @@ namespace RoguelikeUnitTests
       Assert.Greater(en1Health, en.Stats.Health);
     }
 
-    
-
-      [Test]
+    [Test]
     public void TestLootMasteryBarrels()
     {
       TestLootMastery<Barrel>();
@@ -239,6 +244,10 @@ namespace RoguelikeUnitTests
       var hero = game.GameManager.Hero;
 
       var explosiveCocktail = new ProjectileFightItem(FightItemKind.ExplosiveCocktail, hero);
+      explosiveCocktail.Count = 10;
+      hero.Inventory.Add(explosiveCocktail);
+      hero.ActiveFightItem = explosiveCocktail;
+
       for (int i = 0; i < 10; i++)
       {
         champion.OnHitBy(explosiveCocktail);
@@ -278,7 +287,7 @@ namespace RoguelikeUnitTests
         Assert.Greater(enemyBeginHealth, chempAfter1HitHealth);
         var firstExplCoctailDamage = enemyBeginHealth - chempAfter1HitHealth;
 
-        IncreaseAbility(hero, fi.ActiveAbilityKind);
+        IncreaseAbility(hero, fi);
 
         fi = ActivateFightItem(kind, hero);
         var damage2 = fi.Damage;
@@ -314,14 +323,14 @@ namespace RoguelikeUnitTests
       AllEnemies.ForEach(i => i.Revealed = true);
     }
 
-    private static void IncreaseAbility(Hero hero, AbilityKind kind)
+    private static void IncreaseAbility(Hero hero, FightItem fi)//AbilityKind kind)
     {
-      var ab = hero.GetActiveAbility(kind);
+      var ab = hero.GetActiveAbility(fi.AbilityKind);
       hero.AbilityPoints = ab.MaxLevel;
       hero.Level = 11;
       for (int i = 0; i < ab.MaxLevel; i++)
       {
-        var inc = hero.IncreaseAbility(kind);
+        var inc = hero.IncreaseAbility(fi.AbilityKind);
         Assert.IsTrue(inc);
       }
     }
@@ -574,30 +583,39 @@ namespace RoguelikeUnitTests
 
     }
         
-    [Test]
-    public void TestStaffMastering()
+    //[TestCase(EntityStatKind.ChanceToRepeatElementalProjectileAttack)]
+    [TestCase(EntityStatKind.StaffExtraElementalProjectileDamage)]
+    public void TestStaffMasteringStats(EntityStatKind esk)
     {
       var game = CreateGame();
       float originalStatValue = 0;
-      var destExtraStat = SetWeapon(AbilityKind.SceptersMastering, game.Hero, out originalStatValue);
+      SetWeapon(AbilityKind.StaffsMastering, game.Hero, out originalStatValue);
       var weapon = game.Hero.GetActiveWeapon();
 
       var en = PlainEnemies.First();
-      en.Stats.SetNominal(EntityStatKind.Health, 300);
-      var enHealthBase = en.Stats.Health;
+      float enHealthBase = PrepareEnemyToBeBeaten(en);
 
       var spell = weapon.SpellSource.CreateSpell(game.Hero);
-      PlaceCloseToHero(en);
+      
       Assert.AreEqual(game.GameManager.SpellManager.ApplyAttackPolicy(game.Hero, en, weapon.SpellSource), Roguelike.Managers.ApplyAttackPolicyResult.OK);
       GotoNextHeroTurn();
-            
+
       var healthDiffBase = enHealthBase - en.Stats.Health;
       enHealthBase = en.Stats.Health;
       Assert.Greater(healthDiffBase, 0);
-      Assert.AreEqual(game.Hero.Stats.GetCurrentValue(EntityStatKind.ChanceToRepeatElementalProjectileAttack), 0);
-      game.Hero.Stats.SetNominal(EntityStatKind.ChanceToRepeatElementalProjectileAttack, 50);
+
+      var stat1Value = game.Hero.Stats.GetStat(EntityStatKind.ChanceToRepeatElementalProjectileAttack).Value;
+      Assert.AreEqual(stat1Value.Factor, 0);
+      Assert.AreEqual(game.Hero.Stats.GetStat(EntityStatKind.StaffExtraElementalProjectileDamage).Value.Factor, 0);
+      var ab = game.Hero.GetPassiveAbility(AbilityKind.StaffsMastering);
+
+      //do not call  MaximizeAbility as it's not possible to distinguish what cause greater damage ChanceToRepeat or StaffExtraDamage
+      //MaximizeAbility(ab, game.Hero);
+      game.Hero.Stats.SetFactor(esk, 50);//%
+      Assert.Greater(game.Hero.Stats.GetStat(esk).Value.Factor, 0);
       bool works = false;
-      for (int i = 0; i < 10; i++)
+
+      for (int i = 0; i < 20; i++)
       {
         spell = weapon.SpellSource.CreateSpell(game.Hero);
         Assert.AreEqual(game.GameManager.SpellManager.ApplyAttackPolicy(game.Hero, en, weapon.SpellSource), Roguelike.Managers.ApplyAttackPolicyResult.OK);
@@ -612,8 +630,28 @@ namespace RoguelikeUnitTests
         enHealthBase = en.Stats.Health;
       }
       Assert.True(works);
+      ////SumPercentageFactorAndValue of EnityStat depends on Factor, so check it
+      //var scroll = PrepareScroll(game.Hero, SpellKind.Skeleton);
+      //scroll.Count = 10;
+      //var gm = game.GameManager;
+      //var spellSk = gm.SpellManager.ApplySpell(game.Hero, scroll) as SkeletonSpell;
+      //Assert.NotNull(spellSk.Ally);
+
+      //Assert.AreEqual(spellSk.Ally.Stats.GetStat(EntityStatKind.StaffExtraElementalProjectileDamage).Value.Factor, 0);
+      //Assert.AreEqual(spellSk.Ally.Stats.GetStat(EntityStatKind.ChanceToRepeatElementalProjectileAttack).Value.Factor, 0);
+      //MaximizeAbility(ab, spellSk.Ally);
+      //Assert.Greater(spellSk.Ally.Stats.GetStat(EntityStatKind.StaffExtraElementalProjectileDamage).Value.Factor, 0);
+      //Assert.Greater(spellSk.Ally.Stats.GetStat(EntityStatKind.ChanceToRepeatElementalProjectileAttack).Value.Factor, 0);
+
     }
 
+    private float PrepareEnemyToBeBeaten(Enemy en)
+    {
+      PlaceCloseToHero(en);
+      en.Stats.SetNominal(EntityStatKind.Health, 300);
+      var enHealthBase = en.Stats.Health;
+      return enHealthBase;
+    }
 
     [TestCase(Roguelike.Abilities.AbilityKind.AxesMastering)]
     [TestCase(Roguelike.Abilities.AbilityKind.BashingMastering)]

@@ -17,7 +17,7 @@ namespace RoguelikeUnitTests
   {
     [TestCase(true)]
     [TestCase(false)]
-    public void SpellSourcePropertiesTest(bool scroll)
+    public void ManaBasedSpellSourcePropertiesTest(bool scroll)
     {
       var game = CreateGame();
       var hero = game.Hero;

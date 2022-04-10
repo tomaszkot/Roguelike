@@ -109,14 +109,24 @@ namespace Roguelike.Tiles.LivingEntities
     }
 
     //HACK, jest to handle AttackDescription with 0 amount of ammo
-    public FightItem RecentlyActivatedFightItem { get; set; }
+    //public FightItem RecentlyActivatedFightItem { get; set; }
 
     public FightItem GetActivatedFightItem()
     {
       var fightItem = ActiveFightItem;
-      if (fightItem == null)
-        fightItem = RecentlyActivatedFightItem;//HACK
+      //if (fightItem == null)
+      //  fightItem = RecentlyActivatedFightItem;//HACK
       return fightItem;
+    }
+
+    public virtual FightItem GetFightItemFromActiveProjectileAbility()
+    {
+      return null;
+    }
+
+    public virtual Ability GetActivePhysicalProjectileAbility()
+    {
+      return null;
     }
 
     public virtual FightItem ActiveFightItem
@@ -125,7 +135,7 @@ namespace Roguelike.Tiles.LivingEntities
       set
       {
         activeFightItem = value;
-        RecentlyActivatedFightItem = value;
+        //RecentlyActivatedFightItem = value;
       }
     }
     public Point Position
@@ -664,6 +674,12 @@ namespace Roguelike.Tiles.LivingEntities
       {
         if (fi is ProjectileFightItem pfi)
         {
+          var fightItem = AttackDescription.GetActiveFightItem(fi.Caller);
+          if (fightItem == null)
+          {
+            Logger.LogError("OnHitBy ProjectileFightItem GetActivatedFightItem == null");
+            return HitResult.Unset;
+          }
           var damageDesc = "";
           
           var ad = new AttackDescription(fi.Caller, true, AttackKind.PhysicalProjectile);
