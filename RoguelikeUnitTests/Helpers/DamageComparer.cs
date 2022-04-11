@@ -13,7 +13,7 @@ namespace RoguelikeUnitTests.Helpers
     float? h2;
     int? duration1;
     int? duration2;
-    
+
     public DamageComparer(LivingEntity le)
     {
       RegisterHealth(le);
@@ -33,7 +33,7 @@ namespace RoguelikeUnitTests.Helpers
     {
       get
       {
-        return 100-(h2.Value*100 / h1.Value);
+        return 100 - (h2.Value * 100 / h1.Value);
       }
     }
 
@@ -80,4 +80,17 @@ namespace RoguelikeUnitTests.Helpers
 
     public abstract void GotoNextHeroTurn();
   };
+
+  public class OuaDDamageComparer : DamageComparer
+  {
+    TestBase tbase;
+    public OuaDDamageComparer(LivingEntity le, TestBase tbase) : base(le)
+    {
+      this.tbase = tbase;
+    }
+    public override void GotoNextHeroTurn()
+    {
+      tbase.GotoNextHeroTurn();
+    }
+  }
 }

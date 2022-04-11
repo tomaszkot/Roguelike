@@ -8,6 +8,7 @@ using Roguelike.Tiles;
 using Roguelike.Tiles.Interactive;
 using Roguelike.Tiles.LivingEntities;
 using Roguelike.Tiles.Looting;
+using RoguelikeUnitTests.Helpers;
 using SimpleInjector;
 using System;
 using System.Collections.Generic;
@@ -583,51 +584,58 @@ namespace RoguelikeUnitTests
 
     }
         
-    //[TestCase(EntityStatKind.ChanceToRepeatElementalProjectileAttack)]
-    [TestCase(EntityStatKind.StaffExtraElementalProjectileDamage)]
-    public void TestStaffMasteringStats(EntityStatKind esk)
+    [TestCase(EntityStatKind.ChanceToRepeatElementalProjectileAttack, AbilityKind.StaffsMastering)]
+    [TestCase(EntityStatKind.StaffExtraElementalProjectileDamage, AbilityKind.StaffsMastering)]
+    [TestCase(EntityStatKind.ScepterExtraElementalProjectileDamage, AbilityKind.SceptersMastering)]
+    [TestCase(EntityStatKind.WandExtraElementalProjectileDamage, AbilityKind.WandsMastering)]
+    public void TestMagicProjectileMasteringStats(EntityStatKind esk, AbilityKind ak)
     {
       var game = CreateGame();
       float originalStatValue = 0;
-      SetWeapon(AbilityKind.StaffsMastering, game.Hero, out originalStatValue);
+      SetWeapon(ak, game.Hero, out originalStatValue);
       var weapon = game.Hero.GetActiveWeapon();
 
       var en = PlainEnemies.First();
       float enHealthBase = PrepareEnemyToBeBeaten(en);
+      var damageComparer1 = new OuaDDamageComparer(en, this);
 
       var spell = weapon.SpellSource.CreateSpell(game.Hero);
       
       Assert.AreEqual(game.GameManager.SpellManager.ApplyAttackPolicy(game.Hero, en, weapon.SpellSource), Roguelike.Managers.ApplyAttackPolicyResult.OK);
       GotoNextHeroTurn();
 
-      var healthDiffBase = enHealthBase - en.Stats.Health;
-      enHealthBase = en.Stats.Health;
-      Assert.Greater(healthDiffBase, 0);
+      damageComparer1.RegisterHealth(en);
+      Assert.Greater(damageComparer1.HealthDifference, 0);
 
       var stat1Value = game.Hero.Stats.GetStat(EntityStatKind.ChanceToRepeatElementalProjectileAttack).Value;
       Assert.AreEqual(stat1Value.Factor, 0);
       Assert.AreEqual(game.Hero.Stats.GetStat(EntityStatKind.StaffExtraElementalProjectileDamage).Value.Factor, 0);
-      var ab = game.Hero.GetPassiveAbility(AbilityKind.StaffsMastering);
+      var ab = game.Hero.GetPassiveAbility(ak);
 
       //do not call  MaximizeAbility as it's not possible to distinguish what cause greater damage ChanceToRepeat or StaffExtraDamage
       //MaximizeAbility(ab, game.Hero);
-      game.Hero.Stats.SetFactor(esk, 50);//%
+      var factor = 50;//%
+      game.Hero.Stats.SetFactor(esk, factor);
       Assert.Greater(game.Hero.Stats.GetStat(esk).Value.Factor, 0);
       bool works = false;
 
       for (int i = 0; i < 20; i++)
       {
+        var damageComparer2 = new OuaDDamageComparer(en, this);
         spell = weapon.SpellSource.CreateSpell(game.Hero);
         Assert.AreEqual(game.GameManager.SpellManager.ApplyAttackPolicy(game.Hero, en, weapon.SpellSource), Roguelike.Managers.ApplyAttackPolicyResult.OK);
         GotoNextHeroTurn();
-        var healthDiff = enHealthBase - en.Stats.Health;
-        if (healthDiff > healthDiffBase)
+        damageComparer2.RegisterHealth(en);
+        if (damageComparer2.HealthDifference > damageComparer1.HealthDifference)
         {
+          if (esk == EntityStatKind.StaffExtraElementalProjectileDamage)
+          {
+            AssertHealthDiffPercentageInRange(damageComparer1, damageComparer2, 140, 175);//+factor%
+          }
           works = true;
           break;
         }
-
-        enHealthBase = en.Stats.Health;
+        
       }
       Assert.True(works);
       ////SumPercentageFactorAndValue of EnityStat depends on Factor, so check it

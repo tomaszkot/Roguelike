@@ -350,12 +350,12 @@ namespace Roguelike.Effects
       return LastingEffect.DefaultPendingTurns;
     }
 
-    public LastingEffect EnsureEffect(EffectType et, float inflictedDamage, LivingEntity attacker = null, int turnLasting = -1)
+    public LastingEffect EnsureEffect(EffectType et, float inflictedDamage, LivingEntity attacker = null, int turnLasting = -1, Tile source = null)
     {
       var effectInfo = CalcLastingEffDamage(et, inflictedDamage, null, null);
       if(turnLasting > 0)
         effectInfo.Turns = turnLasting;
-      var currentEffect = this.AddLastingEffect(effectInfo, EffectOrigin.External, null, EffectTypeConverter.Convert(et), true);
+      var currentEffect = this.AddLastingEffect(effectInfo, EffectOrigin.External, source, EffectTypeConverter.Convert(et), true);
       return currentEffect;
     }
 

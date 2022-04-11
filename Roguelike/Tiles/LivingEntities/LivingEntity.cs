@@ -682,7 +682,7 @@ namespace Roguelike.Tiles.LivingEntities
           }
           var damageDesc = "";
           
-          var ad = new AttackDescription(fi.Caller, true, AttackKind.PhysicalProjectile);
+          var ad = new AttackDescription(fi.Caller, fi.Caller.UseAttackVariation, AttackKind.PhysicalProjectile);
           var inflicted = CalcMeleeDamage(ad.CurrentPhysicalVariated, ref damageDesc, pfi);//TODO what about NonPhysical?
           var sound = pfi.HitTargetSound;// "punch";
           var srcName = fi.FightItemKind.ToDescription();
@@ -706,7 +706,7 @@ namespace Roguelike.Tiles.LivingEntities
           else if (fi.FightItemKind == FightItemKind.WeightedNet)
           {
             var npd = 0;
-            lastingEffectsSet.EnsureEffect(EffectType.WebTrap, npd, attacker, fi.Duration);
+            lastingEffectsSet.EnsureEffect(EffectType.WebTrap, npd, attacker, fi.Duration, fi);
             PlaySound(sound);//TODO
             return HitResult.Hit;
           }
@@ -944,6 +944,7 @@ namespace Roguelike.Tiles.LivingEntities
 
     public virtual void ReduceHealth(float amount)
     {
+      Debug.WriteLine(Name+ " ReduceHealth: "+ amount);
       Stats.GetStat(EntityStatKind.Health).Subtract(amount);
       DieIfShould(EffectType.Unset);
     }

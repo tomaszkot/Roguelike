@@ -1,9 +1,11 @@
 ﻿using Dungeons.Tiles;
 using NUnit.Framework;
+using Roguelike.Attributes;
 using Roguelike.Calculated;
 using Roguelike.Events;
 using Roguelike.LootFactories;
 using Roguelike.Tiles;
+using Roguelike.Tiles.LivingEntities;
 using Roguelike.Tiles.Looting;
 using System.Linq;
 
@@ -15,7 +17,7 @@ namespace RoguelikeUnitTests
     readonly float StartAttack = Roguelike.Tiles.LivingEntities.Hero.GetStrengthStartStat();
 
     [Test]
-    public void HunterTrapDeact()
+    public void HunterTrapDeactivation()
     {
       var game = CreateGame();
       var hero = game.Hero;
@@ -33,6 +35,8 @@ namespace RoguelikeUnitTests
       }
       Assert.AreEqual(game.GameManager.CurrentNode.GetTile(fi.point).Symbol, new Tile().Symbol);
     }
+
+
 
     [Test]
     public void WeaponPower()
@@ -86,6 +90,57 @@ namespace RoguelikeUnitTests
       Assert.AreEqual(ad.CurrentTotal, expectedAttackValue);
       return ad;
     }
+
+    private Enemy PrepareEnemy(bool addImmunities = true)
+    {
+      var hero = game.Hero;
+      var enemy = ActivePlainEnemies.First();
+      enemy.Stats.Stats[EntityStatKind.Health].Value.Nominal = 300;
+      PlaceCloseToHero(enemy);
+      if (addImmunities)
+        enemy.AddImmunity(Roguelike.Effects.EffectType.Bleeding);
+
+      if (!enemy.Name.Any())
+        enemy.Name = "enemy";
+      return enemy;
+    }
+
+
+    //[Test]
+    //[Repeat(1)]
+    //public void WeightedNetFightItemTest()
+    //{
+    //  var game = CreateGame();
+    //  var hero = game.Hero;
+    //  hero.UseAttackVariation = false;//other tests do it
+
+    //  var fi = ActivateFightItem(FightItemKind.WeightedNet, hero);
+
+    //  var enemy = PrepareEnemy();
+    //  var enemyHealth = enemy.Stats.Health;
+    //  //enemy.Stats.SetNominal(Roguelike.Attributes.EntityStatKind.Defense, 10);
+    //  //var mana = hero.Stats.Mana;
+
+    //  //var bow = GenerateEquipment<Weapon>("Bow");
+    //  //Assert.True(SetHeroEquipment(bow));
+
+    //  //var tile = game.GameManager.CurrentNode.GetClosestEmpty(hero);
+    //  //game.GameManager.CurrentNode.SetTile(enemy, tile.point);
+
+    //  Assert.True(UseFightItem(hero, enemy, fi));
+    //  Assert.Greater(enemyHealth, enemy.Stats.Health);
+    //  //Assert.AreEqual(mana, hero.Stats.Mana);
+    //  //Assert.False(game.GameManager.HeroTurn);
+    //  //var diffBow = enemyHealth - enemy.Stats.Health;
+    //  //enemyHealth = enemy.Stats.Health;
+
+    //  //GotoNextHeroTurn();
+    //  //fi = ActivateFightItem(FightItemKind.ThrowingKnife, hero);
+    //  //Assert.True(UseFightItem(hero, enemy, fi));
+    //  //Assert.Greater(enemyHealth, enemy.Stats.Health);
+    //  //var diffKnife = enemyHealth - enemy.Stats.Health;
+    //  //Assert.Greater(diffBow, diffKnife);
+    //}
 
     [Test]
     [Repeat(1)]

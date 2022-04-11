@@ -61,6 +61,8 @@ namespace Roguelike.Tiles.LivingEntities
         inventory.Owner = this;
       }
     }
+        public ProjectileFightItem ActiveProjectileFightItem => ActiveFightItem as ProjectileFightItem;
+
     //[JsonIgnoreAttribute]
     public CurrentEquipment CurrentEquipment
     {
@@ -833,7 +835,10 @@ namespace Roguelike.Tiles.LivingEntities
     public override AttackDescription GetAttackValue(AttackKind attackKind)
     {
       var wpn = this.GetActiveWeapon();
-      return new AttackDescription(this, wpn != null ? !wpn.StableDamage : true, attackKind);
+      var withVariation = wpn != null ? !wpn.StableDamage : true;
+      if (withVariation)
+        withVariation = this.UseAttackVariation;
+      return new AttackDescription(this, withVariation, attackKind);
     }
 
     public virtual AbilityKind SelectedActiveAbilityKind

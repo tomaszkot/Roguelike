@@ -181,7 +181,7 @@ namespace Roguelike.Calculated
         CurrentPhysical = 0;
 
       var val = CurrentPhysicalVariated;
-      //add extra melee damage
+      //add melee damage
       AddExtraDamage(ent, wpn, weapons2Esk, ref val);
       CurrentPhysicalVariated += val - CurrentPhysicalVariated;
       
@@ -195,7 +195,7 @@ namespace Roguelike.Calculated
           dmg += CalcVariation(attackKind, true, dmg);
         if (wpn != null && attackKind == AttackKind.WeaponElementalProjectile)
         {
-          //add extra projectile damage
+          //add extra magic projectile damage
           AddExtraDamage(ent, wpn, weapons2Esk, ref dmg);
         }
 
@@ -245,14 +245,30 @@ namespace Roguelike.Calculated
 
     private void AddExtraDamage(LivingEntity ent, Weapon wpn, Dictionary<Weapon.WeaponKind, EntityStatKind> weapons2Esk, ref float currentDamage)
     {
-      if (wpn != null && weapons2Esk != null)
+      if (wpn != null)
       {
-        if (weapons2Esk.ContainsKey(wpn.Kind))//AxeExtraDamage, SwordExtraDamage...
+        if (weapons2Esk != null)
         {
-          currentDamage = ent.Stats.GetStat(weapons2Esk[wpn.Kind]).SumPercentageFactorAndValue(currentDamage);
+          if (weapons2Esk.ContainsKey(wpn.Kind))//AxeExtraDamage, SwordExtraDamage...
+          {
+            currentDamage = ent.Stats.GetStat(weapons2Esk[wpn.Kind]).SumPercentageFactorAndValue(currentDamage);
+          }
+        }
+        if (wpn.IsBowLike && ent is AdvancedLivingEntity ale)
+        {
+          var ab = ale.GetActivePhysicalProjectileAbility();
+          if (ab != null && ab.Kind == AbilityKind.PerfectHit)
+          {
+            var nd = ab.PrimaryStat.SumPercentageFactorAndValue(currentDamage);
+            if (nd / currentDamage < 1.5)
+            {
+              int k = 0;
+              k++;
+            }
+            currentDamage = nd;
+          }
         }
       }
-      //return ale.GetActivePhysicalProjectileAbility();
     }
   }
 }

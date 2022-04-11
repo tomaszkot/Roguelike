@@ -270,8 +270,7 @@ namespace RoguelikeUnitTests
       for(int i=0;i<number;i++)
         GotoNextHeroTurn();
     }
-
-    protected void GotoNextHeroTurn(Roguelike.RoguelikeGame game = null)
+    public void GotoNextHeroTurn(Roguelike.RoguelikeGame game = null)
     {
       if (game == null)
         game = this.game;
@@ -436,12 +435,13 @@ namespace RoguelikeUnitTests
       return scroll;
     }
 
-    public static void AssertHealthDiffPercentageInRange(DamageComparer dc1, DamageComparer dc2, int percMin, int percMax)
+    public static float AssertHealthDiffPercentageInRange(DamageComparer dc1, DamageComparer dc2, int percMin, int percMax)
     {
       Assert.Greater(dc2.HealthDifference, dc1.HealthDifference);
       var diff = dc2.CalcHealthDiffPerc(dc1);
       Assert.Greater(diff, percMin);
       Assert.Less(diff, percMax);
+      return diff;
     }
 
     public static void AssertDurationDiffInRange(DamageComparer dc1, DamageComparer dc2, int min, int max)
