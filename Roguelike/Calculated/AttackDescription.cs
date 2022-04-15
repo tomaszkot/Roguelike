@@ -5,6 +5,7 @@ using Roguelike.Spells;
 using Roguelike.Tiles;
 using Roguelike.Tiles.LivingEntities;
 using Roguelike.Tiles.Looting;
+using System;
 using System.Collections.Generic;
 
 namespace Roguelike.Calculated
@@ -256,26 +257,47 @@ namespace Roguelike.Calculated
         }
         if (ent is AdvancedLivingEntity ale)
         {
+          Func<Ability> GetAbility = () => {
+            if (wpn.IsBowLike)
+            {
+              var ab = ale.GetActivePhysicalProjectileAbility();
+              if (ab != null)
+              {
+                if (ab.Kind != AbilityKind.PerfectHit)
+                  return null;
+                return ab;
+              }
+            }
+            else
+            {
+              if (ale.CanUseAbility(AbilityKind.Rage))
+              {
+                return ale.GetActiveAbility(AbilityKind.Rage);
+              }
+            }
+            return null;
+          };
+
+          var ability = GetAbility();
+          if (ability == null || !ale.CanUseAbility(ability.Kind))
+            return;
           if (wpn.IsBowLike)
           {
-            var ab = ale.GetActivePhysicalProjectileAbility();
-            if (ab != null && ab.Kind == AbilityKind.PerfectHit)
+            if (ability.Kind == AbilityKind.PerfectHit)
             {
-              var nd = ab.PrimaryStat.SumPercentageFactorAndValue(currentDamage);
-              if (nd / currentDamage < 1.5)
-              {
-                int k = 0;
-                k++;
-              }
+              var nd = ability.PrimaryStat.SumPercentageFactorAndValue(currentDamage);
+              //if (nd / currentDamage < 1.5)
+              //{
+              //  int k = 0;
+              //  k++;
+              //}
               currentDamage = nd;
             }
           }
-          else if (!wpn.IsBowLike)
+          else
           {
-            if (ale.CanUseAbility(AbilityKind.Rage))
-            {
-              currentDamage = Calculated.FactorCalculator.AddFactor(currentDamage, ale.SelectedActiveAbility.PrimaryStat.Factor);
-            }           
+            if (AbilityKind.Rage == ability.Kind)
+              currentDamage = FactorCalculator.AddFactor(currentDamage, ale.SelectedActiveAbility.PrimaryStat.Factor);
           }
         }
       }

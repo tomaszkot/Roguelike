@@ -42,7 +42,7 @@ namespace Roguelike.Abilities
     protected List<string> customExtraStatDescription = new List<string>();
     public string LastIncError { get; set; }
     protected AbilityKind kind;
-    public int CollDownCounter { get; set; }
+    public int CoolDownCounter { get; set; }//TODO move to active
     public int MaxCollDownCounter { get; set; } = 5;
 
     public Ability()

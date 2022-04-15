@@ -204,23 +204,33 @@ namespace Roguelike.Tiles.Looting
       
     }
 
+    static Dictionary<FightItemKind, AbilityKind> fi2Ab = new Dictionary<FightItemKind, AbilityKind>()
+    {
+      { FightItemKind.ThrowingKnife, AbilityKind.ThrowingKnife},
+      { FightItemKind.Stone, AbilityKind.ThrowingStone},
+      { FightItemKind.PoisonCocktail, AbilityKind.PoisonCocktail},
+      { FightItemKind.ExplosiveCocktail, AbilityKind.ExplosiveCocktail},
+      { FightItemKind.HunterTrap, AbilityKind.HunterTrap},
+      { FightItemKind.WeightedNet, AbilityKind.WeightedNet},
+    };
+
+    public static AbilityKind GetAbilityKind(FightItem item)
+    {
+      if (fi2Ab.ContainsKey(item.FightItemKind))
+      {
+        //var ab = ale.GetActiveAbility(fi2Ab[item.FightItemKind]);
+        //if (ab != null)
+        return fi2Ab[item.FightItemKind];
+      }
+
+      return AbilityKind.Unset;
+    }
+
     public AbilityKind AbilityKind
     {
       get
       {
-        if (fightItemKind == FightItemKind.ThrowingKnife)
-          return AbilityKind.ThrowingKnife;
-        if (fightItemKind == FightItemKind.ExplosiveCocktail)
-          return AbilityKind.ExplosiveCocktail;
-        if (fightItemKind == FightItemKind.PoisonCocktail)
-          return AbilityKind.PoisonCocktail;
-        if (fightItemKind == FightItemKind.Stone)
-          return AbilityKind.ThrowingStone;
-        if (fightItemKind == FightItemKind.HunterTrap)
-          return AbilityKind.HunterTrap;
-        if (fightItemKind == FightItemKind.WeightedNet)
-          return AbilityKind.WeightedNet;
-        return AbilityKind.Unset;
+        return GetAbilityKind(this);
       }
     }
 

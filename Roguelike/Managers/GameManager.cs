@@ -3,6 +3,7 @@ using Dungeons.Core;
 using Dungeons.Tiles;
 using Newtonsoft.Json;
 using Roguelike.Abilities;
+using Roguelike.Abstract.HotBar;
 using Roguelike.Abstract.Inventory;
 using Roguelike.Abstract.Projectiles;
 using Roguelike.Abstract.Spells;
@@ -48,6 +49,7 @@ namespace Roguelike.Managers
 
   public class GameManager
   {
+    
     protected GameContext context;
     LootGenerator lootGenerator;
     EventsManager eventsManager;
@@ -1431,18 +1433,27 @@ namespace Roguelike.Managers
       if (attackVictimsCount > fi.Count)
         attackVictimsCount = fi.Count;
 
-      if (ab != null)
+      var fiCountToRemove = 1;
+      var abUsed = false;
+      if (ab == null)
+        ab = caster.GetActiveAbility(FightItem.GetAbilityKind(fi));
+      if (ab != null && caster.CanUseAbility(ab.Kind))
       {
+        abUsed = true;
         if (ab.Kind == AbilityKind.ArrowVolley)
         {
-          for (int i = 0; i < attackVictimsCount; i++)
-            caster.RemoveFightItem(fi);
+          fiCountToRemove = attackVictimsCount;
         }
-        HandleActiveAbilityUsed(caster, ab.Kind);
       }
-      var destFi = fi.Clone(attackVictimsCount) as ProjectileFightItem;
+      
+      for (int i = 0; i < fiCountToRemove; i++)
+        caster.RemoveFightItem(fi);
 
-      return DoApply(caster, target, destFi, attackVictimsCount, BeforeApply, AfterApply);
+      var destFi = fi.Clone(attackVictimsCount) as ProjectileFightItem;
+      var res = DoApply(caster, target, destFi, attackVictimsCount, BeforeApply, AfterApply);
+      if(abUsed)
+        HandleActiveAbilityUsed(caster, ab.Kind);
+      return res;
     }
 
     public void CallTryAddForLootSource(IObstacle obstacle)
@@ -1680,7 +1691,7 @@ namespace Roguelike.Managers
     private void HandleActiveAbilityUsed(LivingEntity abilityUser, AbilityKind abilityKind)
     {
       var ab = abilityUser.GetActiveAbility(abilityKind);
-      ab.CollDownCounter = ab.MaxCollDownCounter;
+      ab.CoolDownCounter = ab.MaxCollDownCounter;
       AppendUsedAbilityAction(abilityUser, abilityKind);
     }
 
@@ -1707,5 +1718,7 @@ namespace Roguelike.Managers
         neib = TileNeighborhood.North;
       return neib;
     }
+
+    
   }
 }

@@ -412,7 +412,8 @@ namespace RoguelikeUnitTests
 
     protected bool UseFightItem(Hero hero, LivingEntity enemy, ProjectileFightItem fi)
     {
-      hero.Inventory.Add(fi);
+      if(!hero.Inventory.Contains(fi))
+        hero.Inventory.Add(fi);
       if (fi.FightItemKind == FightItemKind.Stone)
         return game.GameManager.ApplyAttackPolicy(hero, enemy, fi);
 

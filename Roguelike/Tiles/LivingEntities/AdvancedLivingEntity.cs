@@ -747,8 +747,8 @@ namespace Roguelike.Tiles.LivingEntities
 
       foreach (var ab in Abilities.ActiveItems)
       {
-        if (ab.CollDownCounter > 0)
-          ab.CollDownCounter--;
+        if (ab.CoolDownCounter > 0)
+          ab.CoolDownCounter--;
       }
     }
 
