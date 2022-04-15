@@ -21,7 +21,6 @@ namespace Roguelike.Managers
       set;
     }
 
-
     public PolicyManager(GameManager mgr)
     {
       this.gm = mgr;
@@ -73,10 +72,11 @@ namespace Roguelike.Managers
         var enemyVictim = ap.Victim as Enemy;
         if (enemyVictim != null)
         {
-          if (enemyVictim.Alive && gm.Hero.CanUseAbility(Abilities.AbilityKind.StrikeBack))
-          {
-            gm.UseAbility(enemyVictim, gm.Hero, Abilities.AbilityKind.StrikeBack, false);
-          }
+          //StrikeBack shall be done when hero is hit
+          //if (enemyVictim.Alive && gm.Hero.CanUseAbility(Abilities.AbilityKind.StrikeBack))
+          //{
+          //  gm.UseAbility(enemyVictim, gm.Hero, Abilities.AbilityKind.StrikeBack, false);
+          //}
 
           var bulkOK = HandleBulk(enemyVictim, EntityStatKind.ChanceToBulkAttack);
           if (!bulkOK)

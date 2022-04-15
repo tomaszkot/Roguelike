@@ -46,6 +46,7 @@ namespace Roguelike.Tiles.Looting
     protected string primaryFactorName = "Damage";
     protected string auxFactorName = "";
     public string HitTargetSound;
+    public string DeactivationSound;
 
     [JsonIgnore]
     public EventHandler<FightItemState> StateChanged { get; set; }
@@ -133,6 +134,7 @@ namespace Roguelike.Tiles.Looting
           PrimaryStatDescription = Name + ", clinch victim and causes bleeding";
           HitTargetSound = "trap";
           Duration = 3;
+          DeactivationSound = "trap_off";
         }
         else if (fightItemKind == FightItemKind.ExplosiveCocktail)
         {

@@ -187,8 +187,6 @@ namespace Roguelike.Managers
         if (fi.FightItemKind == FightItemKind.HunterTrap && fi.FightItemState == FightItemState.Activated)
         {
           entity.OnHitBy(fi as ProjectileFightItem);
-          //bleed.Source = fi;
-          //fi.SetState(FightItemState.Busy);
         }
       }
 
@@ -1561,7 +1559,7 @@ namespace Roguelike.Managers
 
       attackPolicy.OnApplied += (s, e) =>
       {
-        afterApply(e);
+         afterApply(e);
                
         if (target is LivingEntity targetLe && targetLe.Alive)
         {
@@ -1613,6 +1611,7 @@ namespace Roguelike.Managers
         ApplyPhysicalAttackPolicy(abilityUser, victim, (p) =>
         {
           used = true;
+          AppendUsedAbilityAction(abilityUser, abilityKind);
           if (AttackPolicyDone != null)
             AttackPolicyDone();
         });
@@ -1660,9 +1659,10 @@ namespace Roguelike.Managers
           {
             var ab = advEnt.GetActiveAbility(abilityKind);
             ab.CollDownCounter = ab.MaxCollDownCounter;
+            AppendUsedAbilityAction(abilityUser, abilityKind);
           }
         }
-        AppendUsedAbilityAction(abilityUser, abilityKind);
+        
       }
     }
 

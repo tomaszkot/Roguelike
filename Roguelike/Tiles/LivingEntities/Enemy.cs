@@ -20,7 +20,6 @@ namespace Roguelike.Tiles.LivingEntities
 
   public class Enemy : LivingEntity
   {
-    //public EntityKind SpeciesKind { get; set; }
     bool LevelSet { get; set; }
     public const string ChempTagSuffix = "_ch";
     public PrefferedFightStyle PrefferedFightStyle { get; set; }//= PrefferedFightStyle.Magic;
@@ -39,7 +38,6 @@ namespace Roguelike.Tiles.LivingEntities
 
     public Enemy(Container cont) : this(new Point().Invalid(), 'e', null)
     {
-
     }
 
     public Enemy(char symbol, Container cont) : this(new Point().Invalid(), symbol, cont)
@@ -61,13 +59,14 @@ namespace Roguelike.Tiles.LivingEntities
         Name = NameFromSymbol(symbol);
 
       AddFightItem(FightItemKind.Stone);
-      AddFightItem(FightItemKind.ThrowingKnife);
+      var knife = AddFightItem(FightItemKind.ThrowingKnife);
       AddFightItem(FightItemKind.ExplosiveCocktail);
       AddFightItem(FightItemKind.PoisonCocktail);
-      AddFightItem(FightItemKind.WeightedNet);
+      var net = AddFightItem(FightItemKind.WeightedNet);
       //fightItems[FightItemKind.HunterTrap] = new ProjectileFightItem(FightItemKind.HunterTrap, this) { Count = RandHelper.GetRandomInt(3) + 1 };
 
-      SetActiveFightItem(RandHelper.GetRandomElem<FightItem>(this.fightItems.Values.ToList()).FightItemKind);
+      //SetActiveFightItem(RandHelper.GetRandomElem<FightItem>(this.fightItems.Values.ToList()).FightItemKind);
+      SetActiveFightItem(knife.FightItemKind);
 
       SetResist(EntityStatKind.ResistCold, 15);
       SetResist(EntityStatKind.ResistFire, 15);
