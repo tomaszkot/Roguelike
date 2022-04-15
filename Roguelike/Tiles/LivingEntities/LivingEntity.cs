@@ -129,6 +129,14 @@ namespace Roguelike.Tiles.LivingEntities
       return null;
     }
 
+    public virtual Ability SelectedActiveAbility
+    {
+      get { return null; }
+      set {
+        throw new NotImplementedException();
+      }
+    }
+
     public virtual FightItem ActiveFightItem
     {
       get => activeFightItem;
@@ -1323,5 +1331,15 @@ namespace Roguelike.Tiles.LivingEntities
 
     [JsonIgnore]
     public bool LastAttackWasProjectile { get; set; }
+
+    public virtual ActiveAbility GetActiveAbility(AbilityKind kind)
+    {
+      return null;
+    }
+
+    public virtual AbilityKind SelectedActiveAbilityKind
+    {
+      get { return AbilityKind.Unset; }
+    }
   }
 }

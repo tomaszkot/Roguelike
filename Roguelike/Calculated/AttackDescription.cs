@@ -254,18 +254,28 @@ namespace Roguelike.Calculated
             currentDamage = ent.Stats.GetStat(weapons2Esk[wpn.Kind]).SumPercentageFactorAndValue(currentDamage);
           }
         }
-        if (wpn.IsBowLike && ent is AdvancedLivingEntity ale)
+        if (ent is AdvancedLivingEntity ale)
         {
-          var ab = ale.GetActivePhysicalProjectileAbility();
-          if (ab != null && ab.Kind == AbilityKind.PerfectHit)
+          if (wpn.IsBowLike)
           {
-            var nd = ab.PrimaryStat.SumPercentageFactorAndValue(currentDamage);
-            if (nd / currentDamage < 1.5)
+            var ab = ale.GetActivePhysicalProjectileAbility();
+            if (ab != null && ab.Kind == AbilityKind.PerfectHit)
             {
-              int k = 0;
-              k++;
+              var nd = ab.PrimaryStat.SumPercentageFactorAndValue(currentDamage);
+              if (nd / currentDamage < 1.5)
+              {
+                int k = 0;
+                k++;
+              }
+              currentDamage = nd;
             }
-            currentDamage = nd;
+          }
+          else if (!wpn.IsBowLike)
+          {
+            if (ale.CanUseAbility(AbilityKind.Rage))
+            {
+              currentDamage = Calculated.FactorCalculator.AddFactor(currentDamage, ale.SelectedActiveAbility.PrimaryStat.Factor);
+            }           
           }
         }
       }

@@ -203,6 +203,7 @@ namespace Roguelike.Managers
         bulkOK = HandleBulk(en, EntityStatKind.ChanceToElementalProjectileBulkAttack, (Enemy en1) => {
           applyingBulk = true;
           ApplyAttackPolicy(caster, en1, spellSource, BeforeApply, AfterApply, true);
+          gm.AppendAction(caster.Name + " used Projectile Bulk Attack", ActionLevel.Important);
         });
 
       return ApplyAttackPolicyResult.OK;

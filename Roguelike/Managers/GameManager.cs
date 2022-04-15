@@ -1394,9 +1394,21 @@ namespace Roguelike.Managers
       return false;
     }
 
-    protected virtual int GetAttackVictimsCount(LivingEntity caster, out Ability ab)
+    protected virtual int GetAttackVictimsCount(LivingEntity advCaster)
     {
-      ab = null;
+      {
+        if (advCaster.SelectedActiveAbilityKind == AbilityKind.ArrowVolley ||
+           advCaster.SelectedActiveAbilityKind == AbilityKind.PiercingArrow)
+        {
+          var ab = advCaster.GetActiveAbility(advCaster.SelectedActiveAbilityKind);
+          var maxVictims = 1;
+          if (ab.Kind == Roguelike.Abilities.AbilityKind.ArrowVolley)
+            maxVictims = (int)ab.PrimaryStat.Factor;
+          else
+            maxVictims = (int)ab.AuxStat.Factor;
+          return maxVictims;//TODO
+        }
+      }
       return 1;
     }
 
@@ -1414,15 +1426,19 @@ namespace Roguelike.Managers
         logger.LogError("gm fi.Count <= 0");
         return false;
       }
-      Ability ab;
-      var attackVictimsCount = GetAttackVictimsCount(caster, out ab);
+      var ab = caster.SelectedActiveAbility;
+      var attackVictimsCount = GetAttackVictimsCount(caster);
       if (attackVictimsCount > fi.Count)
         attackVictimsCount = fi.Count;
 
-      if (ab != null && ab.Kind == AbilityKind.ArrowVolley)
+      if (ab != null)
       {
-        for(int i=0;i< attackVictimsCount;i++)
-          caster.RemoveFightItem(fi);
+        if (ab.Kind == AbilityKind.ArrowVolley)
+        {
+          for (int i = 0; i < attackVictimsCount; i++)
+            caster.RemoveFightItem(fi);
+        }
+        HandleActiveAbilityUsed(caster, ab.Kind);
       }
       var destFi = fi.Clone(attackVictimsCount) as ProjectileFightItem;
 
@@ -1604,7 +1620,7 @@ namespace Roguelike.Managers
 
     public void UseAbility(LivingEntity victim, LivingEntity abilityUser, Abilities.AbilityKind abilityKind, bool activeAbility)
     {
-      var advEnt = abilityUser as AdvancedLivingEntity;
+      //var advEnt = abilityUser as AdvancedLivingEntity;
       bool used = false;
       if (abilityKind == Abilities.AbilityKind.StrikeBack)
       {
@@ -1630,7 +1646,7 @@ namespace Roguelike.Managers
             activeAbilityVictim.MoveDueToAbilityVictim = true;
 
             var desc = "";
-            var ab = advEnt.GetActiveAbility(Abilities.AbilityKind.Stride);
+            var ab = abilityUser.GetActiveAbility(Abilities.AbilityKind.Stride);
             var attack = abilityUser.Stats.GetStat(EntityStatKind.Strength).SumValueAndPercentageFactor(ab.PrimaryStat, true);
             var damage = victim.CalcMeleeDamage(attack, ref desc);
             var inflicted = victim.InflictDamage(abilityUser, false, ref damage, ref desc);
@@ -1641,7 +1657,7 @@ namespace Roguelike.Managers
         }
         else if (abilityKind == Abilities.AbilityKind.OpenWound)
         {
-          var ab = advEnt.GetActiveAbility(abilityKind);
+          var ab = abilityUser.GetActiveAbility(abilityKind);
           var dur = ab.PrimaryStat.Factor;
           var damage = Calculated.FactorCalculator.AddFactor(3, ab.AuxStat.Factor);//TODO  3
           victim.StartBleeding(damage, null, (int)dur);
@@ -1649,24 +1665,26 @@ namespace Roguelike.Managers
         }
         else if (abilityKind == Abilities.AbilityKind.Rage)
         {
-          used = true;//was added to the damage
+          used = true;//was added to the damage, TODO
         }
       }
       if (used)
       {
         if (activeAbility)
         {
-          {
-            var ab = advEnt.GetActiveAbility(abilityKind);
-            ab.CollDownCounter = ab.MaxCollDownCounter;
-            AppendUsedAbilityAction(abilityUser, abilityKind);
-          }
+          HandleActiveAbilityUsed(abilityUser, abilityKind);
         }
-        
       }
     }
 
-    private void AppendUsedAbilityAction(LivingEntity abilityUser, Abilities.AbilityKind abilityKind)
+    private void HandleActiveAbilityUsed(LivingEntity abilityUser, AbilityKind abilityKind)
+    {
+      var ab = abilityUser.GetActiveAbility(abilityKind);
+      ab.CollDownCounter = ab.MaxCollDownCounter;
+      AppendUsedAbilityAction(abilityUser, abilityKind);
+    }
+
+    public void AppendUsedAbilityAction(LivingEntity abilityUser, Abilities.AbilityKind abilityKind)
     {
       EventsManager.AppendAction(new LivingEntityAction(LivingEntityActionKind.UsedAbility)
       {

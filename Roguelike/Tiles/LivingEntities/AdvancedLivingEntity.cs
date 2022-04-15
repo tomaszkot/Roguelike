@@ -199,7 +199,7 @@ namespace Roguelike.Tiles.LivingEntities
       return Abilities.PassiveItems.Where(i => i.Kind == kind).SingleOrDefault();
     }
 
-    public ActiveAbility GetActiveAbility(AbilityKind kind)
+    public override ActiveAbility GetActiveAbility(AbilityKind kind)
     {
       return Abilities.ActiveItems.Where(i => i.Kind == kind).SingleOrDefault();
     }
@@ -841,7 +841,7 @@ namespace Roguelike.Tiles.LivingEntities
       return new AttackDescription(this, withVariation, attackKind);
     }
 
-    public virtual AbilityKind SelectedActiveAbilityKind
+    public override AbilityKind SelectedActiveAbilityKind
     {
       get { return AbilityKind.Unset; }
     }
