@@ -133,7 +133,6 @@ namespace Roguelike.Tiles.LivingEntities
     {
       get { return null; }
       set {
-        throw new NotImplementedException();
       }
     }
 

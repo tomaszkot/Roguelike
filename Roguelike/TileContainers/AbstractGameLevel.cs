@@ -386,8 +386,8 @@ namespace Roguelike.TileContainers
           byte value = 1;
           findPathMatrix[row, col] = value;
 
-          //var tile = Tiles[row, col];
-          var tile = GetTile(new Point(col, row));//TODO slow
+          var tile = Tiles[row, col];
+          //var tile = GetTile(new Point(col, row));//TODO slow
           if (tile is Hero)
           {
             if (forHeroAlly)
