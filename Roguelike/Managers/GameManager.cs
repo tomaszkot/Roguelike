@@ -880,9 +880,12 @@ namespace Roguelike.Managers
       bool goldInvolved = GetGoldInvolvedOnSell(src, dest);
 
       var price = 0;
+      var count = removeItemArg.StackedCount;
+      if (count == 0)
+        count = 1;
       if (goldInvolved)
       {
-        price = src.GetPrice(loot);// (int)(loot.Price * srcInv.PriceFactor * stackedCount);
+        price = src.GetPrice(loot) * count;// (int)(loot.Price * srcInv.PriceFactor * stackedCount);
 
         if (dest.Gold < price)
         {
