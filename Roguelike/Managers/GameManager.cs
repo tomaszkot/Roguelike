@@ -3,12 +3,12 @@ using Dungeons.Core;
 using Dungeons.Tiles;
 using Newtonsoft.Json;
 using Roguelike.Abilities;
-using Roguelike.Abstract.HotBar;
 using Roguelike.Abstract.Inventory;
 using Roguelike.Abstract.Projectiles;
 using Roguelike.Abstract.Spells;
 using Roguelike.Abstract.Tiles;
 using Roguelike.Attributes;
+using Roguelike.Calculated;
 using Roguelike.Events;
 using Roguelike.Extensions;
 using Roguelike.Generators;
@@ -21,6 +21,7 @@ using Roguelike.State;
 using Roguelike.Strategy;
 using Roguelike.TileContainers;
 using Roguelike.Tiles;
+//using Roguelike.Tiles.Abstract;
 using Roguelike.Tiles.Interactive;
 using Roguelike.Tiles.LivingEntities;
 using Roguelike.Tiles.Looting;
@@ -30,7 +31,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
-using System.Threading;
 
 namespace Roguelike.Managers
 {
@@ -829,6 +829,12 @@ namespace Roguelike.Managers
       return SellItem(loot, src, src.Inventory, dest, dest.Inventory, removeItemArg);
     }
 
+    public bool CanSell(Loot lootToSell)//, IAdvancedEntity seller, IAdvancedEntity buyer)
+    {
+      //bool goldInvolved = GetGoldInvolvedOnSell(src, dest);
+      return true;
+    }
+
     public Loot SellItem
     (
       Loot loot,
@@ -923,8 +929,8 @@ namespace Roguelike.Managers
 
       if (goldInvolved)
       {
-        dest.Gold -= price * removeItemArg.StackedCount;
-        src.Gold += price * removeItemArg.StackedCount;
+        dest.Gold -= price;
+        src.Gold += price;
         SoundManager.PlaySound("COINS_Rattle_04_mono");//coind_drop
       }
       return sold;
@@ -1112,6 +1118,7 @@ namespace Roguelike.Managers
     {
       var enemy = CurrentNode.SpawnEnemy(lootSource);
       AppendEnemy(enemy, lootSource.GetPoint(), lootSource is Barrel);
+      enemy.LootSource = lootSource;
     }
 
     private void AppendEnemy(Enemy enemy, Point pt, bool replace)
@@ -1421,25 +1428,25 @@ namespace Roguelike.Managers
     (
       LivingEntity caster,//hero, enemy, ally
       Tiles.Abstract.IObstacle target,
-      ProjectileFightItem fi,
+      ProjectileFightItem pfi,
       Action<Policy> BeforeApply = null,
       Action<Policy> AfterApply = null
     )
     {
-      if (fi.Count <= 0)
+      if (pfi.Count <= 0)
       {
         logger.LogError("gm fi.Count <= 0");
         return false;
       }
       var ab = caster.SelectedActiveAbility;
       var attackVictimsCount = GetAttackVictimsCount(caster);
-      if (attackVictimsCount > fi.Count)
-        attackVictimsCount = fi.Count;
+      if (attackVictimsCount > pfi.Count)
+        attackVictimsCount = pfi.Count;
 
       var fiCountToRemove = 1;
       var abUsed = false;
       if (ab == null)
-        ab = caster.GetActiveAbility(FightItem.GetAbilityKind(fi));
+        ab = caster.GetActiveAbility(FightItem.GetAbilityKind(pfi));
       if (ab != null && caster.CanUseAbility(ab.Kind))
       {
         abUsed = true;
@@ -1448,15 +1455,29 @@ namespace Roguelike.Managers
           fiCountToRemove = attackVictimsCount;
         }
       }
-      
-      for (int i = 0; i < fiCountToRemove; i++)
-        caster.RemoveFightItem(fi);
 
-      var destFi = fi.Clone(attackVictimsCount) as ProjectileFightItem;
+      pfi.AttackDescription = CreateAttackDescription(caster);
+      for (int i = 0; i < fiCountToRemove; i++)
+        caster.RemoveFightItem(pfi);
+
+      var destFi = pfi.Clone(attackVictimsCount) as ProjectileFightItem;
+      
       var res = DoApply(caster, target, destFi, attackVictimsCount, BeforeApply, AfterApply);
       if(abUsed)
         HandleActiveAbilityUsed(caster, ab.Kind);
       return res;
+    }
+
+    AttackDescription CreateAttackDescription(LivingEntity caster)
+    {
+      var fightItem = AttackDescription.GetActiveFightItem(caster);
+      if (fightItem == null)
+      {
+        Logger.LogError("OnHitBy ProjectileFightItem GetActivatedFightItem == null");
+        return null;
+      }
+
+      return new AttackDescription(caster, caster.UseAttackVariation, AttackKind.PhysicalProjectile);
     }
 
     public void CallTryAddForLootSource(IObstacle obstacle)

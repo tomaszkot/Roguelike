@@ -20,5 +20,6 @@ namespace Roguelike.Tiles.Abstract
     string GetExpInfo();
 
     event EventHandler StatsRecalculated;
+
   }
 }

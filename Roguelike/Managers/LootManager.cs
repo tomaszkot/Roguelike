@@ -86,7 +86,9 @@ namespace Roguelike.Managers
         lsk = chest.LootSourceKind;
       }
 
-      var enFromChest = (lootSource is Chest ch && ch.ChestVisualKind == ChestVisualKind.Grave && RandHelper.GetRandomDouble() < GenerationInfo.ChanceToGenerateEnemyFromGrave);
+      var enFromChest = (lootSource is Chest ch 
+        && ch.ChestVisualKind == ChestVisualKind.Grave 
+        && RandHelper.GetRandomDouble() < GenerationInfo.ChanceToGenerateEnemyFromGrave);
       if (lootSource is Barrel barrel &&
           !(lootSource is DeadBody) &&
           RandHelper.GetRandomDouble() < GenerationInfo.ChanceToGenerateEnemyFromBarrel ||

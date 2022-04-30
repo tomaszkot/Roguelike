@@ -1,5 +1,6 @@
 ﻿#define ASCII_BUILD  
 using Dungeons.Core;
+using Newtonsoft.Json;
 using Roguelike.Attributes;
 using Roguelike.Calculated;
 using Roguelike.Effects;
@@ -34,6 +35,8 @@ namespace Roguelike.Tiles.LivingEntities
     public bool ShoutedAtHero { get; set; }
     public Dictionary<FightItemKind, FightItem> fightItems = new Dictionary<FightItemKind, FightItem>();
     public const float StrengthInc = 2;//no matter what difficulty this is start value
+    [JsonIgnore]
+    public ILootSource LootSource { get; set; }
     //FightItemKind fightItemKind = FightItemKind.Stone;
 
     public Enemy(Container cont) : this(new Point().Invalid(), 'e', null)

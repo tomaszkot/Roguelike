@@ -41,39 +41,48 @@ namespace Roguelike.Abilities
           case AbilityKind.AxesMastering:
             psk = EntityStatKind.ChanceToCauseTearApart;
             ask = EntityStatKind.AxeExtraDamage;
+            MaxLevel = 10;
             break;
           case AbilityKind.BashingMastering:
             psk = EntityStatKind.ChanceToCauseStunning;
             ask = EntityStatKind.BashingExtraDamage;
+            MaxLevel = 10;
             break;
           case AbilityKind.DaggersMastering:
             psk = EntityStatKind.ChanceToCauseBleeding;
             ask = EntityStatKind.DaggerExtraDamage;
+            MaxLevel = 10;
             break;
           case AbilityKind.SwordsMastering:
             psk = EntityStatKind.ChanceToMeleeHit;
             ask = EntityStatKind.SwordExtraDamage;
+            MaxLevel = 10;
             break;
           
           case AbilityKind.StaffsMastering:
             psk = EntityStatKind.ChanceToRepeatElementalProjectileAttack;
             ask = EntityStatKind.StaffExtraElementalProjectileDamage;
+            MaxLevel = 10;
             break;
           case AbilityKind.SceptersMastering:
             psk = EntityStatKind.ChanceToCauseElementalAilment;
             ask = EntityStatKind.ScepterExtraElementalProjectileDamage;
+            MaxLevel = 10;
             break;
           case AbilityKind.WandsMastering:
             psk = EntityStatKind.ChanceToElementalProjectileBulkAttack;
             ask = EntityStatKind.WandExtraElementalProjectileDamage;
+            MaxLevel = 10;
             break;
           case AbilityKind.CrossBowsMastering:
             psk = EntityStatKind.ChanceToCauseBleeding;
             ask = EntityStatKind.CrossbowExtraDamage;
+            MaxLevel = 10;
             break;
           case AbilityKind.BowsMastering:
             psk = EntityStatKind.ChanceToPhysicalProjectileHit;
             ask = EntityStatKind.BowExtraDamage;
+            MaxLevel = 10;
             break;
           case AbilityKind.FireBallMastering:
             psk = EntityStatKind.FireBallExtraDamage;
@@ -171,7 +180,7 @@ namespace Roguelike.Abilities
               || kind == AbilityKind.StaffsMastering//ChanceToRepeatElementalAttack
               )
             {
-              var multsDef = new int[] { 0, 4, 7, 10, 15, 20 };
+              var multsDef = new int[] { 0, 5, 10, 20, 30, 40, 50, 65, 80, 85, 100 };
               factor = multsDef[level];
             }
 

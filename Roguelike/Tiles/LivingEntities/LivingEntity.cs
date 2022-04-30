@@ -681,15 +681,13 @@ namespace Roguelike.Tiles.LivingEntities
       {
         if (fi is ProjectileFightItem pfi)
         {
-          var fightItem = AttackDescription.GetActiveFightItem(fi.Caller);
-          if (fightItem == null)
+          var ad = pfi.AttackDescription;
+          if (ad == null)
           {
             Logger.LogError("OnHitBy ProjectileFightItem GetActivatedFightItem == null");
             return HitResult.Unset;
           }
           var damageDesc = "";
-          
-          var ad = new AttackDescription(fi.Caller, fi.Caller.UseAttackVariation, AttackKind.PhysicalProjectile);
           var inflicted = CalcMeleeDamage(ad.CurrentPhysicalVariated, ref damageDesc, pfi);//TODO what about NonPhysical?
           var sound = pfi.HitTargetSound;// "punch";
           var srcName = fi.FightItemKind.ToDescription();

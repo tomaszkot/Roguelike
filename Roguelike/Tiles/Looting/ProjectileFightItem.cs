@@ -2,6 +2,7 @@
 using Dungeons.Tiles.Abstract;
 using Newtonsoft.Json;
 using Roguelike.Abilities;
+using Roguelike.Calculated;
 using Roguelike.Tiles.LivingEntities;
 using System;
 using System.Collections.Generic;
@@ -28,6 +29,9 @@ namespace Roguelike.Tiles.Looting
 
     [JsonIgnore]
     public Tile Target { get; set; }
+
+    [JsonIgnore]
+    public AttackDescription AttackDescription { get; set; }
 
     public override bool IsCollectable
     {

@@ -86,6 +86,8 @@ namespace Roguelike.Tiles
     protected int basePrice = -1;
     protected string collectedSound = "cloth";
     string droppedSound = "";
+    [JsonIgnore]
+    public bool FromGameStart { get; set; } = false;
 
     public int Price
     {
