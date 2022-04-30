@@ -14,7 +14,7 @@ namespace Roguelike.Tiles.Looting
 {
   public class ProjectileFightItem : FightItem, Roguelike.Abstract.Projectiles.IProjectile
   {
-    public const int DefaultMaxRange = 9;//5;
+    public const int DefaultMaxRange = 5;
 
     public ProjectileFightItem() : this(FightItemKind.Unset, null)
     {

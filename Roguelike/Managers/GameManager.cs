@@ -59,7 +59,7 @@ namespace Roguelike.Managers
     LevelGenerator levelGenerator;
     LootManager lootManager;
     protected InputManager inputManager;
-
+    Inventory invMock;
     IPersister persister;
     ILogger logger;
 
@@ -109,6 +109,7 @@ namespace Roguelike.Managers
       _debugCurrentInstance = this;
       Container = container;
 
+      invMock = new Inventory(container);
       gameState = container.GetInstance<GameState>();
       LootGenerator = container.GetInstance<LootGenerator>();
       Logger = container.GetInstance<ILogger>();
@@ -829,11 +830,18 @@ namespace Roguelike.Managers
       return SellItem(loot, src, src.Inventory, dest, dest.Inventory, removeItemArg);
     }
 
-    public bool CanSell(Loot lootToSell)//, IAdvancedEntity seller, IAdvancedEntity buyer)
+    public bool CanSell(Loot lootToSell, IInventoryOwner src, IInventoryOwner dest, int count, ref int price)
     {
-      //bool goldInvolved = GetGoldInvolvedOnSell(src, dest);
-      return true;
+      price = 0;
+      bool goldInvolved = GetGoldInvolvedOnSell(src, dest);
+      if(!goldInvolved)
+        return true;
+
+      price = src.GetPrice(lootToSell) * count;
+      
+      return dest.Gold >= price;
     }
+        
 
     public Loot SellItem
     (
@@ -882,23 +890,17 @@ namespace Roguelike.Managers
             return null;
         }
       }
-
-      bool goldInvolved = GetGoldInvolvedOnSell(src, dest);
-
+            
       var price = 0;
       var count = removeItemArg.StackedCount;
       if (count == 0)
         count = 1;
-      if (goldInvolved)
+      if (!CanSell(loot, src, dest, count, ref price))
       {
-        price = src.GetPrice(loot) * count;// (int)(loot.Price * srcInv.PriceFactor * stackedCount);
-
-        if (dest.Gold < price)
-        {
-          logger.LogInfo("dest.Gold < loot.Price");
-          SoundManager.PlayBeepSound();
-          return null;
-        }
+        logger.LogInfo("dest.Gold < loot.Price");
+        SoundManager.PlayBeepSound();
+        AppendAction(new InventoryAction(destInv) { Kind = InventoryActionKind.ItemTooExpensive, Info = "ItemTooExpensive" });
+        return null;
       }
       if (!destInv.CanAddLoot(loot))
       {
@@ -927,7 +929,7 @@ namespace Roguelike.Managers
         return null;
       }
 
-      if (goldInvolved)
+      if (price != 0)
       {
         dest.Gold -= price;
         src.Gold += price;
@@ -936,7 +938,7 @@ namespace Roguelike.Managers
       return sold;
     }
 
-    protected virtual bool GetGoldInvolvedOnSell(IInventoryOwner src, IInventoryOwner dest)
+    public virtual bool GetGoldInvolvedOnSell(IInventoryOwner src, IInventoryOwner dest)
     {
       return src.GetGoldWhenSellingTo(dest);
     }
