@@ -31,8 +31,11 @@ namespace Roguelike.Managers
 
     public void AppendAction(GameEvent ac)
     {
-      if (GameManager.Hero != null && !GameManager.Hero.Alive && GameManager.Context.HeroDeadReported)
-        return;
+      if (GameManager != null)//Main Menu?
+      {
+        if (GameManager.Hero != null && !GameManager.Hero.Alive && GameManager.Context.HeroDeadReported)
+          return;
+      }
 
       if(LastActions.Contains(ac))
         return;

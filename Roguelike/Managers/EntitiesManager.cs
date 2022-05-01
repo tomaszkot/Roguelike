@@ -396,7 +396,7 @@ namespace Roguelike.Managers
     public List<Enemy> GetInRange(LivingEntity src, int rangeFrom, Enemy skip)
     {
       return AllEntities
-        .Where(i => i != skip && i.DistanceFrom(src) < 7)
+        .Where(i => i != skip && i.DistanceFrom(src) < 7 && i.Revealed)
         .Cast<Enemy>()
         .ToList();
     }

@@ -123,9 +123,14 @@ namespace Dungeons.Tiles
 
     public Tile(Point point, char symbol = Constants.SymbolBackground)
     {
-      this.Name = GetType().Name;
+      this.Name = GetDefaultName();
       this.point = point;
       this.Symbol = symbol;
+    }
+
+    string GetDefaultName()
+    {
+      return GetType().Name;
     }
 
     public string GetNameFromTag1()
@@ -195,6 +200,8 @@ namespace Dungeons.Tiles
       set
       {
         name = value.Trim();//call GetCapitalized(value) ?;
+        if (string.IsNullOrEmpty(displayedName) || GetDefaultName() == displayedName)
+          DisplayedName = name;
       }
     }
 
@@ -242,9 +249,6 @@ namespace Dungeons.Tiles
     {
       get
       {
-        if (displayedName == null)
-          return Name;
-
         return displayedName;
       }
       set => displayedName = value;

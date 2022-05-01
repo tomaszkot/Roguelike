@@ -40,5 +40,8 @@ namespace Roguelike.Spells
 
     [JsonIgnore]
     public int MaxVictimsCount { get; set; }
+
+    [JsonIgnore]
+    public int Count { get; set; }
   }
 }

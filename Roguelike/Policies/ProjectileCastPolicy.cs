@@ -1,5 +1,6 @@
 ﻿using Roguelike.Abstract.Projectiles;
 using Roguelike.Managers;
+using Roguelike.Strategy;
 using Roguelike.Tiles.LivingEntities;
 using System.Collections.Generic;
 using System.Linq;
@@ -27,6 +28,7 @@ namespace Roguelike.Policies
     public bool ContinueAfterHit { get; set; } = false;
     //public int MaxVictimsCount = 1;
     public List<Tiles.Abstract.IObstacle> Targets = new List<Tiles.Abstract.IObstacle>();
+    public ITilesAtPathProvider TilesAtPathProvider { get; set; }
 
     public void AddTarget(Tiles.Abstract.IObstacle obstacle)
     {
@@ -51,11 +53,13 @@ namespace Roguelike.Policies
     public void Apply(IProjectile projectile, LivingEntity caster, List<Tiles.Abstract.IObstacle> targets, IProjectilesFactory projectilesFactory)
     {
       this.Projectile = projectile;
+      this.Projectile.Count = targets.Count;
       this.caster = caster;
       Targets = targets;
       //this.Target = target as Tile;
       this.ProjectilesFactory = projectilesFactory;
       caster.State = EntityState.CastingProjectile;
+
 
       DoApply(caster);
       
@@ -73,21 +77,42 @@ namespace Roguelike.Policies
       var otherOnes = new List<Tiles.Abstract.IObstacle>();
       if (MaxVictimsCount > 1)
       {
+        TilesAtPathProvider = GameManager.Container.GetInstance<ITilesAtPathProvider>();
         //var neibs = GameManager.CurrentNode.GetNeighborhoodTiles<Enemy>(caster, caster, 9).Distinct().ToList();//TODO 9
         if (Projectile.ActiveAbilitySrc == Abilities.AbilityKind.ArrowVolley)
         {
-          var neibs = GameManager.EnemiesManager.GetInRange(caster, 7, target as Enemy);
-          GameManager.Logger.LogInfo("GetNeighborhoodTiles<Enemy> neibs.Count : " + neibs.Count);
+          List<Enemy> finalNeibs = new List<Enemy>();
+          {
+            var neibs = GameManager.EnemiesManager.GetInRange(caster, 7, target as Enemy);
+            
+            GameManager.Logger.LogInfo("GetNeighborhoodTiles<Enemy> init neibs.Count : " + neibs.Count);
+
+            foreach (var neib in neibs)
+            {
+              var tiles = TilesAtPathProvider.GetTilesAtPath(caster.point, neib.point);
+              if (!tiles.Any(i => i is Dungeons.Tiles.IObstacle))
+              {
+                finalNeibs.Add(neib);
+              }
+            //  //TODO check is there is no obstacle
+            //  var path = GameManager.CurrentNode.FindPath(caster.point, neib.point, false, false, false, caster);
+            //  if (path != null)
+            //    finalNeibs.Add(neib);
+            }
+            //finalNeibs = neibs;
+          }
+          GameManager.Logger.LogInfo("GetNeighborhoodTiles<Enemy> init finalNeibs.Count : " + finalNeibs.Count);
+
           var en = target as Enemy;
           if (en != null)
-            neibs.Remove(en);
+            finalNeibs.Remove(en);
           for (int i = 1; i < MaxVictimsCount; i++)
           {
-            en = neibs.FirstOrDefault();
+            en = finalNeibs.FirstOrDefault();
             if (en != null)
             {
               otherOnes.Add(en);
-              neibs.Remove(en);
+              finalNeibs.Remove(en);
             }
             else
               break;

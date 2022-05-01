@@ -1410,11 +1410,12 @@ namespace Roguelike.Managers
 
     protected virtual int GetAttackVictimsCount(LivingEntity advCaster)
     {
+      if (advCaster.SelectedActiveAbilityKind == AbilityKind.ArrowVolley ||
+          advCaster.SelectedActiveAbilityKind == AbilityKind.PiercingArrow)
       {
-        if (advCaster.SelectedActiveAbilityKind == AbilityKind.ArrowVolley ||
-           advCaster.SelectedActiveAbilityKind == AbilityKind.PiercingArrow)
+        var ab = advCaster.GetActiveAbility(advCaster.SelectedActiveAbilityKind);
+        if (ab.CoolDownCounter == 0)
         {
-          var ab = advCaster.GetActiveAbility(advCaster.SelectedActiveAbilityKind);
           var maxVictims = 1;
           if (ab.Kind == Roguelike.Abilities.AbilityKind.ArrowVolley)
             maxVictims = (int)ab.PrimaryStat.Factor;
@@ -1441,9 +1442,9 @@ namespace Roguelike.Managers
         return false;
       }
       var ab = caster.SelectedActiveAbility;
-      var attackVictimsCount = GetAttackVictimsCount(caster);
-      if (attackVictimsCount > pfi.Count)
-        attackVictimsCount = pfi.Count;
+      var maxVictims = GetAttackVictimsCount(caster);
+      if (maxVictims > pfi.Count)
+        maxVictims = pfi.Count;
 
       var fiCountToRemove = 1;
       var abUsed = false;
@@ -1454,18 +1455,29 @@ namespace Roguelike.Managers
         abUsed = true;
         if (ab.Kind == AbilityKind.ArrowVolley)
         {
-          fiCountToRemove = attackVictimsCount;
+          fiCountToRemove = maxVictims;
         }
       }
 
       pfi.AttackDescription = CreateAttackDescription(caster);
-      for (int i = 0; i < fiCountToRemove; i++)
+   
+      var destFi = pfi.Clone(maxVictims) as ProjectileFightItem;
+      
+      var res = DoApply(caster, target, destFi, maxVictims, BeforeApply, AfterApply);
+
+      var advCaster = caster as AdvancedLivingEntity;
+      var cb = 0;
+      if (advCaster != null)
+        cb = advCaster.Inventory.GetStackedCount(pfi);
+      for (int i = 0; i < destFi.Count; i++)
         caster.RemoveFightItem(pfi);
 
-      var destFi = pfi.Clone(attackVictimsCount) as ProjectileFightItem;
-      
-      var res = DoApply(caster, target, destFi, attackVictimsCount, BeforeApply, AfterApply);
-      if(abUsed)
+      var ca = 0;
+      if (advCaster != null)
+        ca = advCaster.Inventory.GetStackedCount(pfi);
+      var diff = cb - ca;
+
+      if (abUsed)
         HandleActiveAbilityUsed(caster, ab.Kind);
       return res;
     }

@@ -14,5 +14,6 @@ namespace Roguelike.Abstract.Projectiles
     AbilityKind ActiveAbilitySrc { get; set; }
 
     int MaxVictimsCount { get; set; }
+    int Count { get; set; }
   }
 }
