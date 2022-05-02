@@ -55,7 +55,7 @@ namespace Roguelike.Generators
     public static int DefaultEnemyIronSkinUsageCount = 0;
     public static int DefaultEnemyResistAllUsageCount = 0;
     public static int DefaultEnemyInaccuracyUsageCount = 0;
-    public static string ForcedEnemyName = "wolf_skeleton";
+    public static string ForcedEnemyName = "";//"wolf_skeleton";
 
     public int MaxBarrelsPerRoom = 5;
     public int MaxLootPerRoom = 2;

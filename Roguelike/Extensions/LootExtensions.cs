@@ -88,12 +88,19 @@ namespace Roguelike.Extensions
       return potion != null;
     }
 
-    public static bool IsPotion(this Loot loot, PotionKind kind)
+    public static bool IsPotionKind(this Loot loot, PotionKind kind)
     {
       var potion = loot as Potion;
       if (potion == null)
         return false;
       return potion.Kind == kind;
+    }
+    public static Potion AsPotionKind(this Loot loot, PotionKind kind)
+    {
+      var potion = loot as Potion;
+      if (potion == null)
+        return null;
+      return potion.Kind == kind ? loot as Potion : null;
     }
 
     public static Potion AsPotion(this Loot loot)

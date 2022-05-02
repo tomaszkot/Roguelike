@@ -19,7 +19,7 @@ namespace RoguelikeUnitTests
   [TestFixture]
   public class AbilitiesTests : TestBase
   {
-    const int MaxAbilityInc = 5;
+    //const int MaxAbilityInc = 5;
 
     public void MaximizeAbility(Ability ab, AdvancedLivingEntity le)
     {
@@ -83,7 +83,7 @@ namespace RoguelikeUnitTests
       var diff1 = enemyBeginHealth - enemy.Stats.Health;
       enemyBeginHealth = enemy.Stats.Health;
       
-      for(int i=0;i< MaxAbilityInc;i++)
+      for(int i=0;i< ab.MaxLevel; i++)
         ab.IncreaseLevel(game.Hero);
 
       GotoNextHeroTurn();
@@ -241,6 +241,7 @@ namespace RoguelikeUnitTests
     {
       var game = CreateGame();
       var champion = ChampionEnemies.First();
+      PrepareEnemyToBeBeaten(champion);
       var chempBeginHealth = champion.Stats.Health;
       var hero = game.GameManager.Hero;
 
@@ -251,9 +252,11 @@ namespace RoguelikeUnitTests
 
       for (int i = 0; i < 10; i++)
       {
-        champion.OnHitBy(explosiveCocktail);
+        //champion.OnHitBy(explosiveCocktail);
+        UseFightItem(hero, champion, hero.ActiveProjectileFightItem);
         if (champion.HasLastingEffect(Roguelike.Effects.EffectType.Firing))
           break;
+        GotoNextHeroTurn();
       }
 
       Assert.True(champion.HasLastingEffect(Roguelike.Effects.EffectType.Firing));
@@ -265,13 +268,14 @@ namespace RoguelikeUnitTests
     [TestCase(FightItemKind.WeightedNet)]
     public void TestBasicFightItem(FightItemKind kind)
     {
-      var game = CreateGame();
+      var game = CreateGame(true, 100);
 
       //take one which is active to make sure will have it's turn
       RevealAllEnemies(game);
       var enemy = ChampionEnemies.First();
       Assert.True(enemy.Revealed && enemy.Alive);
-      enemy.Stats.SetNominal(EntityStatKind.Health, 100);
+      PrepareEnemyToBeBeaten(enemy);
+      
       var enemyBeginHealth = enemy.Stats.Health;
       var hero = game.GameManager.Hero;
 
@@ -280,7 +284,9 @@ namespace RoguelikeUnitTests
       var damage1 = fi.Damage;
       if(kind != FightItemKind.WeightedNet)
         Assert.Greater(damage1, 0);
-      Assert.AreEqual(enemy.OnHitBy(fi), HitResult.Hit);
+      //Assert.AreEqual(enemy.OnHitBy(fi), HitResult.Hit);
+      
+      Assert.True(UseFightItem(hero, enemy, hero.ActiveProjectileFightItem));
 
       if (kind != FightItemKind.WeightedNet)//TODO test range?
       {
@@ -293,7 +299,9 @@ namespace RoguelikeUnitTests
         fi = ActivateFightItem(kind, hero);
         var damage2 = fi.Damage;
         Assert.Greater(damage2, damage1);
-        enemy.OnHitBy(fi);
+        GotoNextHeroTurn();
+        Assert.True(UseFightItem(hero, enemy, hero.ActiveProjectileFightItem));
+        //enemy.OnHitBy(fi);
         GotoNextHeroTurn();//effect prolonged - make turn to see effect
         var chempAfter2HitHealth = enemy.Stats.Health;
         var secExplCoctailDamage = chempAfter1HitHealth - chempAfter2HitHealth;
@@ -418,10 +426,11 @@ namespace RoguelikeUnitTests
       var Hero = game.Hero;
       Hero.AbilityPoints = 5;
       var abVal = 0.0;
-      for (int i = 0; i < MaxAbilityInc + 1; i++)
+      var ab = Hero.GetPassiveAbility(forMana ? AbilityKind.RestoreMana : AbilityKind.RestoreHealth);
+      for (int i = 0; i < ab.MaxLevel + 1; i++)
       {
         var done = Hero.IncreaseAbility(forMana ? AbilityKind.RestoreMana : AbilityKind.RestoreHealth);
-        var ab = Hero.GetPassiveAbility(forMana ? AbilityKind.RestoreMana : AbilityKind.RestoreHealth);
+        ab = Hero.GetPassiveAbility(forMana ? AbilityKind.RestoreMana : AbilityKind.RestoreHealth);
         Assert.AreEqual(ab.PrimaryStat.Unit, EntityStatUnit.Percentage);
         AssertNextValue(i, ab, abVal, null);
         var factor = GetFactor(ab, true);
@@ -474,7 +483,7 @@ namespace RoguelikeUnitTests
     {
       var factor = GetFactor(ab, true);
       var factorAux = GetFactor(ab, false);
-      if (i < MaxAbilityInc)
+      if (i < ab.MaxLevel)
       {
         Assert.Greater(factor, valuePrimary);
         if (valueAux != null)
@@ -553,21 +562,17 @@ namespace RoguelikeUnitTests
             
       //Assert.Greater(empOnes.Count, 1);
       var enemies = AllEnemies.Where(i => i.PowerKind == EnemyPowerKind.Champion).ToList();
-      enemies[0].Stats.GetStat(EntityStatKind.Health).Value.Nominal *= 10;//make sure wont' die
+      PrepareEnemyToBeBeaten(enemies[0]);
+      PrepareEnemyToBeBeaten(enemies[1]);
       float en1Health = enemies[0].Stats.Health;
       float en2Health = enemies[1].Stats.Health;
-      for (int i = 0; i < 2; i++)
-      {
-        var empOne = game.GameManager.CurrentNode.GetClosestEmpty(game.GameManager.Hero, true);
-        game.GameManager.CurrentNode.SetTile(enemies[i], empOne.point);
-      }
+      
       var ab = game.GameManager.Hero.GetPassiveAbility(Roguelike.Abilities.AbilityKind.WandsMastering);
-      for (int i = 0; i < 5; i++)
+      for (int i = 0; i < 10; i++)
         ab.IncreaseLevel(game.Hero);
 
       game.Hero.RecalculateStatFactors(false);
-      //var sb = game.Hero.GetTotalValue(EntityStatKind.ChanceToBulkAttack);
-
+      
       for (int i = 0; i < 20; i++)
       {
         weapon.SpellSource.Count = 20;
@@ -579,7 +584,7 @@ namespace RoguelikeUnitTests
 
       Assert.Greater(en1Health, enemies[0].Stats.Health);
 
-      //2nd shall be hit by an ability
+      //2nd shall be hit by an ability - bulk attack
       Assert.Greater(en2Health, enemies[1].Stats.Health);
 
     }
@@ -675,7 +680,7 @@ namespace RoguelikeUnitTests
       var game = CreateGame();
       var val = TestWeaponKindMastering(ab);
     }
-
+        
     private float TestWeaponKindMastering(AbilityKind kind)
     {
       var abVal = 0.0f;
@@ -687,6 +692,8 @@ namespace RoguelikeUnitTests
       var en = PlainEnemies.First();
       en.Stats.SetNominal(EntityStatKind.Health, 100);
       en.AddImmunity(Roguelike.Effects.EffectType.Bleeding);//not to mix test results
+      PlaceCloseToHero(en);
+
       var wpn = hero.GetActiveWeapon();
       wpn.StableDamage = true;
       Assert.Greater(wpn.LevelIndex, 0);
@@ -697,7 +704,7 @@ namespace RoguelikeUnitTests
         if(!wpn.IsBowLike)
           en.OnMeleeHitBy(hero);
         else
-          en.OnHitBy(hero.ActiveFightItem as ProjectileFightItem);
+          UseFightItem(hero, en, hero.ActiveFightItem as ProjectileFightItem);
         var health1 = en.Stats.Health;
         return health - health1;
       };
@@ -723,17 +730,18 @@ namespace RoguelikeUnitTests
 
       var heroAttack = hero.GetAttackValue(AttackKind.Unset).CurrentTotal;
 
-      for (int i = 0; i < MaxAbilityInc + 1; i++)
+      var ab = hero.GetPassiveAbility(kind);
+      for (int i = 0; i < ab.MaxLevel + 1; i++)
       {
         hero.IncreaseAbility(kind);
-        var ab = hero.GetPassiveAbility(kind);
+        ab = hero.GetPassiveAbility(kind);
         Assert.AreNotEqual(ab.PrimaryStat.Kind, EntityStatKind.Unset);
         AssertNextValue(i, ab, abVal, abValAux);
 
         abVal = GetFactor(ab, true);
         abValAux = GetFactor(ab, false);
-        Assert.Less(abVal, 21);
-        Assert.Less(abValAux, 26);
+        Assert.Less(abVal, 21*5);
+        Assert.Less(abValAux, 26 *5);
 
         abVal = ab.PrimaryStat.Factor;
         //Debug.WriteLine(kind + " Level: " + ab.Level + ", value :" + ab.PrimaryStat.Factor);
@@ -743,6 +751,7 @@ namespace RoguelikeUnitTests
 
       var heroAttackWithAbility = hero.GetAttackValue(AttackKind.Unset).CurrentTotal;
       Assert.Greater(heroAttackWithAbility, heroAttack);
+      GotoNextHeroTurn();
       var damageWithAbility = hitEnemy();
 
       if (damageWithAbility < damage)

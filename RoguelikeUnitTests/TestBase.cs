@@ -452,5 +452,16 @@ namespace RoguelikeUnitTests
       Assert.Greater(diff, min);
       Assert.Less(diff, max);
     }
+
+    protected bool UseFightItem(Hero hero, Enemy enemy, ProjectileFightItem fi)
+    {
+      if (!hero.Inventory.Contains(fi))
+        hero.Inventory.Add(fi);
+
+      var res = game.GameManager.TryApplyAttackPolicy(fi, enemy);
+      if (hero.SelectedActiveAbility != null)
+        Assert.Greater(hero.SelectedActiveAbility.CoolDownCounter, 0);
+      return res;
+    }
   }
 }

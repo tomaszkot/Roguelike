@@ -173,8 +173,8 @@ namespace Roguelike.Crafting
         }
         else if (recipe.Kind == RecipeKind.CraftSpecialPotion && lootToConvert.Count == 2)
         {
-          var healthPotion = lootToConvert.Where(i => i.IsPotion(PotionKind.Health));
-          var manaPotion = lootToConvert.Where(i => i.IsPotion(PotionKind.Mana));
+          var healthPotion = lootToConvert.Where(i => i.IsPotionKind(PotionKind.Health)).FirstOrDefault();
+          var manaPotion = lootToConvert.Where(i => i.IsPotionKind(PotionKind.Mana)).FirstOrDefault();
           if (healthPotion != null || manaPotion != null)
           {
             var toad = lootToConvert.Where(i => i.IsToadstool());
@@ -268,8 +268,8 @@ namespace Roguelike.Crafting
           return HandleAllGems(lootToConvert);
         }
 
-        var hpCount = lootToConvert.Where(i => i.IsPotion(PotionKind.Health)).Count();
-        var mpCount = lootToConvert.Where(i => i.IsPotion(PotionKind.Mana)).Count();
+        var hpCount = lootToConvert.Where(i => i.IsPotionKind(PotionKind.Health)).Count();
+        var mpCount = lootToConvert.Where(i => i.IsPotionKind(PotionKind.Mana)).Count();
         var toadstools = lootToConvert.Where(i => i.IsToadstool()).ToList();
         var toadstoolsCount = GetStackedCount<StackedLoot>(toadstools);
         if ((recipe.Kind == RecipeKind.Custom || recipe.Kind == RecipeKind.TransformPotion) && 

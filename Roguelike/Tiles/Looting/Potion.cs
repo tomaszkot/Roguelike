@@ -8,7 +8,39 @@ namespace Roguelike.Tiles.Looting
 
   public class Potion : Consumable
   {
-    public PotionKind Kind { get; set; }
+    PotionKind kind;
+    public PotionKind Kind
+    {
+      get { return kind; }
+      set 
+      {
+        kind = value;
+
+        if (kind == PotionKind.Health)
+        {
+          Name = "Health Potion";
+          tag1 = "health_potion";
+          StatKind = EntityStatKind.Health;
+          PrimaryStatDescription = "Restores " + StatKind;
+        }
+        else if (kind == PotionKind.Mana)
+        {
+          Name = "Mana Potion";
+          tag1 = "mana_potion";
+          StatKind = EntityStatKind.Mana;
+          PrimaryStatDescription = "Restores " + StatKind;
+        }
+        else if (kind == PotionKind.Antidote)
+        {
+          Name = "Antidote Potion";
+          tag1 = "antidote_potion";
+          PrimaryStatDescription = "Removes poison effect";
+          StatKind = EntityStatKind.Unset;
+        }
+        else if (kind == PotionKind.Unset)
+          throw new Exception("kind == PotionKind.Unset");
+      }
+    }
 
     public Potion() : this(PotionKind.Health)
     {
@@ -34,29 +66,7 @@ namespace Roguelike.Tiles.Looting
     public void SetKind(PotionKind kind)
     {
       this.Kind = kind;
-      if (kind == PotionKind.Health)
-      {
-        Name = "Health Potion";
-        tag1 = "health_potion";
-        StatKind = EntityStatKind.Health;
-        PrimaryStatDescription = "Restores " + StatKind;
-      }
-      else if (kind == PotionKind.Mana)
-      {
-        Name = "Mana Potion";
-        tag1 = "mana_potion";
-        StatKind = EntityStatKind.Mana;
-        PrimaryStatDescription = "Restores " + StatKind;
-      }
-      else if (kind == PotionKind.Antidote)
-      {
-        Name = "Antidote Potion";
-        tag1 = "antidote_potion";
-        PrimaryStatDescription = "Removes poison effect";
-        StatKind = EntityStatKind.Unset;
-      }
-      else if (kind == PotionKind.Unset)
-        throw new Exception("kind == PotionKind.Unset");
+      
     }
 
     public override string GetId()

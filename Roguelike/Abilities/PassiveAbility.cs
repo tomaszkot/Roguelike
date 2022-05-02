@@ -200,7 +200,7 @@ namespace Roguelike.Abilities
 
             if (kind == AbilityKind.WandsMastering)
             {
-              var multsDef = new int[] { 0, 4, 7, 10, 15, 20 };
+              var multsDef = new int[] { 0, 2, 4, 6, 8, 11, 15, 18, 25, 30, 35 };
               factor = multsDef[level];
             }
           }

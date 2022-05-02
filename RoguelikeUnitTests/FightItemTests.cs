@@ -187,14 +187,14 @@ namespace RoguelikeUnitTests
       var hero = game.Hero;
 
       var fi = ActivateFightItem(FightItemKind.Stone, hero);
-      var fiCount = fi.Count;
-      var enemy = ActivePlainEnemies.First();
+      var fiCount = hero.Inventory.GetStackedCount(fi);
+      var enemy = PrepareEnemy();
       var enemyHealth = enemy.Stats.Health;
       var mana = hero.Stats.Mana;
 
       Assert.True(game.GameManager.HeroTurn);
-      UseFightItem(hero, enemy, fi);
-      Assert.AreEqual(fi.Count, fiCount-1);
+      Assert.True(UseFightItem(hero, enemy, fi));
+      Assert.AreEqual(hero.Inventory.GetStackedCount(fi), fiCount-1);
 
       Assert.Greater(enemyHealth, enemy.Stats.Health);
       Assert.AreEqual(mana, hero.Stats.Mana);

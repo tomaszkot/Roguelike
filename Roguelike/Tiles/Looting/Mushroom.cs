@@ -8,7 +8,37 @@ namespace Roguelike.Tiles
 
   public class Mushroom : Food
   {
-    public MushroomKind MushroomKind;
+    public MushroomKind mushroomKind;
+    public MushroomKind MushroomKind 
+    {
+      get { return mushroomKind; }
+      set {
+        mushroomKind = value;
+        Name = MushroomKind.ToDescription();
+        if (MushroomKind == MushroomKind.BlueToadstool)
+        {
+          SrcPotion = PotionKind.Mana;
+          DestPotion = SpecialPotionKind.Magic;
+
+          StatKind = Attributes.EntityStatKind.Mana;
+        }
+        else
+        {
+          SrcPotion = PotionKind.Health;
+          DestPotion = SpecialPotionKind.Strength;
+          StatKind = Attributes.EntityStatKind.Health;
+        }
+        NegativeFactor = MushroomKind == MushroomKind.RedToadstool;
+
+        //yes, both are poisonous
+        if (MushroomKind == MushroomKind.BlueToadstool || MushroomKind == MushroomKind.RedToadstool)
+          SetPoisoned();
+
+        DisplayedName = Name;
+        SetPrimaryStatDesc();
+        SetDefaultTagFromKind();
+      } 
+    }
     public PotionKind SrcPotion { get; set; }
     public SpecialPotionKind DestPotion { get; set; }
 
@@ -31,29 +61,7 @@ namespace Roguelike.Tiles
     public void SetMushroomKind(MushroomKind kind)
     {
       MushroomKind = kind;
-      Name = MushroomKind.ToDescription();
-      if (MushroomKind == MushroomKind.BlueToadstool)
-      {
-        SrcPotion = PotionKind.Mana;
-        DestPotion = SpecialPotionKind.Magic;
-
-        StatKind = Attributes.EntityStatKind.Mana;
-      }
-      else
-      {
-        SrcPotion = PotionKind.Health;
-        DestPotion = SpecialPotionKind.Strength;
-        StatKind = Attributes.EntityStatKind.Health;
-      }
-      NegativeFactor = MushroomKind == MushroomKind.RedToadstool;
-
-      //yes, both are poisonous
-      if (MushroomKind == MushroomKind.BlueToadstool || MushroomKind == MushroomKind.RedToadstool)
-        SetPoisoned();
-
-      DisplayedName = Name;
-      SetPrimaryStatDesc();
-      SetDefaultTagFromKind();
+      
     }
 
     protected virtual void SetDefaultTagFromKind()

@@ -410,7 +410,7 @@ namespace Roguelike.Tiles.LivingEntities
           EntityKind = SpeciesKindFromName(name);
 
         if (name == "wolf_skeleton")
-          DisplayedName = "wolf's skeleton";
+          DisplayedName = "Wolf's Skeleton";
       }
     }
 

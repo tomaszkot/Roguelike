@@ -1,5 +1,6 @@
 ﻿using Dungeons;
 using Dungeons.Core;
+using Dungeons.Fight;
 using Dungeons.Tiles;
 using Newtonsoft.Json;
 using Roguelike.Abilities;
@@ -44,6 +45,21 @@ namespace Roguelike.Managers
     {
       this.Possible = Possible;
       this.Point = Point;
+    }
+  }
+
+  class FakeTarget : Tile, Tiles.Abstract.IObstacle
+  {
+    public Point Position => this.point;
+
+    public HitResult OnHitBy(Dungeons.Tiles.Abstract.IProjectile md)
+    {
+      return HitResult.Hit;
+    }
+
+    public bool CanBeHitBySpell()
+    {
+      return false;
     }
   }
 
@@ -1396,6 +1412,14 @@ namespace Roguelike.Managers
         return false;
       }
 
+      FakeTarget fakeTarget;
+      if (fi.RequiresEmptyCellOnCast && target.IsEmpty)
+      {
+        fakeTarget = new FakeTarget();
+        fakeTarget.point = target.point;
+        target = fakeTarget;
+      }
+
       var destroyable = target as Tiles.Abstract.IObstacle;
       if (destroyable != null)
       {
@@ -1546,7 +1570,7 @@ namespace Roguelike.Managers
       policy.Apply(caster);
       return true;
     }
-
+        
     public void FinishPolicyApplied(LivingEntity caster, Action<Policy> AfterApply, ProjectileCastPolicy policy)
     {
       if (caster is Hero)

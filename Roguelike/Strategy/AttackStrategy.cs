@@ -269,8 +269,8 @@ namespace Roguelike
         if (fi != null && fi.Count > 0)
         {
           var pfi = fi as ProjectileFightItem;
-          if (pfi.FightItemKind == FightItemKind.Stone ||
-              pfi.FightItemKind == FightItemKind.ThrowingKnife)
+          //if (pfi.FightItemKind == FightItemKind.Stone ||
+          //    pfi.FightItemKind == FightItemKind.ThrowingKnife)
           {
             if(enemy.DistanceFrom(target) <=1.5)
               return false;
