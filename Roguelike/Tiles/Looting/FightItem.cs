@@ -216,11 +216,16 @@ namespace Roguelike.Tiles.Looting
 
     public static AbilityKind GetAbilityKind(FightItem item)
     {
-      if (fi2Ab.ContainsKey(item.FightItemKind))
+      return GetAbilityKind(item.FightItemKind);
+    }
+
+    public static AbilityKind GetAbilityKind(FightItemKind fik)
+    {
+      if (fi2Ab.ContainsKey(fik))
       {
         //var ab = ale.GetActiveAbility(fi2Ab[item.FightItemKind]);
         //if (ab != null)
-        return fi2Ab[item.FightItemKind];
+        return fi2Ab[fik];
       }
 
       return AbilityKind.Unset;

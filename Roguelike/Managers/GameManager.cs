@@ -1463,6 +1463,7 @@ namespace Roguelike.Managers
       if (pfi.Count <= 0)
       {
         logger.LogError("gm fi.Count <= 0");
+        ReportFailure("out of prejectiles");
         return false;
       }
       var ab = caster.SelectedActiveAbility;

@@ -269,15 +269,5 @@ namespace Roguelike.Abilities
       }
       return new Tuple<EntityStat, EntityStat>(primary, secondary);
     }
-
-    //public EntityStatUnit EntityStatUnit
-    //{
-    //  get 
-    //  { 
-    //    if(IsPercentageFromKind)
-    //      return EntityStatUnit.Percentage;
-    //    return EntityStatUnit.Absolute;
-    //  }
-    //}
   }
 }

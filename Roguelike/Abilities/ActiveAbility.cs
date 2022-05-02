@@ -1,6 +1,8 @@
 ﻿using Roguelike.Attributes;
 using Roguelike.Extensions;
+using Roguelike.Tiles.Looting;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 
 namespace Roguelike.Abilities
@@ -258,6 +260,26 @@ namespace Roguelike.Abilities
           AuxStat.Unit = EntityStatUnit.Absolute;
         }
       }
+    }
+
+    static Dictionary<AbilityKind, FightItemKind> Ab2Fi = new Dictionary<AbilityKind, FightItemKind>()
+    {
+      { AbilityKind.ThrowingKnife, FightItemKind.ThrowingKnife},
+      { AbilityKind.ThrowingStone, FightItemKind.Stone},
+      { AbilityKind.PoisonCocktail, FightItemKind.PoisonCocktail},
+      { AbilityKind.ExplosiveCocktail, FightItemKind.ExplosiveCocktail},
+      { AbilityKind.HunterTrap, FightItemKind.HunterTrap},
+      { AbilityKind.WeightedNet, FightItemKind.WeightedNet},
+    };
+
+    public static FightItemKind GetFightItemKind(AbilityKind kind)
+    {
+      if (Ab2Fi.ContainsKey(kind))
+      {
+        return Ab2Fi[kind];
+      }
+
+      return FightItemKind.Unset;
     }
   }
 }
