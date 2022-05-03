@@ -107,8 +107,8 @@ namespace Roguelike.Tiles
       set
       {
         base.Name = value;
-        if (Class == EquipmentClass.Unique)
-          DisplayedName = Name;
+        //if (Class == EquipmentClass.Unique || (this is Weapon wpn && wpn.IsMagician))
+        DisplayedName = Name;
       }
     }
 

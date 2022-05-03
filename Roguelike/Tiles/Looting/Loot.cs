@@ -228,11 +228,25 @@ namespace Roguelike.Tiles
       return this.GetType() == other.GetType();
     }
 
+
+    string primaryStatDescription = "";
     public virtual string PrimaryStatDescription
     {
-      get;
-      set;
-    } = "";
+      get { return primaryStatDescription; }
+      set {
+        if(value == null)
+        {
+          int k = 0;
+          k++;
+        }
+        if (primaryStatDescription.Contains("Emits"))
+        {
+          int k = 0;
+          k++;
+        }
+        primaryStatDescription = value;
+      }
+    } 
 
     protected string[] extraStatDescription;
 

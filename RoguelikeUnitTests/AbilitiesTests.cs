@@ -553,7 +553,7 @@ namespace RoguelikeUnitTests
     }
 
     [Test]
-    public void TestWandMastering()//ChanceToElementalBulkAttack()
+    public void TestWandMastering()//ChanceToElementalProjectileBulkAttack
     {
       var game = CreateGame(numEnemies:100);
       float originalStatValue = 0;
@@ -561,13 +561,13 @@ namespace RoguelikeUnitTests
       var weapon = game.Hero.GetActiveWeapon();
             
       //Assert.Greater(empOnes.Count, 1);
-      var enemies = AllEnemies.Where(i => i.PowerKind == EnemyPowerKind.Champion).ToList();
+      var enemies = AllEnemies;
       PrepareEnemyToBeBeaten(enemies[0]);
       PrepareEnemyToBeBeaten(enemies[1]);
       float en1Health = enemies[0].Stats.Health;
       float en2Health = enemies[1].Stats.Health;
       
-      var ab = game.GameManager.Hero.GetPassiveAbility(Roguelike.Abilities.AbilityKind.WandsMastering);
+      var ab = game.GameManager.Hero.GetPassiveAbility(AbilityKind.WandsMastering);
       for (int i = 0; i < 10; i++)
         ab.IncreaseLevel(game.Hero);
 
@@ -584,7 +584,7 @@ namespace RoguelikeUnitTests
 
       Assert.Greater(en1Health, enemies[0].Stats.Health);
 
-      //2nd shall be hit by an ability - bulk attack
+      //2nd shall be hit by an ability - bulk attack (ChanceToElementalProjectileBulkAttack)
       Assert.Greater(en2Health, enemies[1].Stats.Health);
 
     }

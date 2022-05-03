@@ -319,7 +319,10 @@ namespace Roguelike.Tiles
 
     protected override void SetPrimaryStatDesc()
     {
-      PrimaryStatDescription = PrimaryStatKind.ToDescription() + ": " + GetDamageDescription();
+      if (IsMagician)
+        UpdateMagicWeaponDesc();
+      else
+        PrimaryStatDescription = PrimaryStatKind.ToDescription() + ": " + GetDamageDescription();
     }
 
     public override string ToString()

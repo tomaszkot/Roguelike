@@ -175,7 +175,7 @@ namespace Roguelike.Abilities
           {
             factor = level;
 
-            if (kind == AbilityKind.WandsMastering //ChanceToElementalBulkAttack
+            if (kind == AbilityKind.WandsMastering //ChanceToElementalProjectileBulkAttack
               || kind == AbilityKind.SceptersMastering//ChanceToCauseElementalAilment
               || kind == AbilityKind.StaffsMastering//ChanceToRepeatElementalAttack
               )

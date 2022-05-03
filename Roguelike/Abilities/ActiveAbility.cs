@@ -148,7 +148,7 @@ namespace Roguelike.Abilities
           desc = "Hit target with your body causing damage and possibly knocking it back";
           break;
         case AbilityKind.OpenWound:
-          desc = "Hit target with a sword or a dagger to cause bleeding";
+          desc = "Hit target with a melee weapon to cause bleeding";
           break;
         case AbilityKind.Rage:
           desc = "Increases the melee damage of the caster";

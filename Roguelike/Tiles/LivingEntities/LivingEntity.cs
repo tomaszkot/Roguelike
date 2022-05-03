@@ -35,6 +35,8 @@ namespace Roguelike.Tiles.LivingEntities
   {
     //some attributes describing LivingEntity
     public string Herd { get; set; } = "";
+    [JsonIgnore]
+    public bool LastMeleeAttackWasOK { get; set; }
     public int Level
     {
       get;
@@ -1256,6 +1258,11 @@ namespace Roguelike.Tiles.LivingEntities
       var esk = EntityStatKind.Unset;
       if (kind == AbilityKind.StrikeBack)
           esk = EntityStatKind.ChanceToStrikeBack;
+      if (kind == AbilityKind.Stride || kind == AbilityKind.OpenWound)
+      {
+        if (!LastMeleeAttackWasOK)
+          return false;
+      }
       return IsStatRandomlyTrue(esk);
     }
 

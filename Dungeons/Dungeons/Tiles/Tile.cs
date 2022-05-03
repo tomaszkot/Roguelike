@@ -190,7 +190,7 @@ namespace Dungeons.Tiles
     [JsonIgnore]
     public bool IsEmpty { get { return Symbol == Constants.SymbolBackground; } }
 
-    [JsonIgnore]
+    //[JsonIgnore] item name was lost
     public virtual string Name
     {
       get

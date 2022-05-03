@@ -23,7 +23,7 @@ namespace Roguelike.Tiles.Looting
       PositionInPage = -1;
     }
 
-    string desc;
+    string desc = "";
     public string GetDescription()
     {
       return desc;

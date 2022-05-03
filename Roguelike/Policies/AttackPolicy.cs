@@ -25,14 +25,18 @@ namespace Roguelike.Policies
 
       ReportApplied(attacker);
     }
-
+        
     protected override void ReportApplied(LivingEntity attacker)
     {
       var le = victim as LivingEntity;
+      attacker.LastMeleeAttackWasOK = false;
       if (le != null)
       {
         if (attacker.CalculateIfHitWillHappen(le, Attributes.AttackKind.Melee))
+        {
           attacker.ApplyPhysicalDamage(le);
+          attacker.LastMeleeAttackWasOK = true;
+        }
         else
         {
           attacker.EventsManager.AppendAction(new LivingEntityAction(LivingEntityActionKind.Missed) { InvolvedEntity = attacker, Info = attacker.Name + " missed " + victim.Name });
