@@ -37,6 +37,7 @@ namespace Roguelike.Tiles.Looting
       {
         kind = value;
         Name = GetNameFromKind();
+        DisplayedName = Name;
         if (kind == SpellKind.CrackedStone)
           Price = (int)((float)Price / 2.0f);
         else if (kind == SpellKind.Identify)
@@ -147,7 +148,7 @@ namespace Roguelike.Tiles.Looting
           TargetRequired = true;
           break;
         case SpellKind.Portal:
-          desc = "Allows to teleport to a known point of the world";
+          desc = "Allows to teleport to the camp";
           TargetRequired = true;
           break;
         default:

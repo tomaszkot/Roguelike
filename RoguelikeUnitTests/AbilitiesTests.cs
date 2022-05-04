@@ -264,15 +264,15 @@ namespace RoguelikeUnitTests
 
     [TestCase(FightItemKind.ExplosiveCocktail)]
     [TestCase(FightItemKind.Stone)]
-    [TestCase(FightItemKind.ThrowingKnife)]
     [TestCase(FightItemKind.WeightedNet)]
+    [TestCase(FightItemKind.ThrowingKnife)]
     public void TestBasicFightItem(FightItemKind kind)
     {
       var game = CreateGame(true, 100);
 
       //take one which is active to make sure will have it's turn
       RevealAllEnemies(game);
-      var enemy = ChampionEnemies.First();
+      var enemy = PlainNormalEnemies.First();
       Assert.True(enemy.Revealed && enemy.Alive);
       PrepareEnemyToBeBeaten(enemy);
       
@@ -292,20 +292,21 @@ namespace RoguelikeUnitTests
       {
         var chempAfter1HitHealth = enemy.Stats.Health;
         Assert.Greater(enemyBeginHealth, chempAfter1HitHealth);
-        var firstExplCoctailDamage = enemyBeginHealth - chempAfter1HitHealth;
+        var firstDamageWithAblity = enemyBeginHealth - chempAfter1HitHealth;
 
         IncreaseAbility(hero, fi);
 
         fi = ActivateFightItem(kind, hero);
         var damage2 = fi.Damage;
         Assert.Greater(damage2, damage1);
+        //Assert.Less(damage2/damage1, 1.6f);
         GotoNextHeroTurn();
         Assert.True(UseFightItem(hero, enemy, hero.ActiveProjectileFightItem));
         //enemy.OnHitBy(fi);
         GotoNextHeroTurn();//effect prolonged - make turn to see effect
         var chempAfter2HitHealth = enemy.Stats.Health;
-        var secExplCoctailDamage = chempAfter1HitHealth - chempAfter2HitHealth;
-        Assert.Greater(secExplCoctailDamage, firstExplCoctailDamage);
+        var secondDamageWithAblity = chempAfter1HitHealth - chempAfter2HitHealth;
+        Assert.Greater(secondDamageWithAblity, firstDamageWithAblity);
       }
       else
       {
@@ -327,17 +328,43 @@ namespace RoguelikeUnitTests
       }
     }
 
+    [TestCase(FightItemKind.ThrowingKnife)]
+    public void TestBasicFightItemFactor(FightItemKind kind)
+    {
+      var game = CreateGame(true, 100);
+
+      //take one which is active to make sure will have it's turn
+      RevealAllEnemies(game);
+      var enemy = PlainNormalEnemies.First();
+      PrepareEnemyToBeBeaten(enemy);
+
+      var hero = game.GameManager.Hero;
+
+      var fi = ActivateFightItem(kind, hero);
+
+      var damage1 = fi.Damage;
+
+      IncreaseAbility(hero, fi, 1);
+              
+      var damage2 = fi.Damage;
+      Assert.Greater(damage2, damage1);
+      Assert.Less(damage2/damage1, 1.6f);
+        
+    }
+
+
     private void RevealAllEnemies(Roguelike.RoguelikeGame game)
     {
       AllEnemies.ForEach(i => i.Revealed = true);
     }
 
-    private static void IncreaseAbility(Hero hero, FightItem fi)//AbilityKind kind)
+    private static void IncreaseAbility(Hero hero, FightItem fi, int? steps = null)//AbilityKind kind)
     {
       var ab = hero.GetActiveAbility(fi.AbilityKind);
-      hero.AbilityPoints = ab.MaxLevel;
+      hero.AbilityPoints = steps.HasValue ? steps.Value : ab.MaxLevel;
       hero.Level = 11;
-      for (int i = 0; i < ab.MaxLevel; i++)
+      var max = hero.AbilityPoints;
+      for (int i = 0; i < max; i++)
       {
         var inc = hero.IncreaseAbility(fi.AbilityKind);
         Assert.IsTrue(inc);

@@ -267,7 +267,7 @@ namespace Roguelike.Tiles.Looting
       return null;
     }
 
-    public float GetFactor(bool primary)
+    float GetFactor(bool primary)
     {
       var ab = GetAbility();
       if (ab == null)
@@ -275,7 +275,7 @@ namespace Roguelike.Tiles.Looting
       return GetFactor(primary, ab.Level);
     }
 
-    public float GetFactor(bool primary, int abilityLevel = -1)
+    float GetFactor(bool primary, int abilityLevel = -1)
     {
       var ab = GetAbility();
       if (abilityLevel < 0)
@@ -296,7 +296,8 @@ namespace Roguelike.Tiles.Looting
       get
       {
         var damage = baseDamage;
-        damage += GetFactor(true);
+        var fac = GetFactor(true);
+        damage = Calculated.FactorCalculator.AddFactor(damage, fac);
         return damage;
       }
     }

@@ -26,10 +26,6 @@ namespace Roguelike.Abilities
       float factor = 0;
       switch (kind)
       {
-        case AbilityKind.ExplosiveCocktail:
-        case AbilityKind.PoisonCocktail:
-        case AbilityKind.ThrowingStone:
-        case AbilityKind.ThrowingKnife:
         case AbilityKind.Stride:
                 
           float fac = CalcFightItemFactor(level);
@@ -57,8 +53,12 @@ namespace Roguelike.Abilities
           break;
         
         case AbilityKind.HunterTrap:
-          var multsHunt = new int[] { 0, 10, 20, 30, 40, 50 };
-          factor = multsHunt[level];
+        case AbilityKind.ExplosiveCocktail:
+        case AbilityKind.PoisonCocktail:
+        case AbilityKind.ThrowingStone:
+        case AbilityKind.ThrowingKnife:
+          var multsHunt = new int[] { 0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100 };
+          factor = multsHunt[level]*2;
           break;
         case AbilityKind.PiercingArrow:
           if (primary)
@@ -188,18 +188,23 @@ namespace Roguelike.Abilities
         {
           case AbilityKind.ExplosiveCocktail:
             psk = EntityStatKind.ExlosiveCoctailExtraDamage;
+            MaxLevel = 10;
             break;
           case AbilityKind.PoisonCocktail:
             psk = EntityStatKind.PoisonCoctailExtraDamage;
+            MaxLevel = 10;
             break;
           case AbilityKind.ThrowingKnife:
             psk = EntityStatKind.ThrowingKnifeExtraDamage;
+            MaxLevel = 10;
             break;
           case AbilityKind.ThrowingStone:
             psk = EntityStatKind.ThrowingStoneExtraDamage;
+            MaxLevel = 10;
             break;
           case AbilityKind.HunterTrap:
             psk = EntityStatKind.HunterTrapExtraDamage;
+            MaxLevel = 10;
             break;
           case AbilityKind.Stride:
             psk = EntityStatKind.StrideExtraDamage;
