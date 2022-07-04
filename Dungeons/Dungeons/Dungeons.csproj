@@ -101,12 +101,7 @@
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>
-echo $(SolutionName)
-if "$(SolutionName)" == "OuaDIISln" xcopy  "$(TargetPath)" "$(SolutionDir)\Assets\Dlls\" /Y
-if "$(SolutionName)" == "OuaDIISln" xcopy  "$(TargetDir)Dungeons.pdb" "$(SolutionDir)\Assets\Dlls\" /Y
-if "$(SolutionName)" == "OuaDIISln" xcopy  "$(ProjectDir)..\..\packages\Newtonsoft.Json.12.0.1\lib\net45\Newtonsoft.Json.dll" "$(SolutionDir)\Assets\Dlls" /Y
-if "$(SolutionName)" == "OuaDIISln" xcopy  "$(ProjectDir)..\..\packages\SimpleInjector.4.4.3\lib\net45\SimpleInjector.dll" "$(SolutionDir)\Assets\Dlls" /Y
-"$(SolutionDir)\Assets\"pdb2mdb.exe  "$(SolutionDir)\Assets\Dlls\$(TargetFileName)"</PostBuildEvent>
+    </PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
