@@ -6,6 +6,9 @@ using System.Linq;
 
 namespace Roguelike.Abilities
 {
+  /// <summary>
+  /// A set of entity abilities
+  /// </summary>
   public class AbilitiesSet
   {
     List<PassiveAbility> passiveAbilities = new List<PassiveAbility>();
