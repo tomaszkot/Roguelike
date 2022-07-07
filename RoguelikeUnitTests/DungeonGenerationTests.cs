@@ -2,10 +2,13 @@
 using Dungeons.Tiles;
 using NUnit.Framework;
 using Roguelike;
+using Roguelike.Generators;
+using Roguelike.TileContainers;
 using Roguelike.Tiles;
 using Roguelike.Tiles.Interactive;
 using Roguelike.Tiles.LivingEntities;
 using SimpleInjector;
+using System;
 using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
@@ -338,6 +341,24 @@ namespace RoguelikeUnitTests
       game.GameManager.HandleHeroShift(placement.Item2);
       Assert.AreEqual(game.Hero.point, sur.point);
       Assert.AreEqual(game.Level.GetSurfaceKindUnderHero(game.Hero), sur.Kind);
+    }
+
+    [TestCase(true)]
+    [TestCase(false)]
+    public void TestPathToNextLevel(bool openDoors)
+    {
+      //Arrange
+      var gi = new GenerationInfo();
+      gi.GenerateEnemies = false;
+      gi.PreventSecretRoomGeneration = true;
+      var game = CreateGame(gi: gi);
+      game.Level.GetTiles<Door>().ForEach(p => p.Opened = openDoors);
+      var stairs = game.Level.GetStairs(StairsKind.LevelDown);
+      //Act
+      var path = game.Level.FindPath(game.Hero.Position, game.Level.GetNeighborTiles<Tile>(stairs).FirstOrDefault().point, false, true, false, null);
+      //Assert
+      if (openDoors) Assert.NotNull(path);
+      else Assert.Null(path);
     }
   }
 }
