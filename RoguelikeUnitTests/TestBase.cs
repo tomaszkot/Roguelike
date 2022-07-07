@@ -211,9 +211,9 @@ namespace RoguelikeUnitTests
         }
         enemies = level.GetTiles<Enemy>();
         Assert.LessOrEqual(enemies.Count, numEnemies);
-
+        if (gi.GenerateEnemies == false) numEnemies = 0;
         Assert.GreaterOrEqual(AllEnemies.Count, numEnemies);//some are auto generated
-        Assert.Less(ActiveEnemies.Count, numEnemies * 4);
+        if (gi.GenerateEnemies == true) Assert.Less(ActiveEnemies.Count, numEnemies * 4);
 
         if (AllEnemies.Any() && !AllEnemies.Where(i => i.Revealed).Any())
         {
