@@ -4,6 +4,7 @@ using Dungeons.Tiles;
 using SimpleInjector;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 
 namespace Dungeons
@@ -70,7 +71,7 @@ namespace Dungeons
 
           maxNodeSize = minNodeSize;
         }
-        var width = random.Next(minNodeSize.Width, maxNodeSize.Width);
+        var width = random.Next(minNodeSize.Width, maxNodeSize.Width); //SK 
         var height = random.Next(minNodeSize.Height, maxNodeSize.Height);
 
         node = CreateNode(width, height, gi, nodeIndex);
@@ -116,7 +117,7 @@ namespace Dungeons
     protected virtual DungeonNode CreateLevel(int levelIndex, int w, int h, GenerationInfo gi)
     {
       var dungeon = container.GetInstance<DungeonNode>();
-      dungeon.Create(w, h, gi);
+      dungeon.Create(100, 100, gi); //SK w,h
       return dungeon;
     }
 
@@ -161,13 +162,21 @@ namespace Dungeons
     public virtual DungeonLevel Generate(int levelIndex, GenerationInfo info = null, LayouterOptions opt = null)
     {
       var mazeNodes = CreateDungeonNodes(info);
+
+      var infoC = new GenerationInfo();
+      infoC.NumberOfRooms = 1;
+      infoC.MinNodeSize = new Size(13, 4);
+      infoC.MaxNodeSize = new Size(13, 4);
+      var corrindorNodes = CreateDungeonNodes(infoC);
+      mazeNodes.Add(corrindorNodes[0]);
+
       var diffIndexes = mazeNodes.GroupBy(i => i.NodeIndex).Count();
       if (diffIndexes != mazeNodes.Count)
       {
         container.GetInstance<Logger>().LogError("diffIndexes != mazeNodes.Count", false);
       }
-      //var layouter = new CorridorNodeLayouter(container);
-      var layouter = new DefaultNodeLayouter(container, info);
+      var layouter = new CorridorNodeLayouter(container, info);
+      //var layouter = new DefaultNodeLayouter(container, info);
       var level = layouter.DoLayout(mazeNodes, opt);
 
       return level;
