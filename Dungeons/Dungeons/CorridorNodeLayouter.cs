@@ -98,6 +98,11 @@ namespace Dungeons
 
       mazeNodes[0].Reveal(true);
       mazeNodes[1].Reveal(true);
+
+      var random = new Random(); 
+
+      var distanceBetween = random.Next(12,20);
+      var direction = random.Next(0,2);
       
       level.AppendMaze
         (
@@ -105,18 +110,55 @@ namespace Dungeons
           new Point(0, 0)
         );
 
-      level.AppendMaze
-      (
-        mazeNodes[1],
-        new Point(20, 0)
-      );
+      if (direction == 0){
+        level.AppendMaze
+        (
+          mazeNodes[1],
+          new Point(distanceBetween, 0)
+        );
+      }
+      else {
+        level.AppendMaze
+          (
+            mazeNodes[1],
+            new Point(0, distanceBetween)
+          );
+      }
+
+      var heightOfPassage = 0;
+      var widthOfPassage = 0;
+
+      if (direction == 0){
+        heightOfPassage = (mazeNodes[0].Height / 2) - 1;
+        widthOfPassage = mazeNodes[0].Width - 1;
+      }
+      if (direction == 1){
+        heightOfPassage = mazeNodes[0].Height - 1;
+        widthOfPassage = mazeNodes[0].Width / 2;
+      }
+
+      var d = new DungeonGenerator(container);
+      var infoC = new GenerationInfo();
+      infoC.NumberOfRooms = 1;
+
+      if (direction == 0)
+      {
+        infoC.MinNodeSize = new Size(distanceBetween - mazeNodes[0].Width + 3, 4);
+        infoC.MaxNodeSize = new Size(distanceBetween - mazeNodes[0].Width + 3, 4);
+      }
+      else{
+        infoC.MinNodeSize = new Size(4, distanceBetween - mazeNodes[0].Height + 3);
+        infoC.MaxNodeSize = new Size(4, distanceBetween - mazeNodes[0].Height + 3);
+      }
+      var corrindorNodes = d.CreateDungeonNodes(infoC);
+      mazeNodes.Add(corrindorNodes[0]);
 
       mazeNodes[2].Reveal(true);
 
       level.AppendMaze
      (
        mazeNodes[2],
-       new Point(9, 3)
+       new Point(widthOfPassage, heightOfPassage)
      );
 
       //info.MinNodeSize = new Size(2, 2);

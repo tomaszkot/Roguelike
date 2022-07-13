@@ -163,13 +163,6 @@ namespace Dungeons
     {
       var mazeNodes = CreateDungeonNodes(info);
 
-      var infoC = new GenerationInfo();
-      infoC.NumberOfRooms = 1;
-      infoC.MinNodeSize = new Size(13, 4);
-      infoC.MaxNodeSize = new Size(13, 4);
-      var corrindorNodes = CreateDungeonNodes(infoC);
-      mazeNodes.Add(corrindorNodes[0]);
-
       var diffIndexes = mazeNodes.GroupBy(i => i.NodeIndex).Count();
       if (diffIndexes != mazeNodes.Count)
       {
