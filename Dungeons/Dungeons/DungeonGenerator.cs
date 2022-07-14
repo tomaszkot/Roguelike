@@ -117,7 +117,7 @@ namespace Dungeons
     protected virtual DungeonNode CreateLevel(int levelIndex, int w, int h, GenerationInfo gi)
     {
       var dungeon = container.GetInstance<DungeonNode>();
-      dungeon.Create(100, 100, gi); //SK w,h
+      dungeon.Create(100, 100, gi);
       return dungeon;
     }
 
@@ -168,9 +168,16 @@ namespace Dungeons
       {
         container.GetInstance<Logger>().LogError("diffIndexes != mazeNodes.Count", false);
       }
-      var layouter = new CorridorNodeLayouter(container, info);
-      //var layouter = new DefaultNodeLayouter(container, info);
-      var level = layouter.DoLayout(mazeNodes, opt);
+
+      var chanceForSpecialRoom = random.Next(0, 2);
+
+      var layouterDeflaut = new DefaultNodeLayouter(container, info);
+      var layouterCorridorNodeLayouter = new CorridorNodeLayouter(container, info);
+      var level = new DungeonLevel(Container);
+      if (chanceForSpecialRoom == 0)
+        level = layouterDeflaut.DoLayout(mazeNodes, opt);
+      else
+        level = layouterCorridorNodeLayouter.DoLayout(mazeNodes, opt);
 
       return level;
     }

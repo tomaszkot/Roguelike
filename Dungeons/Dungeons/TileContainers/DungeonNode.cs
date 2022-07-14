@@ -276,6 +276,16 @@ namespace Dungeons
         return res;
       }
 
+      internal List<IDoor> GenerateLayoutDoorsCorrindor(EntranceSide side)
+      {
+        var res = new List<IDoor>();
+        List<Wall> wall = sides[side];
+        
+        res.Add(CreateDoor(wall[wall.Count/2]) as Door);
+
+        return res;
+      }
+
       protected virtual void GenerateContent()
       {
         if (generationInfo == null)
