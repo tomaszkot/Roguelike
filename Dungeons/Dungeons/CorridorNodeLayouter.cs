@@ -1,5 +1,6 @@
 ﻿using Dungeons.Core;
 using Dungeons.TileContainers;
+using Dungeons.Tiles;
 using SimpleInjector;
 using System;
 using System.Collections.Generic;
@@ -266,7 +267,7 @@ namespace Dungeons
          new Point(widthOfPassage, heightOfPassage)
        );
 
-      mazeNodes[0].Reveal(true);
+      mazeNodes.ForEach(p => p.Reveal(options.RevealAllNodes,true));
     }
 
    
