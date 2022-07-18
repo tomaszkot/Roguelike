@@ -161,6 +161,13 @@ namespace Dungeons
 
     public virtual DungeonLevel Generate(int levelIndex, GenerationInfo info = null, LayouterOptions opt = null)
     {
+      var chanceForSpecialRoom = random.Next(0, 2);
+      if (info == null)
+        info = new GenerationInfo();
+      if (chanceForSpecialRoom == 0)
+        info.NumberOfRooms = 6;
+      else
+        info.NumberOfRooms = 5;
       var mazeNodes = CreateDungeonNodes(info);
 
       var diffIndexes = mazeNodes.GroupBy(i => i.NodeIndex).Count();
@@ -168,8 +175,6 @@ namespace Dungeons
       {
         container.GetInstance<Logger>().LogError("diffIndexes != mazeNodes.Count", false);
       }
-
-      var chanceForSpecialRoom = random.Next(0, 2);
 
       var layouterDeflaut = new DefaultNodeLayouter(container, info);
       var layouterCorridorNodeLayouter = new CorridorNodeLayouter(container, info);

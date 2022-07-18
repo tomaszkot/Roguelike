@@ -240,7 +240,7 @@ namespace Dungeons
       internal List<IDoor> GenerateLayoutDoors(EntranceSide side, int nextNodeIndex, bool secret, bool overWallls = false)
       {
         var res = new List<IDoor>();
-        List<Wall> wall = sides[side];
+        var wall = sides[side];
         if (secret)
         {
           var count = sides[side].Count;
@@ -276,12 +276,54 @@ namespace Dungeons
         return res;
       }
 
-      internal List<IDoor> GenerateLayoutDoorsCorrindor(EntranceSide side)
+      internal List<IDoor> GenerateDoors(CorridorNodeLayouter.RoomPlacement room)
       {
-        var res = new List<IDoor>();
-        List<Wall> wall = sides[side];
-        
-        res.Add(CreateDoor(wall[wall.Count/2]) as Door);
+      var listOfRoomSides = new List<EntranceSide>();
+      if (room == CorridorNodeLayouter.RoomPlacement.LeftUpper)
+      {
+          listOfRoomSides.Add(EntranceSide.Right);
+          listOfRoomSides.Add(EntranceSide.Bottom);
+      }
+      if (room == CorridorNodeLayouter.RoomPlacement.LeftLower)
+      {
+          listOfRoomSides.Add(EntranceSide.Top);
+          listOfRoomSides.Add(EntranceSide.Right);
+      }
+      if (room == CorridorNodeLayouter.RoomPlacement.RightUpper)
+      {
+          listOfRoomSides.Add(EntranceSide.Left);
+          listOfRoomSides.Add(EntranceSide.Bottom);
+      }
+      if (room == CorridorNodeLayouter.RoomPlacement.RightLower)
+      {
+          listOfRoomSides.Add(EntranceSide.Left);
+          listOfRoomSides.Add(EntranceSide.Top);
+      }
+      if (room == CorridorNodeLayouter.RoomPlacement.Center)
+      {
+          listOfRoomSides.Add(EntranceSide.Bottom);
+          listOfRoomSides.Add(EntranceSide.Top);
+          listOfRoomSides.Add(EntranceSide.Left);
+          listOfRoomSides.Add(EntranceSide.Right);
+      }
+      if (room == CorridorNodeLayouter.RoomPlacement.CorrindorVertical)
+      {
+          listOfRoomSides.Add(EntranceSide.Top);
+          listOfRoomSides.Add(EntranceSide.Bottom);
+      }
+      if (room == CorridorNodeLayouter.RoomPlacement.CorrindorHorizontal)
+      {
+          listOfRoomSides.Add(EntranceSide.Right);
+          listOfRoomSides.Add(EntranceSide.Left);
+      }
+
+      var res = new List<IDoor>();
+      while (listOfRoomSides.Count > 0){
+          List<Wall> wall = sides[listOfRoomSides[0]];
+
+          res.Add(CreateDoor(wall[wall.Count / 2]) as Door);
+          listOfRoomSides.RemoveAt(0);
+        }
 
         return res;
       }
