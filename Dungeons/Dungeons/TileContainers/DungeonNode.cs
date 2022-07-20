@@ -29,6 +29,8 @@ namespace Dungeons
   public enum TileCorner { NorthWest, SouthWest, NorthEast, SouthEast }
   public enum TileNeighborhood { North, South, East, West }
   public enum Interior { T, L };//shape of the interior
+  public enum RoomPlacement { Unset = -1, LeftUpper = 0, RightUpper = 2, LeftLower = 1, RightLower = 3, Center = 4, CorrindorHorizontalTop = 5, CorrindorHorizontalBottom = 6, CorrindorVerticalLeft = 7, CorrindorVerticalRight = 8 }
+
 
   namespace TileContainers
   {
@@ -43,6 +45,110 @@ namespace Dungeons
     //a single room - typically size of 20x20 tiles
     [XmlRoot("Node", Namespace = "DungeonNode")]
     [XmlInclude(typeof(Wall))]
+
+    public class DungeonNodeConnector
+    {
+      public Point Node1Position;
+      public Point Node2Position;
+      public Point CorridorPosition;
+      public RoomPlacement placement = new RoomPlacement();
+      public const int centralRoomPosition = 12;
+      int[] wallLenght = { 0, 1, 2, 3 };
+      public int upperLenght = RandHelper.Random.Next(24, 27);
+      public int bottomLenght = RandHelper.Random.Next(24, 27);
+      public int rightLenght = RandHelper.Random.Next(24, 27);
+      public int leftLenght = RandHelper.Random.Next(24, 27);
+
+      public DungeonNode ConnectNodes(List<DungeonNode> nodes, DungeonNode node1, DungeonNode node2, DungeonGenerator dungeon)
+      {
+        Node1Position = PlaceNodes(node1);
+        Node2Position = PlaceNodes(node2);
+
+        var infoC = new GenerationInfo();
+        infoC.NumberOfRooms = 1;
+        if (node1.Placement == RoomPlacement.LeftUpper)
+        {
+          infoC.MinNodeSize = new Size(Node2Position.X - node1.Width + wallLenght[3], 4);
+          infoC.MaxNodeSize = new Size(Node2Position.X - node1.Width + wallLenght[3], 4);
+          CorridorPosition = new Point(node1.Width - wallLenght[1],Node1Position.Y + (node1.Height/2) - wallLenght[1]);
+          placement = RoomPlacement.CorrindorHorizontalTop;
+        }
+        if (node1.Placement == RoomPlacement.RightUpper)
+        {
+          infoC.MinNodeSize = new Size(4, Node2Position.Y - node1.Height + wallLenght[3]);
+          infoC.MaxNodeSize = new Size(4, Node2Position.Y - node1.Height + wallLenght[3]);
+          CorridorPosition = new Point(Node1Position.X + (node1.Width / 2) - wallLenght[1], node1.Height - wallLenght[1]);
+          placement = RoomPlacement.CorrindorVerticalRight;
+        }
+        if (node1.Placement == RoomPlacement.RightLower)
+        {
+          infoC.MinNodeSize = new Size(bottomLenght - node2.Width + wallLenght[3], 4);
+          infoC.MaxNodeSize = new Size(bottomLenght - node2.Width + wallLenght[3], 4);
+          CorridorPosition = new Point(node2.Width - wallLenght[1], Node2Position.Y + (node2.Height / 2) - wallLenght[1]);
+          placement = RoomPlacement.CorrindorHorizontalBottom;
+        }
+        if (node1.Placement == RoomPlacement.LeftLower)
+        {
+          infoC.MinNodeSize = new Size(4,Node1Position.Y - node2.Height + wallLenght[3]);
+          infoC.MaxNodeSize = new Size(4,Node1Position.Y - node2.Height + wallLenght[3]);
+          CorridorPosition = new Point((node2.Width/2)- wallLenght[1], node2.Height - wallLenght[1]);
+          placement = RoomPlacement.CorrindorVerticalLeft;
+        }
+        if (node1.Placement == RoomPlacement.CorrindorHorizontalTop)
+        {
+          infoC.MinNodeSize = new Size(4, centralRoomPosition - (nodes[(int)RoomPlacement.LeftUpper].Height / 2) + wallLenght[1]);
+          infoC.MaxNodeSize = new Size(4, centralRoomPosition - (nodes[(int)RoomPlacement.LeftUpper].Height / 2) + wallLenght[1]);
+          CorridorPosition = new Point(centralRoomPosition + (node2.Width/2) - wallLenght[1], (nodes[(int)RoomPlacement.LeftUpper].Height / 2) + wallLenght[1]);
+          placement = RoomPlacement.CorrindorVerticalRight;
+        }
+        if (node1.Placement == RoomPlacement.CorrindorVerticalRight)
+        {
+          infoC.MinNodeSize = new Size(upperLenght - centralRoomPosition - node2.Width + (nodes[(int)RoomPlacement.RightUpper].Width/2) + wallLenght[2], 4);
+          infoC.MaxNodeSize = new Size(upperLenght - centralRoomPosition - node2.Width + (nodes[(int)RoomPlacement.RightUpper].Width/2) + wallLenght[2], 4);
+          CorridorPosition = new Point(centralRoomPosition + node2.Width - wallLenght[1], centralRoomPosition + (node2.Height/2) - wallLenght[1]);
+          placement = RoomPlacement.CorrindorHorizontalTop;
+        }
+        if (node1.Placement == RoomPlacement.CorrindorHorizontalBottom)
+        {
+          infoC.MinNodeSize = new Size(4, leftLenght - centralRoomPosition + (nodes[(int)RoomPlacement.LeftLower].Height/2) - node2.Height + wallLenght[2]);
+          infoC.MaxNodeSize = new Size(4, leftLenght  - centralRoomPosition + (nodes[(int)RoomPlacement.LeftLower].Height / 2) - node2.Height + wallLenght[2]);
+          CorridorPosition = new Point(centralRoomPosition + (node2.Width/2)- wallLenght[1], centralRoomPosition + node2.Height - wallLenght[1]);
+          placement = RoomPlacement.CorrindorVerticalLeft;
+        }
+        if (node1.Placement == RoomPlacement.CorrindorVerticalLeft)
+        {
+          infoC.MinNodeSize = new Size(12 - (nodes[(int)RoomPlacement.LeftUpper].Width/2) + wallLenght[1], 4);
+          infoC.MaxNodeSize = new Size(12 - (nodes[(int)RoomPlacement.LeftUpper].Width / 2) + wallLenght[1], 4);
+          CorridorPosition = new Point((nodes[(int)RoomPlacement.LeftUpper].Width/2) + wallLenght[1], centralRoomPosition + (node2.Height/2) - wallLenght[1]);
+          placement = RoomPlacement.CorrindorHorizontalBottom;
+        }
+
+        var corridor = dungeon.CreateDungeonNodes(infoC);
+        corridor[0].Placement = placement;
+        return corridor[0];
+      }
+
+      public Point PlaceNodes(DungeonNode node)
+      {
+        var position = new Point();
+        if (node.Placement == RoomPlacement.LeftUpper)
+          position = new Point(0,0);
+
+        if (node.Placement == RoomPlacement.RightUpper)
+          position = new Point(upperLenght, 0);
+
+        if (node.Placement == RoomPlacement.LeftLower)
+          position = new Point(0, leftLenght);
+
+        if (node.Placement == RoomPlacement.RightLower)
+          position = new Point(bottomLenght, rightLenght);
+
+        if (node.Placement == RoomPlacement.Center)
+          position = new Point(centralRoomPosition,centralRoomPosition);
+        return position;
+      }
+    }
+
     public class DungeonNode
     {
       [XmlIgnore]
@@ -52,6 +158,7 @@ namespace Dungeons
       protected static Random random;
       bool contentGenerated = false;
       bool secret = false;
+      public RoomPlacement Placement { get; set; }
 
       [XmlIgnore]
       [JsonIgnore]
@@ -276,42 +383,42 @@ namespace Dungeons
         return res;
       }
 
-      internal List<IDoor> GenerateDoors(CorridorNodeLayouter.RoomPlacement room)
+      internal List<IDoor> GenerateDoors(RoomPlacement room)
       {
       var listOfRoomSides = new List<EntranceSide>();
-      if (room == CorridorNodeLayouter.RoomPlacement.LeftUpper)
+      if (room == RoomPlacement.LeftUpper)
       {
           listOfRoomSides.Add(EntranceSide.Right);
           listOfRoomSides.Add(EntranceSide.Bottom);
       }
-      if (room == CorridorNodeLayouter.RoomPlacement.LeftLower)
+      if (room == RoomPlacement.LeftLower)
       {
           listOfRoomSides.Add(EntranceSide.Top);
           listOfRoomSides.Add(EntranceSide.Right);
       }
-      if (room == CorridorNodeLayouter.RoomPlacement.RightUpper)
+      if (room == RoomPlacement.RightUpper)
       {
           listOfRoomSides.Add(EntranceSide.Left);
           listOfRoomSides.Add(EntranceSide.Bottom);
       }
-      if (room == CorridorNodeLayouter.RoomPlacement.RightLower)
+      if (room == RoomPlacement.RightLower)
       {
           listOfRoomSides.Add(EntranceSide.Left);
           listOfRoomSides.Add(EntranceSide.Top);
       }
-      if (room == CorridorNodeLayouter.RoomPlacement.Center)
+      if (room == RoomPlacement.Center)
       {
           listOfRoomSides.Add(EntranceSide.Bottom);
           listOfRoomSides.Add(EntranceSide.Top);
           listOfRoomSides.Add(EntranceSide.Left);
           listOfRoomSides.Add(EntranceSide.Right);
       }
-      if (room == CorridorNodeLayouter.RoomPlacement.CorrindorVertical)
+      if (room == RoomPlacement.CorrindorVerticalRight || room == RoomPlacement.CorrindorVerticalLeft)
       {
           listOfRoomSides.Add(EntranceSide.Top);
           listOfRoomSides.Add(EntranceSide.Bottom);
       }
-      if (room == CorridorNodeLayouter.RoomPlacement.CorrindorHorizontal)
+      if (room == RoomPlacement.CorrindorHorizontalTop || room == RoomPlacement.CorrindorHorizontalBottom)
       {
           listOfRoomSides.Add(EntranceSide.Right);
           listOfRoomSides.Add(EntranceSide.Left);

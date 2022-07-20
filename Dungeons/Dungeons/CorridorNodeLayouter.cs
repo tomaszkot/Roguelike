@@ -21,9 +21,7 @@ namespace Dungeons
     DungeonNode lastNonSecretNode;
     List<DungeonNode> mazeNodes;
     Dictionary<DungeonNode, AppendNodeInfo> appendNodeInfos = new Dictionary<DungeonNode, AppendNodeInfo>();
-    int nodesPadding = 0;
-    bool generateLayoutDoors = true;
-    public enum RoomPlacement { LeftUpper = 0, RightUpper = 2, LeftLower = 1, RightLower = 3, Center = 4, CorrindorHorizontal = 5, CorrindorVertical = 6 }
+    
     public CorridorNodeLayouter(Container container, GenerationInfo info = null)
     {
       this.container = container;
@@ -95,136 +93,42 @@ namespace Dungeons
     protected virtual void LayoutNodes(DungeonNode level, List<DungeonNode> mazeNodes)
     {
       this.mazeNodes = mazeNodes;
-      var random = RandHelper.Random;
-      const int centralRoomPosition = 12;
-      int[] wallLenght = { 0, 1, 2, 3 };
-      List<int[]> positionsOfNodes = new List<int[]>();
+      var d = new DungeonGenerator(container);
+      var infoC = new GenerationInfo();
+      infoC.NumberOfRooms = 1;
 
-      var currentWidth = 0;
-      var currentHeight = 0;
-      List<int> distances = new List<int>();
+      mazeNodes[0].Placement = RoomPlacement.LeftUpper;
+      mazeNodes[1].Placement = RoomPlacement.RightUpper;
+      mazeNodes[2].Placement = RoomPlacement.RightLower;
+      mazeNodes[3].Placement = RoomPlacement.LeftLower;
+      mazeNodes[4].Placement = RoomPlacement.Center;
+
       mazeNodes[0].GenerateDoors(RoomPlacement.LeftUpper);
       mazeNodes[1].GenerateDoors(RoomPlacement.LeftLower);
       mazeNodes[2].GenerateDoors(RoomPlacement.RightUpper);
       mazeNodes[3].GenerateDoors(RoomPlacement.RightLower);
       mazeNodes[4].GenerateDoors(RoomPlacement.Center);
-      for (int i = 0; i < mazeNodes.Count; i++) //creating rooms
+
+      var conn = new DungeonNodeConnector(); //generating normal rooms
+      for (int i = 0; i < 4; i++)
       {
-        if (i == (int)RoomPlacement.LeftUpper || i == (int)RoomPlacement.RightUpper)
-        {
-          positionsOfNodes.Add(new int[]{ currentWidth,currentHeight});
-          currentHeight += random.Next(24, 28);
-          distances.Add(currentHeight);
-        }
-        if (i == (int)RoomPlacement.LeftLower || i == (int)RoomPlacement.RightLower)
-        {
-          if (i == (int)RoomPlacement.RightLower)
-            currentWidth = random.Next(24, 28);
-          positionsOfNodes.Add(new int[] { currentWidth, currentHeight });
-          currentHeight = 0;
-          if (currentWidth == 0)
-            currentWidth += random.Next(24, 28);
-          distances.Add(currentWidth);
-        }
+        var n = i + 1;
+        if (n == 4) n = 0;
+        mazeNodes.Add(conn.ConnectNodes(mazeNodes, mazeNodes[i], mazeNodes[n], d));
+        level.AppendMaze(mazeNodes[n], conn.Node2Position);
+
+        mazeNodes[mazeNodes.Count - 1].GenerateDoors(mazeNodes[mazeNodes.Count - 1].Placement);
+        level.AppendMaze(mazeNodes[mazeNodes.Count - 1], conn.CorridorPosition);
       }
-      positionsOfNodes.Add(new int[] { centralRoomPosition, centralRoomPosition });
 
-
-      var d = new DungeonGenerator(container);
-      var infoC = new GenerationInfo();
-      infoC.NumberOfRooms = 1;
-      currentWidth = 0;
-      currentHeight = 0;
-      var h = 0;
-      var h1 = 0;
-      for (int i = 0; i < 4; i++) //creating corrindors
+      level.AppendMaze(mazeNodes[4], new Point(DungeonNodeConnector.centralRoomPosition, DungeonNodeConnector.centralRoomPosition));
+      for (int i = 5; i < 9; i++) //generatig central room
       {
-        if (i % 2 == 0)
-        {
-          infoC.MinNodeSize = new Size(distances[i+1] - mazeNodes[h].Width + wallLenght[3], 4);
-          infoC.MaxNodeSize = new Size(distances[i+1] - mazeNodes[h].Width + wallLenght[3], 4);
-          h += 1;
-        }
-        else {
-          infoC.MinNodeSize = new Size(4, distances[h1] - mazeNodes[h1].Height + wallLenght[3]);
-          infoC.MaxNodeSize = new Size(4, distances[h1] - mazeNodes[h1].Height + wallLenght[3]);
-          h1 += 2;
-        }
-        var corrindorNodes = d.CreateDungeonNodes(infoC);
-        mazeNodes.Add(corrindorNodes[0]);
+        mazeNodes.Add(conn.ConnectNodes(mazeNodes, mazeNodes[i], mazeNodes[4], d));
+        mazeNodes[mazeNodes.Count - 1].GenerateDoors(mazeNodes[mazeNodes.Count - 1].Placement);
+        level.AppendMaze(mazeNodes[mazeNodes.Count - 1], conn.CorridorPosition);
       }
 
-
-      infoC.MinNodeSize = new Size(4, centralRoomPosition - (mazeNodes[(int)RoomPlacement.LeftUpper].Height / 2) + wallLenght[1]); //creating corrindors to island
-      infoC.MaxNodeSize = new Size(4, centralRoomPosition - (mazeNodes[(int)RoomPlacement.LeftUpper].Height / 2) + wallLenght[1]);
-      var corrindorIslandNotes = d.CreateDungeonNodes(infoC);
-      mazeNodes.Add(corrindorIslandNotes[0]);
-
-      infoC.MinNodeSize = new Size(4, (mazeNodes[(int)RoomPlacement.LeftLower].Height / 2) + distances[0] - centralRoomPosition - mazeNodes[4].Height + wallLenght[2]);
-      infoC.MaxNodeSize = new Size(4, (mazeNodes[(int)RoomPlacement.LeftLower].Height / 2) + distances[0] - centralRoomPosition - mazeNodes[4].Height + wallLenght[2]); ; ;
-      corrindorIslandNotes = d.CreateDungeonNodes(infoC);
-      mazeNodes.Add(corrindorIslandNotes[0]);
-
-      infoC.MinNodeSize = new Size(centralRoomPosition - (mazeNodes[(int)RoomPlacement.LeftUpper].Width / 2) + wallLenght[2], 4);
-      infoC.MaxNodeSize = new Size(centralRoomPosition - (mazeNodes[(int)RoomPlacement.LeftUpper].Width / 2) + wallLenght[2], 4);
-      corrindorIslandNotes = d.CreateDungeonNodes(infoC);
-      mazeNodes.Add(corrindorIslandNotes[0]);
-
-      infoC.MinNodeSize = new Size(distances[1] - centralRoomPosition + wallLenght[1] - mazeNodes[4].Width + (mazeNodes[(int)RoomPlacement.RightUpper].Width / 2),4);
-      infoC.MaxNodeSize = new Size(distances[1] - centralRoomPosition + wallLenght[1] - mazeNodes[4].Width + (mazeNodes[(int)RoomPlacement.RightUpper].Width / 2), 4);
-      corrindorIslandNotes = d.CreateDungeonNodes(infoC);
-      mazeNodes.Add(corrindorIslandNotes[0]);
-
-      var heightOfPassage = 0;
-      var widthOfPassage = 0;
-      currentHeight = 0;
-      currentWidth = 0;
-      h = 0;
-      h1 = 0;
-
-      mazeNodes[5].GenerateDoors(RoomPlacement.CorrindorHorizontal);
-      mazeNodes[6].GenerateDoors(RoomPlacement.CorrindorVertical);
-      mazeNodes[7].GenerateDoors(RoomPlacement.CorrindorHorizontal);
-      mazeNodes[8].GenerateDoors(RoomPlacement.CorrindorVertical);
-      mazeNodes[9].GenerateDoors(RoomPlacement.CorrindorVertical);
-      mazeNodes[10].GenerateDoors(RoomPlacement.CorrindorVertical);
-      mazeNodes[11].GenerateDoors(RoomPlacement.CorrindorHorizontal);
-      mazeNodes[12].GenerateDoors(RoomPlacement.CorrindorHorizontal);
-
-      for (int i = 0; i<4;i++) //placing corrindors
-      {
-        if ((i % 2) == 0){
-          heightOfPassage = ((mazeNodes[h].Height / 2) - wallLenght[1]) + currentHeight;
-          widthOfPassage = mazeNodes[h].Width - wallLenght[1];
-          h++;
-          currentHeight = distances[0];
-        }
-        if ((i % 2) == 1){ //h
-          heightOfPassage = mazeNodes[h1].Height - wallLenght[1];
-          widthOfPassage = mazeNodes[h1].Width / 2 + currentWidth - wallLenght[2];
-          currentWidth = distances[1];
-          h1 += 2;
-        }
-          positionsOfNodes.Add(new int[] { widthOfPassage, heightOfPassage });
-      }
-
-      heightOfPassage = (mazeNodes[(int)RoomPlacement.LeftUpper].Height / 2) + wallLenght[1];
-      widthOfPassage = centralRoomPosition + (mazeNodes[4].Width / 2) - wallLenght[1];
-      positionsOfNodes.Add(new int[] { widthOfPassage, heightOfPassage });
-
-      heightOfPassage = centralRoomPosition + mazeNodes[4].Height - wallLenght[1];
-      positionsOfNodes.Add(new int[] { widthOfPassage, heightOfPassage });
-
-      heightOfPassage = ((distances[0] - mazeNodes[(int)RoomPlacement.LeftUpper].Height)/2 + mazeNodes[(int)RoomPlacement.LeftUpper].Height) - wallLenght[1];
-      widthOfPassage = (mazeNodes[(int)RoomPlacement.LeftUpper].Width / 2);
-      positionsOfNodes.Add(new int[] { widthOfPassage, heightOfPassage });
-
-      widthOfPassage = centralRoomPosition + mazeNodes[4].Width - wallLenght[1];
-      positionsOfNodes.Add(new int[] { widthOfPassage, heightOfPassage });
-
-      for(int i=0; i<mazeNodes.Count; i++) {
-        level.AppendMaze(mazeNodes[i], new Point(positionsOfNodes[i][0],positionsOfNodes[i][1]));
-      }
       mazeNodes.ForEach(p => p.Reveal(options.RevealAllNodes,true));
     }
 
