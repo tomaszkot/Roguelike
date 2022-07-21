@@ -96,39 +96,59 @@ namespace Dungeons
       var d = new DungeonGenerator(container);
       var infoC = new GenerationInfo();
       infoC.NumberOfRooms = 1;
+      var numberOfNodes = mazeNodes.Count;
 
       mazeNodes[0].Placement = RoomPlacement.LeftUpper;
-      mazeNodes[1].Placement = RoomPlacement.RightUpper;
-      mazeNodes[2].Placement = RoomPlacement.RightLower;
-      mazeNodes[3].Placement = RoomPlacement.LeftLower;
-      mazeNodes[4].Placement = RoomPlacement.Center;
-
       mazeNodes[0].GenerateDoors(RoomPlacement.LeftUpper);
-      mazeNodes[1].GenerateDoors(RoomPlacement.LeftLower);
-      mazeNodes[2].GenerateDoors(RoomPlacement.RightUpper);
-      mazeNodes[3].GenerateDoors(RoomPlacement.RightLower);
-      mazeNodes[4].GenerateDoors(RoomPlacement.Center);
+      if (mazeNodes.Count > 1)
+      {
+        mazeNodes[1].Placement = RoomPlacement.RightUpper;
+        mazeNodes[1].GenerateDoors(RoomPlacement.LeftLower);
+      }
+      if (mazeNodes.Count > 2)
+      {
+        mazeNodes[2].Placement = RoomPlacement.RightLower;
+        mazeNodes[2].GenerateDoors(RoomPlacement.RightUpper);
+      }
+      if (mazeNodes.Count > 3)
+      {
+        mazeNodes[3].Placement = RoomPlacement.LeftLower;
+        mazeNodes[3].GenerateDoors(RoomPlacement.RightLower);
+      }
+      if (mazeNodes.Count > 4)
+      {
+        mazeNodes[4].Placement = RoomPlacement.Center;
+        mazeNodes[4].GenerateDoors(RoomPlacement.Center);
+      }
 
       var conn = new DungeonNodeConnector(); //generating normal rooms
-      for (int i = 0; i < 4; i++)
+      level.AppendMaze(mazeNodes[0], new Point(0, 0));
+      var numberOfNormalRooms = numberOfNodes;
+      if (numberOfNormalRooms == 4)
+        numberOfNormalRooms++;
+      for (int i = 0; i < numberOfNormalRooms - 1; i++)
       {
         var n = i + 1;
-        if (n == 4) n = 0;
+        if (n == 4) 
+          n = 0;
         mazeNodes.Add(conn.ConnectNodes(mazeNodes, mazeNodes[i], mazeNodes[n], d));
-        level.AppendMaze(mazeNodes[n], conn.Node2Position);
+        if (n != 4) 
+          level.AppendMaze(mazeNodes[n], conn.Node2Position);
 
         mazeNodes[mazeNodes.Count - 1].GenerateDoors(mazeNodes[mazeNodes.Count - 1].Placement);
         level.AppendMaze(mazeNodes[mazeNodes.Count - 1], conn.CorridorPosition);
       }
 
-      level.AppendMaze(mazeNodes[4], new Point(DungeonNodeConnector.centralRoomPosition, DungeonNodeConnector.centralRoomPosition));
-      for (int i = 5; i < 9; i++) //generatig central room
+      if (numberOfNodes > 4)
       {
-        mazeNodes.Add(conn.ConnectNodes(mazeNodes, mazeNodes[i], mazeNodes[4], d));
-        mazeNodes[mazeNodes.Count - 1].GenerateDoors(mazeNodes[mazeNodes.Count - 1].Placement);
-        level.AppendMaze(mazeNodes[mazeNodes.Count - 1], conn.CorridorPosition);
+        level.AppendMaze(mazeNodes[4], new Point(DungeonNodeConnector.centralRoomPosition, DungeonNodeConnector.centralRoomPosition));
+        for (int i = 5; i < 9; i++) //generatig central room
+        {
+          mazeNodes.Add(conn.ConnectNodes(mazeNodes, mazeNodes[i], mazeNodes[4], d));
+          mazeNodes[mazeNodes.Count - 1].GenerateDoors(mazeNodes[mazeNodes.Count - 1].Placement);
+          level.AppendMaze(mazeNodes[mazeNodes.Count - 1], conn.CorridorPosition);
+        }
       }
-
       mazeNodes.ForEach(p => p.Reveal(options.RevealAllNodes,true));
     }
 

@@ -167,7 +167,10 @@ namespace Dungeons
       if (chanceForSpecialRoom == 0)
         info.NumberOfRooms = 6;
       else
-        info.NumberOfRooms = 5;
+      {
+        info.PreventSecretRoomGeneration = true;
+        info.NumberOfRooms = random.Next(3, 6);
+      }
       var mazeNodes = CreateDungeonNodes(info);
 
       var diffIndexes = mazeNodes.GroupBy(i => i.NodeIndex).Count();
@@ -176,14 +179,11 @@ namespace Dungeons
         container.GetInstance<Logger>().LogError("diffIndexes != mazeNodes.Count", false);
       }
 
-      var layouterDeflaut = new DefaultNodeLayouter(container, info);
-      var layouterCorridorNodeLayouter = new CorridorNodeLayouter(container, info);
       var level = new DungeonLevel(Container);
       if (chanceForSpecialRoom == 0)
-        level = layouterDeflaut.DoLayout(mazeNodes, opt);
+        level = new DefaultNodeLayouter(Container, info).DoLayout(mazeNodes, opt);
       else
-        level = layouterCorridorNodeLayouter.DoLayout(mazeNodes, opt);
-
+        level = new CorridorNodeLayouter(Container, info).DoLayout(mazeNodes, opt);
       return level;
     }
   }
