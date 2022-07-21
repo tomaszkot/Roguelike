@@ -29,7 +29,7 @@ namespace Dungeons
   public enum TileCorner { NorthWest, SouthWest, NorthEast, SouthEast }
   public enum TileNeighborhood { North, South, East, West }
   public enum Interior { T, L };//shape of the interior
-  public enum RoomPlacement { Unset = -1, LeftUpper = 0, RightUpper = 2, LeftLower = 1, RightLower = 3, Center = 4, CorrindorHorizontalTop = 5, CorrindorHorizontalBottom = 6, CorrindorVerticalLeft = 7, CorrindorVerticalRight = 8 }
+  public enum RoomPlacement { Unset = -1, LeftUpper = 0, RightUpper = 1, LeftLower = 3, RightLower = 2, Center = 4, CorrindorHorizontalTop = 5, CorrindorHorizontalBottom = 6, CorrindorVerticalLeft = 7, CorrindorVerticalRight = 8 }
 
 
   namespace TileContainers
