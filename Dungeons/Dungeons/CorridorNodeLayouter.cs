@@ -98,27 +98,10 @@ namespace Dungeons
       infoC.NumberOfRooms = 1;
       var numberOfNodes = mazeNodes.Count;
 
-      mazeNodes[0].Placement = RoomPlacement.LeftUpper;
-      mazeNodes[0].GenerateDoors(RoomPlacement.LeftUpper);
-      if (mazeNodes.Count > 1)
+      for (int i=0; i<numberOfNodes; i++)
       {
-        mazeNodes[1].Placement = RoomPlacement.RightUpper;
-        mazeNodes[1].GenerateDoors(RoomPlacement.LeftLower);
-      }
-      if (mazeNodes.Count > 2)
-      {
-        mazeNodes[2].Placement = RoomPlacement.RightLower;
-        mazeNodes[2].GenerateDoors(RoomPlacement.RightUpper);
-      }
-      if (mazeNodes.Count > 3)
-      {
-        mazeNodes[3].Placement = RoomPlacement.LeftLower;
-        mazeNodes[3].GenerateDoors(RoomPlacement.RightLower);
-      }
-      if (mazeNodes.Count > 4)
-      {
-        mazeNodes[4].Placement = RoomPlacement.Center;
-        mazeNodes[4].GenerateDoors(RoomPlacement.Center);
+        mazeNodes[i].Placement = (RoomPlacement)(i);
+        mazeNodes[i].GenerateDoors((RoomPlacement)(i));
       }
 
       var conn = new DungeonNodeConnector(); //generating normal rooms
@@ -126,17 +109,26 @@ namespace Dungeons
       var numberOfNormalRooms = numberOfNodes;
       if (numberOfNormalRooms == 4)
         numberOfNormalRooms++;
-      for (int i = 0; i < numberOfNormalRooms - 1; i++)
+      var nodesCopy = mazeNodes.ToList();
+      for (int i = 0; i < nodesCopy.Count - 1; i++)
       {
         var n = i + 1;
-        if (n == 4) 
+        if (i + 1 == 5)
           n = 0;
-        mazeNodes.Add(conn.ConnectNodes(mazeNodes, mazeNodes[i], mazeNodes[n], d));
-        if (n != 4) 
-          level.AppendMaze(mazeNodes[n], conn.Node2Position);
-
-        mazeNodes[mazeNodes.Count - 1].GenerateDoors(mazeNodes[mazeNodes.Count - 1].Placement);
-        level.AppendMaze(mazeNodes[mazeNodes.Count - 1], conn.CorridorPosition);
+        var corridor = conn.ConnectNodes(nodesCopy, nodesCopy[i], nodesCopy[n], d);
+        mazeNodes.Add(corridor);
+        if (!nodesCopy[i].Appened)
+        {
+          level.AppendMaze(nodesCopy[i], conn.Node1Position);
+          nodesCopy[i].Appened = true;
+        }
+        if (!nodesCopy[n].Appened)
+        {
+          level.AppendMaze(nodesCopy[n], conn.Node2Position);
+          nodesCopy[n].Appened = true;
+        }
+        corridor.GenerateDoors(conn.placement);
+        level.AppendMaze(corridor, conn.CorridorPosition);
       }
 
       if (numberOfNodes > 4)
