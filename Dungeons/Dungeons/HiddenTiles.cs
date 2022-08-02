@@ -7,7 +7,10 @@ using System.Threading.Tasks;
 
 namespace Dungeons
 {
-  public class HiddenTilesInfo
+  /// <summary>
+  /// 
+  /// </summary>
+  public class HiddenTilesInfo 
   {
     public List<Tile> Tiles { get; set; } = new List<Tile>();
 
