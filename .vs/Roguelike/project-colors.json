@@ -1,0 +1,11 @@
+{
+  "Version": 1,
+  "ProjectMap": {
+    "6e90d7c5-938d-4e62-b45c-53d0033847ef": {
+      "ProjectGuid": "6e90d7c5-938d-4e62-b45c-53d0033847ef",
+      "DisplayName": "Dungeons",
+      "ColorIndex": 0
+    }
+  },
+  "NextColorIndex": 1
+}

@@ -161,10 +161,10 @@ namespace Dungeons
 
     public virtual DungeonLevel Generate(int levelIndex, GenerationInfo info = null, LayouterOptions opt = null)
     {
-      var chanceForSpecialRoom = random.Next(0, 2);
+      var useDefaultLayouter = false;// random.NextDouble() > 0.5f;
       if (info == null)
         info = new GenerationInfo();
-      if (chanceForSpecialRoom == 0)
+      if (useDefaultLayouter)
         info.NumberOfRooms = 6;
       else
       {
@@ -180,7 +180,7 @@ namespace Dungeons
       }
 
       var level = new DungeonLevel(Container);
-      if (chanceForSpecialRoom == 0)
+      if (useDefaultLayouter)
         level = new DefaultNodeLayouter(Container, info).DoLayout(mazeNodes, opt);
       else
         level = new CorridorNodeLayouter(Container, info).DoLayout(mazeNodes, opt);
