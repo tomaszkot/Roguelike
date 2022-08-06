@@ -674,6 +674,8 @@ namespace Dungeons
       )
       {
         childMaze.AppendedSide = entranceSideToSkip;
+        if (Parts.Contains(childMaze))
+          Debug.Assert(false);
         Parts.Add(childMaze);
 
         var start = destStartPoint ?? GetInteriorStartingPoint(4, childMaze);
@@ -755,6 +757,9 @@ namespace Dungeons
             }
           }
         }
+
+
+        childMaze.Appened = true;
       }
 
 

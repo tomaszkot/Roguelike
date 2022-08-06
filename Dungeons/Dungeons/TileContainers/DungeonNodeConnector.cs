@@ -20,19 +20,26 @@ namespace Dungeons.TileContainers
     public int bottomLenght = RandHelper.Random.Next(24, 27);
     public int rightLenght = RandHelper.Random.Next(24, 27);
     public int leftLenght = RandHelper.Random.Next(24, 27);
+    DungeonGenerator dungeonGenerator;
 
-    public DungeonNode ConnectNodes(List<DungeonNode> nodes, DungeonNode node1, DungeonNode node2, DungeonGenerator dungeon)
+    public DungeonNodeConnector(DungeonGenerator dg)
+    {
+      dungeonGenerator = dg;
+    }
+
+    public DungeonNode ConnectNodes(List<DungeonNode> nodes, DungeonNode node1, DungeonNode node2)
     {
       Node1Position = PlaceNodes(node1);
       Node2Position = PlaceNodes(node2);
 
       var infoCorridor = new GenerationInfo();
       infoCorridor.NumberOfRooms = 1;
-      CalculateCorridorPosition(nodes,node1,node2,infoCorridor);
+      CalculateCorridorPosition(nodes, node1, node2, infoCorridor);
       infoCorridor.MaxNodeSize = infoCorridor.MinNodeSize;
 
-      var corridor = dungeon.CreateDungeonNodes(infoCorridor);
+      var corridor = dungeonGenerator.CreateDungeonNodes(infoCorridor);
       corridor[0].Placement = placement;
+      
       return corridor[0];
     }
 
@@ -40,50 +47,51 @@ namespace Dungeons.TileContainers
     {
       if (node1.Placement == RoomPlacement.LeftUpper)
       {
-        infoCorridor.MinNodeSize = new Size(Node2Position.X - node1.Width + wallLength[3], 4);
+        infoCorridor.MinNodeSize = new Size(Node2Position.X - node1.Width + wallLength[3]-1, 4);
         CorridorPosition = new Point(node1.Width - wallLength[1], Node1Position.Y + (node1.Height / 2) - wallLength[1]);
         placement = RoomPlacement.CorrindorHorizontalTop;
       }
-      if (node1.Placement == RoomPlacement.RightUpper)
+      else if (node1.Placement == RoomPlacement.RightUpper)
       {
-        infoCorridor.MinNodeSize = new Size(4, Node2Position.Y - node1.Height + wallLength[3]);
+        infoCorridor.MinNodeSize = new Size(4, Node2Position.Y - node1.Height + wallLength[3]-1);
         CorridorPosition = new Point(Node1Position.X + (node1.Width / 2) - wallLength[1], node1.Height - wallLength[1]);
         placement = RoomPlacement.CorrindorVerticalRight;
       }
-      if (node1.Placement == RoomPlacement.RightLower)
+      else if (node1.Placement == RoomPlacement.RightLower)
       {
-        infoCorridor.MinNodeSize = new Size(bottomLenght - node2.Width + wallLength[3], 4);
+        infoCorridor.MinNodeSize = new Size(bottomLenght - node2.Width + wallLength[3]-1, 4);
         CorridorPosition = new Point(node2.Width - wallLength[1], Node2Position.Y + (node2.Height / 2) - wallLength[1]);
         placement = RoomPlacement.CorrindorHorizontalBottom;
       }
-      if (node1.Placement == RoomPlacement.LeftLower)
+      else if (node1.Placement == RoomPlacement.LeftLower)
       {
-        infoCorridor.MinNodeSize = new Size(4, Node1Position.Y - node2.Height + wallLength[3]);
+        infoCorridor.MinNodeSize = new Size(4, Node1Position.Y - node2.Height + wallLength[3]-1);
         CorridorPosition = new Point((node2.Width / 2) - wallLength[1], node2.Height - wallLength[1]);
         placement = RoomPlacement.CorrindorVerticalLeft;
       }
-      if (node1.Placement == RoomPlacement.CorrindorHorizontalTop)
+      else if (node1.Placement == RoomPlacement.CorrindorHorizontalTop)
       {
-        infoCorridor.MinNodeSize = new Size(4, centralRoomPosition - (nodes[(int)RoomPlacement.LeftUpper].Height / 2) + wallLength[1]);
-        CorridorPosition = new Point(centralRoomPosition + (node2.Width / 2) - wallLength[1], (nodes[(int)RoomPlacement.LeftUpper].Height / 2) + wallLength[1]);
+        infoCorridor.MinNodeSize = new Size(4, centralRoomPosition - (nodes[(int)RoomPlacement.LeftUpper].Height / 2) + wallLength[1] -2);
+        CorridorPosition = new Point(centralRoomPosition + (node2.Width / 2) - wallLength[1], (nodes[(int)RoomPlacement.LeftUpper].Height / 2) + wallLength[1]+1);
         placement = RoomPlacement.CorrindorVerticalRight;
       }
-      if (node1.Placement == RoomPlacement.CorrindorVerticalRight)
+      else if (node1.Placement == RoomPlacement.CorrindorVerticalRight)
       {
-        infoCorridor.MinNodeSize = new Size(upperLenght - centralRoomPosition - node2.Width + (nodes[(int)RoomPlacement.RightUpper].Width / 2) + wallLength[2], 4);
+        var width = upperLenght - centralRoomPosition - node2.Width + (nodes[(int)RoomPlacement.RightUpper].Width / 2) + wallLength[2];
+        infoCorridor.MinNodeSize = new Size(width-1, 4);
         CorridorPosition = new Point(centralRoomPosition + node2.Width - wallLength[1], centralRoomPosition + (node2.Height / 2) - wallLength[1]);
         placement = RoomPlacement.CorrindorHorizontalTop;
       }
-      if (node1.Placement == RoomPlacement.CorrindorHorizontalBottom)
+      else if (node1.Placement == RoomPlacement.CorrindorHorizontalBottom)
       {
-        infoCorridor.MinNodeSize = new Size(4, leftLenght - centralRoomPosition + (nodes[(int)RoomPlacement.LeftLower].Height / 2) - node2.Height + wallLength[2]);
+        infoCorridor.MinNodeSize = new Size(4, leftLenght - centralRoomPosition + (nodes[(int)RoomPlacement.LeftLower].Height / 2) - node2.Height + wallLength[2]-1);
         CorridorPosition = new Point(centralRoomPosition + (node2.Width / 2) - wallLength[1], centralRoomPosition + node2.Height - wallLength[1]);
         placement = RoomPlacement.CorrindorVerticalLeft;
       }
-      if (node1.Placement == RoomPlacement.CorrindorVerticalLeft)
+      else if (node1.Placement == RoomPlacement.CorrindorVerticalLeft)
       {
-        infoCorridor.MinNodeSize = new Size(12 - (nodes[(int)RoomPlacement.LeftUpper].Width / 2) + wallLength[1], 4);
-        CorridorPosition = new Point((nodes[(int)RoomPlacement.LeftUpper].Width / 2) + wallLength[1], centralRoomPosition + (node2.Height / 2) - wallLength[1]);
+        infoCorridor.MinNodeSize = new Size(12 - (nodes[(int)RoomPlacement.LeftUpper].Width / 2) + wallLength[1]-2, 4);
+        CorridorPosition = new Point((nodes[(int)RoomPlacement.LeftUpper].Width / 2) + wallLength[1] +1, centralRoomPosition + (node2.Height / 2) - wallLength[1]);
         placement = RoomPlacement.CorrindorHorizontalBottom;
       }
     }

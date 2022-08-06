@@ -161,16 +161,12 @@ namespace Dungeons
 
     public virtual DungeonLevel Generate(int levelIndex, GenerationInfo info = null, LayouterOptions opt = null)
     {
-      var useDefaultLayouter = false;// random.NextDouble() > 0.5f;
+      var useDefaultLayouter = false;
       if (info == null)
         info = new GenerationInfo();
-      if (useDefaultLayouter)
-        info.NumberOfRooms = 6;
-      else
-      {
+      if (!useDefaultLayouter)
         info.PreventSecretRoomGeneration = true;
-        info.NumberOfRooms = random.Next(3, 6);
-      }
+
       var mazeNodes = CreateDungeonNodes(info);
 
       var diffIndexes = mazeNodes.GroupBy(i => i.NodeIndex).Count();
