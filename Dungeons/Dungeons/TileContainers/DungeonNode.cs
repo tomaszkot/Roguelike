@@ -29,6 +29,8 @@ namespace Dungeons
   public enum TileCorner { NorthWest, SouthWest, NorthEast, SouthEast }
   public enum TileNeighborhood { North, South, East, West }
   public enum Interior { T, L };//shape of the interior
+  public enum RoomPlacement { Unset = -1, LeftUpper = 0, RightUpper = 1, RightLower = 2, LeftLower = 3, Center = 4, CorrindorHorizontalTop = 5, CorrindorHorizontalBottom = 6, CorrindorVerticalLeft = 7, CorrindorVerticalRight = 8 }
+
 
   namespace TileContainers
   {
@@ -43,6 +45,7 @@ namespace Dungeons
     //a single room - typically size of 20x20 tiles
     [XmlRoot("Node", Namespace = "DungeonNode")]
     [XmlInclude(typeof(Wall))]
+
     public class DungeonNode
     {
       [XmlIgnore]
@@ -52,6 +55,8 @@ namespace Dungeons
       protected static Random random;
       bool contentGenerated = false;
       bool secret = false;
+      public RoomPlacement Placement { get; set; }
+      public bool Appened = false;
 
       [XmlIgnore]
       [JsonIgnore]
@@ -240,7 +245,7 @@ namespace Dungeons
       internal List<IDoor> GenerateLayoutDoors(EntranceSide side, int nextNodeIndex, bool secret, bool overWallls = false)
       {
         var res = new List<IDoor>();
-        List<Wall> wall = sides[side];
+        var wall = sides[side];
         if (secret)
         {
           var count = sides[side].Count;
@@ -273,6 +278,58 @@ namespace Dungeons
             res.Add(CreateDoor(wall[i]) as Door);
           }
         }
+        return res;
+      }
+
+      internal List<IDoor> GenerateDoors(RoomPlacement room)
+      {
+      var listOfRoomSides = new List<EntranceSide>();
+      if (room == RoomPlacement.LeftUpper)
+      {
+          listOfRoomSides.Add(EntranceSide.Right);
+          listOfRoomSides.Add(EntranceSide.Bottom);
+      }
+      if (room == RoomPlacement.LeftLower)
+      {
+          listOfRoomSides.Add(EntranceSide.Top);
+          listOfRoomSides.Add(EntranceSide.Right);
+      }
+      if (room == RoomPlacement.RightUpper)
+      {
+          listOfRoomSides.Add(EntranceSide.Left);
+          listOfRoomSides.Add(EntranceSide.Bottom);
+      }
+      if (room == RoomPlacement.RightLower)
+      {
+          listOfRoomSides.Add(EntranceSide.Left);
+          listOfRoomSides.Add(EntranceSide.Top);
+      }
+      if (room == RoomPlacement.Center)
+      {
+          listOfRoomSides.Add(EntranceSide.Bottom);
+          listOfRoomSides.Add(EntranceSide.Top);
+          listOfRoomSides.Add(EntranceSide.Left);
+          listOfRoomSides.Add(EntranceSide.Right);
+      }
+      if (room == RoomPlacement.CorrindorVerticalRight || room == RoomPlacement.CorrindorVerticalLeft)
+      {
+          listOfRoomSides.Add(EntranceSide.Top);
+          listOfRoomSides.Add(EntranceSide.Bottom);
+      }
+      if (room == RoomPlacement.CorrindorHorizontalTop || room == RoomPlacement.CorrindorHorizontalBottom)
+      {
+          listOfRoomSides.Add(EntranceSide.Right);
+          listOfRoomSides.Add(EntranceSide.Left);
+      }
+
+      var res = new List<IDoor>();
+      while (listOfRoomSides.Count > 0){
+          List<Wall> wall = sides[listOfRoomSides[0]];
+
+          res.Add(CreateDoor(wall[wall.Count / 2]) as Door);
+          listOfRoomSides.RemoveAt(0);
+        }
+
         return res;
       }
 

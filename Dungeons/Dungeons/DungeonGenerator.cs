@@ -4,6 +4,7 @@ using Dungeons.Tiles;
 using SimpleInjector;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 
 namespace Dungeons
@@ -70,7 +71,7 @@ namespace Dungeons
 
           maxNodeSize = minNodeSize;
         }
-        var width = random.Next(minNodeSize.Width, maxNodeSize.Width);
+        var width = random.Next(minNodeSize.Width, maxNodeSize.Width); //SK 
         var height = random.Next(minNodeSize.Height, maxNodeSize.Height);
 
         node = CreateNode(width, height, gi, nodeIndex);
@@ -116,7 +117,7 @@ namespace Dungeons
     protected virtual DungeonNode CreateLevel(int levelIndex, int w, int h, GenerationInfo gi)
     {
       var dungeon = container.GetInstance<DungeonNode>();
-      dungeon.Create(w, h, gi);
+      dungeon.Create(100, 100, gi);
       return dungeon;
     }
 
@@ -160,16 +161,29 @@ namespace Dungeons
 
     public virtual DungeonLevel Generate(int levelIndex, GenerationInfo info = null, LayouterOptions opt = null)
     {
+      var chanceForSpecialRoom = random.Next(0, 2);
+      if (info == null)
+        info = new GenerationInfo();
+      if (chanceForSpecialRoom == 0)
+        info.NumberOfRooms = 6;
+      else
+      {
+        info.PreventSecretRoomGeneration = true;
+        info.NumberOfRooms = random.Next(3, 6);
+      }
       var mazeNodes = CreateDungeonNodes(info);
+
       var diffIndexes = mazeNodes.GroupBy(i => i.NodeIndex).Count();
       if (diffIndexes != mazeNodes.Count)
       {
         container.GetInstance<Logger>().LogError("diffIndexes != mazeNodes.Count", false);
       }
-      //var layouter = new CorridorNodeLayouter(container);
-      var layouter = new DefaultNodeLayouter(container, info);
-      var level = layouter.DoLayout(mazeNodes, opt);
 
+      var level = new DungeonLevel(Container);
+      if (chanceForSpecialRoom == 0)
+        level = new DefaultNodeLayouter(Container, info).DoLayout(mazeNodes, opt);
+      else
+        level = new CorridorNodeLayouter(Container, info).DoLayout(mazeNodes, opt);
       return level;
     }
   }

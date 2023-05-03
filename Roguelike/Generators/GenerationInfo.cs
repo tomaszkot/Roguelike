@@ -22,7 +22,7 @@ namespace Roguelike.Generators
 
     public GenerationInfo()
     {
-      NumberOfRooms = 6;//5 + 1 secret = 6
+      NumberOfRooms = 5;//5 + 1 secret = 6
 
 #if TEST_ON
       ForcedNumberOfEnemiesInRoom = 1;

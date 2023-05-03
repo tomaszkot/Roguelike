@@ -10,7 +10,7 @@ namespace Dungeons
   {
     public static bool DefaultRevealedValue = true;
     //Number of rooms inside a level, not counting ChildIslands (smallers rooms inside a room)
-    public int NumberOfRooms = 4;
+    public int NumberOfRooms = 6;
     public int SecretRoomIndex { get; set; } = -1;
     public bool PreventSecretRoomGeneration;
 
@@ -34,8 +34,8 @@ namespace Dungeons
     internal bool GenerateEmptyTiles = true;
 
     public bool FirstNodeSmaller = false;
-    public const int MinRoomSideSize = 16;
-    public const int MaxRoomSideSize = 20;
+    public const int MinRoomSideSize = 10;
+    public const int MaxRoomSideSize = 10;
     public Size MinNodeSize = new Size(MinRoomSideSize, MinRoomSideSize);
     public Size MaxNodeSize = new Size(MaxRoomSideSize, MaxRoomSideSize);
     public Size ForcedChilldIslandSize = new Size(0, 0);

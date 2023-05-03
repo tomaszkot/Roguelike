@@ -1,5 +1,8 @@
-﻿using Dungeons.TileContainers;
+﻿using Dungeons.Core;
+using Dungeons.TileContainers;
+using Dungeons.Tiles;
 using SimpleInjector;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
@@ -14,134 +17,155 @@ namespace Dungeons
     //EntranceSide? forcedEntranceSideToSkip = null;// EntranceSide.Right;
     LayouterOptions options;
     Container container;
-
-    public CorridorNodeLayouter(Container container)
+    GenerationInfo info;
+    DungeonNode lastNonSecretNode;
+    List<DungeonNode> mazeNodes;
+    Dictionary<DungeonNode, AppendNodeInfo> appendNodeInfos = new Dictionary<DungeonNode, AppendNodeInfo>();
+    
+    public CorridorNodeLayouter(Container container, GenerationInfo info = null)
     {
       this.container = container;
+      this.info = info;
     }
 
     public DungeonLevel DoLayout(List<DungeonNode> nodes, LayouterOptions opt = null)
     {
-      List<DungeonNode> finalNodes = nodes;
-
+      if (nodes.Any(i => !i.Created))
+        return container.GetInstance<DungeonLevel>();
       options = opt;
       if (options == null)
         options = new LayouterOptions();
       //totals sizes
-      var tw = finalNodes.Sum(i => i.Width);
-      var th = finalNodes.Sum(i => i.Height);
+      var tw = nodes.Sum(i => i.Width);
+      tw += 15; //SK
+      var th = nodes.Sum(i => i.Height);
+      th += 20;
 
-      var localLevel = container.GetInstance<DungeonLevel>();
-      localLevel.Create(tw, th);
-      int nextX = 0;
-      int nextY = 0;
-      int nodeIndex = 0;
-      foreach (var node in finalNodes)
+      var gi = new GenerationInfo();
+      gi.GenerateOuterWalls = false;
+      gi.GenerateRandomInterior = false;
+      gi.GenerateEmptyTiles = false;
+      var localLevel = container.GetInstance<DungeonNode>();
+      localLevel.Container = this.container;
+      //Activator.CreateInstance(typeof(T), new object[] { container }) as T;
+      localLevel.Create(tw, th /*+ nodesPadding * nodes.Count*/, gi, -1, null, false);
+
+      var maxLoc = localLevel.GetMaxXY();
+      if (nodes.Count > 1)
       {
-        localLevel.AppendMaze
-        (
-          node,
-          new Point(nextX, nextY),
-          null,
-          false,
-          EntranceSide.Left,
-          nodeIndex > 0 ? finalNodes[nodeIndex - 1] : null
-        );
-        nextX += node.Width;
-        nodeIndex++;
-        //nextY += node.Height;
+        if (nodes[1].GetTiles().First().DungeonNodeIndex != nodes[1].NodeIndex)
+          container.GetInstance<ILogger>().LogError("nodes[1].GetTiles().First().DungeonNodeIndex != nodes[1].NodeIndex");
       }
-      //
-      // var maxLoc = localLevel.GetMaxXY();
+
+      LayoutNodes(localLevel, nodes);
+
+      if (localLevel.Tiles[0, 0] != null && localLevel.Tiles[0, 0].DungeonNodeIndex == DungeonNode.DefaultNodeIndex)
+      {
+        container.GetInstance<ILogger>().LogError("localLevel.Tiles[0, 0].DungeonNodeIndex == " + DungeonNode.DefaultNodeIndex);
+      }
+
       var max = localLevel.GetMaxXY();
 
       var level = container.GetInstance<DungeonLevel>();
-      level.Create(max.Item1 + 1, max.Item2 + 1);
-      level.AppendMaze(localLevel, new Point(0, 0), new Point(max.Item1 + 1, max.Item2 + 1));
-      level.DeleteWrongDoors();
+      var width = max.Item1 + 1;
+      var height = max.Item2 + 1;
+      level.Create(width, height);
 
+      //var doors = localLevel.GetTiles<IDoor>();
+      //var secret = doors.Any(i => i.Secret);
+      //if(!info.PreventSecretRoomGeneration)
+      //  Debug.Assert(secret);
+      level.AppendMaze(localLevel, new Point(0, 0), new Point(width, height));
+      level.DeleteWrongDoors();
+      //if (secret)
+      //{
+      //  var secretAppended = level.GetTiles<IDoor>().Any(i => i.Secret);
+      //  Debug.Assert(secretAppended);
+      //}
+
+      level.SecretRoomIndex = -1;
+      var sn = nodes.Where(i => i.Secret).FirstOrDefault();
+      if (sn != null)
+        level.SecretRoomIndex = sn.NodeIndex;
       return level;
     }
 
-    protected virtual void LayoutNodes(DungeonNode localLevel, List<DungeonNode> mazeNodes)
+    protected virtual void LayoutNodes(DungeonNode level, List<DungeonNode> mazeNodes)
     {
-      //AppendNodeInfo info = new AppendNodeInfo();
-      //info.side = EntranceSide.Right;
-      //float chanceForLevelTurn = 0.5f;
-      //EntranceSide? prevEntranceSide = null;
+      this.mazeNodes = mazeNodes;
+      var d = new DungeonGenerator(container);
+      var infoC = new GenerationInfo();
+      infoC.NumberOfRooms = 1;
+      var numberOfNodes = mazeNodes.Count;
 
-      //for (int nodeIndex = 0; nodeIndex < mazeNodes.Count; nodeIndex++)
-      //{
-      //  var infoNext = CalcNextValues(mazeNodes, info, chanceForLevelTurn, nodeIndex);
-      //  if (nodeIndex < mazeNodes.Count - 1 && generateLayoutDoors)
-      //    mazeNodes[nodeIndex].GenerateLayoutDoors(infoNext.side, mazeNodes[nodeIndex + 1]);
+      for (int i=0; i<numberOfNodes; i++)
+      {
+        mazeNodes[i].Placement = (RoomPlacement)(i);
+        mazeNodes[i].GenerateDoors((RoomPlacement)(i));
+      }
 
-      //  EntranceSide? entranceSideToSkip = null;
-      //  if (nodeIndex > 0)
-      //  {
-      //    if (prevEntranceSide == EntranceSide.Right)
-      //      entranceSideToSkip = EntranceSide.Left;
-      //    else if (prevEntranceSide == EntranceSide.Bottom)
-      //      entranceSideToSkip = EntranceSide.Top;
-      //    else
-      //      Debug.Assert(false);
-      //  }
-      //  if (forcedEntranceSideToSkip != null)
-      //    entranceSideToSkip = forcedEntranceSideToSkip.Value;
+      var conn = new DungeonNodeConnector(); //generating normal rooms
+      level.AppendMaze(mazeNodes[0], new Point(0, 0));
+      var numberOfNormalRooms = numberOfNodes;
+      if (numberOfNormalRooms == 4)
+        numberOfNormalRooms++;
+      var nodesCopy = mazeNodes.ToList();
+      for (int i = 0; i < nodesCopy.Count - 1; i++)
+      {
+        var n = i + 1;
+        if (i + 1 == 5)
+          n = 0;
+        var corridor = conn.ConnectNodes(nodesCopy, nodesCopy[i], nodesCopy[n], d);
+        mazeNodes.Add(corridor);
+        if (!nodesCopy[i].Appened)
+        {
+          level.AppendMaze(nodesCopy[i], conn.Node1Position);
+          nodesCopy[i].Appened = true;
+        }
+        if (!nodesCopy[n].Appened)
+        {
+          level.AppendMaze(nodesCopy[n], conn.Node2Position);
+          nodesCopy[n].Appened = true;
+        }
+        corridor.GenerateDoors(conn.placement);
+        level.AppendMaze(corridor, conn.CorridorPosition);
+      }
 
-      //  mazeNodes[nodeIndex].Reveal(options.RevealAllNodes, true);
-
-      //  localLevel.AppendMaze
-      //  (
-      //    mazeNodes[nodeIndex],
-      //    new Point(info.nextX, info.nextY),
-      //    null,
-      //    false,
-      //    entranceSideToSkip,
-      //    nodeIndex > 0 ? mazeNodes[nodeIndex - 1] : null
-      //  );
-
-      //  prevEntranceSide = infoNext.side;
-      //  info = infoNext;
-      //}
+      if (numberOfNodes > 4)
+      {
+        level.AppendMaze(mazeNodes[4], new Point(DungeonNodeConnector.centralRoomPosition, DungeonNodeConnector.centralRoomPosition));
+        for (int i = 5; i < 9; i++) //generatig central room
+        {
+          mazeNodes.Add(conn.ConnectNodes(mazeNodes, mazeNodes[i], mazeNodes[4], d));
+          mazeNodes[mazeNodes.Count - 1].GenerateDoors(mazeNodes[mazeNodes.Count - 1].Placement);
+          level.AppendMaze(mazeNodes[mazeNodes.Count - 1], conn.CorridorPosition);
+        }
+      }
+      mazeNodes.ForEach(p => p.Reveal(options.RevealAllNodes,true));
     }
 
-    //private AppendNodeInfo CalcNextValues(List<DungeonNode> mazeNodes, AppendNodeInfo prevInfo, float chanceForLevelTurn, int nodeIndex)
-    //{
-    //  AppendNodeInfo infoNext = prevInfo;
+    
 
-    //  if (prevInfo.nextForcedSide != null)
-    //  {
-    //    infoNext.side = prevInfo.nextForcedSide.Value;
-    //    //nextForcedSide = null;
-    //  }
-    //  else
-    //  {
-    //    if (forcedNextSide != null)
-    //      infoNext.side = forcedNextSide.Value;
-    //    else
-    //    {
-    //      infoNext.side = RandHelper.GetRandomDouble() >= .5f ? EntranceSide.Bottom : EntranceSide.Right;
-    //      if (nodeIndex > 0 && prevInfo.side == infoNext.side)
-    //      {
-    //        if (RandHelper.GetRandomDouble() >= chanceForLevelTurn)
-    //          infoNext.side = prevInfo.side == EntranceSide.Bottom ? EntranceSide.Right : EntranceSide.Bottom;
-    //      }
-    //      chanceForLevelTurn -= 0.15f;
-    //    }
-    //  }
-    //  if (infoNext.side == EntranceSide.Bottom)
-    //  {
-    //    infoNext.nextY += mazeNodes[nodeIndex].Height - 1 + nodesPadding;
+    private EntranceSide CalcSide(EntranceSide current, EntranceSide next, float chanceForLevelTurn)//, int currentNodeIndex)
+    {
+      if (info != null && info.ForcedNextRoomSide != null)
+        return info.ForcedNextRoomSide.Value;
 
-    //  }
-    //  else if (infoNext.side == EntranceSide.Right)
-    //  {
-    //    infoNext.nextX += mazeNodes[nodeIndex].Width - 1;
-    //  }
+      EntranceSide side = GetRandSide();
+      if (current == next)
+      {
+        if (RandHelper.GetRandomDouble() >= chanceForLevelTurn)
+          side = side == EntranceSide.Bottom ? EntranceSide.Right : EntranceSide.Bottom;
+      }
 
-    //  return infoNext;
-    //}
+      return side;
+    }
+
+    private static EntranceSide GetRandSide()
+    {
+      return RandHelper.GetRandomDouble() >= .5f ? EntranceSide.Bottom : EntranceSide.Right;
+    }
   }
+
 }
 
