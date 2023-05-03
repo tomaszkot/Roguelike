@@ -8,6 +8,7 @@ using System.Linq;
 
 namespace Dungeons
 {
+  //
   public class NodeInteriorGenerator
   {
     DungeonNode dungeonNode;
