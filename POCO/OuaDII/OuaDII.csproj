@@ -1,0 +1,484 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{36E902C3-D0FF-4009-927C-7B6B8EE410EA}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>OuaDII</RootNamespace>
+    <AssemblyName>OuaDII</AssemblyName>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <Deterministic>true</Deterministic>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>..\..\Assets\Scripts\Common\Dlls\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="SimpleInjector">
+      <HintPath>..\..\Assets\Scripts\Common\Dlls\SimpleInjector.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\..\Assets\Scripts\Common\Dlls\OuaDII\ContainerConfigurator.cs">
+      <Link>ContainerConfigurator.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Scripts\Common\Dlls\OuaDII\Crafting\LootCrafter.cs">
+      <Link>LootCrafter.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Scripts\Common\Dlls\OuaDII\Discussions\Discussion.cs">
+      <Link>Discussions\Discussion.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Scripts\Common\Dlls\OuaDII\Discussions\DiscussionFactory.cs">
+      <Link>Discussions\DiscussionFactory.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Scripts\Common\Dlls\OuaDII\Discussions\DiscussionTopic.cs">
+      <Link>Discussions\DiscussionTopic.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Scripts\Common\Dlls\OuaDII\Discussions\DiscussPanel.cs">
+      <Link>Discussions\DiscussPanel.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Scripts\Common\Dlls\OuaDII\Events\GameAction.cs">
+      <Link>Events\GameAction.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Scripts\Common\Dlls\OuaDII\Extensions\DiscussionExt.cs">
+      <Link>Extensions\DiscussionExt.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Scripts\Common\Dlls\OuaDII\Extensions\QuestExt.cs">
+      <Link>Extensions\QuestExt.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Scripts\Common\Dlls\OuaDII\GameContext.cs">
+      <Link>GameContext.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Scripts\Common\Dlls\OuaDII\Generators\ChanceAtGameStart.cs">
+      <Link>Generators\ChanceAtGameStart.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Scripts\Common\Dlls\OuaDII\Generators\GenerationInfo.cs">
+      <Link>Generators\GenerationInfo.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Scripts\Common\Dlls\OuaDII\Generators\IQuestRoomCreator.cs">
+      <Link>Generators\IQuestRoomCreator.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Scripts\Common\Dlls\OuaDII\Generators\LevelGenerator.cs">
+      <Link>Generators\LevelGenerator.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Scripts\Common\Dlls\OuaDII\Generators\LootGenerator.cs">
+      <Link>Generators\LootGenerator.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Scripts\Common\Dlls\OuaDII\Generators\ProceduralQuestRoomCreator.cs">
+      <Link>Generators\ProceduralQuestRoomCreator.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Scripts\Common\Dlls\OuaDII\Generators\RoomContentGenerator.cs">
+      <Link>Generators\RoomContentGenerator.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Scripts\Common\Dlls\OuaDII\Generators\WorldGenerator.cs">
+      <Link>Generators\WorldGenerator.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Scripts\Common\Dlls\OuaDII\LootContainers\Inventory.cs">
+      <Link>LootContainers\Inventory.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Scripts\Common\Dlls\OuaDII\LootContainers\ShortcutsBar.cs">
+      <Link>LootContainers\ShortcutsBar.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Scripts\Common\Dlls\OuaDII\LootContainers\ShortcutsBarContainer.cs">
+      <Link>LootContainers\ShortcutsBarContainer.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Scripts\Common\Dlls\OuaDII\LootContainers\ShortcutsBarContainerLine.cs">
+      <Link>LootContainers\ShortcutsBarContainerLine.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Scripts\Common\Dlls\OuaDII\LootFactories\EquipmentFactory.cs">
+      <Link>LootFactories\EquipmentFactory.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Scripts\Common\Dlls\OuaDII\LootFactories\Equipment\ArmorFactory.cs">
+      <Link>LootFactories\Equipment\ArmorFactory.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Scripts\Common\Dlls\OuaDII\LootFactories\Equipment\HoundEqFactory.cs">
+      <Link>LootFactories\Equipment\HoundEqFactory.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Scripts\Common\Dlls\OuaDII\LootFactories\Equipment\JewelleryFactory.cs">
+      <Link>LootFactories\Equipment\JewelleryFactory.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Scripts\Common\Dlls\OuaDII\LootFactories\Equipment\WeaponFactory.cs">
+      <Link>LootFactories\Equipment\WeaponFactory.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Scripts\Common\Dlls\OuaDII\Managers\EnemiesManager.cs">
+      <Link>Managers\EnemiesManager.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Scripts\Common\Dlls\OuaDII\Managers\GameManager.cs">
+      <Link>Managers\GameManager.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Scripts\Common\Dlls\OuaDII\Managers\InputManager.cs">
+      <Link>Managers\InputManager.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Scripts\Common\Dlls\OuaDII\Managers\LootManager.cs">
+      <Link>Managers\LootManager.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Scripts\Common\Dlls\OuaDII\Managers\PortalManager.cs">
+      <Link>Managers\PortalManager.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Scripts\Common\Dlls\OuaDII\Managers\QuestManager.cs">
+      <Link>Managers\QuestManager.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Scripts\Common\Dlls\OuaDII\Quests\Quest.cs">
+      <Link>Quests\Quest.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Scripts\Common\Dlls\OuaDII\Quests\QuestExtensions.cs">
+      <Link>Quests\QuestExtensions.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Scripts\Common\Dlls\OuaDII\Serialization\IPersister.cs">
+      <Link>Serialization\IPersister.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Scripts\Common\Dlls\OuaDII\Serialization\JSONPersister.cs">
+      <Link>Serialization\JSONPersister.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Scripts\Common\Dlls\OuaDII\Serialization\StoredGamesProvider.cs">
+      <Link>Serialization\StoredGamesProvider.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Scripts\Common\Dlls\OuaDII\State\GameState.cs">
+      <Link>State\GameState.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Scripts\Common\Dlls\OuaDII\State\HeroPath.cs">
+      <Link>State\HeroPath.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Scripts\Common\Dlls\OuaDII\TileContainers\DungeonPit.cs">
+      <Link>TileContainers\DungeonPit.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Scripts\Common\Dlls\OuaDII\TileContainers\World.cs">
+      <Link>TileContainers\World.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Scripts\Common\Dlls\OuaDII\TileContainers\WorldLayers.cs">
+      <Link>TileContainers\WorldLayers.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Scripts\Common\Dlls\OuaDII\Tiles\Interactive\GodGatheringSlot.cs">
+      <Link>Tiles\Interactive\GodGatheringSlot.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Scripts\Common\Dlls\OuaDII\Tiles\Interactive\GroundPortal.cs">
+      <Link>Tiles\Interactive\GroundPortal.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Scripts\Common\Dlls\OuaDII\Tiles\Interactive\HeroChest.cs">
+      <Link>Tiles\Interactive\HeroChest.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Scripts\Common\Dlls\OuaDII\Tiles\Interactive\PitEscape.cs">
+      <Link>Tiles\Interactive\PitEscape.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Scripts\Common\Dlls\OuaDII\Tiles\Interactive\Portal.cs">
+      <Link>Tiles\Interactive\Portal.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Scripts\Common\Dlls\OuaDII\Tiles\LivingEntities\Enemy.cs">
+      <Link>Tiles\LivingEntities\Enemy.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Scripts\Common\Dlls\OuaDII\Tiles\LivingEntities\Hero.cs">
+      <Link>Tiles\LivingEntities\Hero.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Scripts\Common\Dlls\OuaDII\Tiles\LivingEntities\Merchant.cs">
+      <Link>Tiles\LivingEntities\Merchant.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Scripts\Common\Dlls\OuaDII\Tiles\LivingEntities\NPC.cs">
+      <Link>Tiles\LivingEntities\NPC.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Scripts\Common\Dlls\OuaDII\Tiles\LivingEntities\Paladin.cs">
+      <Link>Tiles\LivingEntities\Paladin.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Scripts\Common\Dlls\OuaDII\Tiles\Looting\Equipment\Armor.cs">
+      <Link>Tiles\Looting\Equipment\Armor.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Scripts\Common\Dlls\OuaDII\Tiles\Looting\Equipment\Weapon.cs">
+      <Link>Tiles\Looting\Equipment\Weapon.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Scripts\Common\Dlls\OuaDII\Tiles\Looting\GodStatue.cs">
+      <Link>Tiles\Looting\GodStatue.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Scripts\Common\Dlls\OuaDII\UI\Models\DiscussListItemModel.cs">
+      <Link>UI\Models\DiscussListItemModel.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Scripts\Common\Dlls\OuaDII\UI\Models\InputSupport\Models.cs">
+      <Link>UI\Models\InputSupport\Models.cs</Link>
+    </Compile>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\OuaDII\ContainerConfigurator.cs.meta">
+      <Link>ContainerConfigurator.cs.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\OuaDII\Discussions.meta">
+      <Link>Discussions.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\OuaDII\Discussions\Discussion.cs.meta">
+      <Link>Discussions\Discussion.cs.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\OuaDII\Discussions\DiscussionFactory.cs.meta">
+      <Link>Discussions\DiscussionFactory.cs.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\OuaDII\Discussions\DiscussionTopic.cs.meta">
+      <Link>Discussions\DiscussionTopic.cs.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\OuaDII\Discussions\DiscussPanel.cs.meta">
+      <Link>Discussions\DiscussPanel.cs.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\OuaDII\Dungeons.cd">
+      <Link>Dungeons.cd</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\OuaDII\Dungeons.cd.meta">
+      <Link>Dungeons.cd.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\OuaDII\Events.meta">
+      <Link>Events.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\OuaDII\Events\GameAction.cs.meta">
+      <Link>Events\GameAction.cs.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\OuaDII\Extensions.meta">
+      <Link>Extensions.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\OuaDII\Extensions\DiscussionExt.cs.meta">
+      <Link>Extensions\DiscussionExt.cs.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\OuaDII\Extensions\QuestExt.cs.meta">
+      <Link>Extensions\QuestExt.cs.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\OuaDII\GameContext.cs.meta">
+      <Link>GameContext.cs.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\OuaDII\Generators.meta">
+      <Link>Generators.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\OuaDII\Generators\ChanceAtGameStart.cs.meta">
+      <Link>Generators\ChanceAtGameStart.cs.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\OuaDII\Generators\GenerationInfo.cs.meta">
+      <Link>Generators\GenerationInfo.cs.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\OuaDII\Generators\IQuestRoomCreator.cs.meta">
+      <Link>Generators\IQuestRoomCreator.cs.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\OuaDII\Generators\LevelGenerator.cs.meta">
+      <Link>Generators\LevelGenerator.cs.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\OuaDII\Generators\LootGenerator.cs.meta">
+      <Link>Generators\LootGenerator.cs.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\OuaDII\Generators\ProceduralQuestRoomCreator.cs.meta">
+      <Link>Generators\ProceduralQuestRoomCreator.cs.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\OuaDII\Generators\RoomContentGenerator.cs.meta">
+      <Link>Generators\RoomContentGenerator.cs.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\OuaDII\Generators\WorldGenerator.cs.meta">
+      <Link>Generators\WorldGenerator.cs.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\OuaDII\LootContainers.meta">
+      <Link>LootContainers.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\OuaDII\LootContainers\Inventory.cs.meta">
+      <Link>LootContainers\Inventory.cs.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\OuaDII\LootContainers\ShortcutsBar.cs.meta">
+      <Link>LootContainers\ShortcutsBar.cs.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\OuaDII\LootContainers\ShortcutsBarContainer.cs.meta">
+      <Link>LootContainers\ShortcutsBarContainer.cs.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\OuaDII\LootContainers\ShortcutsBarContainerLine.cs.meta">
+      <Link>LootContainers\ShortcutsBarContainerLine.cs.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\OuaDII\LootFactories.meta">
+      <Link>LootFactories.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\OuaDII\LootFactories\Equipment.meta">
+      <Link>LootFactories\Equipment.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\OuaDII\LootFactories\EquipmentFactory.cs.meta">
+      <Link>LootFactories\EquipmentFactory.cs.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\OuaDII\LootFactories\Equipment\ArmorFactory.cs.meta">
+      <Link>LootFactories\Equipment\ArmorFactory.cs.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\OuaDII\LootFactories\Equipment\HoundEqFactory.cs.meta">
+      <Link>LootFactories\Equipment\HoundEqFactory.cs.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\OuaDII\LootFactories\Equipment\JewelleryFactory.cs.meta">
+      <Link>LootFactories\Equipment\JewelleryFactory.cs.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\OuaDII\LootFactories\Equipment\WeaponFactory.cs.meta">
+      <Link>LootFactories\Equipment\WeaponFactory.cs.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\OuaDII\Managers.meta">
+      <Link>Managers.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\OuaDII\Managers\EnemiesManager.cs.meta">
+      <Link>Managers\EnemiesManager.cs.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\OuaDII\Managers\GameManager.cs.meta">
+      <Link>Managers\GameManager.cs.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\OuaDII\Managers\InputManager.cs.meta">
+      <Link>Managers\InputManager.cs.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\OuaDII\Managers\LootManager.cs.meta">
+      <Link>Managers\LootManager.cs.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\OuaDII\Managers\PortalManager.cs.meta">
+      <Link>Managers\PortalManager.cs.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\OuaDII\Managers\QuestManager.cs.meta">
+      <Link>Managers\QuestManager.cs.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\OuaDII\Quests.meta">
+      <Link>Quests.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\OuaDII\Quests\Quest.cs.meta">
+      <Link>Quests\Quest.cs.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\OuaDII\Quests\QuestExtensions.cs.meta">
+      <Link>Quests\QuestExtensions.cs.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\OuaDII\Serialization.meta">
+      <Link>Serialization.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\OuaDII\Serialization\IPersister.cs.meta">
+      <Link>Serialization\IPersister.cs.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\OuaDII\Serialization\JSONPersister.cs.meta">
+      <Link>Serialization\JSONPersister.cs.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\OuaDII\Serialization\StoredGamesProvider.cs.meta">
+      <Link>Serialization\StoredGamesProvider.cs.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\OuaDII\State.meta">
+      <Link>State.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\OuaDII\State\GameState.cs.meta">
+      <Link>State\GameState.cs.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\OuaDII\State\HeroPath.cs.meta">
+      <Link>State\HeroPath.cs.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\OuaDII\TileContainers.meta">
+      <Link>TileContainers.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\OuaDII\TileContainers\DungeonPit.cs.meta">
+      <Link>TileContainers\DungeonPit.cs.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\OuaDII\TileContainers\World.cs.meta">
+      <Link>TileContainers\World.cs.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\OuaDII\TileContainers\WorldLayers.cs.meta">
+      <Link>TileContainers\WorldLayers.cs.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\OuaDII\Tiles.meta">
+      <Link>Tiles.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\OuaDII\Tiles\Interactive.meta">
+      <Link>Tiles\Interactive.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\OuaDII\Tiles\Interactive\GodGatheringSlot.cs.meta">
+      <Link>Tiles\Interactive\GodGatheringSlot.cs.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\OuaDII\Tiles\Interactive\GroundPortal.cs.meta">
+      <Link>Tiles\Interactive\GroundPortal.cs.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\OuaDII\Tiles\Interactive\HeroChest.cs.meta">
+      <Link>Tiles\Interactive\HeroChest.cs.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\OuaDII\Tiles\Interactive\PitEscape.cs.meta">
+      <Link>Tiles\Interactive\PitEscape.cs.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\OuaDII\Tiles\Interactive\Portal.cs.meta">
+      <Link>Tiles\Interactive\Portal.cs.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\OuaDII\Tiles\LivingEntities.meta">
+      <Link>Tiles\LivingEntities.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\OuaDII\Tiles\LivingEntities\Enemy.cs.meta">
+      <Link>Tiles\LivingEntities\Enemy.cs.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\OuaDII\Tiles\LivingEntities\Hero.cs.meta">
+      <Link>Tiles\LivingEntities\Hero.cs.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\OuaDII\Tiles\LivingEntities\Merchant.cs.meta">
+      <Link>Tiles\LivingEntities\Merchant.cs.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\OuaDII\Tiles\LivingEntities\NPC.cs.meta">
+      <Link>Tiles\LivingEntities\NPC.cs.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\OuaDII\Tiles\LivingEntities\Paladin.cs.meta">
+      <Link>Tiles\LivingEntities\Paladin.cs.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\OuaDII\Tiles\Looting.meta">
+      <Link>Tiles\Looting.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\OuaDII\Tiles\Looting\Equipment.meta">
+      <Link>Tiles\Looting\Equipment.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\OuaDII\Tiles\Looting\Equipment\Armor.cs.meta">
+      <Link>Tiles\Looting\Equipment\Armor.cs.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\OuaDII\Tiles\Looting\Equipment\Weapon.cs.meta">
+      <Link>Tiles\Looting\Equipment\Weapon.cs.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\OuaDII\Tiles\Looting\GodStatue.cs.meta">
+      <Link>Tiles\Looting\GodStatue.cs.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\OuaDII\Tiles\Looting\MinedLoot.cs.meta">
+      <Link>Tiles\Looting\MinedLoot.cs.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\OuaDII\UI.meta">
+      <Link>UI.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\OuaDII\UI\Models.meta">
+      <Link>UI\Models.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\OuaDII\UI\Models\DiscussListItemModel.cs.meta">
+      <Link>UI\Models\DiscussListItemModel.cs.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\OuaDII\UI\Models\InputSupport.meta">
+      <Link>UI\Models\InputSupport.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\OuaDII\UI\Models\InputSupport\Models.cs.meta">
+      <Link>UI\Models\InputSupport\Models.cs.meta</Link>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Dungeons\Dungeons\Dungeons.csproj">
+      <Project>{6e90d7c5-938d-4e62-b45c-53d0033847ef}</Project>
+      <Name>Dungeons</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Roguelike\Roguelike.csproj">
+      <Project>{4dcc340d-ff13-47a8-ab45-c942240b4e1b}</Project>
+      <Name>Roguelike</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Crafting\" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>

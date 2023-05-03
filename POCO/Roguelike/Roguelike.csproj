@@ -1,0 +1,1267 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{4DCC340D-FF13-47A8-AB45-C942240B4E1B}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Roguelike</RootNamespace>
+    <AssemblyName>Roguelike</AssemblyName>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>TRACE;DEBUG;GAME_BUILD</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'OuaDII|AnyCPU'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\OuaDII\</OutputPath>
+    <DefineConstants>TRACE;DEBUG;GAME_BUILD</DefineConstants>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <DebugType>full</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>..\..\Assets\Scripts\Common\Dlls\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="SimpleInjector">
+      <HintPath>..\..\Assets\Scripts\Common\Dlls\SimpleInjector.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\..\Assets\Scripts\Common\Dlls\OuaDII\Tiles\Looting\MinedLoot.cs">
+      <Link>Src\Tiles\Looting\MinedLoot.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Abilities\AbilitiesSet.cs">
+      <Link>Src\Abilities\AbilitiesSet.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Abilities\Ability.cs">
+      <Link>Src\Abilities\Ability.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Abilities\AbilityLastingEffectSrc.cs">
+      <Link>Src\Abilities\AbilityLastingEffectSrc.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Abilities\ActiveAbility.cs">
+      <Link>Src\Abilities\ActiveAbility.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Abilities\LootAbility.cs">
+      <Link>Src\Abilities\LootAbility.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Abilities\PassiveAbility.cs">
+      <Link>Src\Abilities\PassiveAbility.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Abstract\Abilities\IAbility.cs">
+      <Link>Src\Abstract\Abilities\IAbility.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Abstract\Discussions\IDiscussPanel.cs">
+      <Link>Src\Abstract\Discussions\IDiscussPanel.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Abstract\Effects\IEffect.cs">
+      <Link>Src\Abstract\Effects\IEffect.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Abstract\HotBar\IHotbarItem.cs">
+      <Link>Src\Abstract\HotBar\IHotbarItem.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Abstract\IDescriptable.cs">
+      <Link>Src\Abstract\IDescriptable.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Abstract\IGame.cs">
+      <Link>Src\Abstract\IGame.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Abstract\Inventory\IInventoryOwner.cs">
+      <Link>Src\Abstract\Inventory\IInventoryOwner.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Abstract\Managers\IGameManagerProvider.cs">
+      <Link>Src\Abstract\Managers\IGameManagerProvider.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Abstract\Multimedia\ISoundPlayer.cs">
+      <Link>Src\Abstract\Multimedia\ISoundPlayer.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Abstract\Projectiles\IProjectile.cs">
+      <Link>Src\Abstract\Projectiles\IProjectile.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Abstract\Projectiles\IProjectilesFactory.cs">
+      <Link>Src\Abstract\Projectiles\IProjectilesFactory.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Abstract\Spells\ISpell.cs">
+      <Link>Src\Abstract\Spells\ISpell.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Astar\AuthorAttribute.cs">
+      <Link>Src\Astar\AuthorAttribute.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Astar\HighResolutionTime.cs">
+      <Link>Src\Astar\HighResolutionTime.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Astar\IPathFinder.cs">
+      <Link>Src\Astar\IPathFinder.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Astar\PathFinder.cs">
+      <Link>Src\Astar\PathFinder.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Astar\PathFinderFast.cs">
+      <Link>Src\Astar\PathFinderFast.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Astar\PriorityQueueB.cs">
+      <Link>Src\Astar\PriorityQueueB.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Attributes\EntityStat.cs">
+      <Link>Src\Attributes\EntityStat.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Attributes\EntityStats.cs">
+      <Link>Src\Attributes\EntityStats.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Attributes\StatValue.cs">
+      <Link>Src\Attributes\StatValue.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Calculated\AttackDescription.cs">
+      <Link>Src\Calculated\AttackDescription.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Calculated\FactorCalculator.cs">
+      <Link>Src\Calculated\FactorCalculator.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\ContainerConfigurator.cs">
+      <Link>Src\ContainerConfigurator.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Crafting\LootConverter.cs">
+      <Link>Src\Crafting\LootConverter.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Discussions\Discussion.cs">
+      <Link>Src\Discussions\Discussion.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Discussions\DiscussionExtensions.cs">
+      <Link>Src\Discussions\DiscussionExtensions.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Discussions\DiscussionSentence.cs">
+      <Link>Src\Discussions\DiscussionSentence.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Discussions\DiscussionTopic.cs">
+      <Link>Src\Discussions\DiscussionTopic.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Discussions\DiscussPanel.cs">
+      <Link>Src\Discussions\DiscussPanel.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Effects\EffectTypeConverter.cs">
+      <Link>Src\Effects\EffectTypeConverter.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Effects\LastingEffect.cs">
+      <Link>Src\Effects\LastingEffect.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Effects\LastingEffectsSet.cs">
+      <Link>Src\Effects\LastingEffectsSet.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\EnemySymbols.cs">
+      <Link>Src\EnemySymbols.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Events\GameEvent.cs">
+      <Link>Src\Events\GameEvent.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Extensions\AttributesHelperExtension.cs">
+      <Link>Src\Extensions\AttributesHelperExtension.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Extensions\LootExtensions.cs">
+      <Link>Src\Extensions\LootExtensions.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Extensions\SystemExtensions.cs">
+      <Link>Src\Extensions\SystemExtensions.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Factors\EffectiveFactor.cs">
+      <Link>Src\Factors\EffectiveFactor.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Factors\PercentageFactor.cs">
+      <Link>Src\Factors\PercentageFactor.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Game.cs">
+      <Link>Src\Game.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\GameContext.cs">
+      <Link>Src\GameContext.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Generators\GenerationInfo.cs">
+      <Link>Src\Generators\GenerationInfo.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Generators\LevelGenerator.cs">
+      <Link>Src\Generators\LevelGenerator.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Generators\LootGenerator.cs">
+      <Link>Src\Generators\LootGenerator.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Generators\ProjectilesFactory.cs">
+      <Link>Src\Generators\ProjectilesFactory.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Generators\RoomContentGenerator.cs">
+      <Link>Src\Generators\RoomContentGenerator.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Generators\TileContainers\DungeonNode.cs">
+      <Link>Src\Generators\TileContainers\DungeonNode.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Help\HintItem.cs">
+      <Link>Src\Help\HintItem.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\History\HintHistory.cs">
+      <Link>Src\History\HintHistory.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\History\History.cs">
+      <Link>Src\History\History.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\History\LivingEntityHistory.cs">
+      <Link>Src\History\LivingEntityHistory.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\History\LootHistory.cs">
+      <Link>Src\History\LootHistory.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\LootContainers\Crafting.cs">
+      <Link>Src\LootContainers\Crafting.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\LootContainers\CurrentEquipment.cs">
+      <Link>Src\LootContainers\CurrentEquipment.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\LootContainers\Inventory.cs">
+      <Link>Src\LootContainers\Inventory.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\LootFactories\AbstractLootFactory.cs">
+      <Link>Src\LootFactories\AbstractLootFactory.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\LootFactories\BooksFactory.cs">
+      <Link>Src\LootFactories\BooksFactory.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\LootFactories\EquipmentFactory.cs">
+      <Link>Src\LootFactories\EquipmentFactory.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\LootFactories\LootFactory.cs">
+      <Link>Src\LootFactories\LootFactory.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\LootFactories\MiscLootFactory.cs">
+      <Link>Src\LootFactories\MiscLootFactory.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\LootFactories\ScrollsFactory.cs">
+      <Link>Src\LootFactories\ScrollsFactory.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Managers\AlliesManager.cs">
+      <Link>Src\Managers\AlliesManager.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Managers\AnimalsManager.cs">
+      <Link>Src\Managers\AnimalsManager.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Managers\EnemiesManager.cs">
+      <Link>Src\Managers\EnemiesManager.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Managers\EntitiesManager.cs">
+      <Link>Src\Managers\EntitiesManager.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Managers\EventsManager.cs">
+      <Link>Src\Managers\EventsManager.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Managers\GameManager.cs">
+      <Link>Src\Managers\GameManager.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Managers\InputManager.cs">
+      <Link>Src\Managers\InputManager.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Managers\LastActions.cs">
+      <Link>Src\Managers\LastActions.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Managers\LootManager.cs">
+      <Link>Src\Managers\LootManager.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Managers\PolicyManager.cs">
+      <Link>Src\Managers\PolicyManager.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Managers\QuestManager.cs">
+      <Link>Src\Managers\QuestManager.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Managers\SoundManager.cs">
+      <Link>Src\Managers\SoundManager.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Managers\SpellManager.cs">
+      <Link>Src\Managers\SpellManager.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Multimedia\BasicSoundPlayer.cs">
+      <Link>Src\Multimedia\BasicSoundPlayer.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Policies\AttackPolicy.cs">
+      <Link>Src\Policies\AttackPolicy.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Policies\MovePolicy.cs">
+      <Link>Src\Policies\MovePolicy.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Policies\Policy.cs">
+      <Link>Src\Policies\Policy.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Policies\ProjectileCastPolicy.cs">
+      <Link>Src\Policies\ProjectileCastPolicy.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Probability\Chances.cs">
+      <Link>Src\Probability\Chances.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Probability\Looting.cs">
+      <Link>Src\Probability\Looting.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Quests\Quest.cs">
+      <Link>Src\Quests\Quest.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Serialization\IPersister.cs">
+      <Link>Src\Serialization\IPersister.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Serialization\JSONPersister.cs">
+      <Link>Src\Serialization\JSONPersister.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Serialization\PersistancyWorker.cs">
+      <Link>Src\Serialization\PersistancyWorker.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Serialization\SimpleInjectorContractResolver.cs">
+      <Link>Src\Serialization\SimpleInjectorContractResolver.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Settings\RpgGameSettings.cs">
+      <Link>Src\Settings\RpgGameSettings.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Spells\OffensiveSpell.cs">
+      <Link>Src\Spells\OffensiveSpell.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Spells\PassiveSpell.cs">
+      <Link>Src\Spells\PassiveSpell.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Spells\ProjectiveSpell.cs">
+      <Link>Src\Spells\ProjectiveSpell.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Spells\Spell.cs">
+      <Link>Src\Spells\Spell.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Spells\SpellConverter.cs">
+      <Link>Src\Spells\SpellConverter.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Spells\Spells.cs">
+      <Link>Src\Spells\Spells.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Spells\SpellStatsDescription.cs">
+      <Link>Src\Spells\SpellStatsDescription.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\State\GameState.cs">
+      <Link>Src\State\GameState.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\State\HeroPath.cs">
+      <Link>Src\State\HeroPath.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Strategy\AttackStrategy.cs">
+      <Link>Src\Strategy\AttackStrategy.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\TileContainers\AbstractGameLevel.cs">
+      <Link>Src\TileContainers\AbstractGameLevel.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\TileContainers\GameLevel.cs">
+      <Link>Src\TileContainers\GameLevel.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\TileParts\LootExtendedInfo.cs">
+      <Link>Src\TileParts\LootExtendedInfo.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Tiles\Abstract\IAdvancedEntity.cs">
+      <Link>Src\Tiles\Abstract\IAdvancedEntity.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Tiles\Abstract\IAlly.cs">
+      <Link>Src\Tiles\Abstract\IAlly.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Tiles\Abstract\IConsumable.cs">
+      <Link>Src\Tiles\Abstract\IConsumable.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Tiles\Abstract\IDestroyable.cs">
+      <Link>Src\Tiles\Abstract\IDestroyable.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Tiles\Abstract\IEquipable.cs">
+      <Link>Src\Tiles\Abstract\IEquipable.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Tiles\Abstract\IMerchant.cs">
+      <Link>Src\Tiles\Abstract\IMerchant.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Tiles\Abstract\IMovingDamager.cs">
+      <Link>Src\Tiles\Abstract\IMovingDamager.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Tiles\Abstract\IObstacle.cs">
+      <Link>Src\Tiles\Abstract\IObstacle.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Tiles\Interactive\Barrel.cs">
+      <Link>Src\Tiles\Interactive\Barrel.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Tiles\Interactive\Candle.cs">
+      <Link>Src\Tiles\Interactive\Candle.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Tiles\Interactive\Chest.cs">
+      <Link>Src\Tiles\Interactive\Chest.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Tiles\Interactive\DeadBody.cs">
+      <Link>Src\Tiles\Interactive\DeadBody.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Tiles\Interactive\Door.cs">
+      <Link>Src\Tiles\Interactive\Door.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Tiles\Interactive\InteractiveTile.cs">
+      <Link>Src\Tiles\Interactive\InteractiveTile.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Tiles\Interactive\Lever.cs">
+      <Link>Src\Tiles\Interactive\Lever.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Tiles\Interactive\Portal.cs">
+      <Link>Src\Tiles\Interactive\Portal.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Tiles\Interactive\Stairs.cs">
+      <Link>Src\Tiles\Interactive\Stairs.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Tiles\Interactive\TorchSlot.cs">
+      <Link>Src\Tiles\Interactive\TorchSlot.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Tiles\LivingEntities\AdvancedLivingEntity.cs">
+      <Link>Src\Tiles\LivingEntities\AdvancedLivingEntity.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Tiles\LivingEntities\AlliedEnemy.cs">
+      <Link>Src\Tiles\LivingEntities\AlliedEnemy.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Tiles\LivingEntities\Ally.cs">
+      <Link>Src\Tiles\LivingEntities\Ally.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Tiles\LivingEntities\Animal.cs">
+      <Link>Src\Tiles\LivingEntities\Animal.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Tiles\LivingEntities\CrackedStone.cs">
+      <Link>Src\Tiles\LivingEntities\CrackedStone.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Tiles\LivingEntities\Enemy.cs">
+      <Link>Src\Tiles\LivingEntities\Enemy.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Tiles\LivingEntities\God.cs">
+      <Link>Src\Tiles\LivingEntities\God.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Tiles\LivingEntities\Hero.cs">
+      <Link>Src\Tiles\LivingEntities\Hero.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Tiles\LivingEntities\LivingEntity.cs">
+      <Link>Src\Tiles\LivingEntities\LivingEntity.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Tiles\LivingEntities\Merchant.cs">
+      <Link>Src\Tiles\LivingEntities\Merchant.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Tiles\LivingEntities\NPC.cs">
+      <Link>Src\Tiles\LivingEntities\NPC.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Tiles\LivingEntities\TrainedHound.cs">
+      <Link>Src\Tiles\LivingEntities\TrainedHound.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Tiles\Looting\Armor.cs">
+      <Link>Src\Tiles\Looting\Armor.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Tiles\Looting\Book.cs">
+      <Link>Src\Tiles\Looting\Book.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Tiles\Looting\Consumable.cs">
+      <Link>Src\Tiles\Looting\Consumable.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Tiles\Looting\Cord.cs">
+      <Link>Src\Tiles\Looting\Cord.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Tiles\Looting\Enchanter.cs">
+      <Link>Src\Tiles\Looting\Enchanter.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Tiles\Looting\Equipment.cs">
+      <Link>Src\Tiles\Looting\Equipment.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Tiles\Looting\FightItem.cs">
+      <Link>Src\Tiles\Looting\FightItem.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Tiles\Looting\Food.cs">
+      <Link>Src\Tiles\Looting\Food.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Tiles\Looting\Gem.cs">
+      <Link>Src\Tiles\Looting\Gem.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Tiles\Looting\Gold.cs">
+      <Link>Src\Tiles\Looting\Gold.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Tiles\Looting\Hooch.cs">
+      <Link>Src\Tiles\Looting\Hooch.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Tiles\Looting\HunterTrophy.cs">
+      <Link>Src\Tiles\Looting\HunterTrophy.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Tiles\Looting\ILootSource.cs">
+      <Link>Src\Tiles\Looting\ILootSource.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Tiles\Looting\Jewellery.cs">
+      <Link>Src\Tiles\Looting\Jewellery.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Tiles\Looting\Key.cs">
+      <Link>Src\Tiles\Looting\Key.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Tiles\Looting\Loot.cs">
+      <Link>Src\Tiles\Looting\Loot.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Tiles\Looting\MagicDust.cs">
+      <Link>Src\Tiles\Looting\MagicDust.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Tiles\Looting\Misc.cs">
+      <Link>Src\Tiles\Looting\Misc.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Tiles\Looting\Mushroom.cs">
+      <Link>Src\Tiles\Looting\Mushroom.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Tiles\Looting\Plant.cs">
+      <Link>Src\Tiles\Looting\Plant.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Tiles\Looting\Potion.cs">
+      <Link>Src\Tiles\Looting\Potion.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Tiles\Looting\ProjectileFightItem.cs">
+      <Link>Src\Tiles\Looting\ProjectileFightItem.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Tiles\Looting\Recipe.cs">
+      <Link>Src\Tiles\Looting\Recipe.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Tiles\Looting\Scroll.cs">
+      <Link>Src\Tiles\Looting\Scroll.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Tiles\Looting\SpecialPotion.cs">
+      <Link>Src\Tiles\Looting\SpecialPotion.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Tiles\Looting\SpellSource.cs">
+      <Link>Src\Tiles\Looting\SpellSource.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Tiles\Looting\StackedLoot.cs">
+      <Link>Src\Tiles\Looting\StackedLoot.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Tiles\Looting\Trophy.cs">
+      <Link>Src\Tiles\Looting\Trophy.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Tiles\Looting\Weapon.cs">
+      <Link>Src\Tiles\Looting\Weapon.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Tiles\Looting\WeaponSpellSource.cs">
+      <Link>Src\Tiles\Looting\WeaponSpellSource.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Tiles\Surface.cs">
+      <Link>Src\Tiles\Surface.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Tiles\TilesExtensions.cs">
+      <Link>Src\Tiles\TilesExtensions.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Tiles\Trap.cs">
+      <Link>Src\Tiles\Trap.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Translations\Strings.cs">
+      <Link>Src\Translations\Strings.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\UI\Models\GenericListModel.cs">
+      <Link>Src\UI\Models\GenericListModel.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\UI\Models\ListModel.cs">
+      <Link>Src\UI\Models\ListModel.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Utils\Formatters.cs">
+      <Link>Src\Utils\Formatters.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Utils\SerializableDictionary.cs">
+      <Link>Src\Utils\SerializableDictionary.cs</Link>
+    </Compile>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Abilities.meta">
+      <Link>Src\Abilities.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Abilities\AbilitiesSet.cs.meta">
+      <Link>Src\Abilities\AbilitiesSet.cs.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Abilities\Ability.cs.meta">
+      <Link>Src\Abilities\Ability.cs.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Abilities\AbilityLastingEffectSrc.cs.meta">
+      <Link>Src\Abilities\AbilityLastingEffectSrc.cs.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Abilities\ActiveAbility.cs.meta">
+      <Link>Src\Abilities\ActiveAbility.cs.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Abilities\LootAbility.cs.meta">
+      <Link>Src\Abilities\LootAbility.cs.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Abilities\PassiveAbility.cs.meta">
+      <Link>Src\Abilities\PassiveAbility.cs.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Abstract.meta">
+      <Link>Src\Abstract.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Abstract\Abilities.meta">
+      <Link>Src\Abstract\Abilities.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Abstract\Abilities\IAbility.cs.meta">
+      <Link>Src\Abstract\Abilities\IAbility.cs.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Abstract\Discussions.meta">
+      <Link>Src\Abstract\Discussions.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Abstract\Discussions\IDiscussPanel.cs.meta">
+      <Link>Src\Abstract\Discussions\IDiscussPanel.cs.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Abstract\Effects.meta">
+      <Link>Src\Abstract\Effects.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Abstract\Effects\IEffect.cs.meta">
+      <Link>Src\Abstract\Effects\IEffect.cs.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Abstract\HotBar.meta">
+      <Link>Src\Abstract\HotBar.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Abstract\HotBar\IHotbarItem.cs.meta">
+      <Link>Src\Abstract\HotBar\IHotbarItem.cs.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Abstract\IDescriptable.cs.meta">
+      <Link>Src\Abstract\IDescriptable.cs.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Abstract\IGame.cs.meta">
+      <Link>Src\Abstract\IGame.cs.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Abstract\Inventory.meta">
+      <Link>Src\Abstract\Inventory.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Abstract\Inventory\IInventoryOwner.cs.meta">
+      <Link>Src\Abstract\Inventory\IInventoryOwner.cs.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Abstract\Managers.meta">
+      <Link>Src\Abstract\Managers.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Abstract\Managers\IGameManagerProvider.cs.meta">
+      <Link>Src\Abstract\Managers\IGameManagerProvider.cs.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Abstract\Multimedia.meta">
+      <Link>Src\Abstract\Multimedia.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Abstract\Multimedia\ISoundPlayer.cs.meta">
+      <Link>Src\Abstract\Multimedia\ISoundPlayer.cs.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Abstract\Projectiles.meta">
+      <Link>Src\Abstract\Projectiles.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Abstract\Projectiles\IProjectile.cs.meta">
+      <Link>Src\Abstract\Projectiles\IProjectile.cs.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Abstract\Projectiles\IProjectilesFactory.cs.meta">
+      <Link>Src\Abstract\Projectiles\IProjectilesFactory.cs.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Abstract\Spells.meta">
+      <Link>Src\Abstract\Spells.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Abstract\Spells\ISpell.cs.meta">
+      <Link>Src\Abstract\Spells\ISpell.cs.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Astar.meta">
+      <Link>Src\Astar.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Astar\AuthorAttribute.cs.meta">
+      <Link>Src\Astar\AuthorAttribute.cs.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Astar\HighResolutionTime.cs.meta">
+      <Link>Src\Astar\HighResolutionTime.cs.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Astar\IPathFinder.cs.meta">
+      <Link>Src\Astar\IPathFinder.cs.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Astar\PathFinder.cs.meta">
+      <Link>Src\Astar\PathFinder.cs.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Astar\PathFinderFast.cs.meta">
+      <Link>Src\Astar\PathFinderFast.cs.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Astar\PriorityQueueB.cs.meta">
+      <Link>Src\Astar\PriorityQueueB.cs.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Attributes.meta">
+      <Link>Src\Attributes.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Attributes\EntityStat.cs.meta">
+      <Link>Src\Attributes\EntityStat.cs.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Attributes\EntityStats.cs.meta">
+      <Link>Src\Attributes\EntityStats.cs.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Attributes\StatValue.cs.meta">
+      <Link>Src\Attributes\StatValue.cs.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Calculated.meta">
+      <Link>Src\Calculated.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Calculated\AttackDescription.cs.meta">
+      <Link>Src\Calculated\AttackDescription.cs.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Calculated\FactorCalculator.cs.meta">
+      <Link>Src\Calculated\FactorCalculator.cs.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\ContainerConfigurator.cs.meta">
+      <Link>Src\ContainerConfigurator.cs.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Crafting.meta">
+      <Link>Src\Crafting.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Crafting\LootConverter.cs.meta">
+      <Link>Src\Crafting\LootConverter.cs.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Discussions.meta">
+      <Link>Src\Discussions.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Discussions\Discussion.cs.meta">
+      <Link>Src\Discussions\Discussion.cs.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Discussions\DiscussionExtensions.cs.meta">
+      <Link>Src\Discussions\DiscussionExtensions.cs.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Discussions\DiscussionSentence.cs.meta">
+      <Link>Src\Discussions\DiscussionSentence.cs.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Discussions\DiscussionTopic.cs.meta">
+      <Link>Src\Discussions\DiscussionTopic.cs.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Discussions\DiscussPanel.cs.meta">
+      <Link>Src\Discussions\DiscussPanel.cs.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Dungeons.cd">
+      <Link>Src\Dungeons.cd</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Dungeons.cd.meta">
+      <Link>Src\Dungeons.cd.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Effects.meta">
+      <Link>Src\Effects.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Effects\EffectTypeConverter.cs.meta">
+      <Link>Src\Effects\EffectTypeConverter.cs.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Effects\LastingEffect.cs.meta">
+      <Link>Src\Effects\LastingEffect.cs.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Effects\LastingEffectsSet.cs.meta">
+      <Link>Src\Effects\LastingEffectsSet.cs.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\EnemySymbols.cs.meta">
+      <Link>Src\EnemySymbols.cs.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Events.meta">
+      <Link>Src\Events.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Events\GameEvent.cs.meta">
+      <Link>Src\Events\GameEvent.cs.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Extensions.meta">
+      <Link>Src\Extensions.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Extensions\AttributesHelperExtension.cs.meta">
+      <Link>Src\Extensions\AttributesHelperExtension.cs.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Extensions\LootExtensions.cs.meta">
+      <Link>Src\Extensions\LootExtensions.cs.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Extensions\SystemExtensions.cs.meta">
+      <Link>Src\Extensions\SystemExtensions.cs.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Factors.meta">
+      <Link>Src\Factors.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Factors\EffectiveFactor.cs.meta">
+      <Link>Src\Factors\EffectiveFactor.cs.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Factors\PercentageFactor.cs.meta">
+      <Link>Src\Factors\PercentageFactor.cs.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Game.cs.meta">
+      <Link>Src\Game.cs.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\GameContext.cs.meta">
+      <Link>Src\GameContext.cs.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Generators.meta">
+      <Link>Src\Generators.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Generators\GenerationInfo.cs.meta">
+      <Link>Src\Generators\GenerationInfo.cs.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Generators\LevelGenerator.cs.meta">
+      <Link>Src\Generators\LevelGenerator.cs.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Generators\LootGenerator.cs.meta">
+      <Link>Src\Generators\LootGenerator.cs.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Generators\ProjectilesFactory.cs.meta">
+      <Link>Src\Generators\ProjectilesFactory.cs.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Generators\RoomContentGenerator.cs.meta">
+      <Link>Src\Generators\RoomContentGenerator.cs.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Generators\TileContainers.meta">
+      <Link>Src\Generators\TileContainers.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Generators\TileContainers\DungeonNode.cs.meta">
+      <Link>Src\Generators\TileContainers\DungeonNode.cs.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Help.meta">
+      <Link>Src\Help.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Help\HintItem.cs.meta">
+      <Link>Src\Help\HintItem.cs.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\History.meta">
+      <Link>Src\History.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\History\HintHistory.cs.meta">
+      <Link>Src\History\HintHistory.cs.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\History\History.cs.meta">
+      <Link>Src\History\History.cs.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\History\LivingEntityHistory.cs.meta">
+      <Link>Src\History\LivingEntityHistory.cs.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\History\LootHistory.cs.meta">
+      <Link>Src\History\LootHistory.cs.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\LootContainers.meta">
+      <Link>Src\LootContainers.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\LootContainers\Crafting.cs.meta">
+      <Link>Src\LootContainers\Crafting.cs.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\LootContainers\CurrentEquipment.cs.meta">
+      <Link>Src\LootContainers\CurrentEquipment.cs.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\LootContainers\Inventory.cs.meta">
+      <Link>Src\LootContainers\Inventory.cs.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\LootFactories.meta">
+      <Link>Src\LootFactories.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\LootFactories\AbstractLootFactory.cs.meta">
+      <Link>Src\LootFactories\AbstractLootFactory.cs.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\LootFactories\BooksFactory.cs.meta">
+      <Link>Src\LootFactories\BooksFactory.cs.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\LootFactories\EquipmentFactory.cs.meta">
+      <Link>Src\LootFactories\EquipmentFactory.cs.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\LootFactories\LootFactory.cs.meta">
+      <Link>Src\LootFactories\LootFactory.cs.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\LootFactories\MiscLootFactory.cs.meta">
+      <Link>Src\LootFactories\MiscLootFactory.cs.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\LootFactories\ScrollsFactory.cs.meta">
+      <Link>Src\LootFactories\ScrollsFactory.cs.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Managers.meta">
+      <Link>Src\Managers.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Managers\AlliesManager.cs.meta">
+      <Link>Src\Managers\AlliesManager.cs.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Managers\AnimalsManager.cs.meta">
+      <Link>Src\Managers\AnimalsManager.cs.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Managers\EnemiesManager.cs.meta">
+      <Link>Src\Managers\EnemiesManager.cs.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Managers\EntitiesManager.cs.meta">
+      <Link>Src\Managers\EntitiesManager.cs.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Managers\EventsManager.cs.meta">
+      <Link>Src\Managers\EventsManager.cs.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Managers\GameManager.cs.meta">
+      <Link>Src\Managers\GameManager.cs.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Managers\InputManager.cs.meta">
+      <Link>Src\Managers\InputManager.cs.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Managers\LastActions.cs.meta">
+      <Link>Src\Managers\LastActions.cs.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Managers\LootManager.cs.meta">
+      <Link>Src\Managers\LootManager.cs.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Managers\PolicyManager.cs.meta">
+      <Link>Src\Managers\PolicyManager.cs.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Managers\QuestManager.cs.meta">
+      <Link>Src\Managers\QuestManager.cs.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Managers\SoundManager.cs.meta">
+      <Link>Src\Managers\SoundManager.cs.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Managers\SpellManager.cs.meta">
+      <Link>Src\Managers\SpellManager.cs.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Multimedia.meta">
+      <Link>Src\Multimedia.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Multimedia\BasicSoundPlayer.cs.meta">
+      <Link>Src\Multimedia\BasicSoundPlayer.cs.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Policies.meta">
+      <Link>Src\Policies.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Policies\AttackPolicy.cs.meta">
+      <Link>Src\Policies\AttackPolicy.cs.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Policies\MovePolicy.cs.meta">
+      <Link>Src\Policies\MovePolicy.cs.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Policies\Policy.cs.meta">
+      <Link>Src\Policies\Policy.cs.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Policies\ProjectileCastPolicy.cs.meta">
+      <Link>Src\Policies\ProjectileCastPolicy.cs.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Probability.meta">
+      <Link>Src\Probability.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Probability\Chances.cs.meta">
+      <Link>Src\Probability\Chances.cs.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Probability\Looting.cs.meta">
+      <Link>Src\Probability\Looting.cs.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Quests.meta">
+      <Link>Src\Quests.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Quests\Quest.cs.meta">
+      <Link>Src\Quests\Quest.cs.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Serialization.meta">
+      <Link>Src\Serialization.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Serialization\IPersister.cs.meta">
+      <Link>Src\Serialization\IPersister.cs.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Serialization\JSONPersister.cs.meta">
+      <Link>Src\Serialization\JSONPersister.cs.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Serialization\PersistancyWorker.cs.meta">
+      <Link>Src\Serialization\PersistancyWorker.cs.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Serialization\SimpleInjectorContractResolver.cs.meta">
+      <Link>Src\Serialization\SimpleInjectorContractResolver.cs.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Settings.meta">
+      <Link>Src\Settings.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Settings\RpgGameSettings.cs.meta">
+      <Link>Src\Settings\RpgGameSettings.cs.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Spells.meta">
+      <Link>Src\Spells.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Spells\OffensiveSpell.cs.meta">
+      <Link>Src\Spells\OffensiveSpell.cs.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Spells\PassiveSpell.cs.meta">
+      <Link>Src\Spells\PassiveSpell.cs.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Spells\ProjectiveSpell.cs.meta">
+      <Link>Src\Spells\ProjectiveSpell.cs.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Spells\Spell.cs.meta">
+      <Link>Src\Spells\Spell.cs.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Spells\SpellConverter.cs.meta">
+      <Link>Src\Spells\SpellConverter.cs.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Spells\Spells.cs.meta">
+      <Link>Src\Spells\Spells.cs.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Spells\SpellStatsDescription.cs.meta">
+      <Link>Src\Spells\SpellStatsDescription.cs.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\State.meta">
+      <Link>Src\State.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\State\GameState.cs.meta">
+      <Link>Src\State\GameState.cs.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\State\HeroPath.cs.meta">
+      <Link>Src\State\HeroPath.cs.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Strategy.meta">
+      <Link>Src\Strategy.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Strategy\AttackStrategy.cs.meta">
+      <Link>Src\Strategy\AttackStrategy.cs.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\TileContainers.meta">
+      <Link>Src\TileContainers.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\TileContainers\AbstractGameLevel.cs.meta">
+      <Link>Src\TileContainers\AbstractGameLevel.cs.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\TileContainers\GameLevel.cs.meta">
+      <Link>Src\TileContainers\GameLevel.cs.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\TileParts.meta">
+      <Link>Src\TileParts.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\TileParts\LootExtendedInfo.cs.meta">
+      <Link>Src\TileParts\LootExtendedInfo.cs.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Tiles.meta">
+      <Link>Src\Tiles.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Tiles\Abstract.meta">
+      <Link>Src\Tiles\Abstract.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Tiles\Abstract\IAdvancedEntity.cs.meta">
+      <Link>Src\Tiles\Abstract\IAdvancedEntity.cs.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Tiles\Abstract\IAlly.cs.meta">
+      <Link>Src\Tiles\Abstract\IAlly.cs.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Tiles\Abstract\IConsumable.cs.meta">
+      <Link>Src\Tiles\Abstract\IConsumable.cs.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Tiles\Abstract\IDestroyable.cs.meta">
+      <Link>Src\Tiles\Abstract\IDestroyable.cs.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Tiles\Abstract\IEquipable.cs.meta">
+      <Link>Src\Tiles\Abstract\IEquipable.cs.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Tiles\Abstract\IMerchant.cs.meta">
+      <Link>Src\Tiles\Abstract\IMerchant.cs.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Tiles\Abstract\IMovingDamager.cs.meta">
+      <Link>Src\Tiles\Abstract\IMovingDamager.cs.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Tiles\Abstract\IObstacle.cs.meta">
+      <Link>Src\Tiles\Abstract\IObstacle.cs.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Tiles\Interactive.meta">
+      <Link>Src\Tiles\Interactive.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Tiles\Interactive\Barrel.cs.meta">
+      <Link>Src\Tiles\Interactive\Barrel.cs.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Tiles\Interactive\Chest.cs.meta">
+      <Link>Src\Tiles\Interactive\Chest.cs.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Tiles\Interactive\DeadBody.cs.meta">
+      <Link>Src\Tiles\Interactive\DeadBody.cs.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Tiles\Interactive\Door.cs.meta">
+      <Link>Src\Tiles\Interactive\Door.cs.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Tiles\Interactive\InteractiveTile.cs.meta">
+      <Link>Src\Tiles\Interactive\InteractiveTile.cs.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Tiles\Interactive\Lever.cs.meta">
+      <Link>Src\Tiles\Interactive\Lever.cs.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Tiles\Interactive\Portal.cs.meta">
+      <Link>Src\Tiles\Interactive\Portal.cs.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Tiles\Interactive\Stairs.cs.meta">
+      <Link>Src\Tiles\Interactive\Stairs.cs.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Tiles\LivingEntities.meta">
+      <Link>Src\Tiles\LivingEntities.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Tiles\LivingEntities\AdvancedLivingEntity.cs.meta">
+      <Link>Src\Tiles\LivingEntities\AdvancedLivingEntity.cs.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Tiles\LivingEntities\AlliedEnemy.cs.meta">
+      <Link>Src\Tiles\LivingEntities\AlliedEnemy.cs.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Tiles\LivingEntities\Ally.cs.meta">
+      <Link>Src\Tiles\LivingEntities\Ally.cs.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Tiles\LivingEntities\Animal.cs.meta">
+      <Link>Src\Tiles\LivingEntities\Animal.cs.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Tiles\LivingEntities\CrackedStone.cs.meta">
+      <Link>Src\Tiles\LivingEntities\CrackedStone.cs.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Tiles\LivingEntities\Enemy.cs.meta">
+      <Link>Src\Tiles\LivingEntities\Enemy.cs.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Tiles\LivingEntities\God.cs.meta">
+      <Link>Src\Tiles\LivingEntities\God.cs.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Tiles\LivingEntities\Hero.cs.meta">
+      <Link>Src\Tiles\LivingEntities\Hero.cs.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Tiles\LivingEntities\LivingEntity.cs.meta">
+      <Link>Src\Tiles\LivingEntities\LivingEntity.cs.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Tiles\LivingEntities\Merchant.cs.meta">
+      <Link>Src\Tiles\LivingEntities\Merchant.cs.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Tiles\LivingEntities\NPC.cs.meta">
+      <Link>Src\Tiles\LivingEntities\NPC.cs.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Tiles\LivingEntities\TrainedHound.cs.meta">
+      <Link>Src\Tiles\LivingEntities\TrainedHound.cs.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Tiles\Looting.meta">
+      <Link>Src\Tiles\Looting.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Tiles\Looting\Armor.cs.meta">
+      <Link>Src\Tiles\Looting\Armor.cs.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Tiles\Looting\Book.cs.meta">
+      <Link>Src\Tiles\Looting\Book.cs.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Tiles\Looting\Consumable.cs.meta">
+      <Link>Src\Tiles\Looting\Consumable.cs.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Tiles\Looting\Cord.cs.meta">
+      <Link>Src\Tiles\Looting\Cord.cs.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Tiles\Looting\Enchanter.cs.meta">
+      <Link>Src\Tiles\Looting\Enchanter.cs.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Tiles\Looting\Equipment.cs.meta">
+      <Link>Src\Tiles\Looting\Equipment.cs.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Tiles\Looting\FightItem.cs.meta">
+      <Link>Src\Tiles\Looting\FightItem.cs.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Tiles\Looting\Food.cs.meta">
+      <Link>Src\Tiles\Looting\Food.cs.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Tiles\Looting\Gem.cs.meta">
+      <Link>Src\Tiles\Looting\Gem.cs.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Tiles\Looting\Gold.cs.meta">
+      <Link>Src\Tiles\Looting\Gold.cs.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Tiles\Looting\Hooch.cs.meta">
+      <Link>Src\Tiles\Looting\Hooch.cs.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Tiles\Looting\HunterTrophy.cs.meta">
+      <Link>Src\Tiles\Looting\HunterTrophy.cs.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Tiles\Looting\Jewellery.cs.meta">
+      <Link>Src\Tiles\Looting\Jewellery.cs.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Tiles\Looting\Key.cs.meta">
+      <Link>Src\Tiles\Looting\Key.cs.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Tiles\Looting\Loot.cs.meta">
+      <Link>Src\Tiles\Looting\Loot.cs.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Tiles\Looting\MagicDust.cs.meta">
+      <Link>Src\Tiles\Looting\MagicDust.cs.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Tiles\Looting\Misc.cs.meta">
+      <Link>Src\Tiles\Looting\Misc.cs.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Tiles\Looting\Mushroom.cs.meta">
+      <Link>Src\Tiles\Looting\Mushroom.cs.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Tiles\Looting\Plant.cs.meta">
+      <Link>Src\Tiles\Looting\Plant.cs.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Tiles\Looting\Potion.cs.meta">
+      <Link>Src\Tiles\Looting\Potion.cs.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Tiles\Looting\ProjectileFightItem.cs.meta">
+      <Link>Src\Tiles\Looting\ProjectileFightItem.cs.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Tiles\Looting\Recipe.cs.meta">
+      <Link>Src\Tiles\Looting\Recipe.cs.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Tiles\Looting\Scroll.cs.meta">
+      <Link>Src\Tiles\Looting\Scroll.cs.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Tiles\Looting\SpecialPotion.cs.meta">
+      <Link>Src\Tiles\Looting\SpecialPotion.cs.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Tiles\Looting\SpellSource.cs.meta">
+      <Link>Src\Tiles\Looting\SpellSource.cs.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Tiles\Looting\StackedLoot.cs.meta">
+      <Link>Src\Tiles\Looting\StackedLoot.cs.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Tiles\Looting\Trophy.cs.meta">
+      <Link>Src\Tiles\Looting\Trophy.cs.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Tiles\Looting\Weapon.cs.meta">
+      <Link>Src\Tiles\Looting\Weapon.cs.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Tiles\Looting\WeaponSpellSource.cs.meta">
+      <Link>Src\Tiles\Looting\WeaponSpellSource.cs.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Tiles\Surface.cs.meta">
+      <Link>Src\Tiles\Surface.cs.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Tiles\TilesExtensions.cs.meta">
+      <Link>Src\Tiles\TilesExtensions.cs.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Tiles\Trap.cs.meta">
+      <Link>Src\Tiles\Trap.cs.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Translations.meta">
+      <Link>Src\Translations.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Translations\Strings.cs.meta">
+      <Link>Src\Translations\Strings.cs.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\UI.meta">
+      <Link>Src\UI.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\UI\Models.meta">
+      <Link>Src\UI\Models.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\UI\Models\GenericListModel.cs.meta">
+      <Link>Src\UI\Models\GenericListModel.cs.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\UI\Models\ListModel.cs.meta">
+      <Link>Src\UI\Models\ListModel.cs.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Utils.meta">
+      <Link>Src\Utils.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Utils\Formatters.cs.meta">
+      <Link>Src\Utils\Formatters.cs.meta</Link>
+    </None>
+    <None Include="..\..\Assets\Scripts\Common\Dlls\Roguelike\Utils\SerializableDictionary.cs.meta">
+      <Link>Src\Utils\SerializableDictionary.cs.meta</Link>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Dungeons\Dungeons\Dungeons.csproj">
+      <Project>{6e90d7c5-938d-4e62-b45c-53d0033847ef}</Project>
+      <Name>Dungeons</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>
+    </PostBuildEvent>
+  </PropertyGroup>
+</Project>

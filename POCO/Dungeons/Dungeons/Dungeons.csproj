@@ -1,0 +1,271 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{6E90D7C5-938D-4E62-B45C-53D0033847EF}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Dungeons</RootNamespace>
+    <AssemblyName>Dungeons</AssemblyName>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>TRACE;DEBUG;GAME_BUILD</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'OuaDII|AnyCPU'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\OuaDII\</OutputPath>
+    <DefineConstants>TRACE;DEBUG;GAME_BUILD</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>..\..\..\Assets\Scripts\Common\Dlls\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="SimpleInjector">
+      <HintPath>..\..\..\Assets\Scripts\Common\Dlls\SimpleInjector.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\..\Assets\Scripts\Common\Dlls\Dungeons\ASCIIDisplay\ConsoleDrawingEngine.cs.meta">
+      <Link>Src\ASCIIDisplay\ConsoleDrawingEngine.cs.meta</Link>
+    </None>
+    <None Include="..\..\..\Assets\Scripts\Common\Dlls\Dungeons\ASCIIDisplay\IDrawingEngine.cs.meta">
+      <Link>Src\ASCIIDisplay\IDrawingEngine.cs.meta</Link>
+    </None>
+    <None Include="..\..\..\Assets\Scripts\Common\Dlls\Dungeons\ASCIIDisplay\Presenters.meta">
+      <Link>Src\ASCIIDisplay\Presenters.meta</Link>
+    </None>
+    <None Include="..\..\..\Assets\Scripts\Common\Dlls\Dungeons\ASCIIDisplay\Presenters\DungeonPresenter.cs.meta">
+      <Link>Src\ASCIIDisplay\Presenters\DungeonPresenter.cs.meta</Link>
+    </None>
+    <None Include="..\..\..\Assets\Scripts\Common\Dlls\Dungeons\ASCIIDisplay\Presenters\Item.cs.meta">
+      <Link>Src\ASCIIDisplay\Presenters\Item.cs.meta</Link>
+    </None>
+    <None Include="..\..\..\Assets\Scripts\Common\Dlls\Dungeons\ASCIIDisplay\Presenters\Label.cs.meta">
+      <Link>Src\ASCIIDisplay\Presenters\Label.cs.meta</Link>
+    </None>
+    <None Include="..\..\..\Assets\Scripts\Common\Dlls\Dungeons\ASCIIDisplay\Presenters\ListPresenter.cs.meta">
+      <Link>Src\ASCIIDisplay\Presenters\ListPresenter.cs.meta</Link>
+    </None>
+    <None Include="..\..\..\Assets\Scripts\Common\Dlls\Dungeons\ASCIIDisplay\Screen.cs.meta">
+      <Link>Src\ASCIIDisplay\Screen.cs.meta</Link>
+    </None>
+    <None Include="..\..\..\Assets\Scripts\Common\Dlls\Dungeons\Core\Extensions.cs.meta">
+      <Link>Src\Core\Extensions.cs.meta</Link>
+    </None>
+    <None Include="..\..\..\Assets\Scripts\Common\Dlls\Dungeons\Core\GenerationConstraints.cs.meta">
+      <Link>Src\Core\GenerationConstraints.cs.meta</Link>
+    </None>
+    <None Include="..\..\..\Assets\Scripts\Common\Dlls\Dungeons\Core\GenericEventArgs.cs.meta">
+      <Link>Src\Core\GenericEventArgs.cs.meta</Link>
+    </None>
+    <None Include="..\..\..\Assets\Scripts\Common\Dlls\Dungeons\Core\GreediestConstructorBehavior.cs.meta">
+      <Link>Src\Core\GreediestConstructorBehavior.cs.meta</Link>
+    </None>
+    <None Include="..\..\..\Assets\Scripts\Common\Dlls\Dungeons\Core\ILogger.cs.meta">
+      <Link>Src\Core\ILogger.cs.meta</Link>
+    </None>
+    <None Include="..\..\..\Assets\Scripts\Common\Dlls\Dungeons\Core\Logger.cs.meta">
+      <Link>Src\Core\Logger.cs.meta</Link>
+    </None>
+    <None Include="..\..\..\Assets\Scripts\Common\Dlls\Dungeons\Core\RandHelper.cs.meta">
+      <Link>Src\Core\RandHelper.cs.meta</Link>
+    </None>
+    <None Include="..\..\..\Assets\Scripts\Common\Dlls\Dungeons\Core\TimeTracker.cs.meta">
+      <Link>Src\Core\TimeTracker.cs.meta</Link>
+    </None>
+    <None Include="..\..\..\Assets\Scripts\Common\Dlls\Dungeons\Core\Vector2D.cs.meta">
+      <Link>Src\Core\Vector2D.cs.meta</Link>
+    </None>
+    <None Include="..\..\..\Assets\Scripts\Common\Dlls\Dungeons\TileContainers\DungeonLevel.cs.meta">
+      <Link>Src\TileContainers\DungeonLevel.cs.meta</Link>
+    </None>
+    <None Include="..\..\..\Assets\Scripts\Common\Dlls\Dungeons\TileContainers\DungeonNode.cs.meta">
+      <Link>Src\TileContainers\DungeonNode.cs.meta</Link>
+    </None>
+    <None Include="..\..\..\Assets\Scripts\Common\Dlls\Dungeons\Tiles\Abstract.meta">
+      <Link>Src\Tiles\Abstract.meta</Link>
+    </None>
+    <None Include="..\..\..\Assets\Scripts\Common\Dlls\Dungeons\Tiles\Abstract\IObstacle.cs.meta">
+      <Link>Src\Tiles\Abstract\IObstacle.cs.meta</Link>
+    </None>
+    <None Include="..\..\..\Assets\Scripts\Common\Dlls\Dungeons\Tiles\Abstract\IProjectile.cs.meta">
+      <Link>Src\Tiles\Abstract\IProjectile.cs.meta</Link>
+    </None>
+    <None Include="..\..\..\Assets\Scripts\Common\Dlls\Dungeons\Tiles\Abstract\ISpell.cs.meta">
+      <Link>Src\Tiles\Abstract\ISpell.cs.meta</Link>
+    </None>
+    <None Include="..\..\..\Assets\Scripts\Common\Dlls\Dungeons\Tiles\Door.cs.meta">
+      <Link>Src\Tiles\Door.cs.meta</Link>
+    </None>
+    <None Include="..\..\..\Assets\Scripts\Common\Dlls\Dungeons\Tiles\InteractiveTile.cs.meta">
+      <Link>Src\Tiles\InteractiveTile.cs.meta</Link>
+    </None>
+    <None Include="..\..\..\Assets\Scripts\Common\Dlls\Dungeons\Tiles\new 1.txt.meta">
+      <Link>Src\Tiles\new 1.txt.meta</Link>
+    </None>
+    <None Include="..\..\..\Assets\Scripts\Common\Dlls\Dungeons\Tiles\Tile.cs.meta">
+      <Link>Src\Tiles\Tile.cs.meta</Link>
+    </None>
+    <None Include="..\..\..\Assets\Scripts\Common\Dlls\Dungeons\Tiles\Wall.cs.meta">
+      <Link>Src\Tiles\Wall.cs.meta</Link>
+    </None>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Properties\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\..\..\Assets\Scripts\Common\Dlls\Dungeons\ASCIIDisplay\ConsoleDrawingEngine.cs">
+      <Link>Src\ASCIIDisplay\ConsoleDrawingEngine.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\Assets\Scripts\Common\Dlls\Dungeons\ASCIIDisplay\IDrawingEngine.cs">
+      <Link>Src\ASCIIDisplay\IDrawingEngine.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\Assets\Scripts\Common\Dlls\Dungeons\ASCIIDisplay\Presenters\DungeonPresenter.cs">
+      <Link>Src\ASCIIDisplay\Presenters\DungeonPresenter.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\Assets\Scripts\Common\Dlls\Dungeons\ASCIIDisplay\Presenters\Item.cs">
+      <Link>Src\ASCIIDisplay\Presenters\Item.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\Assets\Scripts\Common\Dlls\Dungeons\ASCIIDisplay\Presenters\Label.cs">
+      <Link>Src\ASCIIDisplay\Presenters\Label.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\Assets\Scripts\Common\Dlls\Dungeons\ASCIIDisplay\Presenters\ListPresenter.cs">
+      <Link>Src\ASCIIDisplay\Presenters\ListPresenter.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\Assets\Scripts\Common\Dlls\Dungeons\ASCIIDisplay\Screen.cs">
+      <Link>Src\ASCIIDisplay\Screen.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\Assets\Scripts\Common\Dlls\Dungeons\ContainerConfigurator.cs">
+      <Link>Src\ContainerConfigurator.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\Assets\Scripts\Common\Dlls\Dungeons\Core\EnumHelper.cs">
+      <Link>Src\Core\EnumHelper.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\Assets\Scripts\Common\Dlls\Dungeons\Core\Extensions.cs">
+      <Link>Src\Core\Extensions.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\Assets\Scripts\Common\Dlls\Dungeons\Core\GenerationConstraints.cs">
+      <Link>Src\Core\GenerationConstraints.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\Assets\Scripts\Common\Dlls\Dungeons\Core\GenericEventArgs.cs">
+      <Link>Src\Core\GenericEventArgs.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\Assets\Scripts\Common\Dlls\Dungeons\Core\GreediestConstructorBehavior.cs">
+      <Link>Src\Core\GreediestConstructorBehavior.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\Assets\Scripts\Common\Dlls\Dungeons\Core\ILogger.cs">
+      <Link>Src\Core\ILogger.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\Assets\Scripts\Common\Dlls\Dungeons\Core\Logger.cs">
+      <Link>Src\Core\Logger.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\Assets\Scripts\Common\Dlls\Dungeons\Core\RandHelper.cs">
+      <Link>Src\Core\RandHelper.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\Assets\Scripts\Common\Dlls\Dungeons\Core\TimeTracker.cs">
+      <Link>Src\Core\TimeTracker.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\Assets\Scripts\Common\Dlls\Dungeons\Core\Vector2D.cs">
+      <Link>Src\Core\Vector2D.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\Assets\Scripts\Common\Dlls\Dungeons\CorridorNodeLayouter.cs">
+      <Link>CorridorNodeLayouter.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\Assets\Scripts\Common\Dlls\Dungeons\DefaultNodeLayouter.cs">
+      <Link>DefaultNodeLayouter.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\Assets\Scripts\Common\Dlls\Dungeons\DungeonGenerator.cs">
+      <Link>DungeonGenerator.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\Assets\Scripts\Common\Dlls\Dungeons\GenerationInfo.cs">
+      <Link>GenerationInfo.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\Assets\Scripts\Common\Dlls\Dungeons\HiddenTiles.cs">
+      <Link>HiddenTiles.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\Assets\Scripts\Common\Dlls\Dungeons\NodeInteriorGenerator.cs">
+      <Link>NodeInteriorGenerator.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\Assets\Scripts\Common\Dlls\Dungeons\TileContainers\DungeonLevel.cs">
+      <Link>Src\TileContainers\DungeonLevel.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\Assets\Scripts\Common\Dlls\Dungeons\TileContainers\DungeonNode.cs">
+      <Link>Src\TileContainers\DungeonNode.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\Assets\Scripts\Common\Dlls\Dungeons\TileContainers\DungeonNodeConnector.cs">
+      <Link>Src\TileContainers\DungeonNodeConnector.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\Assets\Scripts\Common\Dlls\Dungeons\Tiles\Abstract\IObstacle.cs">
+      <Link>Src\Tiles\Abstract\IObstacle.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\Assets\Scripts\Common\Dlls\Dungeons\Tiles\Abstract\IProjectile.cs">
+      <Link>Src\Tiles\Abstract\IProjectile.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\Assets\Scripts\Common\Dlls\Dungeons\Tiles\Abstract\ISpell.cs">
+      <Link>Src\Tiles\Abstract\ISpell.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\Assets\Scripts\Common\Dlls\Dungeons\Tiles\Door.cs">
+      <Link>Src\Tiles\Door.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\Assets\Scripts\Common\Dlls\Dungeons\Tiles\InteractiveTile.cs">
+      <Link>Src\Tiles\InteractiveTile.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\Assets\Scripts\Common\Dlls\Dungeons\Tiles\Tile.cs">
+      <Link>Src\Tiles\Tile.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\Assets\Scripts\Common\Dlls\Dungeons\Tiles\Wall.cs">
+      <Link>Src\Tiles\Wall.cs</Link>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="..\..\..\Assets\Scripts\Common\Dlls\Dungeons\Tiles\new 1.txt">
+      <Link>Src\Tiles\new 1.txt</Link>
+    </Content>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>
+    </PostBuildEvent>
+  </PropertyGroup>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

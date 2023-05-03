@@ -1,0 +1,100 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="..\..\packages\NUnit3TestAdapter.4.2.1\build\net35\NUnit3TestAdapter.props" Condition="Exists('..\..\packages\NUnit3TestAdapter.4.2.1\build\net35\NUnit3TestAdapter.props')" />
+  <Import Project="..\packages\NUnit3TestAdapter.3.16.1\build\net35\NUnit3TestAdapter.props" Condition="Exists('..\packages\NUnit3TestAdapter.3.16.1\build\net35\NUnit3TestAdapter.props')" />
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{7C15AF43-0186-4118-B153-14477D93A56D}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <RootNamespace>OuaDIIUnitTests</RootNamespace>
+    <AssemblyName>OuaDIIUnitTests</AssemblyName>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject />
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'OuaDII|AnyCPU'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\OuaDII\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="AbilitiesTests.cs" />
+    <Compile Include="AllyTests.cs" />
+    <Compile Include="CraftingTests.cs" />
+    <Compile Include="DiscussionTests.cs" />
+    <Compile Include="EnemyTests.cs" />
+    <Compile Include="EquipmentTests.cs" />
+    <Compile Include="FightTests.cs" />
+    <Compile Include="GodTests.cs" />
+    <Compile Include="InventoryTests.cs" />
+    <Compile Include="LootTests.cs" />
+    <Compile Include="QuestTests.cs" />
+    <Compile Include="ScrollTests.cs" />
+    <Compile Include="SerializationTests.cs" />
+    <Compile Include="ShortcutsBarTests.cs" />
+    <Compile Include="TestBase.cs" />
+    <Compile Include="WorldGenerationTests.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Dungeons\Dungeons\Dungeons.csproj">
+      <Project>{6e90d7c5-938d-4e62-b45c-53d0033847ef}</Project>
+      <Name>Dungeons</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\OuaDII\OuaDII.csproj">
+      <Project>{36e902c3-d0ff-4009-927c-7b6b8ee410ea}</Project>
+      <Name>OuaDII</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\RoguelikeUnitTests\RoguelikeUnitTests.csproj">
+      <Project>{e2864da6-a60e-4ecb-bf44-2fb839a76baa}</Project>
+      <Name>RoguelikeUnitTests</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Roguelike\Roguelike.csproj">
+      <Project>{4DCC340D-FF13-47A8-AB45-C942240B4E1B}</Project>
+      <Name>Roguelike</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="nunit.framework">
+      <HintPath>..\RoguelikeUnitTests\bin\Debug\nunit.framework.dll</HintPath>
+    </Reference>
+    <Reference Include="SimpleInjector">
+      <HintPath>..\..\Assets\Scripts\Common\Dlls\SimpleInjector.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Drawing" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>

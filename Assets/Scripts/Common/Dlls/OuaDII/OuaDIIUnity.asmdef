@@ -1,0 +1,16 @@
+{
+    "name": "OuaDIIUnity",
+    "rootNamespace": "",
+    "references": [
+        "GUID:f86a39ba34085f642b11786bf42f24f6"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
