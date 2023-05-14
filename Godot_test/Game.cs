@@ -9,11 +9,15 @@ using System;
 using Roguelike.Events;
 using System.IO;
 using Dungeons.Tiles;
+using Roguelike.Tiles.LivingEntities;
+using static System.Net.WebRequestMethods;
 
 public partial class Game : Node2D
 {
   GameManager gm;
   IGame game;
+  GodotGame.Entities.Hero hero;
+  
 
   public GameManager GameManager
   {
@@ -24,8 +28,6 @@ public partial class Game : Node2D
   // Called when the node enters the scene tree for the first time.
   public override void _Ready()
 	{
-    //gm.LoadLevel("Hero1", 0, false);
-
     var container = new Roguelike.ContainerConfigurator().Container;
 
     //container.Register<GameController, GameController>();
@@ -40,9 +42,7 @@ public partial class Game : Node2D
     GD.Print("GenerateDungeon...");
     game.GenerateDungeon();
 
-    var scene = GD.Load<PackedScene>("res://hero.tscn");
-    var instance = scene.Instantiate();
-    AddChild(instance);
+   
   }
 
   private void Context_ContextSwitched(object sender, ContextSwitch e)
@@ -56,27 +56,58 @@ public partial class Game : Node2D
       {
         if (tile is Wall)
         {
-          var scene = GD.Load<PackedScene>("res://Entities/Wall.tscn");
-          var instance = scene.Instantiate();
-          var spr = instance.GetChild<Godot.Sprite2D>(0);
-          spr.GlobalPosition = new Vector2(tile.point.X* Sprite2D.TileSize, tile.point.Y* Sprite2D.TileSize);
-          AddChild(instance);
+          AddChildFromScene(tile, "res://Entities/Wall.tscn");
+        }
+        else if (tile is Hero heroTile)
+        {
+          AddChildFromScene(tile, "res://Entities/Hero.tscn");
+          hero.HeroTile = heroTile;
         }
       }
     }
   }
 
-  private void ActionsManager_ActionAppended(object sender, GameEvent e)
+  private Godot.Sprite2D AddChildFromScene(Tile tile, string scenePath)
   {
-    if (e is LivingEntityAction)
+    var scene = GD.Load<PackedScene>(scenePath);
+    var instance = scene.Instantiate();
+    var spr = instance.GetChild<Godot.Sprite2D>(0);
+    SetPositionFromTile(tile, spr);
+    AddChild(instance);
+
+    if (scenePath == "res://Entities/Hero.tscn")
     {
-      var lea = e as LivingEntityAction;
-      //screen.Redraw(lea.InvolvedEntity, true);
+      this.hero = instance.GetChild<GodotGame.Entities.Hero>(0);
+      this.hero.Moved += Hero_Moved;
     }
-    else if (e is GameStateAction)
+
+    return spr;
+  }
+
+  private void Hero_Moved(object sender, Vector2 e)
+  {
+    GameManager.HandleHeroShift((int)e.X,(int) e.Y);
+  }
+
+  private static void SetPositionFromTile(Tile tile, Godot.Sprite2D spr)
+  {
+    spr.GlobalPosition = new Vector2(tile.point.X * GodotGame.Entities.Hero.TileSize, tile.point.Y * GodotGame.Entities.Hero.TileSize);
+  }
+
+  private void ActionsManager_ActionAppended(object sender, GameEvent ev)
+  {
+    if (ev is LivingEntityAction)
+    {
+      var lea = ev as LivingEntityAction;
+      if (lea.Kind == LivingEntityActionKind.Moved)
+      {
+        SetPositionFromTile(hero.HeroTile, hero);
+      }
+    }
+    else if (ev is GameStateAction)
     {
     }
-    else if (e is LootAction)
+    else if (ev is LootAction)
     {
     }
   }
@@ -85,5 +116,7 @@ public partial class Game : Node2D
   public override void _Process(double delta)
 	{
     game.MakeGameTick();
+
+   
   }
 }
