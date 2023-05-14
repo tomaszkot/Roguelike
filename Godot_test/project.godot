@@ -11,9 +11,14 @@ config_version=5
 [application]
 
 config/name="God4_1"
-run/main_scene="res://node_2d.tscn"
+run/main_scene="res://game.tscn"
 config/features=PackedStringArray("4.0", "C#", "Forward Plus")
 config/icon="res://icon.svg"
+
+[display]
+
+window/size/viewport_width=1600
+window/size/viewport_height=900
 
 [dotnet]
 

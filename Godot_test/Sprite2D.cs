@@ -3,7 +3,8 @@ using System;
 
 public partial class Sprite2D : Godot.Sprite2D
 {
-  int moveStep = 128;
+  public const int TileSize = 128;
+  const int moveStep = TileSize;
 
 	// Called when the node enters the scene tree for the first time.
 	public override void _Ready()
