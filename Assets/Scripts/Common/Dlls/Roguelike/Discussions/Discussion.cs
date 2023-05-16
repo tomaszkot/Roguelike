@@ -52,7 +52,17 @@ namespace Roguelike.Discussions
     [JsonIgnore]
     public Container Container { get => container; set => container = value; }
 
-    public void ToXml()
+    public string ToXml()
+    {
+      return "";
+    }
+
+    public void FromXml(string xml)
+    {
+      return;
+    }
+
+    public void ToXmlFile()
     {
       try
       {
@@ -71,7 +81,7 @@ namespace Roguelike.Discussions
       }
     }
 
-    public static Discussion FromXml(string entityName)
+    public static Discussion FromXmlFile(string entityName)
     {
       try
       {
