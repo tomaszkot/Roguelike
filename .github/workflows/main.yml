@@ -1,0 +1,47 @@
+name: 'Link Checker: All English'
+
+# **What it does**: Renders the content of every page and check all internal links.
+# **Why we have it**: To make sure all links connect correctly.
+# **Who does it impact**: Docs content.
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - Branch_19f8da7d
+  pull_request:
+
+permissions:
+  contents: read
+  # Needed for the 'trilom/file-changes-action' action
+  pull-requests: read
+
+# This allows a subsequently queued workflow run to interrupt previous runs
+concurrency:
+  group: '${{ github.workflow }} @ ${{ github.event.pull_request.head.label || github.head_ref || github.ref }}'
+  cancel-in-progress: true
+
+jobs:
+    build:
+        name: Run ut Roguelike🔑
+        runs-on: windows-latest
+        steps:
+        - uses: actions/checkout@v2
+        - name: Setup .NET
+          uses: actions/setup-dotnet@v1
+          with:
+            dotnet-version: '3.1.x'
+        - name: Setup MSBuild Path
+          uses: microsoft/setup-msbuild@v1
+        - name: pre-build
+          run:  dotnet restore .\OuaDIISln\OuaDIIPOCO.sln
+        - name: Build
+          run:  msbuild.exe .\OuaDIISln\OuaDIIPOCO.sln
+        - name: Setup VSTest and add to PATH
+          uses: darenm/Setup-VSTest@v1
+        - name: Run VSTest Dungeons
+          id: run_vstestDungeons
+          run: vstest.console.exe OuaDIISln\Assets\Scripts\Common\Dlls\Dungeons\bin\Debug\netcoreapp3.1\Dungeons.Core.dll
+        - name: Run VSTest Roguelike
+          id: run_vstestRoguelikeUnitTests
+          run: vstest.console.exe OuaDIISln\POCO\RoguelikeUnitTests.Core\bin\Debug\netcoreapp3.1\RoguelikeUnitTests.Core.dll
