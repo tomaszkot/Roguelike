@@ -13,13 +13,19 @@ config_version=5
 config/name="God4_1"
 run/main_scene="res://game.tscn"
 config/features=PackedStringArray("4.0", "C#", "Forward Plus")
+boot_splash/image="res://Sprites/GUI/title.png"
+boot_splash/fullsize=false
 config/icon="res://icon.svg"
 
 [display]
 
-window/size/viewport_width=1600
-window/size/viewport_height=900
+window/size/viewport_width=1920
+window/size/viewport_height=1080
 
 [dotnet]
 
 project/assembly_name="God4_1"
+
+[rendering]
+
+environment/defaults/default_clear_color=Color(0, 0, 0, 1)

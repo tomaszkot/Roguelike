@@ -3,6 +3,7 @@ using Roguelike.Extensions;
 using Roguelike.Managers;
 using Roguelike.Tiles.LivingEntities;
 using SimpleInjector;
+using System.IO;
 using System.Diagnostics;
 
 namespace Roguelike.Discussions
@@ -24,6 +25,9 @@ namespace Roguelike.Discussions
       this.container = container;
       mainItem = CreateMainItem();
     }
+
+    [JsonConstructor]
+    public Discussion() { }
 
     protected virtual DiscussionTopic CreateMainItem()
     {
@@ -52,25 +56,34 @@ namespace Roguelike.Discussions
     [JsonIgnore]
     public Container Container { get => container; set => container = value; }
 
-    public string ToXml()
+    public string ToJson()
     {
-      return "";
+      JsonSerializerSettings settings = new JsonSerializerSettings
+      {
+         PreserveReferencesHandling = PreserveReferencesHandling.Objects
+      };
+      string jsonData = JsonConvert.SerializeObject(this, settings);
+      return jsonData;
     }
 
-    public void FromXml(string xml)
+    public void FromJson(string json)
     {
-      return;
+      Discussion discussion = JsonConvert.DeserializeObject<Discussion>(json);
+      EntityName = discussion.EntityName;
+      mainItem = discussion.mainItem;
     }
 
-    public void ToXmlFile()
+    public void ToJsonFile()
     {
+      JsonSerializerSettings settings = new JsonSerializerSettings
+      {
+        PreserveReferencesHandling = PreserveReferencesHandling.Objects
+      };
       try
       {
-        var writer = new System.Xml.Serialization.XmlSerializer(typeof(Discussion));
-        var path = EntityName + ".xml";
-        var file = System.IO.File.Create(path);
-        writer.Serialize(file, this);
-        file.Close();
+        string jsonData = JsonConvert.SerializeObject(this, settings);
+        string path = EntityName + ".json";
+        File.WriteAllText(path, jsonData);
       }
       catch (System.Exception ex)
       {
@@ -81,15 +94,13 @@ namespace Roguelike.Discussions
       }
     }
 
-    public static Discussion FromXmlFile(string entityName)
+    public static Discussion FromJsonFile(string entityName)
     {
       try
       {
         Discussion disc = null;
-        var reader = new System.Xml.Serialization.XmlSerializer(typeof(Discussion));
-        var file = new System.IO.StreamReader(entityName + ".xml");
-        disc = (Discussion)reader.Deserialize(file);
-        file.Close();
+        var jsonData = File.ReadAllText(entityName + ".json");
+        disc = JsonConvert.DeserializeObject<Discussion>(jsonData);
         return disc;
       }
       catch (System.Exception ex)

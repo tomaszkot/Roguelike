@@ -1,4 +1,5 @@
 ﻿using Dungeons.Core;
+using Newtonsoft.Json;
 using Roguelike.Extensions;
 using SimpleInjector;
 using System;
@@ -40,6 +41,7 @@ namespace Roguelike.Discussions
       return res;
     }
 
+    [JsonConstructor]
     public DiscussionTopic(Container container) 
     {
       this.container = container;
@@ -51,7 +53,7 @@ namespace Roguelike.Discussions
     {
       Init(right, left, allowBuyHound , addMerchantItems);
     }
-        
+
     public DiscussionTopic(Container container, string right, string left, bool allowBuyHound = false, bool addMerchantItems = merchantItemsAtAllLevels)
       : this(container)
     {
@@ -83,7 +85,6 @@ namespace Roguelike.Discussions
       if (addMerchantItems)
         Discussion.CreateMerchantResponseOptions(this, allowBuyHound);
     }
-
     public DiscussionTopic(string right, KnownSentenceKind leftKnownSentenceKind, bool allowBuyHound = false)
     {
       Right = new DiscussionSentence(right);
