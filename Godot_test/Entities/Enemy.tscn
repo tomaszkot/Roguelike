@@ -1,0 +1,11 @@
+[gd_scene load_steps=3 format=3 uid="uid://8igvtk2i7m7e"]
+
+[ext_resource type="Texture2D" uid="uid://k73jw5u0ny3o" path="res://Sprites/LivingEntities/Enemies/bat.png" id="1_upvjk"]
+[ext_resource type="Script" path="res://Entities/Enemy.cs" id="2_62dx3"]
+
+[node name="Enemy" type="Node2D"]
+z_index = 10
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("1_upvjk")
+script = ExtResource("2_62dx3")

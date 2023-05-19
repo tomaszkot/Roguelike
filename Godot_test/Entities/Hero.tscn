@@ -1,7 +1,8 @@
-[gd_scene load_steps=4 format=3 uid="uid://doojdlflk43w"]
+[gd_scene load_steps=5 format=3 uid="uid://doojdlflk43w"]
 
 [ext_resource type="Texture2D" uid="uid://bqjhompqr2qo8" path="res://Sprites/LivingEntities/Hero.png" id="1_tdfb0"]
 [ext_resource type="Script" path="res://Entities/Hero.cs" id="2_l35lg"]
+[ext_resource type="Texture2D" uid="uid://mvwpkimsvi1p" path="res://Sprites/LivingEntities/LightCircle.png" id="3_oa147"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_371ry"]
 size = Vector2(115, 109)
@@ -9,10 +10,19 @@ size = Vector2(115, 109)
 [node name="Node2D" type="Node2D"]
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
-position = Vector2(630, 289)
 texture = ExtResource("1_tdfb0")
 script = ExtResource("2_l35lg")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Sprite2D"]
 position = Vector2(-5.5, 7.5)
 shape = SubResource("RectangleShape2D_371ry")
+
+[node name="Camera2D" type="Camera2D" parent="Sprite2D"]
+zoom = Vector2(0.9, 0.9)
+
+[node name="PointLight2D" type="PointLight2D" parent="Sprite2D"]
+position = Vector2(-5.72205e-05, 6.49999)
+scale = Vector2(0.915684, 0.712121)
+color = Color(0.862745, 0.862745, 0.862745, 1)
+texture = ExtResource("3_oa147")
+texture_scale = 1.5
