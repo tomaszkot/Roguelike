@@ -26,9 +26,9 @@ namespace RoguelikeUnitTests
       var hero = game.Hero;
       SpellSource spellSource = null;
       if (scroll)
-        spellSource = new Scroll(Roguelike.Spells.SpellKind.FireBall);
+        spellSource = new Scroll(SpellKind.FireBall);
       else
-        spellSource = new Book(Roguelike.Spells.SpellKind.FireBall);
+        spellSource = new Book(SpellKind.FireBall);
 
       {
         //var desc = spellSource.GetDescription();
@@ -82,31 +82,16 @@ namespace RoguelikeUnitTests
       Assert.GreaterOrEqual(range2.Value.TotalValue, range1.Value.TotalValue);
     }
 
-    [Test]
-    public void SpellPropertiesTest()
-    {
-      var game = CreateGame();
-      var hero = game.Hero;
-      {
-        var fireBallScroll = new Scroll(Roguelike.Spells.SpellKind.FireBall);
-        var spell = fireBallScroll.CreateSpell<OffensiveSpell>(hero);
-        Assert.Greater(spell.Damage, 0);
-      }
-      {
-        var fireBallBook = new Book(Roguelike.Spells.SpellKind.FireBall);
-        var spellFromBook = fireBallBook.CreateSpell<OffensiveSpell>(hero);
-        Assert.Greater(spellFromBook.Damage, 0);
-      }
-    }
+    
 
     [TestCase(true)]
     [TestCase(false)]
-    public void SimpleSpellSourceTest(bool scroll)
+    public void SimpleSpellSourceOnEnemyTest(bool scroll)
     {
       var game = CreateGame();
       var hero = game.Hero;
       //SpellSource spellSource = scroll ? new Scroll ? 
-
+      hero.AlwaysHit[AttackKind.SpellElementalProjectile] = true;
       var enemy = ActivePlainEnemies.First();
       var enemyHealth = enemy.Stats.Health;
       var mana = hero.Stats.Mana;
@@ -122,6 +107,21 @@ namespace RoguelikeUnitTests
       var diff = enemyHealth - enemy.Stats.Health;
     }
 
+    [Test]
+    public void SimpleSpellSourceOnBarrelTest()
+    {
+      var game = CreateGame();
+      var hero = game.Hero;
+      //SpellSource spellSource = scroll ? new Scroll ? 
+      hero.AlwaysHit[AttackKind.SpellElementalProjectile] = true;
+      var barrel = new Barrel(Container);
+      PlaceCloseToHero(barrel);
+      Assert.False(barrel.Destroyed);
+      Assert.True(game.GameManager.HeroTurn);
+
+      UseFireBallSpellSource(hero, barrel, true);
+      Assert.True(barrel.Destroyed);
+    }
 
 
     [TestCase(true, 1)]
@@ -176,7 +176,10 @@ namespace RoguelikeUnitTests
       Assert.True(wpn.MakeEnchantable());
       var gem = new Gem() { GemKind = heroLevel > 1 ? GemKind.Amber : GemKind.Ruby };
       string error;
-      Assert.True(gem.ApplyTo(wpn, out error));
+      var crafter = new Roguelike.Crafting.LootCrafter(game.GameManager.Container);
+
+      Assert.True(crafter.ApplyEnchant(gem, wpn, out error));
+      //Assert.True(gem.ApplyTo(wpn, out error));
 
       Assert.True(SetHeroEquipment(wpn, CurrentEquipmentKind.Weapon));
       for (int i = 0; i < 10 * mult; i++)
@@ -576,6 +579,34 @@ namespace RoguelikeUnitTests
       Assert.AreEqual(enemy.point.X, enPos.X);//shall try walk around the stone
     }
 
-    
-  }
+    [Test]
+    public void FrightenScrollTest()
+    {
+      var game = CreateGame();
+      var hero = game.Hero;
+
+      Enemy enemy = AllEnemies.First();
+      FrightenSpell spell;
+      var scroll = PrepareScroll(hero, SpellKind.Frighten, enemy);
+      Assert.True(game.GameManager.EnemiesManager.ShallChaseTarget(enemy, game.Hero));
+
+      spell = game.GameManager.SpellManager.ApplyPassiveSpell<PassiveSpell>(hero, scroll) as FrightenSpell;
+
+      Assert.NotNull(spell);
+      Assert.Greater(spell.Duration, 0);
+      Assert.Greater(spell.Range, 0);
+
+      Assert.True(!game.GameManager.HeroTurn);
+      var le = enemy.LastingEffectsSet.GetByType(Roguelike.Effects.EffectType.Frighten);
+      Assert.NotNull(le);
+      Assert.False(game.GameManager.EnemiesManager.ShallChaseTarget(enemy, game.Hero));
+      Assert.AreEqual(le.Description, "Frighten (Pending Turns: 2)");
+
+      GotoSpellEffectEnd(spell);
+
+      Assert.True(game.GameManager.EnemiesManager.ShallChaseTarget(enemy, game.Hero));
+    }
+
+
+    }
 }

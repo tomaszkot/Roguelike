@@ -2,6 +2,7 @@
 using Roguelike.Factors;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace Roguelike.Spells
 {
@@ -19,7 +20,11 @@ namespace Roguelike.Spells
         damage = value;
       }
     }
-    public int? Duration { get; set; }
+    public int? Duration 
+    { 
+      get; 
+      set; 
+    }
     public EntityStatKind? StatKind { get; set; }
     public PercentageFactor StatKindPercentage { get; set; }
     List<string> extraStatDescription = new List<string>();
@@ -27,6 +32,8 @@ namespace Roguelike.Spells
 
     SpellKind Kind { get; set; }
     public int Range { get; set; }
+    public float? Durability { get; internal set; }
+
     List<EntityStat> entityStats;
 
     public SpellStatsDescription(int level, int? manaCost, int? magicRequired, SpellKind kind, int range)
@@ -64,19 +71,43 @@ namespace Roguelike.Spells
             esk = EntityStatKind.LightingBallExtraRange;
           else if (Kind == SpellKind.SwapPosition)
             esk = EntityStatKind.SwapPositionExtraRange;
-
+          else if (Kind == SpellKind.CrackedStone)
+            esk = EntityStatKind.CrackedStoneExtraRange;
+          else if (Kind == SpellKind.Frighten)
+          {
+            esk = EntityStatKind.FrightenExtraRange;
+            
+          }
           if (esk != EntityStatKind.Unset)
             entityStats.Add(new EntityStat() { Kind = esk, Value = new StatValue() { Nominal = Range } });
           else
           {
-            throw new Exception("unsup Kind : "+ Kind);
+            throw new Exception("unsup Kind : "+ Kind + " ");
           }
         }
-        
 
-        //if (Duration.HasValue)
-          //entityStats.Add(new EntityStat() { Kind = EntityStatKind.Du, Value = new StatValue() { Nominal = Range } });
 
+        if (Duration.HasValue)
+        {
+
+          if (Duration > 0)
+          {
+            var eskDur = EntityStatKind.Unset;
+            if (Kind == SpellKind.Frighten)
+              eskDur = EntityStatKind.FrightenDuration;
+            else if (Kind == SpellKind.ManaShield)
+              eskDur = EntityStatKind.ManaShieldDuration;
+            else if (Kind == SpellKind.Transform)
+              eskDur = EntityStatKind.TransformDuration;
+
+            if (eskDur!= EntityStatKind.Unset)
+              entityStats.Add(new EntityStat() { Kind = eskDur, Value = new StatValue() { Nominal = (float)Duration }, Unit = EntityStatUnit.Absolute });
+            else
+              throw new Exception("!Duration > 0 && !eskDur "+this);
+          }
+          else
+            Debug.WriteLine("!Duration > 0");
+        }
         if (Damage.HasValue)
         {
           var esk = EntityStatKind.ElementalSpellProjectilesAttack;

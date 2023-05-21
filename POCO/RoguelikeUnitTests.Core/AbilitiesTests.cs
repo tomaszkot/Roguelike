@@ -1,7 +1,4 @@
-﻿using Dungeons.Core;
-using Dungeons.Fight;
-using Dungeons.Tiles;
-using NUnit.Framework;
+﻿using NUnit.Framework;
 using Roguelike.Abilities;
 using Roguelike.Attributes;
 using Roguelike.Managers.Policies;
@@ -12,17 +9,16 @@ using Roguelike.Tiles.Interactive;
 using Roguelike.Tiles.LivingEntities;
 using Roguelike.Tiles.Looting;
 using RoguelikeUnitTests.Core.Utils;
-using RoguelikeUnitTests.Helpers;
 using SimpleInjector;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using Roguelike.Managers.Policies;
+
 
 namespace RoguelikeUnitTests
 {
-    [TestFixture]
+  [TestFixture]
   public class AbilitiesTests : TestBase
   {
     //const int MaxAbilityInc = 5;
@@ -250,6 +246,7 @@ namespace RoguelikeUnitTests
       int numOfLoot = 0;
       foreach (var en in enemies)
       {
+        en.RewardGenerated = false;
         var loot = game.GameManager.LootManager.TryAddForLootSource(en);
         if (loot.Any())
         {
@@ -591,7 +588,7 @@ namespace RoguelikeUnitTests
     }
     
     [Test]
-    public void TestScepterMastering()//ChanceToCauseElementalAilment()
+    public void TestScepterMastering_ChanceToCauseElementalAilment()//ChanceToCauseElementalAilment()
     {
       var game = CreateGame();
       float originalStatValue = 0;
@@ -601,16 +598,77 @@ namespace RoguelikeUnitTests
 
       Assert.Greater(PlainEnemies.Count, 5);
       Assert.AreEqual(game.Hero.Stats.GetCurrentValue(EntityStatKind.ChanceToCauseElementalAilment), 0);
-      game.Hero.Stats.SetNominal(EntityStatKind.ChanceToCauseElementalAilment, 100);
+
+      game.Hero.LevelUpPoints = 10;
+      for(int i=0;i<10;i++)
+        Assert.True(game.Hero.IncreaseAbility(AbilityKind.SceptersMastering));
+      var chance = game.Hero.Stats.GetCurrentValue(EntityStatKind.ChanceToCauseElementalAilment);
+      Assert.AreEqual(chance, 50);
+      //game.Hero.Stats.SetNominal(EntityStatKind.ChanceToCauseElementalAilment, 100);
       for (int i=0;i<5;i++)
       {
         var en = PlainEnemies[i];
         var spell = weapon.SpellSource.CreateSpell(game.Hero);
         PlaceCloseToHero(en);
-        Assert.AreEqual(game.GameManager.SpellManager.ApplyAttackPolicy(game.Hero, en, weapon.SpellSource), ApplyAttackPolicyResult.OK);
-        Assert.True(en.HasLastingEffect(Roguelike.Effects.EffectType.Firing));
-        GotoNextHeroTurn();
+        bool firing = false;
+        for (int at = 0; at < 10; at++)
+        {
+          Assert.AreEqual(game.GameManager.SpellManager.ApplyAttackPolicy(game.Hero, en, weapon.SpellSource), ApplyAttackPolicyResult.OK);
+          GotoNextHeroTurn();
+          if (en.HasLastingEffect(Roguelike.Effects.EffectType.Firing))
+          {
+            firing = true;
+            break;
+          }
+          
+        }
+        Assert.True(firing);
       }
+    }
+
+    [Test]
+    public void TestScepterMastering_Range()
+    {
+      var game = CreateGame(true, 1);
+      float originalStatValue = 0;
+      var destExtraStat = SetWeapon(AbilityKind.SceptersMastering, game.Hero, out originalStatValue);
+      var weapon = game.Hero.GetActiveWeapon();
+      Assert.AreEqual(weapon.SpellSource.Kind, SpellKind.FireBall);
+      Assert.Greater(PlainEnemies.Count, 0);
+      var en = PlainEnemies[0];
+      en.d_canMove = false;
+      PlaceCloseToHero(en, 4);
+      var spell = weapon.SpellSource.CreateSpell(game.Hero);
+      Assert.AreEqual(game.GameManager.SpellManager.ApplyAttackPolicy(game.Hero, en, weapon.SpellSource), ApplyAttackPolicyResult.OutOfRange);
+      game.Hero.LevelUpPoints = 2;
+      for (int i = 0; i < 2; i++)
+        Assert.True(game.Hero.IncreaseAbility(AbilityKind.SceptersMastering));
+
+      GotoNextHeroTurn();
+      Assert.AreEqual(game.GameManager.SpellManager.ApplyAttackPolicy(game.Hero, en, weapon.SpellSource), ApplyAttackPolicyResult.OK);
+
+      //var chance = game.Hero.Stats.GetCurrentValue(EntityStatKind.ChanceToCauseElementalAilment);
+      //Assert.AreEqual(chance, 50);
+      ////game.Hero.Stats.SetNominal(EntityStatKind.ChanceToCauseElementalAilment, 100);
+      //for (int i = 0; i < 5; i++)
+      //{
+      //  var en = PlainEnemies[i];
+      //  var spell = weapon.SpellSource.CreateSpell(game.Hero);
+      //  PlaceCloseToHero(en);
+      //  bool firing = false;
+      //  for (int at = 0; at < 10; at++)
+      //  {
+      //    Assert.AreEqual(game.GameManager.SpellManager.ApplyAttackPolicy(game.Hero, en, weapon.SpellSource), ApplyAttackPolicyResult.OK);
+      //    GotoNextHeroTurn();
+      //    if (en.HasLastingEffect(Roguelike.Effects.EffectType.Firing))
+      //    {
+      //      firing = true;
+      //      break;
+      //    }
+
+      //  }
+      //  Assert.True(firing);
+      //}
     }
 
     [Test]
@@ -643,7 +701,7 @@ namespace RoguelikeUnitTests
 
       var ab = game.GameManager.Hero.GetPassiveAbility(AbilityKind.WandsMastering);
       for (int i = 0; i < 10; i++)
-        ab.IncreaseLevel(game.Hero);
+        Assert.True(ab.IncreaseLevel(game.Hero));
 
       game.Hero.RecalculateStatFactors(false);
       chanceForBulk = game.Hero.Stats.GetCurrentValue(EntityStatKind.ChanceToElementalProjectileBulkAttack);

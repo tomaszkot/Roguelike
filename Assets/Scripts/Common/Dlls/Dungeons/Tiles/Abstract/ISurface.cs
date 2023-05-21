@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Dungeons.Core.Tiles.Abstract
+namespace Dungeons.Tiles.Abstract
 {
   public interface ISurface
   {

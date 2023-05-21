@@ -1,4 +1,5 @@
 ﻿using Dungeons.Core;
+using Dungeons.Core.Policy;
 using Dungeons.Tiles;
 using Roguelike.Abilities;
 using Roguelike.Abstract.Projectiles;
@@ -15,10 +16,9 @@ using System.Text;
 
 namespace Roguelike.Managers.Policies
 {
-  internal class ProjectileFightItemPolicyManager
+  internal class ProjectileFightItemPolicyManager : PolicyManager
   {
-    GameManager gm;
-    internal ProjectileFightItemPolicyManager(GameManager gm)
+    internal ProjectileFightItemPolicyManager(GameManager gm) : base(gm)
     {
       this.gm = gm;
     }
@@ -34,7 +34,7 @@ namespace Roguelike.Managers.Policies
     public bool ApplyAttackPolicy
     (
       LivingEntity caster,//hero, enemy, ally
-      Dungeons.Tiles.IHitable target,
+      Dungeons.Tiles.Abstract.IHitable target,
       ProjectileFightItem pfi,
       Action<Policy> BeforeApply = null,
       Action<Policy> AfterApply = null
@@ -126,7 +126,7 @@ namespace Roguelike.Managers.Policies
     private bool DoApply
     (
       LivingEntity caster,
-      Dungeons.Tiles.IHitable target,
+      Dungeons.Tiles.Abstract.IHitable target,
       ProjectileFightItem fi,
       int maxVictimsCount,
       Action<Policy> BeforeApply,
@@ -148,15 +148,14 @@ namespace Roguelike.Managers.Policies
       if (BeforeApply != null)
         BeforeApply(policy);
 
-      policy.OnTargetHit += (s, e) =>
+      policy.TargetHit += (s, e) =>
       {
-        gm.CallTryAddForLootSource(e);
+        HandeTileHit(caster, target, policy);
+        //gm.CallTryAddForLootSource(e, policy);
       };
 
       policy.OnApplied += (s, e) =>
       {
-        //CallTryAddForLootSource(policy);
-
         gm.FinishPolicyApplied(caster, AfterApply, policy);
       };
 
@@ -207,7 +206,7 @@ namespace Roguelike.Managers.Policies
         target = fakeTarget;
       }
 
-      var hitable = target as Dungeons.Tiles.IHitable;
+      var hitable = target as Dungeons.Tiles.Abstract.IHitable;
       if (hitable == null)
       {
         var oil = gm.GetSurfacesOil().GetAt(target.point);

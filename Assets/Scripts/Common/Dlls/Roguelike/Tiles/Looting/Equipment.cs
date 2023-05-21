@@ -1,4 +1,5 @@
 ﻿using Dungeons.Core;
+using Roguelike.Abstract;
 using Roguelike.Attributes;
 using Roguelike.Calculated;
 using Roguelike.Extensions;
@@ -109,10 +110,25 @@ namespace Roguelike.Tiles.Looting
       {
         if (Class != EquipmentClass.Unique)
         {
-          this.DisplayedName = material.ToDescription() + " " + Name.ToLower();
+          SetDisplayedName();
           EnhanceStatsDueToMaterial(material);
         }
       }
+    }
+
+    public void SetDisplayedName()
+    {
+      var dn = "";
+      var name = Name;
+      if (Material != EquipmentMaterial.Unset)
+      {
+        dn = this.Material.ToDescription() + " ";
+        name = name.ToLower();
+      }
+      else
+        name = name.ToUpperFirstLetter();
+
+      this.DisplayedName = dn + name;
     }
 
     public override string Name
@@ -122,7 +138,7 @@ namespace Roguelike.Tiles.Looting
       {
         base.Name = value;
         //if (Class == EquipmentClass.Unique || (this is Weapon wpn && wpn.IsMagician))
-        DisplayedName = Name;
+        DisplayedName = Name.ToUpperFirstLetter();
         
       }
     }
@@ -773,12 +789,23 @@ namespace Roguelike.Tiles.Looting
       return Enchant(new EntityStatKind[] { kind }, val, enchantSrc, out error);
     }
 
+    public virtual bool CanBeEnchantedDueToClass(out string error)
+    {
+      error = "";
+      if (Class == EquipmentClass.Unique)// && !(this is Trophy) && !(this is GodStatue))
+      {
+        error = "Unique item can not be enchanted";
+        return false;
+      }
+      return true;
+
+    }
+
     public bool Enchant(EntityStatKind[] kinds, int val, Enchanter enchantSrc, out string error)
     {
       error = "";
-      if (Class == EquipmentClass.Unique && !(this is Trophy))
+      if (!CanBeEnchantedDueToClass(out error))
       {
-        error = "Unique item can not be enchanted";
         return false;
       }
 

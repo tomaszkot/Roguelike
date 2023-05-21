@@ -26,14 +26,14 @@ namespace Roguelike
     {
         public interface ITilesAtPathProvider
     {
-      List<Dungeons.Tiles.IObstacle> GetTilesAtPath(System.Drawing.Point from, System.Drawing.Point to);
+      List<Dungeons.Tiles.Abstract.IObstacle> GetTilesAtPath(System.Drawing.Point from, System.Drawing.Point to);
     }
 
     public class TilesAtPathProvider : ITilesAtPathProvider
     {
-      public List<Dungeons.Tiles.IObstacle> GetTilesAtPath(Point from, Point to)
+      public List<Dungeons.Tiles.Abstract.IObstacle> GetTilesAtPath(Point from, Point to)
       {
-        return new List<Dungeons.Tiles.IObstacle>();
+        return new List<Dungeons.Tiles.Abstract.IObstacle>();
       }
     }
 
@@ -134,7 +134,7 @@ namespace Roguelike
           if (TilesAtPathProvider != null)
           {
             var tiles = TilesAtPathProvider.GetTilesAtPath(attacker.point, target.point);
-            var clear = !tiles.Any(i => i is Dungeons.Tiles.IObstacle);
+            var clear = !tiles.Any(i => i is Dungeons.Tiles.Abstract.IObstacle);
             if (!clear && tiles.Count == 1 && tiles[0] is IDestroyable && RandHelper.GetRandomDouble() > 0.65)
             {
               clear = true;
@@ -147,7 +147,7 @@ namespace Roguelike
             var pathToTarget = FindPathForEnemy(attacker, target, 1, true);
             if (pathToTarget != null)
             {
-              var obstacles = pathToTarget.Where(i => context.CurrentNode.GetTile(new System.Drawing.Point(i.Y, i.X)) is Dungeons.Tiles.IObstacle).ToList();
+              var obstacles = pathToTarget.Where(i => context.CurrentNode.GetTile(new System.Drawing.Point(i.Y, i.X)) is Dungeons.Tiles.Abstract.IObstacle).ToList();
               if (!obstacles.Any())
               {
                 isClearPath = true;

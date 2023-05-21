@@ -1,6 +1,7 @@
 ﻿using Roguelike.Attributes;
 using Roguelike.Extensions;
 using Roguelike.Tiles.LivingEntities;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -110,7 +111,7 @@ namespace Roguelike.Tiles.Looting
       return base.GetLootStatInfo(caller);
     }
 
-    public override bool ApplyTo(Equipment eq, out string error)
+    public override bool ApplyTo(Equipment eq, Func<EquipmentKind> ekProvider, out string error)
     {
       error = "";
       var props = enhancmentProps[this.TinyTrophyKind];

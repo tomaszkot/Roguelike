@@ -15,6 +15,8 @@ using SimpleInjector;
 using System;
 using System.Drawing;
 using System.Linq;
+using Dungeons.Core.Policy;
+using Dungeons.Tiles.Abstract;
 
 namespace Roguelike.Managers.Policies
 {
@@ -41,6 +43,30 @@ namespace Roguelike.Managers.Policies
 
       //gm.CurrentNode.SetTile(apple, dest.point);
       gm.AppendTile(apple, dest.point);
+    }
+
+    public bool UsePassiveSpell
+    (
+      Tile pointedTile, 
+      LivingEntity caster,
+      Dungeons.Tiles.Abstract.ISpell spell, 
+      bool applied, 
+      SpellSource spellSource
+    )
+    {
+      Point? pt = null;
+      bool spellReqPoint = false;
+      if (spell is Spell sp && sp.RequiresDestPoint)
+      {
+        if (pointedTile != null)
+          pt = pointedTile.point;
+      }
+      if (pt != null || !spellReqPoint)
+      {
+        applied = gm.SpellManager.ApplyPassiveSpell<PassiveSpell>(caster, spellSource, pt) != null;
+      }
+
+      return applied;
     }
 
     public Abstract.Spells.ISpell ApplyPassiveSpell<T>
@@ -126,13 +152,24 @@ namespace Roguelike.Managers.Policies
         }
         else if (kind == SpellKind.Swarog)
         {
-          //TODO
           var ems = gm.EnemiesManager.GetActiveEnemiesInvolved();
           foreach (var en in ems)
           {
             en.HitRandomTarget = true;
           }
         }
+        else if (kind == SpellKind.Frighten)
+        {
+          var typedSpell = spell as FrightenSpell;
+          var ems = gm.EnemiesManager.GetActiveEnemiesInvolved().Where(i=>i.DistanceFrom(caster) <= typedSpell.Range);
+          foreach (var en in ems)
+          {
+            en.LastingEffectsSet.AddLastingEffectFromSpell(Effects.EffectType.Frighten, spell);
+          }
+          gm.SoundManager.PlaySound("hey");
+
+        }
+
 
         else if (kind == SpellKind.Dziewanna)
         {
@@ -163,7 +200,7 @@ namespace Roguelike.Managers.Policies
         }
         else if (kind == SpellKind.CrackedStone)
         {
-          gm.AppendTileByScrollUsage<Tile>(new CrackedStone(Container), destPoint.Value);
+          gm.AppendTileByScrollUsage<Tile>((spell as CrackedStoneSpell).TypedTile, destPoint.Value);
         }
         else if (spell is PassiveSpell ps1)
           caster.ApplyPassiveSpell(ps1);
@@ -234,7 +271,7 @@ namespace Roguelike.Managers.Policies
           if (ems.Any())
           {
             HeroBulkAttackTargets = ems.Cast<Enemy>().ToList();
-            res = ApplyAttackPolicy(gm.Hero, ems.First(), spellSource);
+            res = ApplyAttackPolicy(caster, ems.First(), spellSource);
             callSpellDone = false;
           }
           else
@@ -247,7 +284,7 @@ namespace Roguelike.Managers.Policies
         {
           if (pointedTile is IDestroyable dest)
           {
-            res = ApplyAttackPolicy(gm.Hero, dest, spellSource);
+            res = ApplyAttackPolicy(caster, dest, spellSource);
             callSpellDone = false;
           }
           else
@@ -343,16 +380,26 @@ namespace Roguelike.Managers.Policies
       policy.AddTarget(target);
 
       policies.Add(policy);
+
+      policy.TargetHit += (s, e) =>
+      {
+        HandeTileHit(caster, target, policy);
+      };
+
       if (BeforeApply != null)
         BeforeApply(policy);
 
-      policy.OnApplied += (s, e) =>
+      policy.OnApplied += (s, ev) =>
       {
-        gm.CallTryAddForLootSource(target);
-
+       // gm.CallTryAddForLootSource(target, policy);
+        //HandeTileHit(caster, target as Tile, policy);
         if (looped)
           return;
-        if (!applyingBulk)
+
+        var destr = target as IDestroyable;
+
+        if (!applyingBulk && 
+        (destr == null || !destr.Destroyed))//sec ball hanged
         {
           var repeatOK = spellSource.Kind != SpellKind.Swiatowit && caster.IsStatRandomlyTrue(EntityStatKind.ChanceToRepeatElementalProjectileAttack);
           if (repeatOK)
@@ -424,5 +471,7 @@ namespace Roguelike.Managers.Policies
       }
       return bulkOK;
     }
+
+   
   }
 }

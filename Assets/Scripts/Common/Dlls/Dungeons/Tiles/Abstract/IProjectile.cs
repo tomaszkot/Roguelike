@@ -14,7 +14,15 @@ namespace Dungeons.Tiles.Abstract
 
     string HitSound { get; }
 
-    int Range { get; set; }
+    int Range 
+    { 
+      get; 
+      set; 
+    }
+    bool DiesOnHit { get; set; }
+    int MaxVictimsCount { get; set; }
+    int Count { get; set; }
+    bool MissedTarget { get; set; }
 
   }
 }

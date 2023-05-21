@@ -9,12 +9,10 @@ namespace Roguelike.Abstract.Projectiles
     [JsonIgnore]
     LivingEntity Caller { get; set; }
 
-    bool DiesOnHit { get; set; }
+    
 
     AbilityKind ActiveAbilitySrc { get; set; }
 
-    int MaxVictimsCount { get; set; }
-    int Count { get; set; }
-    bool MissedTarget { get; set; }
+    
   }
 }

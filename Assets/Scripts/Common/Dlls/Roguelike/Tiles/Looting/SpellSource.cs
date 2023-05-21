@@ -284,18 +284,16 @@ namespace Roguelike.Tiles.Looting
         case SpellKind.CrackedStone:
           spell = new CrackedStoneSpell(caller);
           break;
+        case SpellKind.Frighten:
+          spell = new FrightenSpell(caller);
+          break;
         default:
           Dungeons.DebugHelper.Assert(false, "CreateSpell ???" + Kind);
           break;
           
       }
-      if (spell is IProjectileSpell proj)
-        proj.Range += spell.CurrentLevel - 1;
-
-      if (spell is PassiveSpell ps)
-      {
-
-      }
+      //if (spell is IProjectileSpell proj)
+      //  proj.Range += spell.CurrentLevel - 1;
       return spell;
     }
 
@@ -353,5 +351,8 @@ namespace Roguelike.Tiles.Looting
 
       return spellStatsDescription;
     }
-  }
+
+        
+   public bool IsManaPowered  { get { return this is Book || this is Scroll; } }
+ }
 }

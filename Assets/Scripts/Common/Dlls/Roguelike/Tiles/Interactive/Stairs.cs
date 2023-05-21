@@ -44,13 +44,13 @@ namespace Roguelike.Tiles.Interactive
             break;
           case StairsKind.PitUp:
             Symbol = '>';
-            if (string.IsNullOrEmpty(tag1))
-              tag1 = "level_up";
+            //if (string.IsNullOrEmpty(tag1))
+            tag1 = "level_up";
             break;
           case StairsKind.LevelUp:
             Symbol = '>';
-            if (string.IsNullOrEmpty(tag1))
-              tag1 = "level_up";
+            //if (string.IsNullOrEmpty(tag1)) StairsKind.LevelUp had level_down!
+            tag1 = "level_up";
             break;
 
           default:

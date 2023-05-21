@@ -106,8 +106,11 @@ namespace Roguelike.Managers
         }
         else if (ia.InteractiveKind == InteractiveActionKind.AppendedToLevel)
           sndName = ia.InvolvedTile.AppendedSound;
-        else //if (ia.InteractiveKind == InteractiveActionKind.Hit)
+        else 
           sndName = ia.InvolvedTile.InteractSound;
+
+        if (!ia.PlaySound)
+          sndName = "";
       }
       else if (ac is HeroAction)
       {

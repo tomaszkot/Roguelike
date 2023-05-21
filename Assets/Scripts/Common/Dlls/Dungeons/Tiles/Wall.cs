@@ -1,4 +1,5 @@
 ﻿using Dungeons.Core;
+using Dungeons.Core.Policy;
 using Dungeons.Fight;
 using Dungeons.Tiles.Abstract;
 using System;
@@ -45,17 +46,22 @@ namespace Dungeons.Tiles
 
     public Wall() : this(new Point().Invalid()) { }
 
-    public HitResult OnHitBy(IProjectile md)
+    public HitResult OnHitBy(IProjectile md, IPolicy policy)
     {
       return HitResult.Hit;
     }
 
-    public HitResult OnHitBy(IDamagingSpell md)
+    public HitResult OnHitBy(IDamagingSpell md, IPolicy policy)
     {
       return HitResult.Hit;
     }
 
     public virtual void PlayHitSound(IProjectile proj) { }
     public virtual void PlayHitSound(IDamagingSpell spell) { }
+
+    public HitResult OnHitBy(ILivingEntity livingEntity)
+    {
+      return HitResult.Hit;
+    }
   }
 }

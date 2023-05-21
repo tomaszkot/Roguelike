@@ -71,7 +71,7 @@ namespace Roguelike.Spells
         case SpellKind.Transform:
           return EffectType.Transform;
         case SpellKind.Frighten:
-          break;
+          return EffectType.Frighten;
         case SpellKind.Healing:
           break;
         case SpellKind.ManaShield:
@@ -129,6 +129,7 @@ namespace Roguelike.Spells
         case EffectType.TornApart:
           break;
         case EffectType.Frighten:
+          spellKind = SpellKind.Frighten;
           break;
         case EffectType.Stunned:
           break;

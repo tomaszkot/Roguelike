@@ -1,5 +1,5 @@
 ﻿using Dungeons.Core;
-using Dungeons.Core.Tiles.Abstract;
+using Dungeons.Tiles.Abstract;
 using Dungeons.Tiles;
 using Newtonsoft.Json;
 using SimpleInjector;

@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using Roguelike.Attributes;
 
 namespace Roguelike.Core.Extensions
 {
@@ -15,6 +13,11 @@ namespace Roguelike.Core.Extensions
            )
         return true;
       return false;
+    }
+
+    public static bool IsExtraRange(this EntityStatKind  esk)
+    {
+      return esk.ToString().EndsWith("ExtraRange");
     }
   }
 }

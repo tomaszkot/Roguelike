@@ -1,5 +1,7 @@
 ﻿using Dungeons;
 using NUnit.Framework;
+using Roguelike.Attributes;
+using Roguelike.Managers;
 using Roguelike.Spells;
 using Roguelike.Tiles.Interactive;
 using Roguelike.Tiles.Looting;
@@ -54,6 +56,7 @@ namespace RoguelikeUnitTests
 
       Assert.AreEqual(inters.Count, interShallBeDestroyed ? 0 : intersCount);
     }
+
     [Test]
     public void TestChestsDestroy()
     {
@@ -74,8 +77,11 @@ namespace RoguelikeUnitTests
       Assert.False(game.Level.GetTiles<Chest>().Where(i => i == chest).Any());
     }
 
-    [Test]
-    public void CrackedStoneDestroyTest()
+    [TestCase(AttackKind.Melee)]
+    [TestCase(AttackKind.WeaponElementalProjectile)]
+    [TestCase(AttackKind.SpellElementalProjectile)]
+    [TestCase(AttackKind.PhysicalProjectile)]
+    public void CrackedStoneDestroyTest(AttackKind ak)
     {
       var gi = new Roguelike.Generators.GenerationInfo();
       gi.MakeEmpty();
@@ -83,6 +89,7 @@ namespace RoguelikeUnitTests
       gi.ForcedNumberOfEnemiesInRoom = 1;
       var game = CreateGame(gi: gi);
       var hero = game.Hero;
+      hero.AlwaysHit[ak] = true;//TODO
 
       var stonePh = hero.Position;
       stonePh.X += 1;
@@ -90,24 +97,55 @@ namespace RoguelikeUnitTests
 
       PassiveSpell spell;
       var scroll = PrepareScroll(hero, SpellKind.CrackedStone);
-      spell = game.GameManager.SpellManager.ApplyPassiveSpell<PassiveSpell>(hero, scroll, stonePh) as PassiveSpell;
+      spell = game.GameManager.SpellManager.ApplyPassiveSpell<PassiveSpell>(hero, scroll, stonePh) as CrackedStoneSpell;
       Assert.NotNull(spell);
-      var stone = game.Level.GetTile(stonePh);
-      Assert.True(stone is CrackedStone);
+      var stone = game.Level.GetTile(stonePh) as CrackedStone;
+      Assert.NotNull(stone);
+      Assert.False(stone.Damaged);
+      Assert.Greater(stone.Durability, 0);
 
       int destrAfterHits = 0;
-      for (int i = 0; i < 10; i++)
+      ProjectileFightItem fi = null;
+      int destrAfterHitsExp = 1;
+      if (ak == AttackKind.PhysicalProjectile)
       {
-        GotoNextHeroTurn();
-        game.GameManager.InteractHeroWith(stone);
+        fi = ActivateFightItem(FightItemKind.ThrowingKnife, hero, 10);
+        
+      }
+      else if (ak == AttackKind.SpellElementalProjectile)
+      {
+        
+      }
 
-        var tileAt = game.Level.GetTile(stonePh);
+      
+      for (int ind = 0; ind < 10; ind++)
+      {
+        game.GameManager.RecentlyHit = null;
+        GotoNextHeroTurn();
+        if (ak == AttackKind.Melee)
+          game.GameManager.InteractHeroWith(stone);
+        else if (ak == AttackKind.PhysicalProjectile)
+          Assert.True(UseFightItem(hero, stone, fi));
+        else if (ak == AttackKind.WeaponElementalProjectile)
+          HeroUseWeaponElementalProjectile(stone);
+        else if (ak == AttackKind.SpellElementalProjectile)
+        {
+          hero.Stats.SetNominal(EntityStatKind.Mana, 100);
+          Assert.True(UseFireBallSpellSource(hero, stone, true, SpellKind.FireBall));
+        }
+        Assert.True(stone.Damaged);
+        Assert.AreEqual(game.GameManager.RecentlyHit, stone);
+        var tileAt = game.Level.GetTile(stone.point);
+        Assert.True(!stone.Destroyed || tileAt.IsEmpty);
         if (tileAt.IsEmpty)
+        {
+          //Assert.True(stone.Destroyed);
           break;
+        }
         destrAfterHits++;
       }
-      Assert.Greater(destrAfterHits, 1);
-      Assert.Less(destrAfterHits, 6);
+      Assert.Greater(destrAfterHits, destrAfterHitsExp);
+      Assert.Less(destrAfterHits, 7);
     }
 
   }

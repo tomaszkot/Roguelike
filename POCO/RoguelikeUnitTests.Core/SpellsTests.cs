@@ -51,6 +51,30 @@ namespace RoguelikeUnitTests
         var scroll = new SwiatowitScroll();
         Assert.AreEqual(scroll.Name, "Swiatowit Scroll");
       }
+      {
+        var spell = new CrackedStoneSpell(game.Hero);
+        var currentLevelDesc = spell.CreateSpellStatsDescription(true);
+        Assert.AreEqual(currentLevelDesc.Duration, 0);
+      }
+
+      //Assert.AreEqual(features[1], "Defense: +" + (BaseFactor + 1) + "%");
+    }
+
+    [Test]
+    public void TestCrackedStoneDescription()
+    {
+      var game = CreateGame();
+      {
+        var spell = new CrackedStoneSpell(game.Hero);
+        var currentLevelDesc = spell.CreateSpellStatsDescription(true);
+        Assert.AreEqual(currentLevelDesc.Duration, 0);//CrackedStone would have a Health not a Duration
+        Assert.AreEqual(currentLevelDesc.Range, 1);//how far can set create it
+
+        var nextLevelDesc = spell.CreateSpellStatsDescription(false);
+        Assert.AreEqual(nextLevelDesc.Duration, 0);//CrackedStone would have a Health not a Duration
+        Assert.AreEqual(nextLevelDesc.Range, 2);//how far can set create it
+      }
+
       //Assert.AreEqual(features[1], "Defense: +" + (BaseFactor + 1) + "%");
     }
 
@@ -138,7 +162,7 @@ namespace RoguelikeUnitTests
 
 
     [Test]
-    public void TourLastingTest()
+    public void DurationTest()
     {
       var game = CreateGame();
       IncMagic(game);
@@ -256,7 +280,8 @@ namespace RoguelikeUnitTests
       Assert.NotNull(spell);
       var crackedStone = game.Level.GetTile(stonePh) as CrackedStone;
       Assert.NotNull(crackedStone);
-      var crackedStoneHealth = crackedStone.Health;
+      var crackedStoneHealth = crackedStone.Durability;
+      Assert.Greater(crackedStone.Durability, 0);
 
       GotoNextHeroTurn();
       if (ak == AttackKind.Melee)
@@ -277,7 +302,7 @@ namespace RoguelikeUnitTests
         HeroUseWeaponElementalProjectile(crackedStone);
       }
 
-      Assert.Less(crackedStone.Health, crackedStoneHealth);
+      Assert.Less(crackedStone.Durability, crackedStoneHealth);
       Assert.AreEqual(expSound, sndPlayed);
     }
   }

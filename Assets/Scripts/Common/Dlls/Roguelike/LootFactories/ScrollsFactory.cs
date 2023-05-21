@@ -37,7 +37,7 @@ namespace Roguelike.LootFactories
       var names = new[] { "fire_ball_scroll" , "ice_ball_scroll", "poison_ball_scroll",
         "identify_scroll", "teleport_scroll", "portal_scroll", "transform_scroll", "mana_shield_scroll",
         "skeleton_scroll", "dziewanna_scroll", "swarog_scroll", "swiatowit_scroll", "swap_positions_scroll",
-        "cracked_stone_scroll", "perun_scroll"
+        "cracked_stone_scroll", "perun_scroll", "frighten_scroll"
       };
       foreach (var name in names)
         factory[name] = createScroll;
