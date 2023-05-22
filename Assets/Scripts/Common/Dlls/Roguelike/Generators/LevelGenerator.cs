@@ -28,7 +28,6 @@ namespace Roguelike.Generators
     public LevelGenerator(Container container) : base(container)
     {
       Logger = container.GetInstance<ILogger>();
-      //var gi = container.GetInstance<Dungeons.GenerationInfo>() as GenerationInfo;
     }
 
     public LeverSet LeverSet { get => leverSet; protected set => leverSet = value; }

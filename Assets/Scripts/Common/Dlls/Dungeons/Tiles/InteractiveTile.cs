@@ -1,4 +1,5 @@
-﻿using Dungeons.Fight;
+﻿using Dungeons.Core.Policy;
+using Dungeons.Fight;
 using Dungeons.Tiles.Abstract;
 using System;
 using System.Drawing;
@@ -22,32 +23,42 @@ namespace Dungeons.Tiles
 
     }
 
-    protected void EmitInteraction()
+    protected virtual void EmitInteraction()
     {
       if (Interaction != null)
         Interaction(this, EventArgs.Empty);
     }
 
-    public virtual HitResult OnHitBy(IProjectile md)
-    {
-      return HitResult.Hit;
-    }
-
-    public virtual HitResult OnHitBy(IDamagingSpell md)
-    {
-      return HitResult.Hit;
-    }
-
+    
     public virtual void PlayHitSound(IProjectile proj)
     {
 
     }
-    public virtual void PlayHitSound(Dungeons.Tiles.Abstract.IDamagingSpell spell)
+    public virtual void PlayHitSound(IDamagingSpell spell)
     {
 
     }
 
+    public virtual HitResult OnHitBy(IDamagingSpell damager, IPolicy policy)
+    {
+      return HandleHit(HitResult.Hit);
+    }
 
-    
+    private HitResult HandleHit(HitResult res)
+    {
+      if (res == HitResult.Hit)
+        EmitInteraction();
+      return res;
+    }
+
+    public virtual HitResult OnHitBy(IProjectile md, IPolicy policy)
+    {
+      return HandleHit(HitResult.Hit);
+    }
+
+    public virtual HitResult OnHitBy(ILivingEntity livingEntity)
+    {
+      return HandleHit(HitResult.Hit);
+    }
   }
 }

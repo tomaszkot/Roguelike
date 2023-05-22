@@ -1,4 +1,5 @@
-﻿using Roguelike.Abstract.Projectiles;
+﻿using Dungeons.Tiles.Abstract;
+using Roguelike.Abstract.Projectiles;
 using Roguelike.Abstract.Spells;
 using Roguelike.Attributes;
 using Roguelike.Events;
@@ -36,7 +37,7 @@ namespace Roguelike.Policies
       ProjectilesFactory = container.GetInstance<IProjectilesFactory>();
     }
 
-    public IProjectile Projectile { get; set; }
+    public Abstract.Projectiles.IProjectile Projectile { get; set; }
     public LivingEntity Caster { get => caster; set => caster = value; }
     public IProjectilesFactory ProjectilesFactory { get; set; }
     public int MaxVictimsCount 
@@ -50,20 +51,20 @@ namespace Roguelike.Policies
 
     public override void Apply(LivingEntity caster)
     {
-      //if (this.Targets.Count == 1 && MaxVictimsCount > 1)
-      {
         var target = this.Targets[0];
         if(MaxVictimsCount > 1)
           Targets = GetOtherVictims(caster, target);
 
         if(!Targets.Contains(target))
           Targets.Insert(0, target);
-      }
 
       Apply(this.Projectile, caster, this.Targets, this.ProjectilesFactory);
     }
 
-    public void Apply(IProjectile projectile, LivingEntity caster, List<Dungeons.Tiles.IHitable> targets, IProjectilesFactory projectilesFactory)
+    public void Apply(Abstract.Projectiles.IProjectile projectile,
+      LivingEntity caster, 
+      List<Dungeons.Tiles.Abstract.IHitable> targets, 
+      IProjectilesFactory projectilesFactory)
     {
       this.Projectile = projectile;
       this.Projectile.Count = targets.Count;
@@ -86,9 +87,9 @@ namespace Roguelike.Policies
       Targets.ForEach(i=> AttackNextTarget(caster, i));
     }
 
-    private List<Dungeons.Tiles.IHitable> GetOtherVictims(LivingEntity caster, Dungeons.Tiles.IHitable target)
+    private List<Dungeons.Tiles.Abstract.IHitable> GetOtherVictims(LivingEntity caster, Dungeons.Tiles.Abstract.IHitable target)
     {
-      var otherOnes = new List<Dungeons.Tiles.IHitable>();
+      var otherOnes = new List<IHitable>();
       bool cannon = false;
       if (Projectile is ProjectileFightItem pfi && pfi.FightItemKind == FightItemKind.CannonBall)
       {
@@ -97,7 +98,6 @@ namespace Roguelike.Policies
       if (MaxVictimsCount > 1)
       {
         TilesAtPathProvider = GameManager.Container.GetInstance<ITilesAtPathProvider>();
-        //var neibs = GameManager.CurrentNode.GetNeighborhoodTiles<Enemy>(caster, caster, 9).Distinct().ToList();//TODO 9
         if (Projectile.ActiveAbilitySrc == Abilities.AbilityKind.ArrowVolley)
         {
           List<Enemy> finalNeibs = new List<Enemy>();
@@ -109,7 +109,7 @@ namespace Roguelike.Policies
             foreach (var neib in neibs)
             {
               var tiles = TilesAtPathProvider.GetTilesAtPath(caster.point, neib.point);
-              if (!tiles.Any(i => i is Dungeons.Tiles.IObstacle))
+              if (!tiles.Any(i => i is IObstacle))
               {
                 finalNeibs.Add(neib);
               }
@@ -166,31 +166,34 @@ namespace Roguelike.Policies
     public override void AttackNextTarget
     (
       LivingEntity caster,
-      Dungeons.Tiles.IHitable nextTarget
+      IHitable nextTarget
     )
     {
-      if(ShallHitTarget(nextTarget))
-        nextTarget.OnHitBy(Projectile);
+      var ak = AttackKind.PhysicalProjectile;
+      if (Projectile is IProjectileSpell ps)
+        ak = spellSource.IsManaPowered ? AttackKind.SpellElementalProjectile : AttackKind.WeaponElementalProjectile;
+      TryAttack(this, caster, nextTarget, ak, Projectile);
+
     }
 
-    public bool ShallHitTarget(Dungeons.Tiles.IHitable nextTarget)
-    {
-      return ShallHitTarget(Projectile, nextTarget, caster);
-    }
-
-    public static bool ShallHitTarget(IProjectile projectile, Dungeons.Tiles.IHitable nextTarget, LivingEntity caster)
+    //do not delete! used by UI
+    public static bool ShallHitTarget(
+      Dungeons.Tiles.Abstract.IProjectile projectile, 
+      Dungeons.Tiles.Abstract.IHitable nextTarget, 
+      LivingEntity caster
+      )
     {
       if (nextTarget is LivingEntity le && projectile is ProjectileFightItem pfi)
       {
-        if (!caster.CalculateIfHitWillHappen(le, Attributes.AttackKind.PhysicalProjectile, pfi))
+        if (!caster.CalculateIfHitWillHappen(le, AttackKind.PhysicalProjectile, pfi))
         {
           projectile.MissedTarget = true;
           caster.EventsManager.AppendAction(new LivingEntityAction(LivingEntityActionKind.Missed)
           {
             InvolvedEntity = caster,
             Missed = nextTarget,
-            Info = pfi.FightItemKind.ToDescription() + " from " + caster.Name + " missed " + le.Name 
-            
+            Info = pfi.FightItemKind.ToDescription() + " from " + caster.Name + " missed " + le.Name
+
           });
           return false;
         }
@@ -198,9 +201,12 @@ namespace Roguelike.Policies
       return true;
     }
 
+    SpellSource spellSource;
     public override void CreateSpell(LivingEntity caster, SpellSource spellSource)
     {
+      this.spellSource = spellSource;
       Projectile = spellSource.CreateSpell(caster) as IProjectileSpell;
     }
+
   }
 }

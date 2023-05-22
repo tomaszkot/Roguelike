@@ -1,4 +1,5 @@
-﻿using Roguelike.Abilities;
+﻿using Dungeons.Core.Policy;
+using Roguelike.Abilities;
 using Roguelike.Tiles.Abstract;
 using Roguelike.Tiles.LivingEntities;
 using System;
@@ -6,9 +7,9 @@ using System.Collections.Generic;
 
 namespace Roguelike.Policies
 {
-  public enum PolicyKind { Generic, Move, Attack, SpellCast, ProjectileCast }
+  public enum PolicyKind { Generic, Move, MeleeAttack, SpellCast, ProjectileCast }
 
-  public abstract class Policy
+  public abstract class Policy : IPolicy
   {
     public AbilityKind AbilityKind { get; internal set; }
     public bool Bulked { get; set; }
@@ -18,17 +19,17 @@ namespace Roguelike.Policies
       set; 
     }
     public bool ChangesTurnOwner {  get; set; } = true;
-
+    public event EventHandler<Dungeons.Tiles.Abstract.IHitable> TargetHit;
     public event EventHandler<Policy> OnApplied;
-    public event EventHandler<Dungeons.Tiles.IHitable> OnTargetHit;
+    
 
     public abstract void Apply(LivingEntity caster);
 
 
-    protected virtual void ReportHit(Dungeons.Tiles.IHitable entity)
+    public virtual void ReportHit(Dungeons.Tiles.Abstract.IHitable entity)
     {
-      if(OnTargetHit!=null)
-        OnTargetHit(this, entity);
+      if(TargetHit!=null)
+        TargetHit(this, entity);
     }
 
     protected virtual void ReportApplied(LivingEntity entity)

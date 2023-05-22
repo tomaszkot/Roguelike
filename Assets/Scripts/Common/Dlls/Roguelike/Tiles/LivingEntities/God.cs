@@ -1,6 +1,7 @@
 ﻿using Dungeons.Core;
 using Roguelike.Abstract.Tiles;
 using Roguelike.Managers;
+using Roguelike.Tiles.Looting;
 using SimpleInjector;
 using System;
 using System.Drawing;
@@ -34,6 +35,12 @@ namespace Roguelike.Tiles.LivingEntities
       //SetMagicValue();
     }
 
+    public virtual Roguelike.Abstract.Spells.ISpell CreateSpell(out Scroll godScroll)
+    {
+      godScroll = null;
+      return null;
+    }
+    
     public void SetNextLevelExp(double exp)
     {
       NextLevelExperience = exp;

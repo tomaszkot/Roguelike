@@ -36,6 +36,9 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Security.Cryptography;
+using Roguelike.Spells;
+using Dungeons.Core.Policy;
+using Dungeons.Tiles.Abstract;
 
 namespace Roguelike.Managers
 {
@@ -56,7 +59,7 @@ namespace Roguelike.Managers
   {
     public Point Position => this.point;
 
-    public HitResult OnHitBy(Dungeons.Tiles.Abstract.IProjectile md)
+    public HitResult OnHitBy(Dungeons.Tiles.Abstract.IProjectile proj, IPolicy policy)
     {
       return HitResult.Hit;
     }
@@ -66,7 +69,7 @@ namespace Roguelike.Managers
       return false;
     }
 
-    public HitResult OnHitBy(Dungeons.Tiles.Abstract.IDamagingSpell md)
+    public HitResult OnHitBy(Dungeons.Tiles.Abstract.IDamagingSpell md, IPolicy policy)
     {
       return HitResult.Hit;
     }
@@ -79,6 +82,11 @@ namespace Roguelike.Managers
     public void PlayHitSound(Dungeons.Tiles.Abstract.IDamagingSpell spell)
     {
       
+    }
+
+    public HitResult OnHitBy(Dungeons.Tiles.Abstract.ILivingEntity livingEntity)
+    {
+      return HitResult.Hit;
     }
   }
 
@@ -96,7 +104,7 @@ namespace Roguelike.Managers
     HeroInventoryManager heroInventoryManager;
     protected InputManager inputManager;
     IPersister persister;
-    ILogger logger;
+    Dungeons.Core.ILogger logger;
 
     public Hero Hero { get => Context.Hero; }
     protected GameState gameState;
@@ -126,7 +134,7 @@ namespace Roguelike.Managers
       get => persister;
       set => persister = value;
     }
-    public ILogger Logger { get => logger; set => logger = value; }
+    public Dungeons.Core.ILogger Logger { get => logger; set => logger = value; }
     public Func<Tile, InteractionResult> Interact;
     public Func<int, Stairs, InteractionResult> DungeonLevelStairsHandler;
 
@@ -152,7 +160,7 @@ namespace Roguelike.Managers
 
       gameState = container.GetInstance<GameState>();
       LootGenerator = container.GetInstance<LootGenerator>();
-      Logger = container.GetInstance<ILogger>();
+      Logger = container.GetInstance<Dungeons.Core.ILogger>();
       levelGenerator = container.GetInstance<Dungeons.DungeonGenerator>() as LevelGenerator;
 
       EventsManager = container.GetInstance<EventsManager>();
@@ -228,11 +236,11 @@ namespace Roguelike.Managers
       var movePolicy = Container.GetInstance<MovePolicy>();
       //Logger.LogInfo("moving " + entity + " to " + newPos + " mp = " + movePolicy);
 
-      movePolicy.OnApplied += (s, e) =>
+      movePolicy.OnApplied += (s, ev) =>
       {
         if (OnApplied != null)
         {
-          OnApplied(e);
+          OnApplied(ev);
         }
 
       };
@@ -242,7 +250,7 @@ namespace Roguelike.Managers
       {
         if (fi.FightItemKind == FightItemKind.HunterTrap && fi.FightItemState == FightItemState.Activated)
         {
-          entity.OnHitBy(fi as ProjectileFightItem);
+          entity.OnHitBy(fi as ProjectileFightItem, movePolicy);
         }
       }
 
@@ -1358,13 +1366,17 @@ namespace Roguelike.Managers
       return eq.IsMaterialAware();
     }
 
-
-    public virtual void HandeTileHit(LivingEntity attacker, Tile hitTile, Policy policy = null)
+    public IHitable RecentlyHit { get; set; }
+    public virtual void HandeTileHit(Policy policy, LivingEntity attacker, IHitable hitTile)
     {
+      RecentlyHit = hitTile;
       var info = "";
       var hitBlocker = false;
       var chest = hitTile as Chest;
       var barrel = hitTile as Barrel;
+      var policyIsMelee = policy.Kind == PolicyKind.MeleeAttack;
+      var attackerName = attacker.Name;
+
       if (barrel != null && barrel.OutOfOrder)
       {
         AppendAction<HeroAction>((HeroAction ac) => { ac.Kind = HeroActionKind.HitLockedChest; ac.Info = "This element is out of order"; });
@@ -1372,21 +1384,21 @@ namespace Roguelike.Managers
         return;
       }
 
-      if (hitTile is Wall || (chest != null) || (barrel != null))// && !chest.Closed))
+      if (hitTile is Wall || (chest != null) || (barrel != null))
       {
         hitBlocker = true;
         if (chest != null)
         {
-          info = "Hero hit a ";
+          info = attackerName+" hit a ";
           if (chest.ChestVisualKind == ChestVisualKind.Chest)
             info += "chest";
           else if (chest.ChestVisualKind == ChestVisualKind.Grave)
             info += "gave";
         }
         else if (barrel != null)
-          info = "Hero hit a barrel";
+          info = attackerName + " hit a barrel";
         else
-          info = "Hero hit a wall";
+          info = attackerName + " hit a wall";
       }
 
       if (hitBlocker)
@@ -1399,8 +1411,11 @@ namespace Roguelike.Managers
           ReplaceTile(new Tile(), ls.GetPoint());
           return;
         }
-        //var tr = new TimeTracker();
+
+        var chestWasLooted = chest!=null ? chest.IsLooted : false;
         this.LootManager.TryAddForLootSource(ls);
+        if(chest!=null && chestWasLooted)
+          HandleChestHit(ls);
         //Logger.LogInfo("TimeTracker TryAddForLootSource: " + tr.TotalSeconds);
       }
       else if (hitTile is TorchSlot ts)
@@ -1439,25 +1454,18 @@ namespace Roguelike.Managers
       }
       else if (hitTile is CrackedStone cs)
       {
-        var res = cs.OnHitBy(attacker);
-        if(res == HitResult.Hit)
-          AppendAction<InteractiveTileAction>((InteractiveTileAction ac) => 
-          { 
-            ac.InteractiveKind = InteractiveActionKind.Hit; 
-            ac.Info = info;
-            ac.InvolvedTile = cs;
-          });
+        info = attackerName + " hit a cracked stone";
+        AppendAction<InteractiveTileAction>((InteractiveTileAction ac) =>
+        {
+          ac.InteractiveKind = InteractiveActionKind.Hit;
+          ac.Info = info;
+          ac.InvolvedTile = cs;
+          ac.PlaySound = policyIsMelee;//TODO
+        });
         if (cs.Destroyed)
         {
-          //AppendAction<InteractiveTileAction>((InteractiveTileAction ac) =>
-          //{
-          //  ac.InteractiveKind = InteractiveActionKind.Destroyed;
-          //  ac.Info = info;
-          //  ac.InvolvedTile = cs;
-          //});
-          this.ReplaceTile(new Tile(), cs.point);
+          ReplaceTile(new Tile(), cs.point);
         }
-          
       }
     }
 
@@ -1483,7 +1491,7 @@ namespace Roguelike.Managers
 
 
 
-    public bool UtylizeSpellSource(LivingEntity caster, SpellSource spellSource, ISpell spell)
+    public bool UtylizeSpellSource(LivingEntity caster, SpellSource spellSource, Abstract.Spells.ISpell spell)
     {
       try
       {
@@ -1591,7 +1599,7 @@ namespace Roguelike.Managers
     public bool ApplyAttackPolicy
    (
      LivingEntity caster,//hero, enemy, ally
-     Dungeons.Tiles.IHitable target,
+     Dungeons.Tiles.Abstract.IHitable target,
      ProjectileFightItem pfi,
      Action<Policy> BeforeApply = null,
      Action<Policy> AfterApply = null
@@ -1613,23 +1621,23 @@ namespace Roguelike.Managers
       return new AttackDescription(caster, caster.UseAttackVariation, AttackKind.PhysicalProjectile);
     }
 
-    public void CallTryAddForLootSource(Dungeons.Tiles.IHitable obstacle)
-    {
-      if (obstacle is CrackedStone cs)
-      {
-        if (cs.Destroyed)
-          ReplaceTile(new Tile(), cs.point);
-      }
-      else if (obstacle is ILootSource)
-      {
-        var le = obstacle is LivingEntity;
-        if (!le)//le is handled specially
-        {
-          LootManager.TryAddForLootSource(obstacle as ILootSource);
-        }
-      }
+    //public void CallTryAddForLootSource(Dungeons.Tiles.Abstract.IHitable obstacle, Policy policy)
+    //{
+    //  if (obstacle is CrackedStone cs)
+    //  {
+    //  //  if (cs.Destroyed)
+    //  //    ReplaceTile(new Tile(), cs.point);
+    //  }
+    //  else if(obstacle is ILootSource)
+    //  {
+    //    var le = obstacle is LivingEntity;
+    //    if (!le)//le is handled specially
+    //    {
+    //      LootManager.TryAddForLootSource(obstacle as ILootSource);
+    //    }
+    //  }
       
-    }
+    //}
 
     
 
@@ -1657,11 +1665,11 @@ namespace Roguelike.Managers
       return inv.GetStacked<T>().FirstOrDefault();
     }
 
-    public Action<Policy, LivingEntity, Tile> AttackPolicyInitializer;
+    public Action<Policy, LivingEntity, IHitable> AttackPolicyInitializer;
     public Action AttackPolicyDone;
 
 
-    public void ApplyHeroPhysicalAttackPolicy(Tile target, bool allowPostAttackLogic)
+    public void ApplyHeroPhysicalAttackPolicy(IHitable target, bool allowPostAttackLogic)
     {
       Action<Policy> afterApply = (p) => { };
       if (allowPostAttackLogic)
@@ -1670,7 +1678,7 @@ namespace Roguelike.Managers
       ApplyPhysicalAttackPolicy(Hero, target, afterApply, EntityStatKind.Unset);
     }
 
-    public void ApplyPhysicalAttackPolicy(LivingEntity attacker, Tile target, Action<Policy> afterApply, EntityStatKind esk)
+    public void ApplyPhysicalAttackPolicy(LivingEntity attacker, IHitable target, Action<Policy> afterApply, EntityStatKind esk)
     {
       MeleePolicyManager.ApplyPhysicalAttackPolicy(attacker, target, afterApply, null, esk);
     }
@@ -1786,18 +1794,26 @@ namespace Roguelike.Managers
     {
       bool used = false;
       var abilityKind = ab.Kind;
-      var endTurn = false; 
+      var endTurn = false;
+      if (ab.CoolDownCounter > 0)
+        return false;
+
       if (abilityKind == AbilityKind.Smoke)
       {
         AddSmoke(abilityUser);
         endTurn = true;
         used = true;
+        
       }
       else
         used = AddLastingEffectFromAbility(ab, abilityUser);
 
-      if(used && sendEvent)
-        HandleActiveAbilityUsed(abilityUser, abilityKind);
+      if (used)
+      {
+        abilityUser.WorkingAbilityKind = abilityKind;
+        if(sendEvent)
+          HandleActiveAbilityUsed(abilityUser, abilityKind);
+      }
 
       if(endTurn)
         Context.MoveToNextTurnOwner();//TODO call HandleHeroActionDone
@@ -1852,6 +1868,10 @@ namespace Roguelike.Managers
     {
       if (!ab.TurnsIntoLastingEffect)
         return false;
+
+      if(ab.CoolDownCounter > 0)
+        return false;
+
       bool used = false;
       var abilityKind = ab.Kind;
 
@@ -1885,8 +1905,7 @@ namespace Roguelike.Managers
     public void HandleActiveAbilityUsed(LivingEntity abilityUser, AbilityKind abilityKind)
     {
       var ab = abilityUser.GetActiveAbility(abilityKind);
-      if(ab.UsesCoolDownCounter)
-        ab.CoolDownCounter = ab.MaxCollDownCounter;
+      abilityUser.HandleActiveAbilityUsed(abilityKind);
       AppendUsedAbilityAction(abilityUser, abilityKind);
     }
 
@@ -1991,6 +2010,7 @@ namespace Roguelike.Managers
     public virtual void OnBeforeAlliesTurn()
     {
       var smokes = CurrentNode.Layers.GetTypedLayerTiles<ProjectileFightItem>(KnownLayer.Smoke);
+      ProjectileFightItem smokeEnded = null;
       foreach (var smoke in smokes)
       {
         smoke.Durability--;
@@ -1998,8 +2018,14 @@ namespace Roguelike.Managers
         {
           //CurrentNode.RemoveLoot(smoke.point);
           CurrentNode.Layers.GetLayer(KnownLayer.Smoke).Remove(smoke);
-          AppendAction(new LootAction(smoke, null) { Kind = LootActionKind.Destroyed });
+          AppendAction(new LootAction(smoke, null) { Kind = LootActionKind.Destroyed, Loot = smoke });
+          smokeEnded = smoke;
         }
+      }
+      if (smokeEnded !=null && smokeEnded.ActiveAbilitySrc == AbilityKind.Smoke)
+      {
+        smokeEnded.Caller.HandleActiveAbilityEffectDone(AbilityKind.Smoke, false);
+
       }
 
       var surfaces = CurrentNode.SurfaceSets.Sets;
@@ -2027,6 +2053,94 @@ namespace Roguelike.Managers
     public virtual void OnAfterAlliesTurn()
     {
 
+    }
+
+    public bool UseActiveSpell(
+     Tile pointedTile,
+     LivingEntity caster,
+     Dungeons.Tiles.Abstract.ISpell spell,
+     ref ApplyAttackPolicyResult applyAttackPolicyResult,
+     SpellSource spellSource)
+    {
+      bool applied = false;
+      var target = pointedTile;
+      var destroyable = target as IHitable;
+      if (spell is ProjectiveSpell && !(spellSource is SwiatowitScroll))
+      {
+        if (destroyable != null)
+        {
+          applyAttackPolicyResult = SpellManager.ApplyAttackPolicy(caster, destroyable, spellSource);
+          applied = applyAttackPolicyResult == ApplyAttackPolicyResult.OK;
+        }
+        else
+        {
+          ReportFailure("Target not destroyable");
+        }
+      }
+      else if (spell is OffensiveSpell)
+      {
+        applied = SpellManager.ApplySpell(caster, spellSource, pointedTile) != null;
+      }
+      applyAttackPolicyResult = applied ? ApplyAttackPolicyResult.OK : ApplyAttackPolicyResult.Unset;
+      return applied;
+    }
+
+    public bool UseSpell(
+      God god,
+      Tile pointedTile,
+      ref ApplyAttackPolicyResult applyAttackPolicyResult
+      
+      )
+    {
+      Scroll spellSource = null;
+      var spell = god.CreateSpell(out spellSource);
+      return UseSpell(spell, spellSource, pointedTile, ref applyAttackPolicyResult, null);
+    }
+
+    public bool UseSpell(
+      Abstract.Spells.ISpell spell,
+      SpellSource spellSource,
+      Tile pointedTile,
+      ref ApplyAttackPolicyResult applyAttackPolicyResult,
+      Action<bool> onBeforeUseSpell
+      )
+    {
+      bool applied = false;
+      if (spell is PassiveSpell)
+      {
+        applied = SpellManager.UsePassiveSpell(pointedTile, spell.Caller, spell, applied, spellSource);
+        applyAttackPolicyResult = applied ? ApplyAttackPolicyResult.OK : ApplyAttackPolicyResult.Unset;
+      } 
+      else
+      {
+        var target = pointedTile;
+        var destroyable = target as IHitable;
+        if (onBeforeUseSpell != null && destroyable != null)
+        {
+          onBeforeUseSpell(true);
+        }
+
+        applied = UseActiveSpell(pointedTile, spell.Caller, spell, ref applyAttackPolicyResult, spellSource);
+
+      }
+
+      return applied;
+    }
+
+    public void HandleChestHit(ILootSource lootSource)
+    {
+      var chest = (lootSource as Chest);
+      if (chest != null)
+      {
+        chest.RegistedHitWhenOpened();
+        if (chest.Destroyed)
+        {
+          CurrentNode.ReplaceTile(new Tile(), chest.point);
+          AppendAction(new InteractiveTileAction() { InteractiveKind = InteractiveActionKind.Destroyed, InvolvedTile = chest });
+        }
+        else
+          AppendAction(new InteractiveTileAction() { InteractiveKind = InteractiveActionKind.HitWhenLooted, InvolvedTile = chest });
+      }
     }
   }
 }

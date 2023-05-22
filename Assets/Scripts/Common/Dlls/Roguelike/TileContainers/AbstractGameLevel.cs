@@ -300,9 +300,11 @@ namespace Roguelike.TileContainers
       {
         var pfi = new ProjectileFightItem()
         {
-          FightItemKind = FightItemKind.Smoke
+          FightItemKind = FightItemKind.Smoke,
+          Caller = abilityUser
         };
         pfi.Durability = 4 + durab;
+        pfi.ActiveAbilitySrc = AbilityKind.Smoke;
         this.Layers.SetAt<ProjectileFightItem>(KnownLayer.Smoke, pfi, emp.point);
         smokes.Add(pfi);
       }
@@ -601,7 +603,7 @@ namespace Roguelike.TileContainers
             if (/*&& !EnemyCanPassDoors*/ !door.Opened)
               value = 0;
           }
-          else if (tile is IObstacle)
+          else if (tile is Dungeons.Tiles.Abstract.IObstacle)
           {
             if (forHeroAlly && tile is LivingEntity)
             {

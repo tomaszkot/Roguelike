@@ -9,6 +9,9 @@ using System.Threading.Tasks;
 
 namespace Roguelike.Abilities
 {
+  public enum AbilityState { Unset, Working, CoolingDown }
+  public enum AbilityProperty { Unset, Range, Duration, Durability}
+
   /// <summary>
   /// ActiveAbility must be used explicitely by a user
   /// </summary>
@@ -18,7 +21,7 @@ namespace Roguelike.Abilities
     {
       return false;
     }
-
+    
     public override bool IsPercentageFromKind => kind == AbilityKind.Stride;//|| kind == AbilityKind.CauseBleeding;
     public static  readonly EntityStatKind[] ElementalVengeanceEntityStatKinds = new[] { EntityStatKind.FireAttack, EntityStatKind.PoisonAttack, EntityStatKind.ColdAttack };
     public override AbilityKind Kind
@@ -104,7 +107,7 @@ namespace Roguelike.Abilities
             PrimaryStat.Unit = EntityStatUnit.Percentage;
             AuxStat.Unit = EntityStatUnit.Absolute;
             TurnsIntoLastingEffect = true;
-            MaxCollDownCounter = 10;
+            MaxCollDownCounter = 5;
             break;
 
           case AbilityKind.Smoke:
@@ -112,7 +115,7 @@ namespace Roguelike.Abilities
             ask = EntityStatKind.SmokeDuration;
             PrimaryStat.Unit = EntityStatUnit.Absolute;
             AuxStat.Unit = EntityStatUnit.Absolute;
-            MaxCollDownCounter = 12;
+            MaxCollDownCounter = 8;
             break;
 
           case AbilityKind.ElementalVengeance:
@@ -199,7 +202,7 @@ namespace Roguelike.Abilities
         }
       }
     }
-
+        
     public bool RunAtTurnStart { get; internal set; }
 
     public override float CalcFactor(int index, int level)
@@ -419,6 +422,9 @@ namespace Roguelike.Abilities
           break;
         case AbilityKind.Smoke:
           desc = "Creates dense smoke around the hero making enemies confused";
+          break;
+        case AbilityKind.WeightedNet:
+          desc = "Bonus to a weighted net";
           break;
         default:
           break;

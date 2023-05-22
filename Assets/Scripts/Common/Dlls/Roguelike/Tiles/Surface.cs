@@ -1,8 +1,8 @@
 ﻿using Dungeons.Core;
-using Dungeons.Core.Tiles.Abstract;
+using Dungeons.Core.Policy;
+using Dungeons.Tiles.Abstract;
 using Dungeons.Fight;
 using Dungeons.Tiles;
-using Dungeons.Tiles.Abstract;
 using Roguelike.Spells;
 using Roguelike.Tiles.Looting;
 using System;
@@ -90,7 +90,7 @@ namespace Roguelike.Tiles
   }
 
 
-  public class HitableSurface : Surface, Dungeons.Tiles.IHitable
+  public class HitableSurface : Surface, Dungeons.Tiles.Abstract.IHitable
   {
     public Point Position => point;
     public event EventHandler StartedBurning;
@@ -107,7 +107,7 @@ namespace Roguelike.Tiles
 
     
 
-    public HitResult OnHitBy(IProjectile md)
+    public HitResult OnHitBy(IProjectile md, IPolicy policy)
     {
       if (md is FireBallSpell ||
         (md is ProjectileFightItem pfi && pfi.CausesFire))
@@ -127,7 +127,7 @@ namespace Roguelike.Tiles
       }
     }
 
-    public HitResult OnHitBy(IDamagingSpell ds)
+    public HitResult OnHitBy(IDamagingSpell ds, IPolicy policy)
     {
       return HitResult.Hit;
     }
@@ -140,6 +140,11 @@ namespace Roguelike.Tiles
     public void PlayHitSound(IDamagingSpell spell)
     {
       
+    }
+
+    public HitResult OnHitBy(ILivingEntity livingEntity)
+    {
+      return HitResult.Hit;
     }
   }
 }

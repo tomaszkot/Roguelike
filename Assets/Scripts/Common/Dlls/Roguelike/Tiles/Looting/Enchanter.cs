@@ -1,5 +1,6 @@
 ﻿using Roguelike.Attributes;
 using Roguelike.Settings;
+using System;
 using System.Collections.Generic;
 
 namespace Roguelike.Tiles.Looting
@@ -84,7 +85,7 @@ namespace Roguelike.Tiles.Looting
 
     public abstract void SetProps();
 
-    public abstract bool ApplyTo(Equipment eq, out string error);
+    public abstract bool ApplyTo(Equipment eq, Func<EquipmentKind> ekProvider, out string error);
 
     const int baseEnchPrice = 15;
     protected virtual void SetPrice()

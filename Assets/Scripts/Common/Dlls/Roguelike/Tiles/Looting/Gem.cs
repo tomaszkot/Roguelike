@@ -147,28 +147,31 @@ namespace Roguelike.Tiles.Looting
 
     
 
-    public override bool ApplyTo(Equipment eq, out string error)
+    public override bool ApplyTo(Equipment eq, Func<EquipmentKind> ekProvider, out string error)
     {
       error = "";
       var gemKind = this.GemKind;
       if (gemKind == GemKind.Amber)
         gemKind = GemKind.Diamond;
       var props = enhancmentProps[gemKind];
-      if (props.ContainsKey(eq.EquipmentKind))
+
+      var ek = ekProvider();
+
+      if (props.ContainsKey(ek))
       {
-        var esk = props[eq.EquipmentKind];
+        var esk = props[ek];
         var propsToSet = new[] { esk }.ToList();
         if (this.GemKind == GemKind.Amber)
         {
           var otherKinds = GetOtherKinds(gemKind);
           foreach (var other in otherKinds)
-            propsToSet.Add(enhancmentProps[other][eq.EquipmentKind]);
+            propsToSet.Add(enhancmentProps[other][ek]);
         }
 
         var values = new List<int>();
         foreach (var prop in propsToSet)
         {
-          int val = GetStatIncrease(eq.EquipmentKind, prop);
+          int val = GetStatIncrease(ek, prop);
 
           //if (values.Any(i => i != val)) ??
           //  throw new Exception("Error on crafting");

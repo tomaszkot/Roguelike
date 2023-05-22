@@ -95,7 +95,7 @@ namespace Roguelike
         return false;
       }
 
-      if (spell.ManaCost > caster.GetCurrentValue(EntityStatKind.Mana))
+      if (!caster.HasEnoughMana(spell.ManaCost))
       {
         preventReason = "Not enough mana";
         return false;

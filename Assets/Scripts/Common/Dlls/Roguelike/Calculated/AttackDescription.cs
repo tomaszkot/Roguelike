@@ -45,12 +45,14 @@ namespace Roguelike.Calculated
         this.spell = spell;
         NonPhysical = new Dictionary<EntityStatKind, float>();
         this.ent = ent;
-        Weapon wpn = null;
+        Weapon wpn = ent.GetActiveWeapon();
         //if (ent != null)//can be if using WeaponElementalProjectile
         {
-          wpn = ent.GetActiveWeapon();
-
-          attackKind = DiscoverAttackKind(attackKind, wpn);
+          if (attackKind == AttackKind.Unset)
+          {
+            
+            attackKind = DiscoverAttackKind(attackKind, wpn);
+          }
           AttackKind = attackKind;
         }
 
@@ -160,9 +162,7 @@ namespace Roguelike.Calculated
       {
         if (wpn.IsBowLike && attackKind == AttackKind.PhysicalProjectile)
         {
-          if (fightItem.IsBowLikeAmmo)
-            Current += fightItem.Damage;
-          else
+          if (!fightItem.IsBowLikeAmmo)
             Current -= wpn.Damage;//ammo not matching
         }
         else if (wpn.IsMagician && attackKind == AttackKind.WeaponElementalProjectile)
@@ -173,23 +173,23 @@ namespace Roguelike.Calculated
 
       if (attackKind == AttackKind.PhysicalProjectile && fightItem != null)
       {
-        bool addfightItemDamage = false;
+        //bool addfightItemDamage = false;
         if (fightItem.FightItemKind == Tiles.Looting.FightItemKind.Stone ||
            fightItem.FightItemKind == Tiles.Looting.FightItemKind.ThrowingKnife ||
            fightItem.FightItemKind == Tiles.Looting.FightItemKind.ThrowingTorch
            )
         {
           Current += ent.Stats.Strength/2;
-          addfightItemDamage = true;
+          //addfightItemDamage = true;
         }
 
-        if (fightItem.FightItemKind == Tiles.Looting.FightItemKind.CannonBall)
-          addfightItemDamage = true;
+        //if (fightItem.FightItemKind == Tiles.Looting.FightItemKind.CannonBall)
+        //  addfightItemDamage = true;
 
-        if(addfightItemDamage)
+        //if(addfightItemDamage)//trap did 0 damage to skeleton (he is resist on bleeding!)
           Current += fightItem.Damage;
-        else if(!fightItem.IsBowLikeAmmo)//done above
-          Debug.WriteLine("! error PhysicalProjectile damage not calced!");
+        //else if(!fightItem.IsBowLikeAmmo)//done above
+          //Debug.WriteLine("! error PhysicalProjectile damage not calced!");
       }
       
 

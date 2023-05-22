@@ -253,7 +253,7 @@ namespace Roguelike.Tiles.LivingEntities
           NextLevelExperience = NextLevelExperience * 1.3f;
         }
         LevelUpPoints += GenerationInfo.LevelUpPoints;
-        AbilityPoints += 2;
+        AbilityPoints += 3;
 
         //if (Level == 2 || Level == 3)
         //  NextLevelExperience *= 1.5f;
@@ -282,10 +282,10 @@ namespace Roguelike.Tiles.LivingEntities
         return;
       }
 
-      spell.CoolDownCounter = ActiveManaPoweredSpellSource.CreateSpell(this).CoolingDown;
+      spell.CoolDownCounter = ActiveManaPoweredSpellSource.CreateSpell(this).CoolingDownCounter;
     }
 
-    public override void Consume(IConsumable consumable)
+    public override bool Consume(IConsumable consumable)
     {
       if (inventory.Contains(consumable.Loot))
       {
@@ -294,10 +294,10 @@ namespace Roguelike.Tiles.LivingEntities
         if (rem == null)
         {
           Assert(false);
-          return;
+          return false;
         }
       }
-      base.Consume(consumable);
+      return base.Consume(consumable);
     }
 
     public void IncreaseStatByLevelUpPoint(EntityStatKind stat)
@@ -805,7 +805,6 @@ namespace Roguelike.Tiles.LivingEntities
         if (ab.CoolDownCounter > 0)
         {
           ab.CoolDownCounter--;
-          
         }
       }
     }
@@ -1024,9 +1023,10 @@ namespace Roguelike.Tiles.LivingEntities
 
     public override bool IsInProjectileReach(IProjectile fi, Point target)
     {
+      AbilityKind kind = AbilityKind.Unset;
       if (fi is ProjectileFightItem pfi)//TODO
       {
-        AbilityKind kind = AbilityKind.Unset;
+        
         if (pfi.FightItemKind.IsBowAmmoKind())
           kind = AbilityKind.BowsMastering;
         if (pfi.FightItemKind.IsCrossBowAmmoKind())
@@ -1035,6 +1035,30 @@ namespace Roguelike.Tiles.LivingEntities
         {
           var ab = abilities.GetAbility(kind);
           fi.Range = ProjectileFightItem.CalcRange(pfi.FightItemKind) + ab.GetExtraRange();
+        }
+      }
+      if (fi is Spell spell)
+      {
+        if (spell is FireBallSpell || spell is  IceBallSpell || spell is PoisonBallSpell)
+        {
+          if (spell.IsFromMagicalWeapon)
+          {
+            var wpn = GetActiveWeapon();
+            if (wpn != null)
+            {
+              if(wpn.Kind == Weapon.WeaponKind.Scepter)
+                kind = AbilityKind.SceptersMastering;
+              else if (wpn.Kind == Weapon.WeaponKind.Staff)
+                kind = AbilityKind.StaffsMastering;
+              else if (wpn.Kind == Weapon.WeaponKind.Wand)
+                kind = AbilityKind.WandsMastering;
+            }
+          }
+          if (kind != AbilityKind.Unset)
+          {
+            var ab = abilities.GetAbility(kind);
+            fi.Range += ab.GetExtraRange();
+          }
         }
       }
       return base.IsInProjectileReach(fi, target);

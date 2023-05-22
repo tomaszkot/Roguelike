@@ -1,13 +1,16 @@
-﻿using NUnit.Framework;
+﻿using Dungeons.Tiles.Abstract;
+using NUnit.Framework;
 using Roguelike.Attributes;
 using Roguelike.Extensions;
 using Roguelike.LootFactories;
 using Roguelike.Spells;
 using Roguelike.Tiles;
+using Roguelike.Tiles.Abstract;
 using Roguelike.Tiles.Interactive;
 using Roguelike.Tiles.LivingEntities;
 using Roguelike.Tiles.Looting;
 using RoguelikeUnitTests.Helpers;
+using SimpleInjector;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -444,6 +447,97 @@ namespace RoguelikeUnitTests
       Assert.Greater(enemiesAfter.Count, enemiesBefore.Count);
       Assert.Greater(enemiesAfter.Count - enemiesBefore.Count, 5 * multiplicator);
       Assert.AreEqual(enemiesAfter.Count, game.GameManager.EnemiesManager.AllEntities.Count);
+    }
+
+    [TestCase(AttackKind.Melee)]
+    [TestCase(AttackKind.WeaponElementalProjectile)]
+    [TestCase(AttackKind.SpellElementalProjectile)]
+    [TestCase(AttackKind.PhysicalProjectile)]
+    [Repeat(1)]
+    public void BarrelsSimpleTest(AttackKind ak)
+    {
+      var env = CreateTestEnv();
+      var numberOfInteractiveTiles = 10;
+      var lootInfo = new LootInfo(game, null);
+      var barrels = env.AddTiles<Barrel>(() => new Barrel(Container), numberOfInteractiveTiles, (InteractiveTile barrel) => { 
+      });
+     
+      var hero = game.Hero;
+      ProjectileFightItem fi = null;
+      if (ak == AttackKind.PhysicalProjectile)
+      {
+        fi = ActivateFightItem(FightItemKind.ThrowingKnife, hero, 10);
+
+      }
+
+      foreach (var barrel in barrels)
+      {
+
+        HitHitable(ak, hero, fi, barrel);
+        Assert.True(barrel.Destroyed);
+        Assert.AreEqual(game.GameManager.RecentlyHit, barrel);
+        var tileAt = game.Level.GetTile(barrel.point);
+        Assert.True(tileAt != barrel);
+
+      }
+
+      var newLootItems = lootInfo.GetDiff();
+      Assert.Greater(newLootItems.Count, 0);
+    }
+
+    [TestCase(AttackKind.Melee)]
+    [TestCase(AttackKind.WeaponElementalProjectile)]
+    [TestCase(AttackKind.SpellElementalProjectile)]
+    [TestCase(AttackKind.PhysicalProjectile)]
+    [Repeat(1)]
+    public void ChestsSimpleTest(AttackKind ak)
+    {
+      var env = CreateTestEnv();
+      var numberOfInteractiveTiles = 2;
+      var lootInfo = new LootInfo(game, null);
+      var chests
+        = env.AddTiles<Chest>(() => new Chest(Container), numberOfInteractiveTiles, (InteractiveTile barrel) => {
+      });
+
+      var hero = game.Hero;
+      ProjectileFightItem fi = null;
+      if (ak == AttackKind.PhysicalProjectile)
+      {
+        fi = ActivateFightItem(FightItemKind.ThrowingKnife, hero, 10);
+
+      }
+
+      foreach (var chest in chests)
+      {
+        Assert.False(chest.IsLooted);
+        HitHitable(ak, hero, fi, chest);
+        Assert.True(chest.IsLooted);
+        Assert.AreEqual(game.GameManager.RecentlyHit, chest);
+        var tileAt = game.Level.GetTile(chest.point);
+        Assert.AreEqual(tileAt , chest);
+
+      }
+
+      var newLootItems = lootInfo.GetDiff();
+      Assert.Greater(newLootItems.Count, 0);
+    }
+
+    private void HitHitable(AttackKind ak, Hero hero, ProjectileFightItem fi, IDestroyable target)
+    {
+      game.GameManager.RecentlyHit = null;
+      PlaceCloseToHero(target);
+      GotoNextHeroTurn();
+      if (ak == AttackKind.Melee)
+        game.GameManager.InteractHeroWith(target as Dungeons.Tiles.Tile);
+      else if (ak == AttackKind.PhysicalProjectile)
+        Assert.True(UseFightItem(hero, target, fi));
+      else if (ak == AttackKind.WeaponElementalProjectile)
+        HeroUseWeaponElementalProjectile(target);
+      else if (ak == AttackKind.SpellElementalProjectile)
+      {
+        hero.Stats.SetNominal(EntityStatKind.Mana, 100);
+        Assert.True(UseFireBallSpellSource(hero, target, true, SpellKind.FireBall));
+      }
     }
 
     [Test]

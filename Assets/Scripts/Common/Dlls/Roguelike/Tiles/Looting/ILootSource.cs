@@ -12,6 +12,7 @@ namespace Roguelike.Tiles
     bool LevelSet { get; set; }
     Loot ForcedReward { get; set; }
     bool IsLooted { get; set; }
+    bool RewardGenerated { get; set; }
   }
 }
 

@@ -40,6 +40,8 @@ namespace Roguelike.Extensions
 
       else if (valueString.EndsWith("ExtraRange"))
         res = "Extra Range";
+      else if (valueString.EndsWith("Duration"))
+        res = "Duration";
       //else if (valueString == EntityStatKind.ChanceToRepeatElementalProjectileAttack.ToString())
       //{
       //  return "Chance To Repeat Projectile Attack";
@@ -48,9 +50,9 @@ namespace Roguelike.Extensions
       //{
       //  return "Chance To Evade ElementalProjectileAttack";
       //}
-      if(res.Any())
+      if (res.Any())
       {
-        res = res.Replace("Extra", "");
+        res = res.Replace("Extra ", "");
         return res;
       }
 

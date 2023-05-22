@@ -116,19 +116,26 @@ namespace Roguelike.Attributes
     IceBallExtraRange = 1356,
     PoisonBallExtraRange = 1357,
     LightingBallExtraRange = 1358,
+    CrackedStoneExtraRange = 1359,
 
     StrideExtraDamage = 1400,
     TeleportExtraRange = 1401,
     SwapPositionExtraRange = 1402,
+    FrightenExtraRange = 1403,
 
     MaxCannonsCount = 1405,
     CannonExtraChanceToHit = 1406,
     SmokeScope = 1410,
     SmokeDuration = 1411,
+    FrightenDuration = 1412,
 
     ZealAttackVictimsCount = 1420,
 
-    IronSkinDuration = 1430
+    IronSkinDuration = 1430,
+    ManaShieldDuration = 1431,
+    TransformDuration = 1432,
+
+    CrackedStoneDurability = 1435
   };
 
   public class EntityStats
@@ -390,23 +397,20 @@ namespace Roguelike.Attributes
       var he = Health;
 
       var currentValue = this[sk].CurrentValue;
-      //if (currentValue < this[sk].TotalValue && amount > 0 || currentValue > 0 && amount < 0)
+      float val = amount;
+      if (sk == EntityStatKind.Health || sk == EntityStatKind.Mana)
       {
-        //eating food can not make health bigger than TotalValue
-        float val = amount;
-        if (sk == EntityStatKind.Health || sk == EntityStatKind.Mana)
-        {
-          var valMax = this[sk].TotalValue - currentValue;
-          if (val > valMax)
-            val = valMax;
-        }
-
+        var valMax = this[sk].TotalValue - currentValue;
+        if (val > valMax)
+          val = valMax;
+      }
+      if (val != 0)
+      {
         Stats[sk].Subtract(-val);
 
         return true;
       }
-
-      //return false;
+      return false;
     }
 
     internal void ResetStatFactors()

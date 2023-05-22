@@ -116,6 +116,30 @@ namespace RoguelikeUnitTests
     }
 
     [Test]
+    public void TestPotionConsumeNotPossibleWhenFull()
+    {
+      var game = CreateGame();
+      var hero = game.Hero;
+
+      Assert.Greater(ActivePlainEnemies.Count, 0);
+      var heroHealth = hero.Stats.Health;
+      
+      hero.OnMeleeHitBy(ActivePlainEnemies.First());
+      Assert.Greater(heroHealth, hero.Stats.Health);
+      
+      var hp = Helper.AddTile<Potion>();
+      hp.SetKind(PotionKind.Health);
+      hp.Count = 2;
+      AddItemToInv(hp);
+
+      Assert.True(hero.Consume(hp));
+      Assert.AreEqual(hero.Stats.Health, heroHealth);
+      Assert.AreEqual(hp.Count, 1);
+      Assert.False(hero.Consume(hp));
+      Assert.AreEqual(hero.Stats.Health, heroHealth);
+    }
+
+    [Test]
     public void TestManaPotionConsume()
     {
       var game = CreateGame();

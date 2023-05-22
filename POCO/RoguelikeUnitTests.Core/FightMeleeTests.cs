@@ -12,6 +12,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Roguelike.Tiles.Abstract;
+using Roguelike.Calculated;
 
 namespace RoguelikeUnitTests
 {
@@ -65,16 +66,17 @@ namespace RoguelikeUnitTests
     {
       var game = CreateGame();
       var hero = game.Hero;
-
+      hero.AlwaysHit[AttackKind.Melee] = true;
       Assert.Greater(ActivePlainEnemies.Count, 0);
       var enemy = ActivePlainEnemies.First();
       var enemyHealth = enemy.Stats.Health;
-      enemy.OnMeleeHitBy(hero);
+      InteractHeroWith(enemy);
       Assert.Greater(enemyHealth, enemy.Stats.Health);
       enemyHealth = enemy.Stats.Health;
-
+      
       var wpn = GenerateRandomEqOnLevelAndCollectIt<Weapon>();
-      enemy.OnMeleeHitBy(hero);
+      GotoNextHeroTurn();
+      InteractHeroWith(enemy);
 
       Assert.Greater(enemyHealth, enemy.Stats.Health);
     }
@@ -318,5 +320,7 @@ namespace RoguelikeUnitTests
         Assert.True(en.LastingEffects.Any());
       }
     }
+
+    
   }
 }

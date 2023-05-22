@@ -1,4 +1,5 @@
 ﻿using Dungeons.Core;
+using Newtonsoft.Json;
 using Roguelike.Tiles.Abstract;
 using SimpleInjector;
 using System;
@@ -16,6 +17,8 @@ namespace Roguelike.Tiles.Interactive
 
     private ChestVisualKind chestVisualKind = ChestVisualKind.Chest;
 
+    [JsonIgnore]
+    public bool RewardGenerated { get; set; }
     public string OriginMap { get; set; }
 
     public event EventHandler RequiredKey;

@@ -27,8 +27,8 @@ namespace Roguelike.Tiles.Interactive
     event EventHandler Activated;
   }
 
-  public class InteractiveTile : Dungeons.Tiles.InteractiveTile, IObstacle
-  {
+  public class InteractiveTile : Dungeons.Tiles.InteractiveTile
+    {
     private InteractiveTileKind _kind = InteractiveTileKind.Unset;
     public bool OutOfOrder { get; set; }
     public int Level
@@ -109,7 +109,6 @@ namespace Roguelike.Tiles.Interactive
         }
       }
     }
-
     public bool CanBeHitBySpell()
     {
       return true;

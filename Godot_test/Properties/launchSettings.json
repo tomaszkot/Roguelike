@@ -2,7 +2,7 @@
   "profiles": {
     "God4_1": {
       "commandName": "Project",
-      "commandLineArgs": "C:\\Users\\tomko\\Downloads\\Godot_v4.0.2-stable_mono_win64\\Godot_v4.0.2-stable_mono_win64\\Godot_v4.0.2-stable_mono_win64.exe"
+      "commandLineArgs": "C:\\Users\\Intern\\Downloads\\Godot_v4.0.2-stable_mono_win64\\Godot_v4.0.2-stable_mono_win64\\Godot_v4.0.2-stable_mono_win64.exe"
     },
     "Profile 1": {
       "commandName": "Executable",

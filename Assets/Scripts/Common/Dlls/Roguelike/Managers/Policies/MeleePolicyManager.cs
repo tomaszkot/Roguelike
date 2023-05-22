@@ -1,4 +1,5 @@
 ﻿using Dungeons.Tiles;
+using Dungeons.Tiles.Abstract;
 //using NUnit.Framework.Interfaces;
 using Roguelike.Attributes;
 using Roguelike.Managers;
@@ -6,6 +7,7 @@ using Roguelike.Policies;
 using Roguelike.Tiles.LivingEntities;
 using System;
 using System.Linq;
+using System.Reflection;
 
 namespace Roguelike.Managers.Policies
 {
@@ -18,7 +20,7 @@ namespace Roguelike.Managers.Policies
       Container = gm.Container;
     }
 
-    public void ApplyPhysicalAttackPolicy(LivingEntity attacker, Tile target, Action<Policy> afterApply, MeleeAttackPolicy policy,
+    public void ApplyPhysicalAttackPolicy(LivingEntity attacker, IHitable target, Action<Policy> afterApply, MeleeAttackPolicy policy,
       EntityStatKind esk)
     {
       //gm.Logger.LogInfo("ApplyPhysicalAttackPolicy: "+ attacker + ", target: "+ target);
@@ -40,7 +42,8 @@ namespace Roguelike.Managers.Policies
       ApplyPhysicalAttackPolicyInner(attacker, target, afterApply, policy, esk);
     }
 
-    private void ApplyPhysicalAttackPolicyInner(LivingEntity attacker, Tile target, Action<Policy> afterApply, MeleeAttackPolicy policy, EntityStatKind esk)
+    private void ApplyPhysicalAttackPolicyInner(LivingEntity attacker, IHitable target, Action<Policy> afterApply, 
+      MeleeAttackPolicy policy, EntityStatKind esk)
     {
       gm.Hero.PathToTarget = null;//https://github.com/users/tomaszkot/projects/1 11 Automatic turns while fighting
       var attackPolicy = policy ?? Container.GetInstance<MeleeAttackPolicy>();
@@ -52,6 +55,11 @@ namespace Roguelike.Managers.Policies
       if (gm.AttackPolicyInitializer != null)
         gm.AttackPolicyInitializer(attackPolicy, attacker, target);
 
+      attackPolicy.TargetHit += (object sender, IHitable e)=>
+      {
+        HandeTileHit(attacker, attackPolicy.Victim, attackPolicy);
+      };
+
       policies.Add(attackPolicy);
       attackPolicy.OnApplied += (s, policy) =>
       {
@@ -62,7 +70,8 @@ namespace Roguelike.Managers.Policies
       attackPolicy.Apply(attacker, target);
     }
 
-    private void OnPolicyApplied(LivingEntity attacker, Tile target, Action<Policy> afterApply, Policy policy)
+
+    private void OnPolicyApplied(LivingEntity attacker, IHitable target, Action<Policy> afterApply, Policy policy)
     {
       if (afterApply != null)
         afterApply(policy);
@@ -71,10 +80,9 @@ namespace Roguelike.Managers.Policies
         OnPolicyApplied(policy);
 
       var attackPolicy = policy as MeleeAttackPolicy;
-      gm.HandeTileHit(attacker, attackPolicy.Victim, attackPolicy);
+     
 
-      var ap = policy as MeleeAttackPolicy;
-      var enemyVictim = ap.Victim as Enemy;
+      var enemyVictim = attackPolicy.Victim as Enemy;
       if (enemyVictim != null && attacker is Hero)
       {
         MakeNextAttack(policy, enemyVictim);
@@ -117,38 +125,27 @@ namespace Roguelike.Managers.Policies
     protected bool MakeNextAttack(Policy policy, Enemy enemyVictim)
     {
       var ap = policy as MeleeAttackPolicy;
-      //StrikeBack shall be done when hero is hit
-      //if (enemyVictim.Alive && gm.Hero.CanUseAbility(Abilities.AbilityKind.StrikeBack))
-      //{
-      //  gm.UseAbility(enemyVictim, gm.Hero, Abilities.AbilityKind.StrikeBack, false);
-      //}
-      //if (HeroBulkAttackTargets == null)
+
+      if (!policy.Bulked)
       {
-        if (!policy.Bulked)
+        FindBulkAttackTargets(enemyVictim, EntityStatKind.Unset);//for Zeal attack
+        if (!HasBulkAttackVictims())
+          FindBulkAttackTargets(enemyVictim, EntityStatKind.ChanceToBulkAttack);//for rand bulk attack
+      }
+      if (HasBulkAttackVictims())
+      {
+        return AttackNextBulkTarget();
+      }
+      else
+      {
+        var repeatOK = gm.Hero.IsStatRandomlyTrue(EntityStatKind.ChanceToRepeatMeleeAttack);
+        if (repeatOK)
         {
-          FindBulkAttackTargets(enemyVictim, EntityStatKind.Unset);//for Zeal attack
-          if (!HasBulkAttackVictims())
-            FindBulkAttackTargets(enemyVictim, EntityStatKind.ChanceToBulkAttack);//for rand bulk attack
-        }
-        if (HasBulkAttackVictims())
-        {
-          return AttackNextBulkTarget();
-        }
-        else
-        {
-          var repeatOK = gm.Hero.IsStatRandomlyTrue(EntityStatKind.ChanceToRepeatMeleeAttack);
-          if (repeatOK)
-          {
-            ApplyPhysicalAttackPolicy(ap.Attacker, enemyVictim, null, null, EntityStatKind.ChanceToRepeatMeleeAttack);
-            return true;
-          }
+          ApplyPhysicalAttackPolicy(ap.Attacker, enemyVictim, null, null, EntityStatKind.ChanceToRepeatMeleeAttack);
+          return true;
         }
       }
-      //else if (!AttackNextBulkTarget(EntityStatKind.ChanceToBulkAttack, null))
-      //{
-      //  int k = 0;
-      //  k++;
-      //}
+
 
       return false;
     }
@@ -158,23 +155,6 @@ namespace Roguelike.Managers.Policies
       return HeroBulkAttackTargets != null && HeroBulkAttackTargets.Any();
     }
 
-    //protected bool HandleHeroAttackPolicyDone(Enemy en, Policy policy)
-    //{
-    //  if (HeroBulkAttackTargets == null)
-    //  {
-    //    FindBulkAttackTargets(en, EntityStatKind.ChanceToBulkAttack);
-    //  }
-    //  if (!HeroBulkAttackTargets.Any())
-    //  {
-    //    FinishHeroTurn(policy);
-    //  }
-    //  else
-    //    AttackNextBulkTarget();
-
-    //  return true;
-    //}
-
-
     protected bool AttackNextBulkTarget()
     {
       MeleeAttackPolicy pol;
@@ -183,29 +163,5 @@ namespace Roguelike.Managers.Policies
 
       return target != null;
     }
-
-
-
-    ///// <summary>
-    ///// Can  be melee or a spell
-    ///// </summary>
-    ///// <param name="esk"></param>
-    ///// <param name="func"></param>
-    ///// <returns></returns>
-    //protected override bool ApplyBulkAttack(EntityStatKind esk, Action<Enemy> func)
-    //{
-    //  bool bulkOK = HeroBulkAttackTargets.Any();
-    //  if (bulkOK)
-    //  {
-    //    AttackNextBulkTarget(esk, func);
-    //  }
-    //  return bulkOK;
-    //}
-
-
-
-
-
-
   }
 }
