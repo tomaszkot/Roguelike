@@ -96,20 +96,47 @@ public partial class Game : Node2D
 
   private void ActionsManager_ActionAppended(object sender, GameEvent ev)
   {
-    if (ev is LivingEntityAction)
-    {
-      var lea = ev as LivingEntityAction;
-      if (lea.Kind == LivingEntityActionKind.Moved)
-      {
-        SetPositionFromTile(hero.HeroTile, hero);
-      }
-    }
-    else if (ev is GameStateAction)
-    {
-    }
-    else if (ev is LootAction)
-    {
-    }
+	if (ev is LivingEntityAction)
+	{
+	  var lea = ev as LivingEntityAction;
+	  if (lea.Kind == LivingEntityActionKind.Moved)
+	  {
+		if (lea.InvolvedEntity is Hero)
+		{
+		  SetPositionFromTile(hero.HeroTile, hero, true);
+		}
+		if (lea.InvolvedEntity is Enemy en)
+		{
+		  var enGodot = enemyList.SingleOrDefault(i => i.EnemyTile == en);
+			GD.Print(en.Stats);
+		  SetPositionFromTile(en, enGodot, true);
+		}
+	  }
+	  if (lea.Kind == LivingEntityActionKind.Died && lea.InvolvedEntity is Enemy enemy)
+	  {
+		var enGodot = enemyList.SingleOrDefault(i => i.EnemyTile == enemy);
+
+
+		enGodot.GetParent().QueueFree();
+	  }
+	}
+	else if (ev is InteractiveTileAction)
+	{
+		var ita = ev as InteractiveTileAction;
+		if (ita.InteractiveKind == InteractiveActionKind.DoorOpened) 
+		{
+			AddTile(ita.InvolvedTile);
+		}
+	}
+	else if (ev is GameStateAction)
+	{
+		
+	}
+	else if (ev is LootAction)
+	{
+		
+	}
+	
   }
 
   // Called every frame. 'delta' is the elapsed time since the previous frame.
