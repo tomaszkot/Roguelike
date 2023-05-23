@@ -11,12 +11,17 @@ Features:
 - abilities system
 - quests system
 - trading system
-- written in C# 4.5 
+- written in .net core 3.1
 
-Along with the library a sample game is provided in RoguelikeConsoleRunner subdirectory.
-
+THere are two clients:
+- a basic console renderer is provided in RoguelikeConsoleRunner subdirectory
 Example game's view:
 [Sample Dungeon](RoguelikeConsoleRunner/samples/Roguelike.png)
+
+- a Godot renderer (under dev)
+Example game's view:
+TODO
+
 
 ## Configuration:
 GenerationInfo class contains fields controlling generation process.
