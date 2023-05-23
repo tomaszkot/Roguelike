@@ -27,6 +27,7 @@ public partial class Game : Node2D
   List<GodotGame.Entities.Enemy> enemyList = new();
   Dictionary<Enemy, GodotGame.Entities.Enemy> entityDict => new();
 	TileMap tileMap;
+	string pathToEnemies = "res://Sprites/LivingEntities/Enemies/";
 
   public GameManager GameManager
   {
@@ -126,15 +127,20 @@ public partial class Game : Node2D
 	  var enemies = entityDict.Count;
 
 	  enemyList.Add(godotEn);
-	  if (ResourceLoader.Exists("res://Sprites/LivingEntities/Enemies/" + tile.tag1 + ".png"))
-	  {
-			spr.Texture = ResourceLoader.Load("res://Sprites/LivingEntities/Enemies/" + tile.tag1 + ".png") as Texture2D;
-	  }
-	  else
-			spr.Texture = ResourceLoader.Load("res://Sprites/LivingEntities/Enemies/Bat.png") as Texture2D;
+			if (ResourceLoader.Exists(pathToEnemies + tile.tag1 + ".png"))
+			{
+				spr.Texture = LoadTexture(pathToEnemies + tile.tag1);
+			}
+			else
+				spr.Texture = LoadTexture(pathToEnemies + "Bat");
 	}
 
 	return spr;
+  }
+
+	private Texture2D LoadTexture(string path)
+	{
+		return ResourceLoader.Load(path + ".png") as Texture2D;
   }
 
 	private void AddTile(Tile tile)
