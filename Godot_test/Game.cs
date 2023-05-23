@@ -15,11 +15,14 @@ using NUnit.Framework;
 using System.Collections.Generic;
 using System.Linq;
 using Roguelike.Tiles.Interactive;
+using System.Drawing;
+using Dungeons.TileContainers;
 
 public partial class Game : Node2D
 {
   GameManager gm;
   IGame game;
+	DungeonNode dungeon;
   GodotGame.Entities.Hero hero;
   List<GodotGame.Entities.Enemy> enemyList = new();
   Dictionary<Enemy, GodotGame.Entities.Enemy> entityDict => new();
@@ -49,7 +52,7 @@ public partial class Game : Node2D
 
 	public void GenerateDungeon()
 	{
-		game.GenerateDungeon();
+	dungeon = game.GenerateDungeon();
 		CallDeferred("GenerateBackgroundTiles");
 	}
 
@@ -114,14 +117,15 @@ public partial class Game : Node2D
 	if (scenePath == "res://Entities/Enemy.tscn")
 	{
 	  var en = tile as Enemy;
-	  var gototEn = instance.GetChild<GodotGame.Entities.Enemy>(0);
-	  gototEn.EnemyTile = en;
+	  var godotEn = instance.GetChild<GodotGame.Entities.Enemy>(0);
+		godotEn.EnemyTile = en;
+		godotEn.maxHp = en.Stats.Health;
 
 	  //entityDict[en] = instance.GetChild<GodotGame.Entities.Enemy>(0);
 	  //entityDict.Add(en, );
 	  var enemies = entityDict.Count;
 
-	  enemyList.Add(gototEn);
+	  enemyList.Add(godotEn);
 	  if (ResourceLoader.Exists("res://Sprites/LivingEntities/Enemies/" + tile.tag1 + ".png"))
 	  {
 			spr.Texture = ResourceLoader.Load("res://Sprites/LivingEntities/Enemies/" + tile.tag1 + ".png") as Texture2D;
@@ -170,6 +174,12 @@ public partial class Game : Node2D
 		}
   }
 
+	private static Vector2 GetGamePosition(Point position)
+	{
+		var gamePosition = new Vector2(position.X * WorldTileMap.TileSize, position.Y * WorldTileMap.TileSize);
+		return gamePosition;
+  }
+
   private void ActionsManager_ActionAppended(object sender, GameEvent ev)
   {
 	if (ev is LivingEntityAction)
@@ -177,24 +187,46 @@ public partial class Game : Node2D
 	  var lea = ev as LivingEntityAction;
 	  if (lea.Kind == LivingEntityActionKind.Moved)
 	  {
-		if (lea.InvolvedEntity is Hero)
-		{
-		  SetPositionFromTile(hero.HeroTile, hero, true);
-		}
-		if (lea.InvolvedEntity is Enemy en)
-		{
-		  var enGodot = enemyList.SingleOrDefault(i => i.EnemyTile == en);
-			GD.Print(en.Stats);
-		  SetPositionFromTile(en, enGodot, true);
-		}
+			if (lea.InvolvedEntity is Hero)
+			{
+				SetPositionFromTile(hero.HeroTile, hero, true);
+			}
+			if (lea.InvolvedEntity is Enemy en)
+			{
+				var enGodot = enemyList.SingleOrDefault(i => i.EnemyTile == en);
+				SetPositionFromTile(en, enGodot, true);
+			}
 	  }
 	  if (lea.Kind == LivingEntityActionKind.Died && lea.InvolvedEntity is Enemy enemy)
 	  {
-		var enGodot = enemyList.SingleOrDefault(i => i.EnemyTile == enemy);
-
-
-		enGodot.GetParent().QueueFree();
-	  }
+			var enGodot = enemyList.SingleOrDefault(i => i.EnemyTile == enemy);
+			enGodot.GetParent().QueueFree();
+		}
+		if (lea.Kind == LivingEntityActionKind.GainedDamage)
+		{
+			if (lea.InvolvedEntity is Enemy en)
+			{
+			  var enGodot = enemyList.SingleOrDefault(i => i.EnemyTile == en);
+				enGodot.updateHpBar((float)lea.InvolvedValue);
+			}
+			if (lea.InvolvedEntity is Hero)
+			{
+					hero.ShowDamageLabel((float)lea.InvolvedValue);
+			}
+		}
+		if (lea.Kind == LivingEntityActionKind.Missed)
+		{
+			if (lea.InvolvedEntity is Enemy en) 
+			{
+					hero.ShowDamageLabel((float)lea.InvolvedValue, "Evaded");
+			}
+			if (lea.InvolvedEntity is Hero)
+			{
+				var targetTile = dungeon.GetTile(lea.targetEntityPosition);
+		var enGodot = enemyList.SingleOrDefault(i => i.EnemyTile == targetTile);
+		enGodot.updateHpBar((float)lea.InvolvedValue,"Evaded");
+		}
+		}
 	}
 	else if (ev is InteractiveTileAction)
 	{

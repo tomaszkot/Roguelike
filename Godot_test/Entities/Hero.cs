@@ -62,6 +62,16 @@ namespace GodotGame
 		//}
 
 	  }
+
+		public void ShowDamageLabel(float damageValue, string text = "")
+		{
+	  var label = (DamageLabel)ResourceLoader.Load<PackedScene>("res://ClientScripts/damage_label.tscn").Instantiate();
+	  label.Text = (Math.Round(damageValue, 2)).ToString();
+	  label.SelfModulate = new Color(255,255,255);
+		if (text != "")
+			label.Text = text;
+	  AddChild(label);
+		}
 	}
   }
 }

@@ -57,6 +57,7 @@ namespace Roguelike.Policies
       attacker.EventsManager.AppendAction(new LivingEntityAction(LivingEntityActionKind.Missed)
       {
         InvolvedEntity = attacker,
+        targetEntityPosition = target.Position,
         Info = attacker.Name + " missed " + target.Name,
         AttackKind = ak
       });
