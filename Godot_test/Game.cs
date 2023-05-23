@@ -129,10 +129,10 @@ public partial class Game : Node2D
 	  enemyList.Add(godotEn);
 			if (ResourceLoader.Exists(pathToEnemies + tile.tag1 + ".png"))
 			{
-				spr.Texture = LoadTexture(pathToEnemies + tile.tag1);
+				spr.Texture = LoadTexture(tile.tag1);
 			}
 			else
-				spr.Texture = LoadTexture(pathToEnemies + "Bat");
+				spr.Texture = LoadTexture("Bat");
 	}
 
 	return spr;
@@ -140,7 +140,7 @@ public partial class Game : Node2D
 
 	private Texture2D LoadTexture(string path)
 	{
-		return ResourceLoader.Load(path + ".png") as Texture2D;
+		return ResourceLoader.Load(pathToEnemies + path + ".png") as Texture2D;
   }
 
 	private void AddTile(Tile tile)
