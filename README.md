@@ -13,7 +13,7 @@ Features:
 - trading system
 - written in .net core 3.1
 
-THere are two clients:
+There are two clients:
 - a basic console renderer is provided in RoguelikeConsoleRunner subdirectory
 Example game's view:
 [Sample Dungeon](RoguelikeConsoleRunner/samples/Roguelike.png)
