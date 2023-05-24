@@ -8,14 +8,16 @@ public partial class DamageLabel : Label
 		var t = GetTree().CreateTween();
 		t.TweenProperty(this,"position",new Vector2(Position.X,Position.Y - 40),0.5);
 		await ToSignal(GetTree().CreateTimer(0.5),"timeout");
-		DestoryAfaterAnimation();
+		DestoryAfterAnimation();
 
 	//t.TweenCallback(Callable.From(DestoryAfaterAnimation));
 	}
 
-	private void DestoryAfaterAnimation()
+	private void DestoryAfterAnimation()
 	{
 		if (GetParent() != null)
 			CallDeferred("queue_free");
-	}
+  }
+
+
 }
