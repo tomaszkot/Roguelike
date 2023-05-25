@@ -1,8 +1,10 @@
-[gd_scene load_steps=5 format=3 uid="uid://doojdlflk43w"]
+[gd_scene load_steps=7 format=3 uid="uid://doojdlflk43w"]
 
 [ext_resource type="Texture2D" uid="uid://bqjhompqr2qo8" path="res://Sprites/LivingEntities/Hero.png" id="1_tdfb0"]
 [ext_resource type="Script" path="res://Entities/Hero.cs" id="2_l35lg"]
 [ext_resource type="Texture2D" uid="uid://mvwpkimsvi1p" path="res://Sprites/LivingEntities/LightCircle.png" id="3_oa147"]
+[ext_resource type="Texture2D" uid="uid://cmo3n76thq5ts" path="res://Sprites/GUI/hb_out.png" id="4_6vmpa"]
+[ext_resource type="Texture2D" uid="uid://bc64bu176bwgl" path="res://Sprites/GUI/hb_in.png" id="5_n8xg6"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_371ry"]
 size = Vector2(115, 109)
@@ -10,6 +12,7 @@ size = Vector2(115, 109)
 [node name="Node2D" type="Node2D"]
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
+texture_filter = 1
 texture = ExtResource("1_tdfb0")
 script = ExtResource("2_l35lg")
 
@@ -18,7 +21,7 @@ position = Vector2(-5.5, 7.5)
 shape = SubResource("RectangleShape2D_371ry")
 
 [node name="Camera2D" type="Camera2D" parent="Sprite2D"]
-zoom = Vector2(0.9, 0.9)
+zoom = Vector2(0.8, 0.8)
 
 [node name="PointLight2D" type="PointLight2D" parent="Sprite2D"]
 position = Vector2(-5.72205e-05, 6.49999)
@@ -26,3 +29,15 @@ scale = Vector2(0.915684, 0.712121)
 color = Color(0.862745, 0.862745, 0.862745, 1)
 texture = ExtResource("3_oa147")
 texture_scale = 1.5
+
+[node name="HpBar" type="Sprite2D" parent="Sprite2D"]
+z_index = 10
+texture_filter = 1
+position = Vector2(0, -80)
+texture = ExtResource("4_6vmpa")
+
+[node name="Hp" type="Sprite2D" parent="Sprite2D/HpBar"]
+texture_filter = 1
+position = Vector2(-31.6667, 0)
+texture = ExtResource("5_n8xg6")
+offset = Vector2(32, 0)

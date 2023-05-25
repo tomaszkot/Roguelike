@@ -1,5 +1,6 @@
 ﻿#define ASCII_BUILD
 using Dungeons;
+using Newtonsoft.Json;
 using SimpleInjector;
 using System;
 using System.Diagnostics;
@@ -59,11 +60,11 @@ namespace Roguelike.Tiles.Interactive
         }
       }
     }
-
+    //[JsonConstructor]
     public Stairs(Container cont) : this(cont, StairsKind.LevelDown)
     {
     }
-
+    
     public Stairs(Container cont, StairsKind kind) : base(cont, '>')
     {
 #if ASCII_BUILD

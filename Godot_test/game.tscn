@@ -1,4 +1,4 @@
-[gd_scene load_steps=36 format=3 uid="uid://c2ijfx37sdqcj"]
+[gd_scene load_steps=40 format=3 uid="uid://c2ijfx37sdqcj"]
 
 [ext_resource type="Script" path="res://Game.cs" id="1_1mlpr"]
 [ext_resource type="Texture2D" uid="uid://bbn7isi8mttos" path="res://Sprites/GUI/air.png" id="2_eot3r"]
@@ -24,11 +24,13 @@
 [ext_resource type="Texture2D" uid="uid://c6cgc0hyeqryr" path="res://Sprites/GUI/faithkeeper.png" id="21_y7lth"]
 [ext_resource type="Texture2D" uid="uid://bo3xpj0xg2g5h" path="res://Sprites/GUI/skull.png" id="22_q36pe"]
 [ext_resource type="Texture2D" uid="uid://bfiip7a1xr3mi" path="res://Sprites/GUI/flamberge.png" id="23_cju5r"]
+[ext_resource type="Script" path="res://ClientScripts/GUI.cs" id="25_62s86"]
 [ext_resource type="TileSet" uid="uid://dhoxa8lpx0e82" path="res://ClientScripts/TileSet.tres" id="25_v18s7"]
-[ext_resource type="Script" path="res://ClientScripts/WorldTileMap.cs" id="26_khtfm"]
+[ext_resource type="Texture2D" uid="uid://6we743uva22t" path="res://Sprites/GUI/Form.png" id="26_sifmh"]
+[ext_resource type="Script" path="res://ClientScripts/GameLevel.cs" id="29_o02cf"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_e2xfd"]
-font_size = 28
+font_size = 34
 outline_size = 2
 shadow_size = 7
 shadow_color = Color(0, 0, 0, 0.584314)
@@ -155,6 +157,18 @@ _data = {
 "idle": SubResource("Animation_fq5ee")
 }
 
+[sub_resource type="LabelSettings" id="LabelSettings_ewvj7"]
+font_size = 30
+outline_size = 2
+shadow_size = 7
+shadow_color = Color(0, 0, 0, 0.584314)
+
+[sub_resource type="LabelSettings" id="LabelSettings_etri8"]
+font_size = 30
+outline_size = 2
+shadow_size = 7
+shadow_color = Color(0, 0, 0, 0.584314)
+
 [node name="Game" type="Node2D"]
 script = ExtResource("1_1mlpr")
 
@@ -171,91 +185,110 @@ offset_bottom = 40.0
 grow_horizontal = 2
 script = ExtResource("2_ysriv")
 
-[node name="Start" type="Button" parent="MainMenu/TopMenu"]
+[node name="VBoxContainer" type="VBoxContainer" parent="MainMenu/TopMenu"]
+layout_mode = 0
+offset_left = -234.0
+offset_top = 262.0
+offset_right = 158.0
+offset_bottom = 634.0
+theme_override_constants/separation = 40
+
+[node name="Continue" type="Button" parent="MainMenu/TopMenu/VBoxContainer"]
 self_modulate = Color(1, 1, 1, 0)
 z_index = 1
-layout_mode = 0
-offset_left = -224.0
-offset_top = 254.0
-offset_right = 240.0
-offset_bottom = 358.0
-pivot_offset = Vector2(227, 56)
+layout_mode = 2
 icon = ExtResource("4_pr1q7")
 
-[node name="Sprite" type="Sprite2D" parent="MainMenu/TopMenu/Start"]
+[node name="Sprite" type="Sprite2D" parent="MainMenu/TopMenu/VBoxContainer/Continue"]
 z_index = 1
 position = Vector2(230, 51)
 scale = Vector2(1.4, 1.4)
 texture = ExtResource("4_pr1q7")
 
-[node name="Label" type="Label" parent="MainMenu/TopMenu/Start/Sprite"]
-offset_left = -108.571
-offset_top = -20.0
-offset_right = 110.429
-offset_bottom = 22.0
-text = "Start New Game"
+[node name="Label" type="Label" parent="MainMenu/TopMenu/VBoxContainer/Continue/Sprite"]
+offset_left = -134.286
+offset_top = -25.7143
+offset_right = 136.714
+offset_bottom = 24.2857
+text = "Continue"
 label_settings = SubResource("LabelSettings_e2xfd")
+horizontal_alignment = 1
 
-[node name="AnimationPlayer" type="AnimationPlayer" parent="MainMenu/TopMenu/Start"]
+[node name="AnimationPlayer" type="AnimationPlayer" parent="MainMenu/TopMenu/VBoxContainer/Continue"]
 libraries = {
 "": SubResource("AnimationLibrary_3vltp")
 }
 
-[node name="Credits" type="Button" parent="MainMenu/TopMenu"]
+[node name="Start" type="Button" parent="MainMenu/TopMenu/VBoxContainer"]
 self_modulate = Color(1, 1, 1, 0)
 z_index = 1
-layout_mode = 0
-offset_left = -227.0
-offset_top = 397.0
-offset_right = 237.0
-offset_bottom = 501.0
-pivot_offset = Vector2(232, 52)
+layout_mode = 2
 icon = ExtResource("4_pr1q7")
 
-[node name="Sprite" type="Sprite2D" parent="MainMenu/TopMenu/Credits"]
+[node name="Sprite" type="Sprite2D" parent="MainMenu/TopMenu/VBoxContainer/Start"]
 z_index = 1
 position = Vector2(230, 51)
 scale = Vector2(1.4, 1.4)
 texture = ExtResource("4_pr1q7")
 
-[node name="Label" type="Label" parent="MainMenu/TopMenu/Credits/Sprite"]
-offset_left = -112.143
-offset_top = -18.5714
-offset_right = 106.857
-offset_bottom = 23.4286
+[node name="Label" type="Label" parent="MainMenu/TopMenu/VBoxContainer/Start/Sprite"]
+offset_left = -134.286
+offset_top = -25.7143
+offset_right = 136.714
+offset_bottom = 24.2857
+text = "Start New Game"
+label_settings = SubResource("LabelSettings_e2xfd")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="MainMenu/TopMenu/VBoxContainer/Start"]
+libraries = {
+"": SubResource("AnimationLibrary_3vltp")
+}
+
+[node name="Credits" type="Button" parent="MainMenu/TopMenu/VBoxContainer"]
+self_modulate = Color(1, 1, 1, 0)
+z_index = 1
+layout_mode = 2
+icon = ExtResource("4_pr1q7")
+
+[node name="Sprite" type="Sprite2D" parent="MainMenu/TopMenu/VBoxContainer/Credits"]
+z_index = 1
+position = Vector2(230, 51)
+scale = Vector2(1.4, 1.4)
+texture = ExtResource("4_pr1q7")
+
+[node name="Label" type="Label" parent="MainMenu/TopMenu/VBoxContainer/Credits/Sprite"]
+offset_left = -114.286
+offset_top = -25.7143
+offset_right = 104.714
+offset_bottom = 24.2857
 text = "Credits
 "
 label_settings = SubResource("LabelSettings_e2xfd")
 horizontal_alignment = 1
 
-[node name="Exit" type="Button" parent="MainMenu/TopMenu"]
+[node name="Exit" type="Button" parent="MainMenu/TopMenu/VBoxContainer"]
 self_modulate = Color(1, 1, 1, 0)
 z_index = 1
-layout_mode = 0
-offset_left = -225.0
-offset_top = 543.0
-offset_right = 239.0
-offset_bottom = 647.0
-pivot_offset = Vector2(233, 56)
+layout_mode = 2
 icon = ExtResource("4_pr1q7")
 
-[node name="Sprite" type="Sprite2D" parent="MainMenu/TopMenu/Exit"]
+[node name="Sprite" type="Sprite2D" parent="MainMenu/TopMenu/VBoxContainer/Exit"]
 z_index = 1
 position = Vector2(230, 51)
 scale = Vector2(1.4, 1.4)
 texture = ExtResource("4_pr1q7")
 
-[node name="Label" type="Label" parent="MainMenu/TopMenu/Exit/Sprite"]
-offset_left = -112.143
-offset_top = -18.5714
-offset_right = 106.857
-offset_bottom = 23.4286
+[node name="Label" type="Label" parent="MainMenu/TopMenu/VBoxContainer/Exit/Sprite"]
+offset_left = -114.286
+offset_top = -23.5714
+offset_right = 104.714
+offset_bottom = 26.4286
 text = "Exit
 "
 label_settings = SubResource("LabelSettings_e2xfd")
 horizontal_alignment = 1
 
-[node name="AnimationPlayer" type="AnimationPlayer" parent="MainMenu/TopMenu/Exit"]
+[node name="AnimationPlayer" type="AnimationPlayer" parent="MainMenu/TopMenu/VBoxContainer/Exit"]
 libraries = {
 "": SubResource("AnimationLibrary_3vltp")
 }
@@ -506,6 +539,103 @@ texture = ExtResource("23_cju5r")
 region_enabled = true
 region_rect = Rect2(-42, 33.5, 224, 111)
 
+[node name="GUI" type="CanvasLayer" parent="."]
+unique_name_in_owner = true
+process_mode = 3
+script = ExtResource("25_62s86")
+
+[node name="Options" type="Control" parent="GUI"]
+process_mode = 3
+visible = false
+layout_mode = 3
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -20.0
+offset_top = -20.0
+offset_right = 20.0
+offset_bottom = 20.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 4
+
+[node name="Background" type="Sprite2D" parent="GUI/Options"]
+position = Vector2(13, -61)
+texture = ExtResource("26_sifmh")
+
+[node name="Label2" type="Label" parent="GUI/Options/Background"]
+offset_left = -267.0
+offset_top = -260.0
+offset_right = 264.0
+offset_bottom = -210.0
+text = "Paused"
+label_settings = SubResource("LabelSettings_e2xfd")
+horizontal_alignment = 1
+
+[node name="Return" type="Button" parent="GUI/Options"]
+self_modulate = Color(1, 1, 1, 0)
+z_index = 1
+layout_mode = 0
+offset_left = -223.0
+offset_top = -218.0
+offset_right = 241.0
+offset_bottom = -114.0
+pivot_offset = Vector2(227, 56)
+icon = ExtResource("4_pr1q7")
+
+[node name="Sprite" type="Sprite2D" parent="GUI/Options/Return"]
+z_index = 1
+position = Vector2(230, 51)
+texture = ExtResource("4_pr1q7")
+
+[node name="Label" type="Label" parent="GUI/Options/Return/Sprite"]
+offset_left = -108.571
+offset_top = -25.7143
+offset_right = 110.429
+offset_bottom = 24.2857
+text = "Return"
+label_settings = SubResource("LabelSettings_ewvj7")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="GUI/Options/Return"]
+libraries = {
+"": SubResource("AnimationLibrary_3vltp")
+}
+
+[node name="Quit" type="Button" parent="GUI/Options"]
+self_modulate = Color(1, 1, 1, 0)
+z_index = 1
+layout_mode = 0
+offset_left = -224.0
+offset_top = -80.0
+offset_right = 240.0
+offset_bottom = 24.0
+pivot_offset = Vector2(227, 56)
+icon = ExtResource("4_pr1q7")
+
+[node name="Sprite" type="Sprite2D" parent="GUI/Options/Quit"]
+z_index = 1
+position = Vector2(229, 15)
+texture = ExtResource("4_pr1q7")
+
+[node name="Label" type="Label" parent="GUI/Options/Quit/Sprite"]
+offset_left = -108.571
+offset_top = -25.7143
+offset_right = 110.429
+offset_bottom = 24.2857
+text = "Save & Quit"
+label_settings = SubResource("LabelSettings_etri8")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="GUI/Options/Quit"]
+libraries = {
+"": SubResource("AnimationLibrary_3vltp")
+}
+
 [node name="TileMap" type="TileMap" parent="."]
 position = Vector2(-64, -64)
 tile_set = ExtResource("25_v18s7")
@@ -527,10 +657,15 @@ layer_2/y_sort_enabled = true
 layer_2/y_sort_origin = -2
 layer_2/z_index = -2
 layer_2/tile_data = PackedInt32Array()
-script = ExtResource("26_khtfm")
 
 [node name="CanvasModulate" type="CanvasModulate" parent="."]
 color = Color(0.137255, 0.137255, 0.207843, 1)
 
-[connection signal="pressed" from="MainMenu/TopMenu/Start" to="MainMenu/TopMenu" method="_on_start_pressed"]
-[connection signal="pressed" from="MainMenu/TopMenu/Exit" to="MainMenu/TopMenu" method="_on_exit_pressed"]
+[node name="Objects" type="Node" parent="."]
+script = ExtResource("29_o02cf")
+
+[connection signal="pressed" from="MainMenu/TopMenu/VBoxContainer/Continue" to="MainMenu/TopMenu" method="_on_continue_pressed"]
+[connection signal="pressed" from="MainMenu/TopMenu/VBoxContainer/Start" to="MainMenu/TopMenu" method="_on_start_pressed"]
+[connection signal="pressed" from="MainMenu/TopMenu/VBoxContainer/Exit" to="MainMenu/TopMenu" method="_on_exit_pressed"]
+[connection signal="pressed" from="GUI/Options/Return" to="GUI" method="ShowOptionMenu"]
+[connection signal="pressed" from="GUI/Options/Quit" to="GUI" method="_on_quit_pressed"]

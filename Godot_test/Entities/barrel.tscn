@@ -1,0 +1,220 @@
+[gd_scene load_steps=6 format=3 uid="uid://qnjkxd82sdd5"]
+
+[ext_resource type="Texture2D" uid="uid://dnsoky24n7ssu" path="res://Sprites/Interactive/barrel.png" id="1_y2vvh"]
+[ext_resource type="Texture2D" uid="uid://bpr4apovna80k" path="res://Sprites/Interactive/barrel_broken.png" id="2_wpem4"]
+[ext_resource type="Texture2D" uid="uid://b3hegomquchud" path="res://Sprites/GUI/cloud1.png" id="3_tslgh"]
+
+[sub_resource type="Animation" id="Animation_8e7fw"]
+resource_name = "destroy"
+length = 0.6
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Barrel:self_modulate")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.1),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [Color(1, 1, 1, 1), Color(1, 1, 1, 0)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Barrel/BarrelParts:visible")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.1),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [false, true]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("Barrel/BarrelParts/BarrelBroken:offset")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0.1, 0.4),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Vector2(0, 0), Vector2(-30, 0)]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("Barrel/BarrelParts/BarrelBroken2:offset")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0.1, 0.4),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Vector2(0, 0), Vector2(30, 0)]
+}
+tracks/4/type = "value"
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/path = NodePath("Barrel/BarrelParts/BarrelBroken3:offset")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/keys = {
+"times": PackedFloat32Array(0.1, 0.4),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Vector2(0, 0), Vector2(30, 0)]
+}
+tracks/5/type = "value"
+tracks/5/imported = false
+tracks/5/enabled = true
+tracks/5/path = NodePath("Barrel/BarrelParts/BarrelBroken4:offset")
+tracks/5/interp = 1
+tracks/5/loop_wrap = true
+tracks/5/keys = {
+"times": PackedFloat32Array(0.1, 0.4),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Vector2(0, 0), Vector2(-30, 0)]
+}
+tracks/6/type = "value"
+tracks/6/imported = false
+tracks/6/enabled = true
+tracks/6/path = NodePath("Barrel/BarrelParts:modulate")
+tracks/6/interp = 1
+tracks/6/loop_wrap = true
+tracks/6/keys = {
+"times": PackedFloat32Array(0.1, 0.5),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Color(1, 1, 1, 1), Color(1, 1, 1, 0)]
+}
+tracks/7/type = "value"
+tracks/7/imported = false
+tracks/7/enabled = true
+tracks/7/path = NodePath("Barrel/Dust:visible")
+tracks/7/interp = 1
+tracks/7/loop_wrap = true
+tracks/7/keys = {
+"times": PackedFloat32Array(0, 0.1),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [false, true]
+}
+tracks/8/type = "value"
+tracks/8/imported = false
+tracks/8/enabled = true
+tracks/8/path = NodePath("Barrel/Dust:modulate")
+tracks/8/interp = 1
+tracks/8/loop_wrap = true
+tracks/8/keys = {
+"times": PackedFloat32Array(0.1, 0.5),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Color(1, 1, 1, 0.647059), Color(1, 1, 1, 0)]
+}
+tracks/9/type = "value"
+tracks/9/imported = false
+tracks/9/enabled = true
+tracks/9/path = NodePath("Barrel/Dust:scale")
+tracks/9/interp = 1
+tracks/9/loop_wrap = true
+tracks/9/keys = {
+"times": PackedFloat32Array(0.1, 0.4),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Vector2(0.7, 0.7), Vector2(1.2, 1.2)]
+}
+tracks/10/type = "method"
+tracks/10/imported = false
+tracks/10/enabled = true
+tracks/10/path = NodePath(".")
+tracks/10/interp = 1
+tracks/10/loop_wrap = true
+tracks/10/keys = {
+"times": PackedFloat32Array(0.6),
+"transitions": PackedFloat32Array(1),
+"values": [{
+"args": [],
+"method": &"queue_free"
+}]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_2o3i0"]
+_data = {
+"destroy": SubResource("Animation_8e7fw")
+}
+
+[node name="Barrel" type="Node"]
+
+[node name="Barrel" type="Sprite2D" parent="."]
+z_index = 1
+texture_filter = 1
+texture = ExtResource("1_y2vvh")
+
+[node name="BarrelParts" type="Node2D" parent="Barrel"]
+visible = false
+z_index = 2
+
+[node name="BarrelBroken" type="Sprite2D" parent="Barrel/BarrelParts"]
+texture_filter = 1
+position = Vector2(-27, -50)
+rotation = 0.694641
+texture = ExtResource("2_wpem4")
+hframes = 3
+
+[node name="BarrelBroken2" type="Sprite2D" parent="Barrel/BarrelParts"]
+texture_filter = 1
+position = Vector2(46, -36)
+rotation = -0.424115
+texture = ExtResource("2_wpem4")
+hframes = 3
+frame = 1
+
+[node name="BarrelBroken3" type="Sprite2D" parent="Barrel/BarrelParts"]
+texture_filter = 1
+position = Vector2(-9, 6)
+rotation = -2.82394
+texture = ExtResource("2_wpem4")
+hframes = 3
+frame = 2
+
+[node name="BarrelBroken4" type="Sprite2D" parent="Barrel/BarrelParts"]
+texture_filter = 1
+position = Vector2(12, 44)
+rotation = -1.59698
+texture = ExtResource("2_wpem4")
+hframes = 3
+
+[node name="Dust" type="Node2D" parent="Barrel"]
+visible = false
+modulate = Color(1, 1, 1, 0.647059)
+self_modulate = Color(1, 1, 1, 0.647059)
+z_index = 2
+position = Vector2(4, 45)
+scale = Vector2(0.7, 0.7)
+
+[node name="Cloud1" type="Sprite2D" parent="Barrel/Dust"]
+modulate = Color(1, 1, 1, 0.376471)
+position = Vector2(-37, -87)
+rotation = 2.33874
+texture = ExtResource("3_tslgh")
+
+[node name="Cloud2" type="Sprite2D" parent="Barrel/Dust"]
+modulate = Color(1, 1, 1, 0.376471)
+position = Vector2(7, 7)
+rotation = -2.65116
+texture = ExtResource("3_tslgh")
+
+[node name="Cloud3" type="Sprite2D" parent="Barrel/Dust"]
+modulate = Color(1, 1, 1, 0.376471)
+position = Vector2(59, -77)
+rotation = -2.08567
+texture = ExtResource("3_tslgh")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+libraries = {
+"": SubResource("AnimationLibrary_2o3i0")
+}

@@ -1,4 +1,5 @@
-﻿using Dungeons.Tiles;
+﻿using Algorithms;
+using Dungeons.Tiles;
 using Roguelike.Abstract.Tiles;
 using Roguelike.Attributes;
 using Roguelike.Effects;
@@ -275,6 +276,8 @@ namespace Roguelike.Events
     public string Sound { get; set; }
 
     public LivingEntity InvolvedEntity { get; set; }
+
+    public System.Drawing.Point targetEntityPosition { get; set; } //For evasion
 
     public LivingEntityActionKind Kind { get; set; }
     public double InvolvedValue { get; set; }

@@ -15,17 +15,22 @@ using NUnit.Framework;
 using System.Collections.Generic;
 using System.Linq;
 using Roguelike.Tiles.Interactive;
+using System.Drawing;
+using Dungeons.TileContainers;
+using God4_1.ClientScripts;
 
 public partial class Game : Node2D
 {
-  GameManager gm;
-  IGame game;
-  GodotGame.Entities.Hero hero;
-  List<GodotGame.Entities.Enemy> enemyList = new();
-  Dictionary<Enemy, GodotGame.Entities.Enemy> entityDict => new();
-	TileMap tileMap;
+  public static GameManager gm;
+  public static IGame game;
+  public static DungeonNode dungeon;
+  public static GodotGame.Entities.Hero hero;
+  public static TileMap tileMap;
+  public static bool isGameStarted = false;
+  public GameEventHandler eventHandler = new GameEventHandler();
+  public GameLevel gameLevel = new GameLevel();
 
-  public GameManager GameManager
+  public static GameManager GameManager
   {
 	get { return game.GameManager; }
 	set { game.GameManager = value; }//TODO remove?
@@ -42,183 +47,78 @@ public partial class Game : Node2D
 	container.Register<ISoundPlayer, BasicSoundPlayer>();
 
 	game = container.GetInstance<IGame>();
-	this.GameManager.EventsManager.EventAppended += ActionsManager_ActionAppended;
-	this.GameManager.Context.ContextSwitched += Context_ContextSwitched;
-	tileMap = (WorldTileMap)GetNode("TileMap");
+	GameManager.EventsManager.EventAppended += eventHandler.ActionsManager_ActionAppended;
+	GameManager.Context.ContextSwitched += Context_ContextSwitched;
+	tileMap = (TileMap)GetNode("TileMap");
+	gameLevel = (GameLevel)GetNode("Objects");
   }
 
-	public void GenerateDungeon()
-	{
-		game.GenerateDungeon();
-		CallDeferred("GenerateBackgroundTiles");
-	}
+  public void GenerateDungeon()
+  {
+	dungeon = game.GenerateDungeon();
+	isGameStarted = true;
 
-	private void GenerateBackgroundTiles()
-	{
+	CallDeferred("GenerateBackgroundTiles");
+  }
+
+  private void GenerateBackgroundTiles()
+  {
 	var tiles = GameManager.CurrentNode.Tiles;
-		foreach (var tile in tiles) 
-		{
-			if (tile is not null && tile.IsEmpty)
-			{
-				AddTile(tile);
-			}
-		}
+	foreach (var tile in tiles)
+	{
+	  if (tile is not null && tile.IsEmpty)
+	  {
+			GameLevel.AddTile(tile);
+	  }
+	}
   }
 
 
   private void Context_ContextSwitched(object sender, ContextSwitch e)
-	{
-		if (e.Kind == GameContextSwitchKind.NewGame)
-		{
-			GameManager.Hero.Name = "Godot Hero";
-			var tiles = GameManager.CurrentNode.Tiles;
-
-			foreach (var tile in tiles)
-			{
-				if (tile is Roguelike.Tiles.Interactive.InteractiveTile) 
-				{
-					AddTile(tile);
-				}
-				if (tile is Wall || tile is Door)
-				{
-					AddTile(tile);
-				}
-				else if (tile is Hero heroTile)
-				{
-				 AddTile(tile);
-				  AddChildFromScene(tile, "res://Entities/Hero.tscn");
-					hero.HeroTile = heroTile;
-				}
-				else if (tile is Enemy)
-				{
-					AddChildFromScene(tile, "res://Entities/Enemy.tscn");
-					var enemies = GameManager.EnemiesManager.GetEnemies();
-				}
-			}
-		}
-	}
-
-  private Godot.Sprite2D AddChildFromScene(Tile tile, string scenePath)
   {
-	var scene = GD.Load<PackedScene>(scenePath);
-	var instance = scene.Instantiate();
-	var spr = instance.GetChild<Godot.Sprite2D>(0);
-	SetPositionFromTile(tile, spr);
-	AddChild(instance);
-
-	if (scenePath == "res://Entities/Hero.tscn")
+	if (e.Kind == GameContextSwitchKind.NewGame)
 	{
-	  this.hero = instance.GetChild<GodotGame.Entities.Hero>(0);
-	  this.hero.Moved += Hero_Moved;
+	  GameManager.Hero.Name = "Godot Hero";
+	  var tiles = GameManager.CurrentNode.Tiles;
+	  gameLevel.generateMapTiles(tiles);
+	  gameLevel.CreateEntities(tiles);
 	}
-	if (scenePath == "res://Entities/Enemy.tscn")
+	else if (e.Kind == GameContextSwitchKind.GameLoaded)
 	{
-	  var en = tile as Enemy;
-	  var gototEn = instance.GetChild<GodotGame.Entities.Enemy>(0);
-	  gototEn.EnemyTile = en;
-
-	  //entityDict[en] = instance.GetChild<GodotGame.Entities.Enemy>(0);
-	  //entityDict.Add(en, );
-	  var enemies = entityDict.Count;
-
-	  enemyList.Add(gototEn);
-	  if (ResourceLoader.Exists("res://Sprites/LivingEntities/Enemies/" + tile.tag1 + ".png"))
-	  {
-			spr.Texture = ResourceLoader.Load("res://Sprites/LivingEntities/Enemies/" + tile.tag1 + ".png") as Texture2D;
-	  }
-	  else
-			spr.Texture = ResourceLoader.Load("res://Sprites/LivingEntities/Enemies/Bat.png") as Texture2D;
+	  isGameStarted = true;
+	  var tiles = GameManager.CurrentNode.Tiles;
+	  gameLevel.generateMapTiles(tiles);
+	  gameLevel.CreateEntities(tiles);
+	  CallDeferred("GenerateBackgroundTiles");
+		hero.updateHealthBar(hero.HeroTile);
 	}
-
-	return spr;
   }
 
-	private void AddTile(Tile tile)
-	{
-		if (tile is Wall)
-		{
-			tileMap.SetCell(0, new Vector2I(tile.point.X, tile.point.Y), 0, new Vector2I(0,0));
-		}
-		if (tile is Door door)
-		{
-		  tileMap.SetCell(0, new Vector2I(tile.point.X, tile.point.Y), 1, new Vector2I(0, 0));
-			if (door.Opened)
-			{
-				tileMap.EraseCell(0, new Vector2I(tile.point.X, tile.point.Y));
-				tileMap.SetCell(1, new Vector2I(tile.point.X, tile.point.Y), 1, new Vector2I(0, 0));
-			}
-		}
-		if (tile.IsEmpty || tile is Roguelike.Tiles.Interactive.InteractiveTile || tile is Hero heroTile)
-		{
-		  tileMap.SetCell(2, new Vector2I(tile.point.X, tile.point.Y), 2, new Vector2I(0, 0));
-		}
-	}
-
-  private void Hero_Moved(object sender, Vector2 e)
+  public static void SetPositionFromTile(Tile tile, Godot.Sprite2D spr, bool ObjectMoved = false)
   {
-		GameManager.HandleHeroShift((int)e.X, (int)e.Y);
+	if (!ObjectMoved)
+	  spr.GlobalPosition = new Vector2(tile.point.X * WorldTileMap.TileSize, tile.point.Y * WorldTileMap.TileSize);
+	else
+	{
+	  var tween = spr.CreateTween();
+	  tween.TweenProperty(spr, "global_position", new Vector2(tile.point.X * WorldTileMap.TileSize, tile.point.Y * WorldTileMap.TileSize), 0.2);
+	}
   }
 
-  private static void SetPositionFromTile(Tile tile, Godot.Sprite2D spr, bool ObjectMoved = false)
+  private static Vector2 GetGamePosition(Point position)
   {
-		if (!ObjectMoved)
-			spr.GlobalPosition = new Vector2(tile.point.X * WorldTileMap.TileSize, tile.point.Y * WorldTileMap.TileSize);
-		else
-		{
-			var tween = spr.CreateTween();
-			tween.TweenProperty(spr, "global_position", new Vector2(tile.point.X * WorldTileMap.TileSize, tile.point.Y * WorldTileMap.TileSize), 0.2);
-		}
-  }
-
-  private void ActionsManager_ActionAppended(object sender, GameEvent ev)
-  {
-	if (ev is LivingEntityAction)
-	{
-	  var lea = ev as LivingEntityAction;
-	  if (lea.Kind == LivingEntityActionKind.Moved)
-	  {
-		if (lea.InvolvedEntity is Hero)
-		{
-		  SetPositionFromTile(hero.HeroTile, hero, true);
-		}
-		if (lea.InvolvedEntity is Enemy en)
-		{
-		  var enGodot = enemyList.SingleOrDefault(i => i.EnemyTile == en);
-		  SetPositionFromTile(en, enGodot, true);
-		}
-	  }
-	  if (lea.Kind == LivingEntityActionKind.Died && lea.InvolvedEntity is Enemy enemy)
-	  {
-		var enGodot = enemyList.SingleOrDefault(i => i.EnemyTile == enemy);
-
-
-		enGodot.GetParent().QueueFree();
-	  }
-	}
-	else if (ev is InteractiveTileAction)
-	{
-		var ita = ev as InteractiveTileAction;
-		if (ita.InteractiveKind == InteractiveActionKind.DoorOpened) 
-		{
-			AddTile(ita.InvolvedTile);
-		}
-	}
-	else if (ev is GameStateAction)
-	{
-		
-	}
-	else if (ev is LootAction)
-	{
-		
-	}
-	
+	var gamePosition = new Vector2(position.X * WorldTileMap.TileSize, position.Y * WorldTileMap.TileSize);
+	return gamePosition;
   }
 
   // Called every frame. 'delta' is the elapsed time since the previous frame.
   public override void _Process(double delta)
   {
-		game.MakeGameTick();
+	game.MakeGameTick();
+  }
 
-
+  public void SaveGame()
+  {
+	GameManager.Save(false);
   }
 }
