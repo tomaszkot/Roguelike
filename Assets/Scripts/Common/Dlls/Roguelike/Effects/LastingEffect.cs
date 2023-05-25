@@ -133,7 +133,7 @@ namespace Roguelike.Effects
     { 
       get 
       {
-        if (Type == EffectType.Stunned || Type == EffectType.Frozen)
+        if (Type == EffectType.Stunned || Type == EffectType.Frozen || Type == EffectType.WebTrap)
           return true;
         var fi = Source as Tiles.Looting.FightItem;
         return fi != null &&
@@ -225,6 +225,9 @@ namespace Roguelike.Effects
     public string GetDescription(bool shortOne)
     {
       string res = Type.ToDescription();
+
+      if (Type == EffectType.Frighten)
+        return "Frighten (Pending Turns: " + PendingTurns+")";
 
       if (AbilityKind == AbilityKind.ElementalVengeance)
         return "Elemental Attacks: "+ EffectiveFactor.ToString();

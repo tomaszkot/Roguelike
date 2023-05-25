@@ -1,4 +1,7 @@
 ﻿using Dungeons.Core;
+using Dungeons.Core.Policy;
+using Dungeons.Tiles;
+using Dungeons.Tiles.Abstract;
 using Roguelike.Abilities;
 using Roguelike.Attributes;
 using Roguelike.Events;
@@ -30,13 +33,18 @@ namespace Roguelike.Managers.Policies
       Container = gm.Container;
     }
 
+    protected virtual void HandeTileHit(LivingEntity attacker, IHitable hitTile, Policy policy)
+    {
+      gm.HandeTileHit(policy, attacker, hitTile);
+    }
+
 
     /// <summary>
     /// 
     /// </summary>
     /// <param name="lastTarget"></param>
     /// <param name="entityStatKind">can be ChanceToBulkAttack || ChanceToElementalProjectileBulkAttack </param>
-    protected List<Enemy> FindBulkAttackTargets(Enemy lastTarget, EntityStatKind entityStatKind)
+      protected List<Enemy> FindBulkAttackTargets(Enemy lastTarget, EntityStatKind entityStatKind)
     {
       HeroBulkAttackTargets = new List<Enemy>();
       var hero = gm.Hero;

@@ -23,11 +23,12 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
+using Dungeons.Tiles.Abstract;
 
 namespace RoguelikeUnitTests
 {
 
-    public interface ITestBase
+  public interface ITestBase
   {
     void GotoNextHeroTurn();
   }
@@ -65,6 +66,14 @@ namespace RoguelikeUnitTests
       Log("Test Cleanup: " + NUnit.Framework.TestContext.CurrentContext.Test.Name);
       Log("--");
       Log("-");
+    }
+
+    protected void IncreaseSpell(Roguelike.Tiles.LivingEntities.Hero hero, SpellKind sk)
+    {
+      hero.LevelUpPoints = 2;
+      hero.IncreaseStatByLevelUpPoint(EntityStatKind.Magic);
+      hero.IncreaseStatByLevelUpPoint(EntityStatKind.Magic);
+      Assert.True(hero.IncreaseSpell(sk));
     }
 
     protected void Log(string v)
@@ -447,6 +456,7 @@ namespace RoguelikeUnitTests
 
     protected bool UseSpellSource(Hero caster, IHitable victim, SpellSource spellSource)
     {
+      //caster.Stats.SetNominal(EntityStatKind.Mana, 100);
       if (victim is LivingEntity le)
         le.Stats[EntityStatKind.ChanceToEvadeElementalProjectileAttack].Nominal = 0;
 
@@ -460,7 +470,10 @@ namespace RoguelikeUnitTests
       return false;
     }
 
-    protected bool UseFireBallSpellSource(Hero caster, IHitable victim, bool useScroll, Roguelike.Spells.SpellKind Scroll = SpellKind.FireBall)
+    protected bool UseFireBallSpellSource
+    (
+      Hero caster, IHitable victim, bool useScroll, Roguelike.Spells.SpellKind Scroll = SpellKind.FireBall
+    )
     {
       return UseSpellSource(caster, victim, useScroll, Scroll);
     }
@@ -590,12 +603,12 @@ namespace RoguelikeUnitTests
       Load();
     }
 
-    protected static  void PrepareToBeBeaten(LivingEntity le)
+    protected void PrepareToBeBeaten(LivingEntity le)
     {
       le.Stats.GetStat(EntityStatKind.Health).Value.Nominal = 300;
     }
 
-    public static void MakeEnemyThrowProjectileAtHero
+    public void MakeEnemyThrowProjectileAtHero
     (
       Enemy en, 
       GameManager gm, 

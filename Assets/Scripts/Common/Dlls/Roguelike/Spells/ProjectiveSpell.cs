@@ -20,6 +20,7 @@ namespace Roguelike.Spells
       EntityRequired = true;
       EnemyRequired = true;
       this.Caller = caller;
+      this.UnsetProp(AbilityProperty.Duration);
     }
 
     [JsonIgnore]
@@ -31,7 +32,7 @@ namespace Roguelike.Spells
       get { return GetHitSound(); }
     }
 
-    public int Range { get; set; } = DefaultMaxRange;
+    //public int Range { get; set; } = DefaultMaxRange;
 
     [JsonIgnore]
     public int MaxVictimsCount { get; set; }
@@ -44,5 +45,10 @@ namespace Roguelike.Spells
       get;
       set;
     }
+
+    //protected override int GetRange()
+    //{
+    //  return Range;
+    //}
   }
 }

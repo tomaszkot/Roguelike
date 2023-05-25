@@ -1,5 +1,6 @@
 ﻿using Dungeons.Core;
 using Dungeons.Fight;
+using Dungeons.Tiles.Abstract;
 using Roguelike.Spells;
 using Roguelike.TileContainers;
 using Roguelike.Tiles.Looting;
@@ -84,6 +85,12 @@ namespace Roguelike.Tiles.LivingEntities
     {
       return LastHitCoolDown > 0;
     }
+    public  HitResult OnMeleeHitBy(ILivingEntity attacker)
+    {
+      OnMeleeHitBy(attacker as LivingEntity);
+      return HitResult.Hit;
+    }
+
 
     public override float OnMeleeHitBy(LivingEntity attacker)
     {

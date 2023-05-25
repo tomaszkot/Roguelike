@@ -136,6 +136,8 @@ namespace Roguelike.Events
 
     public Tiles.Interactive.InteractiveTile InvolvedTile { get; set; }
     public InteractiveActionKind InteractiveKind { get; set; }
+    public bool PlaySound { get; internal set; } = true;
+
     public InteractiveTileAction(Tiles.Interactive.InteractiveTile tile) { InvolvedTile = tile; }
     public InteractiveTileAction() { }
   }
@@ -279,7 +281,7 @@ namespace Roguelike.Events
     public InteractionResult InteractionResult { get; set; }
 
     public SpellKind UsedSpellKind { get; set; }
-    public Dungeons.Tiles.IHitable Missed { get; internal set; }
+    public Dungeons.Tiles.Abstract.IHitable Missed { get; internal set; }
     public AttackKind AttackKind { get; internal set; }
   }
 

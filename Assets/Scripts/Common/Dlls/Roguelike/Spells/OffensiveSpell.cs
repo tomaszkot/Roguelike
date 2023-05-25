@@ -17,31 +17,12 @@ namespace Roguelike.Spells
     public const int DefaultAddNominal = 0;
     public bool AlwaysHit { get; set; }
 
-    public OffensiveSpell(LivingEntity caller, SpellKind sk, Weapon weaponSpellSource, bool withVariation = true) : base(caller, weaponSpellSource)
+    public OffensiveSpell(LivingEntity caller, SpellKind sk, Weapon weaponSpellSource, bool withVariation = true) 
+      : base(caller, weaponSpellSource, sk)
     {
       Kind = sk;
       this.withVariation = withVariation;
-      var ale = caller as AdvancedLivingEntity;
-      var en = caller as Enemy;
-
-      if (en != null)
-      {
-        //TODO
-        CurrentLevel = en.Level;
-        
-        if (en.PowerKind == EnemyPowerKind.Champion)
-          CurrentLevel += 1;
-        else if (en.PowerKind == EnemyPowerKind.Boss)
-          CurrentLevel += 2;
-      }
-      else if (ale != null)
-      {
-        CurrentLevel = ale.Spells.GetState(Kind).Level;
-      }
-      else if (caller is LivingEntity le)
-      {
-        CurrentLevel = le.Level;
-      }
+     
 
       if (sk.IsGod())
       {

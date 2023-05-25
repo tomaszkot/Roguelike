@@ -94,10 +94,11 @@ namespace Roguelike.Tiles.LivingEntities
       SetResist(EntityStatKind.ResistLighting, 15);
     }
 
-    public override void Consume(IConsumable consumable)
+    public override bool Consume(IConsumable consumable)
     {
-      base.Consume(consumable);
-      AlignMeleeAttack(); 
+      var res = base.Consume(consumable);
+      AlignMeleeAttack();
+      return res;
     }
 
     public override bool RemoveFightItem(FightItem fi)

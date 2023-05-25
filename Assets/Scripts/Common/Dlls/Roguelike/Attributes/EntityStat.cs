@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using Roguelike.Calculated;
+using Roguelike.Core.Extensions;
 using Roguelike.Extensions;
 using System;
 //using System.Text.Json.Serialization;
@@ -68,7 +69,7 @@ namespace Roguelike.Attributes
       var sk = Kind;
       if (sk == EntityStatKind.Unset)
         return;
-      bool isRange = sk.ToString().EndsWith("ExtraRange");
+      bool isRange = sk.IsExtraRange();
       if (sk != EntityStatKind.Unset
         && sk != EntityStatKind.Strength
         && sk != EntityStatKind.Health
@@ -240,8 +241,8 @@ namespace Roguelike.Attributes
     public static string GetFormattedValue(EntityStatKind stat, float value, EntityStatUnit entityStatUnit, EntityStatImportance importance,
       bool RoundValue, bool UseSign)
     {
-      var sign = value > 0 ? "+" : "-";
-      if (value == 0 || !UseSign /*|| entityStatUnit == EntityStatUnit.Absolute*/)
+      var sign = value >= 0 ? "+" : "-";
+      if (/*value == 0 ||*/ !UseSign /*|| entityStatUnit == EntityStatUnit.Absolute*/)
         sign = "";
 
       string valueStr = value.ToString();

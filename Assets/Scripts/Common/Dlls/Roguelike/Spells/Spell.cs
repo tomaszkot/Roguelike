@@ -1,16 +1,13 @@
 ﻿using Dungeons.Core;
 using Newtonsoft.Json;
+using Roguelike.Abilities;
 using Roguelike.Abstract.Spells;
-using Roguelike.Attributes;
-using Roguelike.Tiles;
-using Roguelike.Tiles.Abstract;
+using Roguelike.Calculated;
 using Roguelike.Tiles.LivingEntities;
 using Roguelike.Tiles.Looting;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
-//using static UnityEngine.EventSystems.EventTrigger;
 
 namespace Roguelike.Spells
 {
@@ -32,92 +29,16 @@ namespace Roguelike.Spells
     Perun
   }
 
-  public class SpellState
-  {
-    public SpellKind Kind { get; set; }
-    public int Level { get; set; } = 1;
-
-    public int CoolDownCounter { get; set; } = 0;
-
-    internal bool IsCoolingDown()
-    {
-      return CoolDownCounter > 0;
-    }
-
-    [JsonIgnore]
-    public string LastIncError { get; set; }
-
-    public int MaxLevel = 10;
-
-    public bool IncreaseLevel(IAdvancedEntity entity)
-    {
-
-      //if (abilityLevelToPlayerLevel.ContainsKey(Level + 1))
-      //{
-      //  var lev = abilityLevelToPlayerLevel[Level + 1];
-      //  if (lev > entity.Level)
-      //  {
-      //    LastIncError = "Required character level for ability increase: " + lev;
-      //    return false;
-      //  }
-      //}
-      if (CanIncLevel(entity))
-      {
-        Level++;
-        //SetStatsForLevel();
-        return true;
-      }
-      return false; 
-    }
-
-    public bool CanIncLevel(IAdvancedEntity entity)
-    {
-      LastIncError = "";
-      if (Level == MaxLevel)
-      {
-        LastIncError = "Max level of the spell reached";
-        return false;
-      }
-
-      var scroll = new Scroll(Kind);
-      var le = entity as LivingEntity;
-      var spell = scroll.CreateSpell(le);
-      var canInc = le.Stats.Magic >= spell.NextLevelMagicNeeded;
-      if (!canInc)
-      {
-        LastIncError = "Magic level too low";
-        return false;
-      }
-      return true;
-    }
-  }
-
-  public class SpellStateSet
-  {
-    Dictionary<SpellKind, SpellState> spellStates = new Dictionary<SpellKind, SpellState>();
-
-    public SpellStateSet()
-    {
-      var spells = EnumHelper.GetEnumValues<SpellKind>(true);
-      foreach (var sp in spells)
-      {
-        spellStates[sp] = new SpellState() { Kind = sp };
-      }
-    }
-
-    public SpellState GetState(SpellKind kind)
-    {
-      return spellStates[kind];
-    }
-  }
-
   public class Spell : ISpell
   {
+    Dictionary<AbilityProperty, float?> properties = new Dictionary<AbilityProperty, float?>();
+    protected int BaseRange = 3;
+    //public int Duration { get; set; }
+    public int BaseDuration { get; set; } = 4;
+    public int BaseDurability { get; set; } = 40;
     protected float manaCost;
-
     float manaCostMultiplicator = 20;
     public bool SendByGod { get; set; }
-
     public SpellKind Kind { get; set; }
     public bool EnemyRequired = false;
     public bool EntityRequired = false;
@@ -127,7 +48,30 @@ namespace Roguelike.Spells
     public bool Utylized { get; set; }
     public bool RequiresDestPoint { get; set; }
 
-        public int ManaCost
+
+    float GetPropertyOrDefault(AbilityProperty prop)
+    {
+      return GetProperty(prop) ?? 0;
+    }
+
+    public int Duration
+    {
+      get { return (int)GetPropertyOrDefault(AbilityProperty.Duration); }
+    }
+
+    public int Range
+    {
+      get { return (int)GetPropertyOrDefault(AbilityProperty.Range); }
+      set { SetProperty(AbilityProperty.Range, value); }
+    }
+
+    public int Durability
+    {
+      get { return (int)GetPropertyOrDefault(AbilityProperty.Durability); }
+      set { SetProperty(AbilityProperty.Durability, value); }
+    }
+
+    public int ManaCost
     {
       get
       {
@@ -135,14 +79,117 @@ namespace Roguelike.Spells
       }
     }
 
+    protected void UnsetProp(AbilityProperty prop)
+    {
+      SetProperty(prop, null);
+    }
+
+    protected void SetProperty(AbilityProperty prop, float? value)
+    {
+      properties[prop] = value;
+    }
+
+    public float? GetProperty(AbilityProperty prop)
+    {
+      return properties.ContainsKey(prop) ? properties[prop] : 0;
+    }
+
     protected Weapon weaponSpellSource;
 
-    public Spell(LivingEntity caller, Weapon weaponSpellSource)
+    public Spell(LivingEntity caller, Weapon weaponSpellSource, SpellKind sk)
     {
+      Kind = sk;
       this.weaponSpellSource = weaponSpellSource;
       this.Caller = caller;
       manaCost = BaseManaCost;
       levelToMagic[1] = 10;
+
+      var ale = caller as AdvancedLivingEntity;
+      var en = caller as Enemy;
+
+      if (en != null)
+      {
+        //TODO
+        CurrentLevel = en.Level;
+
+        if (en.PowerKind == EnemyPowerKind.Champion)
+          CurrentLevel += 1;
+        else if (en.PowerKind == EnemyPowerKind.Boss)
+          CurrentLevel += 2;
+      }
+      else if (ale != null)
+      {
+        CurrentLevel = ale.Spells.GetState(Kind).Level;
+      }
+      else if (caller is LivingEntity le)
+      {
+        CurrentLevel = le.Level;
+      }
+
+      var props = EnumHelper.GetEnumValues<AbilityProperty>(true);
+      foreach (var prop in props)
+      {
+        CalcProp(prop, true);
+      }
+    }
+
+    protected void CalcProp(AbilityProperty prop, bool currentLevel)
+    {
+      if (prop == AbilityProperty.Duration)
+        SetProperty(AbilityProperty.Duration, CalcDuration());
+      else if (prop == AbilityProperty.Range)
+        SetProperty(AbilityProperty.Range, CalcRange());
+      else if (prop == AbilityProperty.Durability)
+        SetProperty(AbilityProperty.Durability, CalcDurability());
+      else
+        throw new Exception("unsupported prop "+ prop);
+    }
+
+    protected float? CalcDurability()
+    {
+      return CalcPropFromLevel(CurrentLevel, BaseDurability);
+    }
+
+    protected float? CalcDurability(int level)
+    {
+      return CalcPropFromLevel(level, BaseDurability);
+    }
+
+    public int CalcRange()
+    {
+      return CalcRange(CurrentLevel);
+    }
+
+    public int CalcRange(int level)
+    {
+      if (GetProperty(AbilityProperty.Range) == null)
+        return 0;
+      var ra = BaseRange + level;
+      return ra;
+    }
+
+    protected virtual int CalcDuration(int level)//, float factor = 1)
+    {
+      //var he = GetHealthFromLevel(level);
+      //float baseVal = ((float)he) * factor;
+      //return (int)(baseVal / 4f);
+      if (GetProperty(AbilityProperty.Duration) == null)
+        return 0;
+      return BaseDuration + level;
+    }
+
+    protected virtual int CalcDuration()//float factor = 1)
+    {
+      //var level = 1;
+
+      var dur = CalcDuration(CurrentLevel);//, factor);
+      //if (CurrentLevel > 1)
+      //{
+      //  var durPrev = CalcDuration(CurrentLevel-1, factor);
+      //  if (durPrev == dur)
+      //    dur++; 
+      //}
+      return dur;
     }
 
     protected int CalcManaCost(int level)
@@ -151,7 +198,7 @@ namespace Roguelike.Spells
       return (int)cost;
     }
 
-    public int CoolingDown { get; set; } = 0;
+    public int CoolingDownCounter { get; set; } = 0;
 
     //[XmlIgnore]
     [JsonIgnore]
@@ -208,30 +255,35 @@ namespace Roguelike.Spells
 
     public bool IsFromMagicalWeapon { get => weaponSpellSource != null;}
 
+    protected int CalcPropFromLevel(int lvl, int basePropValue)
+    {
+      return FactorCalculator.CalcFromLevel(lvl, basePropValue);
+    }
+
     //TODO ! remove withVariation, use AttackDesc is needed
     public virtual SpellStatsDescription CreateSpellStatsDescription(bool currentMagicLevel)
     {
       int level = currentMagicLevel ? CurrentLevel : CurrentLevel + 1;
       int? mana = null;
       int? magicRequired = null;
-      int range = 0;
+      int range = CalcRange(level);
 
-      range = GetRange();
       if (weaponSpellSource == null)
       {
         mana = CalcManaCost(level);
         magicRequired = NextLevelMagicNeeded;
       }
-      var desc = new SpellStatsDescription(level, mana, magicRequired, Kind, range);
-      return desc;
-    }
 
-    protected virtual int GetRange()
-    {
-      var range = 0;
-      if (this is IProjectileSpell proj)
-        range = proj.Range;
-      return range;
+      var desc = new SpellStatsDescription(level, mana, magicRequired, Kind, range);
+      if (currentMagicLevel)
+      {
+        desc.Duration = Duration;
+      }
+      else
+      {
+        desc.Duration = CalcDuration(CurrentLevel + 1);
+      }
+      return desc;
     }
   }
 

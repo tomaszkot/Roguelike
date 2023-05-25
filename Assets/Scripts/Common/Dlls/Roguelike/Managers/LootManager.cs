@@ -1,5 +1,5 @@
 ﻿using Dungeons.Core;
-using Dungeons.Core.Tiles.Abstract;
+using Dungeons.Tiles.Abstract;
 using Dungeons.Tiles;
 using Roguelike.Events;
 using Roguelike.Generators;
@@ -37,7 +37,8 @@ namespace Roguelike.Managers
     public List<Loot> TryAddForLootSource(ILootSource lootSource)//Barrel, Chest from attackPolicy.Victim
     {
       var lootItems = new List<Loot>();
-
+      if (lootSource.RewardGenerated)//WTF
+        return lootItems;
       try
       {
         if (lootSource == null)//hit a wall ?
@@ -47,18 +48,7 @@ namespace Roguelike.Managers
         //  lootItems.Add(debugLoot);
         if (lootSource.IsLooted)
         {
-          var chest = (lootSource as Chest);
-          if (chest !=null)
-          {
-            chest.RegistedHitWhenOpened();
-            if (chest.Destroyed)
-            {
-              GameManager.CurrentNode.ReplaceTile(new Tile(), chest.point);
-              GameManager.AppendAction(new InteractiveTileAction() { InteractiveKind = InteractiveActionKind.Destroyed, InvolvedTile = chest });
-            }
-            else
-              GameManager.AppendAction(new InteractiveTileAction() { InteractiveKind = InteractiveActionKind.HitWhenLooted, InvolvedTile = chest });
-          }
+          //GameManager.HandleChestHit(lootSource);
 
           return lootItems;
         }
@@ -106,6 +96,8 @@ namespace Roguelike.Managers
           lootItems.Add(lootSource.ForcedReward);
           GameManager.AddLootReward(lootSource.ForcedReward, lootSource, true);
         }
+
+        lootSource.RewardGenerated = true;
       }
       catch (System.Exception ex)
       {
@@ -115,6 +107,7 @@ namespace Roguelike.Managers
       return lootItems;
     }
 
+   
     private List<Loot> TryAddForNonEnemy(ILootSource lootSource)
     {
       //GameManager.Logger.LogInfo("TryAddForNonEnemy lootSource.Level: " + lootSource.Level);

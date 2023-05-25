@@ -1,4 +1,5 @@
 ﻿using Dungeons.Core;
+using Newtonsoft.Json;
 using SimpleInjector;
 using System.Drawing;
 
@@ -14,7 +15,8 @@ namespace Roguelike.Tiles.Interactive
       InteractSound = "uncloth";
       Kind = InteractiveTileKind.DeadBody;
     }
-
+    [JsonIgnore]
+    public bool RewardGenerated { get; set; }
     public Loot ForcedReward { get; set; }
 
     public DeadBody(Container cont) : this(cont, new Point().Invalid())

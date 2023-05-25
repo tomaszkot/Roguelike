@@ -40,7 +40,7 @@ namespace Roguelike.Tiles.Interactive
     }
     
     public LivingEntity Caller { get; set; }
-    public int CoolingDown { get; set; } = 0;
+    public int CoolingDownCounter { get; set; } = 0;
     public bool Used { get; set; }
     public EntityStatKind StatKind { get; set; }
     public float StatKindFactor { get; set; }

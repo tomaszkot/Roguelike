@@ -15,7 +15,7 @@ namespace Roguelike.Abstract.Spells
   public interface ISpell : Dungeons.Tiles.Abstract.ISpell
   {
     LivingEntity Caller { get; set; }
-    int CoolingDown { get; set; }
+    int CoolingDownCounter { get; set; }
     int ManaCost { get; }
     bool Utylized { get; set; }
     int CurrentLevel { get; }

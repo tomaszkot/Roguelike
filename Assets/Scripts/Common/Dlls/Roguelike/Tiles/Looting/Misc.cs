@@ -1,4 +1,6 @@
-﻿namespace Roguelike.Tiles.Looting
+﻿using Dungeons.Core;
+
+namespace Roguelike.Tiles.Looting
 {
   public class Feather : StackedLoot
   {
@@ -19,7 +21,7 @@
       Name = "Hazel";
       PrimaryStatDescription = "Part of the recipe";
       Price = 5;
-      Count = 20;
+      Count = (int)RandHelper.GetRandomFloatInRange(30,40);
       tag1 = "hazel";
     }
   }

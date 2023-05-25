@@ -67,7 +67,7 @@ namespace Roguelike.Tiles
   public enum LootSourceKind { Enemy, PlainChest, GoldChest, DeluxeGoldChest, Barrel }
   public enum EquipmentClass { Unset, Plain, Magic, MagicSecLevel, Unique }
 
-  public abstract class Loot : Tile, IHotbarItem, Dungeons.Core.Tiles.Abstract.ILoot
+  public abstract class Loot : Tile, IHotbarItem, Dungeons.Tiles.Abstract.ILoot
   {
     public static EntityStatKind[] AttackingNonPhysicalStats = new[] { 
       EntityStatKind.FireAttack, EntityStatKind.PoisonAttack, EntityStatKind.ColdAttack, EntityStatKind.LightingAttack };

@@ -1,4 +1,5 @@
 ﻿using Dungeons.Tiles;
+using Dungeons.Tiles.Abstract;
 using Roguelike.Abstract.Spells;
 using Roguelike.Managers;
 using Roguelike.Tiles.LivingEntities;
@@ -31,7 +32,7 @@ namespace Roguelike.Policies
     }
 
     public LivingEntity Caster { get => caster; set => caster = value; }
-    public IDamagingSpell DamagingSpell { get; internal set; }
+    public Dungeons.Tiles.Abstract.IDamagingSpell DamagingSpell { get; internal set; }
     public IStaticSpellFactory StaticSpellFactory { get; internal set; }
 
     public override void Apply(LivingEntity caster)
@@ -54,11 +55,11 @@ namespace Roguelike.Policies
     public override void AttackNextTarget
    (
      LivingEntity caster,
-     Dungeons.Tiles.IHitable nextTarget
+     Dungeons.Tiles.Abstract.IHitable nextTarget
    )
     {
       if (ShallHitTarget(nextTarget))
-        nextTarget.OnHitBy(DamagingSpell);
+        nextTarget.OnHitBy(DamagingSpell, this);
     }
 
     private bool ShallHitTarget(IHitable nextTarget)

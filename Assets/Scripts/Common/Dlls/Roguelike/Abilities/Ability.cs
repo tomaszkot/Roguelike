@@ -26,7 +26,9 @@ namespace Roguelike.Abilities
 
     PiercingArrow, ArrowVolley, PerfectHit,
 
-    FireBallMastering, IceBallMastering, PoisonBallMastering, SkeletonMasteringDeprecated, ThrowingTorch,
+    FireBallMastering, IceBallMastering, PoisonBallMastering, 
+    SkeletonMastering, //Deprecated, ca not easily remove - as old save game might be a problem
+    ThrowingTorch,
     Cannon,
 
     //Hunter c.d.

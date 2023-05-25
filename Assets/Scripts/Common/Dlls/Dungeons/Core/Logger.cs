@@ -7,7 +7,7 @@ namespace Dungeons.Core
   {
     public Logger()
     {
-      Debug.WriteLine("Logger ctor");
+      //Debug.WriteLine("Logger ctor");
     }
 
     public LogLevel LogLevel 

@@ -1,6 +1,7 @@
 ﻿using Dungeons.Core;
 using Dungeons.Tiles;
 using Newtonsoft.Json;
+using Roguelike.Abilities;
 using Roguelike.Abstract.Effects;
 using Roguelike.Attributes;
 using Roguelike.Events;
@@ -75,6 +76,11 @@ namespace Roguelike.Effects
     public LastingEffect GetByType(EffectType type)
     {
       return LastingEffects.Where(i => i.Type == type).FirstOrDefault();
+    }
+
+    public bool HasEffect(AbilityKind ak)
+    {
+      return LastingEffects.Where(i => i.AbilityKind == ak).FirstOrDefault() != null;
     }
 
     public bool HasEffect(EffectType type)
@@ -281,6 +287,11 @@ namespace Roguelike.Effects
           AppendAction(new LootAction(fi, null) { Kind = LootActionKind.Deactivated });
         }
 
+        if (le.AbilityKind != AbilityKind.Unset)
+        {
+          livingEntity.HandleActiveAbilityEffectDone(le.AbilityKind, true);
+        }
+
         if (LastingEffectDone != null)
           LastingEffectDone(this, le);
 
@@ -294,21 +305,21 @@ namespace Roguelike.Effects
     {
       var scroll = new Scroll(spellKind);
       var spell = scroll.CreateSpell(this.livingEntity);
+      return AddLastingEffectFromSpell(effectType, spell);
+    }
+
+    public LastingEffect AddLastingEffectFromSpell(EffectType effectType, Abstract.Spells.ISpell spell)
+    {
       var spellLasting = spell as ILastingEffectSrc;
       if (spellLasting != null)
       {
         return AddPercentageLastingEffect(effectType, spellLasting, spell.Caller);
       }
-      //else if (spellKind == SpellKind.Teleport)
-      //{
-      //  var effectInfo = CalcLastingEffDamage(EffectType.Unset, 0, null, null);
-      //  return AddLastingEffect(effectInfo, EffectOrigin.SelfCasted, livingEntity);
-      //}
       return null;
     }
 
     //protected 
-      public LastingEffectCalcInfo CreateLastingEffectCalcInfo(EffectType eff, float effectiveFactor, float percentageFactor, int turns)
+    public LastingEffectCalcInfo CreateLastingEffectCalcInfo(EffectType eff, float effectiveFactor, float percentageFactor, int turns)
     {
       if (eff == EffectType.Bleeding || eff == EffectType.Inaccuracy || eff == EffectType.Weaken ||
           eff == EffectType.Poisoned || eff == EffectType.Firing || eff == EffectType.Frozen)

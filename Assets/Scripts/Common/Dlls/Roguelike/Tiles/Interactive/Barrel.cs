@@ -1,7 +1,9 @@
 ﻿//#define ASCII_BUILD  
 using Dungeons.Core;
+using Dungeons.Core.Policy;
 using Dungeons.Fight;
 using Dungeons.Tiles.Abstract;
+using Newtonsoft.Json;
 using Roguelike.Tiles.Abstract;
 using Roguelike.Tiles.Looting;
 using SimpleInjector;
@@ -19,6 +21,8 @@ namespace Roguelike.Tiles.Interactive
     private BarrelKind barrelKind;
     public string UnhidingMapName { get; set; }
 
+    [JsonIgnore]
+    public bool RewardGenerated { get; set; }
     public bool Destroyed { get; set; }
 
     public BarrelKind BarrelKind
@@ -74,31 +78,13 @@ namespace Roguelike.Tiles.Interactive
       return true;
     }
 
-    void CallEmitInteraction()
+    protected override void EmitInteraction()
     {
       Destroyed = true;
-      EmitInteraction();
+      base.EmitInteraction();
     }
 
-    public override HitResult OnHitBy(IDamagingSpell damager)
-    {
-      var res = base.OnHitBy(damager);
-      return HandleHit(res);
-    }
-
-    private HitResult HandleHit(HitResult res)
-    {
-      if (res == HitResult.Hit)
-        CallEmitInteraction();
-      return res;
-    }
-
-    public override HitResult OnHitBy(IProjectile md)
-    {
-      var res = base.OnHitBy(md);
-      return HandleHit(res);
-    }
-
+    
   }
 
 

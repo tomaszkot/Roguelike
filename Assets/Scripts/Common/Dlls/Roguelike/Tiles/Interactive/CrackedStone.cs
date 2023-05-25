@@ -1,6 +1,8 @@
-﻿using Dungeons.Fight;
+﻿using Dungeons.Core.Policy;
+using Dungeons.Fight;
+using Dungeons.Tiles.Abstract;
+using Newtonsoft.Json;
 using Roguelike.Calculated;
-using Roguelike.Spells;
 using Roguelike.Tiles.Abstract;
 using Roguelike.Tiles.LivingEntities;
 using Roguelike.Tiles.Looting;
@@ -11,14 +13,28 @@ namespace Roguelike.Tiles.Interactive
 {
   public class CrackedStone : InteractiveTile, IDestroyable
   {
-    public const float StartHealthBase = 40;
-    public float Health { get; set; }
-    public float StartHealth { get; set; } = StartHealthBase;
+    private float durability;
+    [JsonIgnore]
+    public bool RewardGenerated { get; set; }
+    public float Durability
+    {
+      get => durability;
+      set 
+      {
+        durability = value;
+        if (value > MaxDurability)
+          MaxDurability = value;
+      }
+    }
+    public float MaxDurability { get; set; }
     public bool Destroyed
     {
       get
       {
-        return Health <= 0;
+        return Durability <= 0;
+      }
+      set {
+        Durability = 0;
       }
     }
 
@@ -26,23 +42,27 @@ namespace Roguelike.Tiles.Interactive
     {
       get
       {
-        return Health < StartHealth;
+        return Durability < MaxDurability;
       }
     }
 
-    bool IDestroyable.Destroyed { get ; set ; }
-    public string OriginMap { get; set ; }
-    public bool LevelSet { get; set ; }
+    
+    public string OriginMap { get; set; }
+    public bool LevelSet { get; set; }
     public Loot ForcedReward { get; set; }
 
-    public CrackedStone(Container cont) : base(cont, '%')
+    public CrackedStone(Container cont) : this(cont, 5)
+    {
+    }
+
+    public CrackedStone(Container cont, int durability) : base(cont, '%')
     {
       Kind = InteractiveTileKind.CrackedStone;
       Name = Kind.ToString();
       tag1 = "cracked_stone";
       InteractSound = "punch";
-      Health = StartHealth;
       DestroySound = "bones_fall_golem";
+      Durability = durability;
     }
 
     internal CrackedStone Clone()
@@ -52,57 +72,57 @@ namespace Roguelike.Tiles.Interactive
 
     void CallEmitInteraction()
     {
-      //Destroyed = true;
       EmitInteraction();
     }
 
-    public override HitResult OnHitBy(Dungeons.Tiles.Abstract.IDamagingSpell damager)
+    public override HitResult OnHitBy(IDamagingSpell damager, IPolicy policy)
     {
-      var res = base.OnHitBy(damager);
+      var res = base.OnHitBy(damager, policy);
       return HandleHit(damager, res);
     }
 
+    const float ProjectileMult = 3;
+
     public HitResult OnHitBy(ProjectileFightItem pfi)
     {
-      Health -= pfi.Damage * 4;
       PlayHitSound(pfi);
-      return HitResult.Hit;
+      return OnHitBy(pfi.Damage * ProjectileMult); 
     }
 
-    public override HitResult OnHitBy(Dungeons.Tiles.Abstract.IProjectile md)
+    public override HitResult OnHitBy(IProjectile md, IPolicy policy)
     {
-      //var res = base.OnHitBy(md);
-      //if (res == HitResult.Hit)
-      {
-        if (md is Dungeons.Tiles.Abstract.IDamagingSpell ds)
-          return OnHitBy(ds);
-        //else if (md is Dungeons.Tiles.Abstract.IProjectile proj)
-        //  return HandleHit(proj, res);
-        else if (md is ProjectileFightItem pfi)
-          return OnHitBy(pfi);
-      }
+      if (md is IDamagingSpell ds)
+        return OnHitBy(ds, policy);
+      else if (md is ProjectileFightItem pfi)
+        return OnHitBy(pfi);
+
 
       return HitResult.Unset;
     }
 
-    private HitResult HandleHit(Dungeons.Tiles.Abstract.IDamagingSpell md, HitResult res)
+    private HitResult HandleHit(IDamagingSpell md, HitResult res)
     {
       if (res == HitResult.Hit)
       {
         if (md != null)
         {
-          Health -= md.Damage * 4;
+          var dmg = md.Damage * ProjectileMult;
           PlayHitSound(md);
+          return OnHitBy(dmg);
         }
-        CallEmitInteraction();
       }
       return res;
     }
 
-    public HitResult OnHitBy(LivingEntity le)
+    public override HitResult OnHitBy(ILivingEntity le)
     {
-      var ad = new AttackDescription(le);
-      Health -= ad.CurrentPhysicalVariated;
+      var ad = new AttackDescription(le as LivingEntity, true, Attributes.AttackKind.Melee);
+      return OnHitBy(ad.CurrentPhysicalVariated);
+    }
+
+    HitResult OnHitBy(float damage)
+    {
+      Durability -= damage;
       CallEmitInteraction();
       return HitResult.Hit;
     }

@@ -2,6 +2,7 @@
 using Dungeons.Core;
 using Dungeons.TileContainers;
 using Dungeons.Tiles;
+using Dungeons.Tiles.Abstract;
 using Roguelike.Abstract.Tiles;
 using Roguelike.Events;
 using Roguelike.Tiles;
@@ -134,7 +135,7 @@ namespace Roguelike.Managers
         //  Logger.LogInfo("Hero attacks en health = "+en.Stats.Health);
         gm.EnemiesManager.RemoveDead();
 
-        gm.ApplyHeroPhysicalAttackPolicy(tile, true);
+        gm.ApplyHeroPhysicalAttackPolicy(tile as IHitable, true);
 
         return InteractionResult.Attacked;
       }

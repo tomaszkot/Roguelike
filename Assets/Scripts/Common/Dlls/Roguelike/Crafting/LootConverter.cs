@@ -4,6 +4,7 @@ using Roguelike.Extensions;
 using Roguelike.Generators;
 using Roguelike.LootFactories;
 using Roguelike.Tiles;
+using Roguelike.Tiles.LivingEntities;
 using Roguelike.Tiles.Looting;
 using SimpleInjector;
 using System;
@@ -71,6 +72,11 @@ namespace Roguelike.Crafting
       return lootToConvert.Where(i => i is T).Cast<T>().ToList();
     }
 
+    public bool ApplyEnchant(Enchanter enchant, Equipment eq, out string err)
+    {
+      return enchant.ApplyTo(eq, () => { return GetEquipmentKindForGemApply(eq); }, out err);
+    }
+
     protected T FilterOne<T>(List<Loot> lootToConvert)
     {
       return lootToConvert.Where(i => i is T).Cast<T>().FirstOrDefault();
@@ -114,8 +120,12 @@ namespace Roguelike.Crafting
       var eqs = lootToConvert.Where(i => i is Equipment).Cast<Equipment>().ToList();
 
       if (eqs.Any(i => i.Class == EquipmentClass.Unique))
-        return ReturnCraftingError("Unique items can not crafted");
-
+      {
+        string error;
+        var unqs = eqs.Where(i => i.Class == EquipmentClass.Unique).ToList();
+        if (unqs.Count > 1 || !unqs[0].CanBeEnchantedDueToClass(out error))
+          return ReturnCraftingError("Unique items can not crafted");
+      }
       if (lootToConvert.Any())
       {
         var sulfCount = GetStackedCount<StackedLoot>(lootToConvert, "Sulfur");
@@ -362,7 +372,8 @@ namespace Roguelike.Crafting
       string err;
       foreach (var ench in enchanters.Cast<Enchanter>())
       {
-        if (!ench.ApplyTo(eq, out err))
+        //if (!ench.ApplyTo(eq, () => { return GetEquipmentKindForGemApply(eq); }, out err))
+        if (!ApplyEnchant(ench, eq, out err))
           return ReturnCraftingError(InvalidIngredients);
       }
 
@@ -433,6 +444,11 @@ namespace Roguelike.Crafting
       return ReturnCraftingError("TODO");
     }
 
+    protected virtual EquipmentKind GetEquipmentKindForGemApply(Equipment eq)
+    {
+      return eq.EquipmentKind;
+    }
+
     private CraftingResult HandleCustomRecipe(List<Loot> lootToConvert)
     {
       if (lootToConvert.Count == 2)
@@ -458,7 +474,7 @@ namespace Roguelike.Crafting
           var gem = lootToConvert[0] is Gem ? lootToConvert[0] as Gem : lootToConvert[1] as Gem;
           var eq = lootToConvert[0] is Equipment ? lootToConvert[0] as Equipment : lootToConvert[1] as Equipment;
           var err = "";
-          if (gem.ApplyTo(eq, out err))
+          if(ApplyEnchant(gem, eq, out err))
           {
             return ReturnCraftedLoot(eq);
           }

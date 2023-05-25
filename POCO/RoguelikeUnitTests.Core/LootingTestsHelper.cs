@@ -2,6 +2,7 @@
 using NUnit.Framework;
 using Roguelike;
 using Roguelike.Tiles;
+using Roguelike.Tiles.Interactive;
 using Roguelike.Tiles.LivingEntities;
 using Roguelike.Tiles.Looting;
 using System;
@@ -113,7 +114,28 @@ namespace RoguelikeUnitTests.Helpers
     )
     where T : Roguelike.Tiles.Interactive.InteractiveTile//1, new()
     {
-      var createdTiles = new List<Tile>();
+      var createdTiles = AddTiles(creator, numberOfTilesToTest, init);
+
+      for (int i = 0; i < createdTiles.Count; i++)
+      {
+        var tile = createdTiles[i];
+        var to = game.GameManager.Context.TurnOwner;
+        var tac = game.GameManager.Context.TurnActionsCount;
+        var ni = Enemies.Where(e => e.State != EntityState.Idle).ToList();
+
+        Assert.AreEqual(game.GameManager.Context.TurnOwner, TurnOwner.Hero);
+        var it = tile as Roguelike.Tiles.Interactive.InteractiveTile;
+        test.InteractHeroWith(it);
+        if (it is Barrel bar)
+          Assert.True(bar.Destroyed);
+
+      }
+    }
+
+    public List<T> AddTiles<T>(Func<T> creator, int numberOfTilesToTest, Action<Roguelike.Tiles.Interactive.InteractiveTile> init = null)
+      where T : Roguelike.Tiles.Interactive.InteractiveTile
+    {
+      var createdTiles = new List<T>();
       for (int i = 0; i < numberOfTilesToTest; i++)
       {
         var tile = creator();
@@ -124,16 +146,7 @@ namespace RoguelikeUnitTests.Helpers
         createdTiles.Add(tile);
       }
 
-      for (int i = 0; i < createdTiles.Count; i++)
-      {
-        var tile = createdTiles[i];
-        var to = game.GameManager.Context.TurnOwner;
-        var tac = game.GameManager.Context.TurnActionsCount;
-        var ni = Enemies.Where(e => e.State != EntityState.Idle).ToList();
-
-        Assert.AreEqual(game.GameManager.Context.TurnOwner, TurnOwner.Hero);
-        test.InteractHeroWith(tile as Roguelike.Tiles.Interactive.InteractiveTile);
-      }
+      return createdTiles;
     }
   }
 }

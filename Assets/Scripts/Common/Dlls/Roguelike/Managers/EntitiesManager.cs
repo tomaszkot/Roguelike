@@ -68,7 +68,11 @@ namespace Roguelike.Managers
 
     public virtual List<LivingEntity> GetActiveEntities()
     {
-      return this.entities.Where(i => i.Revealed && i.Alive && i.DistanceFrom(gameManager.Hero) < 15).ToList();
+      return this.entities.Where(i => 
+      i.Revealed && 
+      i.Alive && 
+      (i is God || i.DistanceFrom(gameManager.Hero) < 15))
+      .ToList();
     }
 
     private bool ReportAllDone(bool justEndedLoop)
@@ -426,6 +430,9 @@ namespace Roguelike.Managers
       {
         return false;
       }
+
+      if(chaser.HasLastingEffect(Effects.EffectType.Frighten))
+        return false; 
 
       var isSmoke = this.gameManager.CurrentNode.IsAtSmoke(chaser);
       if (isSmoke)
