@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Drawing;
+#pragma warning disable 8603
 
 namespace Dungeons
 {
