@@ -19,7 +19,6 @@ namespace God4_1.ClientScripts
 {
   public partial class GameLevel : Node
   {
-	enum GodotObjectType { unset, enemy, interactive }
 	string pathToEnemies = "res://Sprites/LivingEntities/Enemies/";
 	public static List<GodotGame.Entities.Enemy> enemyList = new();
 	public static Dictionary<Roguelike.Tiles.Interactive.InteractiveTile, Node> interactiveList = new();
@@ -32,7 +31,7 @@ namespace God4_1.ClientScripts
 		{
 		  AddTile(tile);
 		}
-		else if (tile is Wall || tile is Door)
+		else if (tile is Wall)
 		{
 		  AddTile(tile);
 		}
@@ -48,12 +47,12 @@ namespace God4_1.ClientScripts
 		  AddChildFromScene(tile, "res://Entities/Barrel.tscn");
 
 		}
-		if (tile is Roguelike.Tiles.LivingEntities.Hero heroTile)
+		else if (tile is Roguelike.Tiles.LivingEntities.Hero heroTile)
 		{
 		  AddTile(tile);
 		  AddChildFromScene(tile, "res://Entities/Hero.tscn");
 	  Game.hero.HeroTile = heroTile;
-	}
+		}
 		else if (tile is Roguelike.Tiles.LivingEntities.Enemy)
 		{
 		  AddChildFromScene(tile, "res://Entities/Enemy.tscn");
@@ -84,10 +83,10 @@ namespace God4_1.ClientScripts
 		enemyList.Add(godotEn);
 		if (ResourceLoader.Exists(pathToEnemies + tile.tag1 + ".png"))
 		{
-		  spr.Texture = LoadTexture(tile.tag1, GodotObjectType.enemy);
+		  spr.Texture = LoadTexture(tile.tag1, tile);
 		}
 		else
-		  spr.Texture = LoadTexture("bat", GodotObjectType.enemy);
+		  spr.Texture = LoadTexture("bat", tile);
 	  }
 	  if (scenePath == "res://Entities/Barrel.tscn")
 	  {
@@ -102,28 +101,28 @@ namespace God4_1.ClientScripts
 	{
 	  if (tile is Wall)
 	  {
-		Game.tileMap.SetCell(0, new Vector2I(tile.point.X, tile.point.Y), 0, new Vector2I(0, 0));
+				Game.tileMap.SetTileCell(tile, 0, 0);
 	  }
 	  if (tile is Door door)
 	  {
-		Game.tileMap.SetCell(0, new Vector2I(tile.point.X, tile.point.Y), 1, new Vector2I(0, 0));
+		Game.tileMap.SetTileCell(tile, 0, 1);
 		if (door.Opened)
 		{
 		  Game.tileMap.EraseCell(0, new Vector2I(tile.point.X, tile.point.Y));
-		  Game.tileMap.SetCell(1, new Vector2I(tile.point.X, tile.point.Y), 1, new Vector2I(0, 0));
+	  Game.tileMap.SetTileCell(tile, 1, 1);
 		}
 	  }
 	  if (tile.IsEmpty || tile is Roguelike.Tiles.Interactive.InteractiveTile || tile is Roguelike.Tiles.LivingEntities.Hero heroTile)
 	  {
-		Game.tileMap.SetCell(2, new Vector2I(tile.point.X, tile.point.Y), 2, new Vector2I(0, 0));
+		Game.tileMap.SetTileCell(tile, 2, 2);
 	  }
 	}
 
-	private Texture2D LoadTexture(string path, GodotObjectType type)
+	private Texture2D LoadTexture(string path, Tile tile)
 	{
 	  var texture = new Texture2D();
-	  if (type == GodotObjectType.enemy)
-		texture = ResourceLoader.Load(pathToEnemies + path + ".png") as Texture2D;
+	  if (tile is Roguelike.Tiles.LivingEntities.Enemy)
+			texture = ResourceLoader.Load(pathToEnemies + path + ".png") as Texture2D;
 	  return texture;
 	}
 

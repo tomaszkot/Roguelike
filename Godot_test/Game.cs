@@ -49,7 +49,7 @@ public partial class Game : Node2D
 	game = container.GetInstance<IGame>();
 	GameManager.EventsManager.EventAppended += eventHandler.ActionsManager_ActionAppended;
 	GameManager.Context.ContextSwitched += Context_ContextSwitched;
-	tileMap = (WorldTileMap)GetNode("TileMap");
+	tileMap = (TileMap)GetNode("TileMap");
 	gameLevel = (GameLevel)GetNode("Objects");
   }
 
@@ -90,6 +90,7 @@ public partial class Game : Node2D
 	  gameLevel.generateMapTiles(tiles);
 	  gameLevel.CreateEntities(tiles);
 	  CallDeferred("GenerateBackgroundTiles");
+		hero.updateHealthBar(hero.HeroTile);
 	}
   }
 

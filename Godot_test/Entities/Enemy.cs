@@ -7,26 +7,18 @@ namespace GodotGame
 {
 	namespace Entities 
 	{
-		public partial class Enemy : Godot.Sprite2D
+		public partial class Enemy : God4_1.ClientScripts.LivingEntity
 		{
 			Roguelike.Tiles.LivingEntities.Enemy enemyTile;
 			public Roguelike.Tiles.LivingEntities.Enemy EnemyTile { get => enemyTile; set => enemyTile = value; }
 
-			public void updateHpBar(float damageValue, string text = "")
-			{
-				if (enemyTile.Stats.Health > 0)
-				{
-				 var hpBar = (Node2D)GetNode("HpBar/Hp");
-				 var percentOfHealth = enemyTile.Stats.Health / enemyTile.Stats.GetTotalValue(Roguelike.Attributes.EntityStatKind.Health);
-				 hpBar.Scale = new Vector2((float)percentOfHealth, hpBar.Scale.Y);
-				 var label = (DamageLabel)ResourceLoader.Load<PackedScene>("res://ClientScripts/damage_label.tscn").Instantiate();
-				 label.Text = (Math.Round(damageValue, 2)).ToString();
-				 if (text != "")
-					label.Text = text;
-				 AddChild(label);
-				}
-				
-			}
-		}
+	  public void getDamaged(float damageValue, bool missed = false)
+	  {
+		if (!missed)
+		  showDamageLabel(damageValue, new Color(1, 0, 0), enemyTile);
+		else
+		  showDamageLabel(damageValue, new Color(1, 0, 0), enemyTile, "Evaded");
+	  }
+	}
 	}
 }

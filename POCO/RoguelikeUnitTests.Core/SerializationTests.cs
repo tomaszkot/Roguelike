@@ -1,5 +1,6 @@
 ﻿using NUnit.Framework;
 using Roguelike;
+using Roguelike.Core.Serialization;
 using Roguelike.History;
 using Roguelike.Serialization;
 using Roguelike.TileContainers;
@@ -8,6 +9,7 @@ using Roguelike.Tiles.LivingEntities;
 using Roguelike.Tiles.Looting;
 using System;
 using System.Linq;
+using System.IO;
 
 namespace RoguelikeUnitTests
 {
@@ -253,6 +255,20 @@ namespace RoguelikeUnitTests
         var arm = game.GameManager.LootGenerator.GetRandomEquipment(EquipmentKind.Armor, 1);
         createGame(game, "Edd", arm);
       }
+    }
+
+    [Test]
+    public void GodotSavedGamesList()
+    {
+      var game = CreateGame(true);
+      var hero = game.Hero;
+      hero.Name = "SaveHeroStatsTest";
+
+      SaveLoad();
+
+      var savedGamesList = SavedGames.GetSavedGamesList();
+      Assert.Greater(savedGamesList.Count, 0);
+      Assert.IsTrue(savedGamesList.Any(s => s == System.IO.Path.GetTempPath() + "Roguelike" + "\\" + "SaveHeroStatsTest"));
     }
 
   }
