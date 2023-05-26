@@ -28,7 +28,7 @@ public partial class Game : Node2D
   public static TileMap tileMap;
   public static bool isGameStarted = false;
   public GameEventHandler eventHandler = new GameEventHandler();
-  public GameLevel gameLevel = new GameLevel();
+  public static GameLevel gameLevel = new GameLevel();
 
   public static GameManager GameManager
   {
@@ -68,7 +68,7 @@ public partial class Game : Node2D
 	{
 	  if (tile is not null && tile.IsEmpty)
 	  {
-			GameLevel.AddTile(tile);
+		GameLevel.AddTile(tile);
 	  }
 	}
   }
@@ -90,7 +90,7 @@ public partial class Game : Node2D
 	  gameLevel.generateMapTiles(tiles);
 	  gameLevel.CreateEntities(tiles);
 	  CallDeferred("GenerateBackgroundTiles");
-		hero.updateHealthBar(hero.HeroTile);
+	  hero.updateHealthBar(hero.HeroTile);
 	}
   }
 

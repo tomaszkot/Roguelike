@@ -1,0 +1,10 @@
+[gd_scene load_steps=3 format=3 uid="uid://b6qbhalowindj"]
+
+[ext_resource type="Script" path="res://ClientScripts/EquipmentItem.cs" id="1_4f2qc"]
+[ext_resource type="Texture2D" uid="uid://dps0sd6pbsva5" path="res://Sprites/Loot/Equipment/Weapons/Swords/rusty_sword.png" id="1_wwqag"]
+
+[node name="EquipmentItem" type="Node"]
+script = ExtResource("1_4f2qc")
+
+[node name="RustySword" type="Sprite2D" parent="."]
+texture = ExtResource("1_wwqag")

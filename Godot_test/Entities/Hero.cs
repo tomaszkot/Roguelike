@@ -39,6 +39,11 @@ namespace GodotGame
 				{
 					horizontal = 1;
 				}
+				else if (@event.IsActionPressed("ui_accept"))
+				{
+					Game.GameManager.SkipHeroTurn();
+
+		}
 
 				if (horizontal != 0 || vertical != 0)
 				{
@@ -52,7 +57,7 @@ namespace GodotGame
 				if (!missed)
 					showDamageLabel(damageValue, new Color(1, 1, 1), heroTile);
 				else
-		  showDamageLabel(damageValue, new Color(1, 1, 1), heroTile, "Evaded");
+				  showDamageLabel(damageValue, new Color(1, 1, 1), heroTile, "Evaded");
 	  }
 
 	  public override void _Input(InputEvent @event)
@@ -75,7 +80,9 @@ namespace GodotGame
 						}
 					}
 				}
-			}
+				Game.GameManager.CollectLootOnHeroPosition();
+
+	  }
 	}
   }
 }

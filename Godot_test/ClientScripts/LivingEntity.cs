@@ -23,6 +23,7 @@ namespace God4_1.ClientScripts
     {
       var hpBar = (Node2D)GetNode("HpBar/Hp");
       var percentOfHealth = tile.Stats.Health / tile.Stats.GetTotalValue(Roguelike.Attributes.EntityStatKind.Health);
+      if (percentOfHealth < 0) percentOfHealth = 0;
       hpBar.Scale = new Vector2((float)percentOfHealth, hpBar.Scale.Y);
     }
   }

@@ -1,0 +1,9 @@
+[gd_scene load_steps=2 format=3 uid="uid://ysigmsdtkcx6"]
+
+[ext_resource type="Texture2D" uid="uid://bqcw1ralpmvp8" path="res://Sprites/Interactive/chest_closed.png" id="1_54s1m"]
+
+[node name="Chest" type="Node"]
+
+[node name="PlainChest" type="Sprite2D" parent="."]
+position = Vector2(1, 1)
+texture = ExtResource("1_54s1m")
