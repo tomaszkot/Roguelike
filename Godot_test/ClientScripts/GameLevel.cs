@@ -20,9 +20,14 @@ namespace God4_1.ClientScripts
   public partial class GameLevel : Node
   {
 	string pathToEnemies = "res://Sprites/LivingEntities/Enemies/";
-	public static List<GodotGame.Entities.Enemy> enemyList = new();
-	public static Dictionary<Roguelike.Tiles.Interactive.InteractiveTile, Node> interactiveList = new();
-	public static Dictionary<Roguelike.Tiles.Looting.Equipment, Node> lootingList = new();
+	public Dictionary<Roguelike.Tiles.LivingEntities.Enemy, GodotGame.Entities.Enemy> enemyList = new();
+	private Dictionary<Roguelike.Tiles.Interactive.InteractiveTile, Node> interactiveList = new();
+	private Dictionary<Roguelike.Tiles.Looting.Equipment, Node> lootingList = new();
+	const int defaultLayer = 0;
+	const int transparentLayer = 1;
+	const int backgroundLayer = 2;
+	const int StairsUpTileIndex = 4;
+	const int StairsDownTileIndex = 3;
 
 	public void generateMapTiles(Dungeons.Tiles.Tile[,] tiles)
 	{
@@ -83,7 +88,7 @@ namespace God4_1.ClientScripts
 		var godotEn = instance.GetChild<GodotGame.Entities.Enemy>(0);
 		godotEn.EnemyTile = en;
 
-		enemyList.Add(godotEn);
+		enemyList.Add(en, godotEn);
 		if (ResourceLoader.Exists(pathToEnemies + tile.tag1 + ".png"))
 		{
 		  spr.Texture = LoadTexture(tile.tag1, tile);
@@ -91,48 +96,53 @@ namespace God4_1.ClientScripts
 		else
 		  spr.Texture = LoadTexture("bat", tile);
 	  }
-		else if (scenePath == "res://Entities/equipment_item.tscn")
-		{
+	  else if (scenePath == "res://Entities/equipment_item.tscn")
+	  {
 		var t = tile as Roguelike.Tiles.Looting.Equipment;
-	  lootingList.Add(t,instance);
-		var e = (EquipmentItem) instance;
+		lootingList.Add(t, instance);
+		var e = (EquipmentItem)instance;
 		e.equipment = t;
-		}
+	  }
 	  if (tile is Roguelike.Tiles.Interactive.InteractiveTile)
 	  {
 		var t = tile as Roguelike.Tiles.Interactive.InteractiveTile;
 		interactiveList.Add(t, instance);
 	  }
+	  if (tile is Roguelike.Tiles.Interactive.Chest c)
+	  {
+		var chest = (Chest)instance;
+		chest.updateChestTexture(c);
+	  }
 
-	AddChild(instance);
-	return spr;
+	  AddChild(instance);
+	  return spr;
 	}
 
 	public static void AddTile(Tile tile)
 	{
 	  if (tile is Wall)
 	  {
-		Game.tileMap.SetTileCell(tile, 0, 0);
+		Game.tileMap.SetTileCell(tile, defaultLayer, 0);
 	  }
 	  else if (tile is Door door)
 	  {
-		Game.tileMap.SetTileCell(tile, 0, 1);
+		Game.tileMap.SetTileCell(tile, defaultLayer, 1);
 		if (door.Opened)
 		{
 		  Game.tileMap.EraseCell(0, new Vector2I(tile.point.X, tile.point.Y));
-		  Game.tileMap.SetTileCell(tile, 1, 1);
+		  Game.tileMap.SetTileCell(tile, transparentLayer, 1);
 		}
 	  }
 	  else if (tile is Stairs s)
 	  {
 		if (s.StairsKind == StairsKind.LevelDown)
-		  Game.tileMap.SetTileCell(tile, 0, 3);
+		  Game.tileMap.SetTileCell(tile, defaultLayer, StairsDownTileIndex);
 		else if (s.StairsKind == StairsKind.LevelUp)
-		  Game.tileMap.SetTileCell(tile, 0, 4);
+		  Game.tileMap.SetTileCell(tile, defaultLayer, StairsUpTileIndex);
 	  }
 	  else if (tile.IsEmpty || tile is Roguelike.Tiles.Interactive.InteractiveTile || tile is Roguelike.Tiles.LivingEntities.Hero heroTile || tile is Roguelike.Tiles.Loot)
 	  {
-		Game.tileMap.SetTileCell(tile, 2, 2);
+		Game.tileMap.SetTileCell(tile, backgroundLayer, 2);
 	  }
 	}
 
@@ -147,6 +157,16 @@ namespace God4_1.ClientScripts
 	private void Hero_Moved(object sender, Vector2 e)
 	{
 	  Game.GameManager.HandleHeroShift((int)e.X, (int)e.Y);
+	}
+
+	public Node GetNode(Dungeons.Tiles.Tile tile)
+	{
+	  var node = new Node();
+	  if (tile is Roguelike.Tiles.Interactive.InteractiveTile)
+		node = interactiveList[(Roguelike.Tiles.Interactive.InteractiveTile)tile];
+	  else if (tile is Roguelike.Tiles.Looting.Equipment)
+		node = lootingList[(Roguelike.Tiles.Looting.Equipment)tile];
+	  return node;
 	}
   }
 }

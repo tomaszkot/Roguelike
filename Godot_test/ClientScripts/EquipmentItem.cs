@@ -1,11 +1,13 @@
 using Godot;
+using Godot.Collections;
 using Roguelike.Tiles.Looting;
 using System;
 
 public partial class EquipmentItem : Node
 {
 	public Roguelike.Tiles.Looting.Equipment equipment;
-  private string pathToEquipment = "res://Sprites/Loot/Equipment/";
+	private string pathToEquipment = "res://Sprites/Loot/Equipment/";
+	private Dictionary<Weapon.WeaponKind, string> weaponKindPaths = new Dictionary<Weapon.WeaponKind, string> { { Weapon.WeaponKind.Sword, "Swords/rusty_sword.png" }, { Weapon.WeaponKind.Bashing, "Bashing/branch.png" }, { Weapon.WeaponKind.Axe, "Axes/axe.png" }, { Weapon.WeaponKind.Dagger, "Daggers/dagger.png" } };
 
   public override void _Ready()
   {
@@ -19,22 +21,8 @@ public partial class EquipmentItem : Node
 		if (equipment is Weapon w)
 		{
 	  var texture = pathToEquipment + "Weapons/";
-	  if (w.kind == Weapon.WeaponKind.Sword)
-	  {
-		texture += "Swords/rusty_sword.png";
-	  }
-	  else if (w.kind == Weapon.WeaponKind.Bashing)
-	  {
-		texture += "Bashing/branch.png";
-	  }
-	  else if (w.kind == Weapon.WeaponKind.Axe) 
-	  {
-		texture += "Axes/axe.png";
-	  }
-	  else if (w.kind == Weapon.WeaponKind.Dagger) 
-	  {
-		texture += "Daggers/dagger.png";
-	  }
-	} 
+		texture += weaponKindPaths[w.kind];
+			spr.Texture = ResourceLoader.Load(texture) as Texture2D;
+		} 
 	}
 }
