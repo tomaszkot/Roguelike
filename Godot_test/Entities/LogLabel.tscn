@@ -1,0 +1,8 @@
+[gd_scene load_steps=2 format=3 uid="uid://bgjldhojgf8no"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_ko33i"]
+
+[node name="LogLabel" type="Label"]
+text = "Log nr. 1"
+label_settings = SubResource("LabelSettings_ko33i")
+vertical_alignment = 1

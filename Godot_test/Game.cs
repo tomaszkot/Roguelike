@@ -26,6 +26,7 @@ public partial class Game : Node2D
   public static DungeonNode dungeon;
   public static GodotGame.Entities.Hero hero;
   public static TileMap tileMap;
+  public static LogContainer logContainer;
   public static bool isGameStarted = false;
   public GameEventHandler eventHandler = new GameEventHandler();
   public static GameLevel gameLevel = new GameLevel();
@@ -51,6 +52,7 @@ public partial class Game : Node2D
 	GameManager.Context.ContextSwitched += Context_ContextSwitched;
 	tileMap = (TileMap)GetNode("TileMap");
 	gameLevel = (GameLevel)GetNode("Objects");
+	logContainer = (LogContainer)GetNode("%LogContainer");
   }
 
   public void GenerateDungeon()
@@ -59,6 +61,11 @@ public partial class Game : Node2D
 	isGameStarted = true;
 
 	CallDeferred("GenerateBackgroundTiles");
+  }
+
+  private void Dungeon_OnTileRevealed(object sender, Dungeons.Core.GenericEventArgs<Tile> e)
+  {
+	GD.Print("show");
   }
 
   private void GenerateBackgroundTiles()
@@ -105,7 +112,7 @@ public partial class Game : Node2D
 	}
   }
 
-  private static Vector2 GetGamePosition(Point position)
+  public static Vector2 GetGamePosition(Point position)
   {
 	var gamePosition = new Vector2(position.X * WorldTileMap.TileSize, position.Y * WorldTileMap.TileSize);
 	return gamePosition;

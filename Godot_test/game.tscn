@@ -1,4 +1,4 @@
-[gd_scene load_steps=40 format=3 uid="uid://c2ijfx37sdqcj"]
+[gd_scene load_steps=41 format=3 uid="uid://c2ijfx37sdqcj"]
 
 [ext_resource type="Script" path="res://Game.cs" id="1_1mlpr"]
 [ext_resource type="Texture2D" uid="uid://bbn7isi8mttos" path="res://Sprites/GUI/air.png" id="2_eot3r"]
@@ -27,6 +27,7 @@
 [ext_resource type="Script" path="res://ClientScripts/GUI.cs" id="25_62s86"]
 [ext_resource type="TileSet" uid="uid://dhoxa8lpx0e82" path="res://ClientScripts/TileSet.tres" id="25_v18s7"]
 [ext_resource type="Texture2D" uid="uid://6we743uva22t" path="res://Sprites/GUI/Form.png" id="26_sifmh"]
+[ext_resource type="Script" path="res://ClientScripts/LogContainer.cs" id="27_i6sbv"]
 [ext_resource type="Script" path="res://ClientScripts/GameLevel.cs" id="29_o02cf"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_e2xfd"]
@@ -636,6 +637,30 @@ libraries = {
 "": SubResource("AnimationLibrary_3vltp")
 }
 
+[node name="GameLogs" type="Control" parent="GUI"]
+layout_mode = 3
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_top = -40.0
+offset_right = 40.0
+grow_vertical = 0
+
+[node name="LogContainer" type="VBoxContainer" parent="GUI/GameLogs"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_top = -305.0
+offset_right = 164.0
+offset_bottom = -91.0
+grow_vertical = 0
+pivot_offset = Vector2(1, 58)
+theme_override_constants/separation = 10
+alignment = 2
+script = ExtResource("27_i6sbv")
+
 [node name="TileMap" type="TileMap" parent="."]
 position = Vector2(-64, -64)
 tile_set = ExtResource("25_v18s7")
@@ -657,6 +682,13 @@ layer_2/y_sort_enabled = true
 layer_2/y_sort_origin = -2
 layer_2/z_index = -2
 layer_2/tile_data = PackedInt32Array()
+layer_3/name = ""
+layer_3/enabled = true
+layer_3/modulate = Color(1, 1, 1, 1)
+layer_3/y_sort_enabled = false
+layer_3/y_sort_origin = 0
+layer_3/z_index = 10
+layer_3/tile_data = PackedInt32Array()
 
 [node name="CanvasModulate" type="CanvasModulate" parent="."]
 color = Color(0.137255, 0.137255, 0.207843, 1)

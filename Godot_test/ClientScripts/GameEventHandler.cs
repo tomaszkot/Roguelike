@@ -26,7 +26,6 @@ namespace God4_1.ClientScripts
 {
   public class GameEventHandler
   {
-    string openChestTexture = "res://Sprites/Interactive/chest_opened.png";
     public void ActionsManager_ActionAppended(object sender, GameEvent ev)
     {
       switch (ev)
@@ -44,6 +43,15 @@ namespace God4_1.ClientScripts
               {
                 var enGodot = Game.gameLevel.enemyList[en];
                 Game.SetPositionFromTile(en, enGodot, true);
+                enGodot.Scale = new Vector2(-1, 1);
+
+                var nextPosition = Game.hero.Position;
+                if (enGodot.GlobalPosition.X > nextPosition.X){
+                  enGodot.Scale = new Vector2(1, 1);
+                }
+                else{
+                  enGodot.Scale = new Vector2(-1, 1);
+                }
               }
             }
             else if (lea.Kind == LivingEntityActionKind.Died && lea.InvolvedEntity is Enemy enemy)
@@ -144,6 +152,7 @@ namespace God4_1.ClientScripts
             break;
           }
       }
+      Game.logContainer.showNewLog();
     }
   }
 }

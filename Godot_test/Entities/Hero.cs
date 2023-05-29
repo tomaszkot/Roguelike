@@ -13,6 +13,7 @@ namespace GodotGame
 	  Roguelike.Tiles.LivingEntities.Hero heroTile;
 	  public event EventHandler<Vector2> Moved;
 	  private float scrollingSpeed = 0.05f;
+	  private bool canMove = true;
 
 	  public Roguelike.Tiles.LivingEntities.Hero HeroTile { get => heroTile; set => heroTile = value; }
 
@@ -22,34 +23,45 @@ namespace GodotGame
 
 		int vertical = 0;
 		int horizontal = 0;
-		if (@event.IsActionPressed("ui_up"))
+		if (@event.IsAction("ui_up"))
 		{
 		  vertical = -1;
 		  //GlobalPosition += new Vector2(0, -moveStep);
 		}
-		else if (@event.IsActionPressed("ui_down"))
+		else if (@event.IsAction("ui_down"))
 		{
 		  vertical = 1;
 		}
-		else if (@event.IsActionPressed("ui_left"))
+		else if (@event.IsAction("ui_left"))
 		{
 		  horizontal = -1;
 		}
-		else if (@event.IsActionPressed("ui_right"))
+		else if (@event.IsAction("ui_right"))
 		{
 		  horizontal = 1;
 		}
-		else if (@event.IsActionPressed("ui_accept"))
+		else if (@event.IsAction("ui_accept"))
 		{
+		  canMove = false;
 		  Game.GameManager.SkipHeroTurn();
-
+		  WaitForMovement();
 		}
 
 		if (horizontal != 0 || vertical != 0)
 		{
-		  if (Moved != null)
+		  if (Moved != null && canMove)
+		  {
+			canMove = false;
 			Moved(this, new Vector2(horizontal, vertical));
+			WaitForMovement();
+		  }
 		}
+	  }
+
+	  private async void WaitForMovement()
+	  {
+		await ToSignal(GetTree().CreateTimer(0.2), "timeout");
+		canMove = true;
 	  }
 
 	  public void getDamaged(float damageValue, bool missed = false)

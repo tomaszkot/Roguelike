@@ -26,6 +26,7 @@ namespace God4_1.ClientScripts
 	const int defaultLayer = 0;
 	const int transparentLayer = 1;
 	const int backgroundLayer = 2;
+	const int hiddenTilesLayer = 3;
 	const int StairsUpTileIndex = 4;
 	const int StairsDownTileIndex = 3;
 
@@ -120,6 +121,9 @@ namespace God4_1.ClientScripts
 
 	public static void AddTile(Tile tile)
 	{
+	  if (!tile.Revealed)
+		Game.tileMap.SetTileCell(tile, hiddenTilesLayer, 5);
+
 	  if (tile is Wall)
 	  {
 		Game.tileMap.SetTileCell(tile, defaultLayer, 0);
