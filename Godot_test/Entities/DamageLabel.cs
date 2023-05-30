@@ -1,12 +1,14 @@
+using God4_1.Entities;
 using Godot;
 using System;
 
-public partial class DamageLabel : Label
+public partial class DamageLabel : Entity
 {
-	public override async void _Ready()
+	public async void StartAnimation()
 	{
+		var label = (Label)GetChild(0);
 		var t = GetTree().CreateTween();
-		t.TweenProperty(this,"position",new Vector2(Position.X,Position.Y - 40),0.5);
+		t.TweenProperty(label,"position",new Vector2(label.Position.X, label.Position.Y - 40),0.5);
 		await ToSignal(GetTree().CreateTimer(0.5),"timeout");
 		DestoryAfterAnimation();
 

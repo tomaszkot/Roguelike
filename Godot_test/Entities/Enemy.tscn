@@ -7,10 +7,10 @@
 
 [node name="Enemy" type="Node2D"]
 z_index = 10
+script = ExtResource("2_62dx3")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 texture = ExtResource("1_upvjk")
-script = ExtResource("2_62dx3")
 
 [node name="HpBar" type="Sprite2D" parent="Sprite2D"]
 z_index = 10

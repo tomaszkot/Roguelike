@@ -9,7 +9,6 @@ using Roguelike.Managers;
 using Roguelike.Serialization;
 using Roguelike.Tiles.Interactive;
 using Roguelike.Tiles.LivingEntities;
-using Roguelike.Tiles.Looting;
 using SimpleInjector;
 using System;
 using System.Collections.Generic;

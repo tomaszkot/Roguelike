@@ -10,11 +10,11 @@
 size = Vector2(115, 109)
 
 [node name="Node2D" type="Node2D"]
+script = ExtResource("2_l35lg")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 texture_filter = 1
 texture = ExtResource("1_tdfb0")
-script = ExtResource("2_l35lg")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Sprite2D"]
 position = Vector2(-5.5, 7.5)

@@ -1,7 +1,4 @@
 using Godot;
-using NUnit.Framework;
-using System;
-using System.Linq;
 
 public partial class LogContainer : VBoxContainer
 {
