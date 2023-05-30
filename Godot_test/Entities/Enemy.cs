@@ -1,7 +1,4 @@
 using Godot;
-using Roguelike.Tiles.LivingEntities;
-using System;
-using System.Reflection.Metadata.Ecma335;
 
 namespace GodotGame
 {

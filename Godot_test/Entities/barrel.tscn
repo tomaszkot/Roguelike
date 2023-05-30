@@ -1,8 +1,8 @@
 [gd_scene load_steps=6 format=3 uid="uid://qnjkxd82sdd5"]
 
-[ext_resource type="Texture2D" uid="uid://dnsoky24n7ssu" path="res://Sprites/Interactive/barrel.png" id="1_y2vvh"]
-[ext_resource type="Texture2D" uid="uid://bpr4apovna80k" path="res://Sprites/Interactive/barrel_broken.png" id="2_wpem4"]
-[ext_resource type="Texture2D" uid="uid://b3hegomquchud" path="res://Sprites/GUI/cloud1.png" id="3_tslgh"]
+[ext_resource type="Texture2D" uid="uid://dnsoky24n7ssu" path="res://Sprites/Interactive/barrel.png" id="1_kxjh1"]
+[ext_resource type="Texture2D" uid="uid://bpr4apovna80k" path="res://Sprites/Interactive/barrel_broken.png" id="2_syaxa"]
+[ext_resource type="Texture2D" uid="uid://b3hegomquchud" path="res://Sprites/GUI/cloud1.png" id="3_wr6ga"]
 
 [sub_resource type="Animation" id="Animation_8e7fw"]
 resource_name = "destroy"
@@ -152,7 +152,7 @@ _data = {
 [node name="Barrel" type="Sprite2D" parent="."]
 z_index = 1
 texture_filter = 1
-texture = ExtResource("1_y2vvh")
+texture = ExtResource("1_kxjh1")
 
 [node name="BarrelParts" type="Node2D" parent="Barrel"]
 visible = false
@@ -162,14 +162,14 @@ z_index = 2
 texture_filter = 1
 position = Vector2(-27, -50)
 rotation = 0.694641
-texture = ExtResource("2_wpem4")
+texture = ExtResource("2_syaxa")
 hframes = 3
 
 [node name="BarrelBroken2" type="Sprite2D" parent="Barrel/BarrelParts"]
 texture_filter = 1
 position = Vector2(46, -36)
 rotation = -0.424115
-texture = ExtResource("2_wpem4")
+texture = ExtResource("2_syaxa")
 hframes = 3
 frame = 1
 
@@ -177,7 +177,7 @@ frame = 1
 texture_filter = 1
 position = Vector2(-9, 6)
 rotation = -2.82394
-texture = ExtResource("2_wpem4")
+texture = ExtResource("2_syaxa")
 hframes = 3
 frame = 2
 
@@ -185,7 +185,7 @@ frame = 2
 texture_filter = 1
 position = Vector2(12, 44)
 rotation = -1.59698
-texture = ExtResource("2_wpem4")
+texture = ExtResource("2_syaxa")
 hframes = 3
 
 [node name="Dust" type="Node2D" parent="Barrel"]
@@ -200,19 +200,19 @@ scale = Vector2(0.7, 0.7)
 modulate = Color(1, 1, 1, 0.376471)
 position = Vector2(-37, -87)
 rotation = 2.33874
-texture = ExtResource("3_tslgh")
+texture = ExtResource("3_wr6ga")
 
 [node name="Cloud2" type="Sprite2D" parent="Barrel/Dust"]
 modulate = Color(1, 1, 1, 0.376471)
 position = Vector2(7, 7)
 rotation = -2.65116
-texture = ExtResource("3_tslgh")
+texture = ExtResource("3_wr6ga")
 
 [node name="Cloud3" type="Sprite2D" parent="Barrel/Dust"]
 modulate = Color(1, 1, 1, 0.376471)
 position = Vector2(59, -77)
 rotation = -2.08567
-texture = ExtResource("3_tslgh")
+texture = ExtResource("3_wr6ga")
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 libraries = {

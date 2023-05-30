@@ -1,22 +1,12 @@
-﻿using Dungeons.ASCIIDisplay;
-using Godot;
-using Roguelike.Abstract.Multimedia;
-using Roguelike.Abstract;
-using Roguelike;
-using Roguelike.Managers;
-using Roguelike.Multimedia;
+﻿using Godot;
 using System;
 using Roguelike.Events;
-using System.IO;
-using Dungeons.Tiles;
 using Roguelike.Tiles.LivingEntities;
-using static System.Net.WebRequestMethods;
-using NUnit.Framework;
-using System.Collections.Generic;
-using System.Linq;
 using Roguelike.Tiles.Interactive;
-using System.Drawing;
-using Dungeons.TileContainers;
+using Roguelike.Tiles.Looting;
+using Roguelike.Tiles;
+using GodotGame.Entities;
+
 namespace God4_1.ClientScripts
 {
   public class GameEventHandler
@@ -30,45 +20,67 @@ namespace God4_1.ClientScripts
             var lea = ev as LivingEntityAction;
             if (lea.Kind == LivingEntityActionKind.Moved)
             {
-              if (lea.InvolvedEntity is Hero)
+              if (lea.InvolvedEntity is Roguelike.Tiles.LivingEntities.Hero)
               {
-                Game.SetPositionFromTile(Game.hero.HeroTile, Game.hero, true);
+                Game.SetPositionFromTile(Game.hero.HeroTile, Game.hero.sprite, true);
               }
-              else if (lea.InvolvedEntity is Enemy en)
+              else if (lea.InvolvedEntity is Roguelike.Tiles.LivingEntities.Enemy en)
               {
-                var enGodot = GameLevel.enemyList.SingleOrDefault(i => i.EnemyTile == en);
+                var enGodotNode = (GodotGame.Entities.Enemy)Game.gameLevel.GetNode(en);
+                var enGodot = enGodotNode.sprite;
                 Game.SetPositionFromTile(en, enGodot, true);
+                enGodot.Scale = new Vector2(-1, 1);
+
+                var nextPosition = Game.hero.sprite.Position;
+                if (enGodot.GlobalPosition.X > nextPosition.X)
+                {
+                  enGodot.Scale = new Vector2(1, 1);
+                }
+                else
+                {
+                  enGodot.Scale = new Vector2(-1, 1);
+                }
               }
             }
-            else if (lea.Kind == LivingEntityActionKind.Died && lea.InvolvedEntity is Enemy enemy)
+            else if (lea.Kind == LivingEntityActionKind.Died && lea.InvolvedEntity is Roguelike.Tiles.LivingEntities.Enemy enemy)
             {
-              var enGodot = GameLevel.enemyList.SingleOrDefault(i => i.EnemyTile == enemy);
-              enGodot.GetParent().CallDeferred("queue_free");
+              var enGodot = Game.gameLevel.GetNode(enemy);
+              enGodot.CallDeferred("queue_free");
+            }
+            else if (lea.Kind == LivingEntityActionKind.Died && lea.InvolvedEntity is Roguelike.Tiles.LivingEntities.Hero hero)
+            {
+              Game.gui.ShowDeathScreen();
             }
             else if (lea.Kind == LivingEntityActionKind.GainedDamage)
             {
-              if (lea.InvolvedEntity is Enemy en)
+              if (lea.InvolvedEntity is Roguelike.Tiles.LivingEntities.Enemy en)
               {
-                var enGodot = GameLevel.enemyList.SingleOrDefault(i => i.EnemyTile == en);
+                var enGodot = (GodotGame.Entities.Enemy)Game.gameLevel.GetNode(en);
                 enGodot.getDamaged((float)lea.InvolvedValue);
               }
-              else if (lea.InvolvedEntity is Hero)
+              else if (lea.InvolvedEntity is Roguelike.Tiles.LivingEntities.Hero)
               {
                 Game.hero.getDamaged((float)lea.InvolvedValue);
               }
             }
             else if (lea.Kind == LivingEntityActionKind.Missed)
             {
-              if (lea.InvolvedEntity is Enemy en)
+              if (lea.InvolvedEntity is Roguelike.Tiles.LivingEntities.Enemy en)
               {
                 Game.hero.getDamaged((float)lea.InvolvedValue, true);
               }
-              else if (lea.InvolvedEntity is Hero)
+              else if (lea.InvolvedEntity is Roguelike.Tiles.LivingEntities.Hero)
               {
                 var targetTile = Game.dungeon.GetTile(lea.targetEntityPosition);
-                var enGodot = GameLevel.enemyList.SingleOrDefault(i => i.EnemyTile == targetTile);
+                var enGodot = (GodotGame.Entities.Enemy)Game.gameLevel.GetNode((Roguelike.Tiles.LivingEntities.Enemy)targetTile);
                 enGodot.getDamaged((float)lea.InvolvedValue, true);
               }
+            }
+            else if (lea.Kind == LivingEntityActionKind.AppendedToLevel)
+            {
+              Dungeons.Tiles.Tile[,] tileArray = new Dungeons.Tiles.Tile[1, 1];
+              tileArray[0, 0] = lea.InvolvedEntity;
+              Game.gameLevel.CreateEntities(tileArray);
             }
           }
 
@@ -83,21 +95,56 @@ namespace God4_1.ClientScripts
             }
             else if (ita.InteractiveKind == InteractiveActionKind.Destroyed)
             {
-              var barrel = GameLevel.interactiveList[(Barrel)ita.InvolvedTile];
-              var anim = (AnimationPlayer)barrel.GetNode("AnimationPlayer");
-              anim.Play("destroy");
+              var barrel = Game.gameLevel.GetNode(ita.InvolvedTile);
+              if (ita.InvolvedTile is Barrel)
+              {
+                var anim = (AnimationPlayer)barrel.GetNode("AnimationPlayer");
+                anim.Play("destroy");
+              }
+              else if (ita.InvolvedTile is Roguelike.Tiles.Interactive.Chest)
+              {
+                var chest = Game.gameLevel.GetNode(ita.InvolvedTile);
+                chest.CallDeferred("queue_free");
+              }
+            }
+            else if (ita.InteractiveKind == InteractiveActionKind.ChestOpened)
+            {
+              var chest = (Chest)Game.gameLevel.GetNode(ita.InvolvedTile);
+              chest.updateChestTexture((Roguelike.Tiles.Interactive.Chest)ita.InvolvedTile);
             }
             break;
           }
         case GameStateAction:
           {
+            var gsa = ev as GameStateAction;
             break;
           }
         case LootAction:
           {
+            var la = ev as LootAction;
+            if (la.Kind == LootActionKind.Generated)
+            {
+              if (la.Loot is Equipment i)
+              {
+                if (i is Weapon w)
+                {
+                  Game.gameLevel.AddChildFromScene(Game.dungeon.GetTile(w.point), "res://Entities/equipment_item.tscn");
+                }
+              }
+            }
+            else if (la.Kind == LootActionKind.Collected)
+            {
+              var item = la.Loot;
+              var godotObject = Game.gameLevel.GetNode(item);
+              if (godotObject != null)
+                godotObject.QueueFree();
+              else
+                throw new Exception("Item not implemented in Godot");
+            }
             break;
           }
       }
+      Game.logContainer.showNewLog();
     }
   }
 }
