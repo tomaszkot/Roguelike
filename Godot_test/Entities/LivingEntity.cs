@@ -4,7 +4,7 @@ using Godot;
 
 namespace God4_1.ClientScripts
 {
-  public partial class LivingEntity : Entity
+  public abstract partial class LivingEntity : Entity
   {
     public Sprite2D sprite;
 
@@ -34,5 +34,7 @@ namespace God4_1.ClientScripts
       if (percentOfHealth < 0) percentOfHealth = 0;
       hpBar.Scale = new Vector2((float)percentOfHealth, hpBar.Scale.Y);
     }
+
+    public abstract void getDamaged(float damageValue, bool missed = false);
   }
 }

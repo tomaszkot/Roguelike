@@ -9,7 +9,7 @@ namespace GodotGame
 			Roguelike.Tiles.LivingEntities.Enemy enemyTile;
 			public Roguelike.Tiles.LivingEntities.Enemy EnemyTile { get => enemyTile; set => enemyTile = value; }
 
-	  public void getDamaged(float damageValue, bool missed = false)
+	  public override void getDamaged(float damageValue, bool missed = false)
 	  {
 		if (!missed)
 		  showDamageLabel(damageValue, new Color(1, 0, 0), enemyTile);
