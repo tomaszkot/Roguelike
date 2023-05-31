@@ -2,6 +2,9 @@ using Godot;
 
 public partial class GUI : CanvasLayer
 {
+	public StatsPanel statsPanel;
+	public UIButtons uibuttons;
+
   public void ShowOptionMenu()
   {
     var options = (Control)GetNode("Options");
@@ -21,6 +24,11 @@ public partial class GUI : CanvasLayer
   {
     var heroStats = (Control)GetNode("HeroStats");
     heroStats.Visible = true;
+		statsPanel = (StatsPanel)GetNode("StatsPanel");
+		statsPanel.Visible = true;
+		statsPanel.UpdateStats();
+		uibuttons = (UIButtons)GetNode("UIButtons");
+		uibuttons.Visible = true;
   }
 
   public void ShowDeathScreen()
