@@ -26,7 +26,7 @@ namespace God4_1.ClientScripts
               }
               else if (lea.InvolvedEntity is Roguelike.Tiles.LivingEntities.Enemy en)
               {
-                var enGodotNode = (GodotGame.Entities.Enemy)Game.gameLevel.GetNode(en);
+                var enGodotNode = Game.gameLevel.GetEntity<LivingEntity>(en);
                 var enGodot = enGodotNode.sprite;
                 Game.SetPositionFromTile(en, enGodot, true);
                 enGodot.Scale = new Vector2(-1, 1);
@@ -55,7 +55,7 @@ namespace God4_1.ClientScripts
             {
               if (lea.InvolvedEntity is Roguelike.Tiles.LivingEntities.Enemy en)
               {
-                var enGodot = (GodotGame.Entities.Enemy)Game.gameLevel.GetNode(en);
+                var enGodot = Game.gameLevel.GetEntity<LivingEntity>(en);
                 enGodot.getDamaged((float)lea.InvolvedValue);
               }
               else if (lea.InvolvedEntity is Roguelike.Tiles.LivingEntities.Hero)
@@ -72,13 +72,13 @@ namespace God4_1.ClientScripts
               else if (lea.InvolvedEntity is Roguelike.Tiles.LivingEntities.Hero)
               {
                 var targetTile = Game.dungeon.GetTile(lea.targetEntityPosition);
-                var enGodot = (GodotGame.Entities.Enemy)Game.gameLevel.GetNode((Roguelike.Tiles.LivingEntities.Enemy)targetTile);
+                var enGodot = Game.gameLevel.GetEntity<LivingEntity>(targetTile);
                 enGodot.getDamaged((float)lea.InvolvedValue, true);
               }
             }
             else if (lea.Kind == LivingEntityActionKind.AppendedToLevel)
             {
-              Dungeons.Tiles.Tile[,] tileArray = new Dungeons.Tiles.Tile[1, 1];
+              var tileArray = new Dungeons.Tiles.Tile[1, 1];
               tileArray[0, 0] = lea.InvolvedEntity;
               Game.gameLevel.CreateEntities(tileArray);
             }
@@ -109,7 +109,7 @@ namespace God4_1.ClientScripts
             }
             else if (ita.InteractiveKind == InteractiveActionKind.ChestOpened)
             {
-              var chest = (Chest)Game.gameLevel.GetNode(ita.InvolvedTile);
+              var chest = Game.gameLevel.GetEntity<Chest>(ita.InvolvedTile);
               chest.updateChestTexture((Roguelike.Tiles.Interactive.Chest)ita.InvolvedTile);
             }
             break;

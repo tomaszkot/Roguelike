@@ -62,7 +62,7 @@ namespace GodotGame
         canMove = true;
       }
 
-      public void getDamaged(float damageValue, bool missed = false)
+      public override void getDamaged(float damageValue, bool missed = false)
       {
         if (!missed)
           showDamageLabel(damageValue, new Color(1, 1, 1), heroTile);
