@@ -1085,6 +1085,7 @@ text = "Name: "
 label_settings = SubResource("LabelSettings_llig1")
 
 [node name="Value" type="Label" parent="GUI/PlayerStatsMenu/General/Name"]
+layout_mode = 0
 offset_left = 84.0
 offset_right = 171.0
 offset_bottom = 38.0
@@ -1100,6 +1101,7 @@ text = "Gold: "
 label_settings = SubResource("LabelSettings_llig1")
 
 [node name="Value" type="Label" parent="GUI/PlayerStatsMenu/General/Gold"]
+layout_mode = 0
 offset_left = 68.0
 offset_right = 155.0
 offset_bottom = 38.0
@@ -1116,6 +1118,7 @@ text = "Level: "
 label_settings = SubResource("LabelSettings_llig1")
 
 [node name="Value" type="Label" parent="GUI/PlayerStatsMenu/General/Level"]
+layout_mode = 0
 offset_left = 75.0
 offset_top = 1.0
 offset_right = 162.0
@@ -1133,6 +1136,7 @@ text = "Exp: "
 label_settings = SubResource("LabelSettings_llig1")
 
 [node name="Value" type="Label" parent="GUI/PlayerStatsMenu/General/Exp"]
+layout_mode = 0
 offset_left = 56.0
 offset_top = 2.0
 offset_right = 143.0
@@ -1198,6 +1202,7 @@ text = "Health: "
 label_settings = SubResource("LabelSettings_gfh3m")
 
 [node name="Value" type="Label" parent="GUI/PlayerStatsMenu/Attributes/Health"]
+layout_mode = 0
 offset_left = 225.0
 offset_right = 386.0
 offset_bottom = 66.0
@@ -1213,6 +1218,7 @@ text = "Strength: "
 label_settings = SubResource("LabelSettings_gfh3m")
 
 [node name="Value" type="Label" parent="GUI/PlayerStatsMenu/Attributes/Strength"]
+layout_mode = 0
 offset_left = 225.0
 offset_right = 386.0
 offset_bottom = 66.0
@@ -1228,6 +1234,7 @@ text = "Magic: "
 label_settings = SubResource("LabelSettings_gfh3m")
 
 [node name="Value" type="Label" parent="GUI/PlayerStatsMenu/Attributes/Magic"]
+layout_mode = 0
 offset_left = 225.0
 offset_right = 386.0
 offset_bottom = 66.0
@@ -1243,6 +1250,7 @@ text = "Defence: "
 label_settings = SubResource("LabelSettings_gfh3m")
 
 [node name="Value" type="Label" parent="GUI/PlayerStatsMenu/Attributes/Defence"]
+layout_mode = 0
 offset_left = 225.0
 offset_top = 3.0
 offset_right = 386.0
@@ -1271,6 +1279,7 @@ text = "Attack: "
 label_settings = SubResource("LabelSettings_llig1")
 
 [node name="Value" type="Label" parent="GUI/PlayerStatsMenu/Stats/Attack"]
+layout_mode = 0
 offset_left = 92.0
 offset_top = 2.0
 offset_right = 179.0
@@ -1287,6 +1296,7 @@ text = "Mana: "
 label_settings = SubResource("LabelSettings_llig1")
 
 [node name="Value" type="Label" parent="GUI/PlayerStatsMenu/Stats/Mana"]
+layout_mode = 0
 offset_left = 80.0
 offset_top = 1.0
 offset_right = 167.0
@@ -1303,6 +1313,7 @@ text = "Chance to hit: "
 label_settings = SubResource("LabelSettings_llig1")
 
 [node name="Value" type="Label" parent="GUI/PlayerStatsMenu/Stats/HitChance"]
+layout_mode = 0
 offset_left = 172.0
 offset_top = 1.0
 offset_right = 259.0
@@ -1319,6 +1330,7 @@ text = "Chance to cast spell: "
 label_settings = SubResource("LabelSettings_llig1")
 
 [node name="Value" type="Label" parent="GUI/PlayerStatsMenu/Stats/SpellChance"]
+layout_mode = 0
 offset_left = 250.0
 offset_top = 1.0
 offset_right = 337.0
@@ -1344,6 +1356,7 @@ text = "Fire:"
 label_settings = SubResource("LabelSettings_llig1")
 
 [node name="Value" type="Label" parent="GUI/PlayerStatsMenu/Stats/FireRes"]
+layout_mode = 0
 offset_left = 62.0
 offset_top = 1.0
 offset_right = 149.0
@@ -1360,6 +1373,7 @@ text = "Cold:"
 label_settings = SubResource("LabelSettings_llig1")
 
 [node name="Value" type="Label" parent="GUI/PlayerStatsMenu/Stats/ColdRes"]
+layout_mode = 0
 offset_left = 67.0
 offset_top = 1.0
 offset_right = 154.0
@@ -1376,6 +1390,7 @@ text = "Poison:"
 label_settings = SubResource("LabelSettings_llig1")
 
 [node name="Value" type="Label" parent="GUI/PlayerStatsMenu/Stats/PoisonRes"]
+layout_mode = 0
 offset_left = 94.0
 offset_top = 1.0
 offset_right = 181.0

@@ -18,38 +18,38 @@ public partial class EquipmentItem : Entity
   { EquipmentKind.Helmet, "Helmets/" }, { EquipmentKind.Shield, "Shields/" } };
   public override void _Ready()
   {
-    base._Ready();
-    CallDeferred("SetSprite");
+	base._Ready();
+	CallDeferred("SetSprite");
   }
 
   public void SetSprite()
   {
-    if (loot is Equipment)
-    {
-      if (loot is Weapon w)
-      {
-        var texture = pathToEquipment + "Weapons/";
-        texture += weaponKindPaths[w.kind];
-        texture += w.tag1 + ".png";
+	if (loot is Equipment)
+	{
+	  if (loot is Weapon w)
+	  {
+		var texture = pathToEquipment + "Weapons/";
+		texture += weaponKindPaths[w.kind];
+		texture += w.tag1 + ".png";
 
-        LoadTexture(texture);
-      }
-      else if (loot is Armor a)
-      {
-        var texture = pathToEquipment + "Armor/";
-        texture += armorsKindPaths[a.EquipmentKind];
-        texture += a.tag1 + ".png";
+		LoadTexture(texture);
+	  }
+	  else if (loot is Armor a)
+	  {
+		var texture = pathToEquipment + "Armor/";
+		texture += armorsKindPaths[a.EquipmentKind];
+		texture += a.tag1 + ".png";
 
-        LoadTexture(texture);
-      }
-    }
-    else if (loot is Scroll)
-    {
-      LoadTexture(pathToScrools + loot.tag1 + ".png");
-    }
-    else if (loot is Consumable)
-    {
-      LoadTexture(pathToConsumables + loot.tag1 + ".png");
-    }
+		LoadTexture(texture);
+	  }
+	}
+	else if (loot is Scroll)
+	{
+	  LoadTexture(pathToScrools + loot.tag1 + ".png");
+	}
+	else if (loot is Consumable)
+	{
+	  LoadTexture(pathToConsumables + loot.tag1 + ".png");
+	}
   }
 }

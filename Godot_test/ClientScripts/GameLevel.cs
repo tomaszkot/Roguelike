@@ -3,6 +3,8 @@ using Dungeons.Tiles;
 using System.Collections.Generic;
 using Roguelike.Tiles.Interactive;
 using God4_1.Entities;
+using System;
+using System.Linq;
 
 namespace God4_1.ClientScripts
 {
