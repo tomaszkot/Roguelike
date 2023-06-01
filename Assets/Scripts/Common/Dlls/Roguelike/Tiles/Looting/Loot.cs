@@ -307,6 +307,7 @@ namespace Roguelike.Tiles
       get { return "Part of a crafting recipe."; }
     }
 
+    [JsonIgnore]
     public ILootSource source;
     [JsonIgnore]
     public ILootSource Source
