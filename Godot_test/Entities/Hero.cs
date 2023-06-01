@@ -68,8 +68,8 @@ namespace GodotGame
 		  showDamageLabel(damageValue, new Color(1, 1, 1), heroTile);
 		else
 		  showDamageLabel(damageValue, new Color(1, 1, 1), heroTile, "Evaded");
-			Game.gui.statsPanel.UpdateStats();
-	}
+		Game.gui.statsPanel.UpdateStats();
+	  }
 
 
 	  public override void _Input(InputEvent @event)
@@ -94,7 +94,7 @@ namespace GodotGame
 		}
 		Game.GameManager.CollectLootOnHeroPosition();
 		Game.hero.heroTile.state = Roguelike.Tiles.LivingEntities.EntityState.Idle; //TODO Temporary solution, must be changed when spells are implemented
-		}
+	  }
 	}
   }
 }

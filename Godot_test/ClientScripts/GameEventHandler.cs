@@ -122,15 +122,9 @@ namespace God4_1.ClientScripts
         case LootAction:
           {
             var la = ev as LootAction;
-            if (la.Kind == LootActionKind.Generated)
+            if (la.Kind == LootActionKind.Generated )
             {
-              if (la.Loot is Equipment i)
-              {
-                if (i is Weapon w)
-                {
-                  Game.gameLevel.AddChildFromScene(Game.dungeon.GetTile(w.point), "res://Entities/equipment_item.tscn");
-                }
-              }
+               Game.gameLevel.AddChildFromScene(Game.dungeon.GetTile(la.Loot.point), "res://Entities/equipment_item.tscn");
             }
             else if (la.Kind == LootActionKind.Collected)
             {
@@ -141,6 +135,11 @@ namespace God4_1.ClientScripts
               else
                 throw new Exception("Item not implemented in Godot");
             }
+            break;
+          }
+        case SoundRequestAction:
+          {
+
             break;
           }
       }

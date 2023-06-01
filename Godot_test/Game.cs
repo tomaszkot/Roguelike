@@ -38,7 +38,7 @@ public partial class Game : Node2D
 	//container.Register<GameController, GameController>();
 	container.Register<IDrawingEngine, ConsoleDrawingEngine>();
 	container.Register<IGame, RoguelikeGame>();
-	container.Register<ISoundPlayer, BasicSoundPlayer>();
+	container.Register<ISoundPlayer, MusicPlayer>();
 
 	game = container.GetInstance<IGame>();
 	GameManager.EventsManager.EventAppended += eventHandler.ActionsManager_ActionAppended;
@@ -47,6 +47,7 @@ public partial class Game : Node2D
 	gameLevel = (GameLevel)GetNode("Objects");
 	logContainer = (LogContainer)GetNode("%LogContainer");
 	gui = (GUI)GetNode("%GUI");
+	MusicPlayer.audioPlayer = (AudioStreamPlayer)GetNode("%AudioStreamPlayer");
   }
 
   public void GenerateDungeon()

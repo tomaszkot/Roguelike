@@ -1441,6 +1441,11 @@ color = Color(0.137255, 0.137255, 0.207843, 1)
 [node name="Objects" type="Node" parent="."]
 script = ExtResource("29_o02cf")
 
+[node name="MusicPlayer" type="Node" parent="."]
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="MusicPlayer"]
+unique_name_in_owner = true
+
 [connection signal="pressed" from="MainMenu/TopMenu/VBoxContainer/Continue" to="MainMenu/TopMenu" method="_on_continue_pressed"]
 [connection signal="pressed" from="MainMenu/TopMenu/VBoxContainer/Start" to="MainMenu/TopMenu" method="_on_start_pressed"]
 [connection signal="pressed" from="MainMenu/TopMenu/VBoxContainer/Exit" to="MainMenu/TopMenu" method="_on_exit_pressed"]
