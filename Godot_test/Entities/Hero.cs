@@ -71,6 +71,7 @@ namespace GodotGame
 			Game.gui.statsPanel.UpdateStats();
 	}
 
+
 	  public override void _Input(InputEvent @event)
 	  {
 		base._Input(@event);
