@@ -93,8 +93,8 @@ namespace GodotGame
 		  }
 		}
 		Game.GameManager.CollectLootOnHeroPosition();
-
-	  }
+		Game.hero.heroTile.state = Roguelike.Tiles.LivingEntities.EntityState.Idle; //TODO Temporary solution, must be changed when spells are implemented
+		}
 	}
   }
 }
