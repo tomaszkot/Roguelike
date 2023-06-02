@@ -9,13 +9,15 @@ using Dungeons.Tiles;
 using System.Drawing;
 using Dungeons.TileContainers;
 using God4_1.ClientScripts;
+using Entities;
+using UI;
 
 public partial class Game : Node2D
 {
   public static GameManager gm;
   public static IGame game;
   public static DungeonNode dungeon;
-  public static GodotGame.Entities.Hero hero;
+  public static Hero hero;
   public static TileMap tileMap;
   public static LogContainer logContainer;
   public static GUI gui;
