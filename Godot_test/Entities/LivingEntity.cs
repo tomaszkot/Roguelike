@@ -1,8 +1,8 @@
 ﻿using System;
-using God4_1.Entities;
 using Godot;
+using UI;
 
-namespace God4_1.ClientScripts
+namespace Entities
 {
   public abstract partial class LivingEntity : Entity
   {

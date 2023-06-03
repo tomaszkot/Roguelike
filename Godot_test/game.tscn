@@ -1,8 +1,8 @@
-[gd_scene load_steps=59 format=3 uid="uid://c2ijfx37sdqcj"]
+[gd_scene load_steps=60 format=3 uid="uid://beynekas1cf07"]
 
 [ext_resource type="Script" path="res://Game.cs" id="1_1mlpr"]
 [ext_resource type="Texture2D" uid="uid://bbn7isi8mttos" path="res://Sprites/GUI/air.png" id="2_eot3r"]
-[ext_resource type="Script" path="res://ClientScripts/TopMenu.cs" id="2_ysriv"]
+[ext_resource type="Script" path="res://ClientScripts/UI/TopMenu.cs" id="2_ysriv"]
 [ext_resource type="Texture2D" uid="uid://c8i365ldn5up2" path="res://Sprites/GUI/crossed_swords.png" id="3_mo2u7"]
 [ext_resource type="Texture2D" uid="uid://bmjhnud3un4pf" path="res://Sprites/GUI/button.png" id="4_pr1q7"]
 [ext_resource type="Texture2D" uid="uid://t063r70tun6t" path="res://Sprites/GUI/title.png" id="5_61y31"]
@@ -24,19 +24,19 @@
 [ext_resource type="Texture2D" uid="uid://c6cgc0hyeqryr" path="res://Sprites/GUI/faithkeeper.png" id="21_y7lth"]
 [ext_resource type="Texture2D" uid="uid://bo3xpj0xg2g5h" path="res://Sprites/GUI/skull.png" id="22_q36pe"]
 [ext_resource type="Texture2D" uid="uid://bfiip7a1xr3mi" path="res://Sprites/GUI/flamberge.png" id="23_cju5r"]
-[ext_resource type="Script" path="res://ClientScripts/GUI.cs" id="25_62s86"]
+[ext_resource type="Script" path="res://ClientScripts/UI/GUI.cs" id="25_62s86"]
 [ext_resource type="TileSet" uid="uid://dhoxa8lpx0e82" path="res://ClientScripts/TileSet.tres" id="25_v18s7"]
 [ext_resource type="Texture2D" uid="uid://6we743uva22t" path="res://Sprites/GUI/Form.png" id="26_sifmh"]
-[ext_resource type="Script" path="res://ClientScripts/LogContainer.cs" id="27_i6sbv"]
-[ext_resource type="Script" path="res://ClientScripts/StatsPanel.cs" id="28_6mh3j"]
+[ext_resource type="Script" path="res://ClientScripts/UI/LogContainer.cs" id="27_i6sbv"]
+[ext_resource type="Script" path="res://ClientScripts/UI/StatsPanel.cs" id="28_6mh3j"]
 [ext_resource type="Texture2D" uid="uid://rdn30vwrvwsu" path="res://Sprites/GUI/Idle.png" id="28_pbgvq"]
 [ext_resource type="Script" path="res://ClientScripts/GameLevel.cs" id="29_o02cf"]
-[ext_resource type="Script" path="res://ClientScripts/UIButtons.cs" id="30_v3byd"]
+[ext_resource type="Script" path="res://ClientScripts/UI/UIButtons.cs" id="30_v3byd"]
 [ext_resource type="Shader" path="res://Sprites/Shaders/StatsIcon.gdshader" id="30_wssn4"]
 [ext_resource type="Texture2D" uid="uid://b5jf3k7hkvb4f" path="res://Sprites/GUI/star_bright.png" id="31_f4r63"]
-[ext_resource type="SystemFont" uid="uid://br1bhd00tx1cn" path="res://Sprites/Font.tres" id="32_4jwhn"]
-[ext_resource type="Script" path="res://ClientScripts/PlayerStatsMenu.cs" id="32_ojcg2"]
+[ext_resource type="Script" path="res://ClientScripts/UI/PlayerStatsMenu.cs" id="32_ojcg2"]
 [ext_resource type="Texture2D" uid="uid://dfx2ehwt2utyu" path="res://Sprites/GUI/head.png" id="33_7h0uk"]
+[ext_resource type="FontFile" uid="uid://bik4b1cev67xt" path="res://Sprites/OldEnglishFont.ttf" id="34_g30mg"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_e2xfd"]
 font_size = 34
@@ -186,7 +186,7 @@ shader = ExtResource("30_wssn4")
 shader_parameter/custom_color = Color(0.733333, 0.733333, 0.717647, 1)
 
 [sub_resource type="LabelSettings" id="LabelSettings_rtcfr"]
-font = ExtResource("32_4jwhn")
+font = ExtResource("34_g30mg")
 font_size = 60
 outline_size = 3
 
@@ -198,19 +198,24 @@ font_size = 25
 font_color = Color(0.952941, 0.180392, 0.262745, 1)
 
 [sub_resource type="LabelSettings" id="LabelSettings_707a6"]
-font = ExtResource("32_4jwhn")
+font = ExtResource("34_g30mg")
 font_size = 50
 outline_size = 3
 
 [sub_resource type="LabelSettings" id="LabelSettings_j0rpu"]
 font_color = Color(0.737255, 0.737255, 0.737255, 1)
 
+[sub_resource type="SystemFont" id="SystemFont_vfbiu"]
+font_names = PackedStringArray("Old English Text MT")
+msdf_pixel_range = 32
+msdf_size = 70
+
 [sub_resource type="LabelSettings" id="LabelSettings_gfh3m"]
-font = ExtResource("32_4jwhn")
+font = SubResource("SystemFont_vfbiu")
 font_size = 50
 
 [sub_resource type="LabelSettings" id="LabelSettings_oxwxk"]
-font = ExtResource("32_4jwhn")
+font = SubResource("SystemFont_vfbiu")
 font_size = 50
 font_color = Color(0.843137, 0.168627, 0.239216, 1)
 
@@ -1020,6 +1025,24 @@ joint_mode = 2
 begin_cap_mode = 2
 end_cap_mode = 2
 
+[node name="AutoCollectToggle" type="Node2D" parent="GUI/UIButtons"]
+
+[node name="CheckAutoLoot" type="CheckButton" parent="GUI/UIButtons/AutoCollectToggle"]
+unique_name_in_owner = true
+offset_left = 1666.0
+offset_top = 10.0
+offset_right = 1914.0
+offset_bottom = 54.0
+focus_mode = 0
+theme_override_font_sizes/font_size = 24
+button_pressed = true
+shortcut_feedback = false
+shortcut_in_tooltip = false
+text = "Auto Collect Loot"
+text_overrun_behavior = 2
+clip_text = true
+expand_icon = true
+
 [node name="PlayerStatsMenu" type="Control" parent="GUI"]
 visible = false
 z_index = 10
@@ -1058,6 +1081,7 @@ offset_bottom = 277.0
 text = "Character "
 label_settings = SubResource("LabelSettings_rtcfr")
 horizontal_alignment = 1
+vertical_alignment = 1
 
 [node name="Line2D" type="Line2D" parent="GUI/PlayerStatsMenu/Background"]
 points = PackedVector2Array(168, 284, 671, 284)
@@ -1454,3 +1478,4 @@ unique_name_in_owner = true
 [connection signal="pressed" from="GUI/DeathScreen/TryAgain" to="GUI" method="_on_try_again_pressed"]
 [connection signal="pressed" from="GUI/DeathScreen/MainMenu" to="GUI" method="_on_main_menu_pressed"]
 [connection signal="pressed" from="GUI/UIButtons/StatsButton" to="GUI/UIButtons" method="_on_stats_button_pressed"]
+[connection signal="toggled" from="GUI/UIButtons/AutoCollectToggle/CheckAutoLoot" to="GUI/UIButtons" method="_on_check_auto_loot_toggled"]

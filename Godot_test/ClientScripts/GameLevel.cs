@@ -2,16 +2,17 @@ using Godot;
 using Dungeons.Tiles;
 using System.Collections.Generic;
 using Roguelike.Tiles.Interactive;
-using God4_1.Entities;
 using System;
 using System.Linq;
+using UI;
+using Entities;
 
 namespace God4_1.ClientScripts
 {
   public partial class GameLevel : Node
   {
 	string pathToEnemies = "res://Sprites/LivingEntities/Enemies/";
-	public Dictionary<Roguelike.Tiles.LivingEntities.Enemy, GodotGame.Entities.Enemy> enemyList = new();
+	public Dictionary<Roguelike.Tiles.LivingEntities.Enemy, Entities.Enemy> enemyList = new();
 	private Dictionary<Roguelike.Tiles.Interactive.InteractiveTile, Node> interactiveList = new();
 	private Dictionary<Roguelike.Tiles.Loot, Node> lootingList = new();
 	const int defaultLayer = 0;
@@ -37,12 +38,12 @@ namespace God4_1.ClientScripts
 	}
 
 	Dictionary<Type, string> typeToScene = new Dictionary<Type, string>()
-	{
-	  { typeof(Roguelike.Tiles.Interactive.Barrel), "res://Entities/Barrel.tscn" },
-	  { typeof(Roguelike.Tiles.Interactive.Chest), "res://Entities/Chest.tscn" },
-	  { typeof(Roguelike.Tiles.LivingEntities.Hero), "res://Entities/Hero.tscn" },
-	  { typeof(Roguelike.Tiles.LivingEntities.Enemy), "res://Entities/Enemy.tscn" }
-	};
+  {
+	{ typeof(Roguelike.Tiles.Interactive.Barrel), "res://Entities/Barrel.tscn" },
+	{ typeof(Roguelike.Tiles.Interactive.Chest), "res://Entities/Chest.tscn" },
+	{ typeof(Roguelike.Tiles.LivingEntities.Hero), "res://Entities/Hero.tscn" },
+	{ typeof(Roguelike.Tiles.LivingEntities.Enemy), "res://Entities/Enemy.tscn" }
+  };
 
 	public void CreateEntities(Dungeons.Tiles.Tile[,] tiles)
 	{
@@ -74,13 +75,13 @@ namespace God4_1.ClientScripts
 
 	  if (scenePath == "res://Entities/Hero.tscn")
 	  {
-		Game.hero = (GodotGame.Entities.Hero)instance;
+		Game.hero = (Entities.Hero)instance;
 		Game.hero.Moved += Hero_Moved;
 	  }
 	  else if (scenePath == "res://Entities/Enemy.tscn")
 	  {
 		var en = tile as Roguelike.Tiles.LivingEntities.Enemy;
-		var godotEn = (GodotGame.Entities.Enemy)instance;
+		var godotEn = (Entities.Enemy)instance;
 		godotEn.EnemyTile = en;
 
 		enemyList.Add(en, godotEn);
@@ -105,7 +106,7 @@ namespace God4_1.ClientScripts
 	  }
 	  if (tile is Roguelike.Tiles.Interactive.Chest c)
 	  {
-		var chest = (Chest)instance;
+		var chest = (Entities.Chest)instance;
 		chest.updateChestTexture(c);
 	  }
 

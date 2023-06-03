@@ -10,6 +10,7 @@
 size = Vector2(115, 109)
 
 [node name="Node2D" type="Node2D"]
+z_index = 10
 script = ExtResource("2_l35lg")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
@@ -21,7 +22,7 @@ position = Vector2(-5.5, 7.5)
 shape = SubResource("RectangleShape2D_371ry")
 
 [node name="Camera2D" type="Camera2D" parent="Sprite2D"]
-zoom = Vector2(0.8, 0.8)
+zoom = Vector2(0.6, 0.6)
 
 [node name="PointLight2D" type="PointLight2D" parent="Sprite2D"]
 position = Vector2(-5.72205e-05, 6.49999)

@@ -5,7 +5,8 @@ using Roguelike.Tiles.LivingEntities;
 using Roguelike.Tiles.Interactive;
 using Roguelike.Tiles.Looting;
 using Roguelike.Tiles;
-using GodotGame.Entities;
+using Entities;
+using UI;
 
 namespace God4_1.ClientScripts
 {
@@ -26,7 +27,7 @@ namespace God4_1.ClientScripts
               }
               else if (lea.InvolvedEntity is Roguelike.Tiles.LivingEntities.Enemy en)
               {
-                var enGodotNode = Game.gameLevel.GetEntity<LivingEntity>(en);
+                var enGodotNode = Game.gameLevel.GetEntity<Entities.LivingEntity>(en);
                 var enGodot = enGodotNode.sprite;
                 Game.SetPositionFromTile(en, enGodot, true);
                 enGodot.Scale = new Vector2(-1, 1);
@@ -55,7 +56,7 @@ namespace God4_1.ClientScripts
             {
               if (lea.InvolvedEntity is Roguelike.Tiles.LivingEntities.Enemy en)
               {
-                var enGodot = Game.gameLevel.GetEntity<LivingEntity>(en);
+                var enGodot = Game.gameLevel.GetEntity<Entities.LivingEntity>(en);
                 enGodot.getDamaged((float)lea.InvolvedValue);
               }
               else if (lea.InvolvedEntity is Roguelike.Tiles.LivingEntities.Hero)
@@ -72,7 +73,7 @@ namespace God4_1.ClientScripts
               else if (lea.InvolvedEntity is Roguelike.Tiles.LivingEntities.Hero)
               {
                 var targetTile = Game.dungeon.GetTile(lea.targetEntityPosition);
-                var enGodot = Game.gameLevel.GetEntity<LivingEntity>(targetTile);
+                var enGodot = Game.gameLevel.GetEntity<Entities.LivingEntity>(targetTile);
                 enGodot.getDamaged((float)lea.InvolvedValue, true);
               }
             }
@@ -109,7 +110,7 @@ namespace God4_1.ClientScripts
             }
             else if (ita.InteractiveKind == InteractiveActionKind.ChestOpened)
             {
-              var chest = Game.gameLevel.GetEntity<Chest>(ita.InvolvedTile);
+              var chest = Game.gameLevel.GetEntity<Entities.Chest>(ita.InvolvedTile);
               chest.updateChestTexture((Roguelike.Tiles.Interactive.Chest)ita.InvolvedTile);
             }
             break;
@@ -122,9 +123,9 @@ namespace God4_1.ClientScripts
         case LootAction:
           {
             var la = ev as LootAction;
-            if (la.Kind == LootActionKind.Generated )
+            if (la.Kind == LootActionKind.Generated)
             {
-               Game.gameLevel.AddChildFromScene(Game.dungeon.GetTile(la.Loot.point), "res://Entities/equipment_item.tscn");
+              Game.gameLevel.AddChildFromScene(Game.dungeon.GetTile(la.Loot.point), "res://Entities/equipment_item.tscn");
             }
             else if (la.Kind == LootActionKind.Collected)
             {
