@@ -53,6 +53,12 @@ namespace Roguelike.Tiles.Interactive
 
     SpellKind ISpell.Kind => SpellKind.Portal;
 
+    public bool SendByGod 
+    { 
+      get ;
+      set ;
+    }
+
     public SpellStatsDescription CreateSpellStatsDescription(bool currentLevel) 
     { 
       return new SpellStatsDescription(1, ManaCost, 10, ((ISpell)this).Kind, 0); 

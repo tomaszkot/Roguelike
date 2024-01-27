@@ -1,6 +1,5 @@
 ﻿using Dungeons.Core;
 using Roguelike.Attributes;
-using Roguelike.Generators;
 using Roguelike.History;
 using Roguelike.Tiles;
 using Roguelike.Tiles.Looting;
@@ -26,7 +25,7 @@ namespace Roguelike.LootFactories
 
   public class MaterialProps
   {
-    public const int BashingWeaponBaseDamage = 2;
+    public const int BashingWeaponBaseDamage = 3;
     public const int BronzeSwordBaseDamage = 3;
     public const int BronzeDaggerBaseDamage = 2;
     public const int BronzeAxeBaseDamage = 3;
@@ -75,16 +74,16 @@ namespace Roguelike.LootFactories
       return null;
     }
 
-    public override Roguelike.Tiles.Loot GetByName(string assetName)
-    {
-      foreach (var kv in lootCreators)
-      {
-        var tile = kv.Value.GetByName(assetName);
-        if (tile != null)
-          return tile;
-      }
-      return null;
-    }
+    //public override Roguelike.Tiles.Loot GetByName(string assetName)
+    //{
+    //  foreach (var kv in lootCreators)
+    //  {
+    //    var tile = kv.Value.GetByName(assetName);
+    //    if (tile != null)
+    //      return tile;
+    //  }
+    //  return null;
+    //}
 
     public void SetFactory(EquipmentKind ek, EquipmentTypeFactory factory)
     {
@@ -111,7 +110,8 @@ namespace Roguelike.LootFactories
       {
         if (this.lootCreators.Any())
         {
-          eq = this.lootCreators[EquipmentKind.Weapon].GetUniqueItems(maxEqLevel).FirstOrDefault();
+          var eqTag = this.lootCreators[EquipmentKind.Weapon].GetUniqueItems(maxEqLevel).FirstOrDefault();
+          eq = GetByAsset(eqTag) as Equipment;
         }
         if (eq == null)
         {
@@ -155,9 +155,9 @@ namespace Roguelike.LootFactories
 
           break;
       }
-      if (eq != null && eqClass != EquipmentClass.Plain)
+      if (eq != null)
       {
-        if (eqClass == EquipmentClass.Plain)
+        if (eq.Class == EquipmentClass.Plain && eqClass != EquipmentClass.Plain)
         {
           MakeMagic(eqClass, eq);
         }
@@ -173,12 +173,8 @@ namespace Roguelike.LootFactories
         return;
       if (eq.IsPlain())
         eq.MakeMagic();
-      if (!eq.IsSecondMagicLevel && eqClass == EquipmentClass.MagicSecLevel)
-      {
-        var stats = eq.GetPossibleMagicStats();
-        var stat = RandHelper.GetRandomElem(stats);
-        eq.MakeMagicSecLevel(stat.Key, 3);//TODO !
-      }
+      if (eqClass == EquipmentClass.MagicSecLevel)
+        eq.PromoteToSecondMagicClass();
     }
 
     public virtual Equipment GetRandomArmor()
@@ -201,6 +197,28 @@ namespace Roguelike.LootFactories
       item.PrimaryStatKind = EntityStatKind.MeleeAttack;
       item.PrimaryStatValue = 5;
       return item;
+    }
+
+    public virtual List<Weapon> GetWeapons(Weapon.WeaponKind kind, int level)
+    {
+      return new List<Weapon>();
+    }
+
+    public virtual Weapon GetRandomWeapon(Weapon.WeaponKind kind)
+    {
+      var item = new Weapon();
+      if (kind == Weapon.WeaponKind.Sword)
+      {
+        item.Name = "Sword";
+        item.tag1 = "Sword";
+        item.Kind = Weapon.WeaponKind.Sword;
+
+        item.PrimaryStatKind = EntityStatKind.MeleeAttack;
+        item.PrimaryStatValue = 5;
+        return item;
+      }
+
+      return null;
     }
 
     public virtual Equipment GetRandomHelmet()
@@ -278,7 +296,7 @@ namespace Roguelike.LootFactories
       jew.SetPrimaryStat(sk, statValue);
       var name = "ring of ";
       jew.Name = name + sk;
-      jew.tag1 = "ring_" + sk;
+      jew.tag1 = "ring_of_" + sk;
 
       if (sk == EntityStatKind.ResistCold || sk == EntityStatKind.ResistFire || sk == EntityStatKind.ResistPoison)
       {
@@ -287,6 +305,11 @@ namespace Roguelike.LootFactories
       jew.SetLevelIndex(minDropDungeonLevel);
 
       return jew;
+    }
+
+    protected virtual List<PrototypeValue> GetPlainsAtLevel(int level, EquipmentKind ek,  bool materialAware, ref bool fakeDecreaseOfLevel)
+    {
+      return lootCreators[ek].GetPlainsAtLevel(level, materialAware, true, ref fakeDecreaseOfLevel);
     }
   }
 }

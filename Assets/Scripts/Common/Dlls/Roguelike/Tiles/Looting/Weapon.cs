@@ -63,7 +63,16 @@ namespace Roguelike.Tiles.Looting
                 Kind == Weapon.WeaponKind.Staff;
       }
     }
-        
+
+    public override bool IsMatchingRecipe(RecipeKind kind)
+    {
+      if (base.IsMatchingRecipe(kind))
+        return true;
+      if (kind == RecipeKind.RechargeMagicalWeapon && IsMagician)
+        return true;
+      return false;
+    }
+
     public void SetInitChargesCount(int mult)
     {
       if (SpellSource == null)
@@ -118,14 +127,17 @@ namespace Roguelike.Tiles.Looting
       else
         SetRequiredStat(li);
 
-      if (baseDamages.ContainsKey(Kind))
+      if (Class != EquipmentClass.Unique)
       {
-        CalcDamageFromLevel(baseDamages[Kind]);
-      }
-      else
-      {
-        if(!this.Name.Contains("Hound"))
-          System.Diagnostics.Debug.WriteLine("!baseDamages.ContainsKey(Kind) " + this);
+        if (baseDamages.ContainsKey(Kind))
+        {
+          CalcDamageFromLevel(baseDamages[Kind]);
+        }
+        else
+        {
+          if (!this.Name.Contains("Hound"))
+            System.Diagnostics.Debug.WriteLine("!baseDamages.ContainsKey(Kind) " + this);
+        }
       }
     }
 
@@ -201,14 +213,15 @@ namespace Roguelike.Tiles.Looting
             SpecialFeature = new EntityStat(EntityStatKind.ChanceToMeleeHit, chanceForEffect);
             break;
           case WeaponKind.Bashing:
+            
             SpecialFeature = new EntityStat(EntityStatKind.ChanceToCauseStunning, chanceForEffect);
             SpecialFeatureAux = new EntityStat(EntityStatKind.ChanceToMeleeHit, -chanceForEffect);
 
             break;
           case WeaponKind.Axe:
-            //Symbol = AxeSymbol;
+            
             SpecialFeature = new EntityStat(EntityStatKind.ChanceToCauseTearApart, chanceForEffect);
-            //Name = "Axe";
+            
             break;
           case WeaponKind.Scepter:
           case WeaponKind.Staff:
@@ -259,7 +272,7 @@ namespace Roguelike.Tiles.Looting
       float fact = .1f;
 
       if (Kind == WeaponKind.Bashing)
-        return max+ fact*80;
+        return max+ fact*40;
       if (Kind == WeaponKind.Axe)
         return max + fact * 20;
       if (Kind == WeaponKind.Sword)
@@ -338,8 +351,16 @@ namespace Roguelike.Tiles.Looting
       return base.ToString() + " " + Damage;
     }
 
-    public static readonly FightItemKind[] BowAmmoKinds = new[] { FightItemKind.PlainArrow, FightItemKind.IronArrow, FightItemKind.SteelArrow };
-    public static readonly FightItemKind[] CrossBowAmmoKinds = new[] { FightItemKind.PlainBolt, FightItemKind.IronBolt, FightItemKind.SteelBolt };
+    public static readonly FightItemKind[] BowAmmoKinds = new[] 
+    {
+      FightItemKind.PlainArrow, FightItemKind.IronArrow, FightItemKind.SteelArrow ,
+       FightItemKind.PoisonArrow,  FightItemKind.IceArrow,  FightItemKind.FireArrow
+    };
+    public static readonly FightItemKind[] CrossBowAmmoKinds = new[] 
+    {
+      FightItemKind.PlainBolt, FightItemKind.IronBolt, FightItemKind.SteelBolt ,
+      FightItemKind.PoisonBolt, FightItemKind.IceBolt, FightItemKind.FireBolt ,
+    };
     public static readonly FightItemKind[] AllBowLikeAmmoKinds = null; //see ctor
 
     public static bool IsBowAmmoKind(FightItemKind kind)

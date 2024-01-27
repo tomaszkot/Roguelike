@@ -33,6 +33,17 @@ namespace RoguelikeUnitTests
       var hero = game.Hero;
       var expectedHealthRestore = roasted ? hero.Stats.Health / 2 : hero.Stats.Health / 4;
 
+      var food = Helper.AddTile<Food>();
+      if (roasted)
+        food.MakeRoasted();
+      AddItemToInv(food);
+      Assert.AreEqual(hero.Inventory.GetStackedCount(food), 1);
+
+      var consumed = hero.Consume(food);
+      Assert.False(consumed);//not hurt, workaround for eating all meat at one btn press
+      Assert.AreEqual(hero.Inventory.GetStackedCount(food), 1);
+      Assert.Null(hero.LastingEffects.SingleOrDefault());
+
       var enemy = game.GameManager.CurrentNode.SpawnEnemy(1);
       //Assert.Greater(ActiveEnemies.Count, 0);//enemies on level can be poisonous, failing this test, so let's use skeleton
       var heroHealth = hero.Stats.Health;
@@ -42,15 +53,10 @@ namespace RoguelikeUnitTests
       Assert.Greater(heroHealth, hero.Stats.Health);
       heroHealth = hero.Stats.Health;
       var heroHurtHealth = heroHealth;
-
-      var food = Helper.AddTile<Food>();
-      if (roasted)
-        food.MakeRoasted();
-      AddItemToInv(food);
-
+      
       var turnOwner = game.GameManager.Context.TurnOwner;
       Assert.AreEqual(turnOwner, Roguelike.TurnOwner.Hero);
-      hero.Consume(food);
+      Assert.True(hero.Consume(food));
       Assert.Greater(hero.Stats.Health, heroHealth);
       var le = hero.LastingEffects.Single();
       Assert.NotNull(le);

@@ -90,6 +90,7 @@ namespace Roguelike.Serialization
     public static Hero LoadKeyGameElems(GameManager gm, string heroName, bool quick)
     {
       var hero = gm.Persister.LoadHero(heroName, quick);
+      hero.EnsureInvOwner();
       var allies = gm.Persister.LoadAllies(heroName, quick);
       gm.AlliesManager.SetEntities(allies.Allies);
 

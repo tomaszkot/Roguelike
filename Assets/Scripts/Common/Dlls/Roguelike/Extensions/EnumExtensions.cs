@@ -9,8 +9,10 @@ namespace Roguelike.Core.Extensions
       if (sk == Roguelike.Spells.SpellKind.Dziewanna ||
            sk == Roguelike.Spells.SpellKind.Swarog ||
            sk == Roguelike.Spells.SpellKind.Swiatowit ||
-           sk == Roguelike.Spells.SpellKind.Perun
-           )
+           sk == Roguelike.Spells.SpellKind.Perun ||
+            sk == Roguelike.Spells.SpellKind.Jarowit ||
+            sk == Roguelike.Spells.SpellKind.Wales
+         )
         return true;
       return false;
     }

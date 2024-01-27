@@ -12,7 +12,6 @@ using Roguelike.Tiles.Looting;
 using SimpleInjector;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 
 namespace Roguelike.Generators
@@ -144,37 +143,37 @@ namespace Roguelike.Generators
 
     }
 
-    public virtual Loot GetLootByAsset(string tileName)
+    public virtual Loot GetLootByAsset(string tileAsset)
     {
       Loot loot;
-      if (uniqueLoot.ContainsKey(tileName))
-        loot = uniqueLoot[tileName];
+      if (uniqueLoot.ContainsKey(tileAsset))
+        loot = uniqueLoot[tileAsset];
       else
-        loot = LootFactory.GetByName(tileName);
+        loot = LootFactory.GetByAsset(tileAsset);
 
-      if (tileName == "cap")
+      if (tileAsset == "cap")
       {
         var arm = new Armor();
         arm.EquipmentKind = Roguelike.Tiles.EquipmentKind.Helmet;
         arm.Defense = 5;
-        arm.tag1 = tileName;
+        arm.tag1 = tileAsset;
         arm.SetLevelIndex(1);
         return arm;
       }
-      tileName = tileName.ToLower();
+      tileAsset = tileAsset.ToLower();
 
       if (loot == null)
       {
         var wpn = new Weapon();
         loot = wpn;
-        if (tileName == "rusty_sword")
+        if (tileAsset == "rusty_sword")
         {
           wpn.Kind = Weapon.WeaponKind.Sword;
           wpn.tag1 = "rusty_sword";
           wpn.Name = "Rusty sword";
           wpn.SetLevelIndex(1);
         }
-        else if (tileName == "sickle")
+        else if (tileAsset == "sickle")
         {
           wpn.Kind = Weapon.WeaponKind.Axe;
           wpn.tag1 = "sickle";
@@ -182,7 +181,7 @@ namespace Roguelike.Generators
           wpn.SetLevelIndex(1);
           loot = wpn;
         }
-        else if (tileName == "axe")
+        else if (tileAsset == "axe")
         {
           wpn.Kind = Weapon.WeaponKind.Axe;
           wpn.tag1 = "axe";
@@ -191,7 +190,7 @@ namespace Roguelike.Generators
           loot = wpn;
         }
 
-        else if (tileName == "gladius")
+        else if (tileAsset == "gladius")
         {
           wpn.Kind = Weapon.WeaponKind.Sword;
           wpn.tag1 = "gladius";
@@ -201,7 +200,7 @@ namespace Roguelike.Generators
           
         }
 
-        else if (tileName == "hammer")
+        else if (tileAsset == "hammer")
         {
           wpn.Kind = Weapon.WeaponKind.Bashing;
           wpn.tag1 = "hammer";
@@ -209,7 +208,7 @@ namespace Roguelike.Generators
           wpn.Price *= 2;
           wpn.SetLevelIndex(4);
         }
-        else if (tileName == "broad_sword")
+        else if (tileAsset == "broad_sword")
         {
           wpn.Kind = Weapon.WeaponKind.Sword;
           wpn.tag1 = "broad_sword";
@@ -217,7 +216,7 @@ namespace Roguelike.Generators
           wpn.Price *= 2;
           wpn.SetLevelIndex(6);
         }
-        else if (tileName == "war_dagger")
+        else if (tileAsset == "war_dagger")
         {
           wpn.Kind = Weapon.WeaponKind.Dagger;
           wpn.tag1 = "war_dagger";
@@ -226,7 +225,7 @@ namespace Roguelike.Generators
           wpn.SetLevelIndex(5);
         }
 
-        else if (tileName == "scepter")
+        else if (tileAsset == "scepter")
         {
           wpn.Kind = Weapon.WeaponKind.Scepter;
           wpn.tag1 = "scepter";
@@ -235,7 +234,7 @@ namespace Roguelike.Generators
           wpn.SetLevelIndex(1);
 
         }
-        else if (tileName == "staff")
+        else if (tileAsset == "staff")
         {
           wpn.Kind = Weapon.WeaponKind.Staff;
           wpn.tag1 = "staff";
@@ -244,7 +243,7 @@ namespace Roguelike.Generators
           wpn.SetLevelIndex(1);
 
         }
-        else if (tileName == "wand")
+        else if (tileAsset == "wand")
         {
           wpn.Kind = Weapon.WeaponKind.Wand;
           wpn.tag1 = "wand";
@@ -253,7 +252,7 @@ namespace Roguelike.Generators
           wpn.SetLevelIndex(1);
         }
 
-        else if (tileName == "bow")
+        else if (tileAsset == "bow")
         {
           wpn.Kind = Weapon.WeaponKind.Bow;
           wpn.tag1 = "bow";
@@ -263,7 +262,7 @@ namespace Roguelike.Generators
           wpn.SetLevelIndex(1);
         }
 
-        else if (tileName == "crossbow")
+        else if (tileAsset == "crossbow")
         {
           wpn.Kind = Weapon.WeaponKind.Crossbow;
           wpn.tag1 = "crossbow";
@@ -296,78 +295,108 @@ namespace Roguelike.Generators
 
     public virtual Equipment GetRandomEquipment(EquipmentKind kind, int level, LootAbility ab = null)
     {
-      var eqClass = EquipmentClass.Plain;
-      if (ab != null && ab.ExtraChanceToGetMagicLoot > RandHelper.GetRandomDouble())
-        eqClass = EquipmentClass.Magic;
-      var eq = LootFactory.EquipmentFactory.GetRandom(kind, level, eqClass);
-      //EnasureLevelIndex(eq);//level must be given by factory!
-      return eq;
+      try
+      {
+        var eqClass = EquipmentClass.Plain;
+        if (ab != null && ab.ExtraChanceToGetMagicLoot > RandHelper.GetRandomDouble())
+          eqClass = EquipmentClass.Magic;
+        var eq = LootFactory.EquipmentFactory.GetRandom(kind, level, eqClass);
+        //EnasureLevelIndex(eq);//level must be given by factory!
+        return eq;
+      }
+      catch (Exception ex)
+      {
+        Container.GetInstance<ILogger>().LogError(ex);
+        return GetErrorEqPh();
+      }
+    }
+
+    private Equipment GetErrorEqPh()
+    {
+      //must return null = much of code rely on it now
+      return null;// LootFactory.GetByName("rusty_sword") as Equipment;
     }
 
     bool debug = false;
 
     internal Loot TryGetRandomLootByDiceRoll(LootSourceKind lsk, int maxEqLevel, LootAbility ab)
     {
-      if(debug)
-        return GetRandomEquipment(EquipmentKind.Weapon, maxEqLevel);
-
-      //return null;
-      LootKind lootKind = LootKind.Unset;
-      if (
-        lsk == LootSourceKind.DeluxeGoldChest ||
-        lsk == LootSourceKind.GoldChest
-        )
+      try
       {
-        lootKind = LootKind.Equipment;
-      }
-      else if (lsk == LootSourceKind.PlainChest)
-        return GetRandomLoot(maxEqLevel);//some cheap loot
-      else
-        lootKind = Probability.RollDiceForKind(lsk, ab);
+        if (debug)
+          return GetRandomEquipment(EquipmentKind.Weapon, maxEqLevel);
 
-      if (lootKind == LootKind.Equipment)
-      {
-        var eqClass = Probability.RollDice(lsk, ab);
-        if (eqClass != EquipmentClass.Unset)
+        //return null;
+        LootKind lootKind = LootKind.Unset;
+        if (
+          lsk == LootSourceKind.DeluxeGoldChest ||
+          lsk == LootSourceKind.GoldChest
+          )
         {
-          var item = GetRandomEquipment(eqClass, maxEqLevel);
-          //if (item is Equipment eq)
-          // {
-          //   EnsureMaterialFromLootSource(eq);
-          //   if (item.LevelIndex < maxEqLevel)
-          //   {
-          //     //int k = 0;
-          //     //k++;
-          //   }
-          // }
-          return item;
+          lootKind = LootKind.Equipment;
         }
+        else if (lsk == LootSourceKind.PlainChest)
+          return GetRandomLoot(maxEqLevel);//some cheap loot
+        else
+          lootKind = Probability.RollDiceForKind(lsk, ab);
+
+        if (lootKind == LootKind.Equipment)
+        {
+          var eqClass = Probability.RollDice(lsk, ab);
+          if (eqClass != EquipmentClass.Unset)
+          {
+            var item = GetRandomEquipment(eqClass, maxEqLevel);
+            //if (item is Equipment eq)
+            // {
+            //   EnsureMaterialFromLootSource(eq);
+            //   if (item.LevelIndex < maxEqLevel)
+            //   {
+            //     //int k = 0;
+            //     //k++;
+            //   }
+            // }
+            return item;
+          }
+        }
+
+        if (lootKind == LootKind.Unset)
+          return null;
+
+        return GetRandomLoot(lootKind, maxEqLevel);
       }
-
-      if (lootKind == LootKind.Unset)
-        return null;
-
-      return GetRandomLoot(lootKind, maxEqLevel);
+      catch (Exception ex)
+      {
+        Container.GetInstance<ILogger>().LogError(ex);
+        return new MagicDust();
+      }
     }
 
     protected virtual Equipment GetRandomEquipment(EquipmentClass eqClass, int level)
     {
-      var randedEnum = GetPossibleEqKind();
-
-      LootFactory.EquipmentFactory.lootHistory = this.lootHistory;
-      var generatedEq = LootFactory.EquipmentFactory.GetRandom(randedEnum, level, eqClass);
-      if ((generatedEq == null || generatedEq.Class != EquipmentClass.Unique) && eqClass == EquipmentClass.Unique)
+      try
       {
-        var values = GetEqKinds();
-        foreach (var kind in values)
-        {
-          generatedEq = LootFactory.EquipmentFactory.GetRandom(kind, level, eqClass);
-          if (generatedEq != null)
-            break;
-        }
-      }
+        var randedEnum = GetPossibleEqKind();
 
-      return generatedEq;
+        LootFactory.EquipmentFactory.lootHistory = this.lootHistory;
+        var generatedEq = LootFactory.EquipmentFactory.GetRandom(randedEnum, level, eqClass);
+        if (generatedEq == null || (generatedEq.Class != EquipmentClass.Unique && eqClass == EquipmentClass.Unique))
+        {
+          var values = GetEqKinds();
+          foreach (var kind in values)
+          {
+            generatedEq = LootFactory.EquipmentFactory.GetRandom(kind, level, eqClass);
+            if (generatedEq != null)
+              break;
+          }
+        }
+
+        return generatedEq;
+      }
+      catch (Exception ex)
+      {
+        Container.GetInstance<ILogger>().LogError(ex);
+        return GetErrorEqPh(); 
+      }
     }
 
     public static List<EquipmentKind> GetEqKinds()
@@ -404,6 +433,21 @@ namespace Roguelike.Generators
         }
       }
       var eq = GetRandomEquipment(eqClass, level);
+
+      if (powerKind == EnemyPowerKind.Champion || powerKind == EnemyPowerKind.Boss)
+      {
+        if (eq.Class == EquipmentClass.Plain && !eq.Enchantable)
+          enchant = true;
+        else if (eq.Class == EquipmentClass.Magic)
+        {
+          eq.PromoteToSecondMagicClass();
+          if (eq.Class == EquipmentClass.Magic)
+          {
+            int k = 0;
+              k++;
+          }
+        }
+      }
       if (enchant)
         eq.MakeEnchantable(2);
       return eq;
@@ -421,87 +465,94 @@ namespace Roguelike.Generators
 
     public virtual Loot GetRandomJewellery()
     {
-      return LootFactory.EquipmentFactory.GetRandom(EquipmentKind.Amulet, -1);
+      return LootFactory.EquipmentFactory.GetRandom(EquipmentKind.Amulet, 1);
     }
 
     public virtual Loot GetRandomRing()
     {
-      return LootFactory.EquipmentFactory.GetRandom(EquipmentKind.Ring, -1);
+      return LootFactory.EquipmentFactory.GetRandom(EquipmentKind.Ring, 1);
     }
 
     static string[] GemTags;
 
     public virtual Loot GetRandomLoot(LootKind kind, int level)
     {
-      Loot res = null;
-
-      if (kind == LootKind.Gold)
-        res = new Gold();
-      else if (kind == LootKind.Equipment)
-        res = GetRandomEquipment(EquipmentClass.Plain, level);
-      else if (kind == LootKind.Potion)
-        res = GetRandomPotion();
-      else if (kind == LootKind.Food)
+      try
       {
-        var enumVal = RandHelper.GetRandomEnumValue<FoodKind>();
-        if (enumVal == FoodKind.Mushroom)
-          res = new Mushroom(RandHelper.GetRandomEnumValue<MushroomKind>());
-        else
-          res = new Food(RandHelper.GetRandomEnumValue<FoodKind>(new[] { FoodKind.Unset, FoodKind.Mushroom }));//Mushroom is a diff type
-      }
-      else if (kind == LootKind.Plant)
-        res = new Plant(RandHelper.GetRandomEnumValue<PlantKind>());
-      else if (kind == LootKind.Scroll)
-      {
-        var scroll = LootFactory.ScrollsFactory.GetRandom(level) as Scroll;
-        var rand = RandHelper.GetRandomDouble();
+        Loot res = null;
 
-        if ((scroll.Kind == Spells.SpellKind.Portal && rand > 0.2f) //no need for so many of them
-          || (scroll.Kind != Spells.SpellKind.Identify && rand > 0.6f)) //these are fine
+        if (kind == LootKind.Gold)
+          res = new Gold();
+        else if (kind == LootKind.Equipment)
+          res = GetRandomEquipment(EquipmentClass.Plain, level);
+        else if (kind == LootKind.Potion)
+          res = GetRandomPotion();
+        else if (kind == LootKind.Food)
         {
-          var newScroll = LootFactory.ScrollsFactory.GetRandom(level) as Scroll;
-          //if (newScroll.Kind != Spells.SpellKind.Portal || scroll.Kind == Spells.SpellKind.Portal)
-          scroll = newScroll;
+          var enumVal = RandHelper.GetRandomEnumValue<FoodKind>();
+          if (enumVal == FoodKind.Mushroom)
+            res = new Mushroom(RandHelper.GetRandomEnumValue<MushroomKind>());
+          else
+            res = new Food(RandHelper.GetRandomEnumValue<FoodKind>(new[] { FoodKind.Unset, FoodKind.Mushroom }));//Mushroom is a diff type
         }
+        else if (kind == LootKind.Plant)
+          res = new Plant(RandHelper.GetRandomEnumValue<PlantKind>());
+        else if (kind == LootKind.Scroll)
+        {
+          var scroll = LootFactory.ScrollsFactory.GetRandom(level) as Scroll;
+          var rand = RandHelper.GetRandomDouble();
 
-        res = scroll;
-      }
-      else if (kind == LootKind.Book)
-      {
-        res = LootFactory.BooksFactory.GetRandom(level) as Book;
-      }
-      else if (kind == LootKind.Gem)
-      {
-        res = GetRandomEnchanter(level, false);
-        //var lootName = RandHelper.GetRandomElem<string>(GemTags.ToArray());
-        //res = GetLootByName(lootName);
-      }
-      else if (kind == LootKind.HunterTrophy)
-      {
-        res = GetRandomEnchanter(level, true);
-      }
-      else if (kind == LootKind.Recipe)
-      {
-        res = GetRandRecipe();
-      }
-      else if (kind == LootKind.FightItem)
-      {
-        res = LootFactory.MiscLootFactory.GetRandomFightItem(level);
-      }
-      else if (kind == LootKind.Other)
-      {
-        var rand = RandHelper.GetRandomDouble();
-        if (rand > 0.5f)
-          res = new MagicDust();
+          if ((scroll.Kind == Spells.SpellKind.Portal && rand > 0.2f) //no need for so many of them
+            || (scroll.Kind != Spells.SpellKind.Identify && rand > 0.6f)) //these are fine
+          {
+            var newScroll = LootFactory.ScrollsFactory.GetRandom(level) as Scroll;
+            //if (newScroll.Kind != Spells.SpellKind.Portal || scroll.Kind == Spells.SpellKind.Portal)
+            scroll = newScroll;
+          }
+
+          res = scroll;
+        }
+        else if (kind == LootKind.Book)
+        {
+          res = LootFactory.BooksFactory.GetRandom(level) as Book;
+        }
+        else if (kind == LootKind.Gem)
+        {
+          res = GetRandomEnchanter(level, false);
+          //var lootName = RandHelper.GetRandomElem<string>(GemTags.ToArray());
+        }
+        else if (kind == LootKind.HunterTrophy)
+        {
+          res = GetRandomEnchanter(level, true);
+        }
+        else if (kind == LootKind.Recipe)
+        {
+          res = GetRandRecipe();
+        }
+        else if (kind == LootKind.FightItem)
+        {
+          res = LootFactory.MiscLootFactory.GetRandomFightItem(level);
+        }
+        else if (kind == LootKind.Other)
+        {
+          var rand = RandHelper.GetRandomDouble();
+          if (rand > 0.5f)
+            res = new MagicDust();
+          else
+            res = new Hooch();
+        }
         else
-          res = new Hooch();
+        {
+          DebugHelper.Assert(false);
+        }
+        PrepareLoot(res);
+        return res;
       }
-      else
+      catch (Exception ex)
       {
-        DebugHelper.Assert(false);
+        Container.GetInstance<ILogger>().LogError(ex);
+        return new MagicDust();
       }
-
-      return res;
     }
 
     List<RecipeKind> alreadyGen = new List<RecipeKind>();
@@ -595,6 +646,10 @@ namespace Roguelike.Generators
       return loot;
     }
 
+    public List<Weapon> GetWeapons(Weapon.WeaponKind crossbow, int level)
+    {
+      return LootFactory.EquipmentFactory.GetWeapons(crossbow, level);
 
+    }
   }
 }

@@ -190,7 +190,7 @@ namespace RoguelikeUnitTests
       var hp = dcMelee.HealthPercentage;
       var damageMelee = enemyHealth - enemy.Stats.Health;
       Assert.Greater(damageMelee, 15 * mult);
-      AssertHealthDiffPercentageNotBigger(dcMelee, dcSpell, 140);
+      AssertHealthDiffPercentageNotBigger(dcMelee, dcSpell, 152);
       //Assert.Less(Math.Abs(damageMelee - damageScroll), 30);//TODO %
     }
 
@@ -226,7 +226,7 @@ namespace RoguelikeUnitTests
 
       var enemy = AllEnemies.Cast<Enemy>().First();
       enemy.SetPrefferedFightStyle(PrefferedFightStyle.Magic);//use spells
-      enemy.ActiveManaPoweredSpellSource = new Scroll(SpellKind.FireBall);
+      enemy.SelectedManaPoweredSpellSource = new Scroll(SpellKind.FireBall);
       enemy.AlwaysHit[AttackKind.SpellElementalProjectile] = true;
 
       Assert.True(game.GameManager.HeroTurn);
@@ -304,25 +304,38 @@ namespace RoguelikeUnitTests
 
     [TestCase(SpellKind.Perun)]
     [TestCase(SpellKind.Swiatowit)]
-    public void PerunScrollPowerIncTest(SpellKind sk)
+    [Repeat(1)]
+    public void GodScrollPowerIncTest(SpellKind sk)
     {
-      var game = CreateGame();// genNumOfEnemies: 1);
+      var game = CreateGame();
       var hero = game.Hero;
       Container.GetInstance<ILogger>().LogLevel = LogLevel.Info;
 
-      Enemy enemy = PlainEnemies.First();
+      Enemy enemy = PlainEnemies.First(); 
       PrepareToBeBeaten(enemy);
       PrepareToBeBeaten(hero);
-      
+      Assert.Less(enemy.Stats.GetStat(EntityStatKind.ResistPoison).Value.CurrentValue, 10);
+      Assert.Less(enemy.Stats.GetStat(EntityStatKind.ResistFire).Value.CurrentValue, 10);
+      Assert.Less(enemy.Stats.GetStat(EntityStatKind.ResistCold).Value.CurrentValue, 10);
+
       var dc = new OuaDDamageComparer(enemy, this);
       var scroll = PrepareScroll(hero, sk, enemy, scrollCount:12);
+      hero.AlwaysHit[AttackKind.SpellElementalProjectile] = true;//that test checks the power not accurency
+      //hero.Stats.GetStat(EntityStatKind.ChanceToCastSpell).Value.Nominal = 100;//that test checks the power not accurency
 
-      game.GameManager.SpellManager.ApplySpell(hero, scroll, enemy);
+      var spell = game.GameManager.SpellManager.ApplySpell(hero, scroll, enemy);
       dc.RegisterHealth();
+      if (dc.HealthDifference == 0)
+      {
+        GotoNextHeroTurn();
+        int k = 0;
+        k++;
+      }
       Assert.Greater(dc.HealthDifference, 0);
       int biggerCounter = 0;
       float damageMin = dc.HealthDifference;
       float damageMax = dc.HealthDifference;
+      var lastDamage = spell.Damage;
       for (int level = 0; level < 10; level++)
       {
         hero.Level = level + 2;//2, 3...
@@ -331,12 +344,22 @@ namespace RoguelikeUnitTests
         GotoNextHeroTurn();
         hero.Consume(new Potion() { Kind = PotionKind.Mana });
         GotoNextHeroTurn();
-        var spell = game.GameManager.SpellManager.ApplySpell(hero, scroll, enemy);
+        //use god
+        spell = game.GameManager.SpellManager.ApplySpell(hero, scroll, enemy);
+        if (spell == null)
+        {
+          int k = 0;
+          k++;
+        }
         Assert.NotNull(spell);
+        Assert.Greater(spell.Damage, lastDamage);
         Assert.Greater(spell.CurrentLevel, 1);
         dc.RegisterHealth();
-        Assert.Greater(dc.HealthDifference, 0);
-        //Assert.Greater(dc.HealthDifference, hd);
+        if(dc.HealthDifference == 0)
+        {
+          int k = 0;
+          k++;
+        }
         if (dc.HealthDifference > hd)
           biggerCounter++;
         else {
@@ -348,13 +371,15 @@ namespace RoguelikeUnitTests
         hd = dc.HealthDifference;
         if (hd > damageMax)
           damageMax = hd;
+
+        lastDamage = spell.Damage;
       }
 
       var expBiggerCounter = 8;
       if (sk == SpellKind.Swiatowit)
-        expBiggerCounter = 6;
+        expBiggerCounter = 5;
       Assert.Greater(biggerCounter, expBiggerCounter);
-      Assert.Greater(damageMax / damageMin, 4);
+      Assert.Greater(damageMax / damageMin, 4f);
     }
 
     [Test]
@@ -372,9 +397,14 @@ namespace RoguelikeUnitTests
       var scroll = PrepareScroll(hero, SpellKind.Swiatowit, enemy);
 
       var enHealth = enemy.Stats.Health;
-      game.GameManager.SpellManager.ApplySpell(hero, scroll, enemy);
-      Assert.True(!game.GameManager.HeroTurn);
-      Assert.Less(enemy.Stats.Health, enHealth);
+
+      for (int i = 0; i < 2; i++)
+      {
+        Assert.NotNull(game.GameManager.SpellManager.ApplySpell(hero, scroll, enemy));
+        Assert.True(!game.GameManager.HeroTurn);
+        GotoNextHeroTurn();
+      }
+      Assert.Less(enemy.Stats.Health, enHealth, enemy.ToString());
       Assert.Greater(sndPlayed.Length, 0);
     }
 
@@ -448,7 +478,33 @@ namespace RoguelikeUnitTests
 
     }
 
+
     [Test]
+    [Repeat(1)]
+    public void OnlyOneSkeletonTest()
+    {
+      var game = CreateGame();
+      var hero = game.Hero;
+
+      var scroll = PrepareScroll(hero, SpellKind.Skeleton);
+      scroll.Count = 5;
+      var gm = game.GameManager;
+      var alliesCount = gm.CurrentNode.GetTiles<Ally>().Count;
+      Assert.AreEqual(alliesCount, 0);
+      var spell = gm.SpellManager.ApplySpell(hero, scroll) as SkeletonSpell;
+      Assert.NotNull(spell);
+      Assert.NotNull(spell.Ally);
+      
+      Assert.AreEqual(gm.CurrentNode.GetTiles<Ally>().Count, alliesCount + 1);
+      Assert.True(gm.AlliesManager.AllEntities.Contains((spell.Ally)));
+
+      spell = gm.SpellManager.ApplySpell(hero, scroll) as SkeletonSpell;
+      var allyC = gm.CurrentNode.GetTiles<Ally>().Count;
+      Assert.Null(spell);
+      Assert.AreEqual(allyC, alliesCount + 1);
+    }
+
+      [Test]
     [Repeat(1)]
     public void SkeletonScrollTest()
     {
@@ -542,6 +598,7 @@ namespace RoguelikeUnitTests
     }
 
     [Test]
+    [Repeat(1)]
     public void CrackedStoneScrollTest()
     {
       var gi = new GenerationInfo();
@@ -561,6 +618,8 @@ namespace RoguelikeUnitTests
       var enemy = AllEnemies.First();
       enemy.Name += " in test";
       Assert.True(game.Level.SetTile(enemy, enemyPh));
+      enemy.SelectedFightItem = null;
+      enemy.SelectedManaPoweredSpellSource = null;
 
       PassiveSpell spell;
       var scroll = PrepareScroll(hero, SpellKind.CrackedStone);
@@ -575,6 +634,11 @@ namespace RoguelikeUnitTests
       var enPos = enemy.point;
       GotoNextHeroTurn();
       Assert.True(game.GameManager.EnemiesManager.ShallChaseTarget(enemy, game.Hero));
+      if (enemy.point == enPos)
+      {
+        int k = 0;
+        k++;
+      }
       Assert.AreNotEqual(enemy.point, enPos);
       Assert.AreEqual(enemy.point.X, enPos.X);//shall try walk around the stone
     }

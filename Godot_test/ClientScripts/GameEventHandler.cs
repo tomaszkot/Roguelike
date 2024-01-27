@@ -72,9 +72,10 @@ namespace God4_1.ClientScripts
               }
               else if (lea.InvolvedEntity is Roguelike.Tiles.LivingEntities.Hero)
               {
-                var targetTile = Game.dungeon.GetTile(lea.targetEntityPosition);
-                var enGodot = Game.gameLevel.GetEntity<Entities.LivingEntity>(targetTile);
-                enGodot.getDamaged((float)lea.InvolvedValue, true);
+                //TODO
+                //var targetTile = Game.dungeon.GetTile(lea.targetEntityPosition);
+                //var enGodot = Game.gameLevel.GetEntity<Entities.LivingEntity>(targetTile);
+                //enGodot.getDamaged((float)lea.InvolvedValue, true);
               }
             }
             else if (lea.Kind == LivingEntityActionKind.AppendedToLevel)

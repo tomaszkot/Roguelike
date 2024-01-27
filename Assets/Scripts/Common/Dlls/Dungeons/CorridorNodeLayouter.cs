@@ -138,8 +138,8 @@ namespace Dungeons
       var node = dungeonGenerator.CreateDungeonNodeInstance();
       node.Secret = true;
       
-      var he = 9;
-      var wi = 9;
+      var he = 8;
+      var wi = 8;
 
       var entr = RandHelper.GetRandomDouble() > 0.5f ? EntranceSide.Bottom : EntranceSide.Top;
 

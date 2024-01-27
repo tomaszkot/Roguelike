@@ -19,6 +19,10 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Runtime.InteropServices;
+using Roguelike.Extensions;
+
+using static Roguelike.Tiles.LivingEntities.LivingEntity;
+
 
 namespace Roguelike
 {
@@ -39,17 +43,15 @@ namespace Roguelike
 
     public class AttackStrategy
     {
-      GameContext context;
       public GameManager GameManager { get; set; }
       public Action<Policy> OnPolicyApplied;
-      public AbstractGameLevel Node { get => context.CurrentNode; }
+      public AbstractGameLevel Node { get => GameManager.CurrentNode; }
       public ITilesAtPathProvider TilesAtPathProvider { get; set; }
 
-      public AttackStrategy(GameContext context, GameManager gm)
+      public AttackStrategy(GameManager gm)
       {
-        this.context = context;
         this.GameManager = gm;
-        TilesAtPathProvider = context.Container.GetInstance<ITilesAtPathProvider>();
+        TilesAtPathProvider = gm.Container.GetInstance<ITilesAtPathProvider>();
       }
             
       public bool AttackIfPossible(LivingEntity attacker, LivingEntity target)
@@ -62,8 +64,7 @@ namespace Roguelike
         var enemyCasted = attacker as Enemy;
         if (enemyCasted != null)
         {
-          if(enemyCasted.RessurectOrderCooldown > 0)
-            enemyCasted.RessurectOrderCooldown--;
+          enemyCasted.DescreseAdvEnemySkillUseCount(EntityCommandKind.Resurrect);//  RessurectOrderCooldown--;
 
           bool resistOn = TurnOnResistAll(enemyCasted, target);
           if (resistOn)
@@ -75,6 +76,13 @@ namespace Roguelike
           if (TryUseSpecialSpell(attacker, target))
             return true;
 
+          if (TryUseProjectileAttack(attacker, target))
+            return true;
+          else
+            attacker.LastAttackWasProjectile = false;
+        }
+        else if (attacker is INPC npc)
+        {
           if (TryUseProjectileAttack(attacker, target))
             return true;
           else
@@ -109,26 +117,34 @@ namespace Roguelike
 
       private bool TryUseSpecialSpell(LivingEntity attacker, LivingEntity target)
       {
-        if (attacker is Enemy en && attacker.Name.Contains("Skeleton") && en.PowerKind != EnemyPowerKind.Plain)
+        if (attacker is Enemy en)
         {
-          var ressurectTargets = GameManager.GetRessurectTargets(en);
-          if (ressurectTargets.Any() && en.RessurectOrderCooldown == 0 && en.RessurectOrdersCounter < 3)
+          var cmd = EntityCommandKind.Resurrect;
+          if (en.CanUseCommand(EntityCommandKind.Resurrect))
           {
-            if (ressurectTargets.Count > 1 || en.Stats.HealthBelow(0.5f))
+            var ressurectTargets = GameManager.GetRessurectTargets(en);
+            if (ressurectTargets.Any() && en.GetAdvEnemySkillCooldown(cmd) == 0 && en.GetAdvEnemySkillUseCount(cmd) < 3)
             {
-              en.SendCommand(EntityCommandKind.RaiseMyFriends);
-              return true;
+              if (ressurectTargets.Count > 1 || en.Stats.HealthBelow(0.5f))
+              {
+                return SendCommand(en, EntityCommandKind.Resurrect, GameManager);
+              }
             }
+          }
+
+          if (en.CanUseCommand(EntityCommandKind.MakeFakeClones))
+          {
+            return SendCommand(en, EntityCommandKind.MakeFakeClones, GameManager);
           }
         }
         return false;
       }
 
-      bool IsClearPath(LivingEntity attacker, LivingEntity target)
+      public bool IsClearPath(LivingEntity attacker, LivingEntity target)
       {
         var isClearPath = false;
         //is target next to attacker
-        isClearPath = context.CurrentNode.GetNeighborTiles(attacker, true).Contains(target);
+        isClearPath = GameManager.CurrentNode.GetNeighborTiles(attacker, true).Contains(target);
         if (!isClearPath)
         {
           if (TilesAtPathProvider != null)
@@ -144,10 +160,12 @@ namespace Roguelike
           }
           else
           {
-            var pathToTarget = FindPathForEnemy(attacker, target, 1, true);
+            var forEnemyProjectile = true;
+            var pathToTarget = FindPathForEnemy(attacker, target, 1, forEnemyProjectile);
             if (pathToTarget != null)
             {
-              var obstacles = pathToTarget.Where(i => context.CurrentNode.GetTile(new System.Drawing.Point(i.Y, i.X)) is Dungeons.Tiles.Abstract.IObstacle).ToList();
+              var obstacles = pathToTarget.Where(i => GameManager.CurrentNode.GetTile(new System.Drawing.Point(i.Y, i.X)) 
+              is Dungeons.Tiles.Abstract.IObstacle).ToList();
               if (!obstacles.Any())
               {
                 isClearPath = true;
@@ -171,7 +189,7 @@ namespace Roguelike
           var useMagic = IsClearPath(attacker, target);
           if (useMagic)
           {
-            var applied = GameManager.SpellManager.ApplyAttackPolicy(attacker, target, attacker.ActiveManaPoweredSpellSource, null, (p) => { OnPolicyApplied(p); });
+            var applied = GameManager.SpellManager.ApplyAttackPolicy(attacker, target, attacker.SelectedManaPoweredSpellSource, null, (p) => { OnPolicyApplied(p); });
 
             return applied == ApplyAttackPolicyResult.OK;
           }
@@ -337,8 +355,8 @@ namespace Roguelike
 
         if (skip)
           return false;
-        var enemy = attacker as Enemy;
-        var fi = enemy.ActiveFightItem;
+        var enemy = attacker;// as Enemy;
+        var fi = enemy.SelectedFightItem;
         if (fi != null && fi.Count > 0)
         {
           var pfi = fi as ProjectileFightItem;
@@ -368,32 +386,115 @@ namespace Roguelike
         return false;
       }
 
+      
       bool TryUseMagicAttack(LivingEntity enemy, LivingEntity victim)
       {
         var en = enemy as Enemy;
-        if (enemy.ActiveScrollCoolDownCounter > 0)
+        if (enemy.SelectedScrollCoolDownCounter > 0)
         {
           bool decreaseCoolDown = RandHelper.Random.NextDouble() > .3f;
           if (en.PowerKind == EnemyPowerKind.Boss)
             decreaseCoolDown = RandHelper.Random.NextDouble() > .5f;
           if (decreaseCoolDown)
-            enemy.ActiveScrollCoolDownCounter--;
+            enemy.SelectedScrollCoolDownCounter--;
         }
-        if (enemy.ActiveManaPoweredSpellSource != null && enemy.ActiveScrollCoolDownCounter == 0)
+
+        if (enemy.SelectedScrollCoolDownCounter == 0)
         {
-          if (UseMagicAttack(enemy, victim))
+          SpellSource ss = enemy.SelectedManaPoweredSpellSource;
+          if (enemy.CanUseCommand(EntityCommandKind.SenseVictimWeakResist))
           {
-            enemy.ActiveScrollCoolDownCounter = GetCoolDown(enemy as Enemy);
-            return true;
+            return SendCommand(en, EntityCommandKind.SenseVictimWeakResist, GameManager);
           }
+
+          if (enemy.SelectedManaPoweredSpellSource != null && enemy.SelectedScrollCoolDownCounter == 0)
+          {
+            if (RandHelper.Random.NextDouble() > .65f)
+            {
+              if (UseMagicAttack(enemy, victim))
+              {
+                enemy.SelectedScrollCoolDownCounter = GetCoolDown(enemy as Enemy);
+                return true;
+              }
+            }
+          }
+          
         }
         return false;
       }
 
+      static bool SetBestSpellSource(LivingEntity attacker, LivingEntity victim)
+      {
+        if (attacker.HasSpecialSkill(EntityCommandKind.SenseVictimWeakResist))
+        {
+          var weakStat = SenseWeakStats(victim);
+          var scroll = new Scroll(weakStat.First().GetSpellKind());
+          attacker.SelectedManaPoweredSpellSource = scroll;
+          attacker.SelectedScrollCoolDownCounter = 0;
+          return true;
+        }
+
+        return false;
+      }
+
+      /// <summary>
+      /// TODO Static as used also by ut
+      /// </summary>
+      /// <param name="attacker"></param>
+      /// <param name="commandKind"></param>
+      /// <param name="gm"></param>
+      /// <returns></returns>
+      public static bool SendCommand(LivingEntity attacker, EntityCommandKind commandKind, GameManager gm)
+      {
+        var res = false;
+        string specialInfo = "";
+        if (commandKind == EntityCommandKind.Resurrect)
+        {
+          var en = attacker as Enemy;
+          en.SetAdvEnemySkillCooldown(EntityCommandKind.Resurrect, 10);
+          en.IncreaseAdvEnemySkillUseCount(EntityCommandKind.Resurrect);
+          gm.DoCommand(en, en.GetCommand(EntityCommandKind.Resurrect));
+          res = true;
+          //soundToUse = "raise_my_friends";
+        }
+        else if (commandKind == EntityCommandKind.MakeFakeClones)
+        {
+          gm.MakeFakeClones(attacker, gm.Hero, true);
+          res = true;
+          //soundToUse = "FallenOneSurround";
+        }
+        else if (commandKind == EntityCommandKind.SenseVictimWeakResist)
+        {
+          res = SetBestSpellSource(attacker, gm.Hero);
+          specialInfo = attacker.Name + " has sensed your weak points";
+        }
+
+        var cmd = attacker.GetCommand(commandKind);
+
+        var ea = new LivingEntityAction();
+        ea.AttackerEntity = attacker;
+        ea.InvolvedEntity = gm.Hero;
+        ea.CommandKind = commandKind;
+        ea.Kind = LivingEntityActionKind.SendCommand;
+        ea.Info = specialInfo.Any() ? specialInfo : cmd.Info;
+        ea.Cmd = cmd;
+
+
+        gm.EventsManager.AppendAction(ea);
+        cmd.IncreaseUseCount();
+        if (cmd.Sound.Any())
+        {
+          var sm = gm.SoundManager;
+          if (sm != null)
+            sm.PlayVoice(cmd.Sound);
+        }
+
+        return true;
+      }
 
       public List<Algorithms.PathFinderNode> FindPathForEnemy(LivingEntity enemy, LivingEntity target, int startIndex = 0, bool forEnemyProjectile = false)
       {
-        var pathToTarget = context.CurrentNode.FindPath(enemy.point, target.point, false, true, forEnemyProjectile, enemy);
+        var pathToTarget = GameManager.CurrentNode.FindPath(enemy.point, target.point, false, forEnemyProjectile);
         if (pathToTarget != null && pathToTarget.Any())
         {
           return pathToTarget.GetRange(startIndex, pathToTarget.Count - 1);
@@ -457,6 +558,19 @@ namespace Roguelike
       private bool CanAttackTarget(List<Tile> neibs, LivingEntity enemy)
       {
         return neibs.Any(i => i == enemy);
+      }
+
+      static List<EntityStatKind> SenseWeakStats(LivingEntity victim)
+      {
+        var res = new List<EntityStatKind>();
+        var resists = new EntityStatKind [] { EntityStatKind.ResistCold, EntityStatKind.ResistPoison, EntityStatKind.ResistFire };
+
+        resists.ToList().ForEach(i=> victim.Stats.Ensure(i));
+
+        var list = victim.Stats.Stats.Where(i => resists.Contains(i.Key)).OrderBy(i => victim.GetCurrentValue(i.Key)).ToList();
+        var lowestResist = list.First();
+        res.Add(lowestResist.Key);
+        return res;
       }
     }
   }

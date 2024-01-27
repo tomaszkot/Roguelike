@@ -24,6 +24,9 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using Dungeons.Tiles.Abstract;
+using System.Globalization;
+using Roguelike.Abstract;
+using System.Xml.Linq;
 
 namespace RoguelikeUnitTests
 {
@@ -42,13 +45,16 @@ namespace RoguelikeUnitTests
     public RoguelikeGame Game { get => game; protected set => game = value; }
     public Container Container { get; set; }
     public BaseHelper Helper { get => helper; set => helper = value; }
-    GameManager GameManager { get => game.GameManager; }
+    public GameManager GameManager { get => game.GameManager; }
 
     protected BaseHelper helper;
 
     [SetUp]
     public void Init()
     {
+      CultureInfo.CurrentCulture = new CultureInfo("en-GB");//en-GB
+      OnInit();
+
       Log("--");
       Log("Test SetUp: " + NUnit.Framework.TestContext.CurrentContext.Test.Name);
       Log("--");
@@ -56,14 +62,14 @@ namespace RoguelikeUnitTests
       Assert.Greater(gi.NumberOfRooms, 1);
       Assert.Greater(gi.ForcedNumberOfEnemiesInRoom, 2);
 
-      OnInit();
+      
     }
 
     [TearDown]
     public void Cleanup()
     {
       Log("--");
-      Log("Test Cleanup: " + NUnit.Framework.TestContext.CurrentContext.Test.Name);
+      Log("Test Cleanup: " + TestContext.CurrentContext.Test.Name);
       Log("--");
       Log("-");
     }
@@ -78,14 +84,42 @@ namespace RoguelikeUnitTests
 
     protected void Log(string v)
     {
-      Debug.WriteLine(v);
+      Container.GetInstance<ILogger>().LogInfo(v);
+      //Debug.WriteLine(v);
     }
 
-    protected Enemy SpawnEnemy()
+    protected Ally AddAlly(Hero hero, bool skeleton, bool second = false)
     {
+      var am = GameManager.AlliesManager;
+      //Assert.AreEqual(am.AllEntities.Count, second ? 1 : 0);
+
+      if (skeleton)
+      {
+        var scroll = new Scroll(SpellKind.Skeleton);
+        hero.Inventory.Add(scroll);
+        Assert.NotNull(GameManager.SpellManager.ApplySpell(hero, scroll));
+      }
+      else
+      {
+        var hound = Container.GetInstance<Roguelike.Tiles.LivingEntities.TrainedHound>();
+        GameManager.AddAlly(hound);
+      }
+
+      //Assert.AreEqual(am.AllEntities.Count, second ? 2 : 1);
+      var ally = am.AllAllies.Last() as Ally;
+      Assert.AreEqual(ally.Name, skeleton ? "Skeleton" : "Hound");
+      Assert.Less(ally.DistanceFrom(hero), 5);
+      return ally as Ally;
+    }
+
+    protected Enemy SpawnEnemy(char symbol = 'b')
+    {
+      Enemy en = null;
       if (game != null)
-        return game.GameManager.CurrentNode.SpawnEnemy(1);
-      return Container.GetInstance<Enemy>();
+        en = game.GameManager.CurrentNode.SpawnEnemy(1);
+      en = Container.GetInstance<Enemy>();
+      en.Symbol = symbol;
+      return en;
     }
 
     protected void HeroUseWeaponElementalProjectile( IDestroyable victim)
@@ -102,7 +136,7 @@ namespace RoguelikeUnitTests
       Tile.IncludeDebugDetailsInToString = true;
       Container = new Roguelike.ContainerConfigurator().Container;
       Container.Register<ISoundPlayer, BasicSoundPlayer>();
-
+      Container.GetInstance<ILogger>().LogLevel = LogLevel.Info;
     }
 
     protected T GenerateRandomEqOnLevelAndCollectIt<T>() where T : Equipment, new()
@@ -112,7 +146,7 @@ namespace RoguelikeUnitTests
       return eq;
     }
 
-    private void CollectLoot(Loot loot)
+    protected void CollectLoot(Loot loot)
     {
       var set = Game.GameManager.CurrentNode.SetTile(game.Hero, loot.point);
       game.GameManager.CollectLootOnHeroPosition();
@@ -150,13 +184,13 @@ namespace RoguelikeUnitTests
 
     protected List<Roguelike.Tiles.LivingEntities.Enemy> ActivePlainEnemies
     {
-      get { return game.GameManager.EnemiesManager.GetActiveEnemies().Where(i => i.PowerKind == EnemyPowerKind.Plain).ToList(); }
+      get { return ActiveEnemies.Where(i => i.PowerKind == EnemyPowerKind.Plain).ToList(); }
     }
 
 
     List<Roguelike.Tiles.LivingEntities.Enemy> ActiveEnemies
     {
-      get { return game.GameManager.EnemiesManager.GetActiveEnemies().ToList(); }
+      get { return game.GameManager.EnemiesManager.GetActiveEnemies().Where(i=> i is Enemy).Cast<Enemy>().ToList(); }
     }
 
     protected List<Roguelike.Tiles.LivingEntities.Enemy> AllEnemies
@@ -213,7 +247,7 @@ namespace RoguelikeUnitTests
       int? genNumOfEnemies = null,
       int numberOfRooms = 5,
       GenerationInfo gi = null,
-      LogLevel logLevel = LogLevel.Unset
+      LogLevel logLevel = LogLevel.Info
     )
     {
       Container.GetInstance<ILogger>().LogLevel = logLevel;
@@ -263,7 +297,7 @@ namespace RoguelikeUnitTests
             genNumOfEnemiesToUse = genNumOfEnemiesToUse * numberOfRooms;
           }
         }
-
+        game.GameManager.GameState.CoreInfo.Difficulty = GenerationInfo.Difficulty;
         var level = game.GenerateLevel(0, gi);
 
         var enemies = level.GetTiles<Enemy>();
@@ -366,7 +400,10 @@ namespace RoguelikeUnitTests
       var ni = ActiveEnemies.Where(e => e.State != EntityState.Idle).ToList();
       //game.GameManager.Logger.LogInfo("make enemies move " + game.GameManager.Context.PendingTurnOwnerApply);
       game.MakeGameTick();//make enemies move
+      Assert.AreEqual(gm.Context.TurnOwner, Roguelike.TurnOwner.Animals);
       game.MakeGameTick();//make animals move
+      Assert.AreEqual(gm.Context.TurnOwner, Roguelike.TurnOwner.Npcs);
+      game.MakeGameTick();
       if (!game.GameManager.HeroTurn)
       {
         var tac1 = game.GameManager.Context.TurnActionsCount;
@@ -407,22 +444,28 @@ namespace RoguelikeUnitTests
       PlaceCloseToHero(GameManager, destr, minDistance);
     }
 
-    public static void PlaceCloseToHero(GameManager gm, IDestroyable destr, int? minDistance = null)
+    public void PlaceCloseToHero(GameManager gm, IDestroyable destr, int? minDistance = null)
     {
       var hero = gm.Hero;
+      PlaceClose(hero, destr, minDistance);
+    }
+
+    public void PlaceClose(LivingEntity le, IDestroyable destr, int? minDistance)
+    {
+      var gm = GameManager;
       Tile empty;
       if (minDistance == null)
-        empty = gm.CurrentNode.GetClosestEmpty(hero);
+        empty = gm.CurrentNode.GetClosestEmpty(le);
       else
       {
         empty = gm.CurrentNode.GetEmptyTiles()
-          .Where(i => i.DistanceFrom(hero) >= minDistance.Value)
-          .OrderBy(i=>i.DistanceFrom(hero))
+          .Where(i => i.DistanceFrom(le) >= minDistance.Value)
+          .OrderBy(i => i.DistanceFrom(le))
           .FirstOrDefault();
       }
       gm.CurrentNode.SetTile(destr as Tile, empty.point);
-      if (destr is LivingEntity le && !gm.EnemiesManager.AllEntities.Contains(le))
-        gm.EnemiesManager.AddEntity(le);
+      if (destr is Enemy le1 && !gm.EnemiesManager.AllEntities.Contains(le1))
+        gm.EnemiesManager.AddEntity(le1);
     }
 
     protected Tuple<Point, Dungeons.TileNeighborhood> SetCloseToLivingEntity(Dungeons.Tiles.Tile tile, LivingEntity le)
@@ -464,7 +507,7 @@ namespace RoguelikeUnitTests
         caster.Inventory.Add(spellSource);
       if (caster is Hero)
       {
-        game.Hero.ActiveManaPoweredSpellSource = spellSource;
+        game.Hero.SelectedManaPoweredSpellSource = spellSource;
         return game.GameManager.SpellManager.ApplyAttackPolicy(caster, victim, spellSource) == ApplyAttackPolicyResult.OK;
       }
       return false;
@@ -507,7 +550,12 @@ namespace RoguelikeUnitTests
       fi.Count = fiCount;
       fi.AlwaysHit = true;
       hero.Inventory.Add(fi);
-      hero.ActiveFightItem = fi;
+
+      //var ak = FightItem.GetAbilityKind(fi);
+      //if(ak!= AbilityKind.Unset)
+      //  hero.SelectedActiveAbility = hero.GetActiveAbility(ak);
+      //else
+      hero.SelectedFightItem = fi;
       return fi;
     }
 
@@ -619,13 +667,13 @@ namespace RoguelikeUnitTests
       int pfiCount = 3
     )
     {
-      en.ActiveFightItem = en.SetActiveFightItem(fightItemKind);
+      en.SelectedFightItem = en.SetActiveFightItem(fightItemKind);
       en.Name = "bandit555";
       en.d_canMove = false;//make sure will not move, but fight at distance
       en.AlwaysHit[AttackKind.PhysicalProjectile] = true;
       PlaceCloseToHero(gm, en, 2);
-      if (addFightItems && en.ActiveFightItem.Count != pfiCount)
-        en.ActiveFightItem.Count = pfiCount;
+      if (addFightItems && en.SelectedFightItem.Count != pfiCount)
+        en.SelectedFightItem.Count = pfiCount;
 
       Assert.AreEqual(gm.Hero.GetFightItemKindHitCounter(fightItemKind), 0);
 
@@ -644,7 +692,7 @@ namespace RoguelikeUnitTests
       if (breakAfterOne)
       {
         Assert.AreEqual(fic, 1);
-        Assert.Greater(en.ActiveFightItem.Count, 0);
+        Assert.Greater(en.SelectedFightItem.Count, 0);
       }
       Assert.Greater(fic, 0);
       Assert.Less(fic, 4);
@@ -658,5 +706,13 @@ namespace RoguelikeUnitTests
       }
     }
 
+    protected Enemy AddEnemy(char symbol = 'b')
+    {
+      var en = SpawnEnemy(symbol);
+      en.Revealed = true;
+      GameManager.CurrentNode.SetTileAtRandomPosition(en);
+      GameManager.EnemiesManager.AddEntity(en);
+      return en;
+    }
   }
 }

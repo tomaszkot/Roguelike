@@ -1,4 +1,5 @@
-﻿using RoguelikeUnitTests.Helpers;
+﻿using Dungeons.Core;
+using RoguelikeUnitTests.Helpers;
 
 namespace RoguelikeUnitTests
 {
@@ -12,8 +13,8 @@ namespace RoguelikeUnitTests
 
     public T CreateTestEnv(bool autoLoadLevel = true, int numEnemies = 10, int numRooms = 10)
     {
-      //var numEn = numEnemies / numRooms;
-      var game = CreateGame(autoLoadLevel, numEnemies, numRooms);
+      var logLevel = Container.GetInstance<ILogger>().LogLevel;
+      var game = CreateGame(autoLoadLevel, numEnemies, numRooms, logLevel : logLevel);
       helper = new T();
 
       helper.Test = this;

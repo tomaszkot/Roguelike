@@ -46,7 +46,7 @@
       set { isPendant = value; }
     }
 
-    public Jewellery() : base(EquipmentKind.Ring)
+    public Jewellery() : base(EquipmentKind.Unset)
     {
 
     }

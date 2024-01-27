@@ -99,25 +99,25 @@ namespace RoguelikeUnitTests
       game.GameManager.Hero.SelectedActiveAbility = ab;
 
       var nextLevelStats = ab.GetEntityStats(currentLevel: false);
-      Assert.AreEqual(nextLevelStats[0].Factor, 5);//EntityStatKind.ChanceForPiercing
+      Assert.AreEqual(nextLevelStats[0].Factor, 10);//EntityStatKind.ChanceForPiercing
       Assert.AreEqual(nextLevelStats[1].Factor, 2);//EntityStatKind.NumberOfPiercedVictims
 
       var fv = EntityStat.GetFormattedValue(nextLevelStats[0], true);
-      Assert.AreEqual(fv, "+5%");
+      Assert.AreEqual(fv, "+10%");
       ab.IncreaseLevel(game.Hero);
 
       Assert.AreEqual(ab.PrimaryStat.Kind, EntityStatKind.ChanceForPiercing);
-      Assert.AreEqual(ab.PrimaryStat.Factor, 5);
+      Assert.AreEqual(ab.PrimaryStat.Factor, 10);
       Assert.AreEqual(ab.AuxStat.Kind, EntityStatKind.NumberOfPiercedVictims);
       var numberOfPiercedVictims = 2;
       Assert.AreEqual(ab.AuxStat.Factor, numberOfPiercedVictims);
       numberOfPiercedVictims++;
 
       ab.IncreaseLevel(game.Hero);
-      Assert.AreEqual(ab.PrimaryStat.Factor, 10);
+      Assert.AreEqual(ab.PrimaryStat.Factor, 20);
 
       Assert.AreEqual(ab.AuxStat.Factor, numberOfPiercedVictims);
-      Assert.AreEqual(game.GameManager.Hero.GetEffectChance(EntityStatKind.ChanceToPhysicalProjectileHit, null), 85);
+      Assert.AreEqual(game.GameManager.Hero.GetEffectChance(EntityStatKind.ChanceToPhysicalProjectileHit, null), 95);
     }
 
     private static void FindBigFacs(Roguelike.RoguelikeGame game, bool act)
@@ -182,7 +182,7 @@ namespace RoguelikeUnitTests
       Assert.AreEqual(ab.AuxStat.Factor, 0);
 
       ab.IncreaseLevel(game.Hero);
-      Assert.AreEqual(ab.PrimaryStat.Factor, 10);
+      Assert.AreEqual(ab.PrimaryStat.Factor, 15);
       Assert.AreEqual(ab.AuxStat.Factor, 5);
     }
 

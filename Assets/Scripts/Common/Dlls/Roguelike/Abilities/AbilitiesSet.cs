@@ -15,6 +15,16 @@ namespace Roguelike.Abilities
     {
       EnsureItems();
     }
+
+    public static AbilitiesSet CreateEmpty()
+    {
+      var set = new AbilitiesSet();
+      set.passiveAbilities.Clear();
+      set.activeAbilities.Clear();
+      return set;
+      
+    }
+
     public bool IsActive(AbilityKind kind)
     {
       return activeAbilities.Where(i => i.Kind == kind).Any();

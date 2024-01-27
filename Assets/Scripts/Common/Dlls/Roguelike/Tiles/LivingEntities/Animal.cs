@@ -5,11 +5,34 @@ using Roguelike.Spells;
 using Roguelike.TileContainers;
 using Roguelike.Tiles.Looting;
 using SimpleInjector;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Roguelike.Tiles.LivingEntities
 {
-  public class Animal : LivingEntity, ILootSource 
+  public class Animal : LivingEntity, ILootSource
   {
+    static readonly Dictionary<string, AnimalKind> tag2Kind;
+    //= new Dictionary<string, AnimalKind>
+    //{
+    //  { "rooster", AnimalKind.Rooster},
+    //  { "hen", AnimalKind.Hen},
+    //  { "deer", AnimalKind.Deer},
+    //  { "pig", AnimalKind.Pig},
+    //  { "horse", AnimalKind.Horse},
+    //  { "hound", AnimalKind.Hound},
+
+
+    //};
+
+    static readonly Dictionary<AnimalKind, string> kind2Tag;
+
+    static Animal()
+    {
+      tag2Kind = EnumHelper.GetEnumValues<AnimalKind>(true).ToDictionary(kv => kv.ToString().ToLower(), kv => kv);
+      kind2Tag = tag2Kind.ToDictionary(kv => kv.Value, kv => kv.Key);
+    }
+
     public int RandMoveCoolDown = 1;
     public bool PreventMove { get; set; } = false;
     AnimalKind kind;
@@ -19,9 +42,8 @@ namespace Roguelike.Tiles.LivingEntities
     {
       AnimalKind = kind;
       EntityKind = EntityKind.Animal;
-
-      var he = Stats.GetStat(Attributes.EntityStatKind.Health);
-      he.Value.Nominal /= 3;
+      if(kind!= AnimalKind.Unset)
+        tag1 = kind2Tag[kind];  
     }
 
     public Animal(Container cont) : this(cont, AnimalKind.Unset)
@@ -37,20 +59,32 @@ namespace Roguelike.Tiles.LivingEntities
       set {
         kind = value;
         DisplayedName = kind.ToString();
-
+        if (kind == AnimalKind.Horse)
+          Stats.GetStat(Attributes.EntityStatKind.Health).Value.Nominal *= 4;
+        else if (kind == AnimalKind.Hen || kind == AnimalKind.Rooster)
+        {
+          Stats.GetStat(Attributes.EntityStatKind.Health).Value.Nominal /= 2;
+          Stats.GetStat(Attributes.EntityStatKind.Defense).Value.Nominal /= 2;
+        }
       }
     }
+
+   
 
     public AnimalKind GetKindFromTag1()
     {
       if (tag1 == "rooster")
         return AnimalKind.Rooster;
-      if (tag1 == "hen")
+      else if (tag1 == "hen")
         return AnimalKind.Hen;
-      if (tag1 == "deer")
+      else if (tag1 == "deer")
         return AnimalKind.Deer;
-      if (tag1 == "pig")
+      else if (tag1 == "pig")
         return AnimalKind.Pig;
+      else if (tag1.Contains("horse"))//can be zyndram_horse
+        return AnimalKind.Horse;
+      else if (tag1.Contains("hound"))
+        return AnimalKind.Hound;
 
       return AnimalKind.Unset;
     }
@@ -85,11 +119,11 @@ namespace Roguelike.Tiles.LivingEntities
     {
       return LastHitCoolDown > 0;
     }
-    public  HitResult OnMeleeHitBy(ILivingEntity attacker)
-    {
-      OnMeleeHitBy(attacker as LivingEntity);
-      return HitResult.Hit;
-    }
+    //public  HitResult OnMeleeHitBy(ILivingEntity attacker)
+    //{
+    //  OnMeleeHitBy(attacker as LivingEntity);
+    //  return HitResult.Hit;
+    //}
 
 
     public override float OnMeleeHitBy(LivingEntity attacker)
@@ -114,14 +148,19 @@ namespace Roguelike.Tiles.LivingEntities
         PlaySound("pig_scream");
         LastHitCoolDown = 2;
       }
-
       else if (AnimalKind == AnimalKind.Deer)
       {
         PlaySound("deer");
         LastHitCoolDown = 3;
       }
+      else if (AnimalKind == AnimalKind.Horse)
+      {
+        PlaySound("horse_hit");
+        LastHitCoolDown = 2;
+      }
+      //
       //else if (tag1 == "deer")
-        //this.Speed = 2;
+      //this.Speed = 2;
     }
 
     public override string ToString()

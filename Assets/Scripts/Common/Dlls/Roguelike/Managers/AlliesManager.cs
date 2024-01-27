@@ -8,20 +8,15 @@ using System;
 using System.Linq;
 using System.Collections.Generic;
 
+
 namespace Roguelike.Managers
 {
 
-  //if (ally is God god)
-  //    {
-  //      god.Point = Hero.Position;//TODO
-  //      god.MakeTurn(this);
-  //      return;
-  //}
   public class AlliesManager : EntitiesManager
   {
     EnemiesManager enemiesManager;
-
-    public AllyBehaviour AllyBehaviour { get; set; } = AllyBehaviour.GoFreely;
+    public const string ZyndramHerd = "ZyndramSquad";
+    public AllyBehaviour AllyBehaviour { get; set; } = AllyBehaviour.StayClose;
 
     public AlliesManager(GameContext context, EventsManager eventsManager, Container container, EnemiesManager enemiesManager, GameManager gm) :
                          base(TurnOwner.Allies, context, eventsManager, container, gm)
@@ -29,7 +24,8 @@ namespace Roguelike.Managers
       context.TurnOwnerChanged += OnTurnOwnerChanged;
       context.ContextSwitched += Context_ContextSwitched;
       this.enemiesManager = enemiesManager;
-
+      CheckBusyOnes = true;
+      EmitAllIdleWhenNooneBusy = true;
     }
 
     public override void MakeTurn()
@@ -42,6 +38,18 @@ namespace Roguelike.Managers
     protected override void MakeSpecialActions()
     {
       
+    }
+
+    public override List<LivingEntity> GetActiveEntities()
+    {
+      var basicList = GetBasicActiveEntitiesList();
+      //var res = basicList.Where(i => i is God ||
+      //i.DistanceFrom(gameManager.Hero) < 15 ||
+      //(i is INPC npc && npc.WalkKind == WalkKind.GoToHome)
+      //)
+      //.ToList();
+
+      return basicList;
     }
 
     public override bool RemoveDeadEntity(LivingEntity ent)
@@ -95,16 +103,7 @@ namespace Roguelike.Managers
         }
       }
 
-      //if (ally.FixedWalkTarget != null)
-      //{
-      //  if (ally.PathToTarget != null && ally.PathToTarget.Count == 1)
-      //  {
-      //    ally.FixedWalkTarget = null;
-      //  }
-      //  if (!MakeMoveOnPath(ally, ally.FixedWalkTarget.point, true))
-      //    MakeRandomMove(ally);
-      //  return;
-      //}
+
       var allEnemies = enemiesManager.GetActiveEnemies();
       var enemiesInvolved = enemiesManager.GetActiveEnemiesInvolved();
       if (AllyBehaviour == AllyBehaviour.StayStill)
@@ -125,7 +124,8 @@ namespace Roguelike.Managers
       }
     }
 
-    private void DoMixedMode(AllyBehaviour allyBehaviour, LivingEntity ally, List<Enemy> allEnemies, List<Enemy> enemiesInvolved, int maxEntityDistanceToToChase)
+    private void DoMixedMode(AllyBehaviour allyBehaviour, LivingEntity ally, List<LivingEntity> allEnemies,
+      List<LivingEntity> enemiesInvolved, int maxEntityDistanceToToChase)
     {
       bool moveCloserToHero = false;
       LivingEntity maxDistanceFrom = allyBehaviour == AllyBehaviour.GoFreely ? ally: Hero;
@@ -150,8 +150,8 @@ namespace Roguelike.Managers
     }
 
     private void FindTarget(LivingEntity ally, 
-      List<Enemy> allEnemies, 
-      List<Enemy> enemiesInvolved,
+      List<LivingEntity> allEnemies, 
+      List<LivingEntity> enemiesInvolved,
       int maxDistance,
       LivingEntity maxDistanceFrom
       )
@@ -166,7 +166,9 @@ namespace Roguelike.Managers
       if (ally.AllyModeTarget == null || ally.AllyModeTarget.DistanceFrom(maxDistanceFrom) > maxDistance)
       {
         ally.AllyModeTarget = enemiesInvolved
-          .Where(i => i.Revealed && i.DistanceFrom(maxDistanceFrom) <= maxDistance)
+          .Where(i => i.Revealed && i.DistanceFrom(maxDistanceFrom) <= maxDistance
+          && Node.FindPath(ally, i.point)!=null
+          )
           .OrderBy(i => i.DistanceFrom(ally))
           .ToList()
           .FirstOrDefault();
@@ -217,11 +219,9 @@ namespace Roguelike.Managers
       AddEntity(ent as LivingEntity);
     }
 
-    //public God RemoveGod()
-    //{
-    //  var god = AllEntities.Where(i => i is God).FirstOrDefault();
-    //  AllEntities.Remove(god);
-    //  return god as God;
-    //}
+    protected override bool IsBusy(LivingEntity i)
+    {
+      return base.IsBusy(i);
+    }
   }
 }

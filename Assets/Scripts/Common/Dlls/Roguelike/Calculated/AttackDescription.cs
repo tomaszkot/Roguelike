@@ -30,14 +30,16 @@ namespace Roguelike.Calculated
     public AttackDescription(LivingEntity ent,
       bool withVariation = true,
       AttackKind attackKind = AttackKind.Unset,//if uset it will be based on current weapon/active fi
-      OffensiveSpell spell = null)
+      OffensiveSpell spell = null,
+      ProjectileFightItem pfi = null)
     {
       AttackKind = attackKind;
       fightItem = null;
-      Calc(ent, withVariation, ref attackKind, spell);
+      Calc(ent, withVariation, ref attackKind, spell, pfi);
     }
 
-    private void Calc(LivingEntity ent, bool withVariation, ref AttackKind attackKind, OffensiveSpell spell)
+    private void Calc(LivingEntity ent, bool withVariation, ref AttackKind attackKind, 
+                      OffensiveSpell spell, ProjectileFightItem pfi = null)
     {
       try
       {
@@ -65,7 +67,11 @@ namespace Roguelike.Calculated
           fightItem = GetActiveFightItem(ent);
           fi = fightItem;
           if (fightItem == null)
-            return;
+          {
+            fightItem = pfi;
+            if (fightItem == null)
+              return;
+          }
         }
         if (attackKind == AttackKind.WeaponElementalProjectile)
         {

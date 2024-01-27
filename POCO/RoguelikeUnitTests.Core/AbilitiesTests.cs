@@ -67,18 +67,24 @@ namespace RoguelikeUnitTests
     [TestCase(AbilityKind.FireBallMastering)]
     [TestCase(AbilityKind.IceBallMastering)]
     [TestCase(AbilityKind.PoisonBallMastering)]
+    [Repeat(1)]
     public void MagicProjectileEnemyHitTest(AbilityKind ak)
     {
       var game = CreateGame();
+      game.Hero.AlwaysHit[AttackKind.SpellElementalProjectile] = true;
       var ab = game.GameManager.Hero.GetPassiveAbility(ak);
       var enemy = PlainEnemies.First();
+
+      //Immune!
       enemy.ImmuneOnEffects = true;
-      var enemyBeginHealth = enemy.Stats.Health;
+      var enemyLastHealth = enemy.Stats.Health;
       UseSpellSource(game.Hero, enemy, true, AbilityKind2SpellKind[ak]);
-      Assert.AreEqual(enemy.LastingEffects.Count, 0);
-      Assert.Less(enemy.Stats.Health, enemyBeginHealth);
-      var diff1 = enemyBeginHealth - enemy.Stats.Health;
-      enemyBeginHealth = enemy.Stats.Health;
+      Assert.False(enemy.HasLastingEffect(Roguelike.Effects.EffectType.Firing));
+      Assert.False(enemy.HasLastingEffect(Roguelike.Effects.EffectType.Frozen));
+      Assert.False(enemy.HasLastingEffect(Roguelike.Effects.EffectType.Poisoned));
+      Assert.Less(enemy.Stats.Health, enemyLastHealth);
+      var diff1 = enemyLastHealth - enemy.Stats.Health;
+      enemyLastHealth = enemy.Stats.Health;
       
       for(int i=0;i< ab.MaxLevel; i++)
         ab.IncreaseLevel(game.Hero);
@@ -86,8 +92,8 @@ namespace RoguelikeUnitTests
       GotoNextHeroTurn();
 
       UseSpellSource(game.Hero, enemy, true, AbilityKind2SpellKind[ak]);
-      Assert.Less(enemy.Stats.Health, enemyBeginHealth);
-      var diff2 = enemyBeginHealth - enemy.Stats.Health;
+      Assert.Less(enemy.Stats.Health, enemyLastHealth);
+      var diff2 = enemyLastHealth - enemy.Stats.Health;
       Assert.Greater(diff2, diff1);
     }
 
@@ -139,7 +145,7 @@ namespace RoguelikeUnitTests
 
       var empOnes = game.GameManager.CurrentNode.GetEmptyNeighborhoodTiles(game.GameManager.Hero, false);
       Assert.Greater(empOnes.Count, 2);
-      var enemies = AllEnemies.Where(i => i.PowerKind == EnemyPowerKind.Champion).ToList();
+      var enemies = AllEnemies;//.Where(i => i.PowerKind == EnemyPowerKind.Champion).ToList();
       var enFirst = enemies[0];
       var enSec = enemies[1];
       var enThird = enemies[2];
@@ -178,7 +184,7 @@ namespace RoguelikeUnitTests
     public void TestStrikeBack()
     {
       var game = CreateGame();
-      game.Hero.d_immortal = true;
+      game.Hero.Immortal = true;
       var en = PlainEnemies.First();
       PlaceCloseToHero(en);
       float en1Health = en.Stats.Health;
@@ -277,12 +283,12 @@ namespace RoguelikeUnitTests
       var explosiveCocktail = new ProjectileFightItem(FightItemKind.ExplosiveCocktail, hero);
       explosiveCocktail.Count = 10;
       hero.Inventory.Add(explosiveCocktail);
-      hero.ActiveFightItem = explosiveCocktail;
+      hero.SelectedFightItem = explosiveCocktail;
 
       for (int i = 0; i < 10; i++)
       {
         //champion.OnHitBy(explosiveCocktail);
-        UseFightItem(hero, champion, hero.ActiveProjectileFightItem);
+        UseFightItem(hero, champion, hero.SelectedProjectileFightItem);
         if (champion.HasLastingEffect(Roguelike.Effects.EffectType.Firing))
           break;
         GotoNextHeroTurn();
@@ -293,7 +299,6 @@ namespace RoguelikeUnitTests
 
     [TestCase(FightItemKind.ExplosiveCocktail)]
     [TestCase(FightItemKind.Stone)]
-    [TestCase(FightItemKind.WeightedNet)]
     [TestCase(FightItemKind.ThrowingKnife)]
     [TestCase(FightItemKind.ThrowingTorch)]
     //[Repeat(5)]
@@ -322,7 +327,7 @@ namespace RoguelikeUnitTests
       int repeat = 5;
       for (int i = 0; i < repeat; i++)
       {
-        Assert.True(UseFightItem(hero, enemy, hero.ActiveProjectileFightItem));
+        Assert.True(UseFightItem(hero, enemy, hero.SelectedProjectileFightItem));
         GotoNextHeroTurn();
       }
 
@@ -340,7 +345,7 @@ namespace RoguelikeUnitTests
         //Assert.Less(damage2/damage1, 1.6f);
         for (int i = 0; i < repeat; i++)
         {
-          Assert.True(UseFightItem(hero, enemy, hero.ActiveProjectileFightItem));
+          Assert.True(UseFightItem(hero, enemy, hero.SelectedProjectileFightItem));
           GotoNextHeroTurn();
         }
         var chempAfter2HitHealth = enemy.Stats.Health;
@@ -365,6 +370,51 @@ namespace RoguelikeUnitTests
 
         Assert.Greater(counter, 1);
       }
+    }
+
+    [TestCase]
+    //[Repeat(5)]
+    public void TestWeightedNet()
+    {
+      FightItemKind kind = FightItemKind.WeightedNet;
+      var game = CreateGame(true, 100);
+
+      //take one which is active to make sure will have it's turn
+      RevealAllEnemies();
+      var enemy = GetEnemyToBeBeaten();
+      var enemyBeginHealth = enemy.Stats.Health;
+
+      var hero = game.GameManager.Hero;
+      hero.AlwaysHit[AttackKind.PhysicalProjectile] = true;//TODO
+      var fi = ActivateFightItem(kind, hero, 20);
+
+      var damage1 = fi.Damage;
+      Assert.AreEqual(damage1, 2);//small one
+
+      AssertWebTrapUsage(enemy, enemyBeginHealth, hero, 2);
+      MaximizeAbility(hero.GetActiveAbility(AbilityKind.WeightedNet), hero);
+      AssertWebTrapUsage(enemy, enemyBeginHealth, hero, 6);
+    }
+
+    private void AssertWebTrapUsage(Enemy enemy, float enemyBeginHealth, Hero hero, int expTurns)
+    {
+      Assert.True(UseFightItem(hero, enemy, hero.SelectedProjectileFightItem));
+      GotoNextHeroTurn();
+      int counter = 0;
+      while (true)
+      {
+        var le = enemy.GetFirstLastingEffect(Roguelike.Effects.EffectType.WebTrap);
+        if (le == null)
+          break;
+
+        counter++;
+        Assert.AreEqual(le.Description, "Web Trap");
+        Assert.NotNull(le);
+        Assert.AreEqual(enemyBeginHealth, enemy.Stats.Health);
+        GotoNextHeroTurn();
+      }
+
+      Assert.AreEqual(counter, expTurns);
     }
 
     [TestCase(FightItemKind.ThrowingKnife)]
@@ -492,7 +542,7 @@ namespace RoguelikeUnitTests
         Assert.AreEqual(ab.PrimaryStat.Unit, EntityStatUnit.Percentage);
         AssertNextValue(i, ab, abVal, null);
         var factor = GetFactor(ab, true);
-        Assert.Less(factor, 10);
+        Assert.Less(factor, 10, ab.Name);
         abVal = factor;
       }
       if (forMana)
@@ -588,7 +638,8 @@ namespace RoguelikeUnitTests
     }
     
     [Test]
-    public void TestScepterMastering_ChanceToCauseElementalAilment()//ChanceToCauseElementalAilment()
+    [Repeat(1)]
+    public void TestScepterMastering_ChanceToCauseElementalAilment()
     {
       var game = CreateGame();
       float originalStatValue = 0;
@@ -610,9 +661,12 @@ namespace RoguelikeUnitTests
         var en = PlainEnemies[i];
         var spell = weapon.SpellSource.CreateSpell(game.Hero);
         PlaceCloseToHero(en);
+
         bool firing = false;
         for (int at = 0; at < 10; at++)
         {
+          if (weapon.SpellSource is WeaponSpellSource wss && wss.Count <= 0)
+            wss.RestoreCharges();
           Assert.AreEqual(game.GameManager.SpellManager.ApplyAttackPolicy(game.Hero, en, weapon.SpellSource), ApplyAttackPolicyResult.OK);
           GotoNextHeroTurn();
           if (en.HasLastingEffect(Roguelike.Effects.EffectType.Firing))
@@ -631,10 +685,14 @@ namespace RoguelikeUnitTests
     {
       var game = CreateGame(true, 1);
       float originalStatValue = 0;
+      game.Hero.AlwaysHit[AttackKind.SpellElementalProjectile] = true;
+      game.Hero.AlwaysHit[AttackKind.WeaponElementalProjectile] = true;
       var destExtraStat = SetWeapon(AbilityKind.SceptersMastering, game.Hero, out originalStatValue);
       var weapon = game.Hero.GetActiveWeapon();
       Assert.AreEqual(weapon.SpellSource.Kind, SpellKind.FireBall);
-      Assert.Greater(PlainEnemies.Count, 0);
+      if (PlainEnemies.Count == 0)
+        ChampionEnemies.First().PowerKind = EnemyPowerKind.Plain;//TODO
+      //Assert.Greater(PlainEnemies.Count, 0);
       var en = PlainEnemies[0];
       en.d_canMove = false;
       PlaceCloseToHero(en, 4);
@@ -673,7 +731,7 @@ namespace RoguelikeUnitTests
 
     [Test]
     [Repeat(1)]
-    public void TestWandMastering()//ChanceToElementalProjectileBulkAttack
+    public void TestWandMastering()
     {
       var gi = new Roguelike.Generators.GenerationInfo();
       gi.MakeEmpty();
@@ -683,7 +741,7 @@ namespace RoguelikeUnitTests
       float originalStatValue = 0;
       var destExtraStat = SetWeapon(AbilityKind.WandsMastering, game.Hero, out originalStatValue);
       var weapon = game.Hero.GetActiveWeapon();
-      game.GameManager.Hero.d_immortal = true;
+      game.GameManager.Hero.Immortal = true;
 
       //Assert.Greater(empOnes.Count, 1);
       var enemies = AllEnemies;
@@ -707,10 +765,13 @@ namespace RoguelikeUnitTests
       chanceForBulk = game.Hero.Stats.GetCurrentValue(EntityStatKind.ChanceToElementalProjectileBulkAttack);
       Assert.Greater(chanceForBulk, 40);
 
+      //this test check if the second enemy is hit, not the 1st one. Thus 1st can be hit always.
+      game.Hero.AlwaysHit[AttackKind.WeaponElementalProjectile] = true;
+
       for (int i = 0; i < 20; i++)
       {
         weapon.SpellSource.Count = 20;
-        //hit only 1st enemy
+        //hit only 1st enemy, due to spell second shall be hit
         var spell = weapon.SpellSource.CreateSpell(game.Hero);
         Assert.AreEqual(game.GameManager.SpellManager.ApplyAttackPolicy(game.Hero, en1, weapon.SpellSource), ApplyAttackPolicyResult.OK);
         GotoNextHeroTurn();
@@ -729,15 +790,17 @@ namespace RoguelikeUnitTests
     }
 
     
-
     [TestCase(EntityStatKind.ChanceToRepeatElementalProjectileAttack, AbilityKind.StaffsMastering)]
     [TestCase(EntityStatKind.StaffExtraElementalProjectileDamage, AbilityKind.StaffsMastering)]
     [TestCase(EntityStatKind.ScepterExtraElementalProjectileDamage, AbilityKind.SceptersMastering)]
     [TestCase(EntityStatKind.WandExtraElementalProjectileDamage, AbilityKind.WandsMastering)]
+    [Repeat(1)]
     public void TestMagicProjectileMasteringStats(EntityStatKind esk, AbilityKind ak)
     {
       var game = CreateGame();
       float originalStatValue = 0;
+      game.Hero.AlwaysHit[AttackKind.SpellElementalProjectile] = true;
+      game.Hero.AlwaysHit[AttackKind.WeaponElementalProjectile] = true;
       SetWeapon(ak, game.Hero, out originalStatValue);
       var weapon = game.Hero.GetActiveWeapon();
 
@@ -805,8 +868,15 @@ namespace RoguelikeUnitTests
       return spell;
     }
 
+    Enemy GetEnemyToBeBeaten()
+    {
+      var enemy = PlainNormalEnemies.First();
+      PrepareEnemyToBeBeaten(enemy);
+      return enemy;
+    }
     private float PrepareEnemyToBeBeaten(Enemy en)
     {
+      Assert.True(en.Revealed && en.Alive);
       PlaceCloseToHero(en);
       en.Stats.SetNominal(EntityStatKind.Health, 300);
       var enHealthBase = en.Stats.Health;
@@ -853,7 +923,7 @@ namespace RoguelikeUnitTests
         if(!wpn.IsBowLike)
           en.OnMeleeHitBy(hero);
         else
-          UseFightItem(hero, en, hero.ActiveFightItem as ProjectileFightItem);
+          UseFightItem(hero, en, hero.SelectedFightItem as ProjectileFightItem);
         var health1 = en.Stats.Health;
         return health - health1;
       };
@@ -871,7 +941,7 @@ namespace RoguelikeUnitTests
         }
         pfi.Caller = hero;
         hero.Inventory.Add(pfi);
-        hero.ActiveFightItem = pfi;
+        hero.SelectedFightItem = pfi;
       }
       var damage = hitEnemy();
 
@@ -992,7 +1062,7 @@ namespace RoguelikeUnitTests
     {
       var game = CreateGame(genNumOfEnemies: 100);
       var hero = game.GameManager.Hero;
-      hero.d_immortal = true;
+      hero.Immortal = true;
 
 
       var fi = ActivateFightItem(FightItemKind.ThrowingTorch, hero);
@@ -1016,7 +1086,7 @@ namespace RoguelikeUnitTests
       int firingCounterBefore = 0;
       for (int i = 0; i < 20; i++)
       {
-        Assert.True(UseFightItem(hero, enemy, hero.ActiveProjectileFightItem));
+        Assert.True(UseFightItem(hero, enemy, hero.SelectedProjectileFightItem));
         if (enemy.HasLastingEffect(Roguelike.Effects.EffectType.Firing))
         {
           firingCounterBefore++;

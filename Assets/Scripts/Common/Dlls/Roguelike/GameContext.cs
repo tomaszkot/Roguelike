@@ -22,7 +22,7 @@ using System.Linq;
 namespace Roguelike
 {
   public enum GameContextSwitchKind { DungeonSwitched, NewGame, GameLoaded, Teleported }
-  public enum TurnOwner { Unset, Hero, Allies, Enemies, Animals}
+  public enum TurnOwner { Unset, Hero, Allies, Enemies, Animals, Npcs}
 
   public class HeroPlacementResult
   {
@@ -79,6 +79,7 @@ namespace Roguelike
       turnCounts[TurnOwner.Allies] = 0;
       turnCounts[TurnOwner.Enemies] = 0;
       turnCounts[TurnOwner.Animals] = 0;
+      turnCounts[TurnOwner.Npcs] = 0;
     }
         
     public bool CanUseScroll(LivingEntity caster, SpellSource spellSource, ISpell spell, ref string preventReason)
@@ -104,7 +105,7 @@ namespace Roguelike
       return true;
     }
 
-    bool UseAsyncContextSwitching = true;
+    public bool UseAsyncContextSwitching = true;
     ////////////////////////////////////////////////////////////////////////////////////////////////
     public virtual bool SwitchTo
     (
@@ -145,7 +146,7 @@ namespace Roguelike
         //swap active node
         CurrentNode = node;
 
-        CurrentNode.OnHeroPlaced(Hero);
+        CurrentNode.OnHeroPlaced(Hero, context);
         
         EmitContextSwitched(context);
         Logger.LogInfo("--SwitchTo ends: " + node + " " + tr.TotalSeconds);
@@ -312,10 +313,11 @@ namespace Roguelike
     {
       if (turnOwner != caller)
       {
-        if (!ShalLReportTurnOwner(policy))
-          return;//TODO
+        //TODO
+        //if (!ShalLReportTurnOwner(policy))
+        //  return;//TODO
         
-        Logger.LogError("TurnOwner mismatch! ", true);
+        //Logger.LogError("TurnOwner mismatch! ", true);
         return;
       }
       
@@ -349,23 +351,25 @@ namespace Roguelike
         turnCounts[TurnOwner.Allies]++;
         TurnOwner = TurnOwner.Enemies;
       }
+      
       else if (turnOwner == TurnOwner.Enemies)
       {
         TurnActionsCount[TurnOwner.Enemies] = 0;
         turnCounts[TurnOwner.Enemies]++;
         TurnOwner = TurnOwner.Animals;
       }
-      //else if (turnOwner == TurnOwner.Animals)
-      //{
-      //  TurnActionsCount[TurnOwner.Enemies] = 0;
-      //  turnCounts[TurnOwner.Enemies]++;
-      //  TurnOwner = TurnOwner.Animals;
-      //}
-      else
+      else if (turnOwner == TurnOwner.Animals)
       {
-        DebugHelper.Assert(turnOwner == TurnOwner.Animals);
+       
         TurnActionsCount[TurnOwner.Animals] = 0;
         turnCounts[TurnOwner.Animals]++;
+        TurnOwner = TurnOwner.Npcs;
+      }
+      else
+      {
+        DebugHelper.Assert(turnOwner == TurnOwner.Npcs);
+        TurnActionsCount[TurnOwner.Npcs] = 0;
+        turnCounts[TurnOwner.Npcs]++;
         TurnOwner = TurnOwner.Hero;
       }
 
@@ -408,6 +412,7 @@ namespace Roguelike
             Hero.ApplyLastingEffects();
             Hero.ReduceHealthDueToSurface(CurrentNode);
 
+            EventsManager.GotoNextTurnHint();
           }
           if (!Hero.Alive)
           {
@@ -419,6 +424,10 @@ namespace Roguelike
         //logger.LogInfo("TurnOwner to =>" + turnOwner);
       }
     }
+
+    /// <summary>
+    /// if true mean game has changed the turn owner and waits for it to make a turn
+    /// </summary>
     public bool PendingTurnOwnerApply { get => pendingTurnOwnerApply; set => pendingTurnOwnerApply = value; }
     public bool AutoTurnManagement { get => autoTurnManagement; set => autoTurnManagement = value; }
     public Dictionary<TurnOwner, int> TurnActionsCount { get => turnActionsCount; set => turnActionsCount = value; }

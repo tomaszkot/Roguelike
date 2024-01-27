@@ -122,8 +122,9 @@ namespace Roguelike.Spells
     public Ally Ally { get => enemy; set => enemy = value; }
     public Ally AllyNextLevel { get => enemyNextLevel; set => enemyNextLevel = value; }
 
-    public const int SkeletonSpellStrengthIncrease = 2;
-    public const int SkeletonSpellDefenseIncrease = 4;
+    public const int SkeletonSpellStrengthIncrease = 4;
+    public const int SkeletonSpellDefenseIncrease = 6;
+    public const int SkeletonSpellHealthIncrease = 4;
 
     public SkeletonSpell() : this(new LivingEntity(), Difficulty.Normal)
     {

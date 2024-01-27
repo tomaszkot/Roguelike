@@ -215,5 +215,12 @@ namespace Roguelike.Tiles.Looting
     {
       return base.GetId() + "_" + Kind + "_" + Roasted;
     }
+
+    public override bool IsMatchingRecipe(RecipeKind kind)
+    {
+      if (kind == RecipeKind.NiesiolowskiSoup && this.Kind == FoodKind.Plum)
+        return true;
+      return false;
+    }
   }
 }

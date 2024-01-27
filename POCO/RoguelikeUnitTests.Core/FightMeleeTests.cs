@@ -13,6 +13,8 @@ using System.Collections.Generic;
 using System.Linq;
 using Roguelike.Tiles.Abstract;
 using Roguelike.Calculated;
+using Dungeons.Core;
+using System.Diagnostics;
 
 namespace RoguelikeUnitTests
 {
@@ -41,7 +43,7 @@ namespace RoguelikeUnitTests
 
         var closeToHero = game.Level.GetClosestEmpty(hero, incDiagonals: false);
         game.Level.SetTile(enemy, closeToHero.point);
-        enemy.ActiveManaPoweredSpellSource = null;//this causes attack
+        enemy.SelectedManaPoweredSpellSource = null;//this causes attack
 
         //hit enemy to force him to use effect
         enemy.OnMeleeHitBy(hero);
@@ -87,28 +89,63 @@ namespace RoguelikeUnitTests
     {
       var game = CreateGame();// genNumOfEnemies:1);
       var hero = game.Hero;
-      hero.d_immortal = true;
+      hero.Immortal = true;
       hero.Stats.SetNominal(EntityStatKind.ChanceToMeleeHit, 100);
       var wpn = GenerateEquipment<Weapon>("hammer");
-      wpn.MakeMagic(EntityStatKind.ChanceToCauseStunning, 100);
-      wpn.Identify();
+      //wpn.MakeMagic(EntityStatKind.ChanceToCauseStunning, 10);
+      //wpn.Identify();
       SetHeroEquipment(wpn);
+      //hero.Stats.GetStat(EntityStatKind.ChanceToCauseStunning).Value.Nominal = 40;
       var ccs = hero.GetCurrentValue(EntityStatKind.ChanceToCauseStunning);
-      Assert.AreEqual(ccs, 100);
+      Assert.AreEqual(ccs, 10);
+      //Assert.AreEqual(AllEnemies.Count, 1);
+      int effCounter = 0;
+      Enemy enemy = ActivePlainEnemies.Where(i => !i.IsImmuned(EffectType.Stunned)).First();//AllEnemies.First();//;
+      enemy.Immortal = true;
+      PrepareToBeBeaten(enemy);
 
-      var enemy = ActivePlainEnemies.First();
-      PlaceCloseToHero(enemy);
-      enemy.OnMeleeHitBy(hero);
-      Assert.True(enemy.LastingEffects.Any());
-      Assert.AreEqual(enemy.LastingEffects[0].Type, EffectType.Stunned);
-      Assert.AreEqual(enemy.LastingEffects[0].Description, "Stunned");
-      Assert.Less(enemy.LastingEffects[0].PendingTurns, 5);
-      for (int i = 0; i < 5; i++)
+      for (int ei = 0; ei < 50; ei++)
       {
-        GotoNextHeroTurn();
+        PlaceCloseToHero(enemy);
+        enemy.OnMeleeHitBy(hero);
+
+        if (enemy.HasLastingEffect(EffectType.Stunned))
+        {
+          effCounter++;
+          var le = enemy.LastingEffectsSet.GetByType(EffectType.Stunned);
+          Assert.AreEqual(le.Description, "Stunned (Pending Turns: 3)");
+          Assert.Less(le.PendingTurns, 5);
+          Debug.WriteLine("bl "+ enemy+" has le stune: "+le);
+
+          for (int i = 0; i < 5; i++)
+          {
+            var pt = le.PendingTurns;
+            GotoNextHeroTurn();
+            if (le.PendingTurns == pt && pt != 0)
+            {
+              int k = 0;
+              k++;
+            }
+            Assert.Less(le.PendingTurns, pt);
+            Debug.WriteLine("  il " + enemy + " has le stune: " + le);
+            if (!enemy.HasLastingEffect(EffectType.Stunned))
+              break;
+          }
+          Debug.WriteLine("al " + enemy + " has le stune: " + le);
+        }
+        //GotoNextHeroTurn();
+        if (enemy.HasLastingEffect(EffectType.Stunned))
+        {
+          //enemy.ApplyLastingEffects();
+          int k = 0;
+          k++;
+        }
+        
+        Assert.False(enemy.HasLastingEffect(EffectType.Stunned));
+        //game.Level.SetEmptyTile(enemy.point);//make room for next one
       }
-      GotoNextHeroTurn();
-      Assert.False(enemy.LastingEffects.Any());
+      Assert.Greater(effCounter, 0);
+      Assert.Less(effCounter, 10);
     }
 
     [Test]
@@ -152,7 +189,7 @@ namespace RoguelikeUnitTests
         var en = enemy as Enemy;
         var fi = en.AddFightItem(FightItemKind.ThrowingKnife);
         fi.Count = 15;
-        en.ActiveFightItem = fi as ProjectileFightItem;
+        en.SelectedFightItem = fi as ProjectileFightItem;
         DoDamage(enemy, game.Hero, (LivingEntity attacker, LivingEntity victim) => CallDoDamagePhysicalProjectile(attacker, victim));
       }
       //else if (attackKind == AttackKind.WeaponElementalProjectile)
@@ -161,7 +198,7 @@ namespace RoguelikeUnitTests
       //}
       else if (attackKind == AttackKind.SpellElementalProjectile)
       {
-        enemy.ActiveManaPoweredSpellSource = new Scroll(SpellKind.FireBall);
+        enemy.SelectedManaPoweredSpellSource = new Scroll(SpellKind.FireBall);
         enemy.Stats.SetNominal(EntityStatKind.Mana, 1000);
         DoDamage(enemy, game.Hero, (LivingEntity attacker, LivingEntity victim) => CallDoDamageSpellElementalProjectile(attacker, victim));
       }
@@ -214,7 +251,7 @@ namespace RoguelikeUnitTests
       }
       else 
       {
-        game.GameManager.SpellManager.ApplyAttackPolicy(attacker, victim, attacker.ActiveManaPoweredSpellSource, null, (p) => {});
+        game.GameManager.SpellManager.ApplyAttackPolicy(attacker, victim, attacker.SelectedManaPoweredSpellSource, null, (p) => {});
       }
     }
        
@@ -269,7 +306,7 @@ namespace RoguelikeUnitTests
       else 
       {
         var en = attacker as Enemy;
-        var pfi = en.ActiveFightItem as ProjectileFightItem;
+        var pfi = en.SelectedFightItem as ProjectileFightItem;
 
         if (attacker.DistanceFrom(victim) <= 1)
           return;

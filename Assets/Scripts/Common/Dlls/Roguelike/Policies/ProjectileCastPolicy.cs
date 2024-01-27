@@ -202,10 +202,12 @@ namespace Roguelike.Policies
     }
 
     SpellSource spellSource;
-    public override void CreateSpell(LivingEntity caster, SpellSource spellSource)
+    public override Dungeons.Tiles.Abstract.ISpell CreateSpell(LivingEntity caster, SpellSource spellSource)
     {
       this.spellSource = spellSource;
-      Projectile = spellSource.CreateSpell(caster) as IProjectileSpell;
+      var spell = spellSource.CreateSpell(caster) as IProjectileSpell;
+      Projectile = spell;
+      return spell;
     }
 
   }

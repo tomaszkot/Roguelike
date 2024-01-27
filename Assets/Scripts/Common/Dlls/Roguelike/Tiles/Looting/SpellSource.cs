@@ -71,7 +71,7 @@ namespace Roguelike.Tiles.Looting
       switch (kind)
       {
         case SpellKind.FireBall:
-          desc = "Inflicts fire damage, can be decreased by a related resist";
+          desc = "Inflicts fire damage";//, can be decreased by a related resist
           TargetRequired = true;
           break;
         case SpellKind.CrackedStone:
@@ -81,16 +81,16 @@ namespace Roguelike.Tiles.Looting
         case SpellKind.Skeleton:
           desc = "Creates a skeleton which fights as hero ally";
           break;
-        case SpellKind.Trap:
-          desc = "Inflicts physical damage blocks victim for a few turns";
-          TargetRequired = true;
-          break;
+        //case SpellKind.Trap:
+        //  desc = "Inflicts physical damage blocks victim for a few turns";
+        //  TargetRequired = true;
+        //  break;
         case SpellKind.IceBall:
-          desc = "Inflicts cold damage, can be decreased by a related resist";
+          desc = "Inflicts cold damage";
           TargetRequired = true;
           break;
         case SpellKind.PoisonBall:
-          desc = "Inflicts poison damage, can be decreased by a related resist";
+          desc = "Inflicts poison damage";
           TargetRequired = true;
           break;
         case SpellKind.Transform:
@@ -117,11 +117,11 @@ namespace Roguelike.Tiles.Looting
           TargetRequired = true;
           break;
         case SpellKind.LightingBall:
-          desc = "Inflicts lighting damage, can be decreased by a related resist";
+          desc = "Inflicts lighting damage";
           TargetRequired = true;
           break;
         case SpellKind.Mana:
-          desc = "Restores some mana by sacrificing some health";
+          desc = "Restores some mana by sacrificing some Health";
           break;
         case SpellKind.BushTrap:
           desc = "";
@@ -150,18 +150,26 @@ namespace Roguelike.Tiles.Looting
         case SpellKind.Dziewanna:
           desc = "Creates a poisonous apple(s), irresisteble for many entities";
           break;
+        case SpellKind.Jarowit:
+          desc = "Decreases enemies Defense statistics, increases the caster and allies Defense statistics";
+          break;
         case SpellKind.Swarog:
-          desc = "Turns off light for enemies turn making enemies confused and hitting random targets";
+          desc = "Turns off light for enemies turn making them confused and hitting random targets. (For best results use in crowded places)";
           break;
         case SpellKind.Inaccuracy:
-          desc = "Reduces the Chance to Hit statistic of the victim";
+          desc = "Reduces the 'Chance to Hit' statistic of the victim";
           TargetRequired = true;
           break;
         case SpellKind.Swiatowit:
-          desc = "Hit nearby enemies with a random magic spell";
+          desc = "Hits nearby enemies with a random magic spell";
           break;
         case SpellKind.Perun:
-          desc = "Hit pointed enemy with a devastating Axe of Perun";
+          desc = "Hits pointed enemy with a devastating Axe of Perun";
+          TargetRequired = true;
+          break;
+
+        case SpellKind.Wales:
+          desc = "Blesses the caster and allies increasing their Health and Mana";
           break;
         //case SpellKind.CallMerchant:
         //  desc = "Teleports a merchant near to the hero";
@@ -269,6 +277,12 @@ namespace Roguelike.Tiles.Looting
         case SpellKind.Dziewanna:
           spell = new DziewannaSpell(caller);
           break;
+        case SpellKind.Jarowit:
+          spell = new JarowitSpell(caller);
+          break;
+        case SpellKind.Wales:
+          spell = new WalesSpell(caller);
+          break;
         case SpellKind.Perun:
           spell = new PerunSpell(caller);
           break;
@@ -292,6 +306,8 @@ namespace Roguelike.Tiles.Looting
           break;
           
       }
+      if (GodKind)
+        spell.SendByGod = true;
       //if (spell is IProjectileSpell proj)
       //  proj.Range += spell.CurrentLevel - 1;
       return spell;
@@ -312,6 +328,21 @@ namespace Roguelike.Tiles.Looting
         return dummyForIsOffensive is OffensiveSpell;
       }
     }
+
+    ISpell dummyForIsProjectile;
+    [JsonIgnore]
+    public bool IsProjectile
+    {
+      get
+      {
+    
+        if (dummyForIsProjectile == null)
+          dummyForIsProjectile = CreateSpell(new LivingEntity());
+
+        return dummyForIsProjectile is IProjectileSpell;
+      }
+    }
+
     public override string[] GetExtraStatDescription()
     {
       Dungeons.DebugHelper.Assert(false, "call the one with (LivingEntity caller)");
@@ -354,5 +385,16 @@ namespace Roguelike.Tiles.Looting
 
         
    public bool IsManaPowered  { get { return this is Book || this is Scroll; } }
- }
+
+    public bool RequiresEmptyCellOnCast
+    {
+      get {
+        return Kind == SpellKind.Teleport || Kind == SpellKind.BushTrap
+          || Kind == SpellKind.CrackedStone || Kind == SpellKind.Portal
+          
+          ; 
+         
+      } 
+    }
+  }
 }

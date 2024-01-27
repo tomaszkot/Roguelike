@@ -1,4 +1,5 @@
-﻿using Dungeons.Core.Policy;
+﻿using Dungeons.Core;
+using Dungeons.Core.Policy;
 using Dungeons.Fight;
 using Dungeons.Tiles;
 using Dungeons.Tiles.Abstract;
@@ -27,7 +28,7 @@ namespace Roguelike.Policies
       Targets.Add(obstacle);
     }
 
-    public abstract void CreateSpell(LivingEntity caster, SpellSource spellSource);
+    public abstract ISpell CreateSpell(LivingEntity caster, SpellSource spellSource);
 
     public virtual void TryAttack(IPolicy policy, LivingEntity attacker, IHitable le)
     {
@@ -57,10 +58,10 @@ namespace Roguelike.Policies
       attacker.EventsManager.AppendAction(new LivingEntityAction(LivingEntityActionKind.Missed)
       {
         InvolvedEntity = attacker,
-        targetEntityPosition = target.Position,
         Info = attacker.Name + " missed " + target.Name,
         AttackKind = ak
       });
+      attacker.Container.GetInstance<ILogger>().LogInfo(attacker + " missed " + target + " using "+ proj);
       return HitResult.Evaded;
       
     }

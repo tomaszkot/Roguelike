@@ -21,7 +21,12 @@ namespace Roguelike.Quests
       
     }
 
-    public QuestStatus Status { get; set; }
+    public bool AllowChooseReward { get; set; }
+    public QuestStatus Status
+    { 
+      get;
+      set; 
+    }
     public string Tag { get; set; }
     public string Name { get; set; }
     public string QuestPrincipalName { get; set; }//typically merchant's name

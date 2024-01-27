@@ -3,17 +3,13 @@ using Dungeons.Core;
 using Dungeons.Fight;
 using Dungeons.Tiles;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Schema;
 using Roguelike.Abilities;
 using Roguelike.Abstract.Inventory;
-using Roguelike.Abstract.Projectiles;
-using Roguelike.Abstract.Spells;
 using Roguelike.Abstract.Tiles;
 using Roguelike.Attributes;
 using Roguelike.Calculated;
 using Roguelike.Core.Managers;
 using Roguelike.Managers.Policies;
-using Roguelike.Effects;
 using Roguelike.Events;
 using Roguelike.Extensions;
 using Roguelike.Generators;
@@ -32,17 +28,16 @@ using Roguelike.Tiles.Looting;
 using SimpleInjector;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
-using System.Security.Cryptography;
 using Roguelike.Spells;
 using Dungeons.Core.Policy;
 using Dungeons.Tiles.Abstract;
+using InteractiveTile = Roguelike.Tiles.Interactive.InteractiveTile;
 
 namespace Roguelike.Managers
 {
-    public enum InteractionResult { None, Handled, ContextSwitched, Attacked, Blocked };
+  public enum InteractionResult { None, Handled, ContextSwitched, Attacked, Blocked };
   public struct MoveResult
   {
     public bool Possible { get; set; }
@@ -94,7 +89,7 @@ namespace Roguelike.Managers
   {
 
     protected GameContext context;
-    LootGenerator lootGenerator;
+    protected LootGenerator lootGenerator;
     EventsManager eventsManager;
     EnemiesManager enemiesManager;
     AlliesManager alliesManager;
@@ -123,11 +118,15 @@ namespace Roguelike.Managers
     internal ProjectileFightItemPolicyManager ProjectileFightItemPolicyManager { get; set; }
 
     public EnemiesManager EnemiesManager { get => enemiesManager; set => enemiesManager = value; }
+
+    public NpcManager NpcManager { get; set; }
     public EventsManager EventsManager { get => eventsManager; set => eventsManager = value; }
     public GameContext Context { get => context; set => context = value; }
     public AbstractGameLevel CurrentNode { get => context.CurrentNode; }
     public AlliesManager AlliesManager { get => alliesManager; set => alliesManager = value; }
     public LootGenerator LootGenerator { get => lootGenerator; set => lootGenerator = value; }
+
+    public List<InteractiveTile> PossibleNpcDestMoveTargets = new List<InteractiveTile>();
 
     public IPersister Persister
     {
@@ -169,6 +168,8 @@ namespace Roguelike.Managers
       EventsManager.GameManager = this;
       lastInst = EventsManager;
 
+      AbilityManager = new AbilityManager(this);
+
       lootManager = container.GetInstance<LootManager>();
       lootManager.GameManager = this;
 
@@ -185,11 +186,20 @@ namespace Roguelike.Managers
       };
 
       Context.TurnOwnerChanged += Context_TurnOwnerChanged;
-
+      Enemy.LevelStatIncreaseCalculated = (float inc) =>
+      {
+        if (GameState.CoreInfo.Demo)//demo has less emeies/worse balance
+        {
+          inc -= inc * 15f / 100f;
+        }
+        return inc;
+      };
 
       enemiesManager = new EnemiesManager(Context, EventsManager, Container, null, this);
       AlliesManager = new AlliesManager(Context, EventsManager, Container, enemiesManager, this);
       enemiesManager.AlliesManager = AlliesManager;
+
+      NpcManager = new NpcManager(Context, EventsManager, Container, this);
 
       animalsManager = new AnimalsManager(Context, EventsManager, Container, this);
 
@@ -217,7 +227,23 @@ namespace Roguelike.Managers
           }
         }
 
-        UseActiveAbilities(Hero, null, true);
+        var ab = Hero.SelectedActiveAbility as ActiveAbility;
+        if (ab != null)
+        {
+          if (ab.RunAtTurnStart)
+            AbilityManager.UseActiveAbility(Hero, true);
+          else
+          {
+            AbilityManager.ActivateAbility(Hero, ab.Kind, null);
+          }
+        }
+
+        if (Hero.DestPointDesc.State == DestPointState.StayingAtTarget)
+        {
+          var increasedStateCounter = Hero.DestPointDesc.IncreaseStateCounter();
+          if (!increasedStateCounter)
+            inputManager.HidingHeroInteractionOff(CurrentNode);
+        }
       }
     }
 
@@ -305,6 +331,10 @@ namespace Roguelike.Managers
       if (!node.Inited)
         InitNode(node, gameState, kind);
 
+      if (kind == GameContextSwitchKind.NewGame || kind == GameContextSwitchKind.GameLoaded)
+      {
+        PossibleNpcDestMoveTargets = node.GetTiles<Tiles.Interactive.InteractiveTile>().Where(i => i.IsNpcDestMoveTarget).ToList();
+      }
       Context.SwitchTo(node, hero, gameState, kind, AlliesManager, after, stairsUsedByHero, portal);
 
       if (kind == GameContextSwitchKind.NewGame)
@@ -406,38 +436,8 @@ namespace Roguelike.Managers
       {
         if (lea.Kind == LivingEntityActionKind.Died)
         {
-          if (context.CurrentNode.HasTile(lea.InvolvedEntity))
-          {
-            var set = context.CurrentNode.SetTile(context.CurrentNode.GenerateEmptyTile(), lea.InvolvedEntity.point);
-            if (!set)
-              Logger.LogError("SetTile empty failed for " + lea.InvolvedEntity);
-          }
-          else
-          {
-            Logger.LogError("context.CurrentNode HasTile failed for " + lea.InvolvedEntity);
-          }
-          if (lea.InvolvedEntity is Enemy || lea.InvolvedEntity is Animal)
-          {
-            ILootSource ls = lea.InvolvedEntity;
-            if (lea.InvolvedEntity is Enemy enemy)
-            {
-              var exp = AdvancedLivingEntity.EnemyDamagingTotalExpAward[enemy.PowerKind] * enemy.Level / 10;
-              Hero.IncreaseExp(exp);
-              var allies = context.CurrentNode.GetActiveAllies();
-              foreach (var al in allies)
-                al.IncreaseExp(exp);
-            }
-            context.CurrentNode.SetTile(new Tile(), lea.InvolvedEntity.point);
-            if (lea.InvolvedEntity.tag1 == "boar_butcher")
-            {
-              //GameState.History.LivingEntity.CountByTag1()
-            }
-            else
-              lootManager.TryAddForLootSource(ls);
-          }
+          HandleLeDeath(lea);
         }
-
-
       }
       else if (ev is GameStateAction gsa)
       {
@@ -450,6 +450,40 @@ namespace Roguelike.Managers
         k++;
       }
     }
+
+    private void HandleLeDeath(LivingEntityAction lea)
+    {
+      if (context.CurrentNode.HasTile(lea.InvolvedEntity))
+      {
+        var set = context.CurrentNode.SetTile(context.CurrentNode.GenerateEmptyTile(), lea.InvolvedEntity.point);
+        if (!set)
+          Logger.LogError("SetTile empty failed for " + lea.InvolvedEntity);
+      }
+      else
+      {
+        Logger.LogError("context.CurrentNode HasTile failed for " + lea.InvolvedEntity);
+      }
+      if (lea.InvolvedEntity is Enemy || lea.InvolvedEntity is Animal)
+      {
+        ILootSource ls = lea.InvolvedEntity;
+        if (lea.InvolvedEntity is Enemy enemy)
+        {
+          var exp = AdvancedLivingEntity.EnemyDamagingTotalExpAward[enemy.PowerKind] * enemy.Level;//* 2 with that level would big 1 higher
+          Hero.IncreaseExp(exp);
+          var allies = context.CurrentNode.GetActiveAllies();
+          foreach (var al in allies)
+            al.IncreaseExp(exp*.99f);
+        }
+        context.CurrentNode.SetTile(new Tile(), lea.InvolvedEntity.point);
+        if (lea.InvolvedEntity.tag1 == "boar_butcher")
+        {
+          //GameState.History.LivingEntity.CountByTag1()
+        }
+        else
+          lootManager.TryAddForLootSource(ls);
+      }
+    }
+
     public bool AddLootReward(Loot item, Animal lootSource, bool animated)
     {
       if (CurrentNode.GetTile(lootSource.GetPoint()).IsEmpty)
@@ -520,10 +554,11 @@ namespace Roguelike.Managers
         Context.MoveToNextTurnOwner();
     }
 
-    public void RemoveDead()
+    public virtual void RemoveDead()
     {
       EnemiesManager.RemoveDead();
       ReportHeroDeathIfNeeded();
+      
     }
 
     private void ReportHeroDeathIfNeeded()
@@ -567,8 +602,6 @@ namespace Roguelike.Managers
 
     public virtual void OnHeroPolicyApplied(Policy policy)
     {
-      //SpellManager.OnHeroPolicyApplied(policy);
-      //MeleePolicyManager.OnHeroPolicyApplied(policy);
       if (policy.Kind == PolicyKind.Move || policy.Kind == PolicyKind.ProjectileCast ||
           policy.Kind == PolicyKind.SpellCast)
         FinishHeroTurn(policy);
@@ -626,12 +659,13 @@ namespace Roguelike.Managers
 
     protected virtual bool HandlePortalAdded()
     {
-      if (Hero.ActiveSpellSource is Book)
+      if (Hero.SelectedSpellSource is Book)
       {
         return true;
       }
-      var portalScroll = Hero.Inventory.GetItems<Roguelike.Tiles.Looting.Scroll>().Where(i => i.Kind == Spells.SpellKind.Portal).FirstOrDefault();
-      return Hero.Inventory.Remove(portalScroll) != null;
+      //BUG was utylized twice!
+      //var portalScroll = Hero.Inventory.GetItems<Roguelike.Tiles.Looting.Scroll>().Where(i => i.Kind == Spells.SpellKind.Portal).FirstOrDefault();
+      return true;// Hero.Inventory.Remove(portalScroll) != null;
     }
 
     public bool AppendTile(Tile tile, Point point)
@@ -690,12 +724,15 @@ namespace Roguelike.Managers
           {
             var le = replacer as LivingEntity;
             if (le != null)
-              AppendAction<LivingEntityAction>((LivingEntityAction ac) =>
+            {
+              AppendAction((LivingEntityAction ac) =>
               {
-                ac.InvolvedEntity = le; 
+                ac.InvolvedEntity = le;
                 ac.Kind = LivingEntityActionKind.AppendedToLevel;
                 ac.Info = le.Name + " spawned";
+                ac.Silent = le.Herd == "ZyndramSquad";
               });
+            }
           }
         }
         return true;
@@ -753,10 +790,6 @@ namespace Roguelike.Managers
     )
     {
       persistancyWorker.Load(heroName, this, quick, WorldLoader);
-      if (GameSettings.Serialization.RestoreHeroToSafePointAfterLoad)
-      {
-
-      }
       this.Hero.Abilities.EnsureItems();//new game version might added...
       if (GameState.CoreInfo.PermanentDeath)
       {
@@ -818,6 +851,8 @@ namespace Roguelike.Managers
 
       if (lootTile is Recipe)
         inv = Hero.Crafting.Recipes.Inventory;
+      else if(lootTile is MagicDust)
+        inv = Hero.Crafting.InvItems.Inventory;
 
       var collected = false;
       if (gold != null)
@@ -882,33 +917,22 @@ namespace Roguelike.Managers
       //}
     }
 
-    //public void DoAlliesTurn(bool skipHero = false)
-    //{
-    //  this.AlliesManager.MakeEntitiesMove(skipHero ? Hero : null);
-    //  //DoEnemiesTurn();
-    //}
-
     public virtual Equipment GenerateRandomEquipment(EquipmentKind kind)
     {
       return lootGenerator.GetRandomEquipment(kind, Hero.Level, Hero.GetLootAbility());
     }
 
-    LivingEntity activeAbilityVictim;
-    public void MakeGameTick()
+    //Called every frame
+    public virtual void MakeGameTick()
     {
-      if (activeAbilityVictim != null)
-      {
-        if (activeAbilityVictim.Alive && activeAbilityVictim.State != EntityState.Idle)
-          return;
-        activeAbilityVictim.MoveDueToAbilityVictim = false;
-        activeAbilityVictim = null;
-      }
+      AbilityManager.MakeGameTick();
+
       if (context.PendingTurnOwnerApply)
       {
         EntitiesManager mgr = GetCurrentEntitiesManager();
         if (mgr != null)
         {
-          mgr.MakeTurn();
+          mgr.MakeTurn();//make turn and if all done call Context.MoveToNextTurnOwner();
         }
       }
     }
@@ -919,17 +943,18 @@ namespace Roguelike.Managers
       if (context.TurnOwner == TurnOwner.Allies)
       {
         mgr = AlliesManager;
-        //logger.LogInfo("MakeGameTick call to AlliesManager.MoveHeroAllies");
       }
       else if (context.TurnOwner == TurnOwner.Enemies)
       {
         mgr = EnemiesManager;
-        //logger.LogInfo("MakeGameTick call to EnemiesManager.MakeEntitiesMove");
       }
       else if (context.TurnOwner == TurnOwner.Animals)
       {
         mgr = animalsManager;
-        //logger.LogInfo("MakeGameTick call to EnemiesManager.MakeEntitiesMove");
+      }
+      else if (context.TurnOwner == TurnOwner.Npcs)
+      {
+        mgr = NpcManager;
       }
 
       return mgr;
@@ -958,7 +983,10 @@ namespace Roguelike.Managers
       if (!goldInvolved)
         return true;
 
+     
+
       price = src.GetPrice(lootToSell) * count;
+
 
       return dest.Gold >= price;
     }
@@ -1000,6 +1028,9 @@ namespace Roguelike.Managers
         return null;
       }
 
+      if (!loot.IsSellable() && (dest is Merchant))
+        return null;
+
       if (destInv is CurrentEquipment ce &&
          (destInv.Owner == srcInv.Owner || destInv.Owner is Ally)
          && addItemArg is CurrentEquipmentAddItemArg ceAddArgs)
@@ -1020,9 +1051,14 @@ namespace Roguelike.Managers
       {
         logger.LogInfo("dest.Gold < loot.Price");
         SoundManager.PlayBeepSound();
-        AppendAction(new InventoryAction(destInv) { Kind = InventoryActionKind.ItemTooExpensive, Info = "ItemTooExpensive" });
+        AppendAction(new InventoryAction(destInv) { Kind = InventoryActionKind.ItemTooExpensive, Info = "Not enough gold" });
         return null;
       }
+      if (!destInv.CanAddLoot(loot) && destInv.Owner is Merchant merch)
+      {
+        RegenerateMerchantInv(merch, true);
+      }
+
       if (!destInv.CanAddLoot(loot))
       {
         logger.LogInfo("!dest.Inventory.CanAddLoot(loot)");
@@ -1070,25 +1106,32 @@ namespace Roguelike.Managers
       {
         foreach (var lootKind in lootKinds)
         {
-          int levelIndex = Hero.Level;
-          Loot loot = null;
-          loot = lootGenerator.GetRandomLoot(lootKind, levelIndex);
-          if (loot is Equipment)
-            continue;//generated lower
-          if (loot != null && !merch.Inventory.Items.Any(i => i.tag1 == loot.tag1))
+          try
           {
-            loot.Revealed = true;
-            //TODO use Items to avoid sound
-            merch.Inventory.Items.Add(loot);
-            if (loot is FightItem fi)
+            int levelIndex = Hero.Level;
+            Loot loot = null;
+            loot = lootGenerator.GetRandomLoot(lootKind, levelIndex);
+            if (loot is Equipment)
+              continue;//generated lower
+            if (loot != null && !merch.Inventory.Items.Any(i => i.tag1 == loot.tag1))
             {
-              if (fi.FightItemKind.IsBowLikeAmmunition())
+              loot.Revealed = true;
+              //TODO use Items to avoid sound
+              merch.Inventory.Items.Add(loot);
+              if (loot is FightItem fi)
               {
-                fi.Count = RandHelper.GetRandomInt(50) + 25;
+                if (fi.FightItemKind.IsBowLikeAmmunition())
+                {
+                  fi.Count = RandHelper.GetRandomInt(50) + 25;
+                }
+                else
+                  fi.Count = RandHelper.GetRandomInt(5) + 1;
               }
-              else
-                fi.Count = RandHelper.GetRandomInt(3) + 1;
             }
+          }
+          catch (Exception ex)
+          {
+            Logger.LogError(ex);
           }
         }
       }
@@ -1097,7 +1140,35 @@ namespace Roguelike.Managers
       GenerateMerchantEq(merch, false);
     }
 
-    private void GenerateMerchantEq(Merchant merch, bool magic)
+    protected void AddSpecialBowLikeAmmo(Merchant merch, bool both)
+    {
+      bool arr = true;
+      bool bolt = true;
+      if (!both)
+      {
+        if (RandHelper.GetRandomDouble() > 0.5f)
+          arr = false;
+        else
+          bolt = false;
+      }
+      if (bolt)
+      {
+        var pfiksSpecialBolt = new[]
+        {
+          FightItemKind.PoisonBolt, FightItemKind.IceBolt, FightItemKind.FireBolt
+        };
+        merch.Inventory.Items.Add(new ProjectileFightItem(pfiksSpecialBolt.GetRandomElem()) { Count = both ? 10 : 5 });
+      }
+      if (arr)
+      {
+        var pfiksSpecialArrow = new[]
+        {
+          FightItemKind.PoisonArrow, FightItemKind.IceArrow, FightItemKind.FireArrow
+        };
+        merch.Inventory.Items.Add(new ProjectileFightItem(pfiksSpecialArrow.GetRandomElem()) { Count = both ? 10 : 5 });
+      }
+    }
+    protected virtual void GenerateMerchantEq(Merchant merch, bool magic)
     {
       var args = new AddItemArg();
       args.notifyObservers = false;//prevent 100 sounds
@@ -1105,89 +1176,141 @@ namespace Roguelike.Managers
       eqKinds.Shuffle();
       int levelIndex = Hero.Level;
       bool rangeGen = false;
+      Dictionary<Weapon.WeaponKind, int> wpnKindCounter = new Dictionary<Weapon.WeaponKind, int>();
+      var kvs = EnumHelper.GetEnumValues<Weapon.WeaponKind>(true);
+      foreach (var kv in kvs)
+      {
+        wpnKindCounter[kv] = 0;
+      }
+
       foreach (var eqKind in eqKinds)
       {
-        if (eqKind == EquipmentKind.Trophy || eqKind == EquipmentKind.Unset || eqKind == EquipmentKind.God)
-          continue;
-
-        var breakCount = 2;
-        if (eqKind == EquipmentKind.Weapon)
-          breakCount = 5;
-
-        int count = 0;
-        int attemptTries = 0;
-        while (count < breakCount)
+        try
         {
-          var eq = lootGenerator.GetRandomEquipment(eqKind, levelIndex, merch.GetLootAbility());
-          if (eq != null && !merch.Inventory.Items.Any(i => i.tag1 == eq.tag1))
+          if (eqKind == EquipmentKind.Trophy || eqKind == EquipmentKind.Unset || eqKind == EquipmentKind.God)
+            continue;
+
+          var breakCount = 2;
+          if (eqKind == EquipmentKind.Weapon)
+            breakCount = 5;
+
+          int count = 0;
+          int attemptTries = 0;
+          while (count < breakCount)
           {
-            if (eq.Class == EquipmentClass.Unique)
-              continue;
-            eq.Revealed = true;
-            if (magic)
-              eq.MakeMagic();
+            var eq = lootGenerator.GetRandomEquipment(eqKind, levelIndex, merch.GetLootAbility());
+            if (eq != null && !merch.Inventory.Items.Any(i => i.tag1 == eq.tag1))
+            {
+              if (eq.Class == EquipmentClass.Unique)
+                continue;
+              eq.Revealed = true;
+              if (magic)
+                eq.MakeMagic();
+              else
+                eq.MakeEnchantable();
+
+              merch.Inventory.Add(eq, args);
+              var wpn = eq as Weapon;
+              if (wpn != null)
+              {
+                 if(wpn.IsBowLike)
+                  rangeGen = true;
+
+                wpnKindCounter[wpn.Kind]++;
+              }
+              count++;
+            }
             else
-              eq.MakeEnchantable();
+              attemptTries++;
 
-            merch.Inventory.Add(eq, args);
-            var wpn = eq as Weapon;
-            if (wpn != null && wpn.IsBowLike)
-              rangeGen = true;
-            count++;
+            if (attemptTries == 5)
+              break;
           }
-          else
-            attemptTries++;
-
-          if (attemptTries == 5)
-            break;
         }
+        catch (Exception ex)
+        {
+          Logger.LogError(ex);
+        }
+      }
+
+      if (merch.Name != "Basil")
+      {
+        foreach (var kv in wpnKindCounter)
+        {
+          if (kv.Value == 0)
+          {
+            var eq = lootGenerator.LootFactory.EquipmentFactory.GetWeapons(kv.Key, levelIndex).GetRandomElem();
+            if (eq != null)
+              merch.Inventory.Add(eq);
+          }
+        }
+
+        AddSpecialBowLikeAmmo(merch, false);
       }
 
       if (!rangeGen)
       {
-        if (levelIndex <= 2)
+        try
         {
-          var bow = lootGenerator.GetLootByTileName<Weapon>("crude_crossbow");
-          if (bow.Damage == 0)
+          if (levelIndex <= 2)
           {
-            int kk = 0;
-            kk++;
+            var bow = lootGenerator.GetLootByTileName<Weapon>("crude_crossbow");
+            if (bow.Damage == 0)
+            {
+              int kk = 0;
+              kk++;
+            }
+            merch.Inventory.Add(bow);
           }
-          merch.Inventory.Add(bow);
+          else if (levelIndex <= 4)
+            merch.Inventory.Add(lootGenerator.GetLootByTileName<Weapon>("solid_bow"), args);
+          else if (levelIndex <= 6)
+            merch.Inventory.Add(lootGenerator.GetLootByTileName<Weapon>("composite_bow"), args);
         }
-        else if (levelIndex <= 4)
-          merch.Inventory.Add(lootGenerator.GetLootByTileName<Weapon>("solid_bow"), args);
-        else if (levelIndex <= 6)
-          merch.Inventory.Add(lootGenerator.GetLootByTileName<Weapon>("composite_bow"), args);
+        catch (Exception ex)
+        {
+          Logger.LogError(ex);
+        }
       }
     }
 
-    public void RegenerateMerchantInv(Merchant merch)
+    public void RegenerateMerchantInv(Merchant merch, bool rebind)
     {
       PopulateMerchantInv(merch, this.Hero.Level);
+      if(rebind)
+        AppendAction(new InventoryAction(merch.Inventory) { Info = "", Kind = InventoryActionKind.NeedsRebind });
+
     }
-    protected virtual void PopulateMerchantInv(Merchant merch, int heroLevel)
+    public virtual void PopulateMerchantInv(Merchant merch, int heroLevel)
     {
+      Logger.LogInfo("PopulateMerchantInv start");
+      if (merch == null)
+      {
+        Logger.LogError("PopulateMerchantInv !merch");
+        return;
+      }
       merch.Inventory.Items.Clear();
       var lootKinds = Enum.GetValues(typeof(LootKind)).Cast<LootKind>()
         .Where(i => i != LootKind.Unset && i != LootKind.Other && i != LootKind.Seal && i != LootKind.SealPart
                    && i != LootKind.Gold && i != LootKind.Book && i != LootKind.FightItem)
         .ToList();
 
+      Logger.LogInfo("PopulateMerchantInv AddLootToMerchantInv...");
       AddLootToMerchantInv(merch, lootKinds);
 
-      merch.Inventory.Items.Add(new ProjectileFightItem(FightItemKind.Stone) { Count = 4 });
-      if (RandHelper.GetRandomDouble() > 0.7)
-        merch.Inventory.Items.Add(new ProjectileFightItem(FightItemKind.CannonBall) { Count = 4 });
-      merch.Inventory.Items.Add(new ProjectileFightItem(FightItemKind.ThrowingKnife) { Count = 4 });
-      merch.Inventory.Items.Add(new ProjectileFightItem(FightItemKind.ThrowingTorch) { Count = 4 });
+      merch.Inventory.Items.Add(new ProjectileFightItem(FightItemKind.Stone) { Count = 40 });
+      //if (RandHelper.GetRandomDouble() > 0.7)
+      //  merch.Inventory.Items.Add(new ProjectileFightItem(FightItemKind.CannonBall) { Count = 8 });
+      merch.Inventory.Items.Add(new ProjectileFightItem(FightItemKind.ThrowingKnife) { Count = 40 });
+      merch.Inventory.Items.Add(new ProjectileFightItem(FightItemKind.ThrowingTorch) { Count = 20 });
       
       if (RandHelper.GetRandomDouble() > 0.5)
-        merch.Inventory.Items.Add(new ProjectileFightItem(FightItemKind.HunterTrap) { Count = 4 });
+        merch.Inventory.Items.Add(new ProjectileFightItem(FightItemKind.HunterTrap) { Count = 8 });
 
       merch.Inventory.Items.Add(new ProjectileFightItem(FightItemKind.PlainArrow) { Count = RandHelper.GetRandomInt(50) + 25 });
       merch.Inventory.Items.Add(new ProjectileFightItem(FightItemKind.PlainBolt) { Count = RandHelper.GetRandomInt(50) + 25 });
 
+      Logger.LogInfo("PopulateMerchantInv after ProjectileFightItem...");
       //for (int i = 0; i < 4; i++)
       {
         var loot = new MagicDust();
@@ -1205,21 +1328,6 @@ namespace Roguelike.Managers
 
       if (!merch.Inventory.Items.Any(i => i is Book))
         merch.Inventory.Items.Add(lootGenerator.GetRandomLoot(LootKind.Book, 1));
-
-
-      //int maxPotions = 4;
-      //for (int numOfLootPerKind = 0; numOfLootPerKind < maxPotions; numOfLootPerKind++)
-      //{
-      //  var hp = new Potion();
-      //  hp.SetKind(PotionKind.Health);
-      //  hp.Revealed = true;
-      //  merch.Inventory.Add(hp);
-
-      //  var mp = new Potion();
-      //  hp.SetKind(PotionKind.Mana);
-      //  mp.Revealed = true;
-      //  merch.Inventory.Add(mp);
-      //}
     }
 
     List<ILootSource> lootSourcesWithDelayedEnemies = new List<ILootSource>();
@@ -1285,8 +1393,17 @@ namespace Roguelike.Managers
       return ally;
     }
 
-    public void AddAlly(IAlly ally)
+    public bool AddAlly(IAlly ally)
     {
+      if (ally.Kind == AllyKind.Enemy)
+      {
+        if (AlliesManager.AllAllies.Where(i => i.Kind == AllyKind.Enemy).Any())
+        {
+          AppendAction(new GameInstructionAction() { Info = "Skeleton ally already used" }); ;
+          SoundManager.PlayBeepSound();
+          return false;
+        }
+      }
       ally.Active = true;
       var le = ally as LivingEntity;
       le.Container = this.Container;
@@ -1294,7 +1411,7 @@ namespace Roguelike.Managers
 
       if (ally.TakeLevelFromCaster)
       {
-        float lvl = Hero.Level * 0.8f;
+        float lvl = Hero.Level;// * 0.8f;
         if (lvl < 1)
           lvl = 1;
 
@@ -1302,16 +1419,16 @@ namespace Roguelike.Managers
       }
       AlliesManager.AddEntity(le);
 
-      if (ally.Kind != AllyKind.Paladin)
+      if (!(ally is INPC))//Roslaw?
       {
         var empty = CurrentNode.GetClosestEmpty(Hero, true, false);
         ReplaceTile<LivingEntity>(le, empty);
         if (ally is Ally ally_)
           ally_.SetNextExpFromLevel();
         le.PlayAllySpawnedSound();
-
-        AppendAction(new AllyAction() { Info = le.Name + " has been added", InvolvedTile = ally, AllyActionKind = AllyActionKind.Created });
       }
+      AppendAction(new AllyAction() { Info = le.Name + " has been added", InvolvedTile = ally, AllyActionKind = AllyActionKind.Created });
+      return true;
     }
 
     public bool CanUseSpellSource(LivingEntity caster, SpellSource scroll)
@@ -1333,8 +1450,9 @@ namespace Roguelike.Managers
       }
 
       if (spellSource is Scroll && caster is AdvancedLivingEntity advEnt)
-        return advEnt.Inventory.Remove(spellSource) != null;
-
+      {
+        return advEnt.RemoveFromInv(spellSource) != null;
+      }
       if (spellSource is WeaponSpellSource)
       {
         spellSource.Count--;
@@ -1389,7 +1507,7 @@ namespace Roguelike.Managers
         hitBlocker = true;
         if (chest != null)
         {
-          info = attackerName+" hit a ";
+          info = attackerName + " hit a ";
           if (chest.ChestVisualKind == ChestVisualKind.Chest)
             info += "chest";
           else if (chest.ChestVisualKind == ChestVisualKind.Grave)
@@ -1398,7 +1516,12 @@ namespace Roguelike.Managers
         else if (barrel != null)
           info = attackerName + " hit a barrel";
         else
-          info = attackerName + " hit a wall";
+        {
+          if(hitTile is Wall wall && wall.tag1.Contains("tree"))
+            info = attackerName + " hit a tree";
+          else
+            info = attackerName + " hit a wall";
+        }
       }
 
       if (hitBlocker)
@@ -1412,9 +1535,9 @@ namespace Roguelike.Managers
           return;
         }
 
-        var chestWasLooted = chest!=null ? chest.IsLooted : false;
+        var chestWasLooted = chest != null ? chest.IsLooted : false;
         this.LootManager.TryAddForLootSource(ls);
-        if(chest!=null && chestWasLooted)
+        if (chest != null && chestWasLooted)
           HandleChestHit(ls);
         //Logger.LogInfo("TimeTracker TryAddForLootSource: " + tr.TotalSeconds);
       }
@@ -1452,6 +1575,10 @@ namespace Roguelike.Managers
           candle.SetLooted(true);
         }
       }
+      else if (hitTile is InteractiveTile it && it.tag1.Contains("ladder"))
+      {
+        HandleLadder(it);
+      }
       else if (hitTile is CrackedStone cs)
       {
         info = attackerName + " hit a cracked stone";
@@ -1467,6 +1594,23 @@ namespace Roguelike.Managers
           ReplaceTile(new Tile(), cs.point);
         }
       }
+      else if (hitTile is Bonfire bf)
+      {
+        info = attackerName + " hit a bonfire";
+        AppendAction<InteractiveTileAction>((InteractiveTileAction ac) =>
+        {
+          ac.InteractiveKind = InteractiveActionKind.Hit;
+          ac.Info = info;
+          ac.InvolvedTile = bf;
+          ac.PlaySound = policyIsMelee;//TODO
+        });
+       
+      }
+
+    }
+
+    protected virtual void HandleLadder(InteractiveTile it)
+    {
     }
 
     protected virtual bool GeneratesLoot(ILootSource ls)
@@ -1523,20 +1667,16 @@ namespace Roguelike.Managers
         }
         else
         {
-          if (!(caster is God))
+          if (!(caster is God) && !(caster.tag1.StartsWith("fallen_one")))
           {
-            if (caster.Stats.Mana < spell.ManaCost)
-            {
-              ReportFailure("Not enough mana to cast a spell");
+            if(!TryToBurnMana(caster, spell.ManaCost, false))
               return false;
-            }
-            caster.ReduceMana(spell.ManaCost);
           }
         }
 
         spell.Utylized = true;
-        UtylizeSpellSource(caster, spellSource);
-
+        var utylized = UtylizeSpellSource(caster, spellSource);
+        Logger.LogInfo("UtylizeSpellSource by caster: " + utylized);
       }
       catch (Exception)
       {
@@ -1544,6 +1684,35 @@ namespace Roguelike.Managers
         throw;
       }
 
+      return true;
+    }
+
+    int godBeepCoolDown = 0;
+    public bool TryToBurnMana(LivingEntity caster, int manaCost, bool god)
+    {
+      if (caster.Stats.Mana < manaCost)
+      {
+        if (caster is Hero)
+        {
+          var me = "Not enough mana to cast";
+          if (god)
+            me += " Slavic god's spell";
+          else
+            me += " a spell";
+
+         
+          var sound = !god || godBeepCoolDown == 0;
+          if (god)
+          {
+            godBeepCoolDown++;// == 0
+            //godBeepCoolDown = 10;
+          }
+
+          ReportFailure(me, sound);
+        }
+        return false;
+      }
+      caster.ReduceMana(manaCost);
       return true;
     }
 
@@ -1618,7 +1787,7 @@ namespace Roguelike.Managers
         return null;
       }
 
-      return new AttackDescription(caster, caster.UseAttackVariation, AttackKind.PhysicalProjectile);
+      return new AttackDescription(caster, caster.UseAttackVariation, AttackKind.PhysicalProjectile, null, pfi);
     }
 
     //public void CallTryAddForLootSource(Dungeons.Tiles.Abstract.IHitable obstacle, Policy policy)
@@ -1645,14 +1814,17 @@ namespace Roguelike.Managers
     {
       if (caster is Hero)
         OnHeroPolicyApplied(policy);
+      else if (caster is God)
+        AlliesManager.OnPolicyApplied(policy);
 
       if (AfterApply != null)
         AfterApply(policy);
     }
 
-    public void ReportFailure(string infoToDisplay)
+    public void ReportFailure(string infoToDisplay, bool playBeepSound = true)
     {
-      SoundManager.PlayBeepSound();
+      if(playBeepSound)
+        SoundManager.PlayBeepSound();
       if (infoToDisplay.Any())
       {
         AppendAction(new GameEvent() { Info = infoToDisplay, Level = ActionLevel.Important });
@@ -1668,7 +1840,7 @@ namespace Roguelike.Managers
     public Action<Policy, LivingEntity, IHitable> AttackPolicyInitializer;
     public Action AttackPolicyDone;
 
-
+    
     public void ApplyHeroPhysicalAttackPolicy(IHitable target, bool allowPostAttackLogic)
     {
       Action<Policy> afterApply = (p) => { };
@@ -1683,152 +1855,8 @@ namespace Roguelike.Managers
       MeleePolicyManager.ApplyPhysicalAttackPolicy(attacker, target, afterApply, null, esk);
     }
 
-    public bool UseActiveAbilities(LivingEntity attacker, LivingEntity targetLe, bool turnStart)
-    {
-      bool done = false;
-      var ale = attacker as AdvancedLivingEntity ;
-      foreach (var aa in ale.Abilities.ActiveItems)
-      {
-        if (aa.RunAtTurnStart == turnStart)
-        {
-          if (HasAbilityActivated(aa, ale))
-          {
-            string reason;
-            if (attacker.CanUseAbility(aa.Kind, CurrentNode, out reason))
-            {
-              UseActiveAbility(targetLe, attacker, ale.SelectedActiveAbility.Kind);
-              done = true;
-            }
-          }
-        }
-      }
-
-      return done;
-    }
-
-    protected virtual bool HasAbilityActivated(ActiveAbility ab, AdvancedLivingEntity ale)
-    { 
-      return ale.SelectedActiveAbility != null && ale.SelectedActiveAbility.Kind == ab.Kind;
-    }
-
-    public void UseActiveAbility(LivingEntity victim, LivingEntity abilityUser, Abilities.AbilityKind abilityKind)
-    {
-      var advEnt = abilityUser as AdvancedLivingEntity;
-      if (!advEnt.Abilities.IsActive(abilityKind))
-        return;
-
-      bool activeAbility = true;
-      UseAbility(victim, abilityUser, abilityKind, activeAbility);
-    }
-
-    public void UseAbility(LivingEntity victim, LivingEntity abilityUser, Abilities.AbilityKind abilityKind, bool activeAbility)
-    {
-      var ab = abilityUser.GetActiveAbility(abilityKind);
-
-      bool used = false;
-      if (abilityKind == Abilities.AbilityKind.StrikeBack)//StrikeBack is passive!
-      {
-        ApplyPhysicalAttackPolicy(abilityUser, victim, (p) =>
-        {
-          used = true;
-          AppendUsedAbilityAction(abilityUser, abilityKind);
-          if (AttackPolicyDone != null)
-            AttackPolicyDone();
-        }, EntityStatKind.ChanceToStrikeBack);
-      }
-      else if (abilityKind == AbilityKind.Stride)
-      {
-        int horizontal = 0, vertical = 0;
-        var neibKind = GetTileNeighborhoodKindCompareToHero(victim);
-        if (neibKind.HasValue)
-        {
-          InputManager.GetMoveData(neibKind.Value, out horizontal, out vertical);
-          var newPos = InputManager.GetNewPositionFromMove(victim.point, horizontal, vertical);
-          activeAbilityVictim = victim;// as Enemy;
-          activeAbilityVictim.MoveDueToAbilityVictim = true;
-
-          var desc = "";
-          var attack = abilityUser.Stats.GetStat(EntityStatKind.Strength).SumValueAndPercentageFactor(ab.PrimaryStat, true);
-          var damage = victim.CalcMeleeDamage(attack, ref desc);
-          var inflicted = victim.InflictDamage(abilityUser, false, ref damage, ref desc);
-
-          ApplyMovePolicy(victim, newPos.Point);
-          used = true;
-        }
-      }
-      else if (abilityKind == Abilities.AbilityKind.OpenWound)
-      {
-        if (victim != null)
-        {
-          //psk = EntityStatKind.BleedingExtraDamage;
-          //ask = EntityStatKind.BleedingDuration;
-          var duration = ab.AuxStat.Factor;
-          var damage = Calculated.FactorCalculator.AddFactor(3, ab.PrimaryStat.Factor);//TODO  3
-          victim.StartBleeding(damage, null, (int)duration);
-          used = true;
-        }
-        else
-        {
-          //var leSrc = new AbilityLastingEffectSrc(ab, 0);
-          //abilityUser.LastingEffectsSet.AddPercentageLastingEffect(EffectType.OpenWound, leSrc, abilityUser);
-          //used = true;
-        }
-      }
-      else if (abilityKind == Abilities.AbilityKind.ZealAttack)
-      {
-        used = true;
-      }
-      else
-        used = UseActiveAbility(ab, abilityUser, false);
-
-      if (used)
-      {
-        if (activeAbility)
-        {
-          HandleActiveAbilityUsed(abilityUser, abilityKind);
-        }
-      }
-    }
-
-    public bool UseActiveAbility(ActiveAbility ab, LivingEntity abilityUser, bool sendEvent)
-    {
-      bool used = false;
-      var abilityKind = ab.Kind;
-      var endTurn = false;
-      if (ab.CoolDownCounter > 0)
-        return false;
-
-      if (abilityKind == AbilityKind.Smoke)
-      {
-        AddSmoke(abilityUser);
-        endTurn = true;
-        used = true;
-        
-      }
-      else
-        used = AddLastingEffectFromAbility(ab, abilityUser);
-
-      if (used)
-      {
-        abilityUser.WorkingAbilityKind = abilityKind;
-        if(sendEvent)
-          HandleActiveAbilityUsed(abilityUser, abilityKind);
-      }
-
-      if(endTurn)
-        Context.MoveToNextTurnOwner();//TODO call HandleHeroActionDone
-      return used;
-    }
-
-    private void AddSmoke(LivingEntity abilityUser)
-    {
-      var smokeAb = Hero.GetActiveAbility(AbilityKind.Smoke);
-      var smokes = CurrentNode.AddSmoke(Hero, (int)smokeAb.PrimaryStat.Factor, (int)smokeAb.AuxStat.Factor);
-       AppendAction<TilesAppendedEvent>((TilesAppendedEvent ac) =>
-      {
-        ac.Tiles = smokes.Cast<Tile>().ToList();
-      });
-    }
+    public AbilityManager AbilityManager { get; private set; }
+   
 
     public void SpreadOil(Tile startingTile, int minRange = 1, int maxRange = 1)
     {
@@ -1843,97 +1871,6 @@ namespace Roguelike.Managers
 
         SoundManager.PlaySound("oil_splash");
       }
-    }
-        
-
-    LastingEffect AddAbilityLastingEffectSrc(EffectType et, ActiveAbility ab, LivingEntity abilityUser, int abilityStatIndex = 0)
-    {
-      var src = new AbilityLastingEffectSrc(ab, abilityStatIndex);
-      if (et != EffectType.IronSkin)
-      {
-        if(
-          ab.Kind == AbilityKind.ElementalVengeance ||
-          ab.Kind == AbilityKind.Rage 
-          )
-          src.Duration = 3;
-        else
-          src.Duration = 1;
-      }
-      else 
-        src.Duration = (int)ab.AuxStat.Factor;
-      return abilityUser.LastingEffectsSet.AddLastingEffect(et, src, abilityUser);
-    }
-
-    public bool AddLastingEffectFromAbility(ActiveAbility ab, LivingEntity abilityUser)
-    {
-      if (!ab.TurnsIntoLastingEffect)
-        return false;
-
-      if(ab.CoolDownCounter > 0)
-        return false;
-
-      bool used = false;
-      var abilityKind = ab.Kind;
-
-      if (ab.Kind == AbilityKind.ElementalVengeance)
-      {
-        var attacks = new EffectType[] { EffectType.FireAttack, EffectType.PoisonAttack, EffectType.ColdAttack };
-        int i = 0;
-        foreach (var et in attacks)
-        {
-          AddAbilityLastingEffectSrc(et, ab, abilityUser, i);
-          i++;
-        }
-        used = true;
-      }
-      else if (ab.Kind == AbilityKind.IronSkin)
-      {
-        //var ab = abilityUser.GetActiveAbility(abilityKind);
-        //var defensePercadd = ab.PrimaryStat.Factor;
-        AddAbilityLastingEffectSrc(EffectType.IronSkin, ab, abilityUser);
-        used = true;
-      }
-      else if (abilityKind == Abilities.AbilityKind.Rage)
-      {
-        AddAbilityLastingEffectSrc(EffectType.Rage, ab, abilityUser);
-        used = true;
-      }
-
-      return used;
-    }
-
-    public void HandleActiveAbilityUsed(LivingEntity abilityUser, AbilityKind abilityKind)
-    {
-      var ab = abilityUser.GetActiveAbility(abilityKind);
-      abilityUser.HandleActiveAbilityUsed(abilityKind);
-      AppendUsedAbilityAction(abilityUser, abilityKind);
-    }
-
-    public void AppendUsedAbilityAction(LivingEntity abilityUser, Abilities.AbilityKind abilityKind)
-    {
-      EventsManager.AppendAction(new LivingEntityAction(LivingEntityActionKind.UsedAbility)
-      {
-        Info = abilityUser.Name + " used ability " + abilityKind,
-        Level = ActionLevel.Important,
-        InvolvedEntity = abilityUser
-      });
-
-      if(abilityKind == AbilityKind.Smoke)
-        SoundManager.PlaySound("cloth");
-    }
-
-    TileNeighborhood? GetTileNeighborhoodKindCompareToHero(LivingEntity target)
-    {
-      TileNeighborhood? neib = null;
-      if (target.Position.X > Hero.Position.X)
-        neib = TileNeighborhood.East;
-      else if (target.Position.X < Hero.Position.X)
-        neib = TileNeighborhood.West;
-      else if (target.Position.Y > Hero.Position.Y)
-        neib = TileNeighborhood.South;
-      else if (target.Position.Y < Hero.Position.Y)
-        neib = TileNeighborhood.North;
-      return neib;
     }
 
     public List<Enemy> GetRessurectTargets(Enemy enemyChemp)
@@ -1953,11 +1890,12 @@ namespace Roguelike.Managers
       return ressurectTargets;
     }
 
-    public void SendCommand(Enemy enemyChemp, EnemyAction ea)
+    public void DoCommand(Enemy enemyChemp, CommandUseInfo command) 
     {
-      if (ea.CommandKind == EntityCommandKind.RaiseMyFriends)
+      if (command.Kind == EntityCommandKind.Resurrect)
       {
-        foreach (var dead in GetRessurectTargets(enemyChemp))
+        var rts = GetRessurectTargets(enemyChemp);
+        foreach (var dead in rts)
         {
           var healthProvider = new Enemy(this.Container);
           healthProvider.SetLevel(dead.Level);
@@ -1990,14 +1928,15 @@ namespace Roguelike.Managers
 
     public void ForceNextTurnOwner()
     {
+      Logger.LogError("ForceNextTurnOwner! TurnOwner: " + Context.TurnOwner);
       this.EnemiesManager.ForcePendingForAllIdleFalse();
       this.AlliesManager.ForcePendingForAllIdleFalse();
       this.AnimalsManager.ForcePendingForAllIdleFalse();
-      Hero.State = Roguelike.Tiles.LivingEntities.EntityState.Idle;//with state Attacking no move was possible
+      Hero.State = EntityState.Idle;//with state Attacking no move was possible
       Context.MoveToNextTurnOwner();
     }
 
-    public bool CanCallIdentify(AdvancedLivingEntity priceProvider, Tile shownFor)
+    public bool CanCallIdentify(LivingEntity priceProvider, Tile shownFor)
     {
       if (priceProvider is Hero)
       {
@@ -2009,24 +1948,7 @@ namespace Roguelike.Managers
 
     public virtual void OnBeforeAlliesTurn()
     {
-      var smokes = CurrentNode.Layers.GetTypedLayerTiles<ProjectileFightItem>(KnownLayer.Smoke);
-      ProjectileFightItem smokeEnded = null;
-      foreach (var smoke in smokes)
-      {
-        smoke.Durability--;
-        if (smoke.Durability <= 0)
-        {
-          //CurrentNode.RemoveLoot(smoke.point);
-          CurrentNode.Layers.GetLayer(KnownLayer.Smoke).Remove(smoke);
-          AppendAction(new LootAction(smoke, null) { Kind = LootActionKind.Destroyed, Loot = smoke });
-          smokeEnded = smoke;
-        }
-      }
-      if (smokeEnded !=null && smokeEnded.ActiveAbilitySrc == AbilityKind.Smoke)
-      {
-        smokeEnded.Caller.HandleActiveAbilityEffectDone(AbilityKind.Smoke, false);
-
-      }
+      AbilityManager.HandleSmokeTiles();
 
       var surfaces = CurrentNode.SurfaceSets.Sets;
       foreach (var surfaceSet in surfaces)
@@ -2050,6 +1972,7 @@ namespace Roguelike.Managers
       }
     }
 
+    
     public virtual void OnAfterAlliesTurn()
     {
 
@@ -2141,6 +2064,132 @@ namespace Roguelike.Managers
         else
           AppendAction(new InteractiveTileAction() { InteractiveKind = InteractiveActionKind.HitWhenLooted, InvolvedTile = chest });
       }
+    }
+
+
+    //bool IsUsing(LivingEntity le, DestPointDesc dpd)
+    //{
+    //  return dpd.MoveOnPathTarget == 
+    //        dpd.State == DestPointState.StayingAtTarget;
+    //}
+
+    public bool IsUsingPrivy(LivingEntity le, DestPointDesc dpd)
+    {
+      return dpd.MoveOnPathTarget is Privy && 
+        le.point == dpd.MoveOnPathTarget.point && 
+        dpd.State == DestPointState.StayingAtTarget;
+      
+    }
+
+    public virtual God createGod(SpellKind sk)
+    {
+      var god = new God(Container);
+      return god;
+    }
+
+    public virtual List<LivingEntity> GetLivingEntitiesForGodSpell(bool allies, SpellKind sk)
+    {
+      var les = new List<LivingEntity>();
+      if (sk == SpellKind.Wales && allies)
+      {
+        les.Add(Hero);
+        foreach (var ally in AlliesManager.AllAllies)
+        {
+          if (ally is God)
+            continue;
+
+          les.Add(ally as LivingEntity);
+        }
+      }
+      return les;
+    }
+
+    public IEnumerable<LivingEntity> GetEnemiesForGodAttack(int range)//SwiatowitScroll.MaxRange
+    {
+      return EnemiesManager.GetActiveEnemiesInvolved()
+                .Where(i => i.DistanceFrom(Hero) <= range)
+                .OrderBy(i => i.DistanceFrom(Hero))
+                .Take(5);
+    }
+
+    public bool IsEnemyToHero(Tile tile)
+    {
+      LivingEntity le = null;
+      if (tile is INPC npc)
+        le = npc.LivingEntity;
+      else
+        le = tile as LivingEntity;
+
+      if(le is null)
+        return false;
+      return EnemiesManager.Contains(le);
+    }
+
+    public virtual int GetStartWalkToInteractiveTurnsCount()
+    {
+      return 15;
+    }
+
+    public void MakeFakeClones(LivingEntity fo, LivingEntity victomToSorround, bool sorroundHero)
+    {
+      for (int i = 0; i < 3; i++)
+      {
+        var le = new Enemy(Container);
+        le.tag1 = "cloned_" + fo.tag1;
+        var emp = this.CurrentNode.GetClosestEmpty(this.Hero);
+        le.SetRandomSpellSource();
+        var lev = fo.Level / 3;
+        if (lev == 0)
+          lev = 1;
+        AppendEnemy(le, emp.point, lev);
+        le.SetFakeLevel(victomToSorround.Level);
+
+        le.Name = fo.Name;
+        le.DisplayedName = fo.DisplayedName;
+      }
+    }
+
+    static Dictionary<string, string> MessageToVoice = new Dictionary<string, string>()
+    {
+      { "Kill Him!", "kill_him"},
+      { "I'll crush you!", "crush_you"},
+      { "Join our amy of skeletons", "join_skeletons"},
+      { "I'll burn you", "I_will_burn_you"},
+      { "You'll be my slave for enhernity ", "my_slaves"}
+    };
+    public string SayEnemyWelcomeVoice(Enemy enemyTile)
+    {
+      var message = MessageToVoice.Keys.ToList().GetRandomElem();
+      var  voice = MessageToVoice[message];
+      if (enemyTile.tag1.StartsWith("fallen_one"))
+      {
+        message = "I'll crush you!";
+        voice = "FallenOne_"+ voice;
+      }
+      SoundManager.PlayVoice(voice);
+      return message;
+    }
+
+    public bool IsAnyManagerBusy(EntitiesManager.BusyOnesCheckContext context, ref string message)
+    {
+      message = "";
+      bool busy = false;
+      var mgs = new EntitiesManager[] { AlliesManager, AnimalsManager, EnemiesManager, NpcManager };
+
+      foreach (var mg in mgs)
+      {
+        var bos = mg.FindBusyOnes(context);
+        
+        if (bos.Any())
+        {
+          busy = true;
+          message += mg.GetType() + " has busy ones: " + bos.Count + ", 1st: " + bos.First() + "; ";
+        }
+        if(context == EntitiesManager.BusyOnesCheckContext.ForceIdle)
+          mg.CheckBusyOnes = true;
+      }
+
+      return busy;
     }
   }
 }

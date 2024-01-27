@@ -13,13 +13,18 @@ namespace Roguelike.Tiles.LivingEntities
   public abstract class Ally : AdvancedLivingEntity, IAlly
   {
     public bool IncreaseStatsDueToDifficulty = true;//too easy ?
-    public AllyBehaviour AllyBehaviour { get; set; } = AllyBehaviour.GoFreely;
+    public AllyBehaviour AllyBehaviour { get; set; } = AllyBehaviour.StayClose;
     public Ally(Container cont, char symbol = '!') : base(cont, new Point().Invalid(), symbol)
     {
       canAdvanceInExp = true;
       Inventory.InvBasketKind = InvBasketKind.Ally;
       CurrentEquipment.InvBasketKind = InvBasketKind.AllyEquipment;
-      Inventory.Capacity = 8;
+      SetInvCapacity();
+    }
+
+    public void SetInvCapacity()
+    {
+      Inventory.Capacity = 8 * 3;
     }
 
     protected override bool CanIncreaseStatsDueToDifficulty()
@@ -39,7 +44,10 @@ namespace Roguelike.Tiles.LivingEntities
       {
         kind = value;
         if (kind == AllyKind.Hound)
+        {
           AnimalKind = AnimalKind.Hound;
+          DestroySound = "dog_whining1";
+        }
       }
     }
     override protected bool CanUseAnimalKindEq(IEquipment eq)
@@ -77,6 +85,7 @@ namespace Roguelike.Tiles.LivingEntities
     public Point Point { get => point; set => point = value; }
 
     public bool TakeLevelFromCaster { get; protected set; }
+    public bool PendingReturnToCamp { get; set ; }
 
     public override bool SetLevel(int level, Difficulty? diff = null)
     {

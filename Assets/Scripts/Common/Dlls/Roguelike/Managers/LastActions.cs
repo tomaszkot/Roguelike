@@ -33,7 +33,8 @@ namespace Roguelike.InfoScreens
     {
       if (ac.Info.Trim() == string.Empty)
         return;
-
+      if (ac.Silent)
+        return;
       if (ac is LivingEntityAction leac)
       {
         if (leac.Kind == LivingEntityActionKind.Moved)

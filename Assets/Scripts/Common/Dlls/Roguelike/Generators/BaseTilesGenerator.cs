@@ -31,17 +31,17 @@ namespace Roguelike.Generators
       return Filter(enemyNames);
     }
 
-    public virtual Enemy CreateEnemyInstance(SimpleInjector.Container container, string enemyName, bool reveal, bool setLevel)
+    public virtual Enemy CreateEnemyInstance(SimpleInjector.Container container, string enamyTag, bool reveal, bool setLevel)
     {
       var enemy = container.GetInstance<Enemy>();
 
       enemy.Container = container;
-      enemy.tag1 = enemyName;
-      enemy.Name = enemyName;
+      enemy.tag1 = enamyTag;
+      enemy.SetNameFromTag1();
       if(setLevel)
         SetILootSourceLevel(enemy, null);
-      if (EnemySymbols.EnemiesToSymbols.ContainsKey(enemy.Name))
-        enemy.Symbol = EnemySymbols.EnemiesToSymbols[enemy.Name];
+      if (EnemySymbols.EnemiesToSymbols.ContainsKey(enamyTag))
+        enemy.Symbol = EnemySymbols.EnemiesToSymbols[enamyTag];
 
       if (enemy.tag1.Contains("bandit"))
       {
@@ -57,13 +57,20 @@ namespace Roguelike.Generators
       //these call are fast, 2 ms with grid 200x200
       lootSources.AddRange(node.GetTiles<Barrel>());
       lootSources.AddRange(node.GetTiles<Chest>());
-      lootSources.AddRange(node.GetTiles<Enemy>());
+      SetILootSourceLevel(lootSources, hero);
+
+      lootSources = new List<ILootSource>();
+      var ens = node.GetTiles<Enemy>();
+      lootSources.AddRange(ens);
       SetILootSourceLevel(lootSources, hero);
     }
 
     public virtual void SetILootSourceLevel(List<ILootSource> lss, Hero hero)
     {
-      lss.ForEach(i => SetILootSourceLevel(i, hero));
+      lss.ForEach(i =>
+      {
+        SetILootSourceLevel(i, hero);
+      });
     }
 
     protected virtual List<Enemy> CreateEnemiesPack(GenerationInfo gi, string enemyName)

@@ -51,7 +51,7 @@ namespace Roguelike.Policies
     /// <param name="caster"></param>
     /// <param name="spellSource"></param>
     /// <exception cref="System.NotImplementedException"></exception>
-    public override void CreateSpell(LivingEntity caster, SpellSource spellSource)
+    public override ISpell CreateSpell(LivingEntity caster, SpellSource spellSource)
     {
       throw new System.NotImplementedException();
     }

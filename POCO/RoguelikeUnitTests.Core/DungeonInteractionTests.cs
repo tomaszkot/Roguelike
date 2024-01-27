@@ -46,18 +46,11 @@ namespace RoguelikeUnitTests
 
       CollectLoot(game, loot);
       Assert.True(game.Hero.Inventory.Contains(loot));
-      game.Hero.Consume(loot);
-      Assert.True(!game.Hero.Inventory.Contains(loot));
+      //game.Hero.ReduceHealth(1);
+      Assert.False(game.Hero.Consume(loot));
+      Assert.True(game.Hero.Inventory.Contains(loot));//hero not hurt
     }
 
-    //[Test]
-    //public void LootCollect()
-    //{
-    //  var game = CreateGame();
-    //  Loot loot = new Loot();
-    //  CollectLoot(game, loot);
-
-    //}
 
     [Test]
     public void DestroyBarrel()

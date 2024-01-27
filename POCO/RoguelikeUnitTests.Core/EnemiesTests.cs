@@ -6,6 +6,8 @@ using Roguelike.Attributes;
 using Roguelike.Events;
 using Roguelike.Generators;
 using Roguelike.Managers;
+using Roguelike.State;
+using Roguelike.Strategy;
 using Roguelike.Tiles;
 using Roguelike.Tiles.Interactive;
 using Roguelike.Tiles.LivingEntities;
@@ -20,22 +22,22 @@ namespace RoguelikeUnitTests
   {
 
     [Test]
-    //[Repeat(10)]
+    [Repeat(1)]
     public void TestCommandRaiseMyFriends()
     {
       var game = CreateGame(genNumOfEnemies:0);
-      game.Hero.d_immortal = true;
+      game.Hero.Immortal = true;
 
-      var enemyPlain = SpawnEnemy();
-      Assert.AreEqual(enemyPlain.Symbol, 's');
+      var enemyPlain = SpawnEnemy(EnemySymbols.SkeletonSymbol);
+      Assert.AreEqual(enemyPlain.Symbol, EnemySymbols.SkeletonSymbol);
       PlaceCloseToHero(enemyPlain);
 
-      var enemyChemp = SpawnEnemy();
-      enemyChemp.Symbol = EnemySymbols.SkeletonSymbol;
+      var enemyChemp = SpawnEnemy(EnemySymbols.SkeletonSymbol);
+      Assert.AreEqual(enemyChemp.Symbol, EnemySymbols.SkeletonSymbol);
       enemyChemp.SetNonPlain(false);
       PlaceCloseToHero(enemyChemp);
 
-      List<Enemy> de = game.Level.GetDeadEnemies();
+      var de = game.Level.GetDeadEnemies();
       Assert.AreEqual(de.Count, 0);
       Assert.AreEqual(game.Level.GetTiles<Enemy>().Count, 2);
       var ens = game.GameManager.EnemiesManager.GetEnemies();
@@ -60,10 +62,11 @@ namespace RoguelikeUnitTests
 
       de = game.Level.GetDeadEnemies();
       Assert.AreEqual(de.Count, 1);
-      var ea = new EnemyAction();
-      ea.CommandKind = EntityCommandKind.RaiseMyFriends;
-      ea.Kind = EnemyActionKind.SendComand;
-      game.GameManager.SendCommand(enemyChemp, ea);
+
+      //var cmd = new CommandUseInfo() { Kind = EntityCommandKind.Resurrect };
+      //var ea = new EnemyAction(cmd);
+      //ea.Kind = EnemyActionKind.SendComand;
+      AttackStrategy.SendCommand(enemyChemp, EntityCommandKind.Resurrect, GameManager);
 
       de = game.Level.GetDeadEnemies();
       Assert.AreEqual(de.Count, 0);
@@ -225,11 +228,28 @@ namespace RoguelikeUnitTests
     {
       var game = CreateGame();
       var hero = game.Level.GetTiles<Hero>().SingleOrDefault();
-      var enemy = SpawnEnemy();
-
-      enemy.Symbol = 's';
+      var enemy = SpawnEnemy('s');
       Assert.AreEqual(enemy.Name, "Skeleton");
       Assert.True(enemy.IsImmuned(Roguelike.Effects.EffectType.Bleeding));
+    }
+
+    [Test]
+    public void TestResists()
+    {
+      var game = CreateGame();
+      var hero = game.Level.GetTiles<Hero>().SingleOrDefault();
+      var enemy = SpawnEnemy();
+      enemy.Name = "";
+
+      var symbols = new [] { EnemySymbols.SpiderSymbol, EnemySymbols.SnakeSymbol };
+      foreach (var sy in symbols)
+      {
+        enemy.Symbol = sy;
+
+        var rc = enemy.Stats.GetStat(EntityStatKind.ResistCold).Value;
+        var rp = enemy.Stats.GetStat(EntityStatKind.ResistPoison).Value;
+        Assert.Less(rc.CurrentValue, rp.CurrentValue);
+      }
     }
 
     [Test]
@@ -259,7 +279,7 @@ namespace RoguelikeUnitTests
       Assert.AreEqual(enemies.Count, 1);
       var enemy = enemies.First();
       enemy.SetSurfaceSkillLevel(SurfaceKind.ShallowWater, 1);
-      enemy.ActiveFightItem = null;//make sure it will move
+      enemy.SelectedFightItem = null;//make sure it will move
 
       //put enemy close to hero
       var closeTile = game.Level.GetEmptyTiles().Where(i => i.DistanceFrom(game.Hero) == 3).FirstOrDefault();
@@ -285,7 +305,7 @@ namespace RoguelikeUnitTests
       GotoNextHeroTurn();
       var enTurnsCountAfter = game.GameManager.Context.TurnCounts[TurnOwner.Enemies];
       Assert.Greater(enTurnsCountAfter, enTurnsCount);
-      Assert.IsNull(enemy.ActiveFightItem);
+      Assert.IsNull(enemy.SelectedFightItem);
 
       //check pos, enemy shall make 2 steps
       var enemyDistFromHeroNew = enemy.DistanceFrom(game.Hero);

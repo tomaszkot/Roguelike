@@ -11,7 +11,14 @@ using System.Collections.Generic;
 using System.Linq;
 
 namespace Roguelike.Tiles
-{  
+{
+  namespace Looting
+  {
+    public interface IGodStatue
+    {
+    }
+  }
+
   public class Strings
   {
     public const string PartOfCraftingRecipe = "Part of the crafting recipe.";
@@ -142,7 +149,7 @@ namespace Roguelike.Tiles
 
     public bool StackedInInventory
     {
-      get { return this is Roguelike.Tiles.Looting.StackedLoot; }
+      get { return this is StackedLoot; }
     }
 
     public Guid Id
@@ -187,7 +194,7 @@ namespace Roguelike.Tiles
       if (!this.StackedInInventory)
         return this.GetHashCode() == other.GetHashCode();
 
-      return (this as Looting.StackedLoot).GetId() == (other as Looting.StackedLoot).GetId();
+      return (this as StackedLoot).GetId() == (other as StackedLoot).GetId();
     }
 
     public virtual bool IsConsumable()
@@ -307,7 +314,6 @@ namespace Roguelike.Tiles
       get { return "Part of a crafting recipe."; }
     }
 
-    [JsonIgnore]
     public ILootSource source;
     [JsonIgnore]
     public ILootSource Source
@@ -336,5 +342,19 @@ namespace Roguelike.Tiles
       get { return true; }
     }
 
+    public virtual RecipeKind GetMatchingRecipe(Loot other)
+    {
+      return RecipeKind.Unset;
+    }
+
+    public virtual RecipeKind[] GetMatchingRecipes(Loot[] otherLoot)
+    {
+      return new[] { RecipeKind.Unset };
+    }
+
+    public virtual bool IsMatchingRecipe(RecipeKind kind)
+    {
+      return false;
+    }
   }
 }

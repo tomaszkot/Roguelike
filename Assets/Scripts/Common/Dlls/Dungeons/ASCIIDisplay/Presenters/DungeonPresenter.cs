@@ -18,6 +18,7 @@ namespace Dungeons.ASCIIDisplay.Presenters
       this.left = left;
       drawingEngine.CursorVisible = false;
     }
+       
 
     public void Print(Tile tile, PrintInfo pi)
     {
@@ -25,6 +26,11 @@ namespace Dungeons.ASCIIDisplay.Presenters
       var symbol = ' ';
       if (tile != null)
       {
+        if (pi.CustomDrawer != null)
+        {
+          pi.CustomDrawer(tile, drawingEngine);
+          return;
+        }
         color = tile.Color;
         if (pi.PrintNodeIndexes)
         {
@@ -35,6 +41,10 @@ namespace Dungeons.ASCIIDisplay.Presenters
         if (tile.Revealed)
         {
           symbol = tile.Symbol;
+          if (pi.SymbolToDraw!=null)
+          {
+            symbol = pi.SymbolToDraw(tile);
+          }
         }
       }
       drawingEngine.ForegroundColor = color;

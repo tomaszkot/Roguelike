@@ -14,5 +14,10 @@
       Price = 5;
       PrimaryStatDescription = PartOfCraftingRecipe;
     }
+
+    public override bool IsMatchingRecipe(RecipeKind kind)
+    {
+      return true;
+    }
   }
 }

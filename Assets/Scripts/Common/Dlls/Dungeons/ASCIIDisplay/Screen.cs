@@ -1,6 +1,7 @@
 ﻿using Dungeons.ASCIIDisplay.Presenters;
 using Dungeons.TileContainers;
 using Dungeons.Tiles;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -16,7 +17,11 @@ namespace Dungeons.ASCIIDisplay
     public int DungeonY { get; set; }
 
     public DungeonPresenter DungeonPresenter { get; set; }
-    public PrintInfo PrintInfo { get => printInfo; set => printInfo = value; }
+    public PrintInfo PrintInfo 
+    { 
+      get => printInfo; 
+      set => printInfo = value; 
+    }
     public Dictionary<string, ListPresenter> Lists { get => lists; set => lists = value; }
     public List<Item> ASCIIItems = new List<Item>();
 
@@ -57,7 +62,7 @@ namespace Dungeons.ASCIIDisplay
     protected virtual void CreateLists()
     {
       Lists = new Dictionary<string, ListPresenter>();
-      var usage = new ListPresenter(UsageListName, OriginX+55, OriginY, 30);
+      var usage = new ListPresenter(UsageListName, OriginX+75, OriginY, 30);
       var list = new List<ListItem>();
       list.Add(new ListItem("R - reload"));
       list.Add(new ListItem("D - toggle node_indexes/symbols"));
@@ -104,7 +109,7 @@ namespace Dungeons.ASCIIDisplay
       DungeonPresenter.Redraw(dungeon, PrintInfo);
       DrawingEngine.SetCursorPosition(0, 0);
     }
-
+        
     private void RedrawItems()
     {
       ASCIIItems.ForEach(i =>

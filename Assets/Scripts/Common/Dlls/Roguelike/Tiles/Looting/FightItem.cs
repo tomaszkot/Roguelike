@@ -1,4 +1,5 @@
-﻿using Dungeons.Tiles;
+﻿using Dungeons.Core;
+using Dungeons.Tiles;
 using Newtonsoft.Json;
 using Roguelike.Abilities;
 using Roguelike.Abstract.Projectiles;
@@ -29,6 +30,14 @@ namespace Roguelike.Tiles.Looting
     PlainBolt = 55,
     IronBolt = 56,//Iron Arrowhead
     SteelBolt = 57,//Steel Arrowhead
+
+    PoisonArrow = 60,
+    IceArrow = 61,
+    FireArrow = 62,
+
+    PoisonBolt = 66,
+    IceBolt = 67,
+    FireBolt = 68,
 
     PoisonCocktail = 70,
     WeightedNet = 75,
@@ -93,7 +102,7 @@ namespace Roguelike.Tiles.Looting
     {
       this.FightItemKind = kind;
       this.LootKind = LootKind.FightItem;
-      
+      Count = 1;
     }
 
     //can not be used as torch amount is calculated  see GetStackedCountForHotBar
@@ -129,6 +138,11 @@ namespace Roguelike.Tiles.Looting
     }
     public const int BaseCannonBallDamage = 60;
 
+    string GetDescForBowLike(string suffix)
+    {
+      return Name + suffix;
+    }
+
     public virtual FightItemKind FightItemKind
     {
       get { return fightItemKind; }
@@ -143,6 +157,8 @@ namespace Roguelike.Tiles.Looting
         {
           PrimaryStatDescription = "Stone, can cause harm if thrown by a skilled man.";
           HitTargetSound = "punch";
+          Price = 2;
+          Count = (int)RandHelper.GetRandomFloatInRange(8, 10);
         }
         else if (fightItemKind == FightItemKind.CannonBall)
         {
@@ -172,28 +188,57 @@ namespace Roguelike.Tiles.Looting
         }
         else if (fightItemKind == FightItemKind.PlainArrow)
         {
-          baseDamage += 1;
+          baseDamage += 2;
           Price *= 2;
-          PrimaryStatDescription = Name + ", basic ammo for a bow";
+          PrimaryStatDescription = GetDescForBowLike(", basic ammo for a bow");
           HitTargetSound = "arrow_hit_body";
         }
         else if (fightItemKind == FightItemKind.IronArrow)
         {
           baseDamage += 5;
           Price *= 3;
-          PrimaryStatDescription = Name + ", ammo with an iron head for a bow";
+          PrimaryStatDescription = GetDescForBowLike(", ammo with an iron head for a bow");
           HitTargetSound = "arrow_hit_body";
         }
         else if (fightItemKind == FightItemKind.SteelArrow)
         {
-          baseDamage += 9;
+          baseDamage += 10;
           Price *= 4;
-          PrimaryStatDescription = Name + ", ammo with a steel head for a bow";
+          PrimaryStatDescription = GetDescForBowLike(", ammo with a steel head for a bow");
           HitTargetSound = "arrow_hit_body";
         }
+        
+        else if (
+                 fightItemKind == FightItemKind.PoisonArrow ||
+                 fightItemKind == FightItemKind.IceArrow ||
+                 fightItemKind == FightItemKind.FireArrow ||
+                 fightItemKind == FightItemKind.PoisonBolt ||
+                 fightItemKind == FightItemKind.IceBolt ||
+                 fightItemKind == FightItemKind.FireBolt
+                 )
+        {
+          baseDamage += 5;
+          Price *= 5;
+          var head = fightItemKind.ToDescription();
+          var arrowLikeKind = fightItemKind.ToDescription();
+
+          var kind = head.Replace("Arrow", "").Replace("Bolt", "");
+          if (kind == "Poison")
+            kind = "poisonous";
+          else if (kind == "Ice")
+            kind = "freezing";
+          else if (kind == "Fire")
+            kind = "flaming";
+
+          PrimaryStatDescription = GetDescForBowLike(", ammo with a " 
+            + kind + 
+            " head for a "+ (arrowLikeKind.Contains("Arrow") ? "bow" : "crossbow" ));
+          HitTargetSound = "arrow_hit_body";
+        }
+
         else if (fightItemKind == FightItemKind.PlainBolt)
         {
-          baseDamage += 2;
+          baseDamage += 3;
           Price *= 2;
           PrimaryStatDescription = Name + ", basic ammo for a crossbow";
           HitTargetSound = "arrow_hit_body";
@@ -207,7 +252,7 @@ namespace Roguelike.Tiles.Looting
         }
         else if (fightItemKind == FightItemKind.SteelBolt)
         {
-          baseDamage += 10;
+          baseDamage += 12;
           Price *= 4;
           PrimaryStatDescription = Name + ", ammo with a steel head for a crossbow";
           HitTargetSound = "arrow_hit_body";
@@ -468,13 +513,23 @@ namespace Roguelike.Tiles.Looting
         if (FightItemKind == FightItemKind.WeightedNet)
         {
           var ab = GetAbility();
-          lsi.Desc = "Duration: "+ ab.PrimaryStat.Factor;
+          lsi.Desc = "Duration: "+ ((Duration -1) + ab.PrimaryStat.Factor);
         }
 
         res.Add(lsi);
         
       }
       return res;
+    }
+
+    public override bool IsMatchingRecipe(RecipeKind kind)
+    {
+      if (base.IsMatchingRecipe(kind))
+        return true;
+      if ((kind == RecipeKind.Arrows ||kind == RecipeKind.Bolts) && FightItemKind == FightItemKind.Stone)
+        return true;
+
+      return false;
     }
   }
 

@@ -13,6 +13,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
+//using static UnityEngine.EventSystems.EventTrigger;
 
 namespace Roguelike.Managers
 {
@@ -20,6 +21,7 @@ namespace Roguelike.Managers
 
   public class EntitiesManager
   {
+    
     protected AttackStrategy attackStrategy;
     public Hero Hero { get => context.Hero; }
 
@@ -27,21 +29,17 @@ namespace Roguelike.Managers
 
     public AbstractGameLevel Node { get => context.CurrentNode; }
     public GameContext Context { get => context; set => context = value; }
-    public List<LivingEntity> AllEntities 
+    public List<LivingEntity> AllEntities
     {
-      get => entities; 
-      private set => entities = value; 
+      get => entities;
+      private set => entities = value;
     }
     public IEnumerable<IAlly> AllAllies { get => entities.Cast<IAlly>(); }
-    public bool PendingForAllIdle 
-    { 
-      get => pendingForAllIdle;
-      set
-      {
-        pendingForAllIdle = value;
-        //context.Logger.LogInfo("pendingForAllIdle set to: "+ pendingForAllIdle);
-      }
-    }
+    public enum State { Idle, Looping, WaitingForAllIdle };
+
+    public State CurrentState { get; set; }
+
+    public bool CheckBusyOnes { get; set; }
 
     protected GameManager gameManager;
 
@@ -49,7 +47,7 @@ namespace Roguelike.Managers
     protected GameContext context;
     protected Container container;
     TurnOwner turnOwner;
-    bool pendingForAllIdle = false;
+    
 
     public EntitiesManager(TurnOwner turnOwner, GameContext context, EventsManager eventsManager, Container container,
                           GameManager gameManager)
@@ -62,66 +60,90 @@ namespace Roguelike.Managers
       Context.ContextSwitched += Context_ContextSwitched;
       this.eventsManager = eventsManager;
 
-      attackStrategy = new AttackStrategy(context, gameManager);
+      attackStrategy = new AttackStrategy(gameManager);
       attackStrategy.OnPolicyApplied = (Policy pol) => { OnPolicyApplied(pol); };
     }
 
     public virtual List<LivingEntity> GetActiveEntities()
     {
-      return this.entities.Where(i => 
-      i.Revealed && 
-      i.Alive && 
-      (i is God || i.DistanceFrom(gameManager.Hero) < 15))
+      var basicList = GetBasicActiveEntitiesList();
+
+      var res = basicList.Where(i => i is God ||
+      i.DistanceFrom(gameManager.Hero) < 15 ||
+      (i is INPC npc && npc.WalkKind == WalkKind.GoToHome)
+      )
       .ToList();
+
+      //var res1 = basicList.Where(i => i.State != EntityState.Idle)
+      //.ToList();
+      //if (res1.Count > res.Count)
+      //{
+      //  context.Logger.LogError("ret res1!");
+      //  res = res1;
+      //}
+      return res;
     }
 
-    private bool ReportAllDone(bool justEndedLoop)
+    protected List<LivingEntity> GetBasicActiveEntitiesList()
+    {
+      return this.entities
+              .Where(i => i.Revealed && i.Alive)
+              .ToList();
+    }
+
+    protected virtual bool CheckState(BusyOnesCheckContext context)
     {
       if (Context.TurnOwner == turnOwner)
       {
-        var busyOnes = FindBusyOnes();
-        if (!busyOnes.Any())
-        {
-          OnPolicyAppliedAllIdle();
-          return true;
-        }
-        else if (justEndedLoop)
-        {
-          PendingForAllIdle = true;
-        }
+        return DoCheckState(context);
       }
 
       return false;
     }
 
-    List<LivingEntity> ignoredForPendingForAllIdle = new List<LivingEntity>();
+    protected bool DoCheckState(BusyOnesCheckContext context)
+    {
+      var busyOnes = FindBusyOnes(context);
+      if (!busyOnes.Any() && (CurrentState == State.WaitingForAllIdle || CurrentState == State.Idle))
+      {
+        OnPolicyAppliedAllIdle();
+        return true;
+      }
+      else if (context == BusyOnesCheckContext.EndOfTurn)
+      {
+        CurrentState = State.WaitingForAllIdle;
+      }
+      return false;
+    }
+
     protected bool BrutalPendingForAllIdleFalseMode = false;
     public void ForcePendingForAllIdleFalse()
     {
-      if (BrutalPendingForAllIdleFalseMode)
-      {
-        var busyOnes = FindBusyOnes();
-        if (busyOnes.Any())
-        {
-          if (busyOnes.Count() == 1)
-          {
-            ignoredForPendingForAllIdle.Add(busyOnes.First());
-          }
-        }
-      }
-      PendingForAllIdle = false;
+      var busyOnes = FindBusyOnes(BusyOnesCheckContext.ForceIdle);
+      busyOnes.ForEach(i => i.State = EntityState.Idle);
+      CurrentState = State.Idle;
     }
 
-    public List<LivingEntity> FindBusyOnes()
+    public enum BusyOnesCheckContext { Unset, StartOfTurn, EndOfTurn, PolicyApplied, ForceIdle }
+
+    public virtual List<LivingEntity> FindBusyOnes(BusyOnesCheckContext context)
     {
-      var farOnes = entities.Where(i => i.DistanceFrom(gameManager.Hero) > 15 && i.State != EntityState.Sleeping).ToList();
-      farOnes.ForEach(i => i.State = EntityState.Idle);
-
-      var ents = entities
-      .Where(i => i.State != EntityState.Idle && i.State != EntityState.Sleeping && !ignoredForPendingForAllIdle.Contains(i))
-      .ToList();
-
+      //HACK - state change!
+      //var farOnes = entities.Where(i => i.DistanceFrom(gameManager.Hero) > 15 && i.State != EntityState.Sleeping).ToList();
+      //farOnes.ForEach(i => i.State = EntityState.Idle);
+      var ents = entities.Where(i => IsBusy(i)).ToList();
       return ents;
+    }
+
+    protected virtual bool IsBusy(LivingEntity i)
+    {
+      if (!i.Alive)
+        return false;
+      return i.State != EntityState.Idle &&
+             i.State != EntityState.Sleeping
+            //i.State != EntityState.DestPointTask &&
+            //!ignoredForPendingForAllIdle.Contains(i)
+            ;
     }
 
     private void Context_ContextSwitched(object sender, ContextSwitch e)
@@ -129,54 +151,100 @@ namespace Roguelike.Managers
       //SetEntities(Context.CurrentNode.GetTiles<LivingEntity>().Where(i=> !(i is Hero)).ToList());
     }
 
+    void LogInfo(string log)
+    {
+      context.Logger.LogInfo(log);
+    }
+
+    void LogError(string log)
+    {
+      context.Logger.LogError(log);
+    }
+
+    void WriteDetailedLog(string log)
+    {
+      if (detailedLogs)
+        LogInfo(this + " " + log);
+    }
     protected bool detailedLogs = false;
+    List<LivingEntity> _busyOnes = new List<LivingEntity>();
+    protected bool EmitAllIdleWhenNooneBusy = false;
+    protected const int ZyndramBackMovesCounter = 40;
+    public static bool IsZyndrams(LivingEntity i)
+    {
+      return i.tag1.StartsWith("zyndram_");
+    }
 
     public virtual void MakeTurn()
     {
-      //this.skipInTurn = skipInTurn;
-      if (pendingForAllIdle)
+      if (CurrentState == State.WaitingForAllIdle)
       {
+        var busyOnes = FindBusyOnes(BusyOnesCheckContext.StartOfTurn);
         if (detailedLogs)
         {
-          var busyOnes = FindBusyOnes();
-          context.Logger.LogInfo(this + " MakeTurn pendingForAllIdle!, returning... busy:"+ busyOnes.FirstOrDefault());
+          WriteDetailedLog(" MakeTurn waitingForAllIdle!, returning... busy:" + busyOnes.FirstOrDefault());
         }
-        return;
+        
+        if (EmitAllIdleWhenNooneBusy && !busyOnes.Any())
+        {
+          OnPolicyAppliedAllIdle();
+          return;
+        }
+
+        bool shallRet = true;
+        if (CheckBusyOnes)
+        {
+          CheckBusyOnes = false;
+          busyOnes = HackBusyOnes(busyOnes);
+          if (!busyOnes.Any())
+          {
+            shallRet = false;
+          }
+
+        }
+        
+        if (shallRet)
+          return;
+        CurrentState = State.Idle;
       }
+      CurrentState = State.Looping;
 
       RemoveDead();
 
       var activeEntities = GetActiveEntities();
-      if(detailedLogs)
-        context.Logger.LogInfo(this+" MakeTurn start, count: " + activeEntities.Count);
+      WriteDetailedLog("MakeTurn start, count: " + activeEntities.Count);
 
       if (!activeEntities.Any())
       {
-        if(detailedLogs)
-          context.Logger.LogInfo("no one to move...");
+        WriteDetailedLog("no one to move...");
 
         OnPolicyAppliedAllIdle();
         return;
       }
-      
+
       foreach (var entity in activeEntities)
       {
-        //detailedLogs = false;
-        
+
         try
         {
           var startPoint = entity.Position;
-          //  detailedLogs = true;
+
           if(detailedLogs)
-            context.Logger.LogInfo("turn of: " + entity + " started");
+            WriteDetailedLog("turn of: " + entity + " started");
+
+          if (entity.State != EntityState.Idle && entity.State != EntityState.Sleeping)
+          {
+            if(!IsZyndrams(entity))
+              LogError("entity.State != EntityState.Idle "+ entity + " " + entity.tag1);
+            continue;
+          }
           if (entity is AdvancedLivingEntity ade)
             ade.ApplyAbilities();
           entity.ApplyLastingEffects();
           entity.ReduceHealthDueToSurface(gameManager.CurrentNode);//TODO ReduceHealthDueToSurface shall be no matter if entity is active
           if (!entity.Alive)
           {
-            if(detailedLogs)
-              context.Logger.LogInfo("!entity.Alive");
+            WriteDetailedLog(" !entity.Alive "+ entity.Name);
             continue;
           }
 
@@ -188,11 +256,10 @@ namespace Roguelike.Managers
           string reason = "";
           if (entity.IsMoveBlockedDueToLastingEffect(out reason))
           {
-            if (detailedLogs)
-              context.Logger.LogInfo("!"+ reason);
+            WriteDetailedLog("!" + reason);
             continue;
           }
-
+          entity.MovesCounter++;
           MakeTurn(entity);
 
           if (!context.Hero.Alive)
@@ -206,7 +273,7 @@ namespace Roguelike.Managers
           //  context.Logger.LogError("EnemiesManager  endPoint == startPoint !!! entity: " + entity);
           //}
           if (detailedLogs)
-            context.Logger.LogInfo("turn of: " + entity + " ended");
+            WriteDetailedLog("turn of: " + entity + " ended");
         }
         catch (Exception ex)
         {
@@ -219,23 +286,41 @@ namespace Roguelike.Managers
 
       RemoveDead();
 
-      if (detailedLogs)
-        context.Logger.LogInfo(this+" MakeTurn ends");
+      WriteDetailedLog("MakeTurn ends");
       Dungeons.DebugHelper.Assert(Context.TurnOwner == turnOwner);
+      CurrentState = State.WaitingForAllIdle;
+      CheckState(BusyOnesCheckContext.EndOfTurn);
+    }
 
-      ReportAllDone(true);
+    private List<LivingEntity> HackBusyOnes(List<LivingEntity> busyOnes)
+    {
+      var busyOnesAgain = _busyOnes.Where(i => busyOnes.Contains(i)).ToList();
+      if (busyOnesAgain.Any())
+      {
+        var names = String.Join(";", busyOnesAgain.Select(i => i.Name));
+        LogError("Forcing idle for entities: " + String.Join("; ", names + " "+ busyOnesAgain.First()));
+        foreach (var bo in busyOnesAgain)
+        {
+          bo.State = EntityState.Idle;
+        }
+      }
+      busyOnes = FindBusyOnes(BusyOnesCheckContext.ForceIdle);
+      _busyOnes = busyOnes;
+      return busyOnes;
     }
 
     protected virtual void MakeSpecialActions()
     {
-      
+
     }
 
     public virtual void MakeTurn(LivingEntity entity)
     {
+      if (entity.IsMercenary && entity.MovesCounter > ZyndramBackMovesCounter && RandHelper.GetRandomDouble() > 0.5f)
+        return;
       MakeRandomMove(entity);
     }
-        
+
     public virtual void MakeRandomMove(LivingEntity entity)
     {
       var emptyTypes = Node.GetExtraTypesConsideredEmpty();
@@ -243,7 +328,7 @@ namespace Roguelike.Managers
       if (pt != null && pt.Item1.IsValid() && !Node.GetSurfaceKindsUnderPoint(pt.Item1).Contains(SurfaceKind.Lava))
       {
         //if (detailedLogs)
-        //  context.Logger.LogInfo("!MoveEntity " + pt.Item1);
+        // LogInfo("!MoveEntity " + pt.Item1);
         MoveEntity(entity, pt.Item1, null);
       }
       else if (detailedLogs)
@@ -258,7 +343,7 @@ namespace Roguelike.Managers
           neibs += ty;
         }
 
-        context.Logger.LogInfo("MakeRandomMove not done pt: " + pt + " empty types: " + types + ", neibs: "+ neibs);
+        WriteDetailedLog("MakeRandomMove not done pt: " + pt + " empty types: " + types + ", neibs: " + neibs);
       }
     }
 
@@ -273,12 +358,19 @@ namespace Roguelike.Managers
     {
       entities = list;
       entitiesSet = true;
+      entities.ForEach(i => EnsureInitPoint(i));
     }
 
     public virtual void AddEntity(LivingEntity ent)
     {
+      if (entities.Contains(ent))
+      {
+        LogError("entity already edded "+ent);
+        return;
+      }
       entities.Add(ent);
       entitiesSet = true;
+      EnsureInitPoint(ent);
     }
 
     public bool Contains(LivingEntity ent)
@@ -288,10 +380,18 @@ namespace Roguelike.Managers
 
     protected virtual bool ShalLReportTurnOwner(Policy policy)
     {
+      if (policy is MovePolicy)
+        return false;//when hero had a hound in the camp this was logged
+
       return true;
     }
 
-    protected virtual void OnPolicyApplied(Policy policy)
+    /// <summary>
+    /// Animation is done if all done end the turn
+    /// </summary>
+    /// <param name="policy"></param>
+    public //TODO for god
+      virtual void OnPolicyApplied(Policy policy)
     {
       if (!entitiesSet)
         context.Logger.LogError("!entitiesSet");
@@ -300,36 +400,45 @@ namespace Roguelike.Managers
       {
         if (ShalLReportTurnOwner(policy) && GameContext.ShalLReportTurnOwner(policy))
         {
-          
-          context.Logger.LogError("OnPolicyApplied " + policy + " context.TurnOwner != turnOwner, context.TurnOwner: " + context.TurnOwner + " this: " + this + ", policy : "+policy);
+          context.Logger.LogError("OnPolicyApplied " + policy + " context.TurnOwner != turnOwner, context.TurnOwner: " + context.TurnOwner 
+            + " this: " + this + ", policy : " + policy + " CurrentState: " + CurrentState);
         }
         //return;//that return probably causes a critical bug that hero is not moving at all
       }
       //  return;//in ascii/UT mode this can happend
-      if (pendingForAllIdle)
+      if (CurrentState == State.WaitingForAllIdle)
       {
-        if(detailedLogs)
-          context.Logger.LogInfo("calling  ReportAllDone... Context.TurnOwner: " + Context.TurnOwner);
-        ReportAllDone(false);
+        if (detailedLogs)
+          WriteDetailedLog("calling  ReportAllDone... Context.TurnOwner: " + Context.TurnOwner);
+        CheckState(BusyOnesCheckContext.PolicyApplied);
       }
     }
 
     protected virtual void OnPolicyAppliedAllIdle()
     {
-      if(detailedLogs)
-        context.Logger.LogInfo(this+ " OnPolicyAppliedAllIdle Context.TurnOwner "+ Context.TurnOwner);
+      if (detailedLogs)
+        WriteDetailedLog(" OnPolicyAppliedAllIdle Context.TurnOwner " + Context.TurnOwner);
       if (Context.TurnOwner == turnOwner)//this check is mainly for ASCII/UT
       {
         if (detailedLogs)
-          Context.Logger.LogInfo(this+ " OnPolicyAppliedAllIdle calling MoveToNextTurnOwner");
-        PendingForAllIdle = false;
+          WriteDetailedLog(" OnPolicyAppliedAllIdle calling MoveToNextTurnOwner");
+        CurrentState = State.Idle;
         Context.MoveToNextTurnOwner();
       }
     }
 
     protected virtual bool MoveEntity(LivingEntity entity, Point newPos, List<Point> fullPath = null)
     {
+      EnsureInitPoint(entity);
       return gameManager.ApplyMovePolicy(entity, newPos, fullPath, (e) => OnPolicyApplied(e));
+    }
+
+    private static void EnsureInitPoint(LivingEntity entity)
+    {
+      if (entity.InitialPoint == LivingEntity.DefaultInitialPoint)
+      {
+        entity.InitialPoint = entity.point;
+      }
     }
 
     public bool CanMoveEntity(LivingEntity entity, Point pt)
@@ -364,7 +473,8 @@ namespace Roguelike.Managers
 
     public bool RemoveAlly(IAlly ent)
     {
-      return RemoveEntity(ent as LivingEntity);
+      var rem = RemoveEntity(ent as LivingEntity);
+      return rem;
     }
 
     public virtual bool RemoveDeadEntity(LivingEntity ent)
@@ -374,55 +484,70 @@ namespace Roguelike.Managers
 
     public bool RemoveEntity(LivingEntity ent)
     {
-      return entities.Remove(ent);
+      var res = entities.Remove(ent);
+      if (ent is IAlly ally)
+      {
+        ally.Active = false;
+        Context.EventsManager.AppendAction(new AllyAction() { InvolvedTile = ally, AllyActionKind = AllyActionKind.Released }); ;
+      }
+      return res;
     }
 
     protected bool MakeMoveOnPath(LivingEntity entity, Point target, bool forHeroAlly, bool alwaysAddNextPoint = false)
     {
       bool moved = false;
-      entity.PathToTarget = Node.FindPath(entity.point, target, forHeroAlly, true, false, entity);
-      if (entity.PathToTarget != null && entity.PathToTarget.Count > 1)
+      entity.PathToTarget = Node.FindPath(entity, target);
+      if (entity.PathToTarget != null)
       {
-        var fullPath = new List<Point>();
-        var node = entity.PathToTarget[1];
-        var pt = new Point(node.Y, node.X);
-        fullPath.Add(pt);
-
-        if (entity.PathToTarget.Count > 2)
+        if (entity.PathToTarget.Count > 1)
         {
-          var canMoveFaster = entity.CalcShallMoveFaster(Node);
-                      
-          if (canMoveFaster)
+          var fullPath = new List<Point>();
+          var node = entity.PathToTarget[1];
+          var pt = new Point(node.Y, node.X);
+          fullPath.Add(pt);
+
+          if (entity.PathToTarget.Count > 2)
           {
-            node = entity.PathToTarget[2];
-            var nextPoint = new Point(node.Y, node.X);
-            if (target != nextPoint || alwaysAddNextPoint)//what for ?
+            var canMoveFaster = entity.CalcShallMoveFaster(Node);
+
+            if (canMoveFaster)
             {
-              fullPath.Add(nextPoint);
-              pt = nextPoint;
+              node = entity.PathToTarget[2];
+              var nextPoint = new Point(node.Y, node.X);
+              if (target != nextPoint || alwaysAddNextPoint)//what for ?
+              {
+                fullPath.Add(nextPoint);
+                pt = nextPoint;
+              }
             }
           }
-        }
 
-        if (Node.GetTile(pt) is LivingEntity)
-        {
-          //gm.Assert(false, "Level.GetTile(pt) is LivingEntity "+ enemy + " "+pt);
-          return false;
-        }
+          var atPoint = Node.GetTile(pt);
+          if (atPoint is LivingEntity && atPoint != entity)
+          {
+            //gm.Assert(false, "Level.GetTile(pt) is LivingEntity "+ enemy + " "+pt);
+            return false;
+          }
 
-        MoveEntity(entity, pt, fullPath);
-        moved = true;
+          MoveEntity(entity, pt, fullPath);
+          moved = true;
+        }
       }
-
+      else
+      {
+        int k = 0;
+        k++;
+      }
+      entity.LastMoveOnPathResult = moved;
       return moved;
     }
 
     protected const int MaxEntityDistanceToToChase = 6;
     public bool ShallChaseTarget
     (
-      LivingEntity chaser, 
-      LivingEntity target, 
-      int maxEntityDistanceToToChase = MaxEntityDistanceToToChase, 
+      LivingEntity chaser,
+      LivingEntity target,
+      int maxEntityDistanceToToChase = MaxEntityDistanceToToChase,
       LivingEntity maxDistanceFrom = null
     )
     {
@@ -431,12 +556,14 @@ namespace Roguelike.Managers
         return false;
       }
 
-      if(chaser.HasLastingEffect(Effects.EffectType.Frighten))
-        return false; 
+      if (chaser.HasLastingEffect(Effects.EffectType.Frighten))
+        return false;
 
       var isSmoke = this.gameManager.CurrentNode.IsAtSmoke(chaser);
       if (isSmoke)
         return false;
+
+      var isAlly = chaser is IAlly;
 
       if (chaser.WasEverHitBy(target))
       {
@@ -446,7 +573,7 @@ namespace Roguelike.Managers
       if (maxDistanceFrom == null)
         maxDistanceFrom = chaser;
 
-      if (chaser.ChaseCounter > 4)
+      if (chaser.ChaseCounter > 4 && !isAlly)
       {
         chaser.ChaseCounter = 0;
         return false;
@@ -454,7 +581,9 @@ namespace Roguelike.Managers
 
       var dist = maxDistanceFrom.DistanceFrom(target);
       if (dist < maxEntityDistanceToToChase)
+      {
         return true;
+      }
 
       return false;
     }
@@ -467,7 +596,29 @@ namespace Roguelike.Managers
         .ToList();
     }
 
-    
+    public void FollowTarget(LivingEntity follower, LivingEntity target)
+    {
+      if (target == null)
+        return;
+
+      if (follower.DistanceFrom(target) > 2)//do not block him
+      {
+        var moved = MakeMoveOnPath(follower, target.point, false);
+        if (!moved)
+        {
+          var ce = gameManager.CurrentNode.GetClosestEmpty(target);
+          if (ce != null)
+            moved = MakeMoveOnPath(follower, ce.point, false);
+        }
+      }
+    }
+
+    protected void FollowTarget(INPC npc)
+    {
+      var target = this.AllEntities.Where(i => i.Name == npc.FollowedTargetName).SingleOrDefault();
+      FollowTarget(npc.LivingEntity, target);
+    }
+
   }
 
 

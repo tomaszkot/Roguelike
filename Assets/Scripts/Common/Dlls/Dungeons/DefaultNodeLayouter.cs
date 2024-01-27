@@ -112,7 +112,6 @@ namespace Dungeons
         if (!currentNode.Secret)
           lastNonSecretNode = currentNode;
 
-
         bool shallBreak = currentNodeIndex == mazeNodes.Count - 1;
         AppendNodeInfo infoNext = new AppendNodeInfo();
 

@@ -1,6 +1,4 @@
-using Roguelike.Discussions;
-using System.Collections;
-using System.Collections.Generic;
+using Roguelike.Tiles.Interactive;
 
 namespace Roguelike.Discussions
 {
@@ -8,6 +6,9 @@ namespace Roguelike.Discussions
   {
     string npc;
     protected SimpleInjector.Container container;
+    public const string Great = "Great!";
+    public const string WIPID = "WorkingOnIt";
+    public const string WIPText = "I'm working on it";
 
     public DiscussionNpcInfo(SimpleInjector.Container container, string npc)
     {
@@ -15,13 +16,15 @@ namespace Roguelike.Discussions
       this.container = container;
     }
 
-    public DiscussionTopic GetTopicByLeftRight(string rightId, string leftId)
+    public DiscussionTopic GetTopicByLeftRight(string rightId, string leftId = null)
     {
       string left, right;
       GetRightLeft(rightId, out left, out right);
       var topic = container.GetInstance<DiscussionTopic> ();
       topic.Init(right, left);
       //var topic = new DiscussionTopic(container, right, left);
+      if (string.IsNullOrEmpty(leftId))
+        leftId = rightId;
       topic.Left.Id = leftId;
       topic.Right.Id = rightId;
       if (topic.Right.Id == KnownSentenceKind.WhatsUp.ToString())
@@ -58,18 +61,17 @@ namespace Roguelike.Discussions
       topic.Left.VoiceClipTimeTo = end;
     }
 
-    //public DiscussionTopic GetTopic(string rightId, KnownSentenceKind rightKnown, QuestKind questKind, bool skipReward = false)
-    //{
-    //  string left, right;
-    //  GetRightLeft(rightId, out left, out right);
-    //  var topic = new DiscussionTopic(container, right, rightKnown, questKind, skipReward: skipReward);
-    //  topic.Right.Id = rightId;
-    //  SetClipTimes(rightId, topic);
-    //  return topic;
-    //}
-
-    protected abstract void GetRightLeft(string rightId, out string left, out string right);
-    public abstract void GetHeroClipTimes(string clipId, out string fileName, out float start, out float end);
+    protected virtual /*abstract*/ void GetRightLeft(string rightId, out string left, out string right) 
+    {
+      left = "";
+      right = "";
+    }
+    public virtual /*abstract*/ void GetHeroClipTimes(string clipId, out string fileName, out float start, out float end)
+    {
+      fileName = "";
+      start = 0;
+      end = 0;
+    }
     public virtual void GetNpcClipTimes(string clipId, out string fileName, out float start, out float end)
     {
       fileName = "";

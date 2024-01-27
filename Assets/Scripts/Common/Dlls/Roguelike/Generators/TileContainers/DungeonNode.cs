@@ -24,7 +24,11 @@ namespace Roguelike.Generators.TileContainers
     {
     }
 
-    
+    //in the mill they were outside the room
+    protected override bool ShallEnsureCorrectY(Dungeons.Tiles.Tile tile)
+    {
+      return  tile.IsDynamic();
+    }
 
     public override bool SetTile(Tile tile, Point point, bool resetOldTile = true,
       bool revealReseted = true, bool autoSetTileDungeonIndex = true, bool reportError = true)
@@ -76,8 +80,16 @@ namespace Roguelike.Generators.TileContainers
       return reveal;
     }
 
-    public override Tile SetTileAtRandomPosition(Tile tile, bool matchNodeIndex = true, EmptyCheckContext emptyCheckContext = EmptyCheckContext.Unset)
+    public override Tile SetTileAtRandomPosition
+    (
+      Tile tile, 
+      bool matchNodeIndex = true,
+      EmptyCheckContext emptyCheckContext = EmptyCheckContext.Unset
+    )
     {
+      if (tile is Loot)
+        emptyCheckContext = EmptyCheckContext.DropLoot;
+
       var tileSet = base.SetTileAtRandomPosition(tile, matchNodeIndex, emptyCheckContext);
       if (tileSet != null)
       {

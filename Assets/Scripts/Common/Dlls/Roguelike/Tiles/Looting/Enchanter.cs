@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace Roguelike.Tiles.Looting
 {
-  public enum EnchantSrc { Unset, Ruby, Emerald, Diamond, Amber, Fang, Tusk, Claw }
+  public enum EnchantSrc { Unset, Ruby, Emerald, Diamond, Amber, Fang, /*Tusk*/ Claw }
   public enum EnchanterSize { Small, Medium, Big }
 
   public abstract class Enchanter : StackedLoot
@@ -14,6 +14,12 @@ namespace Roguelike.Tiles.Looting
     public static string Medium = "medium";
     public static string Big = "big";
     public bool Damaged { get; set; }
+
+    public Enchanter()
+    {
+      EnchanterSize = EnchanterSize.Small;
+      
+    }
 
     EnchanterSize enchanterSize = EnchanterSize.Small;
     public EnchanterSize EnchanterSize
@@ -84,6 +90,13 @@ namespace Roguelike.Tiles.Looting
     }
 
     public abstract void SetProps();
+    protected abstract string CalcTagFromProps();
+
+    protected void SetPropsCommon()
+    {
+      SetPrice();
+      tag1 = CalcTagFromProps();
+    }
 
     public abstract bool ApplyTo(Equipment eq, Func<EquipmentKind> ekProvider, out string error);
 
@@ -104,6 +117,7 @@ namespace Roguelike.Tiles.Looting
     protected void SetName(string typeName)
     {
       Name = EnchanterSize + " " + typeName;
+      DisplayedName = Name;
     }
 
     public override string PrimaryStatDescription 
@@ -122,6 +136,13 @@ namespace Roguelike.Tiles.Looting
       set 
       {
       }
+    }
+
+    public override RecipeKind GetMatchingRecipe(Loot other)
+    {
+      if (other is Equipment)
+        return RecipeKind.EnchantEquipment;
+      return RecipeKind.Unset;
     }
   }
 }

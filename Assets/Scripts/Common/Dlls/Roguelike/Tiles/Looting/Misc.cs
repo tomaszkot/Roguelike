@@ -9,8 +9,18 @@ namespace Roguelike.Tiles.Looting
       Name = "Feather";
       Count = 20;
       PrimaryStatDescription = "Part of the recipe";
-      Price = 5;
+      Price = 2;
       tag1 = "feather";
+    }
+
+    public override bool IsMatchingRecipe(RecipeKind kind)
+    {
+      if (base.IsMatchingRecipe(kind))
+        return true;
+      if ((kind == RecipeKind.Arrows || kind == RecipeKind.Bolts))
+        return true;
+
+      return false;
     }
   }
 
@@ -20,11 +30,25 @@ namespace Roguelike.Tiles.Looting
     {
       Name = "Hazel";
       PrimaryStatDescription = "Part of the recipe";
-      Price = 5;
-      Count = (int)RandHelper.GetRandomFloatInRange(30,40);
+      Price = 2;
+      Count = (int)RandHelper.GetRandomFloatInRange(15,40);
       tag1 = "hazel";
+    
+    }
+
+    public override bool IsMatchingRecipe(RecipeKind kind)
+    {
+      if (base.IsMatchingRecipe(kind))
+        return true;
+      if ((kind == RecipeKind.Arrows || kind == RecipeKind.Bolts))
+        return true;
+
+      return false;
     }
   }
+
+
+
 
   public enum GobletKind { Silver, Gold }
 
@@ -87,5 +111,7 @@ namespace Roguelike.Tiles.Looting
     {
       return Kind + "_" + base.GetId();
     }
+
+    
   }
 }

@@ -17,8 +17,7 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
-//using UnityEditor.Experimental.GraphView;
-//using static UnityEngine.EventSystems.EventTrigger;
+
 
 namespace Roguelike.Tiles.LivingEntities
 {
@@ -29,20 +28,18 @@ namespace Roguelike.Tiles.LivingEntities
 
   public class Enemy : LivingEntity
   {
-    [JsonIgnore]
-    public int RessurectOrdersCounter { get; set; }
-
-    [JsonIgnore]
-    public int RessurectOrderCooldown { get; set; }
-
-    
+   
     public const string ChempTagSuffix = "_ch";
     public PrefferedFightStyle PrefferedFightStyle { get; set; }//= PrefferedFightStyle.Magic;
     public static char[] AllSymbols;
 
     public int NumberOfCastedEffectsForAllies = 0;
     public int NumberOfEmergencyTeleports = 0;
-    public EnemyPowerKind PowerKind { get; set; } = EnemyPowerKind.Plain;
+    public EnemyPowerKind PowerKind 
+    { 
+      get; 
+      set; 
+    } = EnemyPowerKind.Plain;
 
     public Dictionary<IncreaseStatsKind, bool> StatsIncreased { get; set; } = new Dictionary<IncreaseStatsKind, bool>();
     public Loot DeathLoot { get; set; }
@@ -62,8 +59,6 @@ namespace Roguelike.Tiles.LivingEntities
 
     public Enemy(Point point, char symbol, Container cont) : base(point, symbol, cont)
     {
-      //MovesCountPerTurn = 2;
-      //IsWounded = true;
       this.Symbol = symbol;
       DestroySound = "death";
 #if ASCII_BUILD
@@ -111,20 +106,7 @@ namespace Roguelike.Tiles.LivingEntities
       return false;
     }
 
-    public void SendCommand(EntityCommandKind raiseMyFriends)
-    {
-      var ea = new EnemyAction();
-      ea.Enemy = this;
-      ea.CommandKind = EntityCommandKind.RaiseMyFriends;
-      ea.Kind = EnemyActionKind.SendComand;
-      ea.Info = "Raise my friends!";
-      Container.GetInstance<EventsManager>().AppendAction(ea);
-      RessurectOrderCooldown = 10;
-      RessurectOrdersCounter++;
-      var sm = Container.GetInstance<GameManager>().SoundManager;
-      if (sm != null)
-        sm.PlayVoice("raise_my_friends");
-    }
+    
 
     public override bool HasFightItem(FightItemKind fik)
     {
@@ -148,33 +130,33 @@ namespace Roguelike.Tiles.LivingEntities
       return startStat;
     }
 
-    public FightItemKind ActiveFightItemKind { get; set; }
+    public FightItemKind SelectedFightItemKind { get; set; }
 
     public ProjectileFightItem SetActiveFightItem(FightItemKind kind)
     {
-      ActiveFightItemKind = kind;
+      SelectedFightItemKind = kind;
       if (!fightItems.ContainsKey(kind))
         SetFightItem(new ProjectileFightItem(kind));
       return fightItems[kind] as ProjectileFightItem;
     }
 
-    public override FightItem ActiveFightItem
+    public override FightItem SelectedFightItem
     {
       get
       {
-        if (ActiveFightItemKind == FightItemKind.Unset)
+        if (SelectedFightItemKind == FightItemKind.Unset)
           return null;
-        if(!fightItems.ContainsKey(ActiveFightItemKind))
+        if(!fightItems.ContainsKey(SelectedFightItemKind))
           return null;
-        return fightItems[ActiveFightItemKind];
+        return fightItems[SelectedFightItemKind];
       }
       set
       {
         var pfi = value as ProjectileFightItem;
         if (value == null)
-          ActiveFightItemKind = FightItemKind.Unset;
+          SelectedFightItemKind = FightItemKind.Unset;
         else
-          ActiveFightItemKind = pfi.FightItemKind;
+          SelectedFightItemKind = pfi.FightItemKind;
         
         SetFightItem(pfi);
       }
@@ -201,8 +183,7 @@ namespace Roguelike.Tiles.LivingEntities
       return false;
     }
 
-    bool specialNonplainCase;
-        
+       
     public virtual void SetNonPlain(bool boss, bool specialCase = false)
     {
       if (PowerKind != EnemyPowerKind.Plain)
@@ -211,7 +192,7 @@ namespace Roguelike.Tiles.LivingEntities
           //AssertFalse("SetNonPlain Kind != PowerKind.Plain " + this);
         return;
       }
-      specialNonplainCase = specialCase;
+      //specialNonplainCase = specialCase;
       NumberOfEmergencyTeleports = 2;
       PowerKind = boss ? EnemyPowerKind.Boss : EnemyPowerKind.Champion;
       if (PowerKind == EnemyPowerKind.Boss)
@@ -315,16 +296,21 @@ namespace Roguelike.Tiles.LivingEntities
       //ActiveScroll = new Scroll(SpellKind.IceBall);
       if (Name.ToLower() == "druid" || PowerKind == EnemyPowerKind.Boss)
       {
-        ActiveManaPoweredSpellSource = new Scroll(attackSpells.GetRandomElem());
-        SetResistanceFromScroll(ActiveManaPoweredSpellSource);
+        SetRandomSpellSource();
+        SetResistanceFromScroll(SelectedManaPoweredSpellSource);
         Stats.SetNominal(EntityStatKind.Mana, 10000);//TODO
       }
       else if (Name.ToLower() == "lava elemental" ||
                Name.ToLower() == "stone golem")
       {
-        ActiveManaPoweredSpellSource = new Scroll(SpellKind.FireStone);
+        SelectedManaPoweredSpellSource = new Scroll(SpellKind.FireStone);
         Stats.SetNominal(EntityStatKind.Mana, 10000);//TODO
       }
+    }
+
+    public void SetRandomSpellSource()
+    {
+      SelectedManaPoweredSpellSource = new Scroll(attackSpells.GetRandomElem());
     }
 
     private void SetResistanceFromScroll(SpellSource activeScroll)
@@ -372,7 +358,7 @@ namespace Roguelike.Tiles.LivingEntities
       {
         if (IsStrongerThanAve)
         {
-          IncreaseStats(1.5f, IncreaseStatsKind.Name);
+          IncreaseStats(1.3f, IncreaseStatsKind.Name);
         }
         
       }
@@ -450,19 +436,20 @@ namespace Roguelike.Tiles.LivingEntities
 
     public void SetSpecialAttackStatFromSymbol()
     {
-      if (Symbol == EnemySymbols.SnakeSymbol ||
-         Symbol == EnemySymbols.SpiderSymbol
+      if (Char.ToLower(Symbol) == EnemySymbols.SnakeSymbol ||
+         Char.ToLower(Symbol) == EnemySymbols.SpiderSymbol
          //hornet has it done in : public override string Name
          )
       {
         SetStat(EntityStatKind.PoisonAttack);
+        SetStat(EntityStatKind.ResistPoison, Stats.GetStat(EntityStatKind.ResistPoison).Value.Nominal*2);
       }
     }
 
-    private void SetStat(EntityStatKind esk)
+    private void SetStat(EntityStatKind esk, float nominal = 1.5f)
     {
       var att = Stats.GetStat(esk);
-      att.Value.Nominal = 1.5f;
+      att.Value.Nominal = nominal;
     }
 
     public static string NameFromSymbol(char symbol)
@@ -477,9 +464,10 @@ namespace Roguelike.Tiles.LivingEntities
 
     public static Enemy Spawn(char symbol, int level, Container cont, Difficulty? difficulty = null)
     {
-      var enemy = new Enemy(symbol, cont);
+      var enemy = cont.GetInstance<Enemy>();//new Enemy(symbol, cont);
       enemy.Container = cont;
       enemy.SetLevel(level, difficulty);
+      enemy.Symbol = symbol;
       enemy.tag1 = EnemySymbols.EnemiesToSymbols.Where(i => i.Value == symbol).Single().Key;
       enemy.Revealed = true;
 
@@ -532,9 +520,7 @@ namespace Roguelike.Tiles.LivingEntities
         AddImmunityFromName();
       }
     }
-
-    public bool HitRandomTarget { get; internal set; }
-
+        
     public void SetPrefferedFightStyle(PrefferedFightStyle pfs)
     {
       PrefferedFightStyle = pfs;
@@ -560,11 +546,11 @@ namespace Roguelike.Tiles.LivingEntities
     {
       if (Name.ToLower().Contains("druid"))
       {
-        return ActiveManaPoweredSpellSource;
+        return SelectedManaPoweredSpellSource;
       }
       else if (Name.ToLower().Contains("lava el"))
       {
-        return ActiveManaPoweredSpellSource;
+        return SelectedManaPoweredSpellSource;
       }
       return base.GetAttackingScroll();
     }
@@ -580,7 +566,8 @@ namespace Roguelike.Tiles.LivingEntities
         else if (tag.EndsWith("_king"))
           SetNonPlain(true);
 
-        SetNameFromTag1();
+        if(tag1 != "boar_butcher")
+          SetNameFromTag1();
         var symbol = Roguelike.EnemySymbols.GetSymbolFromName(tag);
         if (symbol != Roguelike.EnemySymbols.Unset)
         {
@@ -634,5 +621,15 @@ namespace Roguelike.Tiles.LivingEntities
 
       return base.HandleOrder(order, hero, node);
     }
+
+    public override bool HasSpecialSkill(EntityCommandKind skill)
+    {
+      var res = base.HasSpecialSkill(skill);
+      if (skill == EntityCommandKind.Resurrect)
+        return PowerKind != EnemyPowerKind.Plain && res;
+      return res;
+    }
+
+    
   }
 }

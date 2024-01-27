@@ -1,4 +1,6 @@
-﻿using SimpleInjector;
+﻿using Roguelike.Attributes;
+using Roguelike.Spells;
+using SimpleInjector;
 
 namespace Roguelike.Tiles.LivingEntities
 {
@@ -17,6 +19,21 @@ namespace Roguelike.Tiles.LivingEntities
 #if ASCII_BUILD
         color = ConsoleColor.Yellow;
 #endif
+    }
+
+    public override float GetStartStat(EntityStatKind esk)
+    {
+      var startStat = base.GetStartStat(esk);
+      if (esk == EntityStatKind.Strength)
+        startStat += SkeletonSpell.SkeletonSpellStrengthIncrease;
+
+      else if (esk == EntityStatKind.Defense)
+        startStat += SkeletonSpell.SkeletonSpellDefenseIncrease;
+
+      else if (esk == EntityStatKind.Health)
+        startStat += SkeletonSpell.SkeletonSpellHealthIncrease;
+
+      return startStat;
     }
 
     public void bark(bool strong)

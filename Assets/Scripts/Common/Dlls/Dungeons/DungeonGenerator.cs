@@ -104,7 +104,7 @@ namespace Dungeons
       DungeonNode dungeon = CreateDungeonNodeInstance();
 
       dungeon.ChildIslandCreated += Dungeon_ChildIslandCreated;
-      if (dungeonLayouterKind == DungeonLayouterKind.Corridor && nodeIndex == (int)RoomPlacement.Center)
+      if (dungeonLayouterKind == Dungeons.DungeonLayouterKind.Corridor && nodeIndex == (int)RoomPlacement.Center)
       {
         w = GenerationInfo.MaxRoomSideSize;
         h = GenerationInfo.MaxRoomSideSize;
@@ -150,7 +150,7 @@ namespace Dungeons
 
       if (!this.info.PreventSecretRoomGeneration)
       {
-        if (this.dungeonLayouterKind == DungeonLayouterKind.Default)
+        if (this.dungeonLayouterKind == Dungeons.DungeonLayouterKind.Default)
         {
           if (this.info.SecretRoomIndex >= 0)
             secretRoomIndex = this.info.SecretRoomIndex;
@@ -232,12 +232,38 @@ namespace Dungeons
       return level;
     }
 
+    static List<DungeonLayouterKind> everDungeonLayouterKinds = new List<DungeonLayouterKind>();
+    static DungeonLayouterKind recentDungeonLayouterKind;
+
     protected virtual DungeonLayouterKind CalcLayouterKind()
     {
+      DungeonLayouterKind lk;
+         
+      lk = GenerateDungeonLayouterKind();
+      if (lk == recentDungeonLayouterKind)//help luck
+      {
+        lk = GenerateDungeonLayouterKind();
+      }
+      if (everDungeonLayouterKinds.Count == 1 && lk == everDungeonLayouterKinds[0])
+      {
+        lk = lk == DungeonLayouterKind.Corridor ? DungeonLayouterKind.Default : DungeonLayouterKind.Corridor;
+      }
+
+      if (!everDungeonLayouterKinds.Contains(lk))
+        everDungeonLayouterKinds.Add(lk);
+      
+      recentDungeonLayouterKind = lk;
+      return lk;
+    }
+
+    static DungeonLayouterKind GenerateDungeonLayouterKind()
+    {
+      DungeonLayouterKind lk;
       if (RandHelper.GetRandomDouble() > 0.5f)
-        return DungeonLayouterKind.Corridor;
+        lk = DungeonLayouterKind.Corridor;
       else
-        return DungeonLayouterKind.Default;
+        lk = DungeonLayouterKind.Default;
+      return lk;
     }
 
     protected virtual void CreateDynamicTiles(List<Dungeons.TileContainers.DungeonNode> mazeNodes)

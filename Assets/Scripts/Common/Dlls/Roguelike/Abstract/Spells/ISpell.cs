@@ -24,6 +24,8 @@ namespace Roguelike.Abstract.Spells
     SpellStatsDescription CreateSpellStatsDescription(bool currentLevel);
 
     int NextLevelMagicNeeded { get; }
+
+    bool SendByGod { get; set; }
     //EntityStatKind[] GetEntityStatKinds();
 
   }

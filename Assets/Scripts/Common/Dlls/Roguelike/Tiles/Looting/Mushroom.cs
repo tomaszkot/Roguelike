@@ -76,38 +76,10 @@ namespace Roguelike.Tiles.Looting
         tag1 = "mash_Boletus";
     }
 
-    //public override Loot CreateCrafted(Loot other)
-    //{
-    //  if (other is Potion && (other as Potion).Kind == PotionKind.Health)
-    //  {
-    //    return new SpecialPotion(SpecialPotionKind.Strength, SpecialPotionSize.Small);
-    //  }
-    //  else if (other is Potion && (other as Potion).Kind == PotionKind.Mana)
-    //  {
-    //    return new SpecialPotion(SpecialPotionKind.Magic, SpecialPotionSize.Small);
-    //  }
+    
 
-    //  return null;
-    //}
-
-    //public override bool IsCraftableWith(LootBase other)
-    //{
-    //  if (other is Potion)
-    //  {
-    //    return true;
-    //  }
-
-    //  return false;
-    //}
     void SetPrimaryStatDesc()
     {
-      //string desc = "Turns " + Extensions.FirstCharToUpper(SrcPotion.ToString()) + " Potion into";
-      //if (DestPotion == SpecialPotionKind.Magic)
-      //  desc += " a Magic ";
-      //else
-      //  desc += " a Strength ";
-
-      //desc += "Potion.";
       string desc = PartOfCraftingRecipe;
       desc += GetConsumeDesc(" Consumable");
       PrimaryStatDescription = desc;
@@ -118,13 +90,21 @@ namespace Roguelike.Tiles.Looting
       return base.ToString() + " " + MushroomKind;
     }
 
-    //public Loot Loot => this;
-
-    //public EntityStatKind EnhancedStat => EntityStatKind.Health;
-
     public override string[] GetExtraStatDescription()
     {
       return extraStatDescription;
+    }
+
+    public override bool IsMatchingRecipe(RecipeKind kind)
+    {
+      if (base.IsMatchingRecipe(kind))
+        return true;
+      if((kind == RecipeKind.Toadstools2Potion || kind == RecipeKind.TransformPotion) && 
+        (MushroomKind == MushroomKind.BlueToadstool || MushroomKind == MushroomKind.RedToadstool))
+        return true;
+      if (kind == RecipeKind.CraftSpecialPotion && MushroomKind == MushroomKind.Boletus)
+        return true;
+      return false;
     }
   }
 }

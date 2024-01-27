@@ -3,8 +3,9 @@
   public enum HintKind
   {
     Unset, LootCollectShortcut, BulkLootCollectShortcut, ShowCraftingPanel, HeroLevelTooLow, CanNotPutOnUnidentified,
-    LootHightlightShortcut, UseProjectile, UseElementalWeaponProjectile, SwapActiveWeapon, SwapActiveHotBar, PreviewSwapActiveHotBar,
-    FoundPlace, SecretLevel, EnchantEquipment
+    LootHightlightShortcut, UseProjectile, UseElementalWeaponProjectile, SwapActiveWeapon, SwapActiveHotBarByUI, PreviewSwapActiveHotBar,
+    FoundPlace, SecretLevel, EnchantEquipment, WatchoutEnemyLevel, TalkToNPCs, AbilitiesPassive, AbilitiesActive, AbilitiesSpells,
+    EquipAlly, QuicklySell
   }
 
   /// <summary>

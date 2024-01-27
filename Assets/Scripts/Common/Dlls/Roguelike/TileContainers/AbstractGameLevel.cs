@@ -1,4 +1,5 @@
-﻿using Dungeons;
+﻿#define DEBUG_APP 
+using Dungeons;
 using Dungeons.Core;
 using Dungeons.Tiles;
 using Newtonsoft.Json;
@@ -18,6 +19,8 @@ using System.Drawing;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+#pragma warning disable 8632
+
 
 namespace Roguelike.TileContainers
 {
@@ -107,6 +110,21 @@ namespace Roguelike.TileContainers
     public List<IAlly> GetActiveAllies()
     {
       return GetTiles<LivingEntity>().Where(i => i is IAlly ally && ally.Active).Cast<IAlly>().ToList();
+    }
+
+    public List<INPC> GetNpcs()
+    {
+      return GetTiles<LivingEntity>().Where(i => i is INPC).Cast<INPC>().ToList();
+    }
+
+    public INPC GetNPCByName(string name)
+    {
+      return GetTiles<INPC>().Where(i => i.Name == name).SingleOrDefault();
+    }
+
+    public INPC GetNPCByTag(string tag)
+    {
+      return GetTiles<INPC>().Where(i => i.LivingEntity.tag1 == tag).SingleOrDefault();
     }
 
     public override List<T> GetTiles<T>()
@@ -311,15 +329,42 @@ namespace Roguelike.TileContainers
 
       return smokes;
     }
+    protected virtual bool ShallReportOverride()
+    {
+      return false;
+    }
 
+    Tile tileBeingSet = null;
     public override bool SetTile
     (
       Tile tile, Point point, bool resetOldTile = true, bool revealReseted = true,
       bool autoSetTileDungeonIndex = true, bool reportError = true
     )
     {
+#if DEBUG_APP
+      var tileAt = GetTile(point);
+      if (tileAt != null && tileAt != tile && tileAt is LivingEntity leAt && tileBeingSet != tileAt)
+      {
+        if (ShallReportOverride())
+        {
+          Logger.LogError("overriding " + leAt + " at " + point + " with " + tile);
+          return false;
+        }
+      }
+#endif
       //Logger.LogInfo("Adding tile "+ tile + " at "+ point);
-      
+      //if (tile is Hero)
+      //{
+      //  int k = 0;
+      //  k++;
+      //  Debug.WriteLine("hero set at: "+ point);
+      //}
+      //if (tile is Privy)
+      //{
+      //  int k = 0;
+      //  k++;
+      //  Debug.WriteLine("Privy set at: " + point);
+      //}
       if (tile is IApproachableByHero)
       {
         var abh = tile as IApproachableByHero;
@@ -327,7 +372,7 @@ namespace Roguelike.TileContainers
           ApproachableByHero.Add(abh);
       }
 
-      if (tile is ILootSource)
+      else if (tile is ILootSource)
       {
         var ls = tile as ILootSource;
         if (ls.Level <= 0)
@@ -337,7 +382,7 @@ namespace Roguelike.TileContainers
         }
       }
 
-      if (tile is Hero)
+      else if (tile is Hero)
       {
         var tileAtPoint = GetTile(point);
         if (tileAtPoint == tile)
@@ -346,14 +391,20 @@ namespace Roguelike.TileContainers
         {
           DebugHelper.Assert(false);
         }
+        
+        //if (tileAtPoint is Privy)
+        //{
+        //  Debug.WriteLine("Privy is at: " + point);
+        //}
       }
       else if (tile is Loot loot)
       {
-        if (Loot.ContainsKey(point))
+        if (Loot.ContainsKey(point) && loot.Id != Loot[point].Id)
         {
+          var err = "loot already at point: " + Loot[point] + ", trying to add: " + tile + " point:" + point;
           if (Logger != null)
-            Logger.LogError("loot already at point: " + Loot[point] + ", trying to add: " + tile + " point:" + point);
-          DebugHelper.Assert(false);
+            Logger.LogError(err);
+          DebugHelper.Assert(false, err);
           return false;
         }
         //Logger.LogInfo("Adding Loot "+ tile + " at "+ point + " Loot.Count:"+ Loot.Count);
@@ -368,22 +419,22 @@ namespace Roguelike.TileContainers
 
       else if (tile is Surface sur)
       {
-        var surfAtPoint = SurfaceSets.GetKind(sur.Kind);
-        if (surfAtPoint.Tiles.ContainsKey(point))
-        {
-          //var alreadyAtPoint = surfAtPoint.Tiles[point];
-          //if (alreadyAtPoint != sur.Kind &&
-          //  (!alreadyAtPoint.ToString().Contains("Water") || !sur.ToString().Contains("Water"))//Both water are fine
-          //  )
-          //{
-          //  if (Logger != null)
-          //  {
-          //    Logger.LogError("Surface already at point: " + Surfaces[point] + ", trying to add: " + tile + " point:" + point);
-          //    DebugHelper.Assert(false);
-          //    return false;
-          //  }
-          //}
-        }
+        //var surfAtPoint = SurfaceSets.GetKind(sur.Kind);
+        //if (surfAtPoint.Tiles.ContainsKey(point))
+        //{
+        //  //var alreadyAtPoint = surfAtPoint.Tiles[point];
+        //  //if (alreadyAtPoint != sur.Kind &&
+        //  //  (!alreadyAtPoint.ToString().Contains("Water") || !sur.ToString().Contains("Water"))//Both water are fine
+        //  //  )
+        //  //{
+        //  //  if (Logger != null)
+        //  //  {
+        //  //    Logger.LogError("Surface already at point: " + Surfaces[point] + ", trying to add: " + tile + " point:" + point);
+        //  //    DebugHelper.Assert(false);
+        //  //    return false;
+        //  //  }
+        //  //}
+        //}
         //Logger.LogInfo("Adding Loot "+ tile + " at "+ point + " Loot.Count:"+ Loot.Count);
         tile.point = point;
         SurfaceSets.SetAt(point, sur);
@@ -393,10 +444,18 @@ namespace Roguelike.TileContainers
       }
 
       Point? prevPos = tile?.point;
+      tileBeingSet = tile;
       var res = base.SetTile(tile, point, resetOldTile, revealReseted, autoSetTileDungeonIndex, reportError);
-      if (res && tile is LivingEntity && prevPos != null)
+      tileBeingSet = null;
+      if (tile is LivingEntity)
       {
-        (tile as LivingEntity).PrevPoint = prevPos.Value;
+        int k = 0;
+        var t1 = GetTile(point);
+        k++;
+      }
+      if (res && prevPos != null && tile is LivingEntity le)
+      {
+        le.PrevPoint = prevPos.Value;
       }
       return res;
     }
@@ -450,7 +509,7 @@ namespace Roguelike.TileContainers
       }
     }
 
-    public virtual void OnHeroPlaced(Hero hero)
+    public virtual void OnHeroPlaced(Hero hero, GameContextSwitchKind context)
     {
 
     }
@@ -567,9 +626,9 @@ namespace Roguelike.TileContainers
       Point from, 
       Point end, 
       bool forHeroAlly, 
-      bool canGoOverCrackedStone, 
+      //bool canGoOverCrackedStone, 
       bool forEnemyProjectile,
-      LivingEntity movingEntity,
+      LivingEntity? movingEntity,
       Dictionary<Point, Tile> excludedFromPathFind
     )
     {
@@ -585,7 +644,7 @@ namespace Roguelike.TileContainers
           var currPt = new Point(col, row);
           var tile = Tiles[row, col];
           if(currPt == end)
-            tile = GetTile(currPt);//otherwise hero is not moving when clicking on loot in dungeon
+            continue;// tile = GetTile(currPt);//otherwise hero is not moving when clicking on loot in dungeon
           if (tile is Hero)
           {
             if (forHeroAlly)
@@ -605,13 +664,7 @@ namespace Roguelike.TileContainers
           }
           else if (tile is Dungeons.Tiles.Abstract.IObstacle)
           {
-            if (forHeroAlly && tile is LivingEntity)
-            {
-              int k = 0;
-              k++;
-            }
-            else
-              value = 0;//0
+            value = 0;//0
           }
           else if (tile is Wall)
             value = 0;//0
@@ -671,8 +724,16 @@ namespace Roguelike.TileContainers
 
     Dictionary<Point, Tile> excludedFromPathFind;
 
-    public List<Algorithms.PathFinderNode> FindPath(Point from, Point endPoint, bool forHeroAlly, bool canGoOverCrackedStone,
-      bool forEnemyProjectile, LivingEntity movingEntity)
+    public List<Algorithms.PathFinderNode> FindPath(LivingEntity entity, Point target)//, bool forHeroAlly)
+    {
+      bool forHeroAlly = entity is IAlly;
+      var trapAvoider = (forHeroAlly || entity is Hero) ? entity : null;
+      var forEnemyProjectile = false;
+      return FindPath(entity.point, target, forHeroAlly, forEnemyProjectile, trapAvoider);
+    }
+
+    public List<Algorithms.PathFinderNode> FindPath(Point from, Point endPoint, bool forHeroAlly,
+      bool forEnemyProjectile = false, LivingEntity movingEntity = null)
     {
       //Commons.TimeTracker tr = new Commons.TimeTracker();
       if (excludedFromPathFind == null)
@@ -684,7 +745,7 @@ namespace Roguelike.TileContainers
         }
       }
       var startPoint = new Algorithms.Point(from.Y, from.X);
-      var findPathMatrix = InitMatrixBeforePathSearch(from, endPoint, forHeroAlly, canGoOverCrackedStone, forEnemyProjectile, 
+      var findPathMatrix = InitMatrixBeforePathSearch(from, endPoint, forHeroAlly, forEnemyProjectile, 
         movingEntity, excludedFromPathFind);
 
       var mPathFinder = new Algorithms.PathFinder(findPathMatrix);
@@ -755,7 +816,9 @@ namespace Roguelike.TileContainers
     public Tile GetHeroStartTile()
     {
       Tile heroStartTile;
-      var empOnes = GetEmptyTiles(nodeIndexMustMatch: false).Where(i => i.DungeonNodeIndex > Dungeons.TileContainers.DungeonNode.ChildIslandNodeIndex);
+      var empOnes = GetEmptyTiles(nodeIndexMustMatch: false)
+        .Where(i => i.DungeonNodeIndex > Dungeons.TileContainers.DungeonNode.ChildIslandNodeIndex)
+        .ToList();
       var secret = Nodes.Where(i => i.Secret).FirstOrDefault();
       if (secret != null)
       {
@@ -773,27 +836,53 @@ namespace Roguelike.TileContainers
     public void ClearOldHeroPosition(GameContextSwitchKind context)
     {
       var heros = GetTiles<Hero>();
-      var heroInNode = heros.SingleOrDefault();
+      if (heros.Count > 1)
+      {
+        int k = 0;
+        k++;
+      }
+      //var heroInNode = heros.SingleOrDefault(); TODO!!!
+      foreach (var heroInNode in heros)
+      {
+        //if (heroInNode == null && context == GameContextSwitchKind.DungeonSwitched)
+        //  Logger.LogError("SwitchTo heros.Count = " + heros.Count);
 
-      //if (heroInNode == null && context == GameContextSwitchKind.DungeonSwitched)
-      //  Logger.LogError("SwitchTo heros.Count = " + heros.Count);
-
-      if (heroInNode != null)
-        SetEmptyTile(heroInNode.point);//Hero is going to be placed in the node, remove it from the old one (CurrentNode)
+        if (heroInNode != null)
+          SetEmptyTile(heroInNode.point);//Hero is going to be placed in the node, remove it from the old one (CurrentNode)
+      }
     }
 
     public bool PlaceHeroAtTile(GameContextSwitchKind context, Hero hero, Tile tile)
     {
       ClearOldHeroPosition(context);
-      if (SetTile(hero, tile.point, false))
+      var pt = tile != null ? tile.point : hero.point;
+      if (tile is LivingEntity)
       {
-        hero.DungeonNodeIndex = tile.DungeonNodeIndex;
-        Logger.LogInfo("PlaceHeroAtTile ok" + tile.point+  " hero: " + GetTiles<Hero>().FirstOrDefault() + " this: "+this);
+        //ups
+        pt = GetClosestEmpty(tile).point;
+      }
+      var currentAt = GetTile(pt);
+      if (currentAt is Privy)
+      {
+        var emp = GetClosestEmpties(pt).FirstOrDefault();
+        if(emp!=null)
+          pt = emp.point;
+      }
+      if (hero.point == pt)
+      {
+        if(GetTile(pt) == hero)
+          return true;
+      }
+      if (SetTile(hero, pt, false))
+      {
+        if(tile !=null)
+          hero.DungeonNodeIndex = tile.DungeonNodeIndex;
+        Logger.LogInfo("PlaceHeroAtTile ok" + pt +  " hero: " + GetTiles<Hero>().FirstOrDefault() + " this: "+this);
         return true;
       }
       else
       {
-        Logger.LogError("PlaceHeroAtTile failed at: "+tile.point);
+        Logger.LogError("PlaceHeroAtTile failed at: "+ pt + " tile:" + tile);
         DebugHelper.Assert(false);
       }
       return false;
@@ -808,7 +897,7 @@ namespace Roguelike.TileContainers
       {
         if (baseTile != null)
         {
-          var emptyOne = GetClosestEmpty(baseTile); //GetEmptyNeighborhoodTiles(baseTile);
+          var emptyOne = GetClosestEmpty(baseTile); 
           if (emptyOne != null)
             heroStartTile = emptyOne;
           else
@@ -900,12 +989,12 @@ namespace Roguelike.TileContainers
       return emp;
     }
 
-    public virtual Roguelike.Tiles.Interactive.InteractiveTile GetCamp()
+    public virtual Tile GetCampCentralPlace()
     {
       return null;
     }
 
-    public virtual Dungeons.Tiles.Tile GetEmptyNextToCamp()
+    public virtual Dungeons.Tiles.Tile GetEmptyNextToPortal()
     {
       return null;
     }
@@ -941,7 +1030,8 @@ namespace Roguelike.TileContainers
         for (int attempt = 0; attempt < 10; attempt++)
         {
           var randTile = gl.GetRandomEmptyTile(emptyOnes);
-          if (gl.GetEmptyNeighborhoodTiles(randTile).Count > 1)
+          var neib = gl.GetEmptyNeighborhoodTiles(randTile);
+          if (neib!=null && neib.Count > 1)
           {
             gl.SpreadOil(randTile, emptyTilesToUse: emptyOnes, reveal: RevealOilOnGeneration());
             break;
@@ -957,6 +1047,20 @@ namespace Roguelike.TileContainers
         i.ChildIslands.ForEach(i => i.Reveal(true, true));
         }
       );
+    }
+
+    public virtual KeyPuzzle GetCurrentNodeKeyPuzzle()
+    {
+      var door = this.GetTiles<Tiles.Interactive.Door>().Where(i => i.KeyPuzzle != KeyPuzzle.Unset).FirstOrDefault();
+      if (door != null)
+        return door.KeyPuzzle;
+
+      return KeyPuzzle.Unset;
+    }
+
+    public virtual Roguelike.Tiles.Interactive.InteractiveTile GetCampPortal()
+    {
+      return null;
     }
   }
 }

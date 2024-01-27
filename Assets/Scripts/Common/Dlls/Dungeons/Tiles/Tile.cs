@@ -23,16 +23,11 @@ namespace Dungeons.Tiles
   public class Tile
   {
     //members public for speed purposes
-    public Point point;
-    //public Point point
-    //{
-    //  get { return _point; }
-    //  set { _point = value; }
-    //}
+      
 
     private char symbol = Constants.SymbolBackground;
-    public string name;
-    private string displayedName;
+    public string name = "";
+    protected string displayedName = "";
     public string mapName;
 
 #if DEBUG_PROPS
@@ -42,8 +37,13 @@ namespace Dungeons.Tiles
       get { return _tag1; }
       set
       {
+        if (_tag1.Contains("grave"))
+        {
+          int k = 0;
+          k++;
+        }
         _tag1 = value;
-        if (value == "wall1_1_thin_horiz")
+        if (value == "fallen_one")
         { 
           if(point.Y == 0)
           {
@@ -58,8 +58,25 @@ namespace Dungeons.Tiles
         }
       }
     } //custom purpose field
+    public Point _point;
+    public Point point
+    {
+      get { return _point; }
+      set
+      {
+        if (value.X == 0 && value.Y == 0)
+        {
+          int k = 0;
+          k++;
+        }
+        _point = value;
+       
+      }
+    }
+
 #else
-   public string tag1 = "";//custom purpose field
+    public string tag1 = "";//custom purpose field
+    public Point point;
 #endif
 
     public string tag2 = "";//custom purpose field
@@ -142,12 +159,17 @@ namespace Dungeons.Tiles
       this.Symbol = symbol;
     }
 
-    string GetDefaultName()
+    protected virtual string GetDefaultName()
     {
       return GetType().Name;
     }
 
     public string GetNameFromTag1()
+    {
+      return GetNameFromTag1(tag1);
+    }
+
+    public string GetNameFromTag1(string tag1)
     {
       var str = tag1.Replace("_ch", "");
       str = str.Replace("_", " ");
@@ -156,6 +178,7 @@ namespace Dungeons.Tiles
 
     public virtual void SetNameFromTag1()
     {
+      DisplayedName = "";
       Name = GetNameFromTag1();
     }
 
@@ -204,7 +227,7 @@ namespace Dungeons.Tiles
     }
 
     [JsonIgnore]
-    public bool IsEmpty { get { return Symbol == Constants.SymbolBackground; } }
+    public bool IsEmpty { get { return symbol == Constants.SymbolBackground; } }
 
     //[JsonIgnore] item name was lost
     public virtual string Name
@@ -218,10 +241,29 @@ namespace Dungeons.Tiles
         name = value.Trim();//call GetCapitalized(value) ?;
         //if (Symbol != Constants.SymbolBackground)
         {
-          if (string.IsNullOrEmpty(displayedName) || GetDefaultName() == displayedName || displayedName == "Unset")
-            DisplayedName = name;
+          if (DisplayedNameNeedsToBeSet())
+            DisplayedName = EnsureLevelNotInAssetName(name);
         }
       }
+    }
+
+    public string EnsureLevelNotInAssetName(string asset)
+    {
+      if (asset.Contains("_level"))
+      {
+        asset = asset.Substring(0, asset.IndexOf("_level"));
+      }
+      else if (asset.Contains(" level"))
+      {
+        asset = asset.Substring(0, asset.IndexOf(" level"));
+      }
+
+      return asset;
+    }
+
+    protected virtual bool DisplayedNameNeedsToBeSet()
+    {
+      return string.IsNullOrEmpty(displayedName) || displayedName == "Unset" || GetDefaultName() == displayedName;
     }
 
     public static string GetCapitalized(string val)
@@ -261,6 +303,16 @@ namespace Dungeons.Tiles
       }
       set
       {
+        //if (displayedName == "Bloody Mary")
+        //{
+        //  int k = 0;
+        //  k++;
+        //}
+        //if(value == "Ice scepter1")
+        //{
+        //  int k = 0;
+        //  k++;
+        //}
         displayedName = value;
       }
     }
@@ -273,15 +325,15 @@ namespace Dungeons.Tiles
 #if DEBUG_PROPS
   public static bool IncludeDebugDetailsInToString = true;
 #else
-    public static bool IncludeDebugDetailsInToString = false;
+  public static bool IncludeDebugDetailsInToString = true;
 #endif
 
 
     public override string ToString()
     {
-      string res = GetType().ToString() + " " + Name;
+      string res = GetType().ToString() + " " + Name + " " + tag1;
       if (IncludeDebugDetailsInToString)
-        res += " " + Symbol + " " + DungeonNodeIndex + " " + point + " " + tag1 + " " + GetHashCode();
+        res += " " + symbol + " " + DungeonNodeIndex + " " + point + " " + tag1 + " " + GetHashCode();
       return res;
     }
 

@@ -13,7 +13,15 @@ namespace Roguelike.Tiles.Looting
 
   public class Plant : Consumable
   {
-    public PlantKind Kind { get; set; }
+    PlantKind kind;
+    public PlantKind Kind 
+    {
+      get => kind;
+      set {
+        kind = value;
+        SetKindMembers(kind);
+      }
+    }
 
     public Plant() : this(PlantKind.Unset)
     {
@@ -35,6 +43,11 @@ namespace Roguelike.Tiles.Looting
     public void SetKind(PlantKind kind)
     {
       Kind = kind;
+      SetKindMembers(kind);
+    }
+
+    private void SetKindMembers(PlantKind kind)
+    {
       if (Kind == PlantKind.Sorrel)
         Duration = 5;
       else
@@ -68,31 +81,13 @@ namespace Roguelike.Tiles.Looting
       return base.GetId() + "_" + Kind;
     }
 
-    //public override float GetStatIncrease(LivingEntity caller)
-    //{
-    //  return 10;// ConsumableHelper.GetStatIncrease(caller, this, 10);
-    //}
-
-    //public override string PrimaryStatDescription => primaryStatDesc;
-
-    //public EntityStatKind StatKind
-    //{
-    //  get
-    //  {
-    //    switch (Kind)
-    //    {
-    //      case PlantKind.Unset:
-    //        break;
-    //      case PlantKind.Thistle:
-    //        break;
-    //      case PlantKind.Sorrel:
-    //        return EntityStatKind.Health;
-    //      default:
-    //        break;
-    //    }
-
-    //    return EntityStatKind.Unset;
-    //  }
-    //}
+    public override bool IsMatchingRecipe(RecipeKind kind)
+    {
+      if (kind == RecipeKind.AntidotePotion && this.Kind == PlantKind.Thistle)
+        return true;
+      if (kind == RecipeKind.NiesiolowskiSoup && this.Kind == PlantKind.Sorrel)
+        return true;
+      return false;
+    }
   }
 }

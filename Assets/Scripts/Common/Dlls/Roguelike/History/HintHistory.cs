@@ -11,7 +11,6 @@ namespace Roguelike
     {
       public class HintHistory
       {
-        //public static Dictionary<HintKind, string> Messages = new Dictionary<HintKind, string>();
         private List<HintItem> hints = new List<HintItem>();
 
         //[Json]
@@ -33,16 +32,42 @@ namespace Roguelike
         public HintHistory()
         {
           Hints.Add(new HintItem() { Info = "Press 'Left Alt' to see collectable/interactive items.", Kind = HintKind.LootHightlightShortcut });
-          Hints.Add(new HintItem() { Info = "Press 'G' to collect a loot under your position.", Kind = HintKind.LootCollectShortcut });
+          Hints.Add(new HintItem() { Info = "Press 'G' to collect a loot under your position.\r\nKeys can be rebinded in Options.", Kind = HintKind.LootCollectShortcut });
           Hints.Add(new HintItem() { Info = "Use 'G' to collect nearby loot items.", Kind = HintKind.BulkLootCollectShortcut });
           Hints.Add(new HintItem() { Info = "Recipe has been collected. Press 'R' to open Crafting Panel and see it's description.", Kind = HintKind.ShowCraftingPanel });
-          Hints.Add(new HintItem() { Info = "Hero level too low to use an item", Kind = HintKind.HeroLevelTooLow });
-          Hints.Add(new HintItem() { Info = "Can not put on unidentified item", Kind = HintKind.CanNotPutOnUnidentified });
+          Hints.Add(new HintItem() { Info = "Hero level too low to use an item.", Kind = HintKind.HeroLevelTooLow });
+          Hints.Add(new HintItem() { Info = "Can not put on unidentified item.", Kind = HintKind.CanNotPutOnUnidentified });
           Hints.Add(new HintItem() { Info = "TODO", Kind = HintKind.UseProjectile });
           Hints.Add(new HintItem() { Info = "TODO", Kind = HintKind.UseElementalWeaponProjectile });
           Hints.Add(new HintItem() { Info = "swapping an active weapon/shield set Press 'X' to .", Kind = HintKind.SwapActiveWeapon });
           Hints.Add(new HintItem() { Info = "", Kind = HintKind.SecretLevel});
-          Hints.Add(new HintItem() { Info = "You collected a gem, it can be used to enchant your equipment.\r\nPress 'I' to open Inventory Panel and drop the gem on a weapon.", Kind = HintKind.EnchantEquipment });
+          Hints.Add(new HintItem() { Info = "Before attacking an enemy, check his stats to make sure you want to attack it.", Kind = HintKind.WatchoutEnemyLevel });
+          Hints.Add(new HintItem() { Info = "You can use a gem to enchant your equipment.\r\nPress 'I' to open Inventory Panel and drop the gem on a weapon.", Kind = HintKind.EnchantEquipment });
+
+          Hints.Add(new HintItem() { Info = "Talk to NPCs to get quests.", Kind = HintKind.TalkToNPCs });
+          Hints.Add(new HintItem() { Info = "Press Left Control + Right Mouse Button to quickly sell an item.", Kind = HintKind.QuicklySell });
+          Hints.Add(new HintItem() { Info = "Passive abilities are used by the hero automatically (each turn/randomly"+
+            "\r\n - depend on a kind). Just invest action points and enjoy them."
+            , Kind = HintKind.AbilitiesPassive });
+
+          Hints.Add(new HintItem()
+          {
+            Info = "Active abilities must be assigned to the hot bar.\r\nThe hero controls when they are used (activates/deactivates them)." +
+            "\r\nAfter usage a cooldown is applicated."
+           ,
+            Kind = HintKind.AbilitiesActive
+          });
+
+          Hints.Add(new HintItem()
+          {
+            Info = "Spell abilities apply to scrolls and books but not to projectiles casted\r\n by weapons (staffs, wands, scepters)."
+            + "That means a fireball emitted from a staff\r\nwill have different power that the one casted by scroll/book." 
+            
+            ,
+            Kind = HintKind.AbilitiesSpells
+          });
+
+          Hints.Add(new HintItem() { Info = "Open Ally's panel to equip it (default key: L)", Kind = HintKind.EquipAlly });
         }
 
         string BuildDesc(HintKind kind, int keyCode, Func<HintKind, string> codeFormatter = null)

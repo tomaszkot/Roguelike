@@ -107,7 +107,7 @@ namespace Roguelike.Managers
       return lootItems;
     }
 
-   
+    bool bowAmmoGenerated = false;
     private List<Loot> TryAddForNonEnemy(ILootSource lootSource)
     {
       //GameManager.Logger.LogInfo("TryAddForNonEnemy lootSource.Level: " + lootSource.Level);
@@ -184,6 +184,8 @@ namespace Roguelike.Managers
       {
         loot.Source = lootSource;
         lootItems.Add(loot);
+
+        
       }
       
       if (lootSource is Barrel)
@@ -209,11 +211,15 @@ namespace Roguelike.Managers
           return lootItems;
         GameManager.AppendAction<InteractiveTileAction>((InteractiveTileAction ac) => { ac.InvolvedTile = chest; ac.InteractiveKind = InteractiveActionKind.ChestOpened; });
         GameManager.AddLootReward(loot, lootSource, true);//add loot at closest empty
-        Loot lootEx1 = null;
-        if (RandHelper.GetRandomDouble() > .2f)
-          lootEx1 = LootGenerator.GetRandomEquipment(GameManager.Hero.Level, GameManager.Hero.GetLootAbility());
-        else
-          lootEx1 = GetExtraLoot(lootSource, false, loot.LootKind);
+        Loot lootEx1 = GetAmmo(loot);
+
+        if (lootEx1 == null)
+        {
+          if (RandHelper.GetRandomDouble() > .33f)
+            lootEx1 = LootGenerator.GetRandomEquipment(GameManager.Hero.Level, GameManager.Hero.GetLootAbility());
+          else
+            lootEx1 = GetExtraLoot(lootSource, false, loot.LootKind);
+        }
         if (lootEx1 != null)
         {
           if (lootItems.Where(i => i.Name == lootEx1.Name).Any())
@@ -238,6 +244,32 @@ namespace Roguelike.Managers
 
       return lootItems;
     }
+
+    Loot GetAmmo(Loot loot)
+    {
+      if (loot is Weapon wpn && wpn.IsBowLike)
+      {
+        if (!bowAmmoGenerated)
+        {
+          bowAmmoGenerated = true;
+          if (wpn.Kind == Weapon.WeaponKind.Bow)
+          {
+            var ammo = new ProjectileFightItem(FightItemKind.PlainArrow);
+            ammo.Count = (int)RandHelper.GetRandomFloatInRange(5, 20);
+            return ammo;
+          }
+          else if (wpn.Kind == Weapon.WeaponKind.Crossbow)
+          {
+            var ammo = new ProjectileFightItem(FightItemKind.PlainBolt);
+            ammo.Count = (int)RandHelper.GetRandomFloatInRange(5, 20);
+            return ammo;
+          }
+        }
+      }
+
+      return null;
+    }
+
     public Loot EnsureVariety(ILootSource lootSource, LootSourceKind lsk, Loot loot)
     {
       if (loot is Recipe rec)
@@ -284,8 +316,9 @@ namespace Roguelike.Managers
       }
 
       if (loot != null)
+      {
         GameManager.AddLootReward(loot, enemy, false);
-
+      }
       if (enemy.DeathLoot != null)
         GameManager.AddLootReward(enemy.DeathLoot, enemy, false);
             

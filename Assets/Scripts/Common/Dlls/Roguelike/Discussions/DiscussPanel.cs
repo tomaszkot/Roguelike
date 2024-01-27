@@ -1,4 +1,6 @@
 ﻿using Dungeons.Core;
+using Roguelike.Quests;
+using Roguelike.Tiles.Abstract;
 using Roguelike.Tiles.LivingEntities;
 using Roguelike.UI.Models;
 using System;
@@ -10,19 +12,48 @@ namespace Roguelike.Discussions
   {
     protected INPC npc;
     GenericListModel<DiscussionTopic> boundTopics = new GenericListModel<DiscussionTopic>();
+    
+    public INPC NPC => npc;
 
-    public GenericListModel<DiscussionTopic> BoundTopics { get => boundTopics; set => boundTopics = value; }
+    public GenericListModel<DiscussionTopic> BoundTopics 
+    {
+      get => boundTopics; 
+      set => boundTopics = value; 
+    }
 
     public event EventHandler<DiscussionTopic> DiscussionOptionChosen;
     public event EventHandler Hidden;
 
-    protected Roguelike.Tiles.LivingEntities.AdvancedLivingEntity AdvancedLivingEntity
-    {
-      get{ return npc as Roguelike.Tiles.LivingEntities.AdvancedLivingEntity;  } 
-    }
+    //protected INPC AdvancedLivingEntity
+    //{
+    //  get{ return npc;  } 
+    //}
 
     public DiscussPanel()
     {
+    }
+
+    public virtual void Reset()
+    {
+      npc.Discussion.Reset();
+      BindTopics(npc.Discussion.MainItem, npc);
+    }
+
+    protected virtual bool PreventPanelRebind(Roguelike.Discussions.DiscussionTopic topic)
+    {
+      return false;
+    }
+
+    protected virtual bool ShallHideOn(DiscussionTopic topic, KnownSentenceKind knownSentenceKind)
+    {
+      if (topic.ClosesPanel)
+        return true;
+
+      if (knownSentenceKind == KnownSentenceKind.AllyAccepted && topic.Right.Id == "NoWorry")
+        return false;
+
+      return (knownSentenceKind == KnownSentenceKind.Bye || knownSentenceKind == KnownSentenceKind.LetsTrade ||
+        knownSentenceKind == KnownSentenceKind.QuestAccepted || knownSentenceKind == KnownSentenceKind.AllyAccepted) ;
     }
 
     public virtual bool ChooseDiscussionTopic(DiscussionTopic topic)
@@ -32,20 +63,25 @@ namespace Roguelike.Discussions
       {
         BindTopics(topic.Parent, npc);
       }
-      else if (knownSentenceKind == KnownSentenceKind.Bye || knownSentenceKind == KnownSentenceKind.LetsTrade ||
+      else if (topic.ClosesPanel || knownSentenceKind == KnownSentenceKind.Bye || knownSentenceKind == KnownSentenceKind.LetsTrade ||
         knownSentenceKind == KnownSentenceKind.QuestAccepted || knownSentenceKind == KnownSentenceKind.AllyAccepted)
       {
-        Hide();
+        if(ShallHideOn(topic, knownSentenceKind))
+          Hide();
+        else if(topic.Right.Id == "NoWorry")//TODO!
+          BindTopics(topic, npc);
+
+        if (PreventPanelRebind(topic))
+          BindTopics(topic, npc);
       }
-      else if (knownSentenceKind == KnownSentenceKind.SellHound)
-      {
-      }
+
       else
       {
         var itemToBind = topic;
-
-        if (knownSentenceKind == KnownSentenceKind.WorkingOnQuest||
-            knownSentenceKind == KnownSentenceKind.AwaitingReward||
+        //var qs = GetQuestStatus(topic);
+                
+        if (knownSentenceKind == KnownSentenceKind.QuestAccepted||
+            knownSentenceKind == KnownSentenceKind.AwaitingReward ||
             knownSentenceKind == KnownSentenceKind.RewardSkipped||
             knownSentenceKind == KnownSentenceKind.Cheating||
             knownSentenceKind == KnownSentenceKind.AwaitingRewardAfterRewardDeny)
@@ -59,7 +95,7 @@ namespace Roguelike.Discussions
           else if (knownSentenceKind == KnownSentenceKind.Cheating)
           {
             npc.Discussion.EmitCheating(topic, npc);
-            if (AdvancedLivingEntity.RelationToHero.CheatingCounter >= 2)
+            if (npc.RelationToHero.CheatingCounter >= 2)
             {
               Hide();
               //RelationChanged.Raise(this, merch.RelationToHero.Kind);
@@ -67,7 +103,8 @@ namespace Roguelike.Discussions
           }
 
           //itemToBind = itemToBind.Parent.Parent;
-          itemToBind = npc.Discussion.MainItem;
+          if (ShallBindMainTopic(itemToBind))
+            itemToBind = npc.Discussion.MainItem;
         }
 
         BindTopics(itemToBind, npc);
@@ -75,6 +112,16 @@ namespace Roguelike.Discussions
 
       DiscussionOptionChosen.Raise(this, topic);
       return true;
+    }
+
+    protected virtual bool ShallBindMainTopic(DiscussionTopic topic)
+    {
+      return !(npc.Name == "Zyndram" && topic.RightKnownSentenceKind == KnownSentenceKind.Cheating);
+    }
+
+    protected virtual QuestStatus GetQuestStatus(DiscussionTopic topic)
+    {
+      return QuestStatus.Unset;
     }
 
     protected virtual void RewardHero(Roguelike.Tiles.LivingEntities.INPC npc, DiscussionTopic topic)
@@ -87,10 +134,13 @@ namespace Roguelike.Discussions
       throw new NotImplementedException();
     }
 
-    public virtual GenericListModel<DiscussionTopic> BindTopics(DiscussionTopic parentTopic, Roguelike.Tiles.LivingEntities.INPC npc)
+    public virtual GenericListModel<DiscussionTopic> BindTopics(DiscussionTopic parentTopic,
+      INPC npc)
     {
       this.npc = npc;
       boundTopics.Clear();
+
+      parentTopic.EnsureBack();
       foreach (var topic in parentTopic.Topics)
       {
         boundTopics.Add(new GenericListItemModel<DiscussionTopic>(topic, topic.Right.Id, topic.Right.Body+ topic.RightSuffix));
@@ -117,6 +167,8 @@ namespace Roguelike.Discussions
 
     public virtual void Hide()
     {
+      if(npc != null)
+        npc.SetHasUrgentTopic(false);
       if(Hidden!=null)
         Hidden(this, EventArgs.Empty);
     }

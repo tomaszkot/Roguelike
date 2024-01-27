@@ -48,7 +48,7 @@ namespace Roguelike.Managers.Policies
     {
       HeroBulkAttackTargets = new List<Enemy>();
       var hero = gm.Hero;
-      var bulkFromZealAttack = hero.SelectedActiveAbility != null && hero.SelectedActiveAbility.Kind == Abilities.AbilityKind.ZealAttack;
+      var bulkFromZealAttack = hero.SelectedActiveAbility != null && hero.SelectedActiveAbility.Kind == AbilityKind.ZealAttack;
       string reason;
       if (bulkFromZealAttack && !hero.CanUseAbility(AbilityKind.ZealAttack, gm.CurrentNode, out reason))
         return HeroBulkAttackTargets;
@@ -78,8 +78,8 @@ namespace Roguelike.Managers.Policies
           var ak = AbilityKind.BulkAttack;
           if (bulkFromZealAttack)
             ak = AbilityKind.ZealAttack;
-          if (ak == AbilityKind.BulkAttack)
-            gm.AppendUsedAbilityAction(hero, ak);
+          if (ak == AbilityKind.BulkAttack)//TODO all passive ab shall report it
+            hero.AppendUsedAbilityAction(ak);
 
         }
       }
@@ -122,9 +122,9 @@ namespace Roguelike.Managers.Policies
       gm.RemoveDead();
       var targets = HeroBulkAttackTargets.Where(i => i.Alive).ToList();
       var rand = false;
-      var target = rand ? targets.GetRandomElem() : targets.First();
-        if (target == null)
-          return null;
+      var target = rand ? targets.GetRandomElem() : targets.FirstOrDefault();
+      if (target == null)
+        return null;
       HeroBulkAttackTargets.Remove(target);
       return target;
     }

@@ -8,11 +8,6 @@ namespace Roguelike.Abstract.Projectiles
   {
     [JsonIgnore]
     LivingEntity Caller { get; set; }
-
-    
-
-    AbilityKind ActiveAbilitySrc { get; set; }
-
-    
+    AbilityKind ActiveAbilitySrc { get; }
   }
 }

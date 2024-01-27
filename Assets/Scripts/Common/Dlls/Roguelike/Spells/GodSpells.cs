@@ -43,8 +43,36 @@ namespace Roguelike.Spells
       RequiresDestPoint = true;
       UnsetProp(AbilityProperty.Duration);
     }
+  }
 
-    
+  public class JarowitSpell : PassiveSpell
+  {
+    public JarowitSpell() : this(new LivingEntity()) { }
+
+    public JarowitSpell(LivingEntity caller) : base(caller, SpellKind.Jarowit, EntityStatKind.Unset)
+    {
+      CoolingDownCounter = 10;
+      StatKind = EntityStatKind.Unset;
+      manaCost += 5;
+      RequiresDestPoint = false;
+      //UnsetProp(AbilityProperty.Duration);
+    }
+  }
+
+  public class WalesSpell : PassiveSpell
+  {
+    public WalesSpell() : this(new LivingEntity()) { }
+
+    public WalesSpell(LivingEntity caller) : base(caller, SpellKind.Wales, EntityStatKind.Unset)
+    {
+      CoolingDownCounter = 10;
+      StatKind = EntityStatKind.Unset;
+      manaCost -= 5;
+      if (manaCost < 0)
+        manaCost = 5;
+      RequiresDestPoint = false;
+      //UnsetProp(AbilityProperty.Duration);
+    }
   }
 
   public class SwarogSpell : PassiveSpell

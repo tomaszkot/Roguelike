@@ -30,6 +30,19 @@ namespace Roguelike.Managers
       }
     }
 
+    public const string TurnHint1 = "/";
+    public const string TurnHint2 = "\\";
+
+    public static string CurrentTurnHint = TurnHint1;
+
+    public static void GotoNextTurnHint()
+    {
+      if (CurrentTurnHint == TurnHint1)
+        CurrentTurnHint = TurnHint2;
+      else
+        CurrentTurnHint = TurnHint1;
+    }
+
     public void AppendAction(GameEvent ac)
     {
       if (GameManager != null)//Main Menu?
@@ -40,6 +53,8 @@ namespace Roguelike.Managers
 
       if(LastActions.Contains(ac))
         return;
+
+      ac.TurnHint = CurrentTurnHint;
       LastActions.Add(ac);
       if (EventAppended != null)//send it to listeners as logic of game depends on it
       {
@@ -55,8 +70,11 @@ namespace Roguelike.Managers
 
           //Caused recursive call to AppendAction
           //Assert(false, ex.Message + "\r\n"+ ex.StackTrace);
-          if (!LastActions.Contains(ac))
-            LastActions.Add(ex.Message + "\r\n" + ex.StackTrace);
+
+
+          //beneath code added debug string to the game window!
+          //if (!LastActions.Contains(ac))
+            //LastActions.Add(ex.Message + "\r\n" + ex.StackTrace);
         }
       }
     }

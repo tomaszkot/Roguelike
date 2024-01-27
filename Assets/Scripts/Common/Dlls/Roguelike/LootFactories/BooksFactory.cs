@@ -23,7 +23,7 @@ namespace Roguelike.LootFactories
         var book = new Book();
         book.tag1 = tag;
         book.Kind = Scroll.DiscoverKindFromName(tag);
-        //scroll.Count = Enumerable.Range(1, 3).ToList().GetRandomElem();
+   
         return book;
       };
       var names = new[] { "fire_ball_book", "ice_ball_book", "poison_ball_book",
@@ -39,25 +39,18 @@ namespace Roguelike.LootFactories
       return GetRandom<Book>(factory);
     }
 
-    public override Loot GetByName(string name)
-    {
-      return GetByAsset(name);
-    }
-
     public override Loot GetByAsset(string tagPart)
     {
-      var tile = factory.FirstOrDefault(i => i.Key == tagPart);
-      if (tile.Key != null)
-        return tile.Value(tagPart);
-
-      return null;
+      return GetByAsset(factory, tagPart);
     }
 
     public Loot GetByKind(Spells.SpellKind kind)
     {
       var tile = factory.FirstOrDefault(i => Scroll.DiscoverKindFromName(i.Key) == kind);
       if (tile.Key != null)
-        return tile.Value(tile.Key);
+      {
+        return PrepareLoot(tile.Key, tile.Value(tile.Key));
+      }
 
       return null;
     }

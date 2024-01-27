@@ -7,34 +7,55 @@ using System.Linq;
 
 namespace Roguelike.Tiles.Looting
 {
-  public enum HunterTrophyKind { Unset, Fang, Tusk, Claw }//Fang-Tooth
+  public enum HunterTrophyKind { Unset, Fang, /*Tusk,*/ Claw }//Fang-Tooth
 
   public class HunterTrophy : Enchanter
   {
-    public HunterTrophyKind TinyTrophyKind { get; set; }
+    HunterTrophyKind tinyTrophyKind;
+    public HunterTrophyKind TinyTrophyKind
+    {
+      get => tinyTrophyKind;
+      set {
+        tinyTrophyKind = value;
+        SetProps();
+      }
+    }
 
-    static Dictionary<HunterTrophyKind, Dictionary<EquipmentKind, EntityStatKind>> enhancmentProps = new Dictionary<HunterTrophyKind, Dictionary<EquipmentKind, EntityStatKind>>();
+    static Dictionary<HunterTrophyKind, Dictionary<EquipmentKind, EntityStatKind>> enhancmentProps =
+      new Dictionary<HunterTrophyKind, Dictionary<EquipmentKind, EntityStatKind>>();
     static Dictionary<EquipmentKind, EntityStatKind> enhancmentPropsFang = new Dictionary<EquipmentKind, EntityStatKind>();
-    static Dictionary<EquipmentKind, EntityStatKind> enhancmentPropsTusk = new Dictionary<EquipmentKind, EntityStatKind>();
+    //static Dictionary<EquipmentKind, EntityStatKind> enhancmentPropsTusk = new Dictionary<EquipmentKind, EntityStatKind>();
     static Dictionary<EquipmentKind, EntityStatKind> enhancmentPropsClaw = new Dictionary<EquipmentKind, EntityStatKind>();
 
+    public HunterTrophy():this(HunterTrophyKind.Claw)
+    { 
+    
+    }
 
+    public HunterTrophy(HunterTrophyKind kind)
+    {
+      Price = 5;
+      Symbol = '&';
+      LootKind = LootKind.HunterTrophy;
+      this.TinyTrophyKind = kind;
+      SetProps();
+    }
 
     public static string[] TinyTrophiesTags = new[]
     {
-      Enchanter.Big+ "_claw", Enchanter.Big + "_fang",
-      Enchanter.Medium + "_claw",Enchanter.Medium+"_fang",
-      Enchanter.Small+"_claw", Enchanter.Small+"_fang"
+      Enchanter.Big+ "_claw", Enchanter.Big + "_fang",//, Enchanter.Big + "_tusk",
+      Enchanter.Medium + "_claw", Enchanter.Medium+"_fang",//, Enchanter.Medium+ "_tusk",
+      Enchanter.Small+"_claw", Enchanter.Small+"_fang",//, Enchanter.Small+"_tusk"
     };
 
     static HunterTrophy()
     {
       PopulateProps(enhancmentPropsFang, EntityStatKind.Defense, EntityStatKind.ChanceToBulkAttack, EntityStatKind.ChanceToEvadeMeleeAttack);
-      PopulateProps(enhancmentPropsTusk, EntityStatKind.Health, EntityStatKind.ChanceToCauseBleeding, EntityStatKind.Strength);
-      PopulateProps(enhancmentPropsClaw, EntityStatKind.ChanceToMeleeHit, EntityStatKind.ChanceToStrikeBack, EntityStatKind.Dexterity);
+      PopulateProps(enhancmentPropsClaw, EntityStatKind.Health, EntityStatKind.ChanceToCauseBleeding, EntityStatKind.Strength);
+      //PopulateProps(enhancmentPropsTusk, EntityStatKind.ChanceToMeleeHit, EntityStatKind.ChanceToStrikeBack, EntityStatKind.Dexterity);
 
       enhancmentProps[HunterTrophyKind.Fang] = enhancmentPropsFang;
-      enhancmentProps[HunterTrophyKind.Tusk] = enhancmentPropsTusk;
+      //enhancmentProps[HunterTrophyKind.Tusk] = enhancmentPropsTusk;
       enhancmentProps[HunterTrophyKind.Claw] = enhancmentPropsClaw;
     }
 
@@ -43,19 +64,12 @@ namespace Roguelike.Tiles.Looting
       return base.GetId() + TinyTrophyKind + " " + EnchanterSize;
     }
 
-    public HunterTrophy(HunterTrophyKind kind)
-    {
-      Price = 5;
-      Symbol = '&';
-      LootKind = LootKind.HunterTrophy;
-      SetKind(kind);
-    }
+    
 
     private void SetKind(HunterTrophyKind kind)
     {
-      TinyTrophyKind = kind;
+      tinyTrophyKind = kind;
       SetName(kind.ToDescription());
-      SetPrice();
 
       switch (kind)
       {
@@ -67,10 +81,10 @@ namespace Roguelike.Tiles.Looting
           EnchantSrc = EnchantSrc.Fang;
           PrimaryStatDescription = "Sharp, hard, ready to bite. ";
           break;
-        case HunterTrophyKind.Tusk:
-          EnchantSrc = EnchantSrc.Tusk;
-          PrimaryStatDescription = "Big, sharp, ready to tear somebody apart. ";
-          break;
+        //case HunterTrophyKind.Tusk:
+        //  EnchantSrc = EnchantSrc.Tusk;
+        //  PrimaryStatDescription = "Big, sharp, ready to tear somebody apart. ";
+        //  break;
         case HunterTrophyKind.Claw:
           EnchantSrc = EnchantSrc.Claw;
           PrimaryStatDescription = "Sharp, hard, ready to claw. ";
@@ -78,9 +92,6 @@ namespace Roguelike.Tiles.Looting
         default:
           break;
       }
-
-      //if (PrimaryStatDescription.Any())
-      //  PrimaryStatDescription += Strings.DropOnEnchantable;
     }
 
 
@@ -128,6 +139,15 @@ namespace Roguelike.Tiles.Looting
     public override void SetProps()
     {
       SetKind(this.TinyTrophyKind);//refresh
+      base.SetPropsCommon();
+    }
+
+    protected override string CalcTagFromProps()
+    {
+      var tags = TinyTrophiesTags
+        .Where(i => i.Contains(TinyTrophyKind.ToString().ToLower()) && i.Contains(EnchanterSize.ToString().ToLower()))
+        .SingleOrDefault();
+      return tags??"";
     }
   }
 }

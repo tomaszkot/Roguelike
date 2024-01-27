@@ -60,19 +60,12 @@ namespace Roguelike.Tiles.Looting
       return new PercentageFactor(-20);
     }
 
-    //string[] extDesc;
-    //public override string[] GetExtraStatDescription()
-    //{
-    //  if (extDesc == null)
-    //  {
-    //    extDesc = new string[4];
-    //    //extDesc[0] = "Press O to drink it.";
-    //    extDesc[0] = "Drink Effect:";
-    //    extDesc[1] = "Strength +" + StrengthPercentage + "%";
-    //    extDesc[2] = "ChanceToChit -" + ChanceToHitPercentage + "%";
-    //    extDesc[3] = "Tour Lasting: " + TourLasting;
-    //  }
-    //  return extDesc;
-    //}
+    public override bool IsMatchingRecipe(RecipeKind kind)
+    {
+      if (kind == RecipeKind.AntidotePotion || kind == RecipeKind.ExplosiveCocktail)
+        return true;
+      return false;
+    }
+
   }
 }

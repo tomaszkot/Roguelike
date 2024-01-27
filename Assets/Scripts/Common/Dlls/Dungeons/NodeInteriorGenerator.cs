@@ -213,7 +213,7 @@ namespace Dungeons
 
         if (sideCounter < 3)
         {
-          dungeonNode.Container.GetInstance<ILogger>().LogError("sideCounter < 3 = "+ sideCounter + " side: " + side.Key + " NodeInd: "+ dungeonNode);
+          //dungeonNode.Container.GetInstance<ILogger>().LogError("sideCounter < 3 = "+ sideCounter + " side: " + side.Key + " NodeInd: "+ dungeonNode);
         }
       }
     }

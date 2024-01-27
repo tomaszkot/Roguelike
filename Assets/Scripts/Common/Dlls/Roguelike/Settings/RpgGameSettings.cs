@@ -56,10 +56,15 @@ namespace Roguelike.Settings
       get;
       set;
     } = 1f;
+
+    public bool VoiceActingOn { get; set; } = true;
   };
 
   public class Serialization
   {
+    /// <summary>
+    /// If false Hero will be exactly at the save place (potentially dangerous)
+    /// </summary>
     public bool RestoreHeroToSafePointAfterLoad { get; set; } = true;
     public bool RestoreHeroToDungeon { get; set; } = false;//TODO this way loading predefinied levels did not worked in Unity
     public bool RegenerateLevelsOnLoad { get; set; } = true;
@@ -74,6 +79,10 @@ namespace Roguelike.Settings
     public bool AllowEnchantOnDragDrop { get; set; } = true;
 
     public bool AutoCollectLootOnEntering { get; set; }
+
+    public bool ShowEnemiesLevelOnWorldPitEntries { get; set; } = true;
+
+    public bool KeyIsRequiredToEnterBoosRoom { get; set; } = true;
   }
 
   public class Input : SettingsBase
@@ -97,6 +106,7 @@ namespace Roguelike.Settings
 
   public class View : SettingsBase
   {
+    public bool DynamicTerrainLoad { get; set; } = true;
     public bool HintsOn { get; set; } = true;
     public bool ShowShortcuts { get; set; } = true;
     public bool ShowMiniMap { get; set; } = true;
@@ -108,6 +118,12 @@ namespace Roguelike.Settings
       get { return useTouchInterface; }
       set { useTouchInterface = value; }
     }
+
+    public bool AutoCloseEntityDescriptor { get; set; } = true;
+    public bool ShowDungeonKeyHint { get; set; } = true;
+
+    //Darkness embraces hero as he gets hurt
+    public bool DarknessEmbracesHero { get; set; } = true;
   }
 
   public class Colors
@@ -130,6 +146,8 @@ namespace Roguelike.Settings
   public class LookAndFeel : SettingsBase, IPersistable
   {
     public UIScheme SelectedScheme { get; set; } = new UIScheme();
+
+    public bool ShowRecentEvents { get; set; } = true;
   }
 
   public class Options : SettingsBase, IPersistable

@@ -1,7 +1,8 @@
 ﻿using Dungeons.Core;
 using Dungeons.Tiles;
 using Roguelike.Events;
-using Roguelike.Tiles;
+using Roguelike.Policies;
+using Roguelike.State;
 using Roguelike.Tiles.LivingEntities;
 using Roguelike.Tiles.Looting;
 using SimpleInjector;
@@ -28,12 +29,12 @@ namespace Roguelike.Managers
       context.ContextSwitched += Context_ContextSwitched;
     }
 
-    public virtual List<Enemy> GetActiveEnemies()
+    public virtual List<LivingEntity> GetActiveEnemies()
     {
-      return this.AllEntities.Where(i => i.Revealed && i.Alive).Cast<Enemy>().ToList();
+      return this.AllEntities.Where(i => i.Revealed && i.Alive).ToList();
     }
 
-    public List<Enemy> GetActiveEnemiesInvolved()
+    public List<LivingEntity> GetActiveEnemiesInvolved()
     {
       return GetActiveEnemies().Where(i=>i.DistanceFrom(Hero) <= MaxDistanceForInvolvedOne).ToList();
     }
@@ -77,12 +78,17 @@ namespace Roguelike.Managers
       if (enemy.DistanceFrom(Hero) > MaxDistanceForInvolvedOne)
         return;
 
-      var enemyCasted = enemy as Enemy;
-      if (enemyCasted.HitRandomTarget)
       {
-        var other = GetActiveEnemiesInvolved().Where(i=> i!= enemy).OrderBy(i=>i.DistanceFrom(enemyCasted)).FirstOrDefault();
-        AttackIfPossible(enemyCasted, other);
-        enemyCasted.HitRandomTarget = false;
+        var enemyCasted = enemy as Enemy;
+        if (enemyCasted != null && enemyCasted.HitRandomTarget)
+        {
+          var other = GetActiveEnemiesInvolved().Where(i => i != enemy).OrderBy(i => i.DistanceFrom(enemyCasted)).FirstOrDefault();
+          var attacked = AttackIfPossible(enemyCasted, other);
+          enemyCasted.HitRandomTarget = false;
+          if (!attacked)
+            MakeRandomMove(enemy);
+          return;
+        }
       }
 
       if (enemy.HandleOrder(BattleOrder.Surround, Hero, Node))
@@ -127,7 +133,7 @@ namespace Roguelike.Managers
       {
         //if (CastEffectsForAllies(entity))
         //  return;
-        if (MakeEmergencyTeleport(enemyCasted))
+        if (MakeEmergencyTeleport(enemy as Enemy))
           return;
 
         if (AttackIfPossible(enemy, target))
@@ -156,7 +162,7 @@ namespace Roguelike.Managers
         if (!makeRandMove)
           enemy.ChaseCounter++;
         if (detailedLogs)
-          context.Logger.LogInfo("!ShallChaseTarget true, makeRandMove: "+ makeRandMove);
+          context.Logger.LogInfo("!ShallChaseTarget true, makeRandMove: "+ makeRandMove + " enemy: " + enemy + " target: "+ target);
       }
       else
         makeRandMove = true;
@@ -246,10 +252,7 @@ namespace Roguelike.Managers
 
     protected override bool MoveEntity(LivingEntity entity, Point newPos, List<Point> fullPath = null)
     {
-      if (entity.InitialPoint == LivingEntity.DefaultInitialPoint)
-      {
-        entity.InitialPoint = entity.point;
-      }
+      
 
       var moved = base.MoveEntity(entity, newPos, fullPath);
       return moved;
@@ -267,9 +270,12 @@ namespace Roguelike.Managers
 
     bool AttackAlly(LivingEntity enemy, bool forced)
     {
+      if (AlliesManager.AllyBehaviour == AllyBehaviour.StayStill)
+        return false;
       var ally = AlliesManager.AllEntities.Where(i => i.DistanceFrom(enemy) < 2).FirstOrDefault();
       if (ally != null)
       {
+
         var rand = RandHelper.Random.NextDouble();
         if ((forced && rand < 0.75) || rand < 0.3f)//TODO attack if there is no clear path to hero
           return AttackIfPossible(enemy, ally);
@@ -279,6 +285,8 @@ namespace Roguelike.Managers
 
     private bool MakeEmergencyTeleport(Enemy enemy)
     {
+      if (enemy is null)
+        return false;
       if (enemy.PowerKind != EnemyPowerKind.Plain)
       {
         var enCasted = enemy;
@@ -305,7 +313,12 @@ namespace Roguelike.Managers
     public void TeleportEnemy(Enemy enemy, Tile firstEmpty)
     {
       Level.SetTile(enemy, firstEmpty.point);
-      gameManager.AppendAction(new EnemyAction() { Info = enemy.Name + " has teleported", Enemy = enemy as Enemy, Kind = EnemyActionKind.Teleported });
+      var cmd = new CommandUseInfo(EntityCommandKind.TeleportCloser);
+      
+      gameManager.AppendAction(new EnemyAction(cmd) 
+      { 
+        Info = enemy.Name + " has teleported", Enemy = enemy as Enemy, Kind = EnemyActionKind.SendComand 
+      });
       gameManager.SoundManager.PlaySound("teleport");
     }
 

@@ -40,7 +40,7 @@ namespace Roguelike.LootFactories
       {
         var loot = fac.GetByAsset(tagPart);
         if (loot != null)
-          return ReturnLoot(loot);
+          return PrepareLoot(tagPart, ReturnLoot(loot));
       }
 
       return null;
@@ -51,6 +51,33 @@ namespace Roguelike.LootFactories
       var eq = loot as Equipment;
       if (eq != null)
         eq.Identified += Eq_Identified;
+
+      if (loot is StackedLoot sl)
+      {
+        if (sl is Gem || sl is Recipe)
+        {
+          sl.Count = 1;
+          if (sl is Recipe rec)
+          {
+            if (rec.Kind == RecipeKind.Pendant)//not used!
+              rec.Kind = RecipeKind.Toadstools2Potion;
+          }
+        }
+        else if (sl.Count == 1)
+          sl.Count = GetStackableDefaultCount();
+
+        if (sl is ProjectileFightItem pfi)
+        {
+          if (pfi.FightItemKind == FightItemKind.Stone)
+            sl.Count *= 2;//for arrows
+        }
+
+        else if (sl is GenericLoot gl)
+        {
+          if (gl.tag1 == "BarleySack")
+            sl.Count = 1;
+        }
+      }
       return loot;
     }
 
@@ -62,17 +89,17 @@ namespace Roguelike.LootFactories
       });
     }
 
-    public override Loot GetByName(string name)
-    {
-      foreach (var fac in factories)
-      {
-        var loot = fac.GetByName(name);
-        if (loot != null)
-          return ReturnLoot(loot);
-      }
+    //public override Loot GetByName(string name)
+    //{
+    //  foreach (var fac in factories)
+    //  {
+    //    var loot = fac.GetByName(name);
+    //    if (loot != null)
+    //      return ReturnLoot(loot);
+    //  }
 
-      return null;
-    }
+    //  return null;
+    //}
 
     public override Loot GetRandom(int level)
     {

@@ -52,6 +52,11 @@ namespace RoguelikeUnitTests.Helpers
           var en = loot.Source as Enemy;
           Assert.True(en.PowerKind != EnemyPowerKind.Plain);
         }
+        if (string.IsNullOrEmpty(loot.tag1))
+        {
+          int k = 0;
+          k++;
+        }
         Assert.True(!string.IsNullOrEmpty(loot.tag1));
       }
       

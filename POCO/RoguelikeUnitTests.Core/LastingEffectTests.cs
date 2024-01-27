@@ -1,4 +1,5 @@
 ﻿using NUnit.Framework;
+using Roguelike;
 using Roguelike.Attributes;
 using Roguelike.Effects;
 using Roguelike.Events;
@@ -81,11 +82,13 @@ namespace RoguelikeUnitTests
       {
         expected += "Spell was casted on " + ownerName + " ";
       }
+      else
+        expected = ownerName + " ";
 
       expected += le1.Description;
 
 
-      var ac = le1.CreateAction(le1);
+      var ac = le1.CreateAction(le1, false, target);
       //Assert.True(ac.Info.StartsWith(expected));
       Assert.AreEqual(ac.Info, expected);
     }
@@ -250,6 +253,7 @@ namespace RoguelikeUnitTests
     }
 
     [Test]
+    [Repeat(1)]
     public void TestBleeding()
     {
       var game = CreateGame(true, 1);
@@ -270,7 +274,10 @@ namespace RoguelikeUnitTests
       };
 
       var enemy = AllEnemies.First();
+      enemy.RemoveImmunity(EffectType.Bleeding);
+      Assert.False(enemy.IsImmuned(EffectType.Bleeding));
       Assert.True(enemy.Revealed);
+      
       PlaceCloseToHero(enemy);
       var enemyHealthStat = enemy.Stats.GetStat(EntityStatKind.Health);
       enemyHealthStat.Value.Nominal = 150;
@@ -313,8 +320,9 @@ namespace RoguelikeUnitTests
           }
         }
       };
-
-      var enemy = ActivePlainEnemies.First();
+      game.Hero.AlwaysHit[AttackKind.Melee] = true;
+      
+      var enemy = base.AddEnemy(EnemySymbols.BatSymbol);
       PlaceCloseToHero(enemy);
       var healthStat = enemy.Stats.GetStat(EntityStatKind.Health);
       healthStat.Value.Nominal = 150;
@@ -323,7 +331,7 @@ namespace RoguelikeUnitTests
       SetHeroEquipment(wpn);
 
       enemy.OnMeleeHitBy(game.Hero);
-      var le1 = enemy.LastingEffects.Where(i => i.Type == EffectType.Bleeding).SingleOrDefault();
+      var le1 = enemy.LastingEffectsSet.GetByType(EffectType.Bleeding);
       Assert.NotNull(le1);
 
       LastingEffect castedAgain = null;
@@ -333,7 +341,7 @@ namespace RoguelikeUnitTests
       var enemyHealth = enemy.Stats.Health;
       for (int i = 0; i < turns * 2; i++)//there will be prolong
       {
-        castedAgain = enemy.LastingEffects.Where(le => le.Type == EffectType.Bleeding).SingleOrDefault();
+        castedAgain = enemy.LastingEffectsSet.GetByType(EffectType.Bleeding);
         Assert.AreEqual(castedAgain, le1);
 
         game.GameManager.SkipHeroTurn();

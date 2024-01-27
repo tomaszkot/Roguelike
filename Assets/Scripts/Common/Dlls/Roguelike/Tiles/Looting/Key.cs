@@ -32,6 +32,7 @@ namespace Roguelike.Tiles.Looting
       Name = "Key";
       tag1 = "key";
       Revealed = true;
+      Kind = KeyKind.Room;
     }
 
     public string KeyName { get; set; }
@@ -52,7 +53,7 @@ namespace Roguelike.Tiles.Looting
 
     private void SetDescFromKind()
     {
-      var desc = "";
+      var desc = "Opens something";
       if (kind == KeyKind.Room)
         desc = "Opens a door";
       else if (kind == KeyKind.BossRoom)
@@ -91,7 +92,14 @@ public class KeyHalf : Loot, IKey
 
   public bool Matches(KeyHalf other)
   {
-    return tag1 != other.tag1;
+    return other !=null && tag1 != other.tag1;
+  }
+
+  public override RecipeKind GetMatchingRecipe(Loot other)
+  {
+    if (other is KeyHalf && Matches(other as KeyHalf))
+      return RecipeKind.TwoEq;
+    return RecipeKind.Unset;
   }
 }
 

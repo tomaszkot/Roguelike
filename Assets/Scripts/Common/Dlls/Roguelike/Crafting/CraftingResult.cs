@@ -1,4 +1,5 @@
 ﻿using Roguelike.Tiles;
+using Roguelike.Tiles.Looting;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,29 +12,38 @@ namespace Roguelike.Crafting
   /// </summary>
   public class CraftingResult
   {
-    public string Message { get; set; }
-    public List<Loot> LootItems { get; set; }
+    public RecipeKind UsedKind { get; set; }
+    public string Message { get; set; } = "";
+    public List<Loot> OutLootItems { get; set; } = new List<Loot>();
+    public List<Loot> UsedInputItems { get; set; } = new List<Loot>();
 
-    public bool Success { get { return LootItems != null && LootItems.Any(); } }
+
+    public bool Success { get { return OutLootItems != null && OutLootItems.Any(); } }
 
     /// <summary>
     /// Normally true but in rare cases when Eq is enhanced/fixed (e.g.Magical weapon recharge) false
     /// </summary>
     public bool DeleteCraftedLoot { get; set; } = true;
+    public bool AddOutLoot { get; set; }
 
     public CraftingResult(List<Loot> lootItems)
     {
-      this.LootItems = lootItems;
+      this.OutLootItems = lootItems;
     }
 
     public Loot FirstOrDefault()
     {
-      return LootItems.FirstOrDefault();
+      return OutLootItems.FirstOrDefault();
     }
 
     public T FirstOrDefault<T>() where T : Loot
     {
-      return LootItems.FirstOrDefault() as T;
+      return OutLootItems.FirstOrDefault() as T;
+    }
+
+    public override string ToString()
+    {
+      return base.ToString() + ", "+Message;
     }
   }
 }

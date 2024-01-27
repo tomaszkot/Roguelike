@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-
+#pragma warning disable 8603
+#pragma warning disable 8602
 
 namespace Dungeons.Core
 {

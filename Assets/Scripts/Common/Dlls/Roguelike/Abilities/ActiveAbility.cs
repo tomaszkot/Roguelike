@@ -9,7 +9,8 @@ using System.Threading.Tasks;
 
 namespace Roguelike.Abilities
 {
-  public enum AbilityState { Unset, Working, CoolingDown }
+  //public enum AbilityVisualState { Unset, Selected, Highlighted, Disabled }
+  public enum AbilityState { Unset, Unusable, Activated, Working, CoolingDown }
   public enum AbilityProperty { Unset, Range, Duration, Durability}
 
   /// <summary>
@@ -99,6 +100,7 @@ namespace Roguelike.Abilities
           case AbilityKind.PerfectHit:
             psk = EntityStatKind.PerfectHitDamage;
             ask = EntityStatKind.PerfectHitChanceToHit;
+            MaxLevel = 10;
             break;
 
           case AbilityKind.IronSkin:
@@ -189,22 +191,22 @@ namespace Roguelike.Abilities
           AuxStat.Unit = EntityStatUnit.Percentage;
         }
 
-        if (//kind == AbilityKind.Rage ||
-            kind == AbilityKind.IronSkin //||
+        if (kind == AbilityKind.Rage ||
+            kind == AbilityKind.IronSkin 
             //kind == AbilityKind.OpenWound ||
-            //kind == AbilityKind.ElementalVengeance 
+            //kind == AbilityKind.ElementalVengeance ||
             //kind == AbilityKind.ZealAttack
           )
         {
-          RunAtTurnStart = true;
+          RunAtActivation = true;
           //AutoApply = true;
           //Activated = true;
         }
       }
     }
         
-    public bool RunAtTurnStart { get; internal set; }
-
+    public bool RunAtActivation { get; internal set; }
+    public bool RunAtTurnStart => RunAtActivation;
     public override float CalcFactor(int index, int level)
     {
       AbilityKind kind = Kind;
@@ -268,7 +270,7 @@ namespace Roguelike.Abilities
           //ask = EntityStatKind.NumberOfPiercedVictims;
           if (primary)
           {
-            var percentToDo = new int[] { 0, 5, 10, 15, 20, 25 };
+            var percentToDo = new int[] { 0, 10, 20, 30, 40, 50 };
             factor = percentToDo[level];
           }
           else 
@@ -348,12 +350,12 @@ namespace Roguelike.Abilities
         case AbilityKind.PerfectHit:
           if (primary)
           {
-            var victims = new int[] { 0, 10, 15, 35, 50, 70 };//PerfectHitDamage %
+            var victims = new int[]      { 0, 15, 30, 45, 55, 70, 85, 100, 115, 130, 150 };//PerfectHitDamage %
             factor = victims[level];
           }
           else
           {
-            var extraDamages = new int[] { 0, 5, 10, 15, 20, 25 };//PerfectHitChanceToHit %
+            var extraDamages = new int[] { 0, 05, 07, 10, 12, 14, 17, 20, 22, 24, 25  };//PerfectHitChanceToHit %
             factor = extraDamages[level];
           }
           break;

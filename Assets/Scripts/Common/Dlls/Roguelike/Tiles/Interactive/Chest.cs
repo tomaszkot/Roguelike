@@ -70,6 +70,8 @@ namespace Roguelike.Tiles.Interactive
 
     void SetTag1BasedOnKind()
     {
+      if (ChestVisualKind == ChestVisualKind.Grave)
+        return;
       tag1 = "chest_plain1";
       if (ChestKind == ChestKind.Gold)
         tag1 = "chest_gold";
@@ -165,5 +167,10 @@ namespace Roguelike.Tiles.Interactive
     public int Durability { get; set; } = 3;
 
     public bool Destroyed { get; set; }
+
+    public override string ToString()
+    {
+      return base.ToString() + ", ChestKind: " + ChestKind + ", ChestVisualKind: " + ChestVisualKind;
+    }
   }
 }

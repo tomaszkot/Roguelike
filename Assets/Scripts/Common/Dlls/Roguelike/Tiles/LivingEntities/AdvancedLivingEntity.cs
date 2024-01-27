@@ -25,11 +25,13 @@ using Roguelike.Managers;
 namespace Roguelike.Tiles.LivingEntities
 {
   public enum AllyKind { Unset, Hound, Enemy, Merchant, Paladin }
-  public enum EntityProffesionKind { Unset, King, Prince, Knight, Priest, Mercenary, Merchant, Peasant, Bandit, Adventurer, Slave }
+  public enum EntityProffesionKind { Unset, King, Prince, Knight, Priest, Mercenary, Merchant, Peasant, Bandit, 
+    Adventurer, Slave, TeutonicKnight, Smith , Woodcutter, Carpenter, Warrior
+  }
   public enum EntityGender { Unset, Male, Female }
   public enum RelationToHeroKind { Unset, Neutral, Friendly, Antagonistic, Hostile };
   public enum EntityKind { Unset, Human, Animal, Undead, Daemon }
-  public enum AnimalKind { Unset, Hound, Pig, Hen, Rooster, Deer }
+  public enum AnimalKind { Unset, Hound, Pig, Hen, Rooster, Deer, Horse }
 
   public class RelationToHero
   {
@@ -46,14 +48,14 @@ namespace Roguelike.Tiles.LivingEntities
       get => discussion;
       set => discussion = value;
     }
-    public EntityProffesionKind Proffesion { get; set; }
+    
     public event EventHandler ExpChanged;
-    public event EventHandler<bool> UrgentTopicChanged;
     public event EventHandler StatsRecalculated;
     public event EventHandler LeveledUp;
     protected CurrentEquipment currentEquipment;
     protected Inventory inventory = null;
-
+    //public BusyDestPointKind BusyDestPointKind { get; set; }
+    
     public virtual Inventory Inventory
     {
       get => inventory;
@@ -63,7 +65,11 @@ namespace Roguelike.Tiles.LivingEntities
         inventory.Owner = this;
       }
     }
-        public ProjectileFightItem ActiveProjectileFightItem => ActiveFightItem as ProjectileFightItem;
+    public DestPointDesc DestPointDesc { get; 
+      set; 
+    } = new DestPointDesc();
+
+    public ProjectileFightItem SelectedProjectileFightItem => SelectedFightItem as ProjectileFightItem;
 
     //[JsonIgnoreAttribute]
     public CurrentEquipment CurrentEquipment
@@ -116,6 +122,11 @@ namespace Roguelike.Tiles.LivingEntities
       }
     }
 
+    public bool HasAbilityActivated(ActiveAbility ab)
+    {
+      return SelectedActiveAbility != null && SelectedActiveAbility.Kind == ab.Kind;
+    }
+
     public bool IncreaseSpell(SpellKind sk)
     {
       var state = this.Spells.GetState(sk);
@@ -129,7 +140,7 @@ namespace Roguelike.Tiles.LivingEntities
       return false;
     }
 
-    public bool InventoryAcceptsItem(Inventory inv, Loot loot, AddItemArg addItemArg)
+    public virtual bool InventoryAcceptsItem(Inventory inv, Loot loot, AddItemArg addItemArg)
     {
       if (inv is CurrentEquipment)
       {
@@ -209,7 +220,7 @@ namespace Roguelike.Tiles.LivingEntities
       return GetPassiveAbility(AbilityKind.LootingMastering) as LootAbility;
     }
 
-    public PassiveAbility GetPassiveAbility(AbilityKind kind)
+    public override PassiveAbility GetPassiveAbility(AbilityKind kind)
     {
       return Abilities.PassiveItems.Where(i => i.Kind == kind).SingleOrDefault();
     }
@@ -227,11 +238,7 @@ namespace Roguelike.Tiles.LivingEntities
       return price;
     }
 
-    //public new static AdvancedLivingEntity CreateDummy()
-    //{
-    //  return new AdvancedLivingEntity(new Point(0, 0), '\0');
-    //}
-    public double CalcExpScale()
+    public double CalcExperienceScale()
     {
       var currExp = Experience - PrevLevelExperience;
       var scale = currExp / (NextLevelExperience - PrevLevelExperience);
@@ -245,15 +252,13 @@ namespace Roguelike.Tiles.LivingEntities
       bool thresholdReached = Experience >= NextLevelExperience;
       if (thresholdReached && canAdvanceInExp)
       {
-        PrevLevelExperience = NextLevelExperience;
-        NextLevelExperience = Calculated.FactorCalculator.AddFactor((int)NextLevelExperience, 110);
-        Level++;
-        if (Level == 2)
-        {
-          NextLevelExperience = NextLevelExperience * 1.3f;
-        }
-        LevelUpPoints += GenerationInfo.LevelUpPoints;
-        AbilityPoints += 3;
+        var calc = new NextLevelCalculator(this);
+        Level = calc.GetNextLevel(Level);
+        PrevLevelExperience = calc.PrevLevelExperience;
+        NextLevelExperience = calc.NextLevelExperience;
+
+        LevelUpPoints += calc.LevelUpPoints;
+        AbilityPoints += GenerationInfo.AbilityPointLevelUpIncrease;
 
         //if (Level == 2 || Level == 3)
         //  NextLevelExperience *= 1.5f;
@@ -282,22 +287,29 @@ namespace Roguelike.Tiles.LivingEntities
         return;
       }
 
-      spell.CoolDownCounter = ActiveManaPoweredSpellSource.CreateSpell(this).CoolingDownCounter;
+      spell.CoolDownCounter = SelectedManaPoweredSpellSource.CreateSpell(this).CoolingDownCounter;
     }
 
     public override bool Consume(IConsumable consumable)
     {
+      StackedLoot stacked = null;
       if (inventory.Contains(consumable.Loot))
+        stacked = consumable.Loot as StackedLoot;
+      
+      if (base.Consume(consumable))
       {
-        var stacked = consumable.Loot as StackedLoot;
-        var rem = inventory.Remove(stacked);
-        if (rem == null)
+        if (stacked != null)
         {
-          Assert(false);
-          return false;
+          var rem = inventory.Remove(stacked);
+          if (rem == null)
+          {
+            Assert(false);
+            return false;
+          }
         }
+        return true;
       }
-      return base.Consume(consumable);
+      return false;
     }
 
     public void IncreaseStatByLevelUpPoint(EntityStatKind stat)
@@ -425,7 +437,7 @@ namespace Roguelike.Tiles.LivingEntities
       return false;
     }
 
-    public virtual bool CanUseEquipment(IEquipment eq, bool autoPutoOn)
+    public override bool CanUseEquipment(IEquipment eq, bool autoPutoOn)
     {
       Func<string, bool> report = (string message) =>
       {
@@ -451,7 +463,7 @@ namespace Roguelike.Tiles.LivingEntities
 
       foreach (var rs in eq.GetEffectiveRequiredStats())
       {
-        if (rs.Value.Nominal > Stats.GetNominal(rs.Kind))
+        if (!CanUseEquipment(eq, rs))
           return report("Required statistic " + rs.Kind.ToDescription() + " not met.");
       }
 
@@ -613,7 +625,7 @@ namespace Roguelike.Tiles.LivingEntities
       return currentEquipment[CurrentEquipmentKind.Weapon] as Weapon;
     }
 
-    public virtual SpellSource ActiveWeaponSpellSource
+    public virtual SpellSource SelectedWeaponSpellSource
     {
       get
       {
@@ -623,15 +635,15 @@ namespace Roguelike.Tiles.LivingEntities
 
     }
 
-    public SpellSource ActiveSpellSource
+    public SpellSource SelectedSpellSource
     {
       get
       {
-        var spellSrc = ActiveManaPoweredSpellSource;
+        var spellSrc = SelectedManaPoweredSpellSource;
         if (spellSrc != null)
           return spellSrc;
 
-        var fi = ActiveFightItem;
+        var fi = SelectedFightItem;
         if (fi != null && GetStackedCountForHotBar(fi) > 0)
         {
           return null;
@@ -736,10 +748,7 @@ namespace Roguelike.Tiles.LivingEntities
     //  return Stats.GetCurrentValue(EntityStatKind.Strength) - StartStrength;
     //}
 
-    public bool CanUseEquipment(Equipment eq, EntityStat eqStat)
-    {
-      return Stats.GetNominal(eqStat.Kind) >= eq.GetReqStatValue(eqStat);
-    }
+    
 
     public override string ToString()
     {
@@ -764,13 +773,6 @@ namespace Roguelike.Tiles.LivingEntities
           }
         }
       }
-    }
-
-    public void SetHasUrgentTopic(bool ut)
-    {
-      this.HasUrgentTopic = ut;
-      if (UrgentTopicChanged != null)
-        UrgentTopicChanged(this, HasUrgentTopic);
     }
 
     public virtual void ApplyAbilities()
@@ -837,11 +839,11 @@ namespace Roguelike.Tiles.LivingEntities
           lastingEffectCalcInfo = victim.LastingEffectsSet.EnsureEffect(EffectType.Bleeding, inflicted / 3, this);
         //if (fi == null)//throwing knife will not cause stunning or tear apart
         {
-          if (CurrentWeaponCausesStunning() && CalculateIfStatChanceApplied(EntityStatKind.ChanceToCauseStunning))
+          if (CurrentWeaponCausesStunning() && CalculateIfStatChanceApplied(EntityStatKind.ChanceToCauseStunning, victim))
             lastingEffectCalcInfo = victim.LastingEffectsSet.EnsureEffect(EffectType.Stunned, 0, this);
           if (victim.Stats.Health < victim.Stats.GetNominal(EntityStatKind.Health) * 2 / 3)
           {
-            if (CalculateIfStatChanceApplied(EntityStatKind.ChanceToCauseTearApart))
+            if (CalculateIfStatChanceApplied(EntityStatKind.ChanceToCauseTearApart, victim))
               lastingEffectCalcInfo = victim.LastingEffectsSet.EnsureEffect(EffectType.TornApart, 0, this);//this is a death          
           }
           //swords does not have any effect by default(beside unique ones), but have high hit %
@@ -868,15 +870,17 @@ namespace Roguelike.Tiles.LivingEntities
     /// <param name="victim"></param>
     protected override void OnDamageCaused(float inflicted, LivingEntity victim)
     {
-      double exp = 1f;
+      //double exp = 1f;
       if (victim is Enemy en)
       {
         var livePercentage = inflicted / en.GetTotalValue(EntityStatKind.Health) * 100;
         var award = EnemyDamagingTotalExpAward[en.PowerKind];
-        exp = livePercentage * award / 100;
+        //exp = livePercentage * award / 100;
       }
-      var inc = (1 * victim.Level * exp);
-      this.IncreaseExp(inc);
+      //var inc = (1 * victim.Level * exp);
+      //this.IncreaseExp(inc);
+      base.OnDamageCaused(inflicted, victim);
+
     }
 
     public string GetExpInfo()
@@ -973,6 +977,9 @@ namespace Roguelike.Tiles.LivingEntities
 
     public SpellStateSet Spells { get => spellStatesSet; set => spellStatesSet = value; }
 
+    public bool IsMecenary => base.IsMercenary;
+
+
     public FightItem GetFightItemKindAmmoForCurrentWeapon()
     {
       var wpn = this.GetActiveWeapon();
@@ -1062,6 +1069,30 @@ namespace Roguelike.Tiles.LivingEntities
         }
       }
       return base.IsInProjectileReach(fi, target);
+    }
+
+    public virtual Loot RemoveFromInv(Loot item, RemoveItemArg arg = null)
+    {
+      return Inventory.Remove(item);
+    }
+
+    public override bool CanHighlightAbility(AbilityKind kind)
+    {
+      var ab = GetActiveAbility(kind);
+      if (ab == null)
+        return false;
+      if (ab.CoolDownCounter > 0)
+        return false;
+      if (kind == AbilityKind.OpenWound)
+      {
+        var wpn = this.GetCurrentEquipment(EquipmentKind.Weapon) as Weapon;
+        if (wpn == null)
+          return false;
+        if (wpn.Kind != Weapon.WeaponKind.Sword && wpn.Kind != Weapon.WeaponKind.Dagger && wpn.Kind != Weapon.WeaponKind.Axe)
+          return false;
+      }
+
+      return true;
     }
   }
 }

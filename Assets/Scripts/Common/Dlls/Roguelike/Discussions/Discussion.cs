@@ -1,39 +1,38 @@
-﻿using Newtonsoft.Json;
-using Roguelike.Extensions;
+﻿using Dungeons.Core;
+using Newtonsoft.Json;
 using Roguelike.Managers;
+using Roguelike.Serialization;
 using Roguelike.Tiles.LivingEntities;
 using SimpleInjector;
-using System.IO;
 using System.Diagnostics;
 
 namespace Roguelike.Discussions
 {
-  public enum KnownSentenceKind { Unset, WhatsUp, LetsTrade, Bye, SellHound, Back, QuestAccepted, QuestProgress, WorkingOnQuest, AwaitingReward, 
-    Cheating, DidIt , RewardDeny, AwaitingRewardAfterRewardDeny, RewardSkipped, AllyAccepted, AllyRejected
+  public enum KnownSentenceKind { Unset, WhatsUp, LetsTrade, Bye, SellHound, Back, QuestAccepted, QuestRejected, QuestProgress, 
+    WorkingOnQuest, AwaitingReward,  
+    Cheating, DidIt , RewardDeny, AwaitingRewardAfterRewardDeny, 
+    RewardSkipped, AllyAccepted, AllyRejected, AskedToAddAlcohol, AgreeToAddAlcohol, RefusedToAddAlcohol
   }
 
 
-  public class Discussion
+  public class Discussion : IPersistable
   {
       
     protected Container container;
     public string EntityName { get; set; }
-    DiscussionTopic mainItem;
+    protected DiscussionTopic mainItem;
 
+    //[JsonConstructor]
     public Discussion(Container container)
     {
       this.container = container;
       mainItem = CreateMainItem();
     }
 
-    [JsonConstructor]
-    public Discussion() { }
-
     protected virtual DiscussionTopic CreateMainItem()
     {
       return container.GetInstance<DiscussionTopic>();
     }
-
     public static void CreateMerchantResponseOptions(DiscussionTopic item, bool allowBuyHound)
     {
       item.AddTopic(KnownSentenceKind.LetsTrade);
@@ -41,6 +40,12 @@ namespace Roguelike.Discussions
         item.AddTopic(KnownSentenceKind.SellHound, " (" + Merchant.HoundPrice + " gold)", "I'm afraid you can not afford it.");
     }
 
+    public void Reset()
+    {
+      SetMainItem(CreateMainItem());
+    }
+
+    
     public void SetMainItem(DiscussionTopic topic) 
     {
       topic.AddTopic(KnownSentenceKind.Bye);
@@ -56,34 +61,15 @@ namespace Roguelike.Discussions
     [JsonIgnore]
     public Container Container { get => container; set => container = value; }
 
-    public string ToJson()
+    public void ToXml()
     {
-      JsonSerializerSettings settings = new JsonSerializerSettings
-      {
-         PreserveReferencesHandling = PreserveReferencesHandling.Objects
-      };
-      string jsonData = JsonConvert.SerializeObject(this, settings);
-      return jsonData;
-    }
-
-    public void FromJson(string json)
-    {
-      Discussion discussion = JsonConvert.DeserializeObject<Discussion>(json);
-      EntityName = discussion.EntityName;
-      mainItem = discussion.mainItem;
-    }
-
-    public void ToJsonFile()
-    {
-      JsonSerializerSettings settings = new JsonSerializerSettings
-      {
-        PreserveReferencesHandling = PreserveReferencesHandling.Objects
-      };
       try
       {
-        string jsonData = JsonConvert.SerializeObject(this, settings);
-        string path = EntityName + ".json";
-        File.WriteAllText(path, jsonData);
+        var writer = new System.Xml.Serialization.XmlSerializer(typeof(Discussion));
+        var path = EntityName + ".xml";
+        var file = System.IO.File.Create(path);
+        writer.Serialize(file, this);
+        file.Close();
       }
       catch (System.Exception ex)
       {
@@ -94,13 +80,15 @@ namespace Roguelike.Discussions
       }
     }
 
-    public static Discussion FromJsonFile(string entityName)
+    public static Discussion FromXml(string entityName)
     {
       try
       {
         Discussion disc = null;
-        var jsonData = File.ReadAllText(entityName + ".json");
-        disc = JsonConvert.DeserializeObject<Discussion>(jsonData);
+        var reader = new System.Xml.Serialization.XmlSerializer(typeof(Discussion));
+        var file = new System.IO.StreamReader(entityName + ".xml");
+        disc = (Discussion)reader.Deserialize(file);
+        file.Close();
         return disc;
       }
       catch (System.Exception ex)
@@ -116,7 +104,7 @@ namespace Roguelike.Discussions
     {
     }
 
-    public virtual bool AcceptQuest(QuestManager qm, string questKind)
+    public virtual bool AcceptQuest(QuestManager qm, string questKind, string questPrincipalName)
     {
       return false;
     }
@@ -140,5 +128,26 @@ namespace Roguelike.Discussions
         SetParentsForTopic(topic);
       }
     }
+
+    public bool RemoveTopic(KnownSentenceKind ksk)
+    {
+      var topic = MainItem.GetTopic(ksk);
+      if (topic != null)
+        return  RemoveTopic(topic);
+
+      return false;
+    }
+
+    public bool RemoveTopic(DiscussionTopic topic)
+    {
+      if (topic == null)
+      {
+        container.GetInstance<ILogger>().LogError("RemoveTopic null!"+ topic);
+        return false; 
+      }
+      return topic.Parent.Topics.Remove(topic);
+    }
+
+    
   }
 }

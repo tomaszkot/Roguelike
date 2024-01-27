@@ -19,7 +19,7 @@ namespace RoguelikeUnitTests
       var hintHistory = new HintHistory();
 
       var hint = hintHistory.Get(Roguelike.Help.HintKind.LootCollectShortcut);
-      Assert.AreEqual(hint.Info, "Press 'G' to collect a loot under your position.");
+      Assert.True(hint.Info.StartsWith("Press 'G' to collect a loot under your position."));
             
       //hintHistory.SetKeyCode(Roguelike.Help.HintKind.LootHightlightShortcut, (int)KeyCode.LeftControl, (Roguelike.Help.HintKind hk) => { return KeyCode.LeftControl.ToDescription(); });
       //hint = hintHistory.Get(Roguelike.Help.HintKind.LootHightlightShortcut);

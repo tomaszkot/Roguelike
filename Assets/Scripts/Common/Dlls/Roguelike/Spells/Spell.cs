@@ -13,7 +13,9 @@ namespace Roguelike.Spells
 {
   public enum SpellKind
   {
-    Unset = 0, FireBall = 1, CrackedStone = 2, Skeleton = 3, Trap = 4, IceBall = 5, PoisonBall = 6, Transform = 7,
+    Unset = 0, FireBall = 1, CrackedStone = 2, Skeleton = 3, 
+    //Trap = 4, 
+    IceBall = 5, PoisonBall = 6, Transform = 7,
     Frighten = 8, Healing = 9, ManaShield = 10, Telekinesis = 11, StonedBall = 12, LightingBall = 13
         //,MindControl
         , Mana = 14, BushTrap = 15, 
@@ -22,11 +24,13 @@ namespace Roguelike.Spells
     ResistAll = 25, 
     Inaccuracy = 29, /*CallMerchant, CallGod,*/ Identify = 30, Portal = 33,
     Dziewanna = 40,
-    Swarog = 41,
+    Swarog = 41,//Let there be dark!
     Swiatowit = 42,
     FireStone = 50,
     SwapPosition = 53,
-    Perun
+    Perun = 55,
+    Jarowit = 56,
+    Wales = 58
   }
 
   public class Spell : ISpell

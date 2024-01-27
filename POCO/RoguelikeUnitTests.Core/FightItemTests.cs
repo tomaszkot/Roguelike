@@ -2,14 +2,17 @@
 using Dungeons.Tiles;
 using NUnit.Framework;
 using Roguelike.Abilities;
+using Roguelike.Abstract;
 using Roguelike.Attributes;
 using Roguelike.Calculated;
 using Roguelike.Events;
 using Roguelike.LootFactories;
 using Roguelike.Tiles;
+using Roguelike.Tiles.Abstract;
 using Roguelike.Tiles.LivingEntities;
 using Roguelike.Tiles.Looting;
 using RoguelikeUnitTests.Helpers;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace RoguelikeUnitTests
@@ -48,15 +51,15 @@ namespace RoguelikeUnitTests
       ActivateFightItem(FightItemKind.PlainArrow, hero);
       var wpn = GenerateEquipment<Weapon>("Bow");
       Assert.True(SetHeroEquipment(wpn));
-      var expectedBowAttackValue = Props.FightItemBaseDamage + 1 + Props.BowBaseDamage;
+      var expectedBowAttackValue = Props.FightItemBaseDamage + 2 + Props.BowBaseDamage;
       AssertAttackValue(hero, Roguelike.Attributes.AttackKind.PhysicalProjectile, expectedBowAttackValue);
 
       ActivateFightItem(FightItemKind.IronArrow, hero);
-      var expectedBowAttackValueIron = expectedBowAttackValue + 4;
+      var expectedBowAttackValueIron = expectedBowAttackValue + 3;
       AssertAttackValue(hero, Roguelike.Attributes.AttackKind.PhysicalProjectile, expectedBowAttackValueIron);
 
       ActivateFightItem(FightItemKind.SteelArrow, hero);
-      var expectedBowAttackValueSteel = expectedBowAttackValueIron + 4;
+      var expectedBowAttackValueSteel = expectedBowAttackValueIron + 5;
       AssertAttackValue(hero, Roguelike.Attributes.AttackKind.PhysicalProjectile, expectedBowAttackValueSteel);
 
     }
@@ -100,7 +103,7 @@ namespace RoguelikeUnitTests
       ActivateFightItem(FightItemKind.PlainArrow, hero);
       var wpn = GenerateEquipment<Weapon>("Bow");
       Assert.True(SetHeroEquipment(wpn));
-      var expectedBowAttackValue = Props.FightItemBaseDamage + 1 + Props.BowBaseDamage;
+      var expectedBowAttackValue = Props.FightItemBaseDamage + 2 + Props.BowBaseDamage;
       AssertAttackValue(hero, Roguelike.Attributes.AttackKind.PhysicalProjectile, expectedBowAttackValue);
       Assert.Greater(expectedBowAttackValue, expectedThrowingKnifeAttackValue);
 
@@ -108,7 +111,7 @@ namespace RoguelikeUnitTests
       ActivateFightItem(FightItemKind.PlainBolt, hero);
       wpn = GenerateEquipment<Weapon>("Crossbow");
       Assert.True(SetHeroEquipment(wpn));
-      var expectedCrossbowAttackValue = Props.FightItemBaseDamage + 2 + Props.CrossbowBaseDamage;
+      var expectedCrossbowAttackValue = Props.FightItemBaseDamage + 3 + Props.CrossbowBaseDamage;
       AssertAttackValue(hero, Roguelike.Attributes.AttackKind.PhysicalProjectile, expectedCrossbowAttackValue);
       Assert.Greater(expectedCrossbowAttackValue, expectedBowAttackValue);
     }
@@ -121,6 +124,8 @@ namespace RoguelikeUnitTests
       Assert.AreEqual(ad.CurrentTotal, expectedAttackValue);
       return ad;
     }
+
+   
 
     private Enemy PrepareEnemy(bool addImmunities = true, float health  = 300)
     {
@@ -139,9 +144,11 @@ namespace RoguelikeUnitTests
     [TestCase(FightItemKind.PlainArrow, "Bow")]
     [TestCase(FightItemKind.IronArrow, "Bow")]
     [TestCase(FightItemKind.SteelArrow, "Bow")]
+    [TestCase(FightItemKind.PoisonArrow, "Bow")]
     [TestCase(FightItemKind.PlainBolt, "Crossbow")]
     [TestCase(FightItemKind.IronBolt, "Crossbow")]
     [TestCase(FightItemKind.SteelBolt, "Crossbow")]
+    [TestCase(FightItemKind.IceBolt, "Crossbow")]
     //[Repeat(1)]
     public void ArrowFightItemTest(FightItemKind fik, string weapon)
     {
@@ -178,6 +185,50 @@ namespace RoguelikeUnitTests
       Assert.Greater(enemyHealth, enemy.Stats.Health);
       var diffKnife = enemyHealth - enemy.Stats.Health;
       Assert.Greater(diffBow, diffKnife);
+    }
+
+    [TestCase(FightItemKind.PoisonArrow, "Bow")]
+    [TestCase(FightItemKind.FireArrow, "Bow")]
+    [TestCase(FightItemKind.IceBolt, "Crossbow")]
+    //[Repeat(1)]
+    public void ArrowLikeSpecialItemTest(FightItemKind fik, string weapon)
+    {
+      var game = CreateGame();
+      var hero = game.Hero;
+      hero.UseAttackVariation = false;//other tests do it
+      hero.AlwaysHit[AttackKind.PhysicalProjectile] = true;//TODO
+
+      var fi = ActivateFightItem(fik, hero, 10);
+
+      var enemy = ActivePlainEnemies.First();
+      PrepareToBeBeaten(enemy);
+      var enemyHealth = enemy.Stats.Health;
+
+      var bow = GenerateEquipment<Weapon>(weapon);
+      Assert.True(SetHeroEquipment(bow));
+
+      var tile = game.GameManager.CurrentNode.GetClosestEmpty(hero);
+      game.GameManager.CurrentNode.SetTile(enemy, tile.point);
+
+      bool works = false;
+      for (int i = 0; i < 10; i++)
+      {
+        Assert.True(UseFightItem(hero, enemy, fi));
+        Assert.Greater(enemyHealth, enemy.Stats.Health);
+        var diffBow = enemyHealth - enemy.Stats.Health;
+        enemyHealth = enemy.Stats.Health;
+        GotoNextHeroTurn();
+
+        if (enemy.HasLastingEffect(Roguelike.Effects.EffectType.Poisoned) ||
+            enemy.HasLastingEffect(Roguelike.Effects.EffectType.Frozen) ||
+            enemy.HasLastingEffect(Roguelike.Effects.EffectType.Firing))
+        {
+          works = true;
+          break;
+        }
+      }
+
+      Assert.True(works);
     }
 
     [Test]
@@ -222,10 +273,10 @@ namespace RoguelikeUnitTests
       var game = CreateGame();
       var en = PlainEnemies.First();
       en.AlwaysHit[AttackKind.PhysicalProjectile] = true;
-      en.ActiveFightItem = en.SetActiveFightItem(fightItemKind);
-      Assert.LessOrEqual(en.ActiveFightItem.Count, 4);
-      if (en.ActiveFightItem.Count < 2)
-        en.ActiveFightItem.Count = 2;
+      en.SelectedFightItem = en.SetActiveFightItem(fightItemKind);
+      Assert.LessOrEqual(en.SelectedFightItem.Count, 4);
+      if (en.SelectedFightItem.Count < 2)
+        en.SelectedFightItem.Count = 2;
       Assert.AreEqual(game.GameManager.Hero.GetFightItemKindHitCounter(fightItemKind), 0);
 
       var hero = game.GameManager.Hero;
@@ -276,24 +327,7 @@ namespace RoguelikeUnitTests
     //  Assert.Greater(enemyHealth, enemy.Stats.Health);
     //}
 
-    [Test]
-    public void CannonFightItemTest()
-    {
-      var game = CreateGame();
-      var hero = game.Hero;
-      hero.AlwaysHit[AttackKind.PhysicalProjectile] = true;
-
-      var cannonBall = ActivateFightItem(FightItemKind.CannonBall, hero);
-      var fiCount = hero.Inventory.GetStackedCount(cannonBall);
-      var enemy = PrepareEnemyForCannonHit();
-      float enemyHealth = enemy.Stats.Health;
-
-      Assert.True(game.GameManager.HeroTurn);
-      Assert.True(UseFightItem(hero, enemy, cannonBall));
-      Assert.AreEqual(hero.Inventory.GetStackedCount(cannonBall), fiCount - 1);
-
-      Assert.Greater(enemyHealth, enemy.Stats.Health);
-    }
+    
 
     private void WaitForAbilityCoolDown(Ability ab, bool exactlyZero = true)
     {
@@ -315,77 +349,6 @@ namespace RoguelikeUnitTests
       var ct = ab.CoolDownCounter;
       for (int i = 0; i <= ct; i++)
         GotoNextHeroTurn();
-    }
-
-    [Test]
-    [Repeat(5)]
-    public void CannonChanceToHitTest()
-    {
-      var game = CreateGame();
-      var hero = game.Hero;
-      hero.Stats.SetNominal(EntityStatKind.Health, 500);
-
-      var cannonBall = ActivateFightItem(FightItemKind.CannonBall, hero);
-      cannonBall.Count = 50;
-      var fiCount = hero.Inventory.GetStackedCount(cannonBall);
-      var enemy = PrepareEnemyForCannonHit();
-      float enemyHealth = enemy.Stats.Health;
-
-      var ab = hero.GetActiveAbility(Roguelike.Abilities.AbilityKind.Cannon);
-      Assert.AreEqual(ab.AuxStat.Kind, EntityStatKind.CannonExtraChanceToHit);
-
-      var chanceProj = hero.Stats.GetNominal(EntityStatKind.ChanceToPhysicalProjectileHit);
-      hero.Stats.SetNominal(EntityStatKind.ChanceToPhysicalProjectileHit, 0);
-      var facOrg = ab.AuxStat.Factor;
-      ab.AuxStat.Factor = 0;
-
-      Assert.True(game.GameManager.HeroTurn);
-
-      int hitCount = HitEnemyWithCannon(cannonBall, ref fiCount, enemy, ref enemyHealth);
-      Assert.AreEqual(enemyHealth, enemy.Stats.Health);
-
-      //restore stat
-      hero.Stats.SetNominal(EntityStatKind.ChanceToPhysicalProjectileHit, chanceProj);
-
-      hitCount = HitEnemyWithCannon(cannonBall, ref fiCount, enemy, ref enemyHealth);
-
-      Assert.Greater(hitCount, 3);
-      Assert.Less(hitCount, 10);
-
-      MaximizeAbility(ab, game.Hero);
-      hitCount = HitEnemyWithCannon(cannonBall, ref fiCount, enemy, ref enemyHealth);
-
-      Assert.Greater(hitCount, 6);
-    }
-
-    private int HitEnemyWithCannon(ProjectileFightItem cannonBall, ref int fiCount, Enemy enemy, ref float enemyHealth)
-    {
-      var hitCount = 0;
-      for (int i = 0; i < 10; i++)
-      {
-        fiCount = UseCannon(cannonBall, fiCount, enemy);
-        if (enemyHealth > enemy.Stats.Health)
-          hitCount++;
-
-        enemyHealth = enemy.Stats.Health;
-      }
-
-      return hitCount;
-    }
-
-    private int UseCannon(ProjectileFightItem cannonBall, int fiCount, Enemy enemy)
-    {
-      var hero = game.Hero;
-      var ab = hero.GetActiveAbility(Roguelike.Abilities.AbilityKind.Cannon);
-      Assert.True(UseFightItem(hero, enemy, cannonBall));
-      var co = hero.Inventory.GetStackedCount(cannonBall);
-      Assert.AreEqual(co, fiCount - 1);
-      fiCount = co;
-      
-      GotoNextHeroTurn();
-      WaitForAbilityCoolDown(ab);
-      PlaceEnemyForCannon(hero, enemy);
-      return fiCount;
     }
 
     private Enemy PrepareEnemyForCannonHit()

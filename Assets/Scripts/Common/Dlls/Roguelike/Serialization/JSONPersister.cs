@@ -10,8 +10,6 @@ using Roguelike.Tiles.LivingEntities;
 using SimpleInjector;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Globalization;
 using System.IO;
 using System.Linq;
 
@@ -145,7 +143,7 @@ namespace Roguelike.Serialization
     }
 
 
-    public T Load<T>(string filePath, Container container) where T : class, IPersistable
+    public T Load<T>(string filePath) where T : class, IPersistable
     {
       T entity = null;
 
@@ -153,28 +151,9 @@ namespace Roguelike.Serialization
       {
         var json = File.ReadAllText(filePath);
         //this.container.GetInstance<ILogger>().LogInfo("Engine_JsonDeserializer...");
+        entity = JsonToObject<T>(json);
 
-        if (!IsValidJson(json))
-        {
-          this.Container.GetInstance<ILogger>().LogError("param json is not a valid json!");
-          return null;
-        }
-        ITraceWriter traceWriter = null;// new MemoryTraceWriter();
-        JsonSerializerSettings settings = new JsonSerializerSettings
-        { TraceWriter = traceWriter, TypeNameHandling = TypeNameHandling.All };
-        //container.Options.DefaultScopedLifestyle = new ExecutionContextScopeLifestyle();
-        //settings.TypeNameAssemblyFormatHandling = TypeNameAssemblyFormatHandling.Full;
-        settings.Converters.Add(new Newtonsoft.Json.Converters.StringEnumConverter());
-        settings.ContractResolver = new SimpleInjectorContractResolver(container);
-        settings.ObjectCreationHandling = ObjectCreationHandling.Replace;
-        entity = JsonConvert.DeserializeObject<T>(json, settings);
 
-        //string outdata = traceWriter.ToString();
-        //Console.WriteLine(outdata);
-        //if (siFromJson.Hero.CurrentEquipment.ContainsKey(EquipmentKind.Weapon))
-        //  Debug.Log("Engine_JsonDeserializer weapon = " + siFromJson.Hero.CurrentEquipment[EquipmentKind.Weapon]);
-        //else
-        //  Debug.Log("Engine_JsonDeserializer no weapon ");
       }
       catch (Exception ex)
       {
@@ -184,7 +163,33 @@ namespace Roguelike.Serialization
 
       return entity;
     }
-        
+
+    public T JsonToObject<T>(string json) where T : class, IPersistable
+    {
+      if (!IsValidJson(json))
+      {
+        this.Container.GetInstance<ILogger>().LogError("param json is not a valid json!");
+        return null;
+      }
+      ITraceWriter traceWriter = null;// new MemoryTraceWriter();
+      JsonSerializerSettings settings = new JsonSerializerSettings
+      { TraceWriter = traceWriter, TypeNameHandling = TypeNameHandling.All };
+      //container.Options.DefaultScopedLifestyle = new ExecutionContextScopeLifestyle();
+      //settings.TypeNameAssemblyFormatHandling = TypeNameAssemblyFormatHandling.Full;
+      settings.Converters.Add(new Newtonsoft.Json.Converters.StringEnumConverter());
+      settings.ContractResolver = new SimpleInjectorContractResolver(Container);
+      settings.ObjectCreationHandling = ObjectCreationHandling.Replace;
+      return JsonConvert.DeserializeObject<T>(json, settings);
+
+      //string outdata = traceWriter.ToString();
+      //Console.WriteLine(outdata);
+      //if (siFromJson.Hero.CurrentEquipment.ContainsKey(EquipmentKind.Weapon))
+      //  Debug.Log("Engine_JsonDeserializer weapon = " + siFromJson.Hero.CurrentEquipment[EquipmentKind.Weapon]);
+      //else
+      //  Debug.Log("Engine_JsonDeserializer no weapon ");
+    }
+
+
     private static bool IsValidJson(string strInput)
     {
       strInput = strInput.Trim();
@@ -287,13 +292,13 @@ namespace Roguelike.Serialization
     public AlliesStore LoadAllies(string hero, bool quick)
     {
       var fileName = GetFullFilePath(FileKind.Allies, hero, quick);
-      return Load<AlliesStore>(fileName, Container);
+      return Load<AlliesStore>(fileName);
     }
 
     public Hero LoadHero(string heroName, bool quick)
     {
       var fileName = GetFullFilePath(FileKind.Hero, heroName, quick);
-      return Load<Hero>(fileName, Container);
+      return Load<Hero>(fileName);
     }
 
     public virtual void DeleteGame(string heroName, bool quick)
@@ -318,7 +323,7 @@ namespace Roguelike.Serialization
     public GameLevel LoadLevel(string heroName, int index, bool quick)
     {
       var filePath = GetFullFilePath(FileKind.GameLevel, heroName, quick, index.ToString());
-      return Load<GameLevel>(filePath, Container);
+      return Load<GameLevel>(filePath);
     }
 
     public void SaveGameState(string heroName, GameState gameState, bool quick)
@@ -331,7 +336,7 @@ namespace Roguelike.Serialization
     public GameState LoadGameState(string heroName, bool quick)
     {
       var filePath = GetFullFilePath(FileKind.GameState, heroName, quick);
-      return Load<GameState>(filePath, Container);
+      return Load<GameState>(filePath);
     }
 
     public void SaveOptions(Options opt)
@@ -347,7 +352,7 @@ namespace Roguelike.Serialization
       {
         try
         {
-          return Load<Options>(filePath, Container);
+          return Load<Options>(filePath);
         }
         catch (Exception ex)
         {

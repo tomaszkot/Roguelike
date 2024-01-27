@@ -124,6 +124,11 @@ namespace Roguelike.Tiles.Looting
       return this.Price > currentEq.Price;
     }
 
+    public float GetReqStatValue(EntityStat es)
+    {
+      return es.Value.TotalValue;
+    }
+
     //public bool Countable { get; set; } = true;
   }
 }

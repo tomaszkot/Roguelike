@@ -42,7 +42,7 @@ namespace Roguelike.Abilities
   {
     protected string primaryStatDescription;
     public int Level { get; set; }
-
+   
     public List<EntityStat> Stats { get; set; } = new List<EntityStat>();
 
     public int MaxLevel = 5;
@@ -56,7 +56,7 @@ namespace Roguelike.Abilities
     public int CoolDownCounter { get; set; }
     public bool UsesCoolDownCounter { get; set; } = false;
     public int MaxCollDownCounter { get; set; } = 5;
-    public bool AutoApply { get; set; }
+    //public bool AutoApply { get; set; }
     public bool TurnsIntoLastingEffect { get; set; }
 
     public Ability()
@@ -322,6 +322,13 @@ namespace Roguelike.Abilities
     {
       get;
       set;
+    }
+    public bool IsBowLike 
+    {
+      get {
+        return Kind == AbilityKind.PerfectHit || Kind == AbilityKind.PiercingArrow || Kind == AbilityKind.ArrowVolley;
+      } 
+      
     }
 
     public Tuple<EntityStat, EntityStat> GetNextLevelStats()

@@ -1,14 +1,11 @@
 ﻿using Dungeons.Core;
-using Roguelike.Abstract;
 using Roguelike.Attributes;
 using Roguelike.Calculated;
 using Roguelike.Extensions;
 using Roguelike.TileParts;
 using Roguelike.Tiles.LivingEntities;
-using Roguelike.Tiles.Looting;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 
 namespace Roguelike.Tiles.Looting
@@ -40,6 +37,8 @@ namespace Roguelike.Tiles.Looting
     string Tag1 { get; }
 
     bool IsBetter(IEquipment currentEq);
+
+    float GetReqStatValue(EntityStat es);
   }
 
   public class Equipment : Loot, IEquipment
@@ -51,7 +50,9 @@ namespace Roguelike.Tiles.Looting
     EquipmentClass _class;
     public int RequiredLevel { get; set; } = 1;
     EntityStats requiredStats = new EntityStats();
-    public bool IsIdentified { get; set; } = true;
+    public bool IsIdentified { 
+      get; 
+      set; } = true;
     public event EventHandler<Loot> Identified;
 
     public bool Enchantable { get { return maxEnchants > 0; } }
@@ -74,13 +75,25 @@ namespace Roguelike.Tiles.Looting
       LootKind = LootKind.Equipment;
     }
 
+    public override bool IsMatchingRecipe(RecipeKind kind)
+    {
+      if(Class == EquipmentClass.Unique)
+        return false;
+      if (kind == RecipeKind.OneEq || kind == RecipeKind.TwoEq ||
+        kind == RecipeKind.EnchantEquipment || kind == RecipeKind.UnEnchantEquipment)
+        return true;
+      return false;
+    }
+
     public void SetMaterial(EquipmentMaterial material)
     {
       if (material == EquipmentMaterial.Unset)
         return;
+      if (Class == EquipmentClass.Unique)
+        return;
 
       if (this.Material != EquipmentMaterial.Unset &&
-        this.Material != EquipmentMaterial.Bronze)
+      this.Material != EquipmentMaterial.Bronze)
       {
         Dungeons.DebugHelper.Assert(false);//ups already set
         return;
@@ -110,6 +123,7 @@ namespace Roguelike.Tiles.Looting
       {
         if (Class != EquipmentClass.Unique)
         {
+          this.DisplayedName = "";
           SetDisplayedName();
           EnhanceStatsDueToMaterial(material);
         }
@@ -118,17 +132,27 @@ namespace Roguelike.Tiles.Looting
 
     public void SetDisplayedName()
     {
-      var dn = "";
-      var name = Name;
+      if (string.IsNullOrEmpty(displayedName) || displayedName == "Unset")
+        this.DisplayedName = GetDefaultName();
+    }
+
+    protected override string GetDefaultName()
+    {
+      return GetNameWithMaterial(Name);
+    }
+
+    private string GetNameWithMaterial(string name)
+    {
+      string defaultName = "";
       if (Material != EquipmentMaterial.Unset)
       {
-        dn = this.Material.ToDescription() + " ";
+        defaultName = this.Material.ToDescription() + " ";
         name = name.ToLower();
       }
       else
         name = name.ToUpperFirstLetter();
 
-      this.DisplayedName = dn + name;
+      return defaultName + name;
     }
 
     public override string Name
@@ -136,12 +160,101 @@ namespace Roguelike.Tiles.Looting
       get => base.Name;
       set
       {
-        base.Name = value;
-        //if (Class == EquipmentClass.Unique || (this is Weapon wpn && wpn.IsMagician))
-        DisplayedName = Name.ToUpperFirstLetter();
+        //if (Name.Contains("Armor") && !DisplayedName.Contains("Armor"))
+        //{
+        //  int k = 0;
+        //  k++;
+        //}
+        //if (Name.Contains("Shield") && !DisplayedName.Contains("Shield"))
+        //{
+        //  int k = 0;
+        //  k++;
+        //}
+        var val = value;
         
+        base.Name = val;
+       
+
+        EnsureDisplayedName();
+
       }
     }
+
+   
+
+    protected override bool DisplayedNameNeedsToBeSet()
+    {
+      if (!name.Any())
+        return false;
+      if (Class == EquipmentClass.Unique)
+      {
+        if (StringStartsWithMaterial(DisplayedName, EquipmentMaterial.Bronze) ||
+            StringStartsWithMaterial(DisplayedName, EquipmentMaterial.Iron) ||
+            StringStartsWithMaterial(DisplayedName, EquipmentMaterial.Steel))
+          return true;
+      }
+
+      if (name.Any())
+      {
+        var dn = DisplayedName;
+        if (!Char.IsUpper(name[0]) && (!dn.Any() || !Char.IsUpper(dn[0])))
+          return true;
+      }
+      var assetNoLevel = EnsureLevelNotInAssetName(tag1);
+
+      if (assetNoLevel.Any(char.IsDigit))//wand1
+        return false;
+
+      return base.DisplayedNameNeedsToBeSet();
+    }
+
+
+    private void EnsureDisplayedName()
+    {
+      if (DisplayedNameNeedsToBeSet())
+      {
+        if (Class == EquipmentClass.Unique)
+        {
+          DisplayedName = Name.ToUpperFirstLetter();
+        }
+        else if (Name.Any())
+        {
+          DisplayedName = Name.ToUpperFirstLetter();
+        }
+      }
+    }
+
+    bool StringStartsWithMaterial(string str)
+    {
+      return StringStartsWithMaterial(str, Material);
+    }
+    bool StringStartsWithMaterial(string str, EquipmentMaterial mat)
+    {
+      return str.StartsWith(mat.ToDescription());
+    }
+
+
+    public override string DisplayedName
+    {
+      set
+      {
+        var val = value;
+        if (value.Any())
+        {
+          if (IsMaterialAware() && Class != EquipmentClass.Unique && !StringStartsWithMaterial(val))
+          {
+            val = GetNameWithMaterial(val);
+          }
+        }
+        base.DisplayedName = val;
+      }
+    }
+
+    //public void SetNameFromAsset(string asset)
+    //{
+    //  DisplayedName = "";
+    //  Name = asset.Replace("_", " ").ToUpperFirstLetter();
+    //}
 
     protected virtual void EnhanceStatsDueToMaterial(EquipmentMaterial material)
     {
@@ -150,7 +263,7 @@ namespace Roguelike.Tiles.Looting
 
     public bool MakeEnchantable(int enchantSlotsToMake = 1)
     {
-      if (!IsIdentified)
+      if ( Class != EquipmentClass.Plain && !IsIdentified)
         return false;
       if (maxEnchants > 0)
         return false; //already done
@@ -252,10 +365,7 @@ namespace Roguelike.Tiles.Looting
 
     public EquipmentClass Class
     {
-      get
-      {
-        return _class;
-      }
+      get {return _class;}
 
       set
       {
@@ -265,14 +375,15 @@ namespace Roguelike.Tiles.Looting
 
     public virtual EquipmentKind EquipmentKind
     {
-      get
-      {
-        return kind;
-      }
-
+      get{return kind;}
       set
       {
         kind = value;
+        if (kind == EquipmentKind.Armor && !name.Contains("Armor"))
+        {
+          int k = 0;
+          k++;
+        }
       }
     }
 
@@ -329,7 +440,9 @@ namespace Roguelike.Tiles.Looting
     {
       this.primaryStat = new EntityStat(primaryStat, 0);
       PrimaryStatValue = value;
-      this.Name += " of " + primaryStat.ToDescription();
+      //if (string.IsNullOrEmpty(this.Name))
+      //  Name = EquipmentKind.ToString();
+      //this.Name += " of " + primaryStat.ToDescription();
     }
 
     public List<KeyValuePair<EntityStatKind, EntityStat>> GetPossibleMagicStats()
@@ -439,6 +552,33 @@ namespace Roguelike.Tiles.Looting
           return wpn.tag1 == "hammer" || wpn.tag1 == "solid_hammer" || wpn.tag1 == "war_hammer";
         }
       }
+
+      //TODO
+      //else if (this is Armor arm && 
+      //  (arm.EquipmentKind == EquipmentKind.Helmet || arm.EquipmentKind == EquipmentKind.Shield))
+      //{
+      //  if (arm.EquipmentKind == EquipmentKind.Helmet)
+      //  {
+      //    if (arm.tag1 == "helm" ||
+      //      arm.tag1 == "full_helm" ||
+      //      arm.tag1 == "holly_helm" 
+      //      )
+      //    {
+      //      return true;
+      //    }
+      //  }
+      //  if (arm.EquipmentKind == EquipmentKind.Shield)
+      //  {
+      //    if (arm.tag1 == "enhanced_buckler" ||
+      //      arm.tag1 == "long_shield" ||
+      //      arm.tag1 == "war_shield" ||
+      //      arm.tag1 == "king's_buckler"
+      //      )
+      //    {
+      //      return true;
+      //    }
+      //  }
+      //}
 
       return false;
     }
@@ -555,9 +695,15 @@ namespace Roguelike.Tiles.Looting
       AddMagicStat(stat, secLevel, value, false);
     }
 
-    public void MakeMagicSecLevel(EntityStatKind stat, int statValue)
+    public void PromoteToSecondMagicClass()
     {
-      AddMagicStat(stat, true, statValue, false);
+      if (!IsSecondMagicLevel)
+      {
+        var stats = GetPossibleMagicStats();
+        var stat = RandHelper.GetRandomElem(stats);
+        AddMagicStat(stat.Key, true);
+
+      }
     }
 
     EntityStats unidentifiedStats;
@@ -612,26 +758,6 @@ namespace Roguelike.Tiles.Looting
 
     public bool priceAlrIncreased;
 
-    //public void IncreasePriceBasedOnExtInfo()
-    //{
-    //  if(!IsIdentified)
-    //    return;
-    //  //if (priceAlrIncreased)
-    //  //{
-    //  //  //DebugHelper.Assert(false, "priceAlrIncreased");
-    //  //  return;
-    //  //}
-    //  basePrice = Price;
-    //  foreach (var st in ExtendedInfo.Stats.GetStats())
-    //  {
-    //    var prInc = GetPriceForFactor(st.Key, (int)st.Value.Factor);
-    //    if (prInc > 0)
-    //      Price += prInc;
-    //  }
-
-    //  //priceAlrIncreased = true;
-    //}
-
     public int GetPriceForFactor(EntityStatKind esk, int factor)
     {
       var price = 0;
@@ -670,7 +796,7 @@ namespace Roguelike.Tiles.Looting
     {
       SetClass(EquipmentClass.Unique, lootLevel, lootStats);
       Material = EquipmentMaterial.Unset;
-      DisplayedName = Name.ToUpperFirstLetter();
+      EnsureDisplayedName();
     }
 
     public int MinDropDungeonLevel { get { return levelIndex; } }
@@ -704,8 +830,9 @@ namespace Roguelike.Tiles.Looting
 
     public virtual void SetClass(EquipmentClass _class, int levelIndex, EntityStats lootStats = null, bool magicOfSecondLevel = false)
     {
-      SetLevelIndex(levelIndex);
       SetClass(_class);
+      SetLevelIndex(levelIndex);
+      
       if (lootStats == null)
       {
         if (_class == EquipmentClass.Magic)
@@ -720,6 +847,7 @@ namespace Roguelike.Tiles.Looting
     private void SetClass(EquipmentClass _class)
     {
       Class = _class;
+      IsIdentified = true;
       if (_class != EquipmentClass.Plain)
         IsIdentified = false;
     }
@@ -853,5 +981,16 @@ namespace Roguelike.Tiles.Looting
     }
 
     public string Tag1 { get { return tag1; } }
+
+    public override RecipeKind GetMatchingRecipe(Loot other)
+    {
+      if (other is Gem || other is HunterTrophy)
+        return RecipeKind.EnchantEquipment;
+
+      if (other is Equipment)
+        return RecipeKind.TwoEq;
+
+      return RecipeKind.Unset;
+    }
   }
 }

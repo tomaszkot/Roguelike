@@ -25,7 +25,7 @@ namespace Roguelike.Tiles.Looting
       InitChargesCount = chargesCount;
     }
 
-    public void Restore()
+    public void RestoreCharges()
     {
       RestoresCount++;
       RestoredChargesCount = initChargesCount - 2 * RestoresCount;

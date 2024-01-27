@@ -1,5 +1,6 @@
 ﻿using Roguelike.Abilities;
 using Roguelike.Abstract.Inventory;
+using Roguelike.LootContainers;
 using Roguelike.Spells;
 using Roguelike.Tiles.Looting;
 using System;
@@ -16,6 +17,9 @@ namespace Roguelike.Tiles.Abstract
     int AbilityPoints { get; set; }
     AbilitiesSet Abilities { get; }
     SpellStateSet Spells { get; }
+    bool IsMecenary { get; }
+    bool IsMercenary { get; }
+
     bool IncreaseAbility(AbilityKind kind);
 
     bool IncreaseSpell(SpellKind sk);
@@ -24,6 +28,8 @@ namespace Roguelike.Tiles.Abstract
     PassiveAbility GetPassiveAbility(AbilityKind kind);
     ActiveAbility GetActiveAbility(AbilityKind kind);
     string GetExpInfo();
+    bool InventoryAcceptsItem(Inventory inventory, Loot loot, AddItemArg addItemArg);
+    bool MoveEquipmentCurrent2Inv(IEquipment eq, CurrentEquipmentKind cek);
 
     event EventHandler StatsRecalculated;
 

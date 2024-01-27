@@ -1,5 +1,6 @@
 ﻿using NUnit.Framework;
 using Roguelike;
+using Roguelike.Generators;
 using Roguelike.Tiles.LivingEntities;
 using static Dungeons.TileContainers.DungeonNode;
 
@@ -8,6 +9,66 @@ namespace RoguelikeUnitTests
   [TestFixture]
   class ControllTests : TestBase
   {
+    [Test]
+    public void TestAllyCanFindPathToEnemy()
+    {
+      var gi = new GenerationInfo();
+      gi.MakeEmpty();
+
+      var game = CreateGame(gi: gi);
+
+      Enemy en = AddEnemy();
+
+      var gm = game.GameManager;
+      var hero = gm.Hero;
+      var ally = AddAlly(hero, true);
+      Assert.AreEqual(GameManager.CurrentNode.GetTiles<Enemy>().Count, 1);
+
+      PlaceClose(ally, en, 4);
+      Assert.Less(ally.DistanceFrom(en), 6);
+
+      var path1 = GameManager.CurrentNode.FindPath(ally, en.point);
+      var enHealth = en.Stats.Health;
+      Assert.NotNull(path1);
+      for (int i = 0; i < 10; i++)
+      {
+        GotoNextHeroTurn();
+
+      }
+      Assert.Less(en.Stats.Health, enHealth);
+      Assert.True(en.EverHitBy.Contains(ally));
+      Assert.True(ally.EverHitBy.Contains(en));
+    }
+
+    
+    [Test]
+    public void TestEnemyCanFindPathToHero()
+    {
+      var gi = new GenerationInfo();
+      gi.MakeEmpty();
+
+      var game = CreateGame(gi: gi);
+
+      var en = AddEnemy();
+      
+      var gm = game.GameManager;
+      var hero = gm.Hero;
+      PlaceClose(hero, en, 4);
+      Assert.Less(en.DistanceFrom(en), 6);
+
+      var path1 = GameManager.CurrentNode.FindPath(en, hero.point);
+      var heroHealth = hero.Stats.Health;
+      Assert.NotNull(path1);
+      for (int i = 0; i < 10; i++)
+      {
+        GotoNextHeroTurn();
+
+      }
+      Assert.Less(hero.Stats.Health, heroHealth);
+      Assert.True(hero.EverHitBy.Contains(en));
+      Assert.False(en.EverHitBy.Contains(hero));
+    }
+
     [Test]
     public void TestEntityManagers()
     {
@@ -29,6 +90,8 @@ namespace RoguelikeUnitTests
       Assert.AreEqual(game.GameManager.Context.TurnOwner, TurnOwner.Enemies);
       game.GameManager.MakeGameTick();
       Assert.AreEqual(game.GameManager.Context.TurnOwner, TurnOwner.Animals);
+      game.GameManager.MakeGameTick();
+      Assert.AreEqual(game.GameManager.Context.TurnOwner, TurnOwner.Npcs);
       game.GameManager.MakeGameTick();
       Assert.AreEqual(game.GameManager.Context.TurnOwner, TurnOwner.Hero);
     }
@@ -112,6 +175,8 @@ namespace RoguelikeUnitTests
       game.GameManager.Context.MoveToNextTurnOwner();
 
       Assert.AreEqual(game.GameManager.Context.TurnOwner, TurnOwner.Animals);
+      game.GameManager.Context.MoveToNextTurnOwner();
+      Assert.AreEqual(game.GameManager.Context.TurnOwner, TurnOwner.Npcs);
       game.GameManager.Context.MoveToNextTurnOwner();
       Assert.AreEqual(game.GameManager.Context.TurnOwner, TurnOwner.Hero);
       Assert.AreEqual(Game.GameManager.Context.GetActionsCount(), 0);

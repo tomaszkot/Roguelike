@@ -6,8 +6,10 @@ using System;
 
 namespace Roguelike.Tiles.Looting
 {
-  public enum SpecialPotionKind { Unset, Strength, Magic }
-  public enum SpecialPotionSize { Small, Medium, Big }
+  public enum SpecialPotionKind { Unset, Strength, Magic, Virility }
+  public enum SpecialPotionSize { Small,
+    //Medium, 
+    Big }
 
   [Serializable]
   public class SpecialPotion : Potion
@@ -15,6 +17,18 @@ namespace Roguelike.Tiles.Looting
     SpecialPotionKind specialPotionKind;
     SpecialPotionSize size = SpecialPotionSize.Small;
     bool used = false;
+
+    string TagFromKind()
+    {
+      if (SpecialPotionKind == SpecialPotionKind.Magic)
+        return "magic_potion";
+      else if (SpecialPotionKind == SpecialPotionKind.Strength)
+        return "strength_potion";
+      else if (SpecialPotionKind == SpecialPotionKind.Virility)
+        return "virility_potion";
+
+      return "";
+    }
 
     public SpecialPotion() : this(SpecialPotionKind.Unset, SpecialPotionSize.Small)
     {
@@ -27,11 +41,27 @@ namespace Roguelike.Tiles.Looting
       SpecialPotionKind = kind;
       Price = 50;
       this.size = size;
-      if (size == SpecialPotionSize.Medium)
-        Price = 100;
-      else if (size == SpecialPotionSize.Big)
+      //if (size == SpecialPotionSize.Medium)
+      //  Price = 100;
+      if (size == SpecialPotionSize.Big)
         Price = 200;
       Symbol = '`';
+      SetTagFromSize();
+    }
+
+    public override string GetId()
+    {
+      return base.GetId() + "_" + SpecialPotionKind.ToString() + "_" + Size.ToString();
+    }
+
+    private void SetTagFromSize()
+    {
+      if (size == SpecialPotionSize.Big)
+        tag1 = "big_" + TagFromKind();
+      //else if (size == SpecialPotionSize.Medium)
+      //  tag1 = "medium_" + TagFromKind();
+      else
+        tag1 = "small_" + TagFromKind();
     }
 
     public SpecialPotionKind SpecialPotionKind
@@ -46,15 +76,21 @@ namespace Roguelike.Tiles.Looting
         specialPotionKind = value;
         if (value == SpecialPotionKind.Strength)
         {
-          tag1 = "strength_potion";//HACK
+          SetTagFromSize();
           Name = "Strength Potion";
           StatKind = EntityStatKind.Strength;
         }
         else if (value == SpecialPotionKind.Magic)
         {
-          tag1 = "magic_potion";
+          SetTagFromSize();
           Name = "Magic Potion";
           StatKind = EntityStatKind.Magic;
+        }
+        else if (value == SpecialPotionKind.Virility)
+        {
+          SetTagFromSize();
+          Name = "Virility Potion";
+          StatKind = EntityStatKind.Virility;
         }
 
         //tag1 += "_"+size.ToString();maybe UI can scale ?
@@ -81,9 +117,9 @@ namespace Roguelike.Tiles.Looting
     public int GetEnhValue()
     {
       var value = 1;
-      if (size == SpecialPotionSize.Medium)
-        value = 3;
-      else if (size == SpecialPotionSize.Big)
+      //if (size == SpecialPotionSize.Medium)
+      //  value = 3;
+      if (size == SpecialPotionSize.Big)
         value = 5;
 
       return value;
@@ -99,7 +135,15 @@ namespace Roguelike.Tiles.Looting
       return SpecialPotionKind == SpecialPotionKind.Strength ? EntityStatKind.Strength : EntityStatKind.Magic;
     }
 
-    public SpecialPotionSize Size { get => size; set => size = value; }
+    public SpecialPotionSize Size 
+    { 
+      get => size; 
+      set 
+      {
+        size = value;
+        SetTagFromSize();
+      }
+    }
 
     public override string[] GetExtraStatDescription()
     {

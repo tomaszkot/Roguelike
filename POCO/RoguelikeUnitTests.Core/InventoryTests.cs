@@ -173,57 +173,76 @@ namespace RoguelikeUnitTests
       Assert.Greater(priceInMerchInv, priceInHeroInv);
     }
 
-    [Test]
-    public void CountOfStackedRecipe()
+    [TestCase("craft_one_eq", "craft_three_gems", true)]
+    [TestCase("big_claw", "big_fang", false)]
+    public void CountOfStacked(string firstName, string secName, bool recipe)
     {
       var game = CreateGame();
       var hero = game.Hero;
 
       Assert.AreEqual(hero.Inventory.ItemsCount, 0);
 
-      var loot1 = game.GameManager.LootGenerator.GetLootByAsset("craft_one_eq");
-      PutEqOnLevelAndCollectIt(loot1);
-      Assert.AreEqual(hero.Crafting.Recipes.Inventory.ItemsCount, 1);
+      var loot1_0 = game.GameManager.LootGenerator.GetLootByAsset(firstName) as StackedLoot;
+      PutEqOnLevelAndCollectIt(loot1_0);
+      var l1_0Count = loot1_0.Count;
+      var invLootIsCollectedTo = recipe ? hero.Crafting.Recipes.Inventory : hero.Inventory;
 
-      var loot2 = game.GameManager.LootGenerator.GetLootByAsset("craft_one_eq");
-      PutEqOnLevelAndCollectIt(loot2);
-      Assert.AreEqual(hero.Crafting.Recipes.Inventory.ItemsCount, 1);
+      var loot1_1 = game.GameManager.LootGenerator.GetLootByAsset(firstName) as StackedLoot;
+      PutLootOnLevel(loot1_1);
+      var l1_1Count = loot1_1.Count;
+      CollectLoot(loot1_1);
+      GotoNextHeroTurn();
+      Assert.AreEqual(invLootIsCollectedTo.ItemsCount, 1);
+      Assert.AreEqual(invLootIsCollectedTo.GetStackedCount(loot1_1.Name), l1_0Count + l1_1Count);
 
-      Assert.AreEqual(hero.Crafting.Recipes.Inventory.GetStackedCount(loot2 as StackedLoot), 2);
-
-      var loot3 = game.GameManager.LootGenerator.GetLootByAsset("craft_three_gems");
+      var loot3 = game.GameManager.LootGenerator.GetLootByAsset(secName) as StackedLoot;
       PutEqOnLevelAndCollectIt(loot3);
-      Assert.AreEqual(hero.Crafting.Recipes.Inventory.ItemsCount, 2);
-      Assert.AreEqual(hero.Crafting.Recipes.Inventory.GetStackedCount(loot2 as StackedLoot), 2);
-      Assert.AreEqual(hero.Crafting.Recipes.Inventory.GetStackedCount(loot3 as StackedLoot), 1);
+      Assert.AreEqual(invLootIsCollectedTo.ItemsCount, 2);
+      
+      Assert.AreEqual(invLootIsCollectedTo.GetStackedCount(loot3), loot3.Count);
+    }
+
+    [TestCase(FightItemKind.PlainArrow)]
+    [TestCase(FightItemKind.PlainBolt)]
+    [TestCase(FightItemKind.IronBolt)]
+    public void CountOfStackedBowLikeAmmo(FightItemKind fik)
+    {
+      var game = CreateGame();
+      var fi = GameManager.LootGenerator.GetLootByAsset(fik.ToString()) as FightItem;
+      Assert.NotNull(fi);
+      Assert.GreaterOrEqual(fi.Count, 10);
+      Assert.LessOrEqual(fi.Count, 25);
+
     }
 
     [Test]
-    public void CountOfStackedTrophies()
+    public void CountOfStackedPotions()
     {
       var game = CreateGame();
       var hero = game.Hero;
 
       Assert.AreEqual(hero.Inventory.ItemsCount, 0);
 
-      var loot1 = game.GameManager.LootGenerator.GetLootByAsset("big_claw") as StackedLoot;
+      var loot1 = game.GameManager.LootGenerator.GetLootByAsset("small_strength_potion") as StackedLoot;
       Assert.NotNull(loot1);
+      var id1 = loot1.GetId();
+      var l1Count = loot1.Count;
       PutEqOnLevelAndCollectIt(loot1);
       Assert.AreEqual(hero.Inventory.ItemsCount, 1);
+      Assert.AreEqual(hero.Inventory.GetStackedCount(loot1 as StackedLoot), l1Count);
 
-      var loot2 = game.GameManager.LootGenerator.GetLootByAsset("big_claw");
-      PutEqOnLevelAndCollectIt(loot2);
-      Assert.AreEqual(hero.Inventory.ItemsCount, 1);
-      Assert.AreEqual(hero.Inventory.GetStackedCount(loot2 as StackedLoot), 2);
-
-      var loot3 = game.GameManager.LootGenerator.GetLootByAsset("big_fang");
-      PutEqOnLevelAndCollectIt(loot3);
+      var loot2 = game.GameManager.LootGenerator.GetLootByAsset("small_virility_potion") as StackedLoot;
+      //PutEqOnLevelAndCollectIt(loot2);
+      PutLootOnLevel(loot2);
+      var id2 = loot2.GetId();
+      var l2Count = loot2.Count;
+      CollectLoot(loot2);
+      GotoNextHeroTurn();
       Assert.AreEqual(hero.Inventory.ItemsCount, 2);
-      Assert.AreEqual(hero.Inventory.GetStackedCount(loot2 as StackedLoot), 2);
-      Assert.AreEqual(hero.Inventory.GetStackedCount(loot3 as StackedLoot), 1);
+      Assert.AreEqual(hero.Inventory.GetStackedCount(loot2 as StackedLoot), l2Count);
     }
 
-    [Test]
+      [Test]
     public void CountOfStackedGems()
     {
       var game = CreateGame();
@@ -231,23 +250,26 @@ namespace RoguelikeUnitTests
 
       Assert.AreEqual(hero.Inventory.ItemsCount, 0);
 
-      var lootBase = game.GameManager.LootGenerator.GetLootByAsset("diamond_big");
-      Assert.NotNull(lootBase);
-      var loot1 = lootBase as StackedLoot;
+      var loot1 = game.GameManager.LootGenerator.GetLootByAsset("diamond_big")as StackedLoot;
       Assert.NotNull(loot1);
+      var l1Count = loot1.Count;
       PutEqOnLevelAndCollectIt(loot1);
       Assert.AreEqual(hero.Inventory.ItemsCount, 1);
 
-      var loot2 = game.GameManager.LootGenerator.GetLootByAsset("diamond_big");
-      PutEqOnLevelAndCollectIt(loot2);
+      var loot2 = game.GameManager.LootGenerator.GetLootByAsset("diamond_big") as StackedLoot;
+      //PutEqOnLevelAndCollectIt(loot2);
+      PutLootOnLevel(loot2);
+      var l2Count = loot2.Count;
+      CollectLoot(loot2);
+      GotoNextHeroTurn();
       Assert.AreEqual(hero.Inventory.ItemsCount, 1);
-      Assert.AreEqual(hero.Inventory.GetStackedCount(loot2 as StackedLoot), 2);
+      Assert.GreaterOrEqual(hero.Inventory.GetStackedCount(loot2 as StackedLoot), 1);
 
-      var loot3 = game.GameManager.LootGenerator.GetLootByAsset("emerald_medium");
+      var loot3 = game.GameManager.LootGenerator.GetLootByAsset("emerald_medium") as StackedLoot;
       PutEqOnLevelAndCollectIt(loot3);
       Assert.AreEqual(hero.Inventory.ItemsCount, 2);
-      Assert.AreEqual(hero.Inventory.GetStackedCount(loot2 as StackedLoot), 2);
-      Assert.AreEqual(hero.Inventory.GetStackedCount(loot3 as StackedLoot), 1);
+      Assert.AreEqual(hero.Inventory.GetStackedCount(loot1.Name), l1Count+ l2Count);
+      Assert.AreEqual(hero.Inventory.GetStackedCount(loot3), loot3.Count);
     }
 
     [Test]

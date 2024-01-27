@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Drawing;
 #pragma warning disable 8603
+#pragma warning disable 8602
 
 namespace Dungeons
 {
@@ -20,7 +21,7 @@ namespace Dungeons
     public bool GenerateDecorations { get; set; } = true;
     public bool GenerateInterior { get; set; } = true;
 
-    public DungeonLayouterKind ForcedDungeonLayouterKind { get; set; }//= DungeonLayouterKind.Default;
+    public DungeonLayouterKind ForcedDungeonLayouterKind { get; set; }// = DungeonLayouterKind.Corridor;
     /// <summary>
     /// Normally true, can be set to false for issue testing purposes
     /// </summary>
@@ -42,7 +43,7 @@ namespace Dungeons
 
     public bool FirstNodeSmaller = false;
     public const int MinRoomSideSize = 16;//14 is too small - child island would not be created!
-    public const int MaxRoomSideSize = 20;
+    public const int MaxRoomSideSize = 24;
     public Size MinNodeSize = new Size(MinRoomSideSize, MinRoomSideSize);
     public Size MaxNodeSize = new Size(MaxRoomSideSize, MaxRoomSideSize);
     public Size ForcedChilldIslandSize = new Size(0, 0);

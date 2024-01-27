@@ -4,7 +4,8 @@ namespace Roguelike.Tiles.Looting
 {
   public enum RecipeKind
   {
-    Unset, Custom, ThreeGems, OneEq, TransformPotion, TwoEq, TransformGem, Toadstools2Potion, ExplosiveCocktail, Pendant,
+    Unset, Custom, ThreeGems, OneEq, TransformPotion, TwoEq, TransformGem, Toadstools2Potion, ExplosiveCocktail, 
+    Pendant,//Not used
     EnchantEquipment, CraftSpecialPotion, RechargeMagicalWeapon, AntidotePotion, UnEnchantEquipment, Arrows, Bolts, NiesiolowskiSoup
   }
 
@@ -95,7 +96,7 @@ namespace Roguelike.Tiles.Looting
           desc = "Detaches enchant items from the equipment";
           break;
         case RecipeKind.Arrows:
-          desc = "Creates arrows";//The tip's kind depends on used ingradient
+          desc = "Creates arrows";//The tip's kind depends on used ingredient
           break;
         case RecipeKind.Bolts:
           desc = "Creates bolts";
@@ -163,60 +164,71 @@ namespace Roguelike.Tiles.Looting
             break;
           case RecipeKind.TwoEq:
             tag1 += "two_eq";
-            MagicDustRequired = 2;
+            MagicDustRequired = 1;
             Name = "Two Equipments";
             Price = 30;
             MinDropDungeonLevel = 2;
             break;
           case RecipeKind.TransformPotion:
             tag1 += "transform_potion";
-            Name = "";
+            Name = "Transform Potion";
             break;
           case RecipeKind.TransformGem:
             tag1 += "transform_gem";
-            //Name = "";
+            Name = "Transform Gem";
             break;
           case RecipeKind.Toadstools2Potion:
             tag1 += "toad_potions";
-            DisplayedName = "Potion from Toadstools Recipe";
-            //Name = "Potion from Toadstools";
+            Name = "Potion from Toadstools";
             break;
           case RecipeKind.ExplosiveCocktail:
             tag1 += "expl_cocktail";
-            //Name = "";
+            Name = "Explosive Cocktail";
             break;
           case RecipeKind.Pendant:
             tag1 += "pendant";
             break;
           case RecipeKind.EnchantEquipment:
             tag1 += "enchant";
-            MagicDustRequired = 0;//drop in inv is free
+            Name = "Enchant Equipment";
+            //MagicDustRequired = 0;//drop in inv is free
             break;
           case RecipeKind.CraftSpecialPotion:
             tag1 += "special_potion";
+            Name = "Craft Special Potion";
             break;
           case RecipeKind.RechargeMagicalWeapon:
             tag1 += "recharge_magical_weapon";
+            Name = "Recharge Magical Weapon";
             break;
           case RecipeKind.AntidotePotion:
             tag1 += "antidote_potion";
+            Name = "Antidote Potion";
             break;
           case RecipeKind.UnEnchantEquipment:
             tag1 += "unenchant";
+            Name = "Unenchant Equipment";
             break;
           case RecipeKind.Arrows:
             tag1 += "arrows";
+
             break;
           case RecipeKind.Bolts:
             tag1 += "bolts";
             break;
           case RecipeKind.NiesiolowskiSoup:
             tag1 += "niesiolowski_soup";
+            Name = "Niesiolowski Soup";
             break;
           default:
             break;
         }
-
+        
+        DisplayedName = Name;
+        if (!DisplayedName.EndsWith("Recipe"))
+        {
+          DisplayedName += " Recipe";
+        }
         SetPrimaryStatDescription();
 
       }

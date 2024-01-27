@@ -1,16 +1,16 @@
 ﻿using Dungeons.Core;
-using Newtonsoft.Json;
-using Roguelike.Extensions;
 using SimpleInjector;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Xml.Serialization;
 
 namespace Roguelike.Discussions
 {
   public class DiscussionTopic
   {
+    public bool BreakableVoice = true;
+    public bool CustomLeft; 
+    public bool ClosesPanel { get; set; }
     public bool SkipReward { get; set; }
     public DiscussionSentence Right { get; set; } = new DiscussionSentence();
     public DiscussionSentence Left { get; set; } = new DiscussionSentence();
@@ -32,7 +32,17 @@ namespace Roguelike.Discussions
 
     public bool HasBack()
     {
-      return Topics.Any(i => i.Right.Body == "Back");
+      return HasTopicByBody("Back");
+    }
+    public bool HasBye()
+    {
+      return HasTopicByBody("Bye");
+    }
+
+
+    public bool HasTopicByBody(string body)
+    {
+      return Topics.Any(i => i.Right.Body == body);
     }
 
     public override string ToString()
@@ -41,7 +51,6 @@ namespace Roguelike.Discussions
       return res;
     }
 
-    [JsonConstructor]
     public DiscussionTopic(Container container) 
     {
       this.container = container;
@@ -53,7 +62,7 @@ namespace Roguelike.Discussions
     {
       Init(right, left, allowBuyHound , addMerchantItems);
     }
-
+        
     public DiscussionTopic(Container container, string right, string left, bool allowBuyHound = false, bool addMerchantItems = merchantItemsAtAllLevels)
       : this(container)
     {
@@ -85,6 +94,7 @@ namespace Roguelike.Discussions
       if (addMerchantItems)
         Discussion.CreateMerchantResponseOptions(this, allowBuyHound);
     }
+
     public DiscussionTopic(string right, KnownSentenceKind leftKnownSentenceKind, bool allowBuyHound = false)
     {
       Right = new DiscussionSentence(right);
@@ -121,16 +131,21 @@ namespace Roguelike.Discussions
       }
     }
 
-    public DiscussionTopic GetTopic(string topic)
+    public DiscussionTopic GetTopic(string topicBody)
     {
-      return Topics.FirstOrDefault(i => i.Right.Body == topic);
+      return Topics.FirstOrDefault(i => i.Right.Body == topicBody);
+    }
+
+    public DiscussionTopic GetTopicById(string topicId)
+    {
+      return Topics.FirstOrDefault(i => i.Right.Id == topicId);
     }
 
     public DiscussionTopic GetTopic(KnownSentenceKind kind)
     {
       return Topics.SingleOrDefault(i => i.RightKnownSentenceKind == kind);
     }
-
+    
     public bool HasTopics(string topic)
     {
       return GetTopic(topic) != null;
@@ -145,9 +160,19 @@ namespace Roguelike.Discussions
     {
       if (!HasBack())
       {
-        var back = CreateBack(this.parent);
-        Topics.Add(back);
+        if (parent != null)
+        {
+          var back = CreateBack(this.parent);
+          Topics.Add(back);
+        }
+        else if (!HasBye())
+        {
+          var bye = container.GetInstance<DiscussionTopic>();
+          bye.Init(KnownSentenceKind.Bye, KnownSentenceKind.Bye.ToString());
+          Topics.Add(bye);
+        }
       }
+
     }
 
     public DiscussionTopic CreateBack(DiscussionTopic parent)
@@ -159,12 +184,14 @@ namespace Roguelike.Discussions
     }
 
 
-    public void InsertTopic(DiscussionTopic subItem, bool atBegining = true)
+    public DiscussionTopic InsertTopic(DiscussionTopic subItem, bool atBegining = true)
     {
       //TODO prevent duplicates
       if (HasTopics(subItem.Right.Body))
-        container.GetInstance<ILogger>().LogError("HasTopics! "+ subItem.Right.Body);
-
+      {
+        container.GetInstance<ILogger>().LogError("already HasTopic! " + subItem.Right.Body);
+        return subItem;
+      }
       if (subItem == this)
         throw new Exception("subItem == this!"+this);
       subItem.parent = this;
@@ -184,6 +211,8 @@ namespace Roguelike.Discussions
         else
           Topics.Add(subItem);
       }
+
+      return subItem;
     }
 
     public void InsertTopic(string right, KnownSentenceKind knownSentenceKind)
@@ -197,7 +226,5 @@ namespace Roguelike.Discussions
       item.Init(right, left, allowBuyHound, addMerchantItems);
       InsertTopic(item, true);
     }
-
-    
   }
 }

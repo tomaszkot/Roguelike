@@ -9,6 +9,9 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Xml.Serialization;
+using Dungeons.ASCIIDisplay;
+
+
 #pragma warning disable 8603
 namespace Dungeons
 {
@@ -31,6 +34,9 @@ namespace Dungeons
     public bool PrintNodeIndexes = false;
     public int OriginX { get; set; }
     public int OriginY { get; set; }
+
+    public Func<Tile, char> SymbolToDraw;
+    public Action<Tile, IDrawingEngine > CustomDrawer;
   }
 
 
@@ -188,6 +194,21 @@ namespace Dungeons
         return hiddenTilesAlreadyAdded[key];
       }
 
+      protected virtual bool ShallEnsureCorrectY(Dungeons.Tiles.Tile tile)
+      {
+        return false;
+      }
+
+      public Dungeons.Tiles.Tile EnsureCorrectY(Dungeons.Tiles.Tile tile)
+      {
+        var maxY = Height - 1;
+        if (tile.point.Y >= maxY)
+        {
+          tile = GetEmptyTiles().Where(i => i.point.Y < maxY).ToList().FirstOrDefault();
+        }
+
+        return tile;
+      }
       public void SetAlreadyAdded(string key, bool alreadyAdded)
       {
         hiddenTilesAlreadyAdded[key] = alreadyAdded;
@@ -267,26 +288,14 @@ namespace Dungeons
         List<Wall> wall = sides[side];
         if (secret)
         {
-          var count = sides[side].Count;
-          var diff = GenerationInfo.MaxRoomSideSize - GenerationInfo.MinRoomSideSize;
-          int counter = 0;
-          bool added = false;
-          while (counter < 100)
-          {
-            counter++;
-            var index = Enumerable.Range(diff, (count - diff*2)-2).ToList().GetRandomElem();
-            //var allowed = AreDoorAllowedToPutOn(wall[index]);
-            //if (!allowed)
-            //{
-            //  continue;
-            //}
-            var door = CreateDoor(wall[index], side) as IDoor;
-            door.Secret = true;
-            res.Add(door);
-            added = true;
-            break;
-          }
-          DebugHelper.Assert(added);
+          var wallSize = sides[side].Count;
+          var index = wallSize / 2;
+          var moveBy = (int)RandHelper.GetRandomFloatInRange(0,4);
+          index += moveBy * RandHelper.GetRandomFloat() > 0.5f ? 1 : -1;
+          var door = CreateDoor(wall[index], side) as IDoor;
+          door.Secret = true;
+          res.Add(door);
+          
           return res;
         }
 
@@ -470,6 +479,8 @@ namespace Dungeons
 
       public Tile GetNeighborTile(Tile tile, TileNeighborhood neighborhood)
       {
+        if(tile == null)
+          return null;
         var pt = GetNeighborPoint(tile, neighborhood);
         return GetTile(pt);
       }
@@ -549,7 +560,8 @@ namespace Dungeons
         return emptyTiles;
       }
 
-      public Tile GetRandomEmptyTile(EmptyCheckContext emptyCheckContext, GenerationConstraints constraints = null, bool canBeNextToDoors = true, int? nodeIndex = null)
+      public Tile GetRandomEmptyTile(EmptyCheckContext emptyCheckContext, GenerationConstraints constraints = null, 
+        bool canBeNextToDoors = true, int? nodeIndex = null)
       {
         var emptyTiles = GetEmptyTiles(constraints, canBeNextToDoors, emptyCheckContext : emptyCheckContext);
 
@@ -1047,7 +1059,7 @@ namespace Dungeons
           return true;
 
         var neibs = GetNeighborTiles(tile);
-        var forbid = neibs.Where(i => i is Wall).Count() >= 3 || neibs.Where(i => i == null).Any();
+        var forbid = neibs.Count < 4 || neibs.Where(i => i is Wall).Count() >= 3 || neibs.Where(i => i == null).Any();
         return !forbid;
       }
 
@@ -1322,10 +1334,17 @@ namespace Dungeons
 #nullable enable
       public virtual Tile? SetTileAtRandomPosition(Tile tile, bool matchNodeIndex = true, EmptyCheckContext emptyCheckContext = EmptyCheckContext.Unset)
       {
+        
         var node = matchNodeIndex == true ? (int?)NodeIndex : null;
         var empty = this.GetRandomEmptyTile(emptyCheckContext, nodeIndex: node);
+        
         if (empty == null)
           return null;
+
+        if (ShallEnsureCorrectY(tile))
+        {
+          empty = EnsureCorrectY(empty);
+        }
 
         var set = SetTile(tile, empty.point);
 

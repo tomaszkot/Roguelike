@@ -19,11 +19,16 @@ namespace Roguelike.Tiles.LivingEntities
     public override float GetStartStat(EntityStatKind esk)
     {
       var startStat = base.GetStartStat(esk);
+
+      //same as skeleton
       if (esk == EntityStatKind.Strength)
         startStat += SkeletonSpell.SkeletonSpellStrengthIncrease;
 
       else if (esk == EntityStatKind.Defense)
         startStat += SkeletonSpell.SkeletonSpellDefenseIncrease;
+
+      else if (esk == EntityStatKind.Health)
+        startStat += SkeletonSpell.SkeletonSpellHealthIncrease;
 
       return startStat;
     }

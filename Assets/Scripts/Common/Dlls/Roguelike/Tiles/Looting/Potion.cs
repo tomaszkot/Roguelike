@@ -12,7 +12,7 @@ namespace Roguelike.Tiles.Looting
     public PotionKind Kind
     {
       get { return kind; }
-      set
+      set 
       {
         kind = value;
 
@@ -37,13 +37,13 @@ namespace Roguelike.Tiles.Looting
           PrimaryStatDescription = "Removes poison effect";
           StatKind = EntityStatKind.Unset;
         }
-
+        
       }
     }
 
     public Potion() : this(PotionKind.Unset)
     {
-
+      
     }
 
     public Potion(PotionKind kind)
@@ -65,7 +65,7 @@ namespace Roguelike.Tiles.Looting
     public void SetKind(PotionKind kind)
     {
       this.Kind = kind;
-
+      
     }
 
     public override string GetId()
@@ -76,6 +76,18 @@ namespace Roguelike.Tiles.Looting
     public override string ToString()
     {
       return base.ToString() + " PotionKind: " + Kind;
+    }
+
+    public override bool IsMatchingRecipe(RecipeKind kind)
+    {
+      if (base.IsMatchingRecipe(kind))
+        return true;
+      if (kind == RecipeKind.TransformPotion && 
+        (Kind == PotionKind.Mana || Kind == PotionKind.Health))
+        return true;
+      if (kind == RecipeKind.CraftSpecialPotion && (Kind == PotionKind.Mana || Kind == PotionKind.Health))
+        return true;
+      return false;
     }
   }
 }

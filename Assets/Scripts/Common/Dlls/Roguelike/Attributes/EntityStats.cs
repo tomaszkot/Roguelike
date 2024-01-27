@@ -39,7 +39,9 @@ namespace Roguelike.Attributes
     Strength = 1, Health = 2, Magic = 3, Defense = 4, Dexterity = 5,
 
     Mana = 10,
-    
+    Virility = 11,
+
+
     ResistFire = 30, ResistCold = 32, ResistPoison = 34, ResistLighting = 36,
 
 

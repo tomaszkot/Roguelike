@@ -4,6 +4,7 @@ using Roguelike.Abstract.Spells;
 using Roguelike.Events;
 using Roguelike.Managers;
 using Roguelike.Tiles.Abstract;
+using Roguelike.Tiles.LivingEntities;
 using SimpleInjector;
 using System;
 using System.Linq;
@@ -13,7 +14,7 @@ namespace Roguelike.Tiles.Interactive
   public enum InteractiveTileKind
   {
     Unset, Stairs, Doors, Barrel, TreasureChest,
-    Trap, Lever, DeadBody, TorchSlot, Candle, CrackedStone
+    Trap, Lever, DeadBody, TorchSlot, Candle, CrackedStone, Bonfire, Privy, Ladder, Other
   }
 
   public interface IApproachableByHero
@@ -48,6 +49,22 @@ namespace Roguelike.Tiles.Interactive
     public InteractiveTile(Container cont, char symbol) : base(symbol)
     {
       this.container = cont;
+    }
+
+    LivingEntity busyBy;
+    [JsonIgnore]
+    public bool Busy { get { return busyBy != null; } }
+
+    [JsonIgnore]
+    public bool IsNpcDestMoveTarget { get { return DestPointActivityKind != DestPointActivityKind.Unset; } }
+    public DestPointActivityKind DestPointActivityKind { get; set; }
+
+    public void SetBusy(LivingEntity le)
+    {
+      if (le != null)
+        this.busyBy = le;
+      else
+        this.busyBy = null;
     }
 
     public override void PlayHitSound(IProjectile proj)
@@ -103,10 +120,6 @@ namespace Roguelike.Tiles.Interactive
       set
       {
         _kind = value;
-        if (_kind == InteractiveTileKind.TreasureChest)
-        {
-
-        }
       }
     }
     public bool CanBeHitBySpell()
@@ -116,14 +129,22 @@ namespace Roguelike.Tiles.Interactive
 
     public override string ToString()
     {
-      var res = base.ToString();
-      res += ", " + Kind + " Lvl:" + Level;
+      var res = " L:" + Level + " " + base.ToString();
+      res += " " + Kind;
       return res;
+    }
+
+    internal virtual bool InteractWith(LivingEntity npc)
+    {
+      return false;  
     }
 
     /// <summary>
     /// Was hero ever close to the tile?
     /// </summary>
     public bool ApproachedByHero { get; set; }
+    public bool HidesInteractedEntity { get; set; }
+    [JsonIgnore]
+    public LivingEntity BusyBy { get => busyBy; set => busyBy = value; }
   }
 }

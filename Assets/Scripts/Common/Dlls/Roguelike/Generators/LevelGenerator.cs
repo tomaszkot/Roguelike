@@ -10,6 +10,7 @@ using SimpleInjector;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using System.Linq;
 
 namespace Roguelike.Generators
@@ -28,6 +29,10 @@ namespace Roguelike.Generators
     public LevelGenerator(Container container) : base(container)
     {
       Logger = container.GetInstance<ILogger>();
+
+      var cc = CultureInfo.CurrentCulture;
+      int k = 0;
+      k++;
     }
 
     public LeverSet LeverSet { get => leverSet; protected set => leverSet = value; }
@@ -136,20 +141,23 @@ namespace Roguelike.Generators
       var tile = maze.GetRandomEmptyTile(DungeonNode.EmptyCheckContext.DropLoot);//should do job
       if (tile != null)
       {
+        tile = maze.EnsureCorrectY(tile);
+
         var set = maze.SetTile(stairs, tile.point);
         if (stairs.IsFromChildIsland())
         {
           Logger.LogInfo("stairs.IsFromChildIsland! ");
         }
-        if(!set)
+        if (!set)
           Logger.LogError("failed to set stairs down at: " + tile.point);
 
-        Logger.LogInfo("stairs down set at "+ tile.point);
+        Logger.LogInfo("stairs down set at " + tile.point);
       }
       else
         Logger.LogError("no room for stairs, maze: " + maze);
     }
 
+    
     protected override void OnChildIslandCreated(ChildIslandCreationInfo e)
     {
       base.OnChildIslandCreated(e);
@@ -159,7 +167,7 @@ namespace Roguelike.Generators
 
     protected virtual Stairs CreateStairsUp(int nodeIndex)
     {
-      return new Stairs(Container) { StairsKind = StairsKind.LevelUp, Symbol = '<' };
+      return new Stairs(Container, StairsKind.LevelUp);
     }
 
     public override DungeonNode CreateDungeonNodeInstance()
@@ -260,6 +268,13 @@ namespace Roguelike.Generators
         var maxSpreads = 2;// 2;
         gl.GenerateOilSpread((int)RandHelper.GetRandomFloatInRange(1, maxSpreads));
       }
+    }
+
+    protected override DungeonLayouterKind CalcLayouterKind()
+    {
+      if (GenerationInfo.DefaultForcedDungeonLayouterKind != DungeonLayouterKind.Unset)
+        return GenerationInfo.DefaultForcedDungeonLayouterKind;
+      return base.CalcLayouterKind();
     }
   }
 }

@@ -5,6 +5,7 @@ using Dungeons.Tiles;
 using Dungeons.Tiles.Abstract;
 using Roguelike.Abstract.Tiles;
 using Roguelike.Events;
+using Roguelike.TileContainers;
 using Roguelike.Tiles;
 using Roguelike.Tiles.Interactive;
 using Roguelike.Tiles.LivingEntities;
@@ -121,9 +122,10 @@ namespace Roguelike.Managers
       bool tileIsDoor = tile is Tiles.Interactive.Door;
       bool tileIsDoorBySymbol = tile.Symbol == Constants.SymbolDoor;
 
-      if (tile is Enemy || tile is Dungeons.Tiles.Wall || tile is Animal)
+      if (tile is Enemy || tile is Wall || tile is Animal ||
+          gm.IsEnemyToHero(tile))
       {
-        if (tile is Dungeons.Tiles.Wall wall && wall != null && wall.Child != null)
+        if (tile is Wall wall && wall != null && wall.Child != null)
         {
           return HandleInteractionWithInteractive(wall.Child as Tiles.Interactive.InteractiveTile);
         }
@@ -141,6 +143,13 @@ namespace Roguelike.Managers
       }
       else if (tile is INPC npc)
       {
+        if (gm.IsUsingPrivy(npc.LivingEntity, npc.DestPointDesc))
+        {
+          gm.SoundManager.PlayBeepSound();
+          return InteractionResult.Blocked;
+        }
+
+
         gm.AppendAction<NPCAction>((NPCAction ac) => { ac.NPCActionKind = NPCActionKind.Engaged; ac.InvolvedTile = npc; });
         return InteractionResult.Blocked;
       }
@@ -156,7 +165,7 @@ namespace Roguelike.Managers
         return InteractionResult.Blocked;
       }
       
-      else if (tile is INPC)
+      else if (tile is INPC || (tile is LivingEntity le && le.Proffesion != EntityProffesionKind.Unset))
       {
         return InteractionResult.Blocked;
       }
@@ -176,7 +185,7 @@ namespace Roguelike.Managers
         if (door.Opened)
           return InteractionResult.None;
 
-        if (door.KeyName.Any())
+        if (gm.GameSettings.Mechanics.KeyIsRequiredToEnterBoosRoom && door.KeyName.Any())
         {
           if (door.KeyPuzzle == Tiles.Looting.KeyPuzzle.LeverSet)
           {
@@ -231,11 +240,11 @@ namespace Roguelike.Managers
       return InteractionResult.None;
     }
 
-    protected virtual InteractionResult HandleInteractionWithInteractive(Tiles.Interactive.InteractiveTile tile)
+    protected virtual InteractionResult HandleInteractionWithInteractive(Tiles.Interactive.InteractiveTile it)
     {
-      if (tile is Stairs)
+      if (it is Stairs)
       {
-        var stairs = tile as Stairs;
+        var stairs = it as Stairs;
         var destLevelIndex = -1;
         if (stairs.StairsKind == StairsKind.LevelDown ||
         stairs.StairsKind == StairsKind.LevelUp)
@@ -253,16 +262,51 @@ namespace Roguelike.Managers
             return gm.DungeonLevelStairsHandler(destLevelIndex, stairs);
         }
       }
-      else if (tile is Portal)
+      else if (it is Portal)
       {
-        return gm.HandlePortalCollision(tile as Portal);
+        return gm.HandlePortalCollision(it as Portal);
+      }
+      else if (it.HidesInteractedEntity)
+      {
+        if (!it.Busy)
+        {
+          var set = gm.NpcManager.HandleStayingAtTargetState(it, gm.Hero, gm.Hero.DestPointDesc); 
+          if (set)
+          {
+            HidingHeroInteractionOn(it);
+          }
+        }
+        else
+          gm.SoundManager.PlayBeepSound(); 
+        return InteractionResult.Handled;
       }
       else
       {
-        gm.ApplyHeroPhysicalAttackPolicy(tile, true);
+        gm.ApplyHeroPhysicalAttackPolicy(it, true);
         return InteractionResult.Attacked;
       }
       return InteractionResult.Blocked;//blok hero by default
+    }
+
+    private void HidingHeroInteractionOn(Tiles.Interactive.InteractiveTile it)
+    {
+      gm.Hero.DestPointDesc.State = DestPointState.StayingAtTarget;
+      gm.Hero.DestPointDesc.MoveOnPathTarget = it;
+      gm.Hero.DestPointDesc.ReturnPoint = gm.Hero.point;
+      gm.AppendAction(new HeroAction() { InvolvedTile = it, Kind = HeroActionKind.EnteredInteractive });
+    }
+
+    public void HidingHeroInteractionOff(AbstractGameLevel gl)
+    {
+      var dpd = gm.Hero.DestPointDesc;
+      gm.NpcManager.HandleTravelBackState(gm.Hero, dpd, gl, false);
+      
+      var it = gm.Hero;
+      dpd.State = DestPointState.Unset;
+      dpd.MoveOnPathTarget = null;
+
+      gm.AppendAction(new HeroAction() { InvolvedTile = it, Kind = HeroActionKind.LeftInteractive });
+
     }
 
     public InteractionResult HandleHeroShift(int horizontal, int vertical)
@@ -307,10 +351,17 @@ namespace Roguelike.Managers
         else
         {
           //logger.LogInfo(" Hero ac ="+ ac);
+          if (gm.IsUsingPrivy(gm.Hero, gm.Hero.DestPointDesc)) 
+          {
+            HidingHeroInteractionOff(gm.CurrentNode);
+          }
+
           gm.ApplyMovePolicy(gm.Hero, newPos.Point, null, (e) =>
           {
             gm.OnHeroPolicyApplied(e);
           });
+
+          
         }
       }
       catch (Exception ex)

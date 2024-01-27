@@ -1,4 +1,6 @@
 ﻿using Roguelike.Attributes;
+using Roguelike.Crafting.Workers;
+using Roguelike.Spells;
 using Roguelike.Tiles;
 using Roguelike.Tiles.Looting;
 
@@ -23,6 +25,18 @@ namespace Roguelike.Extensions
         return AttackKind.SpellElementalProjectile;
 
       return AttackKind.Unset;
+    }
+
+    public static SpellKind GetSpellKind(this EntityStatKind esk)
+    {
+      if (esk == EntityStatKind.ResistCold)
+        return SpellKind.IceBall;
+      else if (esk == EntityStatKind.ResistFire)
+        return SpellKind.FireBall;
+      else if (esk == EntityStatKind.ResistPoison)
+        return SpellKind.PoisonBall;
+
+      return SpellKind.Unset;
     }
 
     public static bool IsAttackStat(this EntityStatKind esk)
@@ -87,9 +101,24 @@ namespace Roguelike.Extensions
       return mash.MushroomKind == MushroomKind.BlueToadstool || mash.MushroomKind == MushroomKind.RedToadstool;
     }
 
+    //
+    public static bool IsBoletus(this Loot loot)
+    {
+      var mash = loot as Mushroom;
+      if (mash == null)
+        return false;
+      return mash.MushroomKind == MushroomKind.Boletus;
+    }
+
     public static bool IsPotion(this Loot loot)
     {
       var potion = loot as Potion;
+      return potion != null;
+    }
+
+    public static bool IsAlcohol(this Loot loot)
+    {
+      var potion = loot as Hooch;
       return potion != null;
     }
 
@@ -116,6 +145,14 @@ namespace Roguelike.Extensions
     public static bool IsBowLikeAmmunition(this FightItemKind fightItemKind)
     {
       return Weapon.IsBowLikeAmmoKind(fightItemKind);
+    }
+
+    public static bool IsCausingElementalVengeance(this FightItemKind fightItemKind)
+    {
+      return Weapon.IsBowLikeAmmoKind(fightItemKind) &&
+        fightItemKind.ToString().Contains("Fire") ||
+        fightItemKind.ToString().Contains("Ice") ||
+        fightItemKind.ToString().Contains("Poison");
     }
 
     public static bool IsBowAmmoKind(this FightItemKind kind)

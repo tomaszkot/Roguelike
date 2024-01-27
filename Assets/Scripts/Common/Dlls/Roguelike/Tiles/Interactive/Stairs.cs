@@ -1,6 +1,5 @@
 ﻿#define ASCII_BUILD
 using Dungeons;
-using Newtonsoft.Json;
 using SimpleInjector;
 using System;
 using System.Diagnostics;
@@ -24,6 +23,8 @@ namespace Roguelike.Tiles.Interactive
         pitName = value; 
       }
     }
+
+    public int PitStartEnemiesLevel { get; set; }
 
     public StairsKind StairsKind
     {
@@ -60,11 +61,11 @@ namespace Roguelike.Tiles.Interactive
         }
       }
     }
-    //[JsonConstructor]
+
     public Stairs(Container cont) : this(cont, StairsKind.LevelDown)
     {
     }
-    
+
     public Stairs(Container cont, StairsKind kind) : base(cont, '>')
     {
 #if ASCII_BUILD
@@ -96,7 +97,9 @@ namespace Roguelike.Tiles.Interactive
 
     public override string ToString()
     {
-      return base.ToString() + ", pit: "+PitName;
+      var res =  "EL: "+ PitStartEnemiesLevel+ " "+ base.ToString() + ", pit: "+PitName;
+      
+      return res;
     }
   }
 }

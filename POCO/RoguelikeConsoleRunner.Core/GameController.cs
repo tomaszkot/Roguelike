@@ -1,14 +1,17 @@
 ﻿using Dungeons;
 using Dungeons.ASCIIDisplay;
+using Dungeons.Tiles;
 using Roguelike;
 using Roguelike.Abstract;
 using Roguelike.Abstract.Managers;
 using Roguelike.Events;
 using Roguelike.Managers;
+using Roguelike.Tiles;
 using Roguelike.Tiles.Interactive;
 using Roguelike.Tiles.LivingEntities;
 using SimpleInjector;
 using System;
+using System.Drawing;
 using System.Linq;
 
 namespace RoguelikeConsoleRunner
@@ -66,11 +69,45 @@ namespace RoguelikeConsoleRunner
       Redraw();
     }
 
+    //char SymbolToDrawLootSource(Dungeons.Tiles.Tile tile)
+    //{
+    //  if (tile is ILootSource ls)
+    //  {
+    //    return (char)ls.Level;
+    //  }
+    //  return tile.Symbol;
+    //}
+
     protected override Dungeons.ASCIIDisplay.Screen CreateScreen()
     {
       screen = new Dungeons.ASCIIDisplay.Screen(DrawingEngine);
       screen.OriginX = 2;
       screen.OriginY = 2;
+      //screen.PrintInfo.SymbolToDraw = (Dungeons.Tiles.Tile tile) => {
+      //  return SymbolToDrawLootSource(tile);
+      //};
+     
+      //TODO
+      //screen.PrintInfo.CustomDrawer = (Dungeons.Tiles.Tile tile, IDrawingEngine drawingEngine) => {
+
+      //  var color = ConsoleColor.White;
+       
+      //  if (tile is LivingEntity ls)
+      //  {
+      //    color = tile.Color;
+      //    drawingEngine.ForegroundColor = color;
+      //    drawingEngine.Write(ls.Level);
+      //    return;
+      //  }
+      //  if (tile.Symbol == 'e')
+      //  {
+      //    int k = 0;
+      //    k++;
+      //  }
+      //  drawingEngine.ForegroundColor = color;
+      //  drawingEngine.Write(tile.Symbol);
+       
+      //};
       return screen;
     }
 

@@ -1,9 +1,62 @@
 ﻿using Roguelike.Attributes;
+using Roguelike.Spells;
+using Roguelike.Tiles.Looting;
 
 namespace Roguelike.Effects
 {
-  class EffectTypeConverter
+  public static class EffectTypeConverter
   {
+    public static EffectType GetEffectType(this ProjectileFightItem pfi)
+    {
+      switch (pfi.FightItemKind)
+      {
+        case FightItemKind.Unset:
+          break;
+        case FightItemKind.ExplosiveCocktail:
+        case FightItemKind.ThrowingTorch:
+          return EffectType.Firing;
+          
+        case FightItemKind.ThrowingKnife:
+        case FightItemKind.HunterTrap:
+          return EffectType.Bleeding;
+        case FightItemKind.Stone:
+          break;
+        
+        case FightItemKind.PlainArrow:
+          break;
+        case FightItemKind.IronArrow:
+          break;
+        case FightItemKind.SteelArrow:
+          break;
+        case FightItemKind.PlainBolt:
+          break;
+        case FightItemKind.IronBolt:
+          break;
+        case FightItemKind.SteelBolt:
+          break;
+        case FightItemKind.PoisonArrow:
+        case FightItemKind.PoisonBolt:
+        case FightItemKind.PoisonCocktail:
+          return EffectType.Poisoned;
+        case FightItemKind.IceArrow:
+        case FightItemKind.IceBolt:
+          return EffectType.Frozen;
+        case FightItemKind.FireArrow:
+        case FightItemKind.FireBolt:
+          return EffectType.Firing;
+        case FightItemKind.WeightedNet:
+          break;
+        case FightItemKind.CannonBall:
+          break;
+        case FightItemKind.Smoke:
+          break;
+        default:
+          break;
+      }
+
+      return EffectType.Unset;
+    }
+
     public static EffectType Convert(EntityStatKind esk)
     {
       switch (esk)

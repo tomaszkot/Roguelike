@@ -54,6 +54,8 @@ namespace Roguelike.State
       return new HeroPath();
     }
 
+    public Dictionary<string, string> KeyValuePairs = new Dictionary<string, string>();
+
     public CoreInfo CoreInfo { get; set; } = new CoreInfo();
     public HeroPath HeroPath { get; set; }
 

@@ -1,4 +1,5 @@
 ﻿using Dungeons.Core;
+using Roguelike.Abilities;
 using Roguelike.Spells;
 using System;
 using System.Collections.Generic;
@@ -8,7 +9,9 @@ namespace Roguelike.Spells
 {
   public class SpellStateSet
   {
-    Dictionary<SpellKind, SpellState> spellStates = new Dictionary<SpellKind, SpellState>();
+    private Dictionary<SpellKind, SpellState> spellStates = new Dictionary<SpellKind, SpellState>();
+
+    public Dictionary<SpellKind, SpellState> SpellStates { get => spellStates; set => spellStates = value; }
 
     public SpellStateSet()
     {
@@ -21,6 +24,13 @@ namespace Roguelike.Spells
           MaxLevel = GetMaxLevel(sp)
         };
       }
+    }
+
+    public static SpellStateSet CreateEmpty()
+    {
+      var sss = new SpellStateSet();
+      sss.spellStates.Clear();
+      return sss;
     }
 
     private int GetMaxLevel(SpellKind sp)
@@ -37,8 +47,8 @@ namespace Roguelike.Spells
           break;
         case SpellKind.Skeleton:
           break;
-        case SpellKind.Trap:
-          break;
+        //case SpellKind.Trap:
+        //  break;
         case SpellKind.IceBall:
           break;
         case SpellKind.PoisonBall:

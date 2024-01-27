@@ -16,11 +16,9 @@ namespace Roguelike.Attributes
 
     [JsonIgnore]
     public bool Hidden { get; set; }
-
-    [JsonIgnore]
+        
     public bool CanBeBelowZero { get; set; } = false;
-
-    [JsonIgnore]
+        
     public bool UseSign { get; set; }
 
     public EntityStat() : this(EntityStatKind.Unset, 0)
@@ -203,6 +201,12 @@ namespace Roguelike.Attributes
       return value.Rounded();
     }
 
+    public static int GetRoundedStat(float cv)
+    {
+      cv = Round(cv);
+      return (int)(Math.Ceiling(cv));
+    }
+
     public string GetFormattedCurrentValue(float cv)
     {
       var val = cv.ToString();
@@ -210,8 +214,7 @@ namespace Roguelike.Attributes
         val += " " + "%";
       else
       {
-        cv = Round(cv);
-        int intVal = (int)(Math.Ceiling(cv));
+        int intVal = GetRoundedStat(cv);
         val = intVal.ToString();
       }
       return val;

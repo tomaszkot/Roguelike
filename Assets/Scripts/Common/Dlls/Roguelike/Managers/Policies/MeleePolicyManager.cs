@@ -1,5 +1,6 @@
 ﻿using Dungeons.Tiles;
 using Dungeons.Tiles.Abstract;
+using Roguelike.Abilities;
 //using NUnit.Framework.Interfaces;
 using Roguelike.Attributes;
 using Roguelike.Managers;
@@ -80,7 +81,6 @@ namespace Roguelike.Managers.Policies
         OnPolicyApplied(policy);
 
       var attackPolicy = policy as MeleeAttackPolicy;
-     
 
       var enemyVictim = attackPolicy.Victim as Enemy;
       if (enemyVictim != null && attacker is Hero)
@@ -90,21 +90,14 @@ namespace Roguelike.Managers.Policies
 
       if (target is LivingEntity targetLe && targetLe.Alive)
       {
-        {
-          bool done = false;
-          if (attacker is AdvancedLivingEntity ale)
-          {
-            done = gm.UseActiveAbilities(attacker, targetLe, false);
-          }
-          string reason;
-          if (targetLe.CanUseAbility(Abilities.AbilityKind.StrikeBack, gm.CurrentNode, out reason))
-          {
-            //TODO ?
-            gm.UseAbility(attacker, targetLe, Abilities.AbilityKind.StrikeBack, false);
+        bool done = false;
+        if (attacker is AdvancedLivingEntity ale)
+          done = gm.AbilityManager.UseActiveAbility(ale, false, targetLe);
 
-            //if(used)
-            //  AppendUsedAbilityAction(attacker, Abilities.AbilityKind.StrikeBack);
-          }
+        string reason;
+        if (targetLe.CanUseAbility(AbilityKind.StrikeBack, gm.CurrentNode, out reason))
+        {
+          gm.AbilityManager.UseAbility(attacker, targetLe, AbilityKind.StrikeBack, activeAbility : false);
         }
       }
 
@@ -159,7 +152,8 @@ namespace Roguelike.Managers.Policies
     {
       MeleeAttackPolicy pol;
       var target = CreateNext(out pol);
-      ApplyPhysicalAttackPolicyInner(gm.Context.Hero, target, null, pol, EntityStatKind.Unset);
+      if(target!=null)
+        ApplyPhysicalAttackPolicyInner(gm.Context.Hero, target, null, pol, EntityStatKind.Unset);
 
       return target != null;
     }

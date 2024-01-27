@@ -17,6 +17,9 @@ using System.Drawing;
 using System.Linq;
 using Dungeons.Core.Policy;
 using Dungeons.Tiles.Abstract;
+using Roguelike.Effects;
+using System.Collections.Generic;
+using Roguelike.Abstract.Tiles;
 
 namespace Roguelike.Managers.Policies
 {
@@ -169,34 +172,17 @@ namespace Roguelike.Managers.Policies
           gm.SoundManager.PlaySound("hey");
 
         }
-
-
         else if (kind == SpellKind.Dziewanna)
         {
-          reportSpellDone = false;
-          int maxApples = 1;
-          if (RandHelper.GetRandomDouble() > 0.5)
-            maxApples += 1;
-          for (int appleIndex = 0; appleIndex < maxApples; appleIndex++)
-          {
-            var enemies = gm.CurrentNode.GetNeighborTiles<Enemy>(gm.Hero);
-            bool added = false;
-            foreach (var en in enemies)
-            {
-              var emptyOnes = gm.CurrentNode.GetEmptyNeighborhoodTiles(en, false);
-              if (emptyOnes.Any())
-              {
-                AddApple(emptyOnes.First());
-                added = true;
-                break;
-              }
-            }
-            if (!added)
-            {
-              var emp = gm.CurrentNode.GetClosestEmpty(gm.Hero);
-              AddApple(emp);
-            }
-          }
+          reportSpellDone = ApplyDziewannaSpell();
+        }
+        else if (kind == SpellKind.Jarowit)
+        {
+          ApplyJarowitSpell(caster, spell);
+        }
+        else if (kind == SpellKind.Wales)
+        {
+          ApplyWalesSpell(kind);
         }
         else if (kind == SpellKind.CrackedStone)
         {
@@ -215,7 +201,8 @@ namespace Roguelike.Managers.Policies
         else if (spellSource is Book)
           suffix = "book";
 
-        var info = gm.Hero.Name + " used " + spellSource.Kind.ToDescription() + " " + suffix;
+        var info = caster is God ? "God "+ caster.Name + " manifested its power" :
+          gm.Hero.Name + " used " + spellSource.Kind.ToDescription() + " " + suffix;
 
         gm.AppendAction((LivingEntityAction ac) =>
         {
@@ -241,6 +228,76 @@ namespace Roguelike.Managers.Policies
       return default(T);
     }
 
+    private bool ApplyDziewannaSpell()
+    {
+      bool reportSpellDone = false;
+      int maxApples = 1;
+      if (RandHelper.GetRandomDouble() > 0.5)
+        maxApples += 1;
+      for (int appleIndex = 0; appleIndex < maxApples; appleIndex++)
+      {
+        var enemies = gm.CurrentNode.GetNeighborTiles<Enemy>(gm.Hero);
+        bool added = false;
+        foreach (var en in enemies)
+        {
+          var emptyOnes = gm.CurrentNode.GetEmptyNeighborhoodTiles(en, false);
+          if (emptyOnes.Any())
+          {
+            AddApple(emptyOnes.First());
+            added = true;
+            break;
+          }
+        }
+        if (!added)
+        {
+          var emp = gm.CurrentNode.GetClosestEmpty(gm.Hero);
+          AddApple(emp);
+        }
+      }
+
+      return reportSpellDone;
+    }
+
+    private void ApplyJarowitSpell(LivingEntity caster, Abstract.Spells.ISpell spell)
+    {
+      var iron = new IronSkinSpell(gm.Hero);
+      gm.Hero.LastingEffectsSet.AddLastingEffectFromSpell(Effects.EffectType.IronSkin, iron);
+
+      foreach (var ally in gm.AlliesManager.AllAllies)
+      {
+        if (ally is God)
+          continue;
+        (ally as LivingEntity).LastingEffectsSet.AddLastingEffectFromSpell(Effects.EffectType.IronSkin, iron);
+      }
+
+      var typedSpell = spell as JarowitSpell;
+      var ems = gm.EnemiesManager.GetActiveEnemiesInvolved().Where(i => i.DistanceFrom(caster) <= typedSpell.Range);
+      foreach (var en in ems)
+      {
+        var weak = new WeakenSpell(en);
+        en.LastingEffectsSet.AddLastingEffectFromSpell(Effects.EffectType.Weaken, weak);
+      }
+    }
+
+    private void ApplyWalesSpell(SpellKind kind)
+    {
+      var les = gm.GetLivingEntitiesForGodSpell(true, kind);
+      var laEffs = new[] { EffectType.Poisoned, EffectType.Frozen, EffectType.Firing };
+      foreach (var le in les)
+      {
+        le.ConsumePotion(new Potion(PotionKind.Health));
+        le.ConsumePotion(new Potion(PotionKind.Mana));
+        //le.ConsumePotion(new Potion(PotionKind.Antidote));
+
+        foreach (var lef in laEffs)
+        {
+          var eff = le.LastingEffectsSet.GetByType(lef);
+          if (eff != null)
+            le.RemoveLastingEffect(eff);
+        }
+      }
+    }
+
     public event EventHandler<ReportDelayedSpellDoneEventArgs> ReportDelayedSpellDone;
 
     protected virtual void OnReportDelayedSpellDone(float delaySecs, LivingEntity caster)
@@ -259,15 +316,14 @@ namespace Roguelike.Managers.Policies
       {
         if (os is SkeletonSpell skeletonSpell)
         {
-          gm.AddAlly(skeletonSpell.Ally);
-          res = ApplyAttackPolicyResult.OK;
+          if (gm.AddAlly(skeletonSpell.Ally))
+            res = ApplyAttackPolicyResult.OK;
+          else
+            res = ApplyAttackPolicyResult.NotEnoughResources;
         }
         else if (spellSource is SwiatowitScroll)
         {
-          var ems = gm.EnemiesManager.GetActiveEnemiesInvolved()
-          .Where(i => i.DistanceFrom(gm.Hero) <= SwiatowitScroll.MaxRange)
-          .OrderBy(i => i.DistanceFrom(gm.Hero))
-          .Take(5);
+          var ems = GetEnemiesForGodAttack();
           if (ems.Any())
           {
             HeroBulkAttackTargets = ems.Cast<Enemy>().ToList();
@@ -282,10 +338,25 @@ namespace Roguelike.Managers.Policies
         }
         else if (spell is PerunSpell ps)
         {
-          if (pointedTile is IDestroyable dest)
+          var ems = GetEnemiesForGodAttack();
+          if (ems.Any())
           {
-            res = ApplyAttackPolicy(caster, dest, spellSource);
-            callSpellDone = false;
+            IHitable target = ems.FirstOrDefault();
+            var le = pointedTile as LivingEntity;
+            if (le != null && gm.EnemiesManager.Contains(le))
+            {
+              target = le;
+            }
+            if (target != null)
+            {
+              res = ApplyAttackPolicy(caster, target, spellSource);
+              callSpellDone = false;
+            }
+            else
+            {
+              gm.AppendAction(new GameEvent() { Info = "No valid targets for a spell" });
+              return null;
+            }
           }
           else
           {
@@ -309,6 +380,12 @@ namespace Roguelike.Managers.Policies
       }
 
       return null;
+    }
+
+    public IEnumerable<LivingEntity> GetEnemiesForGodAttack()
+    {
+      return gm.GetEnemiesForGodAttack(SwiatowitScroll.MaxRange);
+                
     }
 
     public void OnSpellDone(LivingEntity caster)
@@ -343,9 +420,32 @@ namespace Roguelike.Managers.Policies
       if (!looped)
         applyingBulk = false;
 
+      if (spellSource == null)
+      {
+        gm.Logger.LogInfo("Error: ApplyAttackPolicy !spellSource, "+ caster);
+        return ApplyAttackPolicyResult.NotEnoughResources;
+      }
       AttackPolicy policy = null;
       gm.Logger.LogInfo("SpellManager.ApplyAttackPolicy caster: " + caster + " target: " + target + " spellSource: " + spellSource);
-      var spell = spellSource.CreateSpell(caster);
+            //var spell = spellSource.CreateSpell(caster);
+
+
+      Abstract.Spells.ISpell spell = null;
+      if (spellSource.IsProjectile)
+      {
+        var projectileCastPolicy = Container.GetInstance<ProjectileCastPolicy>();
+        policy = projectileCastPolicy;
+        spell = projectileCastPolicy.CreateSpell(caster, spellSource) as Abstract.Spells.ISpell;
+      }
+      else if (spellSource.Kind == SpellKind.Perun)//TODO
+      {
+        var staticSpellCastPolicy = Container.GetInstance<StaticSpellCastPolicy>();
+        policy = staticSpellCastPolicy;
+        spell = staticSpellCastPolicy.CreateSpell(caster, spellSource) as Abstract.Spells.ISpell ;
+      }
+      else
+        spell = spellSource.CreateSpell(caster);
+
       var projectileSpell = spell as IProjectileSpell;
 
       if (projectileSpell != null)
@@ -364,26 +464,13 @@ namespace Roguelike.Managers.Policies
       if (!looped && !gm.UtylizeSpellSource(caster, spellSource, spell))
         return ApplyAttackPolicyResult.NotEnoughResources;
 
-      if (projectileSpell != null)
-      {
-        var projectileCastPolicy = Container.GetInstance<ProjectileCastPolicy>();
-        policy = projectileCastPolicy;
-        projectileCastPolicy.CreateSpell(caster, spellSource);
-      }
-      else if (spell is PerunSpell)
-      {
-        var staticSpellCastPolicy = Container.GetInstance<StaticSpellCastPolicy>();
-        policy = staticSpellCastPolicy;
-        staticSpellCastPolicy.CreateSpell(caster, spellSource);
-
-      }
       policy.AddTarget(target);
 
       policies.Add(policy);
 
-      policy.TargetHit += (s, e) =>
+      policy.TargetHit += (s, hitObject) =>
       {
-        HandeTileHit(caster, target, policy);
+        HandeTileHit(caster, hitObject, policy);
       };
 
       if (BeforeApply != null)
@@ -462,7 +549,7 @@ namespace Roguelike.Managers.Policies
       bool bulkOK = HeroBulkAttackTargets.Any();
       if (bulkOK)
       {
-        while (HeroBulkAttackTargets.Any())//simplest from of attack
+        while (HeroBulkAttackTargets !=null && HeroBulkAttackTargets.Any())//simplest from of attack
         {
           var target = GetNextTarget();
           func(target);

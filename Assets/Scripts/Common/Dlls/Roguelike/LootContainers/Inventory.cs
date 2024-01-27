@@ -1,9 +1,11 @@
 ﻿using Dungeons.ASCIIDisplay;
 using Dungeons.ASCIIDisplay.Presenters;
+using Dungeons.Core;
 using Newtonsoft.Json;
 using Roguelike.Events;
 using Roguelike.Managers;
 using Roguelike.Tiles;
+using Roguelike.Tiles.Abstract;
 using Roguelike.Tiles.LivingEntities;
 using Roguelike.Tiles.Looting;
 using SimpleInjector;
@@ -55,7 +57,7 @@ namespace Roguelike.LootContainers
     public int Capacity { get; set; }//how many items there can be?
 
     [JsonIgnore]
-    public AdvancedLivingEntity Owner { get; set; }
+    public IAdvancedEntity Owner { get; set; }
     public InvBasketKind InvBasketKind { get; set; }
 
     [JsonIgnore]
@@ -68,7 +70,7 @@ namespace Roguelike.LootContainers
     {
       this.Container = container;
       //Assert(this.Container != null);
-      Capacity = 64;
+      Capacity = 80;//Look out, merchant share the same inv in UI - shall also have same digit here!
     }
 
     public List<ListItem> ToASCIIList()
@@ -171,7 +173,7 @@ namespace Roguelike.LootContainers
     {
       return Items.FirstOrDefault(i => i == loot) as StackedLoot;
     }
-
+    public const string DuplItem = "Add(Loot item) duplicate item ";
     public virtual bool Add
     (
       Loot item,
@@ -187,6 +189,11 @@ namespace Roguelike.LootContainers
       if (stackedInInv != null)
       {
         exist = true;
+        if (itemStacked.Name != item.Name)
+        {
+          Assert(false, "itemStacked.Name != item.Name, stacked: " + itemStacked + ", item:" +item );
+          return false;
+        }
       }
       else
         exist = Items.Contains(item);
@@ -225,7 +232,8 @@ namespace Roguelike.LootContainers
         else
         {
           //var sameID = Items.FirstOrDefault(i => i.Id == item.Id);
-          Assert(false, "Add(Loot item) duplicate item " + item);
+          //TODO sometimes a ring is not removed from UI layer :O
+          Assert(false, DuplItem + item, item);
           //throw new Exception("Add(Loot item) duplicate item " + item);
         }
       }
@@ -244,11 +252,16 @@ namespace Roguelike.LootContainers
         Dungeons.DebugHelper.Assert(false, Owner + " AppendAction EventsManager == null");
     }
 
-    public void Assert(bool assert, string info = "assert failed")
+    public void Assert(bool assert, string info = "assert failed", Dungeons.Tiles.Tile involvedTile = null)
     {
       if (!assert)
       {
-        AppendAction(new Events.GameStateAction() { Type = Events.GameStateAction.ActionType.Assert, Info = info });
+        AppendAction(new Events.GameStateAction()
+        {
+          Type = Events.GameStateAction.ActionType.Assert, 
+          Info = info,
+          InvolvedTile = involvedTile
+        });
       }
     }
 
@@ -278,7 +291,7 @@ namespace Roguelike.LootContainers
             {
               stackedItem.Count = 0;
               itemToRemove = item;
-              
+
             }
             else
               SetStackCount(stackedItem, stackedItemCount);
@@ -287,10 +300,16 @@ namespace Roguelike.LootContainers
             res = true;
           }
           else
+          {
             Assert(false);
+            return null;
+          }
         }
         else
+        {
           Assert(false);
+          return null;
+        }
       }
 
       if (itemToRemove != null)
@@ -348,7 +367,7 @@ namespace Roguelike.LootContainers
 
     internal bool CanAddLoot(Loot loot)
     {
-      var roomLeft = Capacity > Items.Count || (loot is StackedLoot stacked && stacked.Count > 0);
+      var roomLeft = Capacity > Items.Count || (loot is StackedLoot stacked && GetStackedCount(stacked) > 0);
       //if (!roomLeft)
       //  denyReason = "not enouth room";
       return roomLeft;

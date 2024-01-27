@@ -29,5 +29,10 @@ namespace Roguelike.Tiles.Looting
       dest.Count = count;
       return dest;
     }
+
+    public override string ToString()
+    {
+      return base.ToString() + " Count: "+Count;
+    }
   }
 }

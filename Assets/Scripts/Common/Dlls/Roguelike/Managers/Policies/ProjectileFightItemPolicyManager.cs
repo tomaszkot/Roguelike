@@ -25,7 +25,7 @@ namespace Roguelike.Managers.Policies
 
     public void Log(string log)
     {
-      //logger.LogInfo("gm: "+log);
+      Logger.LogInfo("gm: "+log);
     }
 
     public ILogger Logger { get => gm.Logger;  }
@@ -89,7 +89,7 @@ namespace Roguelike.Managers.Policies
       bool res = false;
       if (ab != null && ab.Kind == AbilityKind.Smoke)
       {
-        res = gm.UseActiveAbility(ab as ActiveAbility, caster, true);
+        res = gm.AbilityManager.UseActiveAbility(ab as ActiveAbility, caster as AdvancedLivingEntity, target as LivingEntity, sendEvent: true);
       }
       else
       {
@@ -115,7 +115,7 @@ namespace Roguelike.Managers.Policies
         var diff = cb - ca;
       }
       if (abUsed)
-        gm.HandleActiveAbilityUsed(caster, ab.Kind);
+        gm.AbilityManager.HandleActiveAbilityUsed(caster, ab.Kind);
 
       Log("ApplyAttackPolicy done res: " + res);
       Log("");
@@ -148,9 +148,9 @@ namespace Roguelike.Managers.Policies
       if (BeforeApply != null)
         BeforeApply(policy);
 
-      policy.TargetHit += (s, e) =>
+      policy.TargetHit += (s, hitObject) =>
       {
-        HandeTileHit(caster, target, policy);
+        HandeTileHit(caster, hitObject, policy);
         //gm.CallTryAddForLootSource(e, policy);
       };
 

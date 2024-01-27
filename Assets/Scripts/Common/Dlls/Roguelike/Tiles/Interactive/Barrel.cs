@@ -32,12 +32,18 @@ namespace Roguelike.Tiles.Interactive
       {
         barrelKind = value;
         SetSound();
-        if(barrelKind == BarrelKind.PileOfSkulls)
+        if (barrelKind == BarrelKind.PileOfSkulls)
           tag1 = "pile_skulls";
         else if (barrelKind == BarrelKind.OilBarrel)
           tag1 = "barrel_oil";
         else if (barrelKind == BarrelKind.Barrel)
+        {
+          if (tag1 == "barrel_special_pcim_pond")
+          {
+            return;//deserialization was braking the tag
+          }
           tag1 = "barrel1";
+        }
       }
     }
 

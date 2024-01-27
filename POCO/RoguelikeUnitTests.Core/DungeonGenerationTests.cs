@@ -409,6 +409,7 @@ namespace RoguelikeUnitTests
     }
 
     [TestCase(SurfaceKind.Oil)]
+    [Repeat(1)]
     public void OilSurfaceBurnsOut(SurfaceKind surfaceKind)
     {
       var game = CreateGame();

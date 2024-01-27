@@ -21,6 +21,13 @@ namespace RoguelikeUnitTests.Core.Utils
       RegisterHealth();
     }
 
+    public float RegisterHealthPercentage(Action ac)
+    {
+      ac();
+      RegisterHealth();
+      return HealthPercentage;
+    }
+
     public void RegisterHealth()
     {
       if (!h1.HasValue)

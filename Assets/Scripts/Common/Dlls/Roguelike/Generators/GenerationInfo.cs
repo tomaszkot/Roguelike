@@ -40,11 +40,11 @@ namespace Roguelike.Generators
 
 #if TEST_ON
       //MakeEmpty();
-      //ForcedNumberOfEnemiesInRoom = 0;
-      GenerateEnemies = false;
+      //ForcedNumberOfEnemiesInRoom = 1;
+      //GenerateEnemies = false;
       NumberOfRooms = 2;
       //MaxLevelIndex = 0;
-      DefaultForcedDungeonLayouterKind = Dungeons.DungeonLayouterKind.Corridor;
+      DefaultForcedDungeonLayouterKind = DungeonLayouterKind.Default;
       ForcedKeyPuzzle = KeyPuzzle.LeverSet;
 
 #endif
@@ -67,7 +67,8 @@ namespace Roguelike.Generators
     public const int LevelUpPoints = 5;
     public const float NextExperienceIncrease = .5f;
     public const int FirstNextLevelExperienceThreshold = 250;
-
+    public const int AbilityPointLevelUpIncrease = 3;
+    public const float EnemyStatsIncreasePerLevel = .15f;
     public bool GenerateEnemies { get; set; } = DebugInfo.GenerateEnemies && !ForceEmpty;
 
     public bool GenerateLoot { get; set; } = true && !ForceEmpty;
@@ -82,8 +83,8 @@ namespace Roguelike.Generators
     
     public int MaxBarrelsPerRoom = 5;
     public int MaxLootPerRoom = 2;
-    public static int MaxMerchantMagicDust = 4;
-    public static int MaxMerchantHooch = 4;
+    public static int MaxMerchantMagicDust = 8;
+    public static int MaxMerchantHooch = 8;
     public static float ChangeToGetEnchantableItem = 0.2f;
     public static float MaxMagicAttackDistance = 6;
     public static Difficulty Difficulty = Difficulty.Normal;

@@ -61,8 +61,8 @@ namespace Roguelike.Spells
           break;
         case SpellKind.Skeleton:
           break;
-        case SpellKind.Trap:
-          break;
+        //case SpellKind.Trap:
+        //  break;
         case SpellKind.IceBall:
           return EffectType.Frozen;
           

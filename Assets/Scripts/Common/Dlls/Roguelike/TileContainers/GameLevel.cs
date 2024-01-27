@@ -9,6 +9,7 @@ using Roguelike.Managers;
 using Roguelike.Serialization;
 using Roguelike.Tiles.Interactive;
 using Roguelike.Tiles.LivingEntities;
+using Roguelike.Tiles.Looting;
 using SimpleInjector;
 using System;
 using System.Collections.Generic;
@@ -21,10 +22,14 @@ namespace Roguelike.TileContainers
   {
 
     public Stairs StairsUp { get => stairsUp; set => stairsUp = value; }
-    public Stairs StairsDown { get => stairsDown; set => stairsDown = value; }
+    public Stairs StairsDown 
+    {
+      get;
+      set;
+    }
 
     Stairs stairsUp = null;
-    Stairs stairsDown = null;
+
     public event EventHandler<NodeRevealedParam> NodeRevealed;
     public LeverSet BossRoomLeverSet 
     { 
@@ -67,7 +72,7 @@ namespace Roguelike.TileContainers
       return BossRoomLeverSet.IsOpened();
     }
 
-    public override void OnHeroPlaced(Hero hero)
+    public override void OnHeroPlaced(Hero hero, GameContextSwitchKind context)
     {
       try
       {

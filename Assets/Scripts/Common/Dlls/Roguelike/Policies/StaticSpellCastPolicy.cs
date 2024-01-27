@@ -67,9 +67,10 @@ namespace Roguelike.Policies
       return true;
     }
 
-    public override void CreateSpell(LivingEntity caster, SpellSource spellSource)
+    public override Dungeons.Tiles.Abstract.ISpell CreateSpell(LivingEntity caster, SpellSource spellSource)
     {
       DamagingSpell = spellSource.CreateSpell(caster) as Abstract.Spells.IDamagingSpell;
+      return DamagingSpell;
     }
   }
 }

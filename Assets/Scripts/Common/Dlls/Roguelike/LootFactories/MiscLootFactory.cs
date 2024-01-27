@@ -27,6 +27,7 @@ namespace Roguelike.LootFactories
       {
         var kind = PotionKind.Unset;
         var specialKind = SpecialPotionKind.Unset;
+        var specialPotionSize = SpecialPotionSize.Small;
 
         if (tag == "health_potion")
           kind = PotionKind.Health;
@@ -37,13 +38,17 @@ namespace Roguelike.LootFactories
         else if (tag == "antidote_potion")
           kind = PotionKind.Antidote;
 
-        else if (tag == "magic_potion")
+        else if (tag.Contains("magic_potion"))
         {
           kind = PotionKind.Special;
           specialKind = SpecialPotionKind.Magic;
         }
-
-        else if (tag == "strength_potion")
+        else if (tag.Contains("virility_potion"))
+        {
+          kind = PotionKind.Special;
+          specialKind = SpecialPotionKind.Virility;
+        }
+        else if (tag.Contains("strength_potion"))
         {
           kind = PotionKind.Special;
           specialKind = SpecialPotionKind.Strength;
@@ -51,14 +56,30 @@ namespace Roguelike.LootFactories
         else
           Dungeons.DebugHelper.Assert(false);
 
+        if (kind == PotionKind.Special)
+        {
+          specialPotionSize = SpecialPotionSize.Small;
+          if (tag.Contains("big"))
+            specialPotionSize = SpecialPotionSize.Big;
+          //else if (tag.Contains("medium"))
+          //  specialPotionSize = SpecialPotionSize.Medium;
+        }
+
         Potion loot = null;
         if (specialKind != SpecialPotionKind.Unset)
-          loot = new SpecialPotion(specialKind, SpecialPotionSize.Small);
+          loot = new SpecialPotion(specialKind, specialPotionSize);
         else
           loot = new Potion(kind);
         return loot;
       };
-      var names = new[] { "antidote_potion", "health_potion", "mana_potion", "magic_potion", "strength_potion" };
+      var names = new[] { 
+        "antidote_potion", 
+        "health_potion", 
+        "mana_potion", 
+        "small_magic_potion", "medium_magic_potion", "big_magic_potion",
+        "small_strength_potion" , "medium_strength_potion" ,"big_strength_potion" ,
+        "small_virility_potion" ,"medium_virility_potion","big_virility_potion"
+      };
       foreach (var name in names)
       {
         factory[name] = createPotion;
@@ -68,7 +89,9 @@ namespace Roguelike.LootFactories
 
       factory["magic_dust"] = (string tag) =>
       {
-        return new MagicDust();
+        var md = new MagicDust();
+        //md.Count = 100;
+        return md;
       };
 
       factory["hooch"] = (string tag) =>
@@ -179,8 +202,8 @@ namespace Roguelike.LootFactories
           kind = HunterTrophyKind.Claw;
         else if (tt.EndsWith("fang"))
           kind = HunterTrophyKind.Fang;
-        else if (tt.EndsWith("tusk"))
-          kind = HunterTrophyKind.Tusk;
+        //else if (tt.EndsWith("tusk"))
+        //  kind = HunterTrophyKind.Tusk;
 
         EnchanterSize enchanterSize = EnchanterSize.Small;
         if (tt.StartsWith("big"))
@@ -190,7 +213,7 @@ namespace Roguelike.LootFactories
 
         factory[tt] = (string tag) =>
         {
-          return new HunterTrophy(kind) { EnchanterSize = enchanterSize, tag1 = tag };
+          return new HunterTrophy(kind) { EnchanterSize = enchanterSize };
         };
       }
 
@@ -229,22 +252,70 @@ namespace Roguelike.LootFactories
       }
 
       factory["cannon"] = (string tag)=> new Cannon();
+
+      //var sli = CreateSanderusLoot();
+      //foreach (var sl in sli)
+      //  factory[sl.tag1] = (string tag)=> sl;
+    }
+
+    public static List<Loot> CreateSanderusLoot()
+    {
+      var res = new List<Loot>();
+      var tags = new[] { "ArchangelGabrielFeathers", "PegansOil", "HoovesOfTheDonkey" , "JacobRungs" };
+      foreach (var tag in tags)
+      {
+        string description = "";
+        string name = "";
+        if (tag == "ArchangelGabrielFeathers")
+        {
+          description = "Feathers from the wings of Archangel Gabriel lost during the Annunciation";
+          name = "Archangel Gabriel's feathers";
+        }
+        else if (tag == "PegansOil")
+        {
+          description = "Oil in which the pagans wanted to fry John the Baptist";
+          name = "Saint Oil";
+        }
+        else if (tag == "HoovesOfTheDonkey")
+        {
+          description = "Hooves of the donkey on which the Holy Family fled to Egypt";
+          name = "Holy Family's Donkey hooves";
+        }
+        else if (tag == "JacobRungs")
+        {
+          description = "Rungs from the ladder that patriarch Jacob dreamed of";
+          name = "Patriarch Jacob's Rungs";
+        }
+        var loot = new GenericLoot(name, description, tag);
+        loot.Name = name;
+        loot.Price = 200;
+        
+        res.Add(loot);
+      }
+      return res;
     }
 
     private static ProjectileFightItem CreateFightItem(FightItemKind fik)
     {
-      int max = 3;
+      int max = 3 + RandHelper.GetRandomInt(2);
       int add = 3;
+      int min = 1;
       var fi = new ProjectileFightItem(fik, null) { };
       if (fik.IsBowLikeAmmunition())
-        max = 6;
+      {
+        max = 20;
+        min = 10;
+      }
       if (fik == FightItemKind.HunterTrap)
       {
         max = 1;
         add = 2;
       }
 
-      fi.Count = RandHelper.GetRandomInt(max) + add;
+      var co = RandHelper.GetRandomInt(max) + add;
+      if (co < min)
+        co = min;
+      fi.Count = co;
       return fi;
     }
 
@@ -261,6 +332,8 @@ namespace Roguelike.LootFactories
       var kinds = GetEnumValues<RecipeKind>();
       foreach (var kind in kinds)
       {
+        if (kind == RecipeKind.Pendant)
+          continue;
         recipesPrototypes.Add(createRecipeFromKind(kind));
       }
 
@@ -281,18 +354,14 @@ namespace Roguelike.LootFactories
       return EnumHelper.GetEnumValues<T>(true);
     }
 
-    public override Loot GetByName(string name)
-    {
-      return GetByAsset(name);
-    }
+    //public override Loot GetByName(string name)
+    //{
+    //  return GetByAsset(name);
+    //}
 
     public override Loot GetByAsset(string tagPart)
     {
-      var tile = factory.FirstOrDefault(i => i.Key == tagPart);
-      if (tile.Key != null)
-        return tile.Value(tagPart);
-
-      return null;
+      return GetByAsset(factory, tagPart);
     }
 
     public override Loot GetRandom(int level)//TODO ! level

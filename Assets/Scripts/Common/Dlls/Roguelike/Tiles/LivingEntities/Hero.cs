@@ -109,6 +109,13 @@ namespace Roguelike.Tiles.LivingEntities
     public virtual void OnContextSwitched(Container container)
     {
       //this.Container = container;
+
+      //TODO
+      EnsureInvOwner();
+    }
+
+    public void EnsureInvOwner()
+    {
       Inventory.Owner = this;
       Crafting.InvItems.Inventory.Owner = this;
       Crafting.Recipes.Inventory.Owner = this;
@@ -269,5 +276,6 @@ namespace Roguelike.Tiles.LivingEntities
       }
     }
 
+    public bool InStocks { get; set; }
   }
 }

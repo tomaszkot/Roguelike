@@ -78,7 +78,7 @@ namespace Roguelike.Generators
       node.ContentGenerated = true;
     }
 
-    protected Enemy CreateBoss(string name, char symbol, bool addBossToTag1)
+    protected virtual Enemy CreateBoss(string name, char symbol, bool addBossToTag1)
     {
       var enemy = CreateEnemyInstance(container, name, false, true);
       if(addBossToTag1)
@@ -222,8 +222,8 @@ namespace Roguelike.Generators
         node.SetTileAtRandomPosition(new ProjectileFightItem(FightItemKind.ThrowingKnife) { Count = RandHelper.GetRandomInt(4) });
       if (RandHelper.GetRandomDouble() > .6)
         node.SetTileAtRandomPosition(new ProjectileFightItem(FightItemKind.ThrowingTorch) { Count = RandHelper.GetRandomInt(4) });
-      if (RandHelper.GetRandomDouble() > .9)
-        node.SetTileAtRandomPosition(new ProjectileFightItem(FightItemKind.CannonBall) { Count = RandHelper.GetRandomInt(4) });
+      //if (RandHelper.GetRandomDouble() > .9)
+      //  node.SetTileAtRandomPosition(new ProjectileFightItem(FightItemKind.CannonBall) { Count = RandHelper.GetRandomInt(4) });
 
 
       //node.SetTileAtRandomPosition(new Hooch() { Count = RandHelper.GetRandomInt(4) });
@@ -257,6 +257,7 @@ namespace Roguelike.Generators
 
     protected virtual bool PlaceEnemy(Enemy enemy, Dungeons.TileContainers.DungeonNode node, Point pt)
     {
+      
       var res = node.SetTile(enemy, pt);
       if (res)
       {
@@ -310,7 +311,7 @@ namespace Roguelike.Generators
       //Debug.WriteLine(log);
     }
 
-    protected void CreateEnemiesPack(int packIndex, string enemyName, bool addBoss = false)
+    protected virtual void CreateEnemiesPack(int packIndex, string enemyName, bool addBoss = false)
     {
       Log("CreateEnemiesPack start packIndex: " + packIndex + ", ChildIsland: " + gi.ChildIsland + ", NodeIndex:  "
         + node.NodeIndex + " ChempsCount: "+ gi.GeneratedInfo.ChempionsCount);
@@ -406,7 +407,9 @@ namespace Roguelike.Generators
         emptyCells.RemoveAll(i => i.point == enemyPoint);
         foreach (var en in packEnemies)
         {
-          PlaceEnemy(en, node, enemyPoint.Value);
+          var emp = node.GetTile(enemyPoint.Value);
+          emp = node.EnsureCorrectY(emp);
+          PlaceEnemy(en, node, emp.point);
           var empty = node.GetClosestEmpty(en, emptyCells);
           if (empty == null)
           {
@@ -464,7 +467,7 @@ namespace Roguelike.Generators
       return selEnemyNames;
     }
 
-    public void EnsureBoss()
+    public virtual void EnsureBoss()
     {
       if (!string.IsNullOrEmpty(LevelBossName))
       {

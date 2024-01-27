@@ -159,6 +159,19 @@ namespace RoguelikeUnitTests
       }
     }
 
+    //[Test]
+    //public void TargetRequirementTests()
+    //{
+    //  var game = CreateGame();
+    //  var spellKinds = EnumHelper.GetEnumValues<SpellKind>(true);
+    //  foreach (var spellKind in spellKinds)
+    //  {
+    //    var scroll = new Scroll(spellKind);
+    //    var spell = scroll.CreateSpell(game.Hero);
+
+    //    //Assert.AreEqual(scroll.TargetRequired, spell is OffensiveSpell);//TODO
+    //  }
+    //}
 
 
     [Test]
@@ -289,7 +302,7 @@ namespace RoguelikeUnitTests
       else if (ak == AttackKind.PhysicalProjectile)
       {
         var fi = ActivateFightItem(FightItemKind.ThrowingKnife, hero, 20);
-        Assert.True(UseFightItem(hero, crackedStone, hero.ActiveProjectileFightItem));
+        Assert.True(UseFightItem(hero, crackedStone, hero.SelectedProjectileFightItem));
       }
       else if (ak == AttackKind.SpellElementalProjectile)
       {

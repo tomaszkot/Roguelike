@@ -163,14 +163,23 @@ namespace RoguelikeUnitTests
       var game = CreateGame();
       var hero = game.Hero;
 
+      var esk = EntityStatKind.MeleeAttack;
       Equipment wpn = game.GameManager.GenerateRandomEquipment(EquipmentKind.Weapon);
       var att = wpn.PrimaryStatValue;
+      Assert.AreEqual(wpn.PrimaryStatKind, esk);
       var price = wpn.Price;
       Assert.Greater(price, 0);
 
-      wpn.MakeMagic(EntityStatKind.MeleeAttack, 4);
+      var ms = wpn.GetMagicStats();
+      Assert.AreEqual(ms.Count, 0);//not magic item
+
+      wpn.MakeMagic(esk, 4);
+      ms = wpn.GetMagicStats();
+      Assert.AreEqual(ms.Count, 0);//not identied
       wpn.Identify();
-      Assert.AreEqual(att + 4, wpn.GetStats().GetTotalValue(EntityStatKind.MeleeAttack));
+      ms = wpn.GetMagicStats();
+      Assert.AreEqual(ms.Count, 1);
+      Assert.AreEqual(att + 4, wpn.GetStats().GetTotalValue(esk));
       Assert.Greater(wpn.Price, price);
     }
 

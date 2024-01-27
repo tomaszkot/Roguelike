@@ -14,6 +14,7 @@ namespace Roguelike.Abstract.Tiles
     bool SetLevel(int level, Difficulty? diff = null);
     bool TakeLevelFromCaster { get; }
     string Name { get; }
+    bool PendingReturnToCamp { get; set; }
 
     event EventHandler LeveledUp;
 

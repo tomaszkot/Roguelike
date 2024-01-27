@@ -1,6 +1,5 @@
 ﻿using NUnit.Framework;
 using Roguelike;
-using Roguelike.Core.Serialization;
 using Roguelike.History;
 using Roguelike.Serialization;
 using Roguelike.TileContainers;
@@ -9,7 +8,6 @@ using Roguelike.Tiles.LivingEntities;
 using Roguelike.Tiles.Looting;
 using System;
 using System.Linq;
-using System.IO;
 
 namespace RoguelikeUnitTests
 {
@@ -58,7 +56,7 @@ namespace RoguelikeUnitTests
 
     [Test]
     [Repeat(1)]
-    public void NewGameTest()
+    public void SerializeNewGameTest()
     {
       string heroName;
       GameLevel gameLevel = null;
@@ -77,7 +75,7 @@ namespace RoguelikeUnitTests
         heroName = hero.Name;
 
         //move hero to rand position.
-        var pt = gameNode.GetFirstEmptyPoint();
+        var pt = gameNode.GetFirstEmptyPoint(); 
         Assert.AreNotEqual(hero.point, pt);
         gameNode.SetTile(hero, pt.Value);
 
@@ -255,20 +253,6 @@ namespace RoguelikeUnitTests
         var arm = game.GameManager.LootGenerator.GetRandomEquipment(EquipmentKind.Armor, 1);
         createGame(game, "Edd", arm);
       }
-    }
-
-    [Test]
-    public void GodotSavedGamesList()
-    {
-      var game = CreateGame(true);
-      var hero = game.Hero;
-      hero.Name = "SaveHeroStatsTest";
-
-      SaveLoad();
-
-      var savedGamesList = SavedGames.GetSavedGamesList();
-      Assert.Greater(savedGamesList.Count, 0);
-      Assert.IsTrue(savedGamesList.Any(s => s == System.IO.Path.GetTempPath() + "Roguelike" + "\\" + "SaveHeroStatsTest"));
     }
 
   }

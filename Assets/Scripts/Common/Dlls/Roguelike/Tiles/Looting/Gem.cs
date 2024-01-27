@@ -14,12 +14,24 @@ namespace Roguelike.Tiles.Looting
 
   public class Gem : Enchanter
   {
-    public GemKind GemKind { get; set; }
+
+    public GemKind GemKind
+    {
+      get => gemKind;
+      set 
+      {
+        gemKind = value;
+        EnchantSrcFromGemKind();
+        SetName(GemKind.ToDescription());
+      }
+    }
     static Dictionary<EquipmentKind, EntityStatKind> enhancmentPropsRuby = new Dictionary<EquipmentKind, EntityStatKind>();
     static Dictionary<EquipmentKind, EntityStatKind> enhancmentPropsEmer = new Dictionary<EquipmentKind, EntityStatKind>();
     static Dictionary<EquipmentKind, EntityStatKind> enhancmentPropsDiam = new Dictionary<EquipmentKind, EntityStatKind>();
 
     static Dictionary<GemKind, Dictionary<EquipmentKind, EntityStatKind>> enhancmentProps = new Dictionary<GemKind, Dictionary<EquipmentKind, EntityStatKind>>();
+    private GemKind gemKind;
+
     public int GameLevel { get; set; } = 1;
 
     public Gem() : this(GemKind.Unset)
@@ -39,16 +51,19 @@ namespace Roguelike.Tiles.Looting
       Symbol = '*';
       Name = "Gem";
       GemKind = kind;
-      
-      EnchanterSize = EnchanterSize.Small;
-      EnchantSrcFromGemKind();
-
+     
       if (gameLevel >= 0)
         SetRandomKindAndLevelSize(gameLevel, kind == GemKind.Unset);
       else
         SetProps();
-            
-      //PrimaryStatDescription = desc;
+    }
+
+    public override bool IsMatchingRecipe(RecipeKind kind)
+    {
+      if (kind == RecipeKind.EnchantEquipment || kind == RecipeKind.UnEnchantEquipment ||
+         kind == RecipeKind.ThreeGems || kind == RecipeKind.TransformGem)
+        return true;
+      return false;
     }
 
     public void EnchantSrcFromGemKind()
@@ -129,13 +144,11 @@ namespace Roguelike.Tiles.Looting
 
     public override void SetProps()
     {
-      SetPrice();
-      tag1 = CalcTagFrom();
-
       SetName(GemKind.ToDescription());
+      base.SetPropsCommon();
     }
 
-    public string CalcTagFrom()
+    protected override string CalcTagFromProps()
     {
       return CalcTagFrom(GemKind, EnchanterSize);
     }
@@ -144,8 +157,6 @@ namespace Roguelike.Tiles.Looting
     {
       return kind.ToString().ToLower() + "_" + size.ToString().ToLower();
     }
-
-    
 
     public override bool ApplyTo(Equipment eq, Func<EquipmentKind> ekProvider, out string error)
     {
@@ -320,5 +331,6 @@ namespace Roguelike.Tiles.Looting
       if (GemKind == GemKind.Amber)
         Price *= 2;
     }
+
   }
 }

@@ -1,4 +1,5 @@
 ﻿using Dungeons.Tiles;
+using Dungeons.Tiles.Abstract;
 using Newtonsoft.Json;
 using Roguelike.Abilities;
 using Roguelike.Abstract.Effects;
@@ -15,6 +16,8 @@ using System.Xml.Serialization;
 
 namespace Roguelike.Effects
 {
+  public enum EffectKind { Unset, Positive, Neutral, Negative}
+
   public enum EffectType
   {
     Unset = 0,
@@ -43,6 +46,7 @@ namespace Roguelike.Effects
     WildRage = 110
     //OpenWound = 110
   }
+
 
   public interface ILastingEffectOwner
   {
@@ -95,6 +99,7 @@ namespace Roguelike.Effects
   {
     public const int DefaultPendingTurns = 3;
 
+    [JsonIgnore]
     public ILastingEffectSrc LastingEffectSrc { get; set; }
 
     public EffectApplication Application { get; set; }
@@ -229,6 +234,9 @@ namespace Roguelike.Effects
       if (Type == EffectType.Frighten)
         return "Frighten (Pending Turns: " + PendingTurns+")";
 
+      if (Type == EffectType.Stunned)
+        return "Stunned (Pending Turns: " + PendingTurns + ")";
+
       if (AbilityKind == AbilityKind.ElementalVengeance)
         return "Elemental Attacks: "+ EffectiveFactor.ToString();
 
@@ -304,10 +312,22 @@ namespace Roguelike.Effects
       return Type + ", " + Description;
     }
 
-    public LivingEntityAction CreateAction(LastingEffect le)
+    //public LivingEntityAction CreateAction(LastingEffect le, bool removed)
+    //{
+    //  var lea = new LivingEntityAction(removed ? LivingEntityActionKind.EffectFinished : LivingEntityActionKind.ExperiencedEffect);
+    //  lea.InvolvedEntity = this.livingEntity;
+    //  lea.EffectType = le.Type;
+    //  var targetName = livingEntity.Name.ToString();
+
+    //  lea.Info = targetName + " " + le.Description;
+    //  lea.Level = ActionLevel.Important;
+    //  return lea;
+    //}
+
+    public LivingEntityAction CreateAction(LastingEffect le, bool removed, LivingEntity owner)
     {
-      var target = (Owner as LivingEntity);
-      var lea = new LivingEntityAction(LivingEntityActionKind.ExperiencedEffect);
+      var target = owner;// (Owner as LivingEntity);
+      var lea = new LivingEntityAction(removed ? LivingEntityActionKind.EffectFinished : LivingEntityActionKind.ExperiencedEffect);
       lea.InvolvedEntity = target;
       lea.EffectType = le.Type;
       //var targetName = target.Name.ToString();
@@ -323,17 +343,15 @@ namespace Roguelike.Effects
 
       if (Origin == EffectOrigin.SelfCasted)
       {
-        expected = ownerName;
-        expected += " casted:";
+        expected = ownerName + " casted:";
+      }
+      else if (Origin == EffectOrigin.OtherCasted)
+      {
+        expected = "Spell was casted on " + ownerName;
       }
       else
       {
-      }
-
-      if (Origin == EffectOrigin.OtherCasted)
-      {
-        //expected += Type.ToDescription();
-        expected += "Spell was casted on " + ownerName;
+        expected = ownerName; 
       }
       var res = expected;
       if (res.Any())

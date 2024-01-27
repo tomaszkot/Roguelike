@@ -8,5 +8,7 @@ namespace Roguelike.Abstract.Inventory
     int GetPrice(Loot loot);
     int Gold { get; set; }
     bool GetGoldWhenSellingTo(IInventoryOwner other);
+
+    bool IsSellable(Loot loot);
   }
 }
